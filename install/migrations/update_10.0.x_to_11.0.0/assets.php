@@ -35,7 +35,7 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
- * @var DB $DB
+ * @var DBmysql $DB
  * @var Migration $migration
  */
 
@@ -80,15 +80,14 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             `assets_assetmodels_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `assets_assettypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `name` varchar(255) DEFAULT NULL,
+            `uuid` varchar(255) DEFAULT NULL,
             `comment` text,
             `serial` varchar(255) DEFAULT NULL,
             `otherserial` varchar(255) DEFAULT NULL,
             `contact` varchar(255) DEFAULT NULL,
             `contact_num` varchar(255) DEFAULT NULL,
             `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-            `groups_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `users_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
-            `groups_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
             `locations_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `manufacturers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `states_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -96,18 +95,21 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             `is_recursive` tinyint NOT NULL DEFAULT '0',
             `is_deleted` tinyint NOT NULL DEFAULT '0',
             `is_template` tinyint NOT NULL DEFAULT '0',
+            `is_dynamic` tinyint NOT NULL DEFAULT '0',
             `template_name` varchar(255) DEFAULT NULL,
+            `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
+            `last_inventory_update` timestamp NULL DEFAULT NULL,
+            `custom_fields` json,
             PRIMARY KEY (`id`),
             KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
             KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
             KEY `assets_assettypes_id` (`assets_assettypes_id`),
             KEY `name` (`name`),
+            KEY `uuid` (`uuid`),
             KEY `users_id` (`users_id`),
-            KEY `groups_id` (`groups_id`),
             KEY `users_id_tech` (`users_id_tech`),
-            KEY `groups_id_tech` (`groups_id_tech`),
             KEY `locations_id` (`locations_id`),
             KEY `manufacturers_id` (`manufacturers_id`),
             KEY `states_id` (`states_id`),
@@ -115,6 +117,8 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             KEY `is_recursive` (`is_recursive`),
             KEY `is_deleted` (`is_deleted`),
             KEY `is_template` (`is_template`),
+            KEY `is_dynamic` (`is_dynamic`),
+            KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
@@ -127,7 +131,19 @@ SQL;
     $migration->addKey('glpi_assets_assets', 'assets_assettypes_id');
     $migration->addField('glpi_assets_assets', 'is_template', 'bool');
     $migration->addKey('glpi_assets_assets', 'is_template');
+    $migration->addField('glpi_assets_assets', 'is_dynamic', 'bool');
+    $migration->addKey('glpi_assets_assets', 'is_dynamic');
     $migration->addField('glpi_assets_assets', 'template_name', 'string');
+    $migration->dropKey('glpi_assets_assets', 'groups_id');
+    $migration->dropField('glpi_assets_assets', 'groups_id');
+    $migration->dropKey('glpi_assets_assets', 'groups_id_tech');
+    $migration->dropField('glpi_assets_assets', 'groups_id_tech');
+    $migration->addField('glpi_assets_assets', 'uuid', 'string');
+    $migration->addKey('glpi_assets_assets', 'uuid');
+    $migration->addField('glpi_assets_assets', 'autoupdatesystems_id', 'fkey');
+    $migration->addKey('glpi_assets_assets', 'autoupdatesystems_id');
+    $migration->addField('glpi_assets_assets', 'last_inventory_update', 'timestamp');
+    $migration->addField('glpi_assets_assets', 'custom_fields', 'json', ['update' => $DB::quoteValue('{}')]);
 }
 
 if (!$DB->tableExists('glpi_assets_assetmodels')) {
@@ -179,6 +195,25 @@ SQL;
     $DB->doQueryOrDie($query);
 }
 
+if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_assets_customfielddefinitions` (
+          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+          `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
+          `name` varchar(255) NOT NULL,
+          `label` varchar(255) NOT NULL,
+          `type` varchar(255) NOT NULL,
+          `field_options` json,
+          `itemtype` VARCHAR(255) NULL DEFAULT NULL,
+          `default_value` text,
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
+          KEY `name` (`name`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQueryOrDie($query);
+}
+
 // Dev migration
 // Convert profile rights in glpi_assets_assetdefinitions from an array to OR'd integer like we use in regular glpi_profilerights table
 // TODO Remove before releasing GLPI 11.0 beta.
@@ -211,42 +246,4 @@ foreach ($it as $data) {
             'id' => $data['id']
         ]);
     }
-}
-
-// Add missing fields on assignable items
-$migration->addField('glpi_cartridgeitems', 'users_id', 'fkey');
-$migration->addKey('glpi_cartridgeitems', 'users_id');
-$migration->addField('glpi_cartridgeitems', 'groups_id', 'fkey');
-$migration->addKey('glpi_cartridgeitems', 'groups_id');
-
-$migration->addField('glpi_consumableitems', 'users_id', 'fkey');
-$migration->addKey('glpi_consumableitems', 'users_id');
-$migration->addField('glpi_consumableitems', 'groups_id', 'fkey');
-$migration->addKey('glpi_consumableitems', 'groups_id');
-
-$migration->addField('glpi_databaseinstances', 'users_id', 'fkey');
-$migration->addKey('glpi_databaseinstances', 'users_id');
-$migration->addField('glpi_databaseinstances', 'groups_id', 'fkey');
-$migration->addKey('glpi_databaseinstances', 'groups_id');
-
-$migration->addField('glpi_items_devicesimcards', 'users_id_tech', 'fkey');
-$migration->addKey('glpi_items_devicesimcards', 'users_id_tech');
-$migration->addField('glpi_items_devicesimcards', 'groups_id_tech', 'fkey');
-$migration->addKey('glpi_items_devicesimcards', 'groups_id_tech');
-
-$migration->addField('glpi_lines', 'users_id_tech', 'fkey');
-$migration->addKey('glpi_lines', 'users_id_tech');
-$migration->addField('glpi_lines', 'groups_id_tech', 'fkey');
-$migration->addKey('glpi_lines', 'groups_id_tech');
-
-// Add assignable assets rights
-$assignable_asset_rights = [
-    'computer', 'monitor', 'software', 'networking', 'printer',
-    'cartridge', 'consumable', 'phone', 'peripheral'
-];
-foreach ($assignable_asset_rights as $rightname) {
-    $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
-    $migration->addRight($rightname, UPDATE_ASSIGNED, [$rightname => UPDATE]);
-    $migration->addRight($rightname, READ_OWNED, [$rightname => READ]);
-    $migration->addRight($rightname, UPDATE_OWNED, [$rightname => UPDATE]);
 }

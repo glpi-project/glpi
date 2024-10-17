@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
@@ -354,6 +356,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public static function rawSearchOptionsToAdd()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $base_id = static::getSearchOptionIDOffset();
         $table = static::getTable();
 
@@ -423,6 +428,61 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child'
             ]
+        ];
+
+        $sql = "WITH RECURSIVE entity_tree AS (
+                SELECT
+                    id,
+                    entities_id,
+                    inquest_duration
+                FROM
+                    glpi_entities
+                WHERE
+                    inquest_config != -2
+                UNION ALL
+                SELECT
+                    e.id,
+                    e.entities_id,
+                    et.inquest_duration
+                FROM
+                    glpi_entities e
+                INNER JOIN
+                    entity_tree et
+                    ON e.entities_id = et.id
+                WHERE
+                    e.inquest_config = -2
+            )
+            SELECT
+                id AS entity_id,
+                inquest_duration
+            FROM
+                entity_tree
+        ";
+
+        $subquery = new QueryExpression("($sql) AS durations");
+
+        $tab[] = [
+            'id'                 => 72 + $base_id,
+            'table'              => $table,
+            'field'              => 'inquest_duration',
+            'name'               => __('End date'),
+            'datatype'           => 'datetime',
+            'maybefuture'        => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ],
+            'usehaving'          => true,
+            'nometa'             => true,
+            'computation'        => QueryFunction::if(
+                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = glpi_entities.id AND durations.inquest_duration > 0)"),
+                true_expression: QueryFunction::dateAdd(
+                    date: "$table.date_begin",
+                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = glpi_entities.id)"),
+                    interval_unit: 'DAY',
+                ),
+                false_expression: new QueryExpression($DB::quoteValue(''))
+            )
         ];
 
         return $tab;

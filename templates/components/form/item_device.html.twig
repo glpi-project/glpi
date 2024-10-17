@@ -217,6 +217,7 @@
                         field_options|merge({
                            'entity': item.fields['entities_id'],
                            'condition': {'is_itemgroup': 1},
+                           'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
                         })
                      ) }}
                   {% endif %}

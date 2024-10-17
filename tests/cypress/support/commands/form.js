@@ -47,8 +47,29 @@ Cypress.Commands.add('visitFormTab', {prevSubject: true}, (
 ) => {
     const fully_qualified_tabs = new Map([
         ['Form', 'Glpi\\Form\\Form\\Form$main'],
+        ['Policies', 'Glpi\\Form\\AccessControl\\FormAccessControl$1'],
+        ['Destinations', 'Glpi\\Form\\Destination\\FormDestination$1'],
+        ['ServiceCatalog', 'Glpi\\Form\\ServiceCatalog\\ServiceCatalog$1'],
     ]);
     const tab = fully_qualified_tabs.get(tab_name);
 
     return cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
+});
+
+Cypress.Commands.add('saveFormEditorAndReload', () => {
+    cy.findByRole('button', {'name': 'Save'}).click();
+    cy.findByRole('alert')
+        .should('contain.text', 'Item successfully updated')
+    ;
+    cy.reload();
+});
+
+Cypress.Commands.add('addQuestion', (name) => {
+    cy.findByRole('button', {'name': 'Add a new question'}).click();
+    cy.focused().type(name); // Question name is focused by default
+});
+
+Cypress.Commands.add('addSection', (name) => {
+    cy.findByRole('button', {'name': 'Add a new section'}).click();
+    cy.focused().type(name); // Section name is focused by default
 });

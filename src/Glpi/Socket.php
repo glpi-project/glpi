@@ -464,7 +464,6 @@ class Socket extends CommonDBChild
 
             case 'wiring_side':
                 return self::dropdownWiringSide($name, $options);
-            break;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
@@ -493,10 +492,8 @@ class Socket extends CommonDBChild
                     }
                 }
                 return ' ';
-            break;
             case 'wiring_side':
                 return self::getWiringSideName($values[$field]);
-            break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -912,9 +909,9 @@ class Socket extends CommonDBChild
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         $options = []
     ) {
 

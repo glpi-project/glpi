@@ -215,7 +215,6 @@ class View extends CommonGLPI
      *
      * @param bool   $force_refresh do not rely on cache to get plugins list
      * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
-     * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin by given string
      *
      * @return void display things
@@ -271,7 +270,7 @@ class View extends CommonGLPI
     /**
      * Display discover tab (all availble plugins)
      *
-     * @param bool   $force_refresh do not rely on cache to get plugins list
+     * @param bool   $force do not rely on cache to get plugins list
      * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
      * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin by given string
@@ -531,7 +530,7 @@ JS;
         $description = Toolbox::stripTags($plugin['description']);
 
         $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
-        $authors_title = Html::entities_deep($authors);
+        $authors_title = htmlspecialchars($authors);
         $authors = strlen($authors)
             ? "<i class='fa-fw ti ti-users'></i>{$authors}"
             : "";
@@ -550,28 +549,28 @@ JS;
             ? self::getStarsHtml($plugin['note'])
             : "";
 
-        $home_url = Html::entities_deep($plugin['homepage_url'] ?? "");
+        $home_url = htmlspecialchars($plugin['homepage_url'] ?? "");
         $home_url = strlen($home_url)
             ? "<a href='{$home_url}' target='_blank' >
                <i class='ti ti-home-2 add_tooltip' title='" . __s("Homepage") . "'></i>
                </a>"
             : "";
 
-        $issues_url = Html::entities_deep($plugin['issues_url'] ?? "");
+        $issues_url = htmlspecialchars($plugin['issues_url'] ?? "");
         $issues_url = strlen($issues_url)
             ? "<a href='{$issues_url}' target='_blank' >
                <i class='ti ti-bug add_tooltip' title='" . __s("Get help") . "'></i>
                </a>"
             : "";
 
-        $readme_url = Html::entities_deep($plugin['readme_url'] ?? "");
+        $readme_url = htmlspecialchars($plugin['readme_url'] ?? "");
         $readme_url = strlen($readme_url)
             ? "<a href='{$readme_url}' target='_blank' >
                <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
                </a>"
             : "";
 
-        $changelog_url = Html::entities_deep($plugin['changelog_url'] ?? "");
+        $changelog_url = htmlspecialchars($plugin['changelog_url'] ?? "");
         $changelog_url = strlen($changelog_url)
             ? "<a href='{$changelog_url}' target='_blank' >
                <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
@@ -649,7 +648,7 @@ HTML;
     /**
      * Return HTML part for plugin stars
      *
-     * @param float|int $value current stars note on 5
+     * @param float $value current stars note on 5
      *
      * @return string plugins stars html
      */
@@ -890,24 +889,29 @@ HTML;
                 }
             }
 
-            $buttons .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
-                'plugin_name' => $plugin_inst->getField('name'),
+            $uninstall_label = __s("Uninstall");
+            $buttons .= <<<HTML
+                <button data-bs-toggle="modal"
+                        data-bs-target="#uninstallModal{$plugin_inst->getField('directory')}"
+                        title="{$uninstall_label}">
+                    <i class="ti ti-folder-x"></i>
+                </button>
+HTML;
+            $buttons .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                 'modal_id' => 'uninstallModal' . $plugin_inst->getField('directory'),
-                'open_btn' => '<button data-bs-toggle="modal"
-                                       data-bs-target="#uninstallModal' . $plugin_inst->getField('directory') . '"
-                                       title="' . __s('Uninstall') . '">
-                                   <i class="ti ti-folder-x"></i>
-                               </button>',
-                'uninstall_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
+                'confirm_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                        data-action="uninstall_plugin"
                                        data-bs-dismiss="modal">
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
+                'content' => sprintf(
+                    __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                    htmlspecialchars($plugin_inst->getField('name'))
+                )
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {
-                $plugin_dir = Plugin::getWebDir($plugin_key, true);
-                $config_url = "$plugin_dir/$config_page";
+                $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$plugin_key}/{$config_page}";
                 $buttons .= "<a href='$config_url'>
                         <button class='add_tooltip' title='" . __s("Configure") . "'>
                             <i class='ti ti-tool'></i>
@@ -933,7 +937,7 @@ HTML;
     {
         $icon = "";
 
-        $logo_url = Html::entities_deep($plugin['logo_url'] ?? "");
+        $logo_url = htmlspecialchars($plugin['logo_url'] ?? "");
         if (strlen($logo_url)) {
             $icon = "<img src='{$logo_url}'>";
         } else {

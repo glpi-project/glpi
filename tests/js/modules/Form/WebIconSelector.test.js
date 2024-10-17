@@ -54,15 +54,12 @@ describe('Web Icon Selector', () => {
         const selectElement = document.createElement('select');
         const webIconSelector = new WebIconSelector(selectElement);
         expect(webIconSelector.selectElement).toBe(selectElement);
-        expect(webIconSelector.icon_sets).toEqual(['ti']);
 
-        const webIconSelector2 = new WebIconSelector(selectElement, ['ti', 'fa']);
+        const webIconSelector2 = new WebIconSelector(selectElement);
         expect(webIconSelector2.selectElement).toBe(selectElement);
-        expect(webIconSelector2.icon_sets).toEqual(['ti', 'fa']);
 
-        const webIconSelector3 = new WebIconSelector(selectElement, ['fa']);
+        const webIconSelector3 = new WebIconSelector(selectElement);
         expect(webIconSelector3.selectElement).toBe(selectElement);
-        expect(webIconSelector3.icon_sets).toEqual(['fa']);
     });
     test('Init select2', () => {
         $('body').append('<select id="test"></select>');
@@ -80,47 +77,20 @@ describe('Web Icon Selector', () => {
         webIconSelector.init();
         await new Promise(process.nextTick);
 
-        const select2_options = $('#test').data('select2').results.data._dataToConvert;
-        expect(select2_options).toBeDefined();
-        expect(select2_options.length).toBe(1);
-        // each option id and text should match and contain 'ti-'
-        select2_options.forEach((option) => {
-            expect(option.id).toBe(option.text);
-            expect(option.id).toContain('ti-');
+        $('#test').data('select2').results.data.query({
+            term: '',
+        }, (results) => {
+            // One page/category returned by default
+            expect(results.results.length).toBe(1);
+            expect(results.results[0].text).toBe('Animals');
+            expect(results.results[0].children.length).toBeGreaterThan(1);
+            // More pages available
+            expect(results.pagination.more).toBeTrue();
+            // each option id and text should match and contain 'ti-'
+            results.results[0].children.forEach((option) => {
+                expect(option.id).toBe(`ti-${option.text}`);
+                expect(option.id).toContain('ti-');
+            });
         });
-
-        // Test with FontAwesome
-        const webIconSelector2 = new WebIconSelector(document.getElementById('test2'), ['fa']);
-        webIconSelector2.init();
-
-        const select2_options2 = $('#test2').data('select2').results.data._dataToConvert;
-        expect(select2_options2).toBeDefined();
-        expect(select2_options2.length).toBe(4);
-        // each option id and text should match and contain 'fa-'
-        select2_options2.forEach((option) => {
-            expect(option.id).toBe(option.text);
-            expect(option.id).toContain('fa-');
-        });
-
-        // Test with both icon sets
-        const webIconSelector3 = new WebIconSelector(document.getElementById('test3'), ['ti', 'fa']);
-        webIconSelector3.init();
-
-        let has_ti = false;
-        let has_fa = false;
-        const select2_options3 = $('#test3').data('select2').results.data._dataToConvert;
-        expect(select2_options3).toBeDefined();
-        expect(select2_options3.length).toBe(5);
-        // each option id and text should match and contain 'fa-' or 'ti-' and both types of icons should be present
-        select2_options3.forEach((option) => {
-            expect(option.id).toBe(option.text);
-            if (option.id.includes('fa-')) {
-                has_fa = true;
-            } else if (option.id.includes('ti-')) {
-                has_ti = true;
-            }
-        });
-        expect(has_ti).toBeTrue();
-        expect(has_fa).toBeTrue();
     });
 });

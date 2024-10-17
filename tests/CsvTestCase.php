@@ -67,7 +67,7 @@ abstract class CsvTestCase extends DbTestCase
     }
 
     /**
-     * @dataprovider csvTestProvider
+     * @dataProvider csvTestProvider
      */
     public function testGetFileName(
         ExportToCsvInterface $export,
@@ -78,7 +78,7 @@ abstract class CsvTestCase extends DbTestCase
     }
 
     /**
-     * @dataprovider csvTestProvider
+     * @dataProvider csvTestProvider
      */
     public function testGetFileHeader(
         ExportToCsvInterface $export,
@@ -93,7 +93,7 @@ abstract class CsvTestCase extends DbTestCase
     }
 
     /**
-     * @dataprovider csvTestProvider
+     * @dataProvider csvTestProvider
      */
     public function testGetFileContent(
         ExportToCsvInterface $export,

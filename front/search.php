@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
 
 Session::checkCentralAccess();
 Html::header(__('Search'), $_SERVER['PHP_SELF']);
 
 if (!$CFG_GLPI['allow_search_global']) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 if (isset($_GET["globalsearch"])) {
     $searchtext = trim($_GET["globalsearch"]);

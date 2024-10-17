@@ -50,6 +50,12 @@ class Environment extends AbstractInventoryAsset
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
     <ENVS>
       <KEY>LC_ALL</KEY>
       <VAL>C</VAL>
@@ -143,5 +149,52 @@ class Environment extends AbstractInventoryAsset
             countElementsInTable(\Item_Environment::getTable()),
             'Environments has not been linked to computer :('
         );
+    }
+
+    public function testGenericAssetEnvironment(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        //create generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'MyAsset' . $this->getUniqueString(),
+            capacities: array_merge(
+                [
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                ]
+            )
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf([
+            'import_env' => 1,
+        ]));
+        $this->logout();
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert(self::assetProvider()[0]['xml']);
+        $json = json_decode($data);
+        //we change itemtype to our asset
+        $json->itemtype = $classname;
+        $inventory = $this->doInventory($json);
+
+        //check created asset
+        $assets_id = $inventory->getAgent()->fields['items_id'];
+        $this->assertGreaterThan(0, $assets_id);
+        $asset = new $classname();
+        $this->assertTrue($asset->getFromDB($assets_id));
+
+        $this->assertSame(
+            4,
+            countElementsInTable(\Item_Environment::getTable(), ['itemtype' => $classname, 'items_id' => $assets_id]),
+            'Environments has not been linked to asset :('
+        );
+
+        //check for tab presence
+        $this->login();
+        $this->assertArrayHasKey('Item_Environment$1', $asset->defineAllTabs());
     }
 }

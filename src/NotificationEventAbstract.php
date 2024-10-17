@@ -99,11 +99,12 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 isset($users_infos['additionnaloption']['timezone'])
                                 && is_a($options['item'], CommonDBTM::class, true) // item may be a `CommonGLPI`
                             ) {
-                                 $DB->setTimezone($users_infos['additionnaloption']['timezone']);
-                                 // reload object for get timezone correct dates
-                                 $options['item']->getFromDB($item->fields['id']);
+                                /** @var CommonDBTM $item */
+                                $DB->setTimezone($users_infos['additionnaloption']['timezone']);
+                                // reload object for get timezone correct dates
+                                $options['item']->getFromDB($item->fields['id']);
 
-                                 $DB->setTimezone($orig_tz);
+                                $DB->setTimezone($orig_tz);
                             }
 
                             if (
@@ -142,8 +143,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 } else {
                                     // This is only used in the debug tab of some forms
                                     $notificationtarget->getFromDB($target['id']);
-                                    echo "<tr class='tab_bg_2'><td>" . $label . "</td>";
-                                    echo "<td>" . $notificationtarget->getNameID() . "</td>";
+                                    echo "<tr class='tab_bg_2'><td>" . htmlspecialchars($label) . "</td>";
+                                    echo "<td>" . htmlspecialchars($notificationtarget->getNameID()) . "</td>";
                                     echo "<td>" . sprintf(
                                         __s('%1$s (%2$s)'),
                                         $template->getName(),

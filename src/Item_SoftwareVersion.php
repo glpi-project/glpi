@@ -506,7 +506,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         echo "<div class='center'>";
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No item found') . "</th></tr>";
+            echo "<tr><th>" . __s('No item found') . "</th></tr>";
             echo "</table></div>\n";
             return;
         }
@@ -650,7 +650,6 @@ class Item_SoftwareVersion extends CommonDBRelation
             $softwares_id  = $data['sID'];
             $soft          = new Software();
             $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = User::canView();
             $title         = $soft->fields["name"];
 
             if ($crit === "id") {
@@ -749,6 +748,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
                 echo "<td>{$data['item_type']}</td>";
 
+                $itemname = htmlspecialchars($itemname);
                 if ($canshowitems[$data['item_type']]) {
                     echo "<td><a href='" . $data['item_type']::getFormURLWithID($data['iID']) . "'>$itemname</a></td>";
                 } else {
@@ -756,19 +756,18 @@ class Item_SoftwareVersion extends CommonDBRelation
                 }
 
                 if ($showEntity) {
-                    echo "<td>" . $data['entity'] . "</td>";
+                    echo "<td>" . htmlspecialchars($data['entity']) . "</td>";
                 }
-                echo "<td>" . $data['serial'] . "</td>";
-                echo "<td>" . $data['otherserial'] . "</td>";
-                echo "<td>" . $data['location'] . "</td>";
-                echo "<td>" . $data['state'] . "</td>";
-                echo "<td>" . $data['groupe'] . "</td>";
-                echo "<td>" . formatUserName(
+                echo "<td>" . htmlspecialchars($data['serial']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['otherserial']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['location']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['state']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['groupe']) . "</td>";
+                echo "<td>" . formatUserLink(
                     $data['userid'],
                     $data['username'],
                     $data['userrealname'],
                     $data['userfirstname'],
-                    $linkUser
                 ) . "</td>";
 
                 $lics = Item_SoftwareLicense::getLicenseForInstallation(
@@ -810,7 +809,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else { // Not found
-            echo __('No item found');
+            echo __s('No item found');
         }
         Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
@@ -837,8 +836,8 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         echo "<div class='center'>";
         echo "<table class='tab_cadre'><tr>";
-        echo "<th>" . Entity::getTypeName(1) . "</th>";
-        echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
+        echo "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlspecialchars(self::getTypeName(Session::getPluralNumber())) . "</th>";
         echo "</tr>\n";
 
         $tot = 0;
@@ -853,17 +852,17 @@ class Item_SoftwareVersion extends CommonDBRelation
         foreach ($iterator as $data) {
             $nb = self::countForVersion($softwareversions_id, $data['id']);
             if ($nb > 0) {
-                echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
+                echo "<tr class='tab_bg_2'><td>" . htmlspecialchars($data["completename"]) . "</td>";
                 echo "<td class='numeric'>" . $nb . "</td></tr>\n";
                 $tot += $nb;
             }
         }
 
         if ($tot > 0) {
-            echo "<tr class='tab_bg_1'><td class='center b'>" . __('Total') . "</td>";
+            echo "<tr class='tab_bg_1'><td class='center b'>" . __s('Total') . "</td>";
             echo "<td class='numeric b'>" . $tot . "</td></tr>\n";
         } else {
-            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
+            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No item found') . "</td></tr>\n";
         }
         echo "</table></div>";
     }
@@ -1007,7 +1006,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<form method='post' action='" . Item_SoftwareVersion::getFormURL() . "'>";
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td class='center'>";
-            echo _n('Software', 'Software', Session::getPluralNumber()) . "&nbsp;&nbsp;";
+            echo _sn('Software', 'Software', Session::getPluralNumber()) . "&nbsp;&nbsp;";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             echo "<input type='hidden' name='items_id' value='$items_id'>";
             Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
@@ -1044,9 +1043,9 @@ class Item_SoftwareVersion extends CommonDBRelation
 
        // Mini Search engine
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'><th colspan='2'>" . Software::getTypeName(Session::getPluralNumber()) . "</th></tr>";
+        echo "<tr class='tab_bg_1'><th colspan='2'>" . htmlspecialchars(Software::getTypeName(Session::getPluralNumber())) . "</th></tr>";
         echo "<tr class='tab_bg_1'><td>";
-        echo _n('Category', 'Categories', 1) . "</td><td>";
+        echo _sn('Category', 'Categories', 1) . "</td><td>";
         SoftwareCategory::dropdown(['value'      => $crit,
             'toadd'      => ['-1' =>  __('All categories')],
             'emptylabel' => __('Uncategorized software'),
@@ -1092,19 +1091,19 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header_end    .= "</th>";
             }
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . __('Status') . "</th>";
-            $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th>";
-            $header_end .= "<th>" . SoftwareLicense::getTypeName(1) . "</th>";
-            $header_end .= "<th>" . __('Installation date') . "</th>";
-            $header_end .= "<th>" . _n('Architecture', 'Architectures', 1) . "</th>";
-            $header_end .= "<th>" . __('Automatic inventory') . "</th>";
-            $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
-            $header_end .= "<th>" . __('Valid license') . "</th>";
+            $header_end .= "<th>" . __s('Name') . "</th>";
+            $header_end .= "<th>" . __s('Status') . "</th>";
+            $header_end .= "<th>" . _sn('Version', 'Versions', 1) . "</th>";
+            $header_end .= "<th>" . htmlspecialchars(SoftwareLicense::getTypeName(1)) . "</th>";
+            $header_end .= "<th>" . __s('Installation date') . "</th>";
+            $header_end .= "<th>" . _sn('Architecture', 'Architectures', 1) . "</th>";
+            $header_end .= "<th>" . __s('Automatic inventory') . "</th>";
+            $header_end .= "<th>" . htmlspecialchars(SoftwareCategory::getTypeName(1)) . "</th>";
+            $header_end .= "<th>" . __s('Valid license') . "</th>";
             $header_end .= "<th>
                 <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
                     <i class='fas fa-filter'></i>
-                    <span class='d-none d-xl-block'>" . __('Filter') . "</span>
+                    <span class='d-none d-xl-block'>" . __s('Filter') . "</span>
                 </button></th>";
             $header_end .= "</tr>";
             echo $header_begin . $header_top . $header_end;
@@ -1115,13 +1114,13 @@ class Item_SoftwareVersion extends CommonDBRelation
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[name]' value='" . ($filters['name'] ?? '') . "'>
+                        <input type='text' class='form-control' name='filters[name]' value='" . htmlspecialchars($filters['name'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[state]' value='" . ($filters['state'] ?? '') . "'>
+                        <input type='text' class='form-control' name='filters[state]' value='" . htmlspecialchars($filters['state'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[version]' value='" . ($filters['version'] ?? '') . "'>
+                        <input type='text' class='form-control' name='filters[version]' value='" . htmlspecialchars($filters['version'] ?? '') . "'>
                     </td>
                     <td></td>
                     <td>
@@ -1134,7 +1133,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         ) . "
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[arch]' value='" . ($filters['arch'] ?? '') . "'>
+                        <input type='text' class='form-control' name='filters[arch]' value='" . htmlspecialchars($filters['arch'] ?? '') . "'>
                     </td>
                     <td>" . Dropdown::showFromArray(
                             "filters[is_dynamic]",
@@ -1207,11 +1206,11 @@ class Item_SoftwareVersion extends CommonDBRelation
         ) {
             echo "<form method='post' action='" . Item_SoftwareLicense::getFormURL() . "'>";
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th></tr>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>" . htmlspecialchars(SoftwareLicense::getTypeName(Session::getPluralNumber())) . "</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>";
-            echo SoftwareLicense::getTypeName(Session::getPluralNumber()) . "&nbsp;&nbsp;";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+            echo htmlspecialchars(SoftwareLicense::getTypeName(Session::getPluralNumber())) . "&nbsp;&nbsp;";
+            echo "<input type='hidden' name='itemtype' value='" . htmlspecialchars($itemtype) . "'>";
             echo "<input type='hidden' name='items_id' value='$items_id'>";
             Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
             echo "</td><td width='20%'>";
@@ -1312,9 +1311,9 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $header_bottom .= Html::getCheckAllAsCheckbox('massSoftwareLicense' . $rand);
                 $header_end    .= "</th>";
             }
-            $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-            $header_end .= "<th>" . _n('Version', 'Versions', 1) . "</th><th>" . SoftwareLicense::getTypeName(1) . "</th>";
-            $header_end .= "<th>" . __('Installation date') . "</th>";
+            $header_end .= "<th>" . __s('Name') . "</th><th>" . __s('Status') . "</th>";
+            $header_end .= "<th>" . _sn('Version', 'Versions', 1) . "</th><th>" . htmlspecialchars(SoftwareLicense::getTypeName(1)) . "</th>";
+            $header_end .= "<th>" . __s('Installation date') . "</th>";
             $header_end .= "</tr>\n";
             echo $header_begin . $header_top . $header_end;
 
@@ -1332,7 +1331,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else {
-            echo "<p class='center b'>" . __('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No item found') . "</p>";
         }
 
         echo "</div>\n";
@@ -1380,9 +1379,9 @@ class Item_SoftwareVersion extends CommonDBRelation
             )
                                                : $data["softname"]);
             echo "</a></td>";
-            echo "<td>" . $data["state"] . "</td>";
+            echo "<td>" . htmlspecialchars($data["state"]) . "</td>";
 
-            echo "<td>" . $data["version"];
+            echo "<td>" . htmlspecialchars($data["version"]);
             echo "</td><td>";
         }
 
@@ -1431,13 +1430,13 @@ class Item_SoftwareVersion extends CommonDBRelation
             }
 
             if ($display) {
-                echo "<span class='b'>" . $licdata['name'] . "</span> - " . $licserial;
+                echo "<span class='b'>" . htmlspecialchars($licdata['name']) . "</span> - " . htmlspecialchars($licserial);
 
                 $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
                 $link      = $link_item . "?id=" . $licdata['id'];
-                $comment   = "<table><tr><td>" . __('Name') . "</td><td>" . $licdata['name'] . "</td></tr>" .
-                         "<tr><td>" . __('Serial number') . "</td><td>" . $licdata['serial'] . "</td></tr>" .
-                         "<tr><td>" . __('Comments') . '</td><td>' . $licdata['comment'] . "</td></tr>" .
+                $comment   = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlspecialchars($licdata['name']) . "</td></tr>" .
+                         "<tr><td>" . __s('Serial number') . "</td><td>" . htmlspecialchars($licdata['serial']) . "</td></tr>" .
+                         "<tr><td>" . __s('Comments') . '</td><td>' . htmlspecialchars($licdata['comment']) . "</td></tr>" .
                          "</table>";
 
                 Html::showToolTip($comment, ['link' => $link]);
@@ -1507,9 +1506,9 @@ class Item_SoftwareVersion extends CommonDBRelation
         )
                                             : $data["softname"]);
         echo "</a></td>";
-        echo "<td>" . $data["state"] . "</td>";
+        echo "<td>" . htmlspecialchars($data["state"]) . "</td>";
 
-        echo "<td>" . $data["version"];
+        echo "<td>" . htmlspecialchars($data["version"]);
 
         $serial = $data["serial"];
 
@@ -1528,9 +1527,9 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo " - " . $serial;
         }
 
-        $comment = "<table><tr><td>" . __('Name') . "</td>" . "<td>" . $data['name'] . "</td></tr>" .
-                 "<tr><td>" . __('Serial number') . "</td><td>" . $data['serial'] . "</td></tr>" .
-                 "<tr><td>" . __('Comments') . "</td><td>" . $data['comment'] . "</td></tr></table>";
+        $comment = "<table><tr><td>" . __s('Name') . "</td>" . "<td>" . htmlspecialchars($data['name']) . "</td></tr>" .
+                 "<tr><td>" . __s('Serial number') . "</td><td>" . htmlspecialchars($data['serial']) . "</td></tr>" .
+                 "<tr><td>" . __s('Comments') . "</td><td>" . htmlspecialchars($data['comment']) . "</td></tr></table>";
 
         Html::showToolTip($comment, ['link' => $link]);
         echo "</td></tr>\n";
@@ -1564,6 +1563,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $nb = 0;
         switch ($item::class) {
             case 'Software':
+                /** @var Software $item */
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSoftware($item->getID());

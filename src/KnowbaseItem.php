@@ -45,6 +45,7 @@ use Glpi\Search\SearchEngine;
  **/
 class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 {
+    use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
 
     public static $browse_default = true;
@@ -61,6 +62,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static $rightname   = 'knowbase';
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Entity_KnowbaseItem::class,
+            Group_KnowbaseItem::class,
+            KnowbaseItem_Profile::class,
+            KnowbaseItem_User::class,
+            Document_Item::class,
+            Infocom::class,
+            KnowbaseItem_Item::class,
+            KnowbaseItemTranslation::class,
+        ];
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -940,10 +954,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $writer_link = '';
         if ($this->fields["users_id"]) {
-            $writer_link = getUserName(
-                $this->fields["users_id"],
-                $linkusers_id ? 1 : 0 // Integer because true may be 2 and getUserName return array
-            );
+            $writer_link = getUserLink($this->fields["users_id"]);
         }
 
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
@@ -1583,8 +1594,8 @@ TWIG, $twig_params);
                     }
                     echo Search::showItem(
                         $output_type,
-                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text(htmlspecialchars($name, 80)) . "</a></div>
-                                       <div class='kb_resume'>" . Html::resume_text(htmlspecialchars(RichText::getTextFromHtml($answer, false, false, true), 600)) . "</div>",
+                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                                       <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
                         $item_num,
                         $row_num
                     );
@@ -1593,14 +1604,10 @@ TWIG, $twig_params);
                     echo Search::showItem($output_type, htmlspecialchars(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
                 }
 
-                $showuserlink = 0;
-                if (Session::haveRight('user', READ)) {
-                    $showuserlink = 1;
-                }
                 if ($showwriter) {
                     echo Search::showItem(
                         $output_type,
-                        getUserName($data["users_id"], $showuserlink),
+                        getUserLink($data["users_id"]),
                         $item_num,
                         $row_num
                     );

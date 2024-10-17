@@ -56,7 +56,7 @@ export default class MonacoEditor {
         // Stupid workaround to allow multiple Monaco editors to be created for the same language but with different completions
         // since it registers completions by langauge in a global variable rather than allowing it to be instance-specific
         const existing_lang = window.monaco.languages.getLanguages().find((lang) => lang.id === language);
-        const new_lang_id = options['_force_default_lang'] ? language : 'glpi_' + language + '_' + Math.random().toString(36).substring(2, 15);
+        const new_lang_id = options['_force_default_lang'] ? language : `glpi_${language}_${Math.random().toString(36).substring(2, 15)}`;
 
         // Can't just specify the loader when registering the language apparently...
         async function registerNewLangLoaderData() {

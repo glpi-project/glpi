@@ -259,11 +259,14 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->import_peripheral == 1;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        return $conf->import_peripheral == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }
 
     public function getItemtype(): string
     {
+        //FIXME: check if this is correct - should be the same as Monitor::getItemtype()
         return \Peripheral::class;
     }
 }

@@ -34,8 +34,8 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
-include '../inc/includes.php';
 Session::checkRight('itiltemplate', UPDATE);
 
 /**
@@ -44,11 +44,11 @@ Session::checkRight('itiltemplate', UPDATE);
  */
 
 if (!isset($itiltype)) {
-    Html::displayErrorAndDie("Missing ITIL type");
+    throw new BadRequestHttpException();
 }
 
 if (!isset($fieldtype)) {
-    Html::displayErrorAndDie("Missing field type");
+    throw new BadRequestHttpException();
 }
 
 $item_class = $itiltype . 'Template' . $fieldtype . 'Field';
@@ -98,4 +98,4 @@ if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

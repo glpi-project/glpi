@@ -61,8 +61,10 @@
     --glpi-logo-light-login: url("../pics/logos/logo-GLPI-250-white.png");
     --glpi-logo: var(--glpi-logo-light);
     --glpi-logo-reduced: var(--glpi-logo-light-reduced);
-    --glpi-mainmenu-bg: #2f3f64;
+    --glpi-mainmenu-bg: #2f3f64; // hsl(222, 36%, 29%)
+    --glpi-helpdesk-header: hsl(223deg, 31%, 80%);
     --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-mainmenu-fg-muted: #f4f6fa99;
     --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
     --glpi-search-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), transparent 95%);
     --glpi-search-fg: color-mix(in srgb, var(--glpi-mainmenu-fg), white 5%);
@@ -420,4 +422,33 @@ body .toast {
 
 .tooltip {
     --tblr-tooltip-color: var(--tblr-body-color);
+}
+
+body pre {
+    background-color: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
+}
+
+.col-12.glpi-full-width {
+    .col-form-label {
+        width: calc(-4px + 20.8333%);
+    }
+
+    .field-container {
+        width: calc(-11px + 79.1666%);
+    }
+}
+
+// Needed as 'text-muted' may not always be readable depending on the menu
+// background color.
+.horizontal-layout  {
+    .text-muted-menu {
+        color: var(--glpi-mainmenu-fg-muted) !important;
+    }
+}
+
+.vertical-layout  {
+    .text-muted-menu {
+        color: var(--tblr-muted) !important;
+    }
 }

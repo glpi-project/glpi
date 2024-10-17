@@ -254,7 +254,7 @@ final class UserMention
             $replacement = sprintf(
                 '<a class="user-mention" href="%s">@%s</a>',
                 $user->getLinkURL(),
-                $user->getFriendlyName()
+                \htmlspecialchars($user->getFriendlyName())
             );
             $content = preg_replace($pattern, $replacement, $content);
         }

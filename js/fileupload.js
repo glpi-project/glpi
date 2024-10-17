@@ -31,7 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getExtIcon, getSize, isImage, stopEvent */
+/* eslint no-var: 0 */
+/* global getExtIcon, getSize, isImage, stopEvent, _ */
 
 var insertIntoEditor = []; // contains flags that indicate if uploaded file (image) should be added to editor contents
 
@@ -42,7 +43,7 @@ function uploadFile(file, editor) {
 
     // Search for fileupload container.
     // First try to find an uplaoder having same name as editor element.
-    var uploader = $('[data-uploader-name="' + editor.getElement().name + '"]');
+    var uploader = $(`[data-uploader-name="${editor.getElement().name}"]`);
     if (uploader.length === 0) {
         // Fallback to uploader using default name
         uploader = $(editor.getElement()).closest('form').find('[data-uploader-name="filename"]');
@@ -59,13 +60,13 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
     $.ajax(
         {
             type: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/getFileTag.php',
+            url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
             data: {data: files_data},
             dataType: 'JSON',
             success: function(tags) {
                 $.each(
                     files,
-                    function(index, file) {
+                    (index, file) => {
                         if (files_data[index].error !== undefined) {
                             container.parent().find('.uploadbar')
                                 .text(files_data[index].error)
@@ -78,13 +79,9 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                         var editor = null;
                         if (editor_id) {
                             editor = tinyMCE.get(editor_id);
-                            const uploaded_image = uploaded_images.find(
-                                function (entry) {
-                                    return entry.filename === file.name;
-                                }
-                            );
+                            const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
                             const matching_image = uploaded_image !== undefined
-                                ? editor.dom.select('img[data-upload_id="' + uploaded_image.upload_id + '"]')
+                                ? editor.dom.select(`img[data-upload_id="${uploaded_image.upload_id}"]`)
                                 : [];
                             if (matching_image.length > 0) {
                                 editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
@@ -107,7 +104,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
             complete: function () {
                 $.each(
                     files,
-                    function(index, file) {
+                    (index, file) => {
                         delete(insertIntoEditor[file.name]);
                     }
                 );
@@ -126,42 +123,35 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
  * @param      {Object}  container     The fileinfo container
  */
 var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
-    var fileindex = $('input[name^="_'+input_name+'["]').length;
+    var fileindex = $(`input[name^="_${input_name}["]`).length;
     var ext = file.name.split('.').pop();
 
     var p = $('<p></p>')
         .attr('id',file.id)
-        .html(
-            getExtIcon(ext)
-         + '&nbsp;'
-         + '<b>'+file.display
-         + '</b>'
-         + '&nbsp;('
-         + getSize(file.size)+')&nbsp;'
-        ).appendTo(filecontainer);
+        .html(`${getExtIcon(ext)}&nbsp;<b>${_.escape(file.display)}</b>&nbsp;(${getSize(file.size)})&nbsp;`).appendTo(filecontainer);
 
     // File
     $('<input/>')
         .attr('type', 'hidden')
-        .attr('name', '_'+input_name+'['+fileindex+']')
+        .attr('name', `_${input_name}[${fileindex}]`)
         .attr('value', file.name).appendTo(p);
 
     // Prefix
     $('<input/>')
         .attr('type', 'hidden')
-        .attr('name', '_prefix_'+input_name+'['+fileindex+']')
+        .attr('name', `_prefix_${input_name}[${fileindex}]`)
         .attr('value', file.prefix).appendTo(p);
 
     // Tag
     $('<input/>')
         .attr('type', 'hidden')
-        .attr('name', '_tag_'+input_name+'['+fileindex+']')
+        .attr('name', `_tag_${input_name}[${fileindex}]`)
         .attr('value', tag.name)
         .appendTo(p);
 
     // Delete button
-    var elementsIdToRemove = {0:file.id, 1:file.id+'2'};
-    $('<span class="ti ti-circle-x pointer"></span>').click(function() {
+    var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
+    $('<span class="ti ti-circle-x pointer"></span>').click(() => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
     }).appendTo(p);
 };
@@ -175,8 +165,8 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
  */
 var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
     // Remove file display lines
-    $.each(elementsIdToRemove, function (index, element) {
-        $('#'+element).remove();
+    $.each(elementsIdToRemove, (index, element) => {
+        $(`#${element}`).remove();
     });
 
     if (typeof editor !== "undefined" && editor !== null
@@ -213,7 +203,7 @@ const setRichTextEditorContent = function(editor_id, content) {
  * @param  {[Object]} editor TinyMCE editor
  */
 if (typeof tinyMCE != 'undefined') {
-    tinyMCE.PluginManager.add('glpi_upload_doc', function(editor) {
+    tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
         let last_paste_content = null;
         const rtf_img_types = {
             'pngblip': 'image/png',
@@ -222,7 +212,7 @@ if (typeof tinyMCE != 'undefined') {
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
         });
-        editor.on('PastePreProcess', function(event) {
+        editor.on('PastePreProcess', (event) => {
             const base64_img_contents = [];
             if (last_paste_content !== null && last_paste_content.types.includes('text/rtf')) {
                 // Extract all RTF images and remove line breaks
@@ -234,8 +224,8 @@ if (typeof tinyMCE != 'undefined') {
                 for (const match of hex_binary) {
                     const img_type = match[1];
                     const hex = match[2];
-                    const hexToBase64 = function(hexstring) {
-                        return btoa(hexstring.match(/\w{2}/g).map(function(a) {
+                    const hexToBase64 = (hexstring) => {
+                        return btoa(hexstring.match(/\w{2}/g).map((a) => {
                             return String.fromCharCode(parseInt(a, 16));
                         }).join(""));
                     };
@@ -255,40 +245,37 @@ if (typeof tinyMCE != 'undefined') {
 
                 if (src.match(file_pattern) !== null && base64_img_contents.length > 0) {
                     const rtf_content = base64_img_contents.shift();
-                    src = `data:${rtf_content['type']};base64,` + rtf_content['content'];
+                    src = `data:${rtf_content['type']};base64,${rtf_content['content']}`;
                     image.attr('src', src);
                 }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {
                     const upload_id = Math.random().toString();
                     image.attr('data-upload_id', upload_id);
-                    fetch(src).then(
-                        function (response) {
-                            return response.blob();
+                    fetch(src).then((response) => {
+                        return response.blob();
+                    }
+                    ).then((file) => {
+                        if (/^image\/.+/.test(file.type) === false) {
+                            return; //only process images
                         }
-                    ).then(
-                        function (file) {
-                            if (/^image\/.+/.test(file.type) === false) {
-                                return; //only process images
-                            }
 
-                            // In Firefox, when fetching a `blob://` URI genrated by a unique file pasting,
-                            // `response.blob()` returns a `File`, instead of a `Blob`, with a read-only `name` property.
-                            // So, to be able to force file.name, it have to be converted into a `Blob`.
-                            if (file instanceof File) {
-                                file = new Blob([file], {type: file.type});
-                            }
-
-                            const ext = file.type.replace('image/', '');
-                            file.name = 'image_paste' + Math.floor((Math.random() * 10000000) + 1) + '.' + ext;
-                            uploaded_images.push(
-                                {
-                                    upload_id: upload_id,
-                                    filename:  file.name
-                                }
-                            );
-                            uploadFile(file, editor);
+                        // In Firefox, when fetching a `blob://` URI genrated by a unique file pasting,
+                        // `response.blob()` returns a `File`, instead of a `Blob`, with a read-only `name` property.
+                        // So, to be able to force file.name, it have to be converted into a `Blob`.
+                        if (file instanceof File) {
+                            file = new Blob([file], {type: file.type});
                         }
-                    );
+
+                        const ext = file.type.replace('image/', '');
+                        file.name = `image_paste${Math.floor((Math.random() * 10000000) + 1)}.${  ext}`;
+                        uploaded_images.push(
+                            {
+                                upload_id: upload_id,
+                                filename:  file.name
+                            }
+                        );
+                        uploadFile(file, editor);
+                    });
                 }
             });
 
@@ -299,9 +286,9 @@ if (typeof tinyMCE != 'undefined') {
 }
 
 
-$(function() {
+$(() => {
     // set a function to track drag hover event
-    $(document).bind('dragover', function (event) {
+    $(document).bind('dragover', (event) => {
         event.preventDefault();
 
         var dropZone = $('.dropzone');
@@ -335,7 +322,7 @@ $(function() {
     });
 
     // remove dragover styles on drop
-    $(document).bind('drop', function(event) {
+    $(document).bind('drop', (event) => {
         event.preventDefault();
         $('.draghoverable').removeClass('draghover');
     });

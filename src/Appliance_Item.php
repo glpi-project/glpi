@@ -150,7 +150,7 @@ class Appliance_Item extends CommonDBRelation
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
             echo "<th colspan='2'>" .
-               __('Add an item') . "</th></tr>";
+               __s('Add an item') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             Dropdown::showSelectItemFromItemtypes(
@@ -257,7 +257,7 @@ class Appliance_Item extends CommonDBRelation
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add to an appliance') . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add to an appliance') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td>";
             Appliance::dropdown([

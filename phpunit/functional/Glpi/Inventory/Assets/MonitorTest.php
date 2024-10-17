@@ -1325,7 +1325,6 @@ class MonitorTest extends AbstractInventoryAsset
 
     public function testInventoryRemoved()
     {
-
         global $DB;
 
         $nb_monitors = countElementsInTable(\Monitor::getTable());
@@ -1366,5 +1365,61 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
         //link to monitor has been removed
         $this->assertCount(0, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id, 'itemtype_peripheral' => 'Monitor']]));
+    }
+
+    public function testPartialInventoryRemoved()
+    {
+        global $DB;
+
+        $nb_monitors = countElementsInTable(\Monitor::getTable());
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
+
+        $inventory = $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+        $this->assertIsArray($agent);
+        $this->assertSame('LF014-2017-02-20-12-19-56', $agent['deviceid']);
+        $this->assertSame('LF014-2017-02-20-12-19-56', $agent['name']);
+        $this->assertSame('2.3.19', $agent['version']);
+        $this->assertSame('Computer', $agent['itemtype']);
+        $this->assertSame('000005', $agent['tag']);
+        $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->assertGreaterThan(0, $computers_id);
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //check created monitor
+        ++$nb_monitors;
+        $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
+        $this->assertCount(1, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
+
+        //no monitor in inventory (missing node)
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
+        unset($json->content->monitors);
+        $json->partial = true;
+        $this->doInventory($json);
+
+        //monitor is still present in database
+        $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
+        //link to monitor is still present
+        $this->assertCount(1, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
+
+        //no monitor left in inventory (empty node)
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
+        $json->content->monitors = [];
+        $json->partial = true;
+        $this->doInventory($json);
+
+        //monitor is still present in database
+        $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
+        //link to monitor has been removed
+        $this->assertCount(0, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
     }
 }

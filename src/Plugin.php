@@ -427,7 +427,7 @@ class Plugin extends CommonDBTM
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE
+         * @var \Laminas\I18n\Translator\Translator $TRANSLATE
          */
         global $CFG_GLPI, $TRANSLATE;
 
@@ -1427,6 +1427,19 @@ class Plugin extends CommonDBTM
             return false;
         }
 
+        // Handle `linkuser_types`/`linkgroup_types`/`linkuser_tech_types`/`linkgroup_tech_types` deprecation
+        $is_assignable = false;
+        foreach (['linkuser_types', 'linkgroup_types', 'linkuser_tech_types', 'linkgroup_tech_types'] as $cfg_key) {
+            if (isset($attrib[$cfg_key]) && $attrib[$cfg_key]) {
+                Toolbox::deprecated(sprintf('`%s` configuration is deprecated, use `%s` instead.', $cfg_key, 'assignable_types'));
+                $is_assignable = true;
+                break;
+            }
+        }
+        if ($is_assignable) {
+            $attrib['assignable_types'] = true;
+        }
+
         $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
         $all_types[] = 'networkport_instantiations';
 
@@ -1958,31 +1971,26 @@ class Plugin extends CommonDBTM
                     __('This plugin requires PHP extension %1$s'),
                     $name
                 );
-             break;
             case 'plugin':
                 return sprintf(
                     __('This plugin requires %1$s plugin'),
                     $name
                 );
-             break;
             case 'compil':
                 return sprintf(
                     __('This plugin requires PHP compiled along with "%1$s"'),
                     $name
                 );
-             break;
             case 'param':
                 return sprintf(
                     __('This plugin requires PHP parameter %1$s'),
                     $name
                 );
-             break;
             case 'glpiparam':
                 return sprintf(
                     __('This plugin requires GLPI parameter %1$s'),
                     $name
                 );
-             break;
             default:
                 throw new \RuntimeException("messageMissing type $type is unknown!");
         }
@@ -2060,11 +2068,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            echo htmlspecialchars(Plugin::messageIncompatible(
                 'core',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
-            );
+            ));
         }
 
         return $compat;
@@ -2097,11 +2105,11 @@ class Plugin extends CommonDBTM
         }
 
         if (!$compat) {
-            echo Plugin::messageIncompatible(
+            echo htmlspecialchars(Plugin::messageIncompatible(
                 'php',
                 (isset($infos['min']) ? $infos['min'] : null),
                 (isset($infos['max']) ? $infos['max'] : null)
-            );
+            ));
         }
 
         return $compat;
@@ -2122,7 +2130,7 @@ class Plugin extends CommonDBTM
         $report = Config::checkExtensions($exts);
         if (count($report['missing'])) {
             foreach (array_keys($report['missing']) as $ext) {
-                echo self::messageMissingRequirement('ext', $ext) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('ext', $ext)) . '<br/>';
             }
             return false;
         }
@@ -2147,7 +2155,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!isset($CFG_GLPI[$param]) || trim($CFG_GLPI[$param]) == '' || !$CFG_GLPI[$param]) {
-                echo self::messageMissingRequirement('glpiparam', $param) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('glpiparam', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2170,7 +2178,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($params as $param) {
             if (!ini_get($param) || trim(ini_get($param)) == '') {
-                echo self::messageMissingRequirement('param', $param) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('param', $param)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2193,7 +2201,7 @@ class Plugin extends CommonDBTM
         $compat = true;
         foreach ($plugins as $plugin) {
             if (!$this->isActivated($plugin)) {
-                echo self::messageMissingRequirement('plugin', $plugin) . '<br/>';
+                echo htmlspecialchars(self::messageMissingRequirement('plugin', $plugin)) . '<br/>';
                 $compat = false;
             }
         }
@@ -2474,8 +2482,7 @@ class Plugin extends CommonDBTM
                     && isset($PLUGIN_HOOKS['config_page'][$directory])
                 ) {
                    // Configuration button for activated or configurable plugins
-                    $plugin_dir = self::getWebDir($directory, true);
-                    $config_url = "$plugin_dir/" . $PLUGIN_HOOKS['config_page'][$directory];
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="fas fa-wrench fa-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -2591,16 +2598,19 @@ class Plugin extends CommonDBTM
                 if (in_array($state, [self::ACTIVATED, self::NOTUPDATED, self::TOBECONFIGURED, self::NOTACTIVATED], true)) {
                    // Uninstall button for installed plugins
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
-                        $output .= TemplateRenderer::getInstance()->render('components/plugin_uninstall_modal.html.twig', [
-                            'plugin_name' => $plugin->getField('name'),
+                        $uninstall_label = __s("Uninstall");
+                        $output .= <<<TWIG
+                            <a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
+                                data-bs-toggle="modal"
+                                data-bs-target="#uninstallModal{$plugin->getField('directory')}"
+                                title="{$uninstall_label}">
+                                <span class="sr-only">{$uninstall_label}</span>
+                            </span></a>
+TWIG;
+
+                        $output .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                             'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
-                            'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#uninstallModal' . $plugin->getField('directory') . '"
-                                                  title="' . __s("Uninstall") . '">
-                                                  <span class="sr-only">' . __s("Uninstall") . '</span>
-                                              </span></a>',
-                            'uninstall_btn' => Html::getSimpleForm(
+                            'confirm_btn' => Html::getSimpleForm(
                                 static::getFormURL(),
                                 ['action' => 'uninstall'],
                                 _x('button', 'Uninstall'),
@@ -2608,6 +2618,10 @@ class Plugin extends CommonDBTM
                                 '',
                                 'class="btn btn-danger w-100"'
                             ),
+                            'content' => sprintf(
+                                __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                                htmlspecialchars($plugin->getField('name'))
+                            )
                         ]);
                     } else {
                        //TRANS: %s is the list of missing functions
@@ -2628,21 +2642,19 @@ class Plugin extends CommonDBTM
                 }
 
                 return "<div style='text-align:right'>$output</div>";
-            break;
             case 'state':
                 $plugin = new self();
                 $state = $plugin->isLoadable($values['directory']) ? $values[$field] : self::TOBECLEANED;
                 return self::getState($state);
-            break;
             case 'homepage':
-                $value = Html::entities_deep(Toolbox::formatOutputWebLink($values[$field]));
+                $value = Toolbox::formatOutputWebLink($values[$field]);
                 if (!empty($value)) {
+                    $value = htmlspecialchars($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
                      <i class='fas fa-external-link-alt fa-2x'></i><span class='sr-only'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";
-            break;
             case 'name':
                 $value = Toolbox::stripTags($values[$field]);
                 $state = $values['state'];
@@ -2652,18 +2664,15 @@ class Plugin extends CommonDBTM
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                     && isset($PLUGIN_HOOKS['config_page'][$directory])
                 ) {
-                    $plugin_dir = self::getWebDir($directory, true);
-                    $config_url = "$plugin_dir/" . $PLUGIN_HOOKS['config_page'][$directory];
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
                     return "<a href='$config_url'><span class='b'>$value</span></a>";
                 } else {
                     return $value;
                 }
-                break;
             case 'author':
             case 'license':
             case 'version':
                 return $value = Toolbox::stripTags($values[$field]);
-            break;
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -2690,7 +2699,6 @@ class Plugin extends CommonDBTM
                 ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
-            break;
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -2749,19 +2757,17 @@ class Plugin extends CommonDBTM
      * @param bool $use_url_base if true, url_base instead root_doc
      *
      * @return false|string the web path
+     *
+     * @deprecated 11.0
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $directory = self::getPhpDir($plugin_key, false);
+        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
 
-        if ($directory === false) {
-            return false;
-        }
-
-        $directory = ltrim($directory, '/\\');
+        $directory = '/plugins/' . $plugin_key;
 
         if ($full) {
             $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
@@ -2817,7 +2823,7 @@ class Plugin extends CommonDBTM
                 return true;
             case 'uninstall':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already installed') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already installed') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Uninstall'), [
                     'name'      => 'uninstall',
                 ]);
@@ -2825,7 +2831,7 @@ class Plugin extends CommonDBTM
                 return true;
             case 'enable':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already installed') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already installed') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Enable'), [
                     'name'      => 'enable',
                 ]);
@@ -2833,7 +2839,7 @@ class Plugin extends CommonDBTM
                 return true;
             case 'disable':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins already enabled') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins already enabled') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Disable'), [
                     'name'      => 'disable',
                 ]);
@@ -2841,7 +2847,7 @@ class Plugin extends CommonDBTM
                 return true;
             case 'clean':
                 echo "<table class='mx-auto'><tr>";
-                echo "<td>" . __('This will only affect plugins ready to be cleaned') . "</td><td colspan='3'>";
+                echo "<td>" . __s('This will only affect plugins ready to be cleaned') . "</td><td colspan='3'>";
                 echo Html::submit(_x('button', 'Clean'), [
                     'name'      => 'clean',
                 ]);
@@ -2954,15 +2960,12 @@ class Plugin extends CommonDBTM
             // see `DbUtils::fixItemtypeCase()`
             sprintf('itemtype-case-mapping-%s', $plugin_key),
 
-            // Hookable using `$CFG_GLPI['*_types']` and `$CFG_GLPI['itemdevices_itemaffinity']`.
-            'item_device_affinities',
-
             // Will be stale as long as a plugin adds/remove a custom right.
             'all_possible_rights',
         ];
 
         foreach (array_keys($CFG_GLPI['languages']) as $language) {
-            // Hookable using `$CFG_GLPI['itemdevices']`, `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
+            // Hookable using `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }

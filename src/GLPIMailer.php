@@ -465,7 +465,6 @@ class GLPIMailer
                 // As we cannot know which return value type is expected, it is safer to to ensure
                 // that caller will not continue execution using a void return value.
                 throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
-                break;
         }
 
         Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', __CLASS__, $method));

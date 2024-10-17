@@ -34,12 +34,12 @@
 describe('Filterable', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('preview results are only loaded when explicitly requester', () => {
         // We will be looking for the computer name directly so it must be unique.
-        const computer_name = "Computer for Filterable tests [" + Cypress._.uniqueId() + "]";
+        const computer_name = `Computer for Filterable tests [${Cypress._.uniqueId()}]`;
 
         describe("Set up data and go to webhook page", () => {
             cy.createWithAPI("Computer", {"name": computer_name})

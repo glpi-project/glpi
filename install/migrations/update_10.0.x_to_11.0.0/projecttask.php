@@ -56,6 +56,6 @@ $migration->addConfig(
 );
 
 // new right value for projecttask
-$migration->updateRight('projecttask', DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE, [
+$migration->replaceRight('projecttask', DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE, [
     'projecttask' => ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE,
 ]);

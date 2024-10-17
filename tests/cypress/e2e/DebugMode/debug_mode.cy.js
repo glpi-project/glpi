@@ -39,13 +39,15 @@ describe("Debug Mode", () => {
         cy.disableDebugMode();
     });
     it('No debug mode for non super-admin', () => {
-        cy.changeProfile('Admin', true);
+        cy.changeProfile('Admin');
+        cy.visit('/front/computer.form.php');
         cy.get('#debug-toolbar-applet').should('not.exist', { timeout: 200 });
         cy.get('header a.user-menu-dropdown-toggle').click();
         cy.get('.dropdown-item[title="Change mode"]').should('not.exist', { timeout: 200 });
     });
     it('Debug mode for super-admin', () => {
         cy.changeProfile('Super-Admin');
+        cy.visit('/front/computer.form.php');
         cy.get('#debug-toolbar-applet').should('not.exist');
         cy.get('header a.user-menu-dropdown-toggle').click();
         cy.get('.dropdown-item[title="Change mode"]').should('exist').invoke('attr', 'href').should('include', '/ajax/switchdebug.php');

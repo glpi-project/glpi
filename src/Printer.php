@@ -47,7 +47,10 @@ class Printer extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -222,7 +225,6 @@ class Printer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -240,13 +242,13 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = $input['init_pages_counter'];
         }
 
+        $input = $this->prepareInputForAddAssignableItem($input);
         return $input;
     }
 
 
     public function prepareInputForUpdate($input)
     {
-
         if (isset($input['init_pages_counter'])) {
             $input['init_pages_counter'] = intval($input['init_pages_counter']);
         }
@@ -254,6 +256,7 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = intval($input['last_pages_counter']);
         }
 
+        $input = $this->prepareInputForUpdateAssignableItem($input);
         return $input;
     }
 
@@ -435,6 +438,17 @@ class Printer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -619,9 +633,20 @@ class Printer extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 

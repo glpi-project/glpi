@@ -1,0 +1,66 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+<h3 class="text-start mt-5">{{ __('List of remote management') }}</h3>
+{% if canedit %}
+    <div class="text-center mb-3">
+        <a class="btn btn-primary" href="{{ form_url }}" role="button">
+            {{ __('Add a remote management') }}
+        </a>
+    </div>
+{% endif %}
+
+{% if entries|length > 0 %}
+    {{ include('components/datatable.html.twig', {
+        'is_tab': true,
+        'nopager': true,
+        'nofilter': true,
+        'nosort': true,
+        'columns': {
+            'remoteid': __('Remote ID'),
+            'type': _n('Type', 'Types', 1),
+            'comment': __('Comments'),
+        },
+        'formatters': {
+            'remoteid': 'raw_html',
+        },
+        'entries': entries,
+        'total_number': entries|length,
+        'showmassiveactions': canedit,
+    }, with_context = false) }}
+{% else %}
+    {{ alerts.alert_info(
+        __('No item found')
+    ) }}
+{% endif %}
+

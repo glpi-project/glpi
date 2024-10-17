@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Form\DefaultFormsManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
@@ -818,7 +819,17 @@ class Toolbox
     {
 
        //TRANS: list of unit (o for octet)
-        $bytes = [__('o'), __('Kio'), __('Mio'), __('Gio'), __('Tio'), __('Pio'), __('Eio'), __('Zio'), __('Yio')];
+        $bytes = [
+            _x('size', 'B'),
+            _x('size', 'KiB'),
+            _x('size', 'MiB'),
+            _x('size', 'GiB'),
+            _x('size', 'TiB'),
+            _x('size', 'PiB'),
+            _x('size', 'EiB'),
+            _x('size', 'ZiB'),
+            _x('size', 'YiB'),
+        ];
         foreach ($bytes as $val) {
             if ($size > 1024) {
                 $size = $size / 1024;
@@ -1556,27 +1567,26 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "reservation":
                                 Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                break;
+                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             default:
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-                                break;
                         }
+                        // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;
 
                     case "central":
                         switch (strtolower($data[0])) {
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                break;
 
                            // Use for compatibility with old name
                            // no break
@@ -1617,8 +1627,8 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                                break;
                         }
+                        // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;
                 }
             }
@@ -1829,7 +1839,7 @@ class Toolbox
     }
 
     /**
-     * Retuns available mail servers protocols.
+     * Returns available mail servers protocols.
      *
      * For each returned element:
      *  - key is type used in connection string;
@@ -2024,7 +2034,7 @@ class Toolbox
     /**
      * Clean integer string value (strip all chars not - and spaces )
      *
-     * @since versin 0.83.5
+     * @since version 0.83.5
      *
      * @param string  $integer  integer string
      *
@@ -2081,7 +2091,7 @@ class Toolbox
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', DBmysql $database = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2145,6 +2155,10 @@ class Toolbox
                     }
                 }
             }
+
+            // Create default forms
+            $default_forms_manager = new DefaultFormsManager();
+            $default_forms_manager->createDefaultForms();
 
             // Initalize rules
             RulesManager::initializeRules();
@@ -2437,12 +2451,20 @@ class Toolbox
                                 $height = $img_infos[1];
                             }
 
+                            // Avoids creating a link within a link, when the image is already in an <a> tag
+                            $add_link_tmp = $add_link;
+                            if ($add_link) {
+                                $pattern = '/<a[^>]*>[^<>]*?<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>[^<>]*?<\/a>/s';
+                                if (preg_match($pattern, $content_text)) {
+                                    $add_link_tmp = false;
+                                }
+                            }
                             // replace image
                             $new_image =  Html::getImageHtmlTagForDocument(
                                 $id,
                                 $width,
                                 $height,
-                                $add_link,
+                                $add_link_tmp,
                                 $object_url_param
                             );
                             if (empty($new_image)) {
@@ -3072,7 +3094,7 @@ HTML;
      * This function checks the class itself and all parent classes for the trait.
      * @since 10.0.0
      * @param string|object $class The class or object
-     * @param string $trait The trait
+     * @param class-string $trait The trait
      * @return bool True if the class or its parents have the specified trait
      */
     public static function hasTrait($class, string $trait): bool
@@ -3174,23 +3196,6 @@ HTML;
         $tabs[-1] = 'All';
 
         return $tabs;
-    }
-
-    /**
-     * Handle redirect after a profile switch.
-     * Must be called after a right check failure.
-     */
-    public static function handleProfileChangeRedirect(): void
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $redirect = $_SESSION['_redirected_from_profile_selector'] ?? false;
-
-        if ($redirect) {
-            unset($_SESSION['_redirected_from_profile_selector']);
-            Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
-        }
     }
 
     /**

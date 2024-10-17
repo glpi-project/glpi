@@ -607,9 +607,7 @@ class NotificationTarget extends CommonDBChild
                     $user->getField('name'),
                     $user->getField('realname'),
                     $user->getField('firstname'),
-                    0,
-                    0,
-                    true
+                    force_config: true
                 );
             }
            // It is a GLPI user :
@@ -1370,7 +1368,7 @@ class NotificationTarget extends CommonDBChild
      * Get SQL join to restrict by profile and by config to avoid send notification
      * to a user without rights.
      *
-     * @return string
+     * @return array
      */
     public function getProfileJoinCriteria()
     {
@@ -1515,8 +1513,8 @@ class NotificationTarget extends CommonDBChild
 
         if (!$withtemplate && Notification::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Group':
+            switch (get_class($item)) {
+                case Group::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForGroup($item);
                     }
@@ -1526,7 +1524,7 @@ class NotificationTarget extends CommonDBChild
                         $item::getType()
                     );
 
-                case 'Notification':
+                case Notification::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             $this->getTable(),
@@ -1644,9 +1642,9 @@ class NotificationTarget extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == 'Group') {
+        if (get_class($item) == Group::class) {
             self::showForGroup($item);
-        } else if ($item->getType() == 'Notification') {
+        } else if (get_class($item) == Notification::class) {
             $target = self::getInstanceByType(
                 $item->getField('itemtype'),
                 $item->getField('event'),

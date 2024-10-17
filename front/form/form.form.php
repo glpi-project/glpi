@@ -35,21 +35,11 @@
 
 use Glpi\Form\Form;
 
-include('../../inc/includes.php');
-
 // Read parameters
 $id = $_REQUEST['id'] ?? null;
 
-if (($_GET['id'] ?? 0) == 0) {
+if (($_REQUEST['id'] ?? 0) == 0) {
     Session::checkRight(Form::$rightname, CREATE);
-
-    // Clear stale drafts
-    // TODO: move to a dedicated cron task
-    $form = new Form();
-    $form->deleteByCriteria([
-        'is_draft'      => true,
-        'date_creation' => ['<=', date('Y-m-d', strtotime('-7 days'))]
-    ]);
 
     // Add as draft and redirect to the creation page
     // This allow to seamlessly skip the creation step and get straight to the
@@ -62,6 +52,15 @@ if (($_GET['id'] ?? 0) == 0) {
     ]);
     Html::redirect($form->getLinkURL());
     // Code stop here due to exit() in the Html::redirect() method
+} elseif (isset($_POST['update'])) {
+    $id = $_POST['id'] ?? 0;
+
+    $form = new Form();
+    $form->getFromDB($id);
+    $form->check($id, UPDATE);
+    $form->update($_POST);
+
+    Html::redirect($form->getLinkURL());
 } else {
     // Show requested form
     Session::checkRight(Form::$rightname, READ);

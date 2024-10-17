@@ -391,7 +391,7 @@ TWIG, $twig_params);
             ];
 
             foreach ($results as $result) {
-                /** @var CommonDBTM $asset */
+                /** @var CommonDBTM $peripheral */
                 $peripheral = getItemForItemtype($result['itemtype_peripheral']);
                 if ($peripheral === false || $peripheral->getFromDB($result['items_id_peripheral']) === false) {
                     // ignore orphan data
@@ -1049,7 +1049,11 @@ TWIG);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
         }
         return '';
@@ -1057,7 +1061,12 @@ TWIG);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
+
+        if (
+            ($item instanceof CommonDBTM)
+            && $item->isDynamic()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
             self::showForItem($item);
         }
         return true;
@@ -1245,7 +1254,7 @@ TWIG);
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1280,7 +1289,7 @@ TWIG);
                 ];
 
                 echo __s('Select the type of the item that must be unlock');
-                echo "<br><br>\n";
+                echo "<br><br>";
 
                 Dropdown::showFromArray(
                     'attached_item',
@@ -1293,14 +1302,13 @@ TWIG);
 
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
             case 'unlock_fields':
                 $related_itemtype = $ma->getItemtype(false);
                 $lockedfield = new Lockedfield();
                 $fields = $lockedfield->getFieldsToLock($related_itemtype);
 
-                echo __('Select fields of the item that must be unlock');
-                echo "<br><br>\n";
+                echo __s('Select fields of the item that must be unlock');
+                echo "<br><br>";
                 Dropdown::showFromArray(
                     'attached_fields',
                     $fields,
@@ -1311,7 +1319,6 @@ TWIG);
                 );
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
         }
         return false;
     }

@@ -36,19 +36,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use InvalidArgumentException;
+use Glpi\Form\Tag\FormTagProvider;
+use Glpi\Form\Tag\FormTagsManager;
 use Override;
 
 class TitleField extends AbstractConfigField
 {
-    #[Override]
-    public function getKey(): string
-    {
-        return 'title';
-    }
-
     #[Override]
     public function getLabel(): string
     {
@@ -56,52 +54,105 @@ class TitleField extends AbstractConfigField
     }
 
     #[Override]
+    public function getConfigClass(): string
+    {
+        return SimpleValueConfig::class;
+    }
+
+    #[Override]
     public function renderConfigForm(
         Form $form,
-        mixed $configurated_value,
+        JsonFieldInterface $config,
         string $input_name,
         array $display_options
     ): string {
+        if (!$config instanceof SimpleValueConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
+
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.textField(
+            {% set rand = random() %}
+
+            {{ fields.textareaField(
                 input_name,
                 value,
                 label,
-                options
+                options|merge({
+                    'enable_richtext'  : true,
+                    'enable_images'    : false,
+                    'enable_form_tags' : true,
+                    'form_tags_form_id': form_id,
+                    'toolbar'          : false,
+                    'editor_height'    : 0,
+                    'statusbar'        : false,
+                    'rand'             : rand,
+                })
             ) }}
+
+            <script>
+                tinymce.on('AddEditor', (e) => {
+                    if (e.editor.id === '{{ input_name ~ '_' ~ rand }}') {
+                        e.editor.on('keydown', (e) => {
+                            if (e.keyCode === 13) {
+                                e.preventDefault();
+                            }
+                        });
+                    }
+                });
+            </script>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
+            'form_id'    => $form->fields['id'],
             'label'      => $this->getLabel(),
-            'value'      => $configurated_value ?? '',
-            'input_name' => $input_name,
+            'value'      => $config->getValue(),
+            'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,
         ]);
     }
 
     #[Override]
     public function applyConfiguratedValueToInputUsingAnswers(
-        mixed $configurated_value,
+        JsonFieldInterface $config,
         array $input,
         AnswersSet $answers_set
     ): array {
-        if (is_null($configurated_value)) {
-            return $input;
+        if (!$config instanceof SimpleValueConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $input['name'] = $configurated_value;
+        $tag_manager = new FormTagsManager();
+        $input['name'] = $tag_manager->insertTagsContent(
+            $config->getValue(),
+            $answers_set
+        );
 
         return $input;
     }
 
-    #[Override()]
-    public function getDefaultValue(Form $form): mixed
+    #[Override]
+    public function getDefaultConfig(Form $form): SimpleValueConfig
     {
-        // TODO: use a "form name" tag here instead of an hardcoded string
-        // that may not be valid if the form name is updated later on.
-        return $form->fields['name'];
+        return new SimpleValueConfig((new FormTagProvider())->getTagForForm($form)->html);
+    }
+
+    #[Override]
+    public function prepareInput(array $input): array
+    {
+        if (isset($input[$this->getKey()]) && isset($input[$this->getKey()]['value'])) {
+            // Remove HTML tags except span with data-form-tag attribute
+            $input[$this->getKey()]['value'] = strip_tags($input[$this->getKey()]['value'], '<span>');
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
     }
 }

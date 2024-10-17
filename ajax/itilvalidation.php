@@ -39,14 +39,9 @@
 
 use Glpi\Http\Response;
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -61,7 +56,7 @@ if ($validationtemplates_id === null) {
     echo json_encode([
         'content' => ""
     ]);
-    die;
+    return;
 }
 
 // Mandatory parameter: items_id

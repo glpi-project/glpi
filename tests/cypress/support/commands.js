@@ -31,8 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-import _ from 'lodash';
-
 let api_token = null;
 
 /**
@@ -44,35 +42,37 @@ let api_token = null;
  * @returns Chainable
  */
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
-    cy.session(
-        username,
-        () => {
-            cy.blockGLPIDashboards();
-            cy.visit('/');
-            cy.title().should('eq', 'Authentication - GLPI');
-            cy.findByRole('textbox', {'name': "Login"}).type(username);
-            cy.findByLabelText("Password", {exact: false}).type(password);
-            cy.findByRole('checkbox', {name: "Remember me"}).check();
-            // Select 'local' from the 'auth' dropdown
-            cy.findByLabelText("Login source").select('local', { force: true });
-            // TODO: should be
-            // cy.findByRole('combobox', {name: "Login source"}).select2('local', { force: true });
+    cy.clearAllCookies();
+    cy.request('index.php').its('body').then((body) => {
+        const $html = Cypress.$(body);
 
-            cy.findByRole('button', {name: "Sign in"}).click();
-            // After logging in, the url should contain /front/central.php or /front/helpdesk.public.php
-            cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
-        },
-        {
-            validate: () => {
-                cy.getCookies().should('have.length.gte', 2).then((cookies) => {
-                    // Should be two cookies starting with 'glpi_' and one of them should end with '_rememberme'
-                    expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_'))).to.have.length(2);
-                    expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_') && cookie.name.endsWith('_rememberme'))).to.have.length(1);
-                });
-            },
-            cacheAcrossSpecs: true,
-        },
-    );
+        // Parse page
+        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        const username_input = $html.find('#login_name').prop('name');
+        const password_input = $html.find('#login_password').prop('name');
+
+        // Send login request
+        cy.request({
+            method: 'POST',
+            url: '/front/login.php',
+            form: true,
+            body: {
+                [username_input]: username,
+                [password_input]: password,
+                _glpi_csrf_token: csrf,
+            }
+        });
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method logout
+ * @description Logout of GLPI
+ * @returns Chainable
+ */
+Cypress.Commands.add('logout', () => {
+    cy.request('/front/logout.php');
 });
 
 /**
@@ -80,40 +80,21 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
  * @method changeProfile
  * @description Change the profile of the current user. Only supports the default GLPI profiles.
  * @param {string} profile - Profile to change to
- * @param {boolean} [verify=false] - Whether to verify that the profile was changed
  */
-Cypress.Commands.add('changeProfile', (profile, verify = false) => {
-    // If on about:blank, we need to get back to GLPI.
-    // Can happen at the start of a test if the login restored an existing session and therefore no redirect happened.
-    // With testIsolation, cypress starts each test on about:blank.
-    cy.url().then((url) => {
-        if (url === 'about:blank') {
-            cy.blockGLPIDashboards();
-            cy.visit('/');
-        }
-    });
-    // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
-    const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
-    // Check if we are already on the desired profile
-    cy.get('header a.user-menu-dropdown-toggle').then(() => {
-        if (!Cypress.$('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').text().match(profile_pattern)) {
-            // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
-            cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
-                cy.blockGLPIDashboards();
-                cy.visit(href, {
-                    headers: {
-                        // Cypress doesn't send this by default and it causes a real headache with GLPI since it is always used when redirecting back after a profile/entity change.
-                        // This causes e2e tests to randomly fail with the browser ending up on a /front/null page.
-                        Referer: Cypress.config('baseUrl'),
-                    }
-                }).then(() => {
-                    if (verify) {
-                        cy.get('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').contains(profile_pattern);
-                    }
-                });
-            });
-        }
-    });
+Cypress.Commands.add('changeProfile', (profile) => {
+    const profiles = new Map([
+        ['Self-Service', 1],
+        ['Observer',     2],
+        ['Admin',        3],
+        ['Super-Admin',  4],
+        ['Hotliner',     5],
+        ['Technician',   6],
+        ['Supervisor',   7],
+        ['Read-Only',    8],
+    ]);
+    const profile_id = profiles.get(profile);
+
+    cy.request(`/front/central.php?newprofile=${profile_id}`);
 });
 
 /**
@@ -133,7 +114,10 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
     }
     return cy.wrap(new Cypress.Promise(resolve => {
         // Check if the iframe's content window is already loaded to a page on the same domain
-        if (iframe[0].contentWindow.location.href.match(url_pattern)) {
+        if (
+            iframe[0].contentWindow.location.href.match(url_pattern)
+            && iframe.contents().find('body').length > 0
+        ) {
             resolve(iframe.contents().find('body'));
             return;
         }
@@ -203,7 +187,7 @@ Cypress.Commands.overwrite('select', (originalFn, subject, text, options) => {
     options = options || {};
     options.force = true;
 
-    cy.get('#' + select_id).select(text, options);
+    cy.get(`#${select_id}`).select(text, options);
 });
 
 /**
@@ -299,6 +283,10 @@ Cypress.Commands.add("getMany", (names) => {
 
 Cypress.Commands.add("createWithAPI", (url, values) => {
     return cy.initApi().doApiRequest("POST", url, values).then(response => {
+        if (response.status !== 201) {
+            throw new Error('Failed to create item');
+        }
+
         return response.body.id;
     });
 });
@@ -328,7 +316,7 @@ Cypress.Commands.add("initApi", () => {
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
     return cy.request({
         method: method,
-        url: '/apirest.php/' + encodeURI(endpoint),
+        url: `/apirest.php/${encodeURI(endpoint)}`,
         body: {input: values},
         headers: {
             'Session-Token': token,
@@ -377,4 +365,41 @@ Cypress.Commands.add('disableDebugMode', () => {
     }).then(() => {
         cy.reload();
     });
+});
+
+Cypress.Commands.add('openEntitySelector', () => {
+    cy.intercept('GET', '/ajax/entitytreesons.php*').as('load_data_request');
+
+    cy.findAllByText('Select the desired entity').should('not.be.visible');
+    cy.get('body').type('{ctrl}{alt}e');
+    cy.findAllByText('Select the desired entity').should('be.visible');
+
+    cy.wait('@load_data_request');
+});
+
+// The "startToDrag" and "dropDraggedItemAfter" commands are not perfect as they
+// simulate dragging by moving the DOM node using jquery.
+//
+// It would be better to trigger real events like mousedown/mousemove/moveup or
+// drag/dragstart/drop but I was no able to get it working with the html5sortable lib.
+//
+// Note: this also require to manually add `data-glpi-draggable-item` to draggable
+// items as the lib doesn't give us any way to find the draggable container afaik.
+Cypress.Commands.add('startToDrag', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).find(`[draggable=true]`).as('drag_source');
+});
+Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).find(`[draggable=true]`).as('drag_destination');
+    cy.getMany(["@drag_source", "@drag_destination"]).then(([$source, $destination]) => {
+        // move manually
+        $source.closest('[data-glpi-draggable-item]').detach().insertAfter(
+            $destination.closest('[data-glpi-draggable-item]')
+        );
+    });
+});
+
+Cypress.Commands.add('checkAndCloseAlert', (text) => {
+    cy.findByRole('alert').as('alert');
+    cy.get('@alert').should('contain.text', text);
+    cy.get('@alert').findByRole('button', {name: 'Close'}).click();
 });

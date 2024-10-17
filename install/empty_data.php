@@ -272,7 +272,7 @@ $empty_data_builder = new class
             'maintenance_mode' => '0',
             'maintenance_text' => '',
             'attach_ticket_documents_to_mail' => '0',
-            'backcreated' => '0',
+            'backcreated' => '1',
             'task_state' => '1',
             'palette' => 'auror',
             'page_layout' => 'vertical',
@@ -2438,6 +2438,7 @@ $empty_data_builder = new class
                 'autofill_decommission_date' => 0,
                 'suppliers_as_private' => 0,
                 'enable_custom_css' => 0,
+                'custom_css_code' => '',
                 'anonymize_support_agents' => 0,
                 'display_users_initials' => 1,
                 'contracts_strategy_default' => 0,
@@ -5617,11 +5618,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'followup',
-                'rights' => READ | CREATE,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::ADDMY,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'task',
-                'rights' => READ,
+                'rights' => CommonITILTask::SEEPUBLIC,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'planning',
@@ -5893,11 +5894,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'followup',
-                'rights' => READ | CREATE,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::ADDMY,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'task',
-                'rights' => READ,
+                'rights' => CommonITILTask::SEEPUBLIC,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'projecttask',
@@ -6190,13 +6191,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
-                'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMY | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADD_AS_GROUP
+                    | ITILFollowup::ADDALLITEM | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'task',
-                'rights' => CommonITILTask::SEEPUBLIC | PURGE | CommonITILTask::UPDATEALL
-                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE,
+                'rights' => CommonITILTask::SEEPUBLIC | CommonITILTask::UPDATEMY | CommonITILTask::ADDMY | PURGE | CommonITILTask::UPDATEALL | CommonITILTask::ADD_AS_GROUP
+                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'projecttask',
@@ -6487,13 +6488,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
-                'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMY | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADD_AS_GROUP
+                    | ITILFollowup::ADDALLITEM | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'task',
-                'rights' => CommonITILTask::SEEPUBLIC | PURGE | CommonITILTask::UPDATEALL
-                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE,
+                'rights' => CommonITILTask::SEEPUBLIC | CommonITILTask::UPDATEMY | CommonITILTask::ADDMY | PURGE | CommonITILTask::UPDATEALL | CommonITILTask::ADD_AS_GROUP
+                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'project',
@@ -6785,12 +6786,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'followup',
-                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMYTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMY
+                    | ITILFollowup::ADDALLITEM | ITILFollowup::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'task',
-                'rights' => READ | CommonITILTask::SEEPRIVATE,
+                'rights' => CommonITILTask::SEEPUBLIC | CommonITILTask::UPDATEMY | CommonITILTask::ADDMY
+                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'project',
@@ -7071,13 +7073,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'followup',
-                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMYTICKET
-                    | ITILFollowup::UPDATEALL | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMY | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADD_AS_GROUP
+                    | ITILFollowup::ADDALLITEM | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'task',
-                'rights' => CommonITILTask::SEEPUBLIC | PURGE | CommonITILTask::UPDATEALL
-                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE,
+                'rights' => CommonITILTask::SEEPUBLIC | CommonITILTask::UPDATEMY | CommonITILTask::ADDMY | PURGE | CommonITILTask::UPDATEALL | CommonITILTask::ADD_AS_GROUP
+                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'project',
@@ -7362,13 +7364,13 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
-                'rights' => READ | UPDATE | CREATE | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADDGROUPTICKET
-                    | ITILFollowup::ADDALLTICKET | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER,
+                'rights' => ITILFollowup::SEEPUBLIC | ITILFollowup::UPDATEMY | ITILFollowup::ADDMY | PURGE | ITILFollowup::UPDATEALL | ITILFollowup::ADD_AS_GROUP
+                    | ITILFollowup::ADDALLITEM | ITILFollowup::SEEPRIVATE | ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'task',
-                'rights' => CommonITILTask::SEEPUBLIC | PURGE | CommonITILTask::UPDATEALL
-                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE,
+                'rights' => CommonITILTask::SEEPUBLIC | CommonITILTask::UPDATEMY | CommonITILTask::ADDMY | PURGE | CommonITILTask::UPDATEALL | CommonITILTask::ADD_AS_GROUP
+                    | CommonITILTask::ADDALLITEM | CommonITILTask::SEEPRIVATE | CommonITILTask::ADD_AS_OBSERVER | CommonITILTask::ADD_AS_TECHNICIAN,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'queuednotification',
@@ -9068,7 +9070,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => self::USER_GLPI,
                 'name' => 'glpi',
                 'realname' => null,
-                'password' => '$2y$10$rXXzbc2ShaiCldwkw4AZL.n.9QSH7c0c9XJAyyjrbL9BwmWditAYm',
+                'password' => password_hash('glpi', PASSWORD_DEFAULT),
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9077,7 +9079,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
                 'realname' => null,
-                'password' => '$2y$10$dTMar1F3ef5X/H1IjX9gYOjQWBR1K4bERGf4/oTPxFtJE/c3vXILm',
+                'password' => password_hash('postonly', PASSWORD_DEFAULT),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9086,7 +9088,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => self::USER_TECH,
                 'name' => 'tech',
                 'realname' => null,
-                'password' => '$2y$10$.xEgErizkp6Az0z.DHyoeOoenuh0RcsX4JapBk2JMD6VI17KtB1lO',
+                'password' => password_hash('tech', PASSWORD_DEFAULT),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9095,7 +9097,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
                 'realname' => null,
-                'password' => '$2y$10$Z6doq4zVHkSPZFbPeXTCluN1Q/r0ryZ3ZsSJncJqkN3.8cRiN0NV.',
+                'password' => password_hash('normal', PASSWORD_DEFAULT),
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
@@ -9156,8 +9158,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         // Test environment data
         if ($is_testing) {
             $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
-            $e2e_entity = array_shift($root_entity);
-            $e2e_entity = array_replace($e2e_entity, [
+            $root_entity = current($root_entity);
+
+            // Main E2E test entity
+            $e2e_entity = array_replace($root_entity, [
                 'id' => 1,
                 'name' => 'E2ETestEntity',
                 'entities_id' => 0,
@@ -9165,6 +9169,26 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'level' => 2,
             ]);
             $tables['glpi_entities'][] = $e2e_entity;
+
+            // Sub entity 1
+            $e2e_subentity1 = array_replace($root_entity, [
+                'id' => 2,
+                'name' => 'E2ETestSubEntity1',
+                'entities_id' => 1,
+                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity1',
+                'level' => 3,
+            ]);
+            $tables['glpi_entities'][] = $e2e_subentity1;
+
+            // Sub entity 2
+            $e2e_subentity2 = array_replace($root_entity, [
+                'id' => 3,
+                'name' => 'E2ETestSubEntity2',
+                'entities_id' => 1,
+                'completename' => __('Root entity') . ' > E2ETestEntity > E2ETestSubEntity2',
+                'level' => 3,
+            ]);
+            $tables['glpi_entities'][] = $e2e_subentity2;
 
             // New e2e super-admin user (login: e2e_tests, password: glpi)
             $default_glpi_user = array_filter($tables['glpi_users'], static fn ($u) => $u['id'] === self::USER_GLPI);

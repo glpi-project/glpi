@@ -50,6 +50,12 @@ class Process extends AbstractInventoryAsset
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
     <PROCESSES>
         <CMD>php-fpm: pool www</CMD>
         <CPUUSAGE>0.0</CPUUSAGE>
@@ -156,5 +162,52 @@ class Process extends AbstractInventoryAsset
             $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
             'Process has not been linked to computer :('
         );
+    }
+
+    public function testGenericAssetProcess(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        //create generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'MyAsset' . $this->getUniqueString(),
+            capacities: array_merge(
+                [
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                ]
+            )
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf([
+            'import_process' => 1,
+        ]));
+        $this->logout();
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert(self::assetProvider()[0]['xml']);
+        $json = json_decode($data);
+        //we change itemtype to our asset
+        $json->itemtype = $classname;
+        $inventory = $this->doInventory($json);
+
+        //check created asset
+        $assets_id = $inventory->getAgent()->fields['items_id'];
+        $this->assertGreaterThan(0, $assets_id);
+        $asset = new $classname();
+        $this->assertTrue($asset->getFromDB($assets_id));
+
+        $this->assertSame(
+            1,
+            countElementsInTable(\Item_Process::getTable(), ['itemtype' => $classname, 'items_id' => $assets_id]),
+            'Process has not been linked to asset :('
+        );
+
+        //check for tab presence
+        $this->login();
+        $this->assertArrayHasKey('Item_Process$1', $asset->defineAllTabs());
     }
 }

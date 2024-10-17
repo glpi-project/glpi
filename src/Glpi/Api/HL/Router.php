@@ -157,6 +157,33 @@ EOT;
     }
 
     /**
+     * Normalize the requested API version based on the available versions.
+     *
+     * If only a major version is specified, the latest minor version will be used.
+     * If a major and minor version is specified, the latest patch version will be used.
+     * If a complete version is specified, it will be used as is.
+     * If no version is specified, the latest version will be used.
+     * @param string $version
+     * @return string
+     */
+    public static function normalizeAPIVersion(string $version): string
+    {
+        $versions = array_column(static::getAPIVersions(), 'version');
+        $best_match = self::API_VERSION;
+        if (in_array($version, $versions, true)) {
+            // Exact match
+            return $version;
+        }
+
+        foreach ($versions as $available_version) {
+            if (str_starts_with($available_version, $version . '.') && version_compare($available_version, $best_match, '>')) {
+                $best_match = $available_version;
+            }
+        }
+        return $best_match;
+    }
+
+    /**
      * Get the singleton instance of the router
      *
      * @return Router
@@ -447,10 +474,12 @@ EOT;
      */
     public function matchAll(Request $request): array
     {
-        /** @var RoutePath[] $routes */
         $routes = $this->getRoutesFromCache();
-        $routes = array_filter($routes, static function ($route) use ($request) {
-            if (in_array($request->getMethod(), $route->getRouteMethods(), true)) {
+
+        $api_version = $request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION;
+        // Filter routes by the requested API version and method
+        $routes = array_filter($routes, static function ($route) use ($request, $api_version) {
+            if ($route->matchesAPIVersion($api_version) && in_array($request->getMethod(), $route->getRouteMethods(), true)) {
                 // Verify the request uri path matches the compiled path
                 return (bool) preg_match('#^' . $route->getCompiledPath() . '$#i', $request->getUri()->getPath());
             }
@@ -678,6 +707,10 @@ EOT;
     private function handleAuth(Request $request): void
     {
         if ($request->hasHeader('Authorization')) {
+            // Ignore Basic auth because it is only supported when passing data in password flow to /token, not actual auth
+            if (str_starts_with($request->getHeaderLine('Authorization'), 'Basic ')) {
+                return;
+            }
             $this->startTemporarySession($request);
             if ($request->hasHeader('GLPI-Profile')) {
                 $requested_profile = $request->getHeaderLine('GLPI-Profile');

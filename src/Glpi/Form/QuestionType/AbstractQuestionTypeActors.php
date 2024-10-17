@@ -72,6 +72,35 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
     }
 
+    #[Override]
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        if (!is_array($answer)) {
+            $answer = [$answer];
+        }
+
+        $actors = [];
+        if (is_array($answer)) {
+            foreach ($answer as $actor) {
+                // The "0" value can occur when the empty label is selected.
+                if ($actor == "0") {
+                    continue;
+                }
+
+                $actor_parts = explode('-', $actor);
+                $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
+                $item_id = $actor_parts[1];
+
+                $actors[] = [
+                    'itemtype' => $itemtype,
+                    'items_id' => $item_id
+                ];
+            }
+        }
+
+        return $actors;
+    }
+
     /**
      * Check if the question allows multiple actors
      *
@@ -80,11 +109,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      */
     public function isMultipleActors(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeActorsConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_multiple_actors'] ?? false;
+        return $config->isMultipleActors();
     }
 
     /**
@@ -130,7 +161,11 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             {
                 'multiple': false,
                 'init': init,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label,
+                'specific_tags': is_multiple_actors ? {
+                    'disabled': 'disabled'
+                } : {}
             }
         ]) %}
         {% set actors_dropdown_multiple = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
@@ -139,7 +174,11 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             {
                 'multiple': true,
                 'init': init,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label,
+                'specific_tags': not is_multiple_actors ? {
+                    'disabled': 'disabled'
+                } : {}
             }
         ]) %}
 
@@ -155,7 +194,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
                     'col-12',
                     'col-sm-6',
                     not is_multiple_actors ? '' : 'd-none'
-                ]|join(' ')
+                ]|join(' '),
+                wrapper_class: ''
             }
         ) }}
         {{ fields.htmlField(
@@ -169,7 +209,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
                     'col-12',
                     'col-sm-6',
                     is_multiple_actors ? '' : 'd-none'
-                ]|join(' ')
+                ]|join(' '),
+                wrapper_class: ''
             }
         ) }}
 TWIG;
@@ -179,7 +220,8 @@ TWIG;
             'init'               => $question != null,
             'values'             => $this->getDefaultValue($question, $this->isMultipleActors($question)),
             'allowed_types'      => $this->getAllowedActorTypes(),
-            'is_multiple_actors' => $this->isMultipleActors($question)
+            'is_multiple_actors' => $this->isMultipleActors($question),
+            'aria_label'         => __('Select an actor...')
         ]);
     }
 
@@ -205,12 +247,15 @@ TWIG;
             <script>
                 function handleMultipleActorsCheckbox_{{ rand }}(input) {
                     const is_checked = $(input).is(':checked');
-                    const selects = $(input).closest('div[data-glpi-form-editor-question]')
+                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
                         .find('div .actors-dropdown');
 
                     {# Disable all selects and toggle their visibility, then enable the right ones #}
                     selects.toggleClass('d-none').find('select').prop('disabled', is_checked)
                         .filter('[multiple]').prop('disabled', !is_checked);
+
+                    {# Handle hidden input for multiple actors #}
+                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
                 }
             </script>
 TWIG;
@@ -223,32 +268,38 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function renderAnswerTemplate(mixed $answer): string
     {
         $template = <<<TWIG
             <div class="form-control-plaintext">
-                {% for itemtype, actors_id in actors %}
-                    {% for actor_id in actors_id %}
-                        {{ get_item_link(itemtype, actor_id) }}
-                    {% endfor %}
+                {% for actors in actors %}
+                    {{ get_item_link(actors.itemtype, actors.items_id) }}
                 {% endfor %}
             </div>
 TWIG;
 
-        $actors = [];
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'actors' => $answer
+        ]);
+    }
+
+    #[Override]
+    public function formatRawAnswer(mixed $answer): string
+    {
+        $formatted_actors = [];
         foreach ($answer as $actor) {
             foreach ($this->getAllowedActorTypes() as $type) {
-                if (strpos($actor, $type::getForeignKeyField()) === 0) {
-                    $actors[$type][] = (int)substr($actor, strlen($type::getForeignKeyField()) + 1);
-                    break;
+                if ($actor['itemtype'] === $type) {
+                    $item = $type::getById($actor['items_id']);
+                    if ($item !== false) {
+                        $formatted_actors[] = $item->getName();
+                    }
                 }
             }
         }
 
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'actors' => $actors
-        ]);
+        return implode(', ', $formatted_actors);
     }
 
     #[Override]
@@ -262,7 +313,8 @@ TWIG;
             value,
             {
                 'multiple': is_multiple_actors,
-                'allowed_types': allowed_types
+                'allowed_types': allowed_types,
+                'aria_label': aria_label
             }
         ]) %}
 
@@ -286,15 +338,26 @@ TWIG;
             'value'              => $this->getDefaultValue($question, $is_multiple_actors),
             'question'           => $question,
             'allowed_types'      => $this->getAllowedActorTypes(),
-            'is_multiple_actors' => $is_multiple_actors
+            'is_multiple_actors' => $is_multiple_actors,
+            'aria_label'         => $question->fields['name']
         ]);
-
-        return '';
     }
 
     #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::ACTORS;
+    }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeActorsConfig::class;
     }
 }

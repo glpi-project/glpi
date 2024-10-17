@@ -42,10 +42,11 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Event;
 use Glpi\Http\Response;
 
-include('../../inc/includes.php');
-
 if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $asset = Asset::getById($_REQUEST['id']);
+    if ($asset === false) {
+        $asset = null;
+    }
 } else {
     $definition = new AssetDefinition();
     $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])

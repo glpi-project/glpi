@@ -141,7 +141,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             $content
         );
 
-        if (!$html) {
+        if ($html === null) {
             $html = $content;
         }
 

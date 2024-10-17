@@ -41,8 +41,14 @@ final class ConfigurationConstants
     {
     }
 
-    public function computeConstants(): void
+    public function computeConstants(?string $env = null): void
     {
+        if ($env !== null) {
+            // Force the `GLPI_ENVIRONMENT_TYPE` constant.
+            // The value defined in the server env variables will be ignored.
+            define('GLPI_ENVIRONMENT_TYPE', $env);
+        }
+
         // Define GLPI_* constants that can be customized by admin.
         //
         // Use a self-invoking anonymous function to:
@@ -114,6 +120,10 @@ final class ConfigurationConstants
                 'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
                 'GLPI_TEXT_MAXSIZE'           => '4000' // character threshold for displaying read more button
             ],
+            'production' => [
+            ],
+            'staging' => [
+            ],
             'testing' => [
                 'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
                 'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
@@ -125,6 +135,8 @@ final class ConfigurationConstants
                     $this->root_dir . '/plugins',
                     $this->root_dir . '/tests/fixtures/plugins',
                 ],
+            ],
+            'development' => [
             ],
         ];
 
@@ -157,9 +169,6 @@ final class ConfigurationConstants
                     implode('`, `', $allowed_envs)
                 )
             );
-        }
-        if (defined('PLUGINS_DIRECTORIES') && !is_array(PLUGINS_DIRECTORIES)) {
-            throw new \Exception('PLUGINS_DIRECTORIES constant value must be an array');
         }
 
         // Configure environment type if not defined by user.

@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
-
-include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
@@ -63,8 +63,7 @@ switch ($action) {
         $plugin->clean($id);
         break;
     default:
-        Html::displayErrorAndDie('Lost');
-        break;
+        throw new BadRequestHttpException();
 }
 
 Html::back();

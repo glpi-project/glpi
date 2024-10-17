@@ -40,6 +40,7 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
@@ -180,10 +181,7 @@ final class SearchEngine
             'appliance_types'      => ['Appliance'],
             'directconnect_types'  => Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             'infocom_types'        => ['Budget', 'Infocom'],
-            'linkgroup_types'      => ['Group'],
-            // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
-            'linkuser_types'       => ['User'],
-            // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+            'assignable_types'     => ['Group', 'User'],
             'project_asset_types'  => ['Project'],
             'rackable_types'       => ['Enclosure', 'Rack'],
             'socket_types'         => [\Glpi\Socket::class],
@@ -379,14 +377,14 @@ final class SearchEngine
         if (!$CFG_GLPI['allow_search_all']) {
             foreach ($p['criteria'] as $val) {
                 if (isset($val['field']) && $val['field'] == 'all') {
-                    \Html::displayRightError();
+                    throw new AccessDeniedHttpException();
                 }
             }
         }
         if (!$CFG_GLPI['allow_search_view'] && !array_key_exists('globalsearch', $p)) {
             foreach ($p['criteria'] as $val) {
                 if (isset($val['field']) && $val['field'] == 'view') {
-                    \Html::displayRightError();
+                    throw new AccessDeniedHttpException();
                 }
             }
         }

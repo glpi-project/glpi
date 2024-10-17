@@ -11,7 +11,7 @@ const config = {
         filename: 'app.js',
         chunkFilename: "[name].js",
         path: path.resolve(__dirname, 'public/build/vue'),
-        publicPath: '/public/build/vue/',
+        publicPath: '/public/build/vue',
         asyncChunks: true,
         clean: true,
     },
@@ -45,6 +45,7 @@ const config = {
         new webpack.DefinePlugin({
             __VUE_OPTIONS_API__: false, // We will only use composition API
             __VUE_PROD_DEVTOOLS__: false,
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         }),
     ],
     resolve: {
@@ -66,4 +67,4 @@ const config = {
     }
 };
 
-module.exports = config
+module.exports = config;

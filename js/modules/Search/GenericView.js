@@ -50,7 +50,7 @@ window.GLPI.Search.GenericView = class GenericView {
     postInit() {}
 
     getElement() {
-        return $('#'+this.element_id);
+        return $(`#${this.element_id}`);
     }
 
     getResultsView() {
@@ -103,7 +103,7 @@ window.GLPI.Search.GenericView = class GenericView {
             modal.off('show.bs.modal').on('show.bs.modal', () => {
                 const params = JSON.parse(modal.attr('data-params'));
                 params['url'] = window.location.pathname + window.location.search;
-                modal.find('.modal-body').load(CFG_GLPI.root_doc + '/ajax/savedsearch.php', params);
+                modal.find('.modal-body').load(`${CFG_GLPI.root_doc}/ajax/savedsearch.php`, params);
             });
             bs_modal.show();
         });

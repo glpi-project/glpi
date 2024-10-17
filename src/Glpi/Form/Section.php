@@ -87,8 +87,9 @@ final class Section extends CommonDBChild
     /**
      * Get blocks of this section
      * Block can be a question or a comment
+     * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return Block[]
+     * @return (BlockInterface & CommonDBChild)[]
      */
     public function getBlocks(): array
     {
@@ -138,6 +139,9 @@ final class Section extends CommonDBChild
      */
     public function getComments(): array
     {
+        // TODO: getComments is already a method part of the CommonDBTM interface.
+        // We need another name for this.
+
         // Lazy loading
         if ($this->comments === null) {
             $this->comments = [];

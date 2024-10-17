@@ -38,8 +38,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include("../inc/includes.php");
-
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }

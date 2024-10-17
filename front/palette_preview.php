@@ -36,8 +36,6 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\UI\ThemeManager;
 
-include('../inc/includes.php');
-
 // Ensure warnings will not break image output.
 ErrorHandler::getInstance()->disableOutput();
 

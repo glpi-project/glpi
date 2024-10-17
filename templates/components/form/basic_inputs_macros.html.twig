@@ -151,7 +151,10 @@
         id: name ~ '_' ~ options.rand
     }|merge(options) %}
 
-    {{ _self.input(name, value, options|merge({'type': 'text'})) }}
+    {{ _self.input(name, value, options|merge({
+        'type': 'text',
+        'input_addclass': 'rounded-0',
+    })) }}
     <script>
         $(function () {
             $("#{{ options.id }}").spectrum({
@@ -305,12 +308,15 @@
         'disabled': false,
         'required': false,
         'add_body_classes': [],
+        'toolbar': true,
         'toolbar_location': 'top',
         'init': true,
         'placeholder': "",
         'enable_form_tags': false,
         'form_tags_form_id': null,
         'aria_label': "",
+        'statusbar': true,
+        'content_style': "",
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -343,6 +349,9 @@
             options.toolbar_location,
             options.init,
             options.placeholder,
+            options.toolbar,
+            options.statusbar,
+            options.content_style,
         ]) %}
    {% endif %}
 
@@ -441,7 +450,7 @@
               data-bs-toggle="popover"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ helper_safe_text }}">
+              data-bs-content="{{ helper_safe_text|raw }}">
             ?
         </span>
         {% endset %}

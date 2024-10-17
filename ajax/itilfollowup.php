@@ -39,14 +39,9 @@
 
 use Glpi\Http\Response;
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -61,7 +56,7 @@ if ($itilfollowuptemplates_id === null) {
     echo json_encode([
         'content' => ""
     ]);
-    die;
+    return;
 }
 
 // Mandatory parameter: items_id
@@ -113,7 +108,7 @@ if ($template->fields['requesttypes_id']) {
     }
 }
 
-if ($template->fields['pendingreasons_id'] ?? 0 > 0) {
+if (($template->fields['pendingreasons_id'] ?? 0) > 0) {
     $pendingReason = new PendingReason();
     if ($pendingReason->getFromDB($template->fields['pendingreasons_id'])) {
         $template->fields = array_merge($template->fields, [

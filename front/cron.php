@@ -33,21 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
+if (PHP_SAPI === 'cli') {
+    // Check the resources state before trying to instanciate the Kernel.
+    // It must be done here as this check must be done even when the Kernel
+    // cannot be instanciated due to missing dependencies.
+    require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+    (new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+
+    require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+    $kernel = new \Glpi\Kernel\Kernel();
+    $kernel->loadCommonGlobalConfig();
+}
+
 /**
  * @var array $CFG_GLPI
- * @var string|null $SECURITY_STRATEGY
  */
-global $CFG_GLPI,
-    $SECURITY_STRATEGY;
+global $CFG_GLPI;
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
-$SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
-
 // Try detecting if we are running with the root user (Not available on Windows)
 if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
-    // Translation functions not available here
     echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
     echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
     if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
@@ -56,12 +64,9 @@ if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
     }
 }
 
-include('../inc/includes.php');
-
 if (!is_writable(GLPI_LOCK_DIR)) {
-   //TRANS: %s is a directory
-    echo "\t" . sprintf(__('ERROR: %s is not writable.') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __('Run the script as the same user that your web server runs as.') . "\n";
+    echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
+    echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
     exit(1);
 }
 

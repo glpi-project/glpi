@@ -58,6 +58,32 @@
 }
 
 .topbar {
+    #navbar-menu {
+        .nav-item {
+            a.nav-link {
+                color: var(--glpi-mainmenu-fg);
+
+                &:hover {
+                    opacity: 1 !important;
+                }
+            }
+
+            &:not(.active) {
+                a.nav-link {
+                    opacity: 0.7;
+                }
+            }
+
+            // Tabler add a yellow "underline" on the active item that doesn't really
+            // works on our side because we aren't using the same layout as them.
+            // To use it, we'll need to rework our menu to match more closely
+            // the html structure expected by tabler.
+            &::after {
+                display: none !important;
+            }
+        }
+    }
+
     .nav-item {
         i {
             margin-right: 0.3em;

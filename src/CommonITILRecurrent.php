@@ -239,7 +239,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     return sprintf(_n('%d year', '%d years', $matches[1]), $matches[1]);
                 }
                 return Html::timestampToString($values[$field], false);
-            break;
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -354,7 +353,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             echo "<div class='center'>";
            //TRANS: %s is the date of next creation
             echo sprintf(
-                __('Next creation on %s'),
+                __s('Next creation on %s'),
                 Html::convDateTime($this->fields['next_creation_date'])
             );
             echo "</div>";
@@ -434,10 +433,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $is_calendar_valid = $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
 
         if (!$is_calendar_valid || $periodicity_in_seconds >= DAY_TIMESTAMP) {
-           // Compute next occurence without using the calendar if calendar is not valid
+           // Compute next occurrence without using the calendar if calendar is not valid
            // or if periodicity is at least one day.
 
-           // First occurence of creation
+           // First occurrence of creation
             $occurence_time = strtotime($begin_date);
             $creation_time  = $occurence_time - $create_before;
 
@@ -453,14 +452,14 @@ abstract class CommonITILRecurrent extends CommonDropdown
             }
 
             if ($is_calendar_valid) {
-               // Jump to next working day if occurence is outside working days.
+               // Jump to next working day if occurrence is outside working days.
                 while (
                     $calendar->isHoliday(date('Y-m-d', $occurence_time))
                     || !$calendar->isAWorkingDay($occurence_time)
                 ) {
                     $occurence_time = strtotime('+ 1 day', $occurence_time);
                 }
-               // Jump to next working hour if occurence is outside working hours.
+               // Jump to next working hour if occurrence is outside working hours.
                 if (!$calendar->isAWorkingHour($occurence_time)) {
                     $tmp_search_time = null;
 

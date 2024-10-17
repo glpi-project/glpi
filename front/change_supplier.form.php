@@ -33,15 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Event;
-
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
 
 $link = new Change_Supplier();
 
@@ -52,7 +49,7 @@ if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);
 
     $link->update($_POST);
-    echo "<script type='text/javascript' >\n";
+    echo "<script type='text/javascript' >";
     echo "window.parent.location.reload();";
     echo "</script>";
 } else if (isset($_POST['delete'])) {
@@ -68,7 +65,7 @@ if (isset($_POST["update"])) {
     );
     Html::redirect(Change::getFormURLWithID($link->fields['changes_id']));
 } else {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 Html::popFooter();

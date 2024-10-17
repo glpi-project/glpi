@@ -116,8 +116,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             'db-password',
             'p',
             InputOption::VALUE_OPTIONAL,
-            __('Database password (will be prompted for value if option passed without value)'),
-            '' // Empty string by default (enable detection of null if passed without value)
+            __('Database password'),
         );
 
         $this->addOption(

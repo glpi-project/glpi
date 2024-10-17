@@ -37,31 +37,20 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', realpath('..'));
-}
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**
  * @var \DBmysql $DB
- * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  * @var \Update $update
  * @var bool $HEADER_LOADED
  */
-global $DB, $GLPI, $GLPI_CACHE,
+global $DB,
+    $GLPI_CACHE,
     $update,
     $HEADER_LOADED;
 
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
-
-Config::detectRootDoc();
 
 Session::checkCookieSecureConfig();
 
@@ -192,6 +181,7 @@ echo "<title>Setup GLPI</title>";
 echo Html::script("public/lib/base.js");
 echo Html::script("js/glpi_dialog.js");
 // CSS
+echo Html::css('public/lib/tabler.css');
 echo Html::css('public/lib/base.css');
 echo Html::scss("css/install", [], true);
 echo "</head>";

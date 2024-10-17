@@ -34,14 +34,13 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /**
  * @var array $CFG_GLPI
  * @var \DBmysql $DB
  */
 global $CFG_GLPI, $DB;
-
-include('../inc/includes.php');
 
 Session::checkLoginUser();
 $track = new Ticket();
@@ -85,7 +84,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else if (isset($_POST['update'])) {
     if (!$track::canUpdate()) {
-        Html::displayRightError();
+        throw new AccessDeniedHttpException();
     }
     $track->update($_POST);
 
@@ -265,8 +264,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
-        die;
+        Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");
     }
 
     unset($_REQUEST['id']);

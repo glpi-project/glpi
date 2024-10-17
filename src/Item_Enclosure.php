@@ -161,7 +161,7 @@ class Item_Enclosure extends CommonDBRelation
         $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_itemtype$rand'>" . __('Item type') . "</label></td>";
+        echo "<td><label for='dropdown_itemtype$rand'>" . __s('Item type') . "</label></td>";
         echo "<td>";
         $types = $CFG_GLPI['rackable_types'];
         $translated_types = [];
@@ -218,7 +218,7 @@ class Item_Enclosure extends CommonDBRelation
        //TODO: update orientation according to item model depth
 
         echo "</td>";
-        echo "<td><label for='dropdown_items_id$rand'>" . _n('Item', 'Items', 1) . "</label></td>";
+        echo "<td><label for='dropdown_items_id$rand'>" . _sn('Item', 'Items', 1) . "</label></td>";
         echo "<td id='items_id'>";
         if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
@@ -243,11 +243,11 @@ class Item_Enclosure extends CommonDBRelation
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_enclosures_id$rand'>" . Enclosure::getTypeName(1) . "</label></td>";
+        echo "<td><label for='dropdown_enclosures_id$rand'>" . htmlspecialchars(Enclosure::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Enclosure::dropdown(['value' => $this->fields["enclosures_id"], 'rand' => $rand]);
         echo "</td>";
-        echo "<td><label for='dropdown_position$rand'>" . __('Position') . "</label></td>";
+        echo "<td><label for='dropdown_position$rand'>" . htmlspecialchars(__('Position')) . "</label></td>";
         echo "<td>";
         Dropdown::showNumber(
             'position',

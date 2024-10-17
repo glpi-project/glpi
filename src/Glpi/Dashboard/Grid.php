@@ -36,14 +36,15 @@
 namespace Glpi\Dashboard;
 
 use Config;
-use DateInterval;
 use Dropdown;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
+use Item_Devices;
 use Plugin;
 use Ramsey\Uuid\Uuid;
 use Reminder;
@@ -506,8 +507,7 @@ JAVASCRIPT;
         $params = array_merge($defaults, $params);
 
         if (!self::checkToken($params)) {
-            Html::displayRightError();
-            exit;
+            throw new AccessDeniedHttpException();
         }
 
         self::$embed = true;
@@ -1005,7 +1005,7 @@ HTML;
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
-                                    $unset_url($value, 'url');
+                                    $unset_url($value);
                                 }
                             }
                         };
@@ -1050,7 +1050,7 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filter_names
+     * @param array $filters
      *
      * @return string the html
      */
@@ -1181,7 +1181,7 @@ HTML;
                 }
             }
 
-            foreach ($CFG_GLPI['itemdevices'] as $itemtype) {
+            foreach (Item_Devices::getDeviceTypes() as $itemtype) {
                 $fk_itemtype = $itemtype::getDeviceType();
                 $label = sprintf(
                     __("Number of %s by type"),

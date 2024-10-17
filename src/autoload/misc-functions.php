@@ -50,7 +50,7 @@ function isCommandLine()
  */
 function isAPI()
 {
-    $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
+    $script = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
     if (str_contains($script, 'api.php')) {
         return true;
     }
@@ -70,8 +70,7 @@ function isAPI()
  */
 function isPluginItemType($classname)
 {
-
-    /** @var array $matches */
+    $matches = [];
     if (preg_match("/^Plugin([A-Z][a-z0-9]+)([A-Z]\w+)$/", $classname, $matches)) {
         $plug           = [];
         $plug['plugin'] = $matches[1];

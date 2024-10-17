@@ -33,9 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Response;
-
-include('../inc/includes.php');
 
 Session::checkLoginUser();
 
@@ -57,7 +56,7 @@ if (isset($_POST['id'])) {
     // The itemtype and items_id parameters are necessary because the Stencil class targets multiple objects of different types
     $item = getItemForItemtype($_POST['itemtype']);
     if (!$item || !$item->canView()) {
-        Html::displayRightError();
+        throw new AccessDeniedHttpException();
     }
 
     if ($item->getFromDB($_POST['items_id'])) {

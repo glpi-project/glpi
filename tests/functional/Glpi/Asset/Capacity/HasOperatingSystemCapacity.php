@@ -101,6 +101,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Validate that the subject does not have the operating system tab,
@@ -143,6 +144,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $base_search_options_count = count($subject->rawSearchOptions());
 
@@ -182,6 +184,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create an Item_OperatingSystem linked to our asset
@@ -230,6 +233,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create and update the linked OS in order to generate history entries
@@ -291,6 +295,7 @@ class HasOperatingSystemCapacity extends DbTestCase
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Set display preferences
@@ -304,28 +309,22 @@ class HasOperatingSystemCapacity extends DbTestCase
                 'itemtype' => $subject::getType(),
                 'num'      => '46', // Linked OS version
                 'users_id' => 0,
-            ],
-            [
-                'itemtype' => $subject::getType(),
-                'num'      => '5', // Serial number of the asset
-                'users_id' => 0,
             ]
         ]);
 
-        // Count display preferences, should be 3 (2 for OS + 1 for asset)
+        // Count display preferences, should be 9 (2 for OS + 7 for asset)
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
                 'itemtype' => $subject::getType(),
             ]
         );
-        $this->integer($count_display_preferences)->isEqualTo(3);
+        $this->integer($count_display_preferences)->isEqualTo(9);
 
         // Disable capacity, display preferences related to OS should be
         // deleted while display preferences related to the asset should not be
         // deleted
-        // The two OS search options should be deleted, leaving only the asset
-        // serial number search option
+        // The two OS search options should be deleted
         $definition = $this->disableCapacity(
             $definition,
             $this->getTargetCapacity()
@@ -336,7 +335,7 @@ class HasOperatingSystemCapacity extends DbTestCase
                 'itemtype' => $subject::getType(),
             ]
         );
-        $this->integer($count_display_preferences)->isEqualTo(1);
+        $this->integer($count_display_preferences)->isEqualTo(7);
     }
 
     public function testCloneAsset()

@@ -35,11 +35,14 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\AccessVote;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Form;
 use Override;
-use Glpi\Session\SessionInfo;
 
 final class DirectAccess implements ControlTypeInterface
 {
@@ -62,25 +65,49 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(JsonConfigInterface $config): string
+    public function getWarnings(Form $form, array $warnings): array
+    {
+        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+    }
+
+    private function addWarningIfFormHasBlacklistedQuestionTypes(
+        Form $form,
+        array $warnings
+    ): array {
+        if (
+            FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
+            && array_reduce(
+                $form->getQuestions(),
+                fn ($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+            )
+        ) {
+            $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');
+        }
+
+        return $warnings;
+    }
+
+    #[Override]
+    public function renderConfigForm(FormAccessControl $access_control): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $config = $access_control->getConfig();
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         // Build form URL with integrated token parameter
         $url = $CFG_GLPI['url_base'];
-        $url .= "/front/form/form_renderer.php?";
+        $url .= "/Form/Render/{$_GET['id']}?";
         $url .= http_build_query([
-            'id'    => $_GET['id'],
             'token' => $config->getToken(),
         ]);
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/direct_access.html.twig", [
+            'access_control' => $access_control,
             'config' => $config,
             'url'    => $url,
         ]);
@@ -95,7 +122,7 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function createConfigFromUserInput(array $input): DirectAccessConfig
     {
-        return DirectAccessConfig::createFromRawArray([
+        return DirectAccessConfig::jsonDeserialize([
             'token'                 => $input['_token'] ?? null,
             'allow_unauthenticated' => $input['_allow_unauthenticated'] ?? false,
         ]);
@@ -103,18 +130,22 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
-    ): bool {
+    ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         if (!$this->validateSession($config, $parameters)) {
-            return false;
+            return AccessVote::Abstain;
         }
 
-        return $this->validateToken($config, $parameters);
+        if (!$this->validateToken($config, $parameters)) {
+            return AccessVote::Abstain;
+        };
+
+        return AccessVote::Grant;
     }
 
     private function validateSession(
@@ -138,5 +169,14 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         return $config->getToken() === $token;
+    }
+
+    public function allowUnauthenticated(JsonFieldInterface $config): bool
+    {
+        if (!$config instanceof DirectAccessConfig) {
+            throw new \InvalidArgumentException("Invalid config class");
+        }
+
+        return $config->allowUnauthenticated();
     }
 }

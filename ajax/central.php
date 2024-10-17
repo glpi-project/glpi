@@ -33,13 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+use Glpi\Exception\Http\BadRequestHttpException;
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+
+$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -51,8 +49,7 @@ if (
     (!isset($_REQUEST['params']['_idor_token']) || empty($_REQUEST['params']['_idor_token'])) || !isset($_REQUEST['itemtype'])
     || !isset($_REQUEST['widget'])
 ) {
-    http_response_code(400);
-    die();
+    throw new BadRequestHttpException();
 }
 
 $idor = $_REQUEST['params']['_idor_token'];
@@ -64,10 +61,10 @@ if (
         '_idor_token'  => $idor
     ] + $_REQUEST['params'])
 ) {
-    http_response_code(400);
-    die();
+    throw new BadRequestHttpException();
 }
 
+/** @var class-string<CommonGLPI> $itemtype */
 $itemtype = $_REQUEST['itemtype'];
 $params = $_REQUEST['params'];
 
@@ -98,5 +95,5 @@ switch ($_REQUEST['widget']) {
         }
         break;
     default:
-        echo __('Invalid widget');
+        echo __s('Invalid widget');
 }

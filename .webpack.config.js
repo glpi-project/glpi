@@ -14,15 +14,21 @@ const scssOutputPath = 'css/lib';
 /*
  * External libraries files build configuration.
  */
-let config = {
+const config = {
     entry: function () {
-        // Create an entry per *.js file in lib/bundle directory.
+        // Create an entry per file in lib/bundle directory.
         // Entry name will be name of the file (without ext).
-        let entries = {};
+        const entries = {};
 
-        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-        for (const file of files) {
-            entries[path.basename(file, '.js')] = file;
+        for (const ext of ['.js', '.scss']) {
+            const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
+            for (const file of files) {
+                const entry_name = path.basename(file, ext);
+                if (entry_name in entries) {
+                    throw new Error(`Duplicate bundle entry: '${entry_name}'.`);
+                }
+                entries[entry_name] = file;
+            }
         }
 
         return entries;
@@ -50,6 +56,10 @@ let config = {
                 use: ['script-loader', 'strip-sourcemap-loader'],
             },
             {
+                test: /\.json$/,
+                type: 'json'
+            },
+            {
                 // Test for a polyfill (or any file) and it won't be included in your
                 // bundle
                 test: path.resolve(__dirname, 'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.ui-deps.js'),
@@ -67,7 +77,7 @@ let config = {
                 generator: {
                     filename: function (pathData) {
                         // Keep only relative path
-                        var sanitizedPath = path.relative(__dirname, pathData.filename);
+                        let sanitizedPath = path.relative(__dirname, pathData.filename);
 
                         // Sanitize name
                         sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
@@ -75,13 +85,18 @@ let config = {
                         // Remove the first directory (lib, node_modules, ...) and empty parts
                         // and replace directory separator by '/' (windows case)
                         sanitizedPath = sanitizedPath.split(path.sep)
-                            .filter(function (part, index) {
+                            .filter((part, index) => {
                                 return '' != part && index != 0;
                             }).join('/');
 
                         return sanitizedPath;
                     },
                 },
+            },
+            {
+                // Build SCSS files
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
         ],
     },
@@ -132,7 +147,7 @@ let config = {
 };
 
 // Copy raw JS and SCSS files
-var filesToCopy = [
+const filesToCopy = [
     // JS files
     {
         package: '@fullcalendar/core',
@@ -163,23 +178,8 @@ var filesToCopy = [
     },
     // SCSS files
     {
-        package: '@fontsource/inter',
-        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff,files/*[0-9]00*.woff2}',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/core',
-        from: 'src/scss/**/*.scss',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/icons-webfont',
-        from: 'dist/{fonts/*,tabler-icons.scss}',
-        to: scssOutputPath,
-    },
-    {
         package: 'bootstrap',
-        from: 'scss/**/*.scss',
+        from: 'scss/vendor/_rfs.scss',
         to: scssOutputPath,
     },
     {
@@ -198,17 +198,17 @@ var filesToCopy = [
     }
 ];
 
-let copyPatterns = [];
+const copyPatterns = [];
 for (let s = 0; s < filesToCopy.length; s++) {
-    let specs = filesToCopy[s];
-    let to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package
+    const specs = filesToCopy[s];
+    const to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
     let context = 'node_modules/' + specs.package;
     if (Object.prototype.hasOwnProperty.call(specs, 'context')) {
         context += '/' + specs.context;
     }
 
-    let copyParams = {
+    const copyParams = {
         context: path.resolve(__dirname, context),
         from:    specs.from,
         to:      path.resolve(__dirname, to),

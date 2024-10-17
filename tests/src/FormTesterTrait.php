@@ -36,14 +36,20 @@
 namespace Glpi\Tests;
 
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
+use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
+use Profile;
+use Ticket;
+use User;
 
 /**
  * Helper trait to tests helpdesk form related features
@@ -63,6 +69,7 @@ trait FormTesterTrait
         // Create form
         $form = $this->createItem(Form::class, [
             'name'                  => $builder->getName(),
+            'description'           => $builder->getDescription(),
             'entities_id'           => $builder->getEntitiesId(),
             'is_recursive'          => $builder->getIsRecursive(),
             'is_active'             => $builder->getIsActive(),
@@ -71,12 +78,14 @@ trait FormTesterTrait
             '_do_not_init_sections' => true, // We will handle sections ourselves
         ]);
 
+        $section_rank = 0;
         foreach ($builder->getSections() as $section_data) {
             // Create section
             $section = $this->createItem(Section::class, [
                 'forms_forms_id' => $form->getID(),
                 'name'           => $section_data['name'],
                 'description'    => $section_data['description'],
+                'rank'           => $section_rank++,
             ]);
 
             // Create questions
@@ -88,15 +97,19 @@ trait FormTesterTrait
                     'is_mandatory'      => $question_data['is_mandatory'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                ], [
+                    'default_value', // The default value can be formatted by the question type
                 ]);
             }
 
             // Create comments
+            $comment_rank = 0;
             foreach ($section_data['comments'] as $comment_data) {
                 $this->createItem(Comment::class, [
                     'forms_sections_id' => $section->getID(),
                     'name'              => $comment_data['name'],
                     'description'       => $comment_data['description'],
+                    'rank'              => $comment_rank++,
                 ]);
             }
         }
@@ -114,12 +127,12 @@ trait FormTesterTrait
         }
 
         // Create access controls
-        foreach ($builder->getAccessControls() as $strategy_class => $config) {
+        foreach ($builder->getAccessControls() as $strategy_class => $params) {
             $this->createItem(FormAccessControl::class, [
                 'forms_forms_id' => $form->getID(),
                 'strategy'       => $strategy_class,
-                '_config'        => $config,
-                'is_active'      => true,
+                '_config'        => $params['config'],
+                'is_active'      => $params['is_active'],
             ]);
         }
 
@@ -175,7 +188,7 @@ trait FormTesterTrait
                 fn($question) => $question->fields['name'] === $question_name
                     && $question->fields['forms_sections_id'] === $section->getID()
             );
-            $this->array($filtered_questions)->hasSize(1);
+            $this->assertCount(1, $filtered_questions);
             $question = array_pop($filtered_questions);
             return $question->getID();
         }
@@ -253,7 +266,7 @@ trait FormTesterTrait
                 fn($comment) => $comment->fields['name'] === $comment_name
                     && $comment->fields['forms_sections_id'] === $section->getID()
             );
-            $this->array($filtered_comments)->hasSize(1);
+            $this->assertCount(1, $filtered_comments);
             $comment = array_pop($filtered_comments);
             return $comment->getID();
         }
@@ -288,5 +301,144 @@ trait FormTesterTrait
             $tags,
             fn($tag) => $tag->label === $name,
         ));
+    }
+
+    protected function addSectionToForm(Form $form, string $section_name): Section
+    {
+        $section = $this->createItem(Section::class, [
+            'forms_forms_id' => $form->getID(),
+            'name'           => $section_name,
+        ]);
+
+        return $section;
+    }
+
+    protected function addQuestionToForm(Form $form, string $question_name): Question
+    {
+        // Get last section
+        $sections = $form->getSections();
+        $section = end($sections);
+
+        $question = $this->createItem(Question::class, [
+            'forms_sections_id' => $section->getID(),
+            'name'              => $question_name,
+        ]);
+
+        return $question;
+    }
+
+    protected function addCommentBlockToForm(
+        Form $form,
+        string $title,
+        string $content,
+    ): Comment {
+        // Get last section
+        $sections = $form->getSections();
+        $section = end($sections);
+
+        $comment = $this->createItem(Comment::class, [
+            'forms_sections_id' => $section->getID(),
+            'name'              => $title,
+            'description'       => $content,
+        ]);
+
+        return $comment;
+    }
+
+    protected function sendFormAndGetCreatedTicket(
+        Form $form, // We assume $form has a single "Ticket" destination
+        array $answers = [],
+    ): Ticket {
+        // The provider use a simplified answer format to be more readable.
+        // Rewrite answers into expected format.
+        $formatted_answers = [];
+        foreach ($answers as $question => $answer) {
+            $key = $this->getQuestionId($form, $question);
+            if (is_numeric($answer)) {
+                // Real answer will be decoded as string by default
+                $answer = (string) $answer;
+            }
+            $formatted_answers[$key] = $answer;
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            $formatted_answers,
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // Get created ticket
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+
+        /** @var Ticket $ticket */
+        $ticket = current($created_items);
+        $this->assertInstanceOf(Ticket::class, $ticket);
+        return $ticket;
+    }
+
+    /**
+     * Get the default parameters containing a mocked session of the TU_USER
+     * user and no URL parameters.
+     *
+     * @return FormAccessParameters
+     */
+    protected function getDefaultParametersForTestUser(): FormAccessParameters
+    {
+        $session_info = new SessionInfo(
+            user_id: getItemByTypeName(User::class, TU_USER, true),
+            group_ids: [],
+            profile_id: getItemByTypeName(Profile::class, "Super-Admin", true),
+        );
+
+        return new FormAccessParameters($session_info, []);
+    }
+
+    private function exportForm(Form $form): string
+    {
+        return self::$serializer->exportFormsToJson([$form])->getJsonContent();
+    }
+
+    private function importForm(
+        string $json,
+        DatabaseMapper $mapper,
+    ): Form {
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $imported_forms = $import_result->getImportedForms();
+        $this->assertCount(1, $imported_forms, "Failed to import form from JSON: $json");
+        $form_copy = current($imported_forms);
+        return $form_copy;
+    }
+
+    private function exportAndImportForm(Form $form): Form
+    {
+        // Export and import process
+        $json = $this->exportForm($form);
+        $form_copy = $this->importForm(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Make sure it was not the same form object that was returned.
+        $this->assertNotEquals($form_copy->getId(), $form->getId());
+
+        // Make sure the new form really exist in the database.
+        $this->assertNotFalse($form_copy->getFromDB($form_copy->getId()));
+
+        return $form_copy;
+    }
+
+    protected function disableExistingForms(): void
+    {
+        $forms = (new Form())->find([]);
+        foreach ($forms as $row) {
+            $form = new Form();
+            $form->update([
+                'id' => $row['id'],
+                'is_active' => false
+            ]);
+        }
     }
 }

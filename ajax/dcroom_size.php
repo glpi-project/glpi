@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
 Html::header_nocache();
 
 Session::checkLoginUser();
@@ -62,5 +61,5 @@ if ($room->getFromDB($id)) {
         ]
     );
 } else {
-    echo "<div class='col-form-label'>" . __('No room found or selected') . "</div>";
+    echo "<div class='col-form-label'>" . __s('No room found or selected') . "</div>";
 }

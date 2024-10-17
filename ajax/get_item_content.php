@@ -40,7 +40,6 @@ use Glpi\RichText\RichText;
  * Ajax tooltip endpoint for CommonITILObjects
  */
 
-include('../inc/includes.php');
 Session::checkLoginUser();
 
 // Read parameters

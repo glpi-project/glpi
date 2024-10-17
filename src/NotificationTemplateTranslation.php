@@ -389,8 +389,7 @@ TWIG, $twig_params);
             switch ($item::class) {
                 case self::class:
                     return self::createTabEntry(__('Preview'), 0, $item::class, 'ti ti-template');
-                    break;
-                case 'NotificationTemplate':
+                case NotificationTemplate::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             static::getTable(),

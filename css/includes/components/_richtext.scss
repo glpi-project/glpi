@@ -43,6 +43,10 @@ body.mce-content-body {
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
     }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0.5rem;
+    }
 }
 
 #page .tox .tox-statusbar {
@@ -92,6 +96,10 @@ body.mce-content-body {
         .read_more {
             background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
         }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0.5rem;
     }
 }
 

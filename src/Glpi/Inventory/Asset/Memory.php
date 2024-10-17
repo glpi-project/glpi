@@ -109,7 +109,7 @@ class Memory extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_memory == 1;
+        return $conf->component_memory == 1 && parent::checkConf($conf);
     }
 
     public function getItemtype(): string

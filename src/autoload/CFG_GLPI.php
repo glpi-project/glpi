@@ -142,7 +142,7 @@ $CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEqui
     'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
     'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
     'DeviceBattery', 'DeviceFirmware', 'DeviceCamera',
-    'Certificate'
+    'Certificate', 'Appliance'
 ];
 
 
@@ -166,7 +166,7 @@ $CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
 ];
 
 // `peripheralhost_types` contains assets that can host peripherals
-// `directconnect_types` contains the list of assets that are considred as peripherals
+// `directconnect_types` contains the list of assets that are considered as peripherals
 $CFG_GLPI["peripheralhost_types"]         = ['Computer'];
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
@@ -183,14 +183,36 @@ $CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEqui
     'Peripheral', 'Phone', 'Printer', 'Software', 'Rack'
 ];
 
-// FIXME: Merge these configurations
-$CFG_GLPI["linkuser_types"]               = ['Computer', 'CartridgeItem', 'ConsumableItem', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate', 'Appliance', 'DatabaseInstance', 'Item_DeviceSimcard', 'Line'
+$CFG_GLPI["assignable_types"] = [
+    'Appliance',
+    'Cable',
+    'CartridgeItem',
+    'Certificate',
+    'Cluster',
+    'Computer',
+    'ConsumableItem',
+    'DatabaseInstance',
+    'Domain',
+    'DomainRecord',
+    'Enclosure',
+    'Item_DeviceSimcard',
+    'Line',
+    'Monitor',
+    'NetworkEquipment',
+    'PassiveDCEquipment',
+    'PDU',
+    'Peripheral',
+    'Phone',
+    'Printer',
+    'Rack',
+    'Software',
+    'SoftwareLicense',
+    'Unmanaged',
 ];
-$CFG_GLPI["linkgroup_types"]              = $CFG_GLPI["linkuser_types"];
-$CFG_GLPI["linkuser_tech_types"]          = $CFG_GLPI["linkuser_types"];
-$CFG_GLPI["linkgroup_tech_types"]         = $CFG_GLPI["linkuser_types"];
+$CFG_GLPI["linkuser_types"]         = $CFG_GLPI["assignable_types"];
+$CFG_GLPI["linkgroup_types"]        = $CFG_GLPI["assignable_types"];
+$CFG_GLPI["linkuser_tech_types"]    = $CFG_GLPI["assignable_types"];
+$CFG_GLPI["linkgroup_tech_types"]   = $CFG_GLPI["assignable_types"];
 
 $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
     'Computer', 'Monitor', "Glpi\\Socket",
@@ -242,6 +264,14 @@ $CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPort
     'NetworkPortFiberchannel'
 ];
 
+$CFG_GLPI["contract_types"]               = [
+    'Computer', 'Monitor', 'NetworkEquipment',
+    'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
+    'Software', 'SoftwareLicense', 'Certificate',
+    'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
+    'DatabaseInstance',
+];
+
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
     'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
     'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
@@ -255,11 +285,10 @@ $CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
     'Peripheral','Phone','Printer', 'PassiveDCEquipment'
 ];
 
-$CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
     $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
     $CFG_GLPI['state_types'][] = 'Item_' . $dtype;
-    $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
+    $CFG_GLPI["contract_types"][] = 'Item_' . $dtype;
 }
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
@@ -286,6 +315,10 @@ $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
 $CFG_GLPI['itemdevicepci_types']          = ['*'];
 
+$CFG_GLPI['itemdevicecontrol_types']      = ['Computer'];
+
+$CFG_GLPI['itemdevicedrive_types']        = ['Computer'];
+
 $CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral', 'Phone'];
 
 $CFG_GLPI['itemdeviceprocessor_types']    = ['Computer', 'Phone'];
@@ -307,16 +340,6 @@ $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'Consuma
     'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
     'Domain', 'KnowbaseItem'
 ];
-
-$CFG_GLPI["contract_types"]               = array_merge(
-    ['Computer', 'Monitor', 'NetworkEquipment',
-        'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-        'Software', 'SoftwareLicense', 'Certificate',
-        'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-        'DatabaseInstance'
-    ],
-    $CFG_GLPI['itemdevices']
-);
 
 
 $CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
@@ -536,6 +559,7 @@ $CFG_GLPI['javascript'] = [
     'create_ticket' => ['tinymce'],
     'reservation'   => array_merge(['tinymce'], $reservations_libs),
     'faq'           => ['tinymce'],
+    'helpdesk-home' => ['home-scss-file']
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)
@@ -602,3 +626,18 @@ $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];
 $CFG_GLPI['itemvirtualmachines_types'] = ['Computer'];
 $CFG_GLPI['plug_types'] = ['PDU'];
+
+$CFG_GLPI['management_types'] = [
+    'Budget', 'Supplier', 'Contact', 'Contract', 'Document', 'Project', 'Certificate', 'Appliance', 'Database'
+];
+
+$CFG_GLPI['tools_types'] = [
+    'Reminder', 'RSSFeed'
+];
+
+$CFG_GLPI['admin_types'] = [
+    'User', 'Group', 'Entity', 'Profile'
+];
+
+$CFG_GLPI['process_types'] = ['Computer'];
+$CFG_GLPI['environment_types'] = ['Computer'];

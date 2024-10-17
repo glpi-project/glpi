@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 $ic = new Infocom();
 
 if (isset($_POST['add'])) {

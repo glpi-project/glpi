@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
-
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 // Need REQUEST to manage initial values and posted ones

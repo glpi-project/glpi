@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 $obj      = new Change();
 $item_obj = new Change_Item();
 include(GLPI_ROOT . '/front/commonitilobject_item.form.php');

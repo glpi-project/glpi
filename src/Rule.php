@@ -105,8 +105,8 @@ class Rule extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            RuleAction::class,
-            RuleCriteria::class
+            $this->ruleactionclass,
+            $this->rulecriteriaclass
         ];
     }
 
@@ -229,8 +229,6 @@ class Rule extends CommonDBTM
                     $menu['rule']['options'][$rulecollection->menu_option]['title']
                               = $rulecollection->getRuleClass()->getTitle();
                     $menu['rule']['options'][$rulecollection->menu_option]['page']
-                              = $ruleclassname::getSearchURL(false);
-                    $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
                               = $ruleclassname::getSearchURL(false);
                     if ($rulecollection->canCreate()) {
                         $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
@@ -510,6 +508,37 @@ class Rule extends CommonDBTM
             }
         }
 
+        $asset_definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($asset_definitions as $definition) {
+            $model_dictionary_collection = $definition->getAssetModelDictionaryCollectionClassName();
+            $model_dictionary = $model_dictionary_collection::getRuleClassName();
+            $model_entry = [
+                'title' => $definition->getAssetModelClassName()::getTypeName(Session::getPluralNumber()),
+                'page'  => $model_dictionary::getSearchURL(false),
+                'links' => [
+                    'search' => $model_dictionary::getSearchURL(false)
+                ]
+            ];
+            if ($model_dictionary::canCreate()) {
+                $model_entry['links']['add'] = $model_dictionary::getFormURL(false);
+            }
+            $menu['dictionnary']['options']['model.' . $definition->fields['system_name']] = $model_entry;
+
+            $type_dictionary_collection = $definition->getAssetTypeDictionaryCollectionClassName();
+            $type_dictionary = $type_dictionary_collection::getRuleClassName();
+            $type_entry = [
+                'title' => $definition->getAssetTypeClassName()::getTypeName(Session::getPluralNumber()),
+                'page'  => $type_dictionary::getSearchURL(false),
+                'links' => [
+                    'search' => $type_dictionary::getSearchURL(false)
+                ]
+            ];
+            if ($type_dictionary::canCreate()) {
+                $type_entry['links']['add'] = $type_dictionary::getFormURL(false);
+            }
+            $menu['dictionnary']['options']['type.' . $definition->fields['system_name']] = $type_entry;
+        }
+
         if (count($menu)) {
             $menu['is_multi_entries'] = true;
             return $menu;
@@ -518,11 +547,17 @@ class Rule extends CommonDBTM
         return false;
     }
 
+    /**
+     * @phpstan-return class-string<RuleAction>
+     */
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
 
+    /**
+     * @phpstan-return class-string<RuleCriteria>
+     */
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;
@@ -867,7 +902,7 @@ class Rule extends CommonDBTM
         $rand = mt_rand();
 
         $plugin = isPluginItemType(static::class);
-        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? Plugin::getWebDir($plugin['plugin'], false) : '');
+        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? "/plugins/{$plugin['plugin']}" : '');
 
         $add_buttons = [];
         if (!$new_item && $canedit) {
@@ -946,7 +981,7 @@ class Rule extends CommonDBTM
      * @see {@link actions}
      * @see {@link criterias}
      **/
-    public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
+    public function getRuleWithCriteriasAndActions($ID, $withcriterias = false, $withactions = false)
     {
         if (static::isNewID($ID)) {
             return $this->getEmpty();
@@ -1399,8 +1434,8 @@ JS
     /**
      * Process the rule
      *
-     * @param array &$input the input data used to check criterias
-     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$input the input data used to check criteria
+     * @param array &$output the initial output array used to be manipulated by actions
      * @param array &$params parameters for all internal functions
      * @param array &$options array options:
      *                     - only_criteria : only react on specific criteria
@@ -1579,12 +1614,12 @@ JS
     /**
      * Process a criteria of a rule
      *
-     * @param RuleCriteria &$criteria  criteria to check
+     * @param RuleCriteria $criteria  criteria to check
      * @param array &$input     the input data used to check criteria
      *
      * @return boolean
      **/
-    public function checkCriteria(&$criteria, &$input)
+    public function checkCriteria($criteria, &$input)
     {
         $partial_regex_result = [];
         // Undefine criteria field : set to blank
@@ -3029,12 +3064,12 @@ JS
     /**
      * Clean Rule with Action or Criteria linked to an item
      *
-     * @param Object $item
-     * @param string $field name (default is FK to item)
-     * @param object $ruleitem (instance of Rules of SlaLevel)
-     * @param string $table (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-     * @param string $valfield (value or pattern)
-     * @param string $fieldfield (criteria of field)
+     * @param CommonDBTM $item
+     * @param string     $field      name (default is FK to item)
+     * @param Rule       $ruleitem   instance of Rules of SlaLevel
+     * @param string     $table      glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias
+     * @param string     $valfield   value or pattern
+     * @param string     $fieldfield criteria of field
      **/
     private static function cleanForItemActionOrCriteria(
         $item,
@@ -3354,33 +3389,50 @@ JS
      * @param boolean $reset        Whether to reset before adding new rules, defaults to true
      * @param boolean $with_plugins Use plugins rules or not
      * @param boolean $check        Check if rule exists before creating
+     * @param ?string $itemtype     Itemtype to work on
      *
      * @return boolean
      *
      * @FIXME Make it final in GLPI 11.0.
      * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
      */
-    public static function initRules($reset = true, $with_plugins = true, $check = false): bool
+    public function initRules(bool $reset = true, $with_plugins = true, $check = true, string $itemtype = null): bool
     {
-        $self = new static();
+        /** @var DBmysql $DB */
+        global $DB;
 
         if (!static::hasDefaultRules()) {
             return false;
         }
 
         if ($reset === true) {
-            $rules = $self->find(['sub_type' => static::class]);
-            foreach ($rules as $data) {
-                $delete = $self->delete($data);
-                if (!$delete) {
-                    return false; // Do not continue if reset failed
-                }
+            $where = ['sub_type' => static::class];
+            $joins = [];
+            if ($itemtype !== null) {
+                $joins = [
+                    'LEFT JOIN' => [
+                        'glpi_rulecriterias' => [
+                            'FKEY' => [
+                                'glpi_rules' => 'id',
+                                'glpi_rulecriterias' => 'rules_id'
+                            ]
+                        ]
+                    ]
+                ];
+                $where += [
+                    'criteria' => 'itemtype',
+                    'pattern' => $itemtype
+                ];
+            }
+
+            if (!$DB->delete(self::getTable(), $where, $joins)) {
+                return false; // Do not continue if reset failed
             }
 
             $check = false; // Nothing to check
         }
 
-        $xml = simplexml_load_file(self::getDefaultRulesFilePath());
+        $xml = $this->getDefaultRules();
         if ($xml === false) {
             return false;
         }
@@ -3397,14 +3449,34 @@ JS
         }
 
         $has_errors = false;
-        foreach ($xml->xpath('/rules/rule') as $rulexml) {
+        $xpath = '/rules/rule';
+        if ($itemtype !== null) {
+            $xpath = sprintf(
+                "/rules/rule[rulecriteria/criteria = 'itemtype' and rulecriteria/pattern = '%s']",
+                $itemtype
+            );
+        }
+        foreach ($xml->xpath($xpath) as $rulexml) {
             if ((string)$rulexml->sub_type !== self::getType()) {
-                trigger_error(sprintf('Unexpected rule type for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                trigger_error(
+                    sprintf(
+                        'Unexpected rule type %s for rule `%s`.',
+                        (string)$rulexml->sub_type,
+                        (string)$rulexml->uuid
+                    ),
+                    E_USER_WARNING
+                );
                 $has_errors = true;
                 continue;
             }
             if ((string)$rulexml->entities_id !== 'Root entity') {
-                trigger_error(sprintf('Unexpected entity value for rule `%s`.', (string)$rulexml->uuid), E_USER_WARNING);
+                trigger_error(
+                    sprintf(
+                        'Unexpected entity value for rule `%s`.',
+                        (string)$rulexml->uuid
+                    ),
+                    E_USER_WARNING
+                );
                 $has_errors = true;
                 continue;
             }
@@ -3492,6 +3564,16 @@ JS
     final public static function hasDefaultRules(): bool
     {
         return file_exists(self::getDefaultRulesFilePath());
+    }
+
+    /**
+     * Get default rules as XML
+     *
+     * @return SimpleXMLElement|false
+     */
+    public function getDefaultRules(): SimpleXMLElement|false
+    {
+        return simplexml_load_file(self::getDefaultRulesFilePath());
     }
 
     /**

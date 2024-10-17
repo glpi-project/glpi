@@ -31,6 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
 /* global glpi_ajax_dialog, glpi_close_all_dialogs */
 
@@ -47,7 +48,7 @@ window.GLPI.Dashboard = {
     getActiveDashboard: function () {
         let current_dashboard_index = "";
 
-        $.each(this.dashboards, function(index, dashboard) {
+        $.each(this.dashboards, (index, dashboard) => {
             if ($(dashboard.elem_dom).is(':visible')) {
                 current_dashboard_index = index;
                 return false; // Break
@@ -234,7 +235,7 @@ class GLPIDashboard {
 
         // filter mode toggle
         $("#dashboard-"+options.rand+" .toolbar .filter-dashboard").on('click', (e) => {
-            var activate = !$(e.currentTarget).hasClass('active');
+            const activate = !$(e.currentTarget).hasClass('active');
 
             this.setFilterMode(activate);
         });
@@ -247,7 +248,7 @@ class GLPIDashboard {
         $(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', () => {
             if (!document.webkitIsFullScreen
                 && !document.mozFullScreen
-                && !document.msFullscreenElement !== null) {
+                && !document.msFullscreenElement) {
                 this.disableFullscreenMode();
             }
         });
@@ -300,8 +301,7 @@ class GLPIDashboard {
 
             const button    = $(e.target);
             const form_data = {};
-            let is_private;
-            $.each(button.closest('.display-rights-form').serializeArray(), function(i, v) {
+            $.each(button.closest('.display-rights-form').serializeArray(), (i, v) => {
                 const current_val = v.value.split('-');
                 if (current_val.length !== 2) {
                     return;
@@ -313,7 +313,7 @@ class GLPIDashboard {
                 }
                 form_data[right_name].push(value);
             });
-            is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
+            const is_private = button.closest('.display-rights-form').find('select[name="is_private"]').val();
 
             $.post({
                 url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
@@ -676,7 +676,7 @@ class GLPIDashboard {
         const gridstack = $(this.elem_id+" .grid-stack");
         this.grid.removeAll();
 
-        let data = {
+        const data = {
             dashboard: this.current_name,
             action: 'get_dashboard_items',
         };
@@ -1048,8 +1048,8 @@ class GLPIDashboard {
         const filters = this.getFiltersFromDB();
         const force = (specific_one.length > 0 ? 1 : 0);
 
-        let requested_cards = [];
-        let card_ajax_data = [];
+        const requested_cards = [];
+        const card_ajax_data = [];
         $(this.elem_dom).find(".grid-stack-item:not(.lock-bottom)"+specific_one).each((i, card) => {
             card         = $(card);
             const card_opt     = card.data('card-options');
@@ -1085,7 +1085,7 @@ class GLPIDashboard {
             requested_cards.forEach((requested_card) => {
                 const card = requested_card.card_el;
 
-                let data = {
+                const data = {
                     'action':      'get_card',
                     'dashboard':   this.current_name,
                     'card_id':     requested_card.card_id,
@@ -1106,7 +1106,7 @@ class GLPIDashboard {
 
                     this.fitNumbers(card);
                     this.animateNumbers(card);
-                }, function() {
+                }, () => {
                     card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
                 }));
             });
@@ -1114,7 +1114,7 @@ class GLPIDashboard {
             return promises;
         } else {
             // Single ajax mode, spawn a single request
-            let data = {
+            const data = {
                 'dashboard': this.current_name,
                 'force': (specific_one.length > 0 ? 1 : 0),
                 'd_cache_key': this.cache_key,
@@ -1150,7 +1150,7 @@ class GLPIDashboard {
                         card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
                     }
                 });
-            }, function() {
+            }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
                     card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
@@ -1162,7 +1162,7 @@ class GLPIDashboard {
     easter() {
         const items = $(this.elem_id+" .grid-stack .grid-stack-item .card");
 
-        setInterval(function() {
+        setInterval(() => {
             const color = "#"+((1<<24)*Math.random()|0).toString(16);
             const no_item = Math.floor(Math.random() * items.length);
             const item = items[no_item];
@@ -1229,7 +1229,7 @@ class GLPIDashboard {
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query
-        $.each(filters, function( index, value ) {
+        $.each(filters, ( index, value ) => {
             if (Array.isArray(value) && value.length === 0) {
                 filters[index] = "";
             }

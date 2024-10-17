@@ -78,7 +78,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
                         );
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                break;
                 case NotificationTemplate::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -87,7 +86,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
                         );
                     }
                     return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-                break;
             }
         }
         return '';
@@ -95,7 +93,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch (get_class($item)) {
             case Notification::class:
                 self::showForNotification($item, $withtemplate);
                 break;
@@ -338,9 +336,9 @@ TWIG, $twig_params);
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification_notificationtemplate.html.twig', [
-            'item' => $this,
+            'item'              => $this,
+            'notification'      => $notif,
             'notification_link' => $notif->getLink(),
-            'itemtype' => $notif->fields['itemtype']
         ]);
 
         return true;
@@ -490,10 +488,9 @@ TWIG, $twig_params);
      * Get class name for specified mode
      *
      * @param string $mode      Requested mode
-     * @param 'event'|'setting' $extratype Extra type (either 'event' or 'setting')
+     * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return string
-     * @phpstan-return $extratype === 'event' ? class-string<NotificationEventInterface> : class-string<NotificationSetting>
      */
     public static function getModeClass($mode, $extratype = '')
     {
@@ -502,6 +499,7 @@ TWIG, $twig_params);
         } else if ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
+            // @phpstan-ignore notIdentical.alwaysFalse (defensive programming)
             if ($extratype !== '') {
                 throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }

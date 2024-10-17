@@ -47,6 +47,7 @@ use Glpi\Dashboard\Filters\{
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
+    GroupRequesterFilter,
     GroupTechFilter,
     UserTechFilter,
     DatesModFilter
@@ -97,6 +98,7 @@ class Filter extends \CommonDBChild
             RequestTypeFilter::class,
             StateFilter::class,
             TicketTypeFilter::class,
+            GroupRequesterFilter::class,
             GroupTechFilter::class,
             UserTechFilter::class,
         ];
@@ -173,7 +175,7 @@ class Filter extends \CommonDBChild
      * Save filter in DB for the provided dashboard
      *
      * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $settings contains a JSON representation of the filter data
+     * @param string $settings contains a JSON representation of the filter data
      *
      * @return void
      */

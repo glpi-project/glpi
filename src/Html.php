@@ -34,12 +34,14 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
-use donatj\UserAgent\Platforms;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -53,14 +55,24 @@ use ScssPhp\ScssPhp\Compiler;
 class Html
 {
     /**
+     * Indicates whether the request is made in an AJAX context.
+     * @FIXME This flag is actually not set to true by all AJAX requests.
+     */
+    private static bool $is_ajax_request = false;
+
+    /**
      * Recursivly execute html_entity_decode on an array
      *
      * @param string|array $value
      *
      * @return string|array
+     *
+     * @deprecated 11.0.0
      **/
     public static function entity_decode_deep($value)
     {
+        Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map([__CLASS__, 'entity_decode_deep'], $value);
         }
@@ -77,9 +89,13 @@ class Html
      * @param string|array $value
      *
      * @return string|array
+     *
+     * @deprecated 11.0.0
      **/
     public static function entities_deep($value)
     {
+        Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map([__CLASS__, 'entities_deep'], $value);
         }
@@ -117,7 +133,7 @@ class Html
         try {
             $date = new \DateTime($time);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, false);
             Session::addMessageAfterRedirect(
                 htmlspecialchars(sprintf(
                     __('%1$s %2$s'),
@@ -187,7 +203,8 @@ class Html
     }
 
     /**
-     *  Resume text for followup
+     * Cut a text if longer than than the expected length.
+     * This method always encodes the HTML special chars of the provided text.
      *
      * @param string  $string  string to resume
      * @param integer $length  resume length (default 255)
@@ -196,11 +213,13 @@ class Html
      **/
     public static function resume_text($string, $length = 255)
     {
-        if (Toolbox::strlen($string) > $length) {
-            $string = Toolbox::substr($string, 0, $length) . "&nbsp;(...)";
+        $append = '';
+        if (mb_strlen($string, 'UTF-8') > $length) {
+            $string = mb_substr($string, 0, $length, 'UTF-8');
+            $append = '&nbsp;(...)';
         }
 
-        return $string;
+        return \htmlspecialchars($string) . $append;
     }
 
     /**
@@ -394,7 +413,7 @@ class Html
 
 
     /**
-     * Redirection to $_SERVER['HTTP_REFERER'] page
+     * Redirect to the previous page.
      *
      * @return never
      **/
@@ -450,14 +469,13 @@ class Html
     public static function redirectToLogin($params = '')
     {
         /**
-         * @var int $AJAX_INCLUDE
          * @var array $CFG_GLPI
          */
-        global $AJAX_INCLUDE, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        $dest     = $CFG_GLPI["root_doc"] . "/index.php";
+        $dest = $CFG_GLPI["root_doc"] . "/index.php";
 
-        if (!$AJAX_INCLUDE) {
+        if (!self::$is_ajax_request) {
             $url_dest = preg_replace(
                 '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
                 '',
@@ -482,36 +500,14 @@ class Html
      * Display common message for item not found
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayNotFoundError(string $additional_info = '')
     {
-        /** @var bool $HEADER_LOADED */
-        global $HEADER_LOADED;
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException` exception instead.');
 
-        if (!$HEADER_LOADED) {
-            if (!Session::getCurrentInterface()) {
-                self::nullHeader(__('Access denied'));
-            } else if (Session::getCurrentInterface() === "central") {
-                self::header(__('Access denied'));
-            } else if (Session::getCurrentInterface() === "helpdesk") {
-                self::helpHeader(__('Access denied'));
-            }
-        }
-        TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
-            'message' => __('Item not found'),
-            'link'    => self::getBackUrl()
-        ]);
-        $requested_url = $_SERVER['REQUEST_URI'] ?? 'Unknown';
-        $user_id = Session::getLoginUserID() ?? 'Anonymous';
-        $internal_message = "User ID: $user_id tried to access a non-existent item $requested_url. Additional information: $additional_info\n";
-        $internal_message .= "\tStack Trace:\n";
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        foreach ($backtrace as $frame) {
-            $internal_message .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
-        }
-        Toolbox::logInFile('access-errors', $internal_message);
-        self::nullFooter();
-        exit();
+        throw new NotFoundHttpException();
     }
 
 
@@ -519,25 +515,14 @@ class Html
      * Display common message for privileges errors
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayRightError(string $additional_info = '')
     {
-        Toolbox::handleProfileChangeRedirect();
-        $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
-        $user_id = Session::getLoginUserID() ?? 'Anonymous';
-        if (empty($additional_info)) {
-            $additional_info = __('No additional information given');
-        }
-        $internal_message = "User ID: $user_id tried to access or perform an action on $requested_url with insufficient rights. Additional information: $additional_info\n";
-        $internal_message .= "\tStack Trace:\n";
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $trace_string = '';
-        foreach ($backtrace as $frame) {
-            $trace_string .= "\t\t" . $frame['file'] . ':' . $frame['line'] . ' ' . $frame['function'] . '()' . "\n";
-        }
-        $internal_message .= $trace_string;
-        Toolbox::logInFile('access-errors', $internal_message);
-        self::displayErrorAndDie(__("You don't have permission to perform this action."));
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException` exception instead.');
+
+        throw new AccessDeniedHttpException();
     }
 
 
@@ -572,7 +557,7 @@ class Html
 
         if ($ref_title != "") {
             echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
-            $ref_title
+            " . htmlspecialchars($ref_title) . "
          </span>";
         }
 
@@ -627,52 +612,84 @@ class Html
 
 
     /**
-     * Display a Link to the last page using http_referer if available else use history.back
+     * Display a Link to the last page.
      **/
     public static function displayBackLink()
     {
-        $url_referer = self::getBackUrl();
-        if ($url_referer !== false) {
-            echo '<a href="' . htmlspecialchars($url_referer) . '">' . __s('Back') . "</a>";
-        } else {
-            echo "<a href='javascript:history.back();'>" . __s('Back') . "</a>";
-        }
+        echo '<a href="' . htmlspecialchars(self::getBackUrl()) . '">' . __s('Back') . "</a>";
     }
 
     /**
-     * Return an url for getting back to previous page.
-     * Remove `forcetab` parameter if exists to prevent bad tab display
-     *
-     * @param string $url_in optional url to return (without forcetab param), if empty, we will user HTTP_REFERER from server
+     * Return an URL for getting back to previous page.
+     * Remove `forcetab` parameter if exists to prevent bad tab display.
+     * If the referer does not match an URL inside GLPI, return value will be the GLPI index page.
      *
      * @since 9.2.2
+     * @since 11.0.0 The `$url_in` parameter has been removed.
      *
-     * @return mixed [string|boolean] false, if failed, else the url string
+     * @return string|false Referer URL or false if referer URL is outside the GLPI path.
      */
-    public static function getBackUrl($url_in = "")
+    public static function getBackUrl()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $referer_url  = self::getRefererUrl();
+
+        if ($referer_url === null) {
+            return $CFG_GLPI['url_base'];
+        }
+
+        $referer_host = parse_url($referer_url, PHP_URL_HOST);
+        $referer_path = parse_url($referer_url, PHP_URL_PATH);
+
+        $glpi_host      = parse_url($CFG_GLPI['url_base'], PHP_URL_HOST);
+        $glpi_base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '/';
+
         if (
-            isset($_SERVER['HTTP_REFERER'])
-            && $url_in === ''
+            $referer_host !== $glpi_host
+            || !str_starts_with($referer_path, $glpi_base_path)
         ) {
-            $url_in = $_SERVER['HTTP_REFERER'];
+            return $CFG_GLPI['url_base'];
         }
-        if ($url_in !== '') {
-            $url = parse_url($url_in);
 
-            if (isset($url['query'])) {
-                $parameters = [];
-                parse_str($url['query'], $parameters);
-                unset($parameters['forcetab'], $parameters['tab_params']);
-                $new_query = http_build_query($parameters);
-                $url_out = str_replace($url['query'], $new_query, $url_in);
-                $url_out = rtrim($url_out, '?'); // remove `?` when there is no parameters
-                return $url_out;
-            }
+        $referer_query = parse_url($referer_url, PHP_URL_QUERY);
 
-            return $url_in;
+        if ($referer_query !== null) {
+            $parameters = [];
+            parse_str($referer_query, $parameters);
+            unset($parameters['forcetab'], $parameters['tab_params']);
+            $new_query = http_build_query($parameters);
+
+            $referer_url = str_replace($referer_query, $new_query, $referer_url);
+            $referer_url = rtrim($referer_url, '?'); // remove `?` when there is no parameters
+            return $referer_url;
         }
-        return false;
+
+        return $referer_url;
+    }
+
+    /**
+     * Return the referer URL.
+     * If the referer is invalid, return value will be null.
+     *
+     * @since 11.0.0
+     *
+     * @return string|null
+     */
+    public static function getRefererUrl(): ?string
+    {
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+
+        $referer_host = parse_url($referer, PHP_URL_HOST);
+        $referer_path = parse_url($referer, PHP_URL_PATH);
+
+        if ($referer_host === null || $referer_path === null) {
+            // Filter invalid referer.
+            return null;
+        }
+
+        return $referer;
     }
 
 
@@ -683,32 +700,15 @@ class Html
      * @param boolean $minimal  set to true do not display app menu (false by default)
      *
      * @return void
-     **/
-    public static function displayErrorAndDie($message, $minimal = false)
+     *
+     * @deprecated 11.0.0
+     */
+    public static function displayErrorAndDie($message, $minimal = false): void
     {
-        /** @var bool $HEADER_LOADED */
-        global $HEADER_LOADED;
+        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\BadRequestHttpException` exception instead.');
 
-        if (!$HEADER_LOADED) {
-            if ($minimal || !Session::getCurrentInterface()) {
-                self::nullHeader(__('Access denied'), '');
-            } else if (Session::getCurrentInterface() == "central") {
-                self::header(__('Access denied'), '');
-            } else if (Session::getCurrentInterface() == "helpdesk") {
-                self::helpHeader(__('Access denied'), '');
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('display_and_die.html.twig', [
-            'title'   => __('Access denied'),
-            'message' => $message,
-            'link'    => Html::getBackUrl(),
-        ]);
-
-        self::nullFooter();
-        exit();
+        throw new BadRequestHttpException();
     }
-
 
     /**
      * Add confirmation on button or link before action
@@ -1152,6 +1152,10 @@ HTML;
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
             }
+
+            if (in_array('home-scss-file', $jslibs)) {
+                $tpl_vars['css_files'][] = ['path' => 'css/helpdesk_home.scss'];
+            }
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
@@ -1185,7 +1189,6 @@ HTML;
                     continue;
                 }
 
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1194,7 +1197,7 @@ HTML;
 
                 foreach ($files as $file) {
                     $tpl_vars['css_files'][] = [
-                        'path' => "$plugin_web_dir/$file",
+                        'path' => "{$CFG_GLPI['root_doc']}/plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
                         ]
@@ -1211,7 +1214,7 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
-        $tpl_vars['css_files'][] = ['path' => 'css/tabler.scss'];
+        $tpl_vars['css_files'][] = ['path' => 'public/lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         if ($theme->isCustomTheme()) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];
@@ -1251,8 +1254,6 @@ HTML;
         } else {
             return TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $tpl_vars);
         }
-
-        self::glpi_flush();
     }
 
 
@@ -1280,7 +1281,7 @@ HTML;
                         'CartridgeItem', 'ConsumableItem', 'Phone',
                         'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Unmanaged', 'Cable',
                     ],
-                    AssetDefinitionManager::getInstance()->getAssetClassesNames(),
+                    AssetDefinitionManager::getInstance()->getCustomObjectClassNames(),
                     $CFG_GLPI['devices_in_menu']
                 ),
                 'icon'    => 'ti ti-package'
@@ -1320,7 +1321,7 @@ HTML;
                 'title' => __('Tools'),
                 'types' => [
                     'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                    'ReservationItem', 'Report', 'MigrationCleaner',
+                    'ReservationItem', 'Report',
                     'SavedSearch', 'Impact'
                 ],
                 'icon' => 'ti ti-briefcase'
@@ -1367,7 +1368,7 @@ HTML;
      *
      * @since  9.2
      *
--    * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
      * @return array the menu array
      */
     public static function generateMenuSession($force = false)
@@ -1397,6 +1398,7 @@ HTML;
                                 foreach ($val as $k => $object) {
                                     $menu[$key]['types'][] = $object;
                                     if (empty($menu[$key]['icon']) && method_exists($object, 'getIcon')) {
+                                        /** @var class-string $object */
                                         $menu[$key]['icon']    = $object::getIcon();
                                     }
                                 }
@@ -1498,7 +1500,7 @@ HTML;
 
         if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-                'default' => '/front/helpdesk.public.php?create_ticket=1',
+                'default' => '/ServiceCatalog',
                 'title'   => __('Create a ticket'),
                 'icon'    => 'ti ti-plus',
             ];
@@ -1523,7 +1525,7 @@ HTML;
             ];
 
             if (Session::haveRight("ticket", CREATE)) {
-                $menu['tickets']['content']['ticket']['links']['add'] = '/front/helpdesk.public.php?create_ticket=1';
+                $menu['tickets']['content']['ticket']['links']['add'] = '/ServiceCatalog';
             }
         }
 
@@ -1568,9 +1570,8 @@ HTML;
                         }
 
                         // Prefix with plugin path if plugin path is missing
-                        $plugin_dir = Plugin::getWebDir($plugin, false);
-                        if (!str_starts_with($link, '/' . $plugin_dir)) {
-                            $link = '/' . $plugin_dir . $link;
+                        if (!str_starts_with($link, "/plugins/{$plugin}/")) {
+                            $link = "/plugins/{$plugin}{$link}";
                         }
                     }
                     $infos['page'] = $link;
@@ -1682,9 +1683,9 @@ HTML;
     /**
      * Print footer for every page
      *
-     * @param boolean $keepDB closeDBConnections if false (false by default)
-     **/
-    public static function footer($keepDB = false)
+     * @since 11.0.0 The `$keepDB` parameter has been removed.
+     */
+    public static function footer()
     {
         /**
          * @var array $CFG_GLPI
@@ -1755,7 +1756,6 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1764,7 +1764,7 @@ HTML;
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         $tpl_vars['js_files'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
+                            'path' => "/plugins/{$plugin}/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
                             ]
@@ -1781,7 +1781,6 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
@@ -1790,7 +1789,7 @@ HTML;
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
                         $tpl_vars['js_modules'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
+                            'path' => "/plugins/{$plugin}/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
                             ]
@@ -1807,10 +1806,6 @@ HTML;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
             \Glpi\Debug\Profiler::getInstance()->stopAll();
             (new Glpi\Debug\Toolbar())->show();
-        }
-
-        if (!$keepDB && function_exists('closeDBConnections')) {
-            closeDBConnections();
         }
     }
 
@@ -1992,9 +1987,6 @@ HTML;
         }
         $HEADER_LOADED = true;
        // Print a nice HTML-head with no controls
-
-       // Detect root_doc in case of error
-        Config::detectRootDoc();
 
        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
@@ -2574,7 +2566,7 @@ HTML;
                     ]
                 );
             }
-            $out .= "<a title='" . __('Massive actions') . "'
+            $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
                      class='btn btn-sm btn-primary me-2' ";
             if (is_array($p['confirm'] || strlen($p['confirm']))) {
@@ -2582,11 +2574,11 @@ HTML;
             } else {
                 $out .= "onclick='modal_massiveaction_window$identifier.show();'";
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlentities($p['title'], ENT_QUOTES, 'UTF-8') . "\">";
+            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlspecialchars($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
-            $out .= "<span>" . $p['title'] . "</span>";
+            $out .= "<span>" . htmlspecialchars($p['title']) . "</span>";
             $out .= "</a>";
 
             if (
@@ -3508,9 +3500,12 @@ JS;
      * @param boolean $enable_images    enable image pasting in rich text
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
+     * @param bool    $toolbar          tinymce toolbar (default: true)
      * @param string  $toolbar_location tinymce toolbar location (default: top)
      * @param bool    $init             init the editor (default: true)
      * @param string  $placeholder      textarea placeholder
+     * @param bool    $statusbar        tinymce statusbar (default: true)
+     * @param string  $content_style    content style to apply to the editor
      *
      * @return void|string
      *    integer if param display=true
@@ -3526,7 +3521,10 @@ JS;
         array $add_body_classes = [],
         string $toolbar_location = 'top',
         bool $init = true,
-        string $placeholder = ''
+        string $placeholder = '',
+        bool $toolbar = true,
+        bool $statusbar = true,
+        string $content_style = ''
     ) {
         /**
          * @var array $CFG_GLPI
@@ -3549,17 +3547,17 @@ JS;
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
-            'css/tabler.scss',
             'css/glpi.scss',
             'css/core_palettes.scss',
         ];
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = implode(',', array_map(static function ($path) {
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/tabler.css', ['force_no_version' => true]));
+        $content_css .= ',' . implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
-        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
 
         // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
@@ -3617,118 +3615,128 @@ JS;
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
 
+        // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
+        $toolbar = $toolbar ? 'true' : 'false';
+
+        // Compute statusbar option as "string boolean" so it can be inserted directly into the js output
+        $statusbar = $statusbar ? 'true' : 'false';
+
         $js = <<<JS
-         $(function() {
-            const html_el = $('html');
-            var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
+            $(function() {
+                const html_el = $('html');
+                var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
-            // Store config in global var so the editor can be reinitialized from the client side if needed
-            tinymce_editor_configs['{$id}'] = Object.assign({
-               license_key: 'gpl',
+                // Store config in global var so the editor can be reinitialized from the client side if needed
+                tinymce_editor_configs['{$id}'] = Object.assign({
+                    license_key: 'gpl',
 
-               link_default_target: '_blank',
-               branding: false,
-               selector: '#' + $.escapeSelector('{$id}'),
-               text_patterns: false,
-               paste_webkit_styles: 'all',
+                    link_default_target: '_blank',
+                    branding: false,
+                    selector: '#' + $.escapeSelector('{$id}'),
+                    text_patterns: false,
+                    paste_webkit_styles: 'all',
 
-               plugins: {$pluginsjs},
+                    plugins: {$pluginsjs},
 
-               // Appearance
-               skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
-               body_class: '{$body_class}',
-               content_css: '{$content_css}',
-               highlight_on_focus: false,
-               autoresize_bottom_margin: 0, // Avoid excessive bottom padding
-               autoresize_overflow_padding: 0,
+                    // Appearance
+                    skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
+                    body_class: '{$body_class}',
+                    content_css: '{$content_css}',
+                    content_style: '{$content_style}',
+                    highlight_on_focus: false,
+                    autoresize_bottom_margin: 1, // Avoid excessive bottom padding
+                    autoresize_overflow_padding: 0,
 
-               min_height: $editor_height,
-               height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
-               resize: true,
+                    min_height: $editor_height,
+                    height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
+                    resize: true,
 
-               // disable path indicator in bottom bar
-               elementpath: false,
+                    // disable path indicator in bottom bar
+                    elementpath: false,
 
-               placeholder: "{$placeholder}",
+                    placeholder: "{$placeholder}",
 
-               // inline toolbar configuration
-               menubar: false,
-               toolbar_location: '{$toolbar_location}',
-               toolbar: richtext_layout == 'classic'
-                  ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
-                  : false,
-               quickbars_insert_toolbar: richtext_layout == 'inline'
-                  ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
-                  : false,
-               quickbars_selection_toolbar: richtext_layout == 'inline'
-                  ? 'bold italic | styles | forecolor backcolor '
-                  : false,
-               contextmenu: richtext_layout == 'classic'
-                  ? false
-                  : 'copy paste | emoticons table image link | undo redo | code fullscreen',
+                    // inline toolbar configuration
+                    menubar: false,
+                    toolbar_location: '{$toolbar_location}',
+                    toolbar: {$toolbar} && richtext_layout == 'classic'
+                        ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
+                        : false,
+                    quickbars_insert_toolbar: richtext_layout == 'inline'
+                        ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
+                        : false,
+                    quickbars_selection_toolbar: richtext_layout == 'inline'
+                        ? 'bold italic | styles | forecolor backcolor '
+                        : false,
+                    contextmenu: richtext_layout == 'classic'
+                        ? false
+                        : 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
-               // Content settings
-               entity_encoding: 'raw',
-               invalid_elements: '{$invalid_elements}',
-               readonly: {$readonlyjs},
-               relative_urls: false,
-               remove_script_host: false,
+                    // Status bar configuration
+                    statusbar: {$statusbar},
 
-               // Misc options
-               browser_spellcheck: true,
-               cache_suffix: '{$cache_suffix}',
+                    // Content settings
+                    entity_encoding: 'raw',
+                    invalid_elements: '{$invalid_elements}',
+                    readonly: {$readonlyjs},
+                    relative_urls: false,
+                    remove_script_host: false,
 
-               // Security options
-               // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
-               sandbox_iframes: false,
+                    // Misc options
+                    browser_spellcheck: true,
+                    cache_suffix: '{$cache_suffix}',
 
-               init_instance_callback: (editor) => {
-                   const page_root_el = $(document.documentElement);
-                   const root_el = $(editor.dom.doc.documentElement);
-                   // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
-                   const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
-                   for (const attr of to_copy) {
-                       if (page_root_el.attr(attr) !== undefined) {
-                           root_el.attr(attr, page_root_el.attr(attr));
-                       }
-                   }
-               },
-               setup: function(editor) {
-                  // "required" state handling
-                  if ($('#$id').attr('required') == 'required') {
-                     $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+                    // Security options
+                    // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
+                    sandbox_iframes: false,
 
-                     editor.on('submit', function (e) {
-                        if ($('#$id').val() == '') {
-                           const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                           alert({$mandatory_field_msg}.replace('%s', field));
-                           e.preventDefault();
-
-                           // Prevent other events to run
-                           // Needed to not break single submit forms
-                           e.stopPropagation();
+                    init_instance_callback: (editor) => {
+                        const page_root_el = $(document.documentElement);
+                        const root_el = $(editor.dom.doc.documentElement);
+                        // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
+                        const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                        for (const attr of to_copy) {
+                            if (page_root_el.attr(attr) !== undefined) {
+                                root_el.attr(attr, page_root_el.attr(attr));
+                            }
                         }
-                     });
-                     editor.on('keyup', function (e) {
-                        editor.save();
-                        if ($('#$id').val() == '') {
-                           $(editor.container).addClass('required');
-                        } else {
-                           $(editor.container).removeClass('required');
+                    },
+                    setup: function(editor) {
+                        // "required" state handling
+                        if ($('#$id').attr('required') == 'required') {
+                            $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+
+                            editor.on('submit', function (e) {
+                                if ($('#$id').val() == '') {
+                                    const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
+                                    alert({$mandatory_field_msg}.replace('%s', field));
+                                    e.preventDefault();
+
+                                    // Prevent other events to run
+                                    // Needed to not break single submit forms
+                                    e.stopPropagation();
+                                }
+                            });
+                            editor.on('keyup', function (e) {
+                                editor.save();
+                                if ($('#$id').val() == '') {
+                                    $(editor.container).addClass('required');
+                                } else {
+                                    $(editor.container).removeClass('required');
+                                }
+                            });
+                            editor.on('init', function (e) {
+                                if (strip_tags($('#$id').val()) == '') {
+                                    $(editor.container).addClass('required');
+                                }
+                            });
+                            editor.on('paste', function (e) {
+                                // Remove required on paste event
+                                // This is only needed when pasting with right click (context menu)
+                                // Pasting with Ctrl+V is already handled by keyup event above
+                                $(editor.container).removeClass('required');
+                            });
                         }
-                     });
-                     editor.on('init', function (e) {
-                        if (strip_tags($('#$id').val()) == '') {
-                           $(editor.container).addClass('required');
-                        }
-                     });
-                     editor.on('paste', function (e) {
-                        // Remove required on paste event
-                        // This is only needed when pasting with right click (context menu)
-                        // Pasting with Ctrl+V is already handled by keyup event above
-                        $(editor.container).removeClass('required');
-                     });
-                   }
                         // Propagate click event to allow other components to
                         // listen to it
                         editor.on('click', function (e) {
@@ -3834,7 +3842,7 @@ JAVASCRIPT
             $params['id'] = $link_id;
         }
 
-        $text = __('Available variables') . ' <i class="fas fa-question-circle"></i>';
+        $text = __s('Available variables') . ' <i class="fas fa-question-circle"></i>';
 
         echo Html::link($text, $link, $params);
     }
@@ -3914,7 +3922,7 @@ JAVASCRIPT
        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
-            $out .= "<tr><th colspan='6'>$title</th></tr>";
+            $out .= "<tr><th colspan='6'>" . htmlspecialchars($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
@@ -3937,7 +3945,7 @@ JAVASCRIPT
        // Print the "where am I?"
         $out .= "<td width='50%' class='tab_bg_2 b'>";
        //TRANS: %1$d, %2$d, %3$d are page numbers
-        $out .= sprintf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+        $out .= sprintf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         $out .= "</td>\n";
 
        // Forward and fast forward button
@@ -4012,7 +4020,7 @@ JAVASCRIPT
                                 echo "(object) " . get_class($val);
                             }
                         } else {
-                            echo htmlentities($val ?? "");
+                            echo htmlspecialchars($val ?? "");
                         }
                     }
                 }
@@ -4020,7 +4028,7 @@ JAVASCRIPT
             }
             echo "</table>";
         } else {
-            echo __('Empty array');
+            echo __s('Empty array');
         }
     }
 
@@ -4152,7 +4160,7 @@ JAVASCRIPT
 
         echo "<td width='20%' class='b'>";
        //TRANS: %1$d, %2$d, %3$d are page numbers
-        printf(__('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
+        printf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         echo "</td>";
 
        // Forward and fast forward button
@@ -4194,11 +4202,11 @@ JAVASCRIPT
         $out = '';
         if ($action) {
             $out .= "<form method='POST' action=\"$action\">";
-            $out .= "<span class='responsive_hidden'>" . __('Display (number of items)') . "</span>&nbsp;";
+            $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
             $out .= Dropdown::showListLimit("submit()", false);
         } else {
             $out .= "<form method='POST' action =''>\n";
-            $out .= "<span class='responsive_hidden'>" . __('Display (number of items)') . "</span>&nbsp;";
+            $out .= "<span class='responsive_hidden'>" . __s('Display (number of items)') . "</span>&nbsp;";
             $out .= Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value+\"$additional_params\")", false);
         }
         $out .= Html::closeForm(false);
@@ -4291,6 +4299,8 @@ JAVASCRIPT
             $link .= " onclick=\"$action\" ";
         }
 
+        // Ensure $btlabel is properly escaped
+        $btlabel = htmlspecialchars($btlabel);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
@@ -4450,7 +4460,7 @@ JAVASCRIPT
                 placeholder: {$placeholder},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 templateresult: {$templateresult},
-                templateselection: {$templateselection}
+                templateselection: {$templateselection},
             };
 JS;
 
@@ -4501,6 +4511,8 @@ JS;
             'parent_id_field'     => null,
             'templateResult'      => 'templateResult',
             'templateSelection'   => 'templateSelection',
+            'container_css_class' => '',
+            'aria_label'          => '',
         ];
         $params = array_merge($default_options, $params);
 
@@ -4512,6 +4524,8 @@ JS;
         $multiple = $params['multiple'];
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
+        $container_css_class = $params['container_css_class'];
+        $aria_label = $params['aria_label'];
         unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
@@ -4540,6 +4554,11 @@ JS;
         $parent_id_field = $params['parent_id_field'];
 
         unset($params['placeholder'], $params['value'], $params['valuename'], $params['parent_id_field']);
+
+        if (!empty($aria_label)) {
+            $params['specific_tags']['aria-label'] = $aria_label;
+        }
+        unset($params['aria_label']);
 
         foreach ($params['specific_tags'] as $tag => $val) {
             if (is_array($val)) {
@@ -4579,6 +4598,7 @@ JS;
                 on_change: {$on_change},
                 templateResult: {$templateResult},
                 templateSelection: {$templateSelection},
+                container_css_class: '{$params['container_css_class']}',
                 params: {
                     {$js_params}
                 }
@@ -4775,8 +4795,19 @@ JS;
         }
         $select = '';
         if (isset($options['multiple']) && $options['multiple']) {
-            $original_field_name = htmlspecialchars(rtrim($name, '[]'));
-            $select .= "<input type='hidden' name='$original_field_name' value=''>";
+            $input_options = [];
+            if (isset($options['disabled'])) {
+                $input_options['disabled'] = $options['disabled'];
+            }
+
+            $original_field_name = str_ends_with($name, '[]') ? substr($name, 0, -2) : $name;
+            $original_field_name = htmlspecialchars($original_field_name);
+
+            $select .= sprintf(
+                '<input type="hidden" name="%1$s" value="" %2$s>',
+                $original_field_name,
+                self::parseAttributes($input_options)
+            );
         }
         $select .= sprintf(
             '<select name="%1$s" %2$s>',
@@ -5055,26 +5086,26 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string  $url                   File to include (relative to GLPI_ROOT)
-     * @param array   $options               Array of HTML attributes
-     * @param bool    $force_compiled_file   Force usage of compiled file, even in debug mode (usefull for install/update process)
+     * @param string  $url      File to include (relative to GLPI_ROOT)
+     * @param array   $options  Array of HTML attributes
+     * @param bool    $no_debug Ignore the debug mode of GLPI (usefull for install/update process)
      *
      * @return string CSS link tag
      **/
-    public static function scss($url, $options = [], bool $force_compiled_file = false)
+    public static function scss($url, $options = [], bool $no_debug = false)
     {
         $prod_file = self::getScssCompilePath($url);
 
         if (
             file_exists($prod_file)
-            && ($force_compiled_file || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+            && ($no_debug || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
         ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if (!$no_debug && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
@@ -5179,11 +5210,11 @@ HTML;
         if ($p['only_uploaded_files']) {
             $display .= "<div class='fileupload only-uploaded-files'>";
         } else {
-            $display .= "<div class='fileupload draghoverable' id='{$p['dropZone']}'>";
+            $display .= "<div class='fileupload draghoverable' id='" . htmlspecialchars($p['dropZone']) . "'>";
 
             if ($p['showtitle']) {
                 $display .= "<b>";
-                $display .= sprintf(__('%1$s (%2$s)'), __('File(s)'), Document::getMaxUploadSize());
+                $display .= sprintf(__s('%1$s (%2$s)'), __s('File(s)'), Document::getMaxUploadSize());
                 $display .= DocumentType::showAvailableTypesLink([
                     'display' => false,
                     'rand'    => $p['rand']
@@ -5211,26 +5242,30 @@ HTML;
             $required = "required='required'";
         }
 
+        // sanitize name and random id
+        $name    = preg_replace('/[^a-z0-9_\[\]]/', '', $p['name']);
+        $rand_id = (int)$p['rand'];
+
         if (!$p['only_uploaded_files']) {
            // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
-        $display .= "<input id='fileupload{$p['rand']}' type='file' name='_uploader_" . $p['name'] . "[]'
+        $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
-                      data-uploader-name=\"{$p['name']}\"
-                      data-url='" . $CFG_GLPI["root_doc"] . "/ajax/fileupload.php'
-                      data-form-data='{\"name\": \"_uploader_" . $p['name'] . "\", \"showfilesize\": \"" . $p['showfilesize'] . "\"}'"
+                      data-uploader-name=\"" . htmlspecialchars($p['name']) . "\"
+                      data-url='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
+                      data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
-        $display .= "<div id='progress{$p['rand']}' style='display:none'>" .
+        $display .= "<div id='progress{$rand_id}' style='display:none'>" .
                 "<div class='uploadbar' style='width: 0%;'></div></div>";
         $progressall_js = "
         progressall: function(event, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress{$p['rand']}').show();
-            $('#progress{$p['rand']} .uploadbar')
+            $('#progress{$rand_id}').show();
+            $('#progress{$rand_id} .uploadbar')
                 .text(progress + '%')
                 .css('width', progress + '%')
                 .show();
@@ -5239,14 +5274,14 @@ HTML;
 
         $display .= Html::scriptBlock("
       $(function() {
-         var fileindex{$p['rand']} = 0;
-         $('#fileupload{$p['rand']}').fileupload({
+         var fileindex{$rand_id} = 0;
+         $('#fileupload{$rand_id}').fileupload({
             dataType: 'json',
             pasteZone: " . ($p['pasteZone'] !== false
-                           ? "$('#{$p['pasteZone']}')"
+                           ? "$(" . json_encode("#" . $p['pasteZone']) . ")"
                            : "false") . ",
             dropZone:  " . ($p['dropZone'] !== false
-                           ? "$('#{$p['dropZone']}')"
+                           ? "$(" . json_encode("#" . $p['dropZone']) . ")"
                            : "false") . ",
             acceptFileTypes: " . ($p['onlyimages']
                                     ? "/(\.|\/)(gif|jpe?g|png)$/i"
@@ -5266,15 +5301,15 @@ HTML;
             done: function (event, data) {
                handleUploadedFile(
                   data.files, // files as blob
-                  data.result._uploader_{$p['name']}, // response from '/ajax/fileupload.php'
-                  '{$p['name']}',
-                  $('#{$p['filecontainer']}'),
-                  '{$p['editor_id']}'
+                  data.result._uploader_{$name}, // response from '/ajax/fileupload.php'
+                  \"{$name}\",
+                  $(" . json_encode("#" . $p['filecontainer']) . "),
+                  " . json_encode($p['editor_id']) . "
                );
                // enable submit button after upload
                $(this).closest('form').find(':submit').prop('disabled', false);
                // remove required
-                $('#fileupload{$p['rand']}').removeAttr('required');
+                $('#fileupload{$rand_id}').removeAttr('required');
             },
             fail: function (e, data) {
                 // enable submit button after upload
@@ -5291,8 +5326,8 @@ HTML;
                   data.files,
                   function(index, file) {
                      if (file.error) {
-                        $('#progress{$p['rand']}').show();
-                        $('#progress{$p['rand']} .uploadbar')
+                        $('#progress{$rand_id}').show();
+                        $('#progress{$rand_id} .uploadbar')
                            .text(file.error)
                            .css('width', '100%')
                            .show();
@@ -5421,7 +5456,7 @@ HTML;
         $p = array_merge($p, $options);
 
        // div who will receive and display file list
-        $display = "<div id='" . $p['filecontainer'] . "' class='fileupload_info'>";
+        $display = "<div id='" . htmlspecialchars($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
                 $prefix  = substr($upload, 0, 23);
@@ -5450,9 +5485,9 @@ HTML;
                 ];
 
                 // Show the name and size of the upload
-                $display .= "<p id='" . $upload['id'] . "'>&nbsp;";
-                $display .= "<img src='$extensionIcon' title='$extension'>&nbsp;";
-                $display .= "<b>" . $upload['display'] . "</b>&nbsp;(" . Toolbox::getSize($upload['size']) . ")";
+                $display .= "<p id='" . htmlspecialchars($upload['id']) . "'>&nbsp;";
+                $display .= "<img src='" . htmlspecialchars($extensionIcon) . "' title='" . htmlspecialchars($extension) . "'>&nbsp;";
+                $display .= "<b>" . htmlspecialchars($upload['display']) . "</b>&nbsp;(" . htmlspecialchars(Toolbox::getSize($upload['size'])) . ")";
 
                 $name = '_' . $p['name'] . '[' . $uploadId . ']';
                 $display .= Html::hidden($name, ['value' => $upload['name']]);
@@ -5466,12 +5501,15 @@ HTML;
                 // show button to delete the upload
                 $getEditor = 'null';
                 if ($p['editor_id'] != '') {
-                    $getEditor = "tinymce.get('" . $p['editor_id'] . "')";
+                    $getEditor = "tinymce.get('" . json_encode($p['editor_id']) . "')";
                 }
-                $textTag = $tag['tag'];
-                $domItems = "{0:'" . $upload['id'] . "', 1:'" . $upload['id'] . "'+'2'}";
-                $deleteUpload = "deleteImagePasted($domItems, '$textTag', $getEditor)";
-                $display .= '<span class="fas fa-times-circle pointer" onclick="' . $deleteUpload . '"></span>';
+                $textTag = json_encode($tag['tag']);
+                $domItems = json_encode([
+                    0 => $upload['id'],
+                    1 => $upload['id'] . '2',
+                ]);
+                $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
+                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlspecialchars($deleteUpload) . '"></span>';
 
                 $display .= "</p>";
             }
@@ -6018,14 +6056,13 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo Html::script("$plugin_web_dir/{$file}", [
+                        echo Html::script("/plugins/{$plugin}/{$file}", [
                             'version'   => $version,
                             'type'      => 'text/javascript'
                         ]);
@@ -6042,14 +6079,13 @@ HTML;
                     continue;
                 }
                 $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo self::script("$plugin_web_dir/{$file}", [
+                        echo self::script("/plugins/{$plugin}/{$file}", [
                             'version'   => $version,
                             'type'      => 'module'
                         ]);
@@ -6094,7 +6130,7 @@ HTML;
 
         $plugins_path = [];
         foreach (Plugin::getPlugins() as $key) {
-            $plugins_path[$key] = Plugin::getWebDir($key, false);
+            $plugins_path[$key] = "/plugins/{$key}";
         }
         $plugins_path = 'var GLPI_PLUGINS_PATH = ' . json_encode($plugins_path) . ';';
 
@@ -6258,9 +6294,9 @@ HTML;
         }
        // convert 3-digit hex to 6-digits.
         if (strlen($hexcolor) === 3) {
-            $hexcolor = $hexcolor[0] + $hexcolor[0]
-                   + $hexcolor[1] + $hexcolor[1]
-                   + $hexcolor[2] + $hexcolor[2];
+            $hexcolor = $hexcolor[0] . $hexcolor[0]
+                   . $hexcolor[1] . $hexcolor[1]
+                   . $hexcolor[2] . $hexcolor[2];
         }
         if (strlen($hexcolor) != 6) {
             throw new \Exception('Invalid HEX color.');
@@ -6286,9 +6322,9 @@ HTML;
 
        // pad each with zeros and return
         return "#"
-         + str_pad($r, 2, '0', STR_PAD_LEFT)
-         + str_pad($g, 2, '0', STR_PAD_LEFT)
-         + str_pad($b, 2, '0', STR_PAD_LEFT);
+         . str_pad($r, 2, '0', STR_PAD_LEFT)
+         . str_pad($g, 2, '0', STR_PAD_LEFT)
+         . str_pad($b, 2, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -6416,13 +6452,14 @@ HTML;
 
         $css = '';
         try {
-            Toolbox::logDebug("Compile $file");
+            $start = microtime(true);
             $result = $scss->compileString($import, dirname($path));
             $css = $result->getCss();
             if (!isset($args['nocache'])) {
                 $GLPI_CACHE->set($ckey, $css);
                 $GLPI_CACHE->set($fckey, $file_hash);
             }
+            Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
             if (isset($args['debug'])) {
@@ -6618,7 +6655,21 @@ CSS;
 
             return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         }
+    }
 
-        return "";
+    /**
+     * Indicates that the request is made in an AJAX context.
+     */
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
+    }
+
+    /**
+     * Unset the flag that indicates that the request is made in an AJAX context.
+     */
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

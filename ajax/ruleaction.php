@@ -38,11 +38,8 @@ global $CFG_GLPI;
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
-    include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
@@ -53,10 +50,11 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         $_POST["field"] = key(Rule::getActionsByType($_POST["sub_type"]));
     }
     if (!($item = getItemForItemtype($_POST["sub_type"]))) {
-        exit();
+        return;
     }
+    /** @var Rule $item */
     if (!isset($_POST[$item->getRuleIdField()])) {
-        exit();
+        return;
     }
 
    // Existing action

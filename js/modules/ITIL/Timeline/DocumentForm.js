@@ -45,7 +45,7 @@ if (Screenshot.isSupported()) {
     btn_screenshot.removeClass('d-none');
     btn_screenrecording.removeClass('d-none');
 
-    btn_screenshot.on('click', function() {
+    btn_screenshot.on('click', () => {
         btn_stop_recording.addClass('d-none');
         Screenshot.captureScreenshot().then((temp_canvas) => {
             const img_index = preview_container.find('.previews').children().length;
@@ -65,7 +65,7 @@ if (Screenshot.isSupported()) {
         });
     });
 
-    btn_screenrecording.on('click', function() {
+    btn_screenrecording.on('click', () => {
         const chunks = [];
         Screenshot.startRecording().then((recorder) => {
             btn_stop_recording.removeClass('d-none');

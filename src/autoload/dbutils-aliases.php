@@ -225,7 +225,7 @@ function countElementsInTableForMyEntities($table, $condition = [])
  *
  * @param string  $table     table name
  * @param integer $entity    the entity ID
- * @param string  $condition additional condition (default [])
+ * @param array   $condition additional condition (default [])
  * @param boolean $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
  *
  * @return int nb of elements in table
@@ -405,22 +405,51 @@ function contructListFromTree($tree, $parent = 0)
 
 
 /**
- * Format a user name
+ * Format a user name.
  *
- *@param $ID            integer  ID of the user.
- *@param $login         string   login of the user
- *@param $realname      string   realname of the user
- *@param $firstname     string   firstname of the user
- *@param $link          integer  include link (only if $link==1) (default =0)
- *@param $cut           integer  limit string length (0 = no limit) (default =0)
- *@param $force_config   boolean force order and id_visible to use common config (false by default)
+ * @param integer       $ID           ID of the user.
+ * @param string|null   $login        login of the user
+ * @param string|null   $realname     realname of the user
+ * @param string|null   $firstname    firstname of the user
+ * @param integer       $link         include link
+ * @param integer       $cut          IGNORED PARAMETER
+ * @param boolean       $force_config force order and id_visible to use common config
  *
- *@return string : formatted username
- **/
+ * @return string
+ *
+ * @since 11.0 `$link` parameter is deprecated
+ * @since 11.0 `$cut` parameter is ignored
+ */
 function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
 {
     $dbu = new DbUtils();
-    return $dbu->formatUserName($ID, $login, $realname, $firstname, $link, $cut, $force_config);
+
+    if ((bool) $cut) {
+        trigger_error('`$cut` parameter is now ignored.', E_USER_WARNING);
+    }
+
+    if ((bool) $link) {
+        Toolbox::deprecated('`$link` parameter is deprecated. Use `formatUserLink()` instead.');
+        return $dbu->formatUserLink($ID, $login, $realname, $firstname);
+    }
+
+    return $dbu->formatUserName($ID, $login, $realname, $firstname, 0, 0, $force_config);
+}
+
+/**
+ * Format a user link.
+ *
+ * @param integer       $id           ID of the user.
+ * @param string|null   $login        login of the user
+ * @param string|null   $realname     realname of the user
+ * @param string|null   $firstname    firstname of the user
+ *
+ * @return string
+ */
+function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname)
+{
+    $dbu = new DbUtils();
+    return $dbu->formatUserLink($id, $login, $realname, $firstname);
 }
 
 
@@ -433,11 +462,29 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *@param $disable_anon   bool  disable anonymization of username.
  *
  *@return string[]|string : username string (realname if not empty and name if realname is empty).
+ *
+ * @since 11.0 `$link` parameter is deprecated.
  **/
 function getUserName($ID, $link = 0, $disable_anon = false)
 {
+    if ($link != 0) {
+        Toolbox::deprecated('Usage of `$link` parameter is deprecated. See `DbUtils::getUserName()`.');
+    }
     $dbu = new DbUtils();
     return $dbu->getUserName($ID, $link, $disable_anon);
+}
+
+/**
+ * Get link of the given user.
+ *
+ * @param int $id
+ *
+ * @return string
+ */
+function getUserLink(int $id): string
+{
+    $dbu = new DbUtils();
+    return $dbu->getUserLink($id);
 }
 
 
@@ -486,18 +533,6 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
 {
     $dbu = new DbUtils();
     return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
-}
-
-
-/**
- * Close active DB connections
- *
- * @return void
- **/
-function closeDBConnections()
-{
-    $dbu = new DbUtils();
-    return $dbu->closeDBConnections();
 }
 
 /**

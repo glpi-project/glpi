@@ -78,6 +78,8 @@ trait TreeBrowse
                             : 1;
 
         $criteria    = json_encode($params['criteria']);
+        $sort        = json_encode($_REQUEST['sort'] ?? []);
+        $order       = json_encode($_REQUEST['order'] ?? []);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
         $no_cat_found  = __s("No category found");
@@ -95,16 +97,22 @@ trait TreeBrowse
                 'browse': $browse,
                 'is_deleted': $is_deleted,
                 'unpublished': $unpublished,
-                'criteria': $criteria
+                'criteria': $criteria,
+                'sort': $sort,
+                'order': $order,
             });
         };
 JAVASCRIPT;
 
         if ($update) {
-            $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
             $JS .= <<<JAVASCRIPT
             $('#tree_category').fancytree('option', 'source', {$category_list});
 JAVASCRIPT;
+
+            $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
+            $results = Search::getDatas($itemtype, $params);
+            $results['searchform_id'] = $params['searchform_id'] ?? null;
+            Search::displayData($results);
         } else {
             $JS .= <<<JAVASCRIPT
             $(function() {
@@ -335,7 +343,7 @@ JAVASCRIPT;
             $nodes[] = $node;
         }
 
-       // recursive construct tree data
+        // recursive construct tree data
         $buildtree = function (array &$elements, $parent = 0) use (&$buildtree) {
             $branch = [];
 
@@ -343,7 +351,7 @@ JAVASCRIPT;
                 if ($element['parent'] === $parent) {
                     $children = $buildtree($elements, $element['key']);
                     if (count($children) > 0) {
-                         $element['children'] = $children;
+                        $element['children'] = $children;
                     }
                     $branch[] = $element;
                     unset($elements[$index]);

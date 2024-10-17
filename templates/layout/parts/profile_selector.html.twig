@@ -34,7 +34,14 @@
 {% set rand = random() %}
 
 <div class="dropdown dropstart">
-    <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button
+        class="dropdown-item dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label="{{ __("Change profile") }}"
+    >
         <i class="ti ti-user-check"></i>
         {{ (session('glpiactiveprofile')['name'] ?? '') }}
     </button>
@@ -66,7 +73,7 @@
     </span>
 {% else %}
     <div class="dropdown dropstart" id="entity-tree-dropdown-{{ rand }}">
-        <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}">
+        <a href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="{{ current_entity }}" aria-label="{{ __('Select the desired entity') }}">
             <i class="fa-fw ti ti-stack"></i>
             {{ current_entity_short|u.truncate(35, '...') }}
         </a>
@@ -102,7 +109,7 @@
                     title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
                         <i class="ti ti-x"></i>
                 </a>
-                <a href="{{ target }}?active_entity=all" class="btn btn-secondary"
+                <a href="{{ target }}?active_entity=all" class="btn btn-secondary" role="button"
                     title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="ti ti-eye"></i>
                 </a>
@@ -110,7 +117,7 @@
             </form>
 
             <div class="fancytree-grid-container flexbox-item-grow entity_tree">
-                <table id="tree_entity{{ rand }}">
+                <table id="tree_entity{{ rand }}" aria-label="{{ __('Entity tree') }}">
                 <colgroup>
                     <col></col>
                 </colgroup>
@@ -256,9 +263,9 @@
         hotkeys('ctrl+alt+e, option+command+e', async function(e) {
             e.stopPropagation();
             e.preventDefault();
-            $('.user-menu-dropdown-toggle').dropdown('show');
+            $('.user-menu-dropdown-toggle:visible').dropdown('show');
             await new Promise(r => setTimeout(r, 100));
-            $('.entity-dropdown-toggle').dropdown('show');
+            $('.user-menu-dropdown-toggle:visible').parent().find('.entity-dropdown-toggle').dropdown('show');
             $('input[name=entsearchtext]').filter(":visible")[0].focus();
         });
     });

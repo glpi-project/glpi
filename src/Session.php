@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\SessionExpiredHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 
@@ -49,6 +51,12 @@ class Session
     const NORMAL_MODE       = 0;
     const TRANSLATION_MODE  = 1; // no more used
     const DEBUG_MODE        = 2;
+
+    /**
+     * Indicates whether the request is made in an AJAX context.
+     * @FIXME This flag is actually not set to true by all AJAX requests.
+     */
+    private static bool $is_ajax_request = false;
 
     /**
      * Max count of CSRF tokens to keep in session.
@@ -363,10 +371,7 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        /** @var int $AJAX_INCLUDE */
-        global $AJAX_INCLUDE;
-
-        if ($AJAX_INCLUDE && ($url === null)) {
+        if (self::$is_ajax_request === true && ($url === null)) {
             return;
         }
         if (empty($title)) {
@@ -376,9 +381,7 @@ class Session
             $url = '';
 
             if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
-                if (isset($_SERVER['HTTP_REFERER'])) {
-                    $url = $_SERVER['HTTP_REFERER'];
-                }
+                $url = Html::getRefererUrl();
             } else {
                 $url = $_SERVER['REQUEST_URI'];
             }
@@ -387,6 +390,33 @@ class Session
         $_SESSION['glpilisttitle'][$itemtype] = $title;
         $_SESSION['glpilistitems'][$itemtype] = [];
         $_SESSION['glpilisturl'][$itemtype]   = $url;
+    }
+
+
+    /**
+     * Check if active entities should be reloaded.
+     *
+     * @return bool true if active entities should be reloaded, false otherwise
+     */
+    public static function shouldReloadActiveEntities(): bool
+    {
+        if (!array_key_exists('glpiactive_entity', $_SESSION)) {
+            return false;
+        }
+        $glpiactiveentities = $_SESSION['glpiactiveentities'] ?? [];
+        if (count($glpiactiveentities)) {
+            $glpiactive_entity = $_SESSION['glpiactive_entity'];
+            $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
+            $entities = [$glpiactive_entity];
+            if ($glpiactive_entity_recursive) {
+                $entities = getSonsOf("glpi_entities", $glpiactive_entity);
+            }
+
+            return count($entities) !== count($glpiactiveentities)
+                || array_diff($entities, $glpiactiveentities) !== []
+                || array_diff($glpiactiveentities, $entities) !== [];
+        }
+        return false;
     }
 
 
@@ -427,6 +457,7 @@ class Session
                         }
                     }
                 }
+                $is_recursive = true;
             } else {
                 $ID = (int)$ID;
 
@@ -474,19 +505,7 @@ class Session
                 $active
             );
             $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
-            if ($is_recursive) {
-                //TRANS: %s is the entity name
-                $_SESSION["glpiactive_entity_name"]      = sprintf(
-                    __('%1$s (%2$s)'),
-                    $_SESSION["glpiactive_entity_name"],
-                    __('tree structure')
-                );
-                 $_SESSION["glpiactive_entity_shortname"] = sprintf(
-                     __('%1$s (%2$s)'),
-                     $_SESSION["glpiactive_entity_shortname"],
-                     __('tree structure')
-                 );
-            } elseif ($ID == "all") {
+            if ($ID == "all") {
                 //TRANS: %s is the entity name
                 $_SESSION["glpiactive_entity_name"]      = sprintf(
                     __('%1$s (%2$s)'),
@@ -498,6 +517,18 @@ class Session
                     $_SESSION["glpiactive_entity_shortname"],
                     __('full structure')
                 );
+            } elseif ($is_recursive) {
+                //TRANS: %s is the entity name
+                $_SESSION["glpiactive_entity_name"]      = sprintf(
+                    __('%1$s (%2$s)'),
+                    $_SESSION["glpiactive_entity_name"],
+                    __('tree structure')
+                );
+                 $_SESSION["glpiactive_entity_shortname"] = sprintf(
+                     __('%1$s (%2$s)'),
+                     $_SESSION["glpiactive_entity_shortname"],
+                     __('tree structure')
+                 );
             }
 
             if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
@@ -986,17 +1017,13 @@ class Session
     public static function checkCookieSecureConfig(): void
     {
         // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // display a warning message
+        // throw an exception
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
         if ($is_https_request === false && $cookie_secure === true) {
-            TemplateRenderer::getInstance()->display(
-                'pages/https_only.html.twig',
-                [
-                    'secured_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-                ]
-            );
-            exit();
+            $exception = new BadRequestHttpException();
+            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
+            throw $exception;
         }
     }
 
@@ -1018,7 +1045,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            Html::redirectToLogin('error=3');
+            throw new SessionExpiredHttpException();
         }
 
         $user_id    = self::getLoginUserID();
@@ -1064,11 +1091,11 @@ class Session
 
             $row = $result->current();
 
-            if ($row['count'] === 0) {
+            if ($row === null || $row['count'] === 0) {
                 $valid_user = false;
             } elseif (
                 $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > $_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0
+                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
             ) {
                 Session::reloadCurrentProfile();
                 $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
@@ -1095,7 +1122,7 @@ class Session
         if (Session::getCurrentInterface() != "central") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the standard interface");
+            throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
 
@@ -1113,7 +1140,7 @@ class Session
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
             if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
-                Html::displayRightError("Missing FAQ right");
+                throw new AccessDeniedHttpException("Missing FAQ right");
             }
         }
     }
@@ -1130,7 +1157,7 @@ class Session
         if (Session::getCurrentInterface() != "helpdesk") {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("The current profile does not use the simplified interface");
+            throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
 
@@ -1145,7 +1172,7 @@ class Session
         if (!isset($_SESSION["glpiname"])) {
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
-            Html::displayRightError("User has no valid session but seems to be logged in");
+            throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
 
@@ -1220,7 +1247,7 @@ class Session
            // Gestion timeout session
             self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
-            Html::displayRightError("User is missing the $right ($right_name) right for $module");
+            throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
     }
 
@@ -1240,11 +1267,11 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
-                $info .= $right . "($right_name), ";
+                $info .= $right . " ($right_name), ";
             }
             $info = substr($info, 0, -2);
             $info .= " for $module";
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1284,10 +1311,10 @@ class Session
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);
-                $info .= $right . "($right_name) for module $mod, ";
+                $info .= $right . " ($right_name) for module $mod, ";
             }
             $info = substr($info, 0, -2);
-            Html::displayRightError($info);
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -1398,14 +1425,14 @@ class Session
      * @param string  $module Module to check
      * @param integer $right  Right to check
      *
-     * @return boolean
+     * @return boolean|int
      **/
     public static function haveRight($module, $right)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory()) {
+        if (Session::isInventory() || Session::isCron()) {
             return true;
         }
 
@@ -1446,7 +1473,7 @@ class Session
 
 
     /**
-     * Have I one right of array $rights to module $module (conpare to session variable)
+     * Have I one right of array $rights to module $module (compare to session variable)
      *
      * @param string    $module Module to check
      * @param integer[] $rights Rights to check
@@ -1755,15 +1782,9 @@ class Session
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
 
-            $message = __("The action you have requested is not allowed.");
-
-            // Output JSON if requested by client
-            if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
-                http_response_code(403);
-                die(json_encode(["message" => $message]));
-            }
-
-            Html::displayErrorAndDie($message, true);
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
         }
     }
 
@@ -1771,13 +1792,13 @@ class Session
     /**
      * Get new IDOR token
      * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
-     * So, we avoid IDOR request where an attacker asks for an another itemtype
-     * than the originaly intended
+     * So, we avoid IDOR request where an attacker asks for another itemtype
+     * than the originally intended
      *
      * @since 9.5.3
      *
      * @param string $itemtype
-     * @param array  $add_params more criteria to check validy of idor tokens
+     * @param array  $add_params more criteria to check validity of IDOR tokens
      *
      * @return string
      **/
@@ -1842,7 +1863,7 @@ class Session
                 }
             }
 
-           // check all stored data for the idor token are present (and identical) in the posted data
+           // check all stored data for the IDOR token are present (and identical) in the posted data
             $match_expected = function ($expected, $given) use (&$match_expected) {
                 if (is_array($expected)) {
                     if (!is_array($given)) {
@@ -2137,6 +2158,16 @@ class Session
     }
 
     /**
+     * Get actives entities id.
+     *
+     * @return array<int>
+     */
+    public static function getActiveEntities(): array
+    {
+        return $_SESSION['glpiactiveentities'] ?? [];
+    }
+
+    /**
      * Filter given entities ID list to return only these tht are matching current active entities in session.
      *
      * @since 10.0.13
@@ -2248,7 +2279,7 @@ class Session
      * Load given entity.
      *
      * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursivly or not
+     * @param boolean $is_recursive Whether to load entities recursively or not
      *
      * @return void
      */
@@ -2290,7 +2321,7 @@ class Session
     }
 
     /**
-     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     * Helper function to get the date + time stored in $_SESSION['glpi_currenttime']
      *
      * @return null|string
      */
@@ -2298,6 +2329,16 @@ class Session
     {
         // TODO (11.0 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
+    }
+
+    /**
+     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     *
+     * @return null|string
+     */
+    public static function getCurrentDate(): ?string
+    {
+        return date('Y-m-d', strtotime(self::getCurrentTime()));
     }
 
     /**
@@ -2352,5 +2393,21 @@ class Session
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
         );
+    }
+
+    /**
+     * Indicates that the request is made in an AJAX context.
+     */
+    public static function setAjax(): void
+    {
+        self::$is_ajax_request = true;
+    }
+
+    /**
+     * Unset the flag that indicates that the request is made in an AJAX context.
+     */
+    public static function resetAjaxParam(): void
+    {
+        self::$is_ajax_request = false;
     }
 }

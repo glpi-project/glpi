@@ -69,6 +69,7 @@ class Itil_Project extends CommonDBRelation
                 case Change::class:
                 case Problem::class:
                 case Ticket::class:
+                    /** @var Change|Problem|Ticket $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
@@ -82,6 +83,7 @@ class Itil_Project extends CommonDBRelation
                     break;
 
                 case Project::class:
+                    /** @var Project $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(self::getTable(), ['projects_id' => $item->getID()]);
                     }
@@ -136,6 +138,7 @@ class Itil_Project extends CommonDBRelation
         $canedit = $project->canEdit($ID);
 
         $queries = [];
+        /** @var class-string<CommonITILObject> $itemtype */
         foreach ($CFG_GLPI['itil_types'] as $itemtype) {
             $link_table = self::getTable();
             $itil_table = $itemtype::getTable();
@@ -311,10 +314,10 @@ TWIG, $twig_params);
                      method="post"
                      action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
             echo '<table class="tab_cadre_fixe">';
-            echo '<tr class="tab_bg_2"><th colspan="2">' . __('Add a project') . '</th></tr>';
+            echo '<tr class="tab_bg_2"><th colspan="2">' . __s('Add a project') . '</th></tr>';
             echo '<tr class="tab_bg_2">';
             echo '<td>';
-            echo '<input type="hidden" name="itemtype" value="' . $itil->getType() . '" />';
+            echo '<input type="hidden" name="itemtype" value="' . htmlspecialchars($itil->getType()) . '" />';
             echo '<input type="hidden" name="items_id" value="' . $ID . '" />';
             Project::dropdown(
                 [
@@ -345,7 +348,7 @@ TWIG, $twig_params);
 
         echo '<table class="tab_cadre_fixehov">';
         echo '<tr class="noHover">';
-        echo '<th colspan="12">' . Project::getTypeName($numrows) . '</th>';
+        echo '<th colspan="12">' . htmlspecialchars(Project::getTypeName($numrows)) . '</th>';
         echo '</tr>';
         if ($numrows) {
             Project::commonListHeader(Search::HTML_OUTPUT, $massContainerId);

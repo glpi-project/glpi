@@ -234,7 +234,7 @@ class NetworkEquipment extends MainAsset
         }
     }
 
-    public function handleLinks(array $data = null)
+    public function handleLinks(?array $data = null)
     {
         if ($this->current_key !== null) {
             $data = [$this->data[$this->current_key]];
@@ -411,10 +411,5 @@ class NetworkEquipment extends MainAsset
 
             return preg_replace('/.+\s(\d+)$/', '$1', $data->name);
         }
-    }
-
-    public function getItemtype(): string
-    {
-        return \NetworkEquipment::class;
     }
 }

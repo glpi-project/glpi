@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Question;
 
 /**
@@ -43,14 +44,6 @@ use Glpi\Form\Question;
 interface QuestionTypeInterface
 {
     public function __construct();
-
-    /**
-     * Load the required JS files for this question type.
-     * This method is called when the form editor page is loaded.
-     *
-     * @return array List of JS files to load.
-     */
-    public function loadJavascriptFiles(): array;
 
     /**
      * Format the default value for the database.
@@ -91,6 +84,17 @@ interface QuestionTypeInterface
     public function prepareExtraData(array $input): array;
 
     /**
+     * Get JS functions options for the form editor.
+     *
+     * The options must be a JSON object, accepting the following keys:
+     * The extractDefaultValue function is used to extract the default value from the form editor.
+     * The convertDefaultValue function is used to convert the default value to the form editor.
+     *
+     * @return string
+     */
+    public function getFormEditorJsOptions(): string;
+
+    /**
      * Render the administration template for the given question.
      * This template is used on the form editor page.
      *
@@ -128,7 +132,17 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function renderAnswerTemplate($answer): string;
+    public function renderAnswerTemplate(mixed $answer): string;
+
+    /**
+     * Format the given answer.
+     * This method is used to format the answer to display.
+     *
+     * @param mixed $answer Given raw answer data.
+     *
+     * @return string
+     */
+    public function formatRawAnswer(mixed $answer): string;
 
     /**
      * Get the name of this questions type.
@@ -158,4 +172,28 @@ interface QuestionTypeInterface
      * @return int
      */
     public function getWeight(): int;
+
+    /**
+     * Check if this question type is allowed for anonymous forms.
+     * If this method returns false, the question type will not be displayed in the end user form.
+     *
+     * @return bool
+     */
+    public function isAllowedForUnauthenticatedAccess(): bool;
+
+    /**
+     * Get the configuration class for this question type.
+     *
+     * @return ?string
+     */
+    public function getConfigClass(): ?string;
+
+    /**
+     * Get the configuration for the given question.
+     *
+     * @param Question|null $question The question to get the configuration for.
+     *
+     * @return ?JsonFieldInterface
+     */
+    public function getConfig(?Question $question): ?JsonFieldInterface;
 }

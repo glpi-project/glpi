@@ -33,13 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
-
-use Glpi\Event;
-
-include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -98,4 +97,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();

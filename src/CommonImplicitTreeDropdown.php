@@ -113,7 +113,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
 
 
     /**
-     * The haveChildren=false must be define to be sure that CommonDropdown allows the deletion of a
+     * The haveChildren=false must be defined to be sure that CommonDropdown allows the deletion of a
      * node of the tree
      **/
     public function haveChildren()
@@ -154,7 +154,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
          * $oldParent contains the old parent, to check its sons to attach them to it
          * $newParent contains the new parent, to check its sons to potentially attach them to this
          *            item.
-         * $potentialSons list ALL potential childrens (sons as well as grandsons). That is use to
+         * $potentialSons list ALL potential children (sons as well as grandsons). That is used to
          *                update them. (See getPotentialSons())
          **/
 
@@ -188,7 +188,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
             }
         }
 
-        if ($step != "delete" && count($potentialSons)) { // Because ther is no new sons for deleted nodes
+        if ($step != "delete" && count($potentialSons)) { // Because their is no new sons for deleted nodes
            // And, get all direct sons of my new Father that must be attached to me (ie : that are
            // potential sons
             $iterator = $DB->request([

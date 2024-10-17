@@ -34,13 +34,10 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
 
 $link = new Ticket_User();
 $item = new Ticket();
@@ -52,7 +49,7 @@ if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);
 
     if ($link->update($_POST)) {
-        echo "<script type='text/javascript' >\n";
+        echo "<script type='text/javascript' >";
         echo "window.parent.location.reload();";
         echo "</script>";
     } else {
@@ -81,7 +78,7 @@ if (isset($_POST["update"])) {
 
     Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
 } else {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 Html::popFooter();

@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("config", READ);
 
 if (empty($_GET["id"])) {

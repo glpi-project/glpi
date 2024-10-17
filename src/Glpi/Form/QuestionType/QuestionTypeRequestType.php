@@ -87,7 +87,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'request_types'     => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes()
         ]);
     }
 
@@ -104,7 +104,8 @@ TWIG;
             '',
             {
                 'no_label'           : true,
-                'display_emptychoice': true
+                'display_emptychoice': false,
+                'aria_label'         : label
             }
         ) }}
 TWIG;
@@ -113,26 +114,26 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'value'              => $this->getDefaultValue($question),
             'question'           => $question,
-            'request_types'      => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes(),
+            'label'              => $question->fields['name'],
         ]);
     }
 
     #[Override]
-    public function renderAnswerTemplate($answer): string
+    public function formatRawAnswer(mixed $answer): string
     {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => Ticket::getTicketTypeName($answer)
-        ]);
+        return Ticket::getTicketTypeName($answer);
     }
 
     #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::REQUEST_TYPE;
+    }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
     }
 }

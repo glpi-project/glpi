@@ -61,7 +61,8 @@ class SessionExtension extends AbstractExtension
             new TwigFunction('pull_messages', [$this, 'pullMessages']),
             new TwigFunction('session', [$this, 'session']),
             new TwigFunction('user_pref', [$this, 'userPref']),
-            new TwigFunction('get_saved_option', [Session::class, 'getSavedOption'])
+            new TwigFunction('get_saved_option', [Session::class, 'getSavedOption']),
+            new TwigFunction('get_page_layout', [$this, 'getPageLayout']),
         ];
     }
 
@@ -165,5 +166,23 @@ class SessionExtension extends AbstractExtension
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
         return $messages;
+    }
+
+    /**
+     * Get the page layout ('vertical' or 'horizontal').
+     *
+     * Helpdesk interface is always horizontal.
+     * Central interface depends on the user preferences.
+     *
+     * @return string
+     */
+    public function getPageLayout(): string
+    {
+        // Helpdesk interface is always horizontal
+        if ($this->getCurrentInterface() == 'helpdesk') {
+            return 'horizontal';
+        }
+
+        return $this->userPref('page_layout');
     }
 }

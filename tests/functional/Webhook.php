@@ -35,8 +35,7 @@
 
 namespace tests\units;
 
-/* Test for inc/user.class.php */
-
+use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
 
 class Webhook extends \DbTestCase
@@ -243,5 +242,23 @@ JSON;
         // Make sure we get at least something as a response.
         // The main purpose is to test the internal authentication middleware.
         $this->variable($webhook->getResultForPath('/Administration/User/' . $users_id, 'new', 'User', $users_id))->isNotNull();
+    }
+
+    public function testGetAPIItemtypeData()
+    {
+        $this->login();
+        $this->initAssetDefinition();
+
+        $supported_types = \Webhook::getAPIItemtypeData();
+        foreach ($supported_types as $controller => $type_data) {
+            $this->boolean(is_subclass_of($controller, AbstractController::class))->isTrue();
+            foreach ($type_data as $category => $types) {
+                $this->string($category)->matches('/main|subtypes/');
+                foreach ($types as $type_key => $type) {
+                    $this->boolean(class_exists($type_key))->isTrue();
+                    $this->array($type)->isNotEmpty();
+                }
+            }
+        }
     }
 }

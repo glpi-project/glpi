@@ -564,9 +564,9 @@ class RuleAction extends CommonDBChild
                             $param['name']  = 'value';
                             if (is_a($_POST['sub_type'], RuleCommonITILObject::class, true)) {
                                 $itil = $_POST['sub_type']::getItemtype();
-                                return $itil::dropdownStatus($param);
+                                $itil::dropdownStatus($param);
                             } else {
-                                return Ticket::dropdownStatus($param);
+                                Ticket::dropdownStatus($param);
                             }
                             $display = true;
                             break;

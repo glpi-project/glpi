@@ -34,12 +34,16 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 
 class DatabaseInstance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
+    use AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -130,6 +134,10 @@ class DatabaseInstance extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareInputForAddAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         if (isset($input['date_lastbackup']) && empty($input['date_lastbackup'])) {
             unset($input['date_lastbackup']);
         }
@@ -269,9 +277,20 @@ class DatabaseInstance extends CommonDBTM
             'id'                 => '49',
             'table'              => Group::getTable(),
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -295,7 +314,7 @@ class DatabaseInstance extends CommonDBTM
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         if ($item->getFromDB($values[$field])) {
-                            return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                            return "<a href='" . htmlspecialchars($item->getLinkURL()) . "'>" . htmlspecialchars($item->fields['name']) . "</a>";
                         } else {
                             return ' ';
                         }
@@ -350,12 +369,12 @@ class DatabaseInstance extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!self::canView()) {
-            return '';
-        }
-
-        $nb = 0;
-        if (in_array($item->getType(), self::getTypes(true))) {
+        if (
+            ($item instanceof CommonDBTM)
+            && self::canView()
+            && in_array($item->getType(), self::getTypes(true))
+        ) {
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
             }

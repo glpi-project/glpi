@@ -34,7 +34,7 @@
  */
 
 /**
- * @var DB $DB
+ * @var DBmysql $DB
  * @var Migration $migration
  */
 

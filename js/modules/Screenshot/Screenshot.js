@@ -31,7 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI_PLUGINS_PATH */
 class Screenhot {
 
     constructor() {
@@ -173,7 +172,7 @@ class Screenhot {
      */
     getRecordingCodec(requested_format) {
         const codecs = ['vp9', 'vp8'];
-        return codecs.find(c => MediaRecorder.isTypeSupported(requested_format + ';codecs=' + c));
+        return codecs.find(c => MediaRecorder.isTypeSupported(`${requested_format};codecs=${c}`));
     }
 
     /**
@@ -185,7 +184,7 @@ class Screenhot {
             const track = mediaStream.getVideoTracks()[0];
 
             const recorder = new MediaRecorder(mediaStream, {
-                mimeType: 'video/webm;codecs=' + this.getRecordingCodec('video/webm'),
+                mimeType: `video/webm;codecs=${this.getRecordingCodec('video/webm')}`,
                 videoBitsPerSecond: this.getPreferredBitrate(track),
             });
             recorder.start();
@@ -215,7 +214,7 @@ class Screenhot {
         preview_item.append(img);
 
         const form = preview_container.closest('form');
-        const fileupload_btn_selector = '.fileupload input[name^="_filename"][value$="' + filename + '"]';
+        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${filename}"]`;
         preview_item.find('button').on('click', () => {
             form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();
@@ -246,7 +245,7 @@ class Screenhot {
         preview_item.append(video);
 
         const form = preview_container.closest('form');
-        const fileupload_btn_selector = '.fileupload input[name^="_filename"][value$="' + filename + '"]';
+        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${filename}"]`;
         preview_item.find('button').on('click', () => {
             form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();

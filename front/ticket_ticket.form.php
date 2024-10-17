@@ -33,13 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
-
-use Glpi\Event;
-
-include('../inc/includes.php');
 
 $ticket_ticket = new Ticket_Ticket();
 
@@ -62,4 +61,5 @@ if (isset($_POST['purge'])) {
     );
     Html::redirect(Ticket::getFormURLWithID($_POST['tickets_id']));
 }
-Html::displayErrorAndDie("lost");
+
+throw new BadRequestHttpException();

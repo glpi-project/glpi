@@ -63,7 +63,7 @@ class SoundCard extends Device
 
     public function checkConf(Conf $conf): bool
     {
-        return $conf->component_soundcard == 1;
+        return $conf->component_soundcard == 1 && parent::checkConf($conf);
     }
 
     public function getItemtype(): string

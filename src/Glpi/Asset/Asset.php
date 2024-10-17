@@ -36,20 +36,30 @@
 namespace Glpi\Asset;
 
 use CommonDBTM;
-use Glpi\Application\View\TemplateRenderer;
+use Dropdown;
 use Entity;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\CustomObject\CustomObjectTrait;
 use Group;
+use Group_Item;
 use Location;
+use Log;
 use Manufacturer;
 use State;
-use Toolbox;
 use User;
 
 abstract class Asset extends CommonDBTM
 {
-    use \Glpi\Features\AssignableAsset;
+    use CustomObjectTrait;
+
+    use \Glpi\Features\AssignableItem {
+        getEmpty as getEmptyFromAssignableItem;
+        post_getFromDB as post_getFromDBFromAssignableItem;
+        post_updateItem as post_updateItemFromAssignableItem;
+    }
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
+    use \Glpi\Features\Inventoriable;
 
     /**
      * Asset definition.
@@ -81,72 +91,9 @@ abstract class Asset extends CommonDBTM
         return static::$definition;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getDefinitionClass(): string
     {
-        return static::getDefinition()->getTranslatedName($nb);
-    }
-
-    public static function getIcon()
-    {
-        return static::getDefinition()->getAssetsIcon();
-    }
-
-    public static function getTable($classname = null)
-    {
-        if (is_a($classname ?? static::class, self::class, true)) {
-            return parent::getTable(self::class);
-        }
-        return parent::getTable($classname);
-    }
-
-    public static function getSearchURL($full = true)
-    {
-        return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
-    }
-
-    public static function getFormURL($full = true)
-    {
-        return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
-    }
-
-    public static function getById(?int $id)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if ($id === null) {
-            return false;
-        }
-
-        // Load the asset definition corresponding to given asset ID
-        $definition_request = [
-            'INNER JOIN' => [
-                self::getTable()  => [
-                    'ON'  => [
-                        self::getTable()            => AssetDefinition::getForeignKeyField(),
-                        AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
-                ],
-            ],
-            'WHERE' => [
-                self::getTableField(self::getIndexName()) => $id,
-            ],
-        ];
-        $definition = new AssetDefinition();
-        if (!$definition->getFromDBByRequest($definition_request)) {
-            return false;
-        }
-
-        // Instanciate concrete class
-        $asset_class = $definition->getAssetClassName(true);
-        $asset = new $asset_class();
-        if (!$asset->getFromDB($id)) {
-            return false;
-        }
-
-        return $asset;
+        return AssetDefinition::class;
     }
 
     public function rawSearchOptions()
@@ -255,6 +202,15 @@ abstract class Asset extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 
@@ -302,6 +258,15 @@ abstract class Asset extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge of the hardware'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 
@@ -329,37 +294,25 @@ abstract class Asset extends CommonDBTM
             array_push($search_options, ...$capacity->getSearchOptions(static::class));
         }
 
-        foreach ($search_options as &$search_option) {
-            if (
-                is_array($search_option)
-                && array_key_exists('table', $search_option)
-                && $search_option['table'] === $this->getTable()
-            ) {
-                // Search class could not be able to retrieve the concrete class when using `getItemTypeForTable()`,
-                // so we have to define an `itemtype` here.
-                $search_option['itemtype'] = static::class;
+        $search_options = $this->amendSearchOptions($search_options);
+
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
+        foreach ($custom_fields as $custom_field) {
+            $opt = $custom_field->getFieldType()->getSearchOption();
+            if ($opt !== null) {
+                $opt['itemtype'] ??= static::class;
+                $search_options[] = $opt;
             }
         }
 
         return $search_options;
     }
 
-    public static function getSystemSQLCriteria(?string $tablename = null): array
+    public function getUnallowedFieldsForUnicity()
     {
-        $table_prefix = $tablename !== null
-            ? $tablename . '.'
-            : '';
-
-        // Keep only items from current definition must be shown.
-        $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
-        ];
-
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array.
-        $criteria = [crc32(serialize($criteria)) => $criteria];
-
-        return $criteria;
+        $not_allowed = parent::getUnallowedFieldsForUnicity();
+        $not_allowed[] = AssetDefinition::getForeignKeyField();
+        return $not_allowed;
     }
 
     public function showForm($ID, array $options = [])
@@ -370,6 +323,7 @@ abstract class Asset extends CommonDBTM
             [
                 'item'   => $this,
                 'params' => $options,
+                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
             ]
         );
         return true;
@@ -377,42 +331,125 @@ abstract class Asset extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareGroupFields($input);
+
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        $input = $this->prepareGroupFields($input);
+
+        $input = $this->handleCustomFieldsUpdate($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
-    /**
-     * Ensure definition input corresponds to the current concrete class.
-     *
-     * @param array $input
-     * @return array
-     */
-    private function prepareDefinitionInput(array $input): array
+    protected function handleCustomFieldsUpdate(array $input): array
     {
-        $definition_fkey = AssetDefinition::getForeignKeyField();
-        $definition_id   = static::getDefinition()->getID();
+        $custom_fields = $this->getDecodedCustomFields();
 
-        if (
-            array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
-        ) {
-            throw new \RuntimeException('Asset definition does not match the current concrete class.');
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            if (!isset($input[$custom_field_name])) {
+                continue;
+            }
+            $value = $input[$custom_field_name];
+
+            try {
+                $custom_fields[$custom_field->getID()] = $custom_field->getFieldType()->formatValueForDB($value);
+            } catch (\InvalidArgumentException) {
+                continue;
+            }
         }
-
-        if (
-            !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
-        ) {
-            throw new \RuntimeException('Asset definition cannot be changed.');
-        }
-
-        $input[$definition_fkey] = $definition_id;
+        $input['custom_fields'] = json_encode($custom_fields);
 
         return $input;
+    }
+
+    private function getDecodedCustomFields(): array
+    {
+        return json_decode($this->fields['custom_fields'] ?? '[]', true) ?? [];
+    }
+
+    public function getEmpty()
+    {
+        if (!$this->getEmptyFromAssignableItem()) {
+            return false;
+        }
+
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $f_name = 'custom_' . $custom_field->fields['name'];
+            $this->fields[$f_name] = $custom_field->fields['default_value'];
+        }
+        return true;
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+
+        $this->post_getFromDBFromAssignableItem();
+
+        $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
+        $custom_field_values = $this->getDecodedCustomFields();
+
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $value = $custom_field_values[$custom_field->getID()] ?? $custom_field->fields['default_value'];
+
+            $this->fields[$custom_field_name] = $custom_field->getFieldType()->formatValueFromDB($value);
+        }
+    }
+
+    public function pre_updateInDB()
+    {
+        parent::pre_updateInDB();
+        // Fill old values for custom fields
+        $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $this->oldvalues[$custom_field_name] = $this->fields[$custom_field_name];
+        }
+    }
+
+    public function post_updateItem($history = true)
+    {
+        $this->post_updateItemFromAssignableItem($history);
+        if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {
+            foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+                $custom_field_name = 'custom_' . $custom_field->fields['name'];
+                $field_type = $custom_field->getFieldType();
+                $old_value = $field_type->formatValueFromDB($this->oldvalues[$custom_field_name] ?? $field_type->getDefaultValue());
+                $current_value = $field_type->formatValueFromDB($this->fields[$custom_field_name] ?? null);
+                $opt = $custom_field->getFieldType()->getSearchOption();
+
+                if ($old_value !== $current_value) {
+                    $dropdown = $opt['table'] !== static::getTable();
+                    if ($dropdown) {
+                        $old_value = $old_value !== null ? Dropdown::getDropdownName($opt['table'], $old_value) : $old_value;
+                        $current_value = $current_value !== null ? Dropdown::getDropdownName($opt['table'], $current_value) : $current_value;
+                    }
+                    Log::history($this->getID(), static::class, [
+                        $custom_field->getSearchOptionID(),
+                        $old_value,
+                        $current_value,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function getNonLoggedFields(): array
+    {
+        $ignored_fields = array_map(
+            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['name'],
+            static::getDefinition()->getCustomFieldDefinitions()
+        );
+        $ignored_fields[] = 'custom_fields';
+        return $ignored_fields;
     }
 
     public function getCloneRelations(): array

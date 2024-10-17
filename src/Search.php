@@ -1007,7 +1007,11 @@ class Search
     public static function showHeader($type, $rows, $cols, $fixed = 0)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showHeader($rows, $cols, $fixed);
+        if (!defined('TU_USER')) {
+            return $output::showHeader($rows, $cols, $fixed);
+        } else {
+            return '';
+        }
     }
 
 

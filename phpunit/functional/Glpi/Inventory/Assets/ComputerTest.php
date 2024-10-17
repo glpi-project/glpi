@@ -581,6 +581,7 @@ class ComputerTest extends AbstractInventoryAsset
         $json = json_decode($json_str);
 
         $computer = new \Computer();
+        $conf = new \Glpi\Inventory\Conf();
 
         $data = (array)$json->content;
         $inventory = new \Glpi\Inventory\Inventory();
@@ -590,7 +591,7 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $agent->handleAgent($inventory->extractMetadata()));
 
         $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-        $main->setAgent($agent)->setExtraData($data);
+        $main->setAgent($agent)->setExtraData($data)->checkConf($conf);
         $result = $main->prepare();
         $this->assertCount(1, $result);
 
@@ -1059,7 +1060,7 @@ class ComputerTest extends AbstractInventoryAsset
         //test entities_id
         $this->assertSame(0, $computer->fields['entities_id']);
 
-        //transer to another entity
+        //transfer to another entity
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);
@@ -1109,7 +1110,7 @@ class ComputerTest extends AbstractInventoryAsset
         //test entities_id
         $this->assertSame(0, $computer->fields['entities_id']);
 
-        //transer to another entity
+        //transfer to another entity
         $doTransfer = \Entity::getUsedConfig('transfers_strategy', $computer->fields['entities_id'], 'transfers_id', 0);
         $transfer = new \Transfer();
         $transfer->getFromDB($doTransfer);

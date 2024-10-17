@@ -424,7 +424,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     } else {
                         return $this->handleFieldsAlias("COUNT(DISTINCT", $f, ')');
                     }
-                    break;
                 case 'COUNT':
                 case 'SUM':
                 case 'AVG':
@@ -439,7 +438,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     } else {
                         return $this->handleFieldsAlias($t, $f);
                     }
-                    break;
                 default:
                     if (is_array($f)) {
                         $t = DBmysql::quoteName($t);
@@ -450,7 +448,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                         $f = ($f == '*' ? $f : DBmysql::quoteName($f));
                         return "$t.$f";
                     }
-                    break;
             }
         }
     }
@@ -651,7 +648,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
             if (!is_array($jointables)) {
                 throw new \LogicException("BAD JOIN, value must be [ table => criteria ].");
-                continue;
             }
 
             foreach ($jointables as $jointablekey => $jointablecrit) {

@@ -36,19 +36,20 @@
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var CommonDropdown $dropdown
+ * @var LegacyFileLoadController $this
  */
 
-if (!($dropdown instanceof CommonDropdown)) {
-    Html::displayErrorAndDie('');
-}
-if (!$dropdown->canView()) {
-   // Gestion timeout session
-    Session::redirectIfNotLoggedIn();
-    Html::displayRightError();
+use Glpi\Controller\DropdownController;
+use Glpi\Controller\LegacyFileLoadController;
+
+if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
+    throw new LogicException();
 }
 
-$dropdown::displayCentralHeader();
+\Toolbox::deprecated(\sprintf(
+    'Requiring legacy dropdown files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for dropdowns.',
+    debug_backtrace()[0]['file'] ?? 'including',
+    'glpi_dropdown',
+));
 
-Search::show(get_class($dropdown));
-
-Html::footer();
+DropdownController::loadDropdown($this->request, $dropdown);

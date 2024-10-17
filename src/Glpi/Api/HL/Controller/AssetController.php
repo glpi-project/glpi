@@ -43,6 +43,7 @@ use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -50,6 +51,7 @@ use Glpi\Http\Response;
 use Glpi\Socket;
 use Glpi\SocketModel;
 use Group;
+use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Location;
 use Manufacturer;
@@ -59,6 +61,7 @@ use NetworkEquipment;
 use PassiveDCEquipment;
 use PDU;
 use Peripheral;
+use Software;
 use State;
 use User;
 
@@ -105,6 +108,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PrinterModel'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PrinterModel::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -122,6 +126,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['SoftwareCategory'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \SoftwareCategory::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -139,6 +144,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['OperatingSystem'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \OperatingSystem::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -155,6 +161,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['RackModel'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \RackModel::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -172,6 +179,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['RackType'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \RackType::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -190,6 +198,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PDUModel'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PDUModel::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -214,6 +223,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PDUType'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PDUType::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -232,6 +242,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PassiveDCEquipmentModel'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PassiveDCEquipmentModel::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -256,6 +267,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PassiveDCEquipmentType'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PassiveDCEquipmentType::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -272,6 +284,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['SocketModel'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => SocketModel::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -288,6 +301,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['NetworkPort'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \NetworkPort::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -324,6 +338,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['DCRoom'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \DCRoom::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -354,6 +369,7 @@ final class AssetController extends AbstractController
             // Replace namespace separator with underscore
             $schema_name = str_replace('\\', '_', $asset_type);
             $schemas[$schema_name] = $schemas['_BaseAsset'];
+            $schemas[$schema_name]['x-version-introduced'] = '2.0';
             $schemas[$schema_name]['x-itemtype'] = $asset_type;
 
             // Need instance since some fields are not static even if they aren't related to instances
@@ -394,33 +410,75 @@ final class AssetController extends AbstractController
                 );
             }
 
-            if (in_array($asset_type, $CFG_GLPI['linkuser_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id_tech',
-                    full_schema: 'User'
-                );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['group_tech'] = self::getDropdownTypeSchema(
-                    class: Group::class,
-                    field: 'groups_id_tech',
-                    full_schema: 'Group'
-                );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkuser_types'], true)) {
+            if (in_array($asset_type, $CFG_GLPI['assignable_types'], true)) {
                 $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(
                     class: User::class,
                     field: 'users_id',
                     full_schema: 'User'
                 );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkgroup_types'], true)) {
-                $schemas[$schema_name]['properties']['group'] = self::getDropdownTypeSchema(
-                    class: Group::class,
-                    field: 'groups_id',
-                    full_schema: 'Group'
+                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
+                    class: User::class,
+                    field: 'users_id_tech',
+                    full_schema: 'User'
                 );
+                $schemas[$schema_name]['properties']['group'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $asset_type,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
+                $schemas[$schema_name]['properties']['group_tech'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $asset_type,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
             }
 
             if ($asset->isField('contact')) {
@@ -452,6 +510,7 @@ final class AssetController extends AbstractController
         }
 
         $schemas['Cartridge'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Cartridge::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -492,6 +551,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['CartridgeItem'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \CartridgeItem::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -561,6 +621,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Consumable'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Consumable::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -597,6 +658,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['ConsumableItem'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \ConsumableItem::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -639,7 +701,8 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Software'] = [
-            'x-itemtype' => \Software::class,
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => Software::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
@@ -657,9 +720,65 @@ final class AssetController extends AbstractController
                 'parent' => self::getDropdownTypeSchema(class: \Software::class, full_schema: 'Software'),
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -669,6 +788,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['SoftwareVersion'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \SoftwareVersion::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -691,6 +811,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Rack'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Rack::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -710,8 +831,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \RackType::class, full_schema: 'RackType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Rack::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Rack::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'width' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'height' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'depth' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -757,6 +936,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['RackItem'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Item_Rack::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -788,6 +968,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Enclosure'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Enclosure::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -806,8 +987,66 @@ final class AssetController extends AbstractController
                 'model' => self::getDropdownTypeSchema(\EnclosureModel::class),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Enclosure::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Enclosure::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -817,6 +1056,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PDU'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PDU::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -836,8 +1076,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \PDUType::class, full_schema: 'PDUType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PDU::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PDU::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -845,6 +1143,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['PassiveDCEquipment'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \PassiveDCEquipment::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -864,8 +1163,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \PassiveDCEquipmentType::class, full_schema: 'PassiveDCEquipmentType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PassiveDCEquipment::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PassiveDCEquipment::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -873,6 +1230,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Cable'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => \Cable::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -887,7 +1245,66 @@ final class AssetController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Cable::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Cable::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'itemtype_endpoint_a' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id_endpoint_a' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -911,6 +1328,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Socket'] = [
+            'x-version-introduced' => '2.0',
             'x-itemtype' => Socket::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -943,14 +1361,14 @@ final class AssetController extends AbstractController
      */
     public static function getAssetTypes(bool $classes_only = true): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         static $assets = null;
 
         if ($assets === null) {
             $assets = [];
-            $types = $CFG_GLPI["asset_types"];
+            $types = ['Computer', 'Monitor', 'NetworkEquipment',
+                'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+                'Certificate', 'Unmanaged', 'Appliance'
+            ];
             /**
              * @var class-string<CommonDBTM> $type
              */
@@ -1001,6 +1419,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get all available asset types',
         methods: ['GET'],
@@ -1041,10 +1460,13 @@ final class AssetController extends AbstractController
         $asset_schemas = array_filter($asset_schemas, static function ($key) use ($asset_types) {
             return !str_starts_with($key, '_') && in_array($key, $asset_types, true);
         }, ARRAY_FILTER_USE_KEY);
-        return Doc\Schema::getUnionSchema($asset_schemas);
+        $union_schema = Doc\Schema::getUnionSchema($asset_schemas);
+        $union_schema['x-version-introduced'] = '2.0';
+        return $union_schema;
     }
 
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search assets of all types',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1054,12 +1476,13 @@ final class AssetController extends AbstractController
     )]
     public function searchAll(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('CommonAsset'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('CommonAsset', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes']
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search assets of a specific type',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1070,13 +1493,14 @@ final class AssetController extends AbstractController
     public function search(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get an asset of a specific type by ID',
         responses: [
@@ -1086,13 +1510,14 @@ final class AssetController extends AbstractController
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the financial and administration information for a specific asset',
         responses: [
@@ -1110,7 +1535,7 @@ final class AssetController extends AbstractController
         $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
         $params['filter'] = $filter;
         $management_controller = new ManagementController();
-        $result = Search::searchBySchema($management_controller->getKnownSchema('Infocom'), $params);
+        $result = Search::searchBySchema($management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
         if ($result->getStatusCode() !== 200) {
             return $result;
         }
@@ -1125,6 +1550,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create an asset of a specific type',
         parameters: [
@@ -1138,13 +1564,14 @@ final class AssetController extends AbstractController
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update an asset of a specific type by ID',
         parameters: [
@@ -1158,23 +1585,25 @@ final class AssetController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getAssetTypes'],
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete an asset of a specific type by ID',
     )]
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search cartridge models',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1184,12 +1613,13 @@ final class AssetController extends AbstractController
     )]
     public function searchCartridgeItems(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('CartridgeItem'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cartridge model by ID',
         responses: [
@@ -1198,10 +1628,11 @@ final class AssetController extends AbstractController
     )]
     public function getCartridgeItem(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cartridge model',
         parameters: [
@@ -1214,12 +1645,13 @@ final class AssetController extends AbstractController
     )]
     public function createCartridgeItems(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('CartridgeItem'), $request->getParameters(), [self::class, 'getCartridgeItem']);
+        return Search::createBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridgeItem']);
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a cartridge model by ID',
         parameters: [
@@ -1232,23 +1664,25 @@ final class AssetController extends AbstractController
     )]
     public function updateCartridgeItems(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a cartridge model by ID',
     )]
     public function deleteCartridgeItems(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('CartridgeItem'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('CartridgeItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cartridge by ID',
         responses: [
@@ -1257,10 +1691,11 @@ final class AssetController extends AbstractController
     )]
     public function getCartridge(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cartridge',
         parameters: [
@@ -1273,12 +1708,13 @@ final class AssetController extends AbstractController
     )]
     public function createCartridges(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Cartridge'), $request->getParameters(), [self::class, 'getCartridge']);
+        return Search::createBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCartridge']);
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a cartridge by ID',
         parameters: [
@@ -1291,21 +1727,23 @@ final class AssetController extends AbstractController
     )]
     public function updateCartridges(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a cartridge by ID',
     )]
     public function deleteCartridges(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Cartridge'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search consumables models',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1315,12 +1753,13 @@ final class AssetController extends AbstractController
     )]
     public function searchConsumableItems(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('ConsumableItem'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a consumable model by ID',
         responses: [
@@ -1329,10 +1768,11 @@ final class AssetController extends AbstractController
     )]
     public function getConsumableItem(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('ConsumableItem'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a consumable model',
         parameters: [
@@ -1345,12 +1785,13 @@ final class AssetController extends AbstractController
     )]
     public function createConsumableItems(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('ConsumableItem'), $request->getParameters(), [self::class, 'getConsumableItem']);
+        return Search::createBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumableItem']);
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a consumable model by ID',
         parameters: [
@@ -1363,23 +1804,25 @@ final class AssetController extends AbstractController
     )]
     public function updateConsumableItems(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('ConsumableItem'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a consumable model by ID',
     )]
     public function deleteConsumableItems(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('ConsumableItem'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('ConsumableItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a consumable by ID',
         responses: [
@@ -1388,10 +1831,11 @@ final class AssetController extends AbstractController
     )]
     public function getConsumable(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Consumable'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a consumable',
         parameters: [
@@ -1404,12 +1848,13 @@ final class AssetController extends AbstractController
     )]
     public function createConsumables(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Consumable'), $request->getParameters(), [self::class, 'getConsumable']);
+        return Search::createBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getConsumable']);
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a consumable by ID',
         parameters: [
@@ -1422,21 +1867,23 @@ final class AssetController extends AbstractController
     )]
     public function updateConsumable(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Consumable'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a consumable by ID',
     )]
     public function deleteConsumable(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Consumable'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search software',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1446,12 +1893,13 @@ final class AssetController extends AbstractController
     )]
     public function searchSoftware(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Software'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Software/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a software by ID',
         responses: [
@@ -1460,10 +1908,11 @@ final class AssetController extends AbstractController
     )]
     public function getSoftware(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Software'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a software',
         parameters: [
@@ -1476,12 +1925,13 @@ final class AssetController extends AbstractController
     )]
     public function createSoftware(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Software'), $request->getParameters(), [self::class, 'getSoftware']);
+        return Search::createBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSoftware']);
     }
 
     #[Route(path: '/Software/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a software by ID',
         parameters: [
@@ -1494,21 +1944,23 @@ final class AssetController extends AbstractController
     )]
     public function updateSoftware(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Software'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a software by ID',
     )]
     public function deleteSoftware(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Software'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Software', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search racks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1518,12 +1970,13 @@ final class AssetController extends AbstractController
     )]
     public function searchRack(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Rack'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a rack by ID',
         responses: [
@@ -1532,10 +1985,11 @@ final class AssetController extends AbstractController
     )]
     public function getRack(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Rack'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a rack',
         parameters: [
@@ -1548,12 +2002,13 @@ final class AssetController extends AbstractController
     )]
     public function createRack(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Rack'), $request->getParameters(), [self::class, 'getRack']);
+        return Search::createBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getRack']);
     }
 
     #[Route(path: '/Rack/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a rack by ID',
         parameters: [
@@ -1566,23 +2021,25 @@ final class AssetController extends AbstractController
     )]
     public function updateRack(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Rack'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a rack by ID',
     )]
     public function deleteRack(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Rack'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Rack', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['GET'], requirements: [
         'rack_id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get items in a rack',
         responses: [
@@ -1594,13 +2051,14 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';rack.id==' . $request->getAttribute('rack_id');
         $request->setParameter('filter', $filters);
-        return Search::searchBySchema($this->getKnownSchema('RackItem'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['GET'], requirements: [
         'rack_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a rack item',
         responses: [
@@ -1612,13 +2070,14 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';rack.id==' . $request->getAttribute('rack_id');
         $request->setParameter('filter', $filters);
-        return Search::getOneBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item/{id}', methods: ['PATCH'], requirements: [
         'rack_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a rack item',
         parameters: [
@@ -1631,12 +2090,13 @@ final class AssetController extends AbstractController
     )]
     public function updateRackItem(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Rack/{rack_id}/Item', methods: ['POST'], requirements: [
         'rack_id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Add an item to a rack',
         parameters: [
@@ -1659,7 +2119,7 @@ final class AssetController extends AbstractController
         }
 
         $request->setParameter('rack', $request->getAttribute('rack_id'));
-        return Search::createBySchema($this->getKnownSchema('RackItem'), $request->getParameters(), [
+        return Search::createBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getParameters(), [
             self::class, 'getRackItem'
         ], [
             'mapped' => [
@@ -1672,15 +2132,17 @@ final class AssetController extends AbstractController
         'rack_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Remove an item from a rack'
     )]
     public function deleteRackItem(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('RackItem'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('RackItem', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search enclosure',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1690,12 +2152,13 @@ final class AssetController extends AbstractController
     )]
     public function searchEnclosure(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Enclosure'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a enclosure by ID',
         responses: [
@@ -1704,10 +2167,11 @@ final class AssetController extends AbstractController
     )]
     public function getEnclosure(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Enclosure'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a enclosure',
         parameters: [
@@ -1720,12 +2184,13 @@ final class AssetController extends AbstractController
     )]
     public function createEnclosure(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Enclosure'), $request->getParameters(), [self::class, 'getEnclosure']);
+        return Search::createBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getEnclosure']);
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a enclosure by ID',
         parameters: [
@@ -1738,21 +2203,23 @@ final class AssetController extends AbstractController
     )]
     public function updateEnclosure(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Enclosure'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Enclosure/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a enclosure by ID',
     )]
     public function deleteEnclosure(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Enclosure'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Enclosure', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search PDUs',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1762,12 +2229,13 @@ final class AssetController extends AbstractController
     )]
     public function searchPDU(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('PDU'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/PDU/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a PDU by ID',
         responses: [
@@ -1776,10 +2244,11 @@ final class AssetController extends AbstractController
     )]
     public function getPDU(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('PDU'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a PDU',
         parameters: [
@@ -1792,12 +2261,13 @@ final class AssetController extends AbstractController
     )]
     public function createPDU(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('PDU'), $request->getParameters(), [self::class, 'getPDU']);
+        return Search::createBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPDU']);
     }
 
     #[Route(path: '/PDU/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a PDU by ID',
         parameters: [
@@ -1810,21 +2280,23 @@ final class AssetController extends AbstractController
     )]
     public function updatePDU(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('PDU'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PDU/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a PDU by ID',
     )]
     public function deletePDU(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('PDU'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('PDU', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search passive DC equipment',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1834,12 +2306,13 @@ final class AssetController extends AbstractController
     )]
     public function searchPassiveDCEquipment(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('PassiveDCEquipment'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a passive DC equipment by ID',
         responses: [
@@ -1848,10 +2321,11 @@ final class AssetController extends AbstractController
     )]
     public function getPassiveDCEquipment(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('PassiveDCEquipment'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a passive DC equipment',
         parameters: [
@@ -1864,12 +2338,13 @@ final class AssetController extends AbstractController
     )]
     public function createPassiveDCEquipment(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('PassiveDCEquipment'), $request->getParameters(), [self::class, 'getPassiveDCEquipment']);
+        return Search::createBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPassiveDCEquipment']);
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a passive DC equipment by ID',
         parameters: [
@@ -1882,21 +2357,23 @@ final class AssetController extends AbstractController
     )]
     public function updatePassiveDCEquipment(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('PassiveDCEquipment'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/PassiveDCEquipment/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a passive DC equipment by ID',
     )]
     public function deletePassiveDCEquipment(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('PassiveDCEquipment'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('PassiveDCEquipment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search cables',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1906,12 +2383,13 @@ final class AssetController extends AbstractController
     )]
     public function searchCables(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Cable'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Cable/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a cable by ID',
         responses: [
@@ -1920,10 +2398,11 @@ final class AssetController extends AbstractController
     )]
     public function getCable(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Cable'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cable',
         parameters: [
@@ -1936,12 +2415,13 @@ final class AssetController extends AbstractController
     )]
     public function createCable(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Cable'), $request->getParameters(), [self::class, 'getCable']);
+        return Search::createBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getCable']);
     }
 
     #[Route(path: '/Cable/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a cable by ID',
         parameters: [
@@ -1954,21 +2434,23 @@ final class AssetController extends AbstractController
     )]
     public function updateCable(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Cable'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Cable/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a cable by ID',
     )]
     public function deleteCable(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Cable'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Cable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search sockets',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -1978,12 +2460,13 @@ final class AssetController extends AbstractController
     )]
     public function searchSockets(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Socket'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Socket/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a socket by ID',
         responses: [
@@ -1992,10 +2475,11 @@ final class AssetController extends AbstractController
     )]
     public function getSocket(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Socket'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket', methods: ['POST'], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a socket',
         parameters: [
@@ -2008,12 +2492,13 @@ final class AssetController extends AbstractController
     )]
     public function createSocket(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Socket'), $request->getParameters(), [self::class, 'getSocket']);
+        return Search::createBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getSocket']);
     }
 
     #[Route(path: '/Socket/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a socket by ID',
         parameters: [
@@ -2026,23 +2511,25 @@ final class AssetController extends AbstractController
     )]
     public function updateSocket(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Socket'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Socket/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a socket by ID',
     )]
     public function deleteSocket(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Socket'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('Socket', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version', methods: ['GET'], requirements: [
         'software_id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'List or search software versions',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
@@ -2055,12 +2542,13 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
-        return Search::searchBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get a software version by ID',
         responses: [
@@ -2072,12 +2560,13 @@ final class AssetController extends AbstractController
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
         $filters .= ';software.id==' . $request->getAttribute('software_id');
         $request->setParameter('filter', $filters);
-        return Search::getOneBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version', methods: ['POST'], requirements: [
         'software_id' => '\d+',
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a software version',
         parameters: [
@@ -2091,7 +2580,7 @@ final class AssetController extends AbstractController
     public function createSoftwareVersion(Request $request): Response
     {
         $request->setParameter('software', $request->getAttribute('software_id'));
-        return Search::createBySchema($this->getKnownSchema('SoftwareVersion'), $request->getParameters(), [
+        return Search::createBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getParameters(), [
             self::class, 'getSoftwareVersion'
         ], [
             'mapped' => [
@@ -2103,6 +2592,7 @@ final class AssetController extends AbstractController
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Update a software version by ID',
         parameters: [
@@ -2115,17 +2605,18 @@ final class AssetController extends AbstractController
     )]
     public function updateSoftwareVersion(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
         'id' => '\d+'
     ], tags: ['Assets'])]
+    #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Delete a software version by ID',
     )]
     public function deleteSoftwareVersion(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('SoftwareVersion'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

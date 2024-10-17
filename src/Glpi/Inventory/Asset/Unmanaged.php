@@ -305,7 +305,7 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(array $data = null)
+    public function handleLinks(?array $data = null)
     {
         if ($this->current_key !== null) {
             $data = [$this->data[$this->current_key]];
@@ -341,10 +341,5 @@ class Unmanaged extends MainAsset
         $this->conf = $conf;
         $this->states_id_default = $conf->states_id_default;
         return $conf->import_unmanaged == 1;
-    }
-
-    public function getItemtype(): string
-    {
-        return \Unmanaged::class;
     }
 }

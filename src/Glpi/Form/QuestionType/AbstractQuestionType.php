@@ -35,6 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Question;
 use Override;
 
@@ -43,12 +45,6 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function __construct()
     {
-    }
-
-    #[Override]
-    public function loadJavascriptFiles(): array
-    {
-        return []; // No extra JS files by default
     }
 
     #[Override]
@@ -76,9 +72,44 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) { return null; },
+                "convertDefaultValue": function (question, value) {
+                    return value;
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
         return ''; // No options by default
+    }
+
+    #[Override]
+    public function renderAnswerTemplate(mixed $answer): string
+    {
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(
+            '<div class="form-control-plaintext">{{ answer }}</div>',
+            ['answer' => $this->formatRawAnswer($answer)]
+        );
+    }
+
+    #[Override]
+    public function formatRawAnswer(mixed $answer): string
+    {
+        // By default only return the string answer
+        if (!is_string($answer) && !is_numeric($answer)) {
+            throw new \InvalidArgumentException(
+                'Raw answer must be a string or a method must be implemented to format the answer'
+            );
+        }
+
+        return (string) $answer;
     }
 
     #[Override]
@@ -97,5 +128,33 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return null;
+    }
+
+    #[Override]
+    public function getConfig(?Question $question): ?JsonFieldInterface
+    {
+        $config_class = $this->getConfigClass();
+        if ($config_class === null || $question === null) {
+            return null;
+        }
+
+        $extra_data = $question->fields['extra_data'];
+        if (empty($extra_data)) {
+            return null;
+        }
+
+        return $config_class::jsonDeserialize(json_decode($extra_data, true));
     }
 }

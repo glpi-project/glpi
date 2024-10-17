@@ -61,11 +61,13 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
      */
     public function isMultipleDropdown(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeDropdownConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_multiple_dropdown'] ?? false;
+        return $config->isMultipleDropdown();
     }
 
     #[Override]
@@ -80,27 +82,27 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
     }
 
     #[Override]
-    public function loadJavascriptFiles(): array
-    {
-        return array_merge(
-            parent::loadJavascriptFiles(),
-            ['js/form_question_dropdown.js']
-        );
-    }
-
-    #[Override]
     protected function getFormInlineScript(): string
     {
+        // language=Twig
         $js = <<<TWIG
-            $(document).ready(function() {
+            import("{{ js_path('js/modules/Forms/QuestionDropdown.js') }}").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                    new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                        }
+                    });
+
+                    $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
+                        const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
+                        if (question_type === '{{ question_type|escape('js') }}') {
+                            const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
+                            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
                         }
                     });
                 {% endif %}
@@ -134,7 +136,8 @@ TWIG;
                     'multiple': false,
                     'display_emptychoice': true,
                     'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': ''
+                    'mb': '',
+                    'aria_label': __('Default option')
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -148,7 +151,8 @@ TWIG;
                     'multiple': true,
                     'values': checked_values,
                     'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': ''
+                    'mb': '',
+                    'aria_label': __('Default options')
                 }
             ) }}
         </div>
@@ -231,5 +235,11 @@ TWIG;
             'checked_values' => $checked_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeDropdownConfig::class;
     }
 }

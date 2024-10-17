@@ -34,11 +34,8 @@
  */
 
 if (strpos($_SERVER['PHP_SELF'], "private_public.php")) {
-    include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
 }
 
 if (isset($_POST['is_private'])) {
@@ -51,7 +48,7 @@ if (isset($_POST['is_private'])) {
             echo "<input type='hidden' name='is_recursive' value='0'>\n";
             $private =  __('Personal');
             $link    = "<a href='#' onClick='setPublic" . $_POST['rand'] . "();return false;'>" . __('Set public') . "</a>";
-            printf(__('%1$s - %2$s'), $private, $link);
+            printf(__s('%1$s - %2$s'), $private, $link);
             break;
 
         case false:
@@ -66,13 +63,13 @@ if (isset($_POST['is_private'])) {
             echo "<table class='w-100'>";
             echo "<tr><td>";
             echo "<input type='hidden' name='is_private' value='0'>\n";
-            echo __('Public');
+            echo __s('Public');
             echo "</td><td>";
             Entity::dropdown(['value' => $val]);
-            echo "</td><td>" . __('Child entities') . "</td><td>";
+            echo "</td><td>" . __s('Child entities') . "</td><td>";
             Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
             echo "</td><td>";
-            echo "<a href='#' onClick='setPrivate" . $_POST['rand'] . "();return false'>" . __('Set personal') . "</a>";
+            echo "<a href='#' onClick='setPrivate" . $_POST['rand'] . "();return false'>" . __s('Set personal') . "</a>";
             echo "</td></tr></table>";
             break;
     }

@@ -151,8 +151,8 @@ class Change_Item extends CommonItilObject_Item
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'Change':
+        switch ($item::class) {
+            case Change::class:
                 self::showForObject($item);
                 break;
 

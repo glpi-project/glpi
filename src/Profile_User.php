@@ -350,12 +350,11 @@ class Profile_User extends CommonDBRelation
 
         $entries = [];
         foreach ($iterator as $data) {
-            $username = formatUserName(
+            $username = formatUserLink(
                 $data["id"],
                 $data["name"],
                 $data["realname"],
                 $data["firstname"],
-                1
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                 $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
@@ -537,12 +536,11 @@ TWIG, $avatar_params) . $username;
             if (!isset($entity_names[$data['entity']])) {
                 $entity_names[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
             }
-            $username = formatUserName(
+            $username = formatUserLink(
                 $data["id"],
                 $data["name"],
                 $data["realname"],
                 $data["firstname"],
-                1
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                 $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
@@ -859,8 +857,8 @@ TWIG, $avatar_params) . $username;
     /**
      * Get entities for which a user have a right
      *
-     * @param $user_ID         user ID
-     * @param $only_dynamic    get only recursive rights (false by default)
+     * @param int  $user_ID      user ID
+     * @param bool $only_dynamic get only recursive rights (false by default)
      *
      * @return array of entities ID
      **/
@@ -1019,8 +1017,8 @@ TWIG, $avatar_params) . $username;
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Entity':
+            switch (get_class($item)) {
+                case Entity::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $count = $DB->request([
@@ -1045,7 +1043,7 @@ TWIG, $avatar_params) . $username;
                     }
                     break;
 
-                case 'Profile':
+                case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
@@ -1054,7 +1052,7 @@ TWIG, $avatar_params) . $username;
                     }
                     break;
 
-                case 'User':
+                case User::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
@@ -1072,16 +1070,16 @@ TWIG, $avatar_params) . $username;
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'Entity':
+        switch (get_class($item)) {
+            case Entity::class:
                 self::showForEntity($item);
                 break;
 
-            case 'Profile':
+            case Profile::class:
                 self::showForProfile($item);
                 break;
 
-            case 'User':
+            case User::class:
                 self::showForUser($item);
                 break;
         }
@@ -1117,9 +1115,9 @@ TWIG, $avatar_params) . $username;
             ($ma->getAction() == 'add')
             && ($peer_number == 2)
         ) {
-            echo "<br><br>" . sprintf(__('%1$s: %2$s'), Entity::getTypeName(1), '');
+            echo "<br><br>" . sprintf(__s('%1$s: %2$s'), Entity::getTypeName(1), '');
             Entity::dropdown(['entity' => $_SESSION['glpiactiveentities']]);
-            echo "<br><br>" . sprintf(__('%1$s: %2$s'), __('Recursive'), '');
+            echo "<br><br>" . sprintf(__s('%1$s: %2$s'), __('Recursive'), '');
             Html::showCheckbox(['name' => 'is_recursive']);
         }
     }

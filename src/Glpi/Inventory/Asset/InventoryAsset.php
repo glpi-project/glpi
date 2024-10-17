@@ -93,7 +93,7 @@ abstract class InventoryAsset
      * @param CommonDBTM $item Item instance
      * @param array|null $data Data part, optional
      */
-    public function __construct(CommonDBTM $item, array $data = null)
+    public function __construct(CommonDBTM $item, ?array $data = null)
     {
         $this->item = $item;
         if ($data !== null) {
@@ -457,7 +457,10 @@ abstract class InventoryAsset
         return $input;
     }
 
-    abstract public function getItemtype(): string;
+    public function getItemtype(): string
+    {
+        return $this->item::class;
+    }
 
     final protected function cleanName(string $string): string
     {

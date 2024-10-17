@@ -127,7 +127,7 @@ class RuleMatchedLog extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
+        if ($item instanceof CommonDBTM && ($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
             self::showForItem($item);
             return true;
         }

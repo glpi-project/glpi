@@ -36,6 +36,7 @@
 namespace Glpi\Application\View\Extension;
 
 use Plugin;
+use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -107,12 +108,15 @@ class PluginExtension extends AbstractExtension
      * @param bool    $use_url_base
      *
      * @return string|null
+     *
+     * @deprecated 11.0
      */
     public function getPluginWebDir(
         string $plugin,
         bool $full = true,
         bool $use_url_base = false
     ): ?string {
+        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
         return Plugin::getWebDir($plugin, $full, $use_url_base) ?: null;
     }
 }

@@ -131,8 +131,10 @@ final class Environment extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         $this->conf = $conf;
-        return $conf->import_env == 1;
+        return $conf->import_env == 1 && in_array($this->item::class, $CFG_GLPI['environment_types']);
     }
 
     public function getItemtype(): string

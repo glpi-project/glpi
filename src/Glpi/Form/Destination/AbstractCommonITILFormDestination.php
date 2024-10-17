@@ -38,10 +38,24 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\AssigneeField;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\EntityField;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
+use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
+use Glpi\Form\Destination\CommonITILField\LocationField;
+use Glpi\Form\Destination\CommonITILField\RequestSourceField;
+use Glpi\Form\Destination\CommonITILField\TemplateField;
+use Glpi\Form\Destination\CommonITILField\ITILTaskField;
+use Glpi\Form\Destination\CommonITILField\ObserverField;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\CommonITILField\UrgencyField;
+use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Form;
 use Override;
+use Ticket;
 
 abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
 {
@@ -71,8 +85,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         AnswersSet $answers_set,
         array $config
     ): array {
-        $typename = static::getTypeName(1);
-        $itemtype = static::getTargetItemtype();
+        $typename        = static::getTypeName(1);
+        $itemtype        = static::getTargetItemtype();
+        $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
         // missing from the input.
@@ -81,10 +96,37 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             'content' => '',
         ];
 
+        // Template field must be computed before applying predefined fields
+        $target_itemtype = static::getTargetItemtype();
+        $template_class = (new $target_itemtype())->getTemplateClass();
+        $template_field = new TemplateField($template_class);
+        $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
+            $template_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
+
+        // Remove template field from fields to apply
+        $fields_to_apply = array_filter(
+            $fields_to_apply,
+            fn($field) => !$field instanceof TemplateField
+        );
+
+        // ITILCategory field must be computed before applying predefined fields
+        $itilcategory_field = new ITILCategoryField();
+        $input = $itilcategory_field->applyConfiguratedValueToInputUsingAnswers(
+            $itilcategory_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
+
+        // Compute and apply template predefined template fields
+        $input = $this->applyPredefinedTemplateFields($input);
+
         // Compute input from fields configuration
         foreach ($this->getConfigurableFields() as $field) {
             $input = $field->applyConfiguratedValueToInputUsingAnswers(
-                $field->getValue($form, $config),
+                $field->getConfig($form, $config),
                 $input,
                 $answers_set
             );
@@ -135,9 +177,25 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
      */
     public function getConfigurableFields(): array
     {
+        $target_itemtype = static::getTargetItemtype();
+        $template_class = (new $target_itemtype())->getTemplateClass();
+
         return [
             new TitleField(),
             new ContentField(),
+            new TemplateField($template_class),
+            new UrgencyField(),
+            new ITILCategoryField(),
+            new EntityField(),
+            new LocationField(),
+            new AssociatedItemsField(),
+            new ITILFollowupField(),
+            new RequestSourceField(),
+            new ValidationField(),
+            new ITILTaskField(),
+            new RequesterField(),
+            new ObserverField(),
+            new AssigneeField(),
         ];
     }
 
@@ -149,5 +207,37 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         }
 
         return "config[$field_key]";
+    }
+
+    private function applyPredefinedTemplateFields(array $input): array
+    {
+        $itemtype = static::getTargetItemtype();
+
+        /** @var \CommonITILObject $itil */
+        $itil = new $itemtype();
+        $template = $itil->getITILTemplateToUse(
+            entities_id: $_SESSION["glpiactive_entity"],
+            itilcategories_id: $input['itilcategories_id'] ?? 0,
+            type: $input['type'] ?? (isset($input['itilcategories_id']) ? Ticket::INCIDENT_TYPE : null)
+        );
+        $template_foreign_key = $template::getForeignKeyField();
+
+        if (isset($input[$template_foreign_key])) {
+            $template->getFromDB($input[$template_foreign_key]);
+        } else {
+            $input[$template_foreign_key] = $template->getID();
+        }
+
+        $predefined_fields_class = $itemtype . "TemplatePredefinedField";
+
+        /** @var \ITILTemplatePredefinedField $predefined_fields */
+        $predefined_fields = new $predefined_fields_class();
+
+        $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
+        foreach ($fields as $field => $value) {
+            $input[$field] = $value;
+        }
+
+        return $input;
     }
 }

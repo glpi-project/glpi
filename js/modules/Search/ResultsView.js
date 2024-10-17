@@ -51,7 +51,7 @@ window.GLPI.Search.ResultsView = class ResultsView {
     }
 
     getElement() {
-        return $('#'+this.element_id);
+        return $(`#${this.element_id}`);
     }
 
     getAJAXContainer() {

@@ -1132,6 +1132,7 @@
                 card_id: e.card_id,
                 purged: response.purged || false
             });
+            refresh();
         });
     }
 

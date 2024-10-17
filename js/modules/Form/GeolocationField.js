@@ -103,7 +103,7 @@ class GeolocationField {
 
         this.map.on('click', onMapClick);
 
-        this.map.on('popupopen', function(e){
+        this.map.on('popupopen', (e) => {
             const _popup = e.popup;
             const _container = $(_popup._container);
 

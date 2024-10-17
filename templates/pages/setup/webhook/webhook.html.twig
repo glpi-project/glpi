@@ -38,7 +38,7 @@
 
 {% block more_fields %}
 
-    {{ fields.nullField() }}
+    {{ fields.dropdownField('WebhookCategory', 'webhookcategories_id', item.fields['webhookcategories_id'], 'WebhookCategory'|itemtype_name) }}
 
     {{ fields.dropdownArrayField(
         'itemtype',

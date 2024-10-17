@@ -33,7 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -48,17 +51,17 @@ switch ($action) {
             $response = Webhook::validateCRAChallenge($webhook->fields['url'], 'validate_cra_challenge', $_POST['secret']);
             header("Content-Type: application/json; charset=UTF-8");
             echo json_encode($response);
+            return;
         } else {
-            die(404);
+            throw new NotFoundHttpException();
         }
-        die();
     case 'get_events_from_itemtype':
         echo Dropdown::showFromArray(
             "event",
             Webhook::getDefaultEventsList(),
             ['display' => false]
         );
-        die();
+        return;
     case 'get_items_from_itemtype':
         if (array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())) {
             $object = new $_POST['itemtype']();
@@ -96,7 +99,7 @@ switch ($action) {
                 );
             }
         }
-        die();
+        return;
     case 'get_webhook_body':
         $webhook = new Webhook();
         $itemtype = $_POST['itemtype'];
@@ -131,15 +134,14 @@ switch ($action) {
             echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);
         }
 
-        die();
+        return;
     case 'update_payload_template':
         $webhook_id = $_POST['webhook_id'];
         $payload_template = $_POST['payload_template'] ?? '';
         $webhook = new Webhook();
         if ($webhook->getFromDB($webhook_id)) {
             if (!$webhook->canUpdateItem()) {
-                http_response_code(403);
-                die();
+                throw new AccessDeniedHttpException();
             }
             if ($_POST['use_default_payload'] === 'true') {
                 $webhook->update([
@@ -154,25 +156,19 @@ switch ($action) {
                 ]);
             }
         } else {
-            http_response_code(404);
-            die();
+            throw new NotFoundHttpException();
         }
-        die();
+        return;
     case 'resend':
         $result = QueuedWebhook::sendById($_POST['id']);
-        if ($result) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
+        if (!$result) {
+            throw new BadRequestHttpException();
         }
-        die();
+        return;
     case 'get_monaco_suggestions':
         header("Content-Type: application/json; charset=UTF-8");
-        try {
-            echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            http_response_code(500);
-        }
-        die();
+        echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);
+        return;
 }
-http_response_code(400);
+
+throw new BadRequestHttpException();

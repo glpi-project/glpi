@@ -1,6 +1,6 @@
 <script setup>
+    /* global tinycolor */
     import {computed} from "vue";
-    import tinycolor from 'tinycolor2';
 
     const props = defineProps({
         parent_id: {
@@ -30,7 +30,7 @@
 
     function getProfilerCategoryColor(category) {
         const predefined_colors = {
-            core: '#526dad',
+            core: '#89a2e1',
             db: '#9252ad',
             twig: '#64ad52',
             plugins: '#a077a6',
@@ -132,7 +132,7 @@
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></td>
                     <td data-prop="category">
-                        <span class="category-badge" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
+                        <span class="category-badge fw-bold" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
                             {{ section.category }}
                         </span>
                     </td>

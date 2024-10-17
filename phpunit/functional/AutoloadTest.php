@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 require_once __DIR__ . '/../Autoload.php';
 
@@ -81,6 +82,7 @@ class AutoloadTest extends DbTestCase
         $this->assertTrue(class_exists('Glpi\\Event'));
     }
 
+    #[RunInSeparateProcess]
     public function testPluginAutoloading()
     {
         // PSR4 autoloader (registered during plugins initialization)

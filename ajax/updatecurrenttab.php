@@ -33,16 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-// Prevent plugins loading to speed up the framework initiation time.
-/** @var bool $PLUGINS_INCLUDED */
-$PLUGINS_INCLUDED = true;
-
-include('../inc/includes.php');
-
-if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
-    Session::checkLoginUser();
-}
-
 // Manage tabs
 if (isset($_GET['itemtype']) && isset($_GET['tab_key'])) {
     Session::setActiveTab($_GET['itemtype'], $_GET['tab_key']);

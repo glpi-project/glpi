@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -52,6 +50,7 @@ if (
     $rand = mt_rand();
     $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
 
+    /** @var CommonITILObject $item */
     if ($item = getItemForItemtype($_POST["itemtype"])) {
         switch ($_POST["type"]) {
             case "user":
@@ -64,11 +63,13 @@ if (
                     }
                 }
 
-                $options = ['name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
+                $options = [
+                    'name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
                     'entity'      => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'right'       => $right,
                     'rand'        => $rand,
-                    'ldap_import' => true
+                    'ldap_import' => true,
+                    'toupdate'    => null,
                 ];
 
                 if ($CFG_GLPI["notifications_mailing"]) {
@@ -94,7 +95,7 @@ if (
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     $toupdate = [];
-                    if (isset($options['toupdate']) && is_array($options['toupdate'])) {
+                    if (is_array($options['toupdate'])) {
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
@@ -180,7 +181,8 @@ if (
             case "supplier":
                 $options = ['name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
                     'entity'    => Session::getMatchingActiveEntities($_POST['entity_restrict']),
-                    'rand'      => $rand
+                    'rand'      => $rand,
+                    'to_update' => null,
                 ];
                 if ($CFG_GLPI["notifications_mailing"]) {
                     $paramscomment = ['value'       => '__VALUE__',
@@ -202,7 +204,7 @@ if (
                 }
                 if ($_POST["itemtype"] == 'Ticket') {
                     $toupdate = [];
-                    if (isset($options['toupdate']) && is_array($options['toupdate'])) {
+                    if (is_array($options['toupdate'])) {
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
@@ -229,7 +231,7 @@ if (
                         echo '<br>';
                         printf(
                             __('%1$s: %2$s'),
-                            _n('Email', 'Emails', 1),
+                            _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . $_POST["actortype"] .
                             "[alternative_email]'>"
                         );

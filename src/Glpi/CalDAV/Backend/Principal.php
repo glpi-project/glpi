@@ -219,7 +219,6 @@ class Principal extends AbstractBackend
                 break;
             default:
                 return []; // No groups if principal is not a user or a group
-            break;
         }
 
         $groups_iterator = $DB->request($groups_query);

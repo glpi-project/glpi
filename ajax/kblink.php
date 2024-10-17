@@ -41,8 +41,6 @@
 /** @var \DBmysql $DB */
 global $DB;
 
-include('../inc/includes.php');
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -52,7 +50,7 @@ Session::checkLoginUser();
 if (isset($_POST["table"], $_POST["value"])) {
     // Security
     if (!$DB->tableExists($_POST['table'])) {
-        exit();
+        return;
     }
 
     if (isset($_POST['withlink'])) {
@@ -63,7 +61,7 @@ if (isset($_POST["table"], $_POST["value"])) {
                 '_idor_token' => $_POST['_idor_token'] ?? ""
             ])
         ) {
-            exit();
+            return;
         }
         $item = new $itemtype();
         $item->getFromDB((int)$_POST["value"]);

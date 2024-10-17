@@ -34,8 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-
-include('../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 Session::checkLoginUser();
 
@@ -43,23 +42,25 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
     if (
-        !isset($_POST['tasks_id'])
-        || !isset($_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
     ) {
-        exit();
+        return;
     }
 
-    $taskClass = $parent->getType() . "Task";
+    $taskClass = $parent::getType() . "Task";
+    /** @var CommonITILTask $task */
     $task = new $taskClass();
-    $task->getFromDB(intval($_POST['tasks_id']));
+    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
+        throw new AccessDeniedHttpException();
+    }
     if (!in_array($task->fields['state'], [0, Planning::INFO])) {
         $new_state = ($task->fields['state'] == Planning::DONE)
                         ? Planning::TODO
                         : Planning::DONE;
-        $foreignKey = $parent->getForeignKeyField();
+        $foreignKey = $parent::getForeignKeyField();
         $task->update([
-            'id'        => intval($_POST['tasks_id']),
-            $foreignKey => intval($_POST[$foreignKey]),
+            'id'        => (int) $_POST['tasks_id'],
+            $foreignKey => (int) $_POST[$foreignKey],
             'state'     => $new_state,
             'users_id_editor' => Session::getLoginUserID()
         ]);
@@ -73,14 +74,22 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
     if (!isset($_REQUEST['type'])) {
-        exit();
+        return;
     }
     if (!isset($_REQUEST['parenttype'])) {
-        exit();
+        return;
     }
 
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
+
+    if (!$parent instanceof CommonITILObject) {
+        trigger_error(
+            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
+            E_USER_WARNING
+        );
+        return;
+    }
 
     $twig = TemplateRenderer::getInstance();
     $template = null;
@@ -114,11 +123,11 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $foreignKey = $parent->getForeignKeyField();
         $params[$foreignKey] = $_REQUEST[$foreignKey];
         $parent::showSubForm($item, $_REQUEST["id"], ['parent' => $parent, $foreignKey => $_REQUEST[$foreignKey]]);
-        exit();
+        return;
     }
     if ($template === null) {
-        echo __('Access denied');
-        exit();
+        echo __s('Access denied');
+        return;
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 }

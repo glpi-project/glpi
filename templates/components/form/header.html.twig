@@ -57,7 +57,7 @@
 {% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
 
 {% if open_form and item.canEdit(item.fields['id']) %}
-<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+<form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
    {% endif %}
@@ -67,9 +67,7 @@
 {% endif %}
    <div id="mainformtable">
       {% if include_header_content %}
-         {{ include('components/form/header_content.html.twig', {'inside_main': true}) }}
-      {% else %}
-         <input type="hidden" name="is_recursive" value="{{ item.fields['is_recursive']|default(1) }}" />
+         {{ include('components/form/header_content.html.twig') }}
       {% endif %}
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}

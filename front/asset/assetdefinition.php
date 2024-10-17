@@ -35,8 +35,6 @@
 
 use Glpi\Asset\AssetDefinition;
 
-include('../../inc/includes.php');
-
 Session::checkRight(AssetDefinition::$rightname, READ);
 
 Html::header(

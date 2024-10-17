@@ -145,6 +145,16 @@
     </div>
 </div>
 
+<script>
+    import("{{ js_path('js/modules/Forms/DestinationAutoConfigController.js') }}").then((m) => {
+        new m.GlpiFormDestinationAutoConfigController();
+    });
+    import("{{ js_path('js/modules/DynamicDropdownController.js') }}").then((m) => {
+        new m.DynamicDropdownController();
+    });
+</script>
+
+
 <style>
     /* Should be handled by tabler but it doesn't seem to be active */
     .accordion-header {

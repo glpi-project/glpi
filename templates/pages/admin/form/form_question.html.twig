@@ -31,12 +31,13 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var form                   Glpi\Form #}
-{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
-{# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
-{# @var question               Glpi\Form\Question|null #}
-{# @var section                Glpi\Form\Section|null #}
-{# @var can_update             bool #}
+{# @var form                         Glpi\Form #}
+{# @var question_types_manager       Glpi\Form\QuestionType\QuestionTypesManager #}
+{# @var question_type                Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question                     Glpi\Form\Question|null #}
+{# @var section                      Glpi\Form\Section|null #}
+{# @var can_update                   bool #}
+{# @var allow_unauthenticated_access bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -51,11 +52,13 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
     <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
+        data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
         class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
         aria-label="{{ __("Question details") }}"
     >
@@ -73,6 +76,15 @@
             </div>
             {# Display question's title #}
             <div class="d-flex mt-n1 align-items-center">
+                <i
+                    class="ti ti-alert-triangle text-warning me-2 {{ allow_unauthenticated_access and not question_type.isAllowedForUnauthenticatedAccess() ? '' : 'd-none' }}"
+                    data-glpi-form-editor-blacklisted-question-type-warning
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-placement="top"
+                    data-bs-html="true"
+                    data-bs-content="{{ __("The current access policy allows unauthenticated access to this form, but this question type will be hidden to unauthenticated users.") }}"
+                ></i>
                 <input
                     title="{{ __("Question name") }}"
                     class="form-control content-editable-h2 mb-0"
@@ -87,12 +99,14 @@
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
                 {# Duplicate question #}
                 <i
+                    role="button"
                     class="ti ti-copy ms-auto cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
                     data-glpi-form-editor-on-click="duplicate-question"
                     data-glpi-form-editor-question-extra-details
+                    role="button"
                 ></i>
             </div>
 
@@ -132,6 +146,7 @@
             <div
                 class="d-flex align-items-center mt-2"
                 data-glpi-form-editor-question-extra-details
+                data-fix-dropdown-flex
             >
                 {% set categories = {} %}
                 {% for category in question_types_manager.getCategories() %}
@@ -240,6 +255,16 @@
             type="hidden"
             name="rank"
             value="{{ question is not null ? question.fields.rank : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="category"
+            value="{{ question_type.getCategory().value }}"
+        />
+        <input
+            type="hidden"
+            name="type"
+            value="{{ constant('class', question_type) }}"
         />
     </section>
     <div data-glpi-form-editor-question-extra-details>

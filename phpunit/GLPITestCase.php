@@ -33,9 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -46,6 +48,7 @@ class GLPITestCase extends TestCase
     private $int;
     private $str;
     protected $has_failed = false;
+    private ?array $config_copy = null;
 
     /**
      * @var TestHandler
@@ -59,13 +62,18 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-       // By default, no session, not connected
+        $this->storeGlobals();
+
+        global $DB;
+        $DB->setTimezone('UTC');
+
+        // By default, no session, not connected
         $this->resetSession();
 
         // By default, there shouldn't be any pictures in the test files
         $this->resetPictures();
 
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
@@ -76,10 +84,16 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->php_log_handler]);
         $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
         $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+
+        vfsStreamWrapper::register();
     }
 
     public function tearDown(): void
     {
+        $this->resetGlobalsAndStaticValues();
+
+        vfsStreamWrapper::unregister();
+
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
             unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
             $this->assertSame(
@@ -397,5 +411,52 @@ class GLPITestCase extends TestCase
     protected function getTestRootEntity(bool $only_id = false)
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
+    }
+
+    /**
+     * Store Globals
+     *
+     * @return void
+     */
+    private function storeGlobals(): void
+    {
+        global $CFG_GLPI;
+
+        if ($this->config_copy === null) {
+            $this->config_copy = $CFG_GLPI;
+        }
+    }
+
+    /**
+     * Reset globals and static variables
+     *
+     * @return void
+     */
+    private function resetGlobalsAndStaticValues(): void
+    {
+        // Globals
+        global $CFG_GLPI;
+        $CFG_GLPI = $this->config_copy;
+
+        // Statics values
+        Log::$use_queue = false;
+        CommonDBTM::clearSearchOptionCache();
+        \Glpi\Search\SearchOption::clearSearchOptionCache();
+        AssetDefinitionManager::unsetInstance();
+        Dropdown::resetItemtypesStaticCache();
+    }
+
+    /**
+     * Apply a DateTime modification using the given string.
+     * Examples:
+     * - $this->modifyCurrentTime('+1 second');
+     * - $this->modifyCurrentTime('+5 hours');
+     * - $this->modifyCurrentTime('-2 years');
+     */
+    protected function modifyCurrentTime(string $modification): void
+    {
+        $date = new DateTime(Session::getCurrentTime());
+        $date->modify($modification);
+        $_SESSION['glpi_currenttime'] = $date->format("Y-m-d H:i:s");
     }
 }

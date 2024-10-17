@@ -38,7 +38,7 @@ describe('Form destination', () => {
         }).as('form_id');
 
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
@@ -46,6 +46,7 @@ describe('Form destination', () => {
 
             // Create a ticket destination
             cy.findByRole('button', {name: "Add ticket"}).click();
+            cy.checkAndCloseAlert('Item successfully added');
         });
     });
 
@@ -59,6 +60,7 @@ describe('Form destination', () => {
 
         // Save form
         cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Check if the form destination name is updated
         cy.findByRole("textbox", {name: "Form destination name"}).should('exist').and('have.value', 'Updated ticket destination name');
@@ -66,7 +68,7 @@ describe('Form destination', () => {
 
     it('can enable or disable auto configuration on supported fields', () => {
         // Inputs aliases
-        cy.findByRole("textbox", {'name': "Title"}).as("title_field");
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
         cy.findByLabelText("Content").awaitTinyMCE().as("content_field");
 
         // Checkbox aliases
@@ -103,6 +105,7 @@ describe('Form destination', () => {
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
         });
 
         describe('Validate manual values are kept after reload', () => {
@@ -122,6 +125,7 @@ describe('Form destination', () => {
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
         });
 
         describe('Validate manual values have been removed', () => {
@@ -133,5 +137,10 @@ describe('Form destination', () => {
                 .should('have.text', "")
             ;
         });
+    });
+
+    it('check form destination title default value', () => {
+        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.get('@title_field').contains('Form name: Test form for the destination form suite');
     });
 });

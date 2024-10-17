@@ -33,23 +33,24 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 // Direct access to file
-include('../inc/includes.php');
+
 header("Content-Type: application/json; charset=UTF-8");
 
 Session::checkLoginUser();
 
 // Tech only
 if (Session::getCurrentInterface() !== "central") {
-    http_response_code(403);
-    die;
+    throw new AccessDeniedHttpException();
 }
 
 // Read parameter and load pending reason
 $pending_reason = PendingReason::getById($_REQUEST['pendingreasons_id'] ?? null);
 if (!$pending_reason) {
-    http_response_code(400);
-    die;
+    throw new BadRequestHttpException();
 }
 
 echo json_encode([

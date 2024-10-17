@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Http\Request;
+
 class ManagementController extends \HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
@@ -47,5 +49,12 @@ class ManagementController extends \HLAPITestCase
         foreach ($management_types as $m_name) {
             $this->api->autoTestCRUD('/Management/' . $m_name);
         }
+    }
+
+    public function testDocumentDownload()
+    {
+        $this->login();
+        // Not sure we can mock a file upload to actually test the download. At least we need to check the endpoint exists.
+        $this->api->hasMatch(new Request('GET', '/Management/Document/1/Download'));
     }
 }

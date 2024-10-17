@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 Session::checkRightsOr('reservation', [CREATE, UPDATE, DELETE, PURGE]);
 
@@ -90,19 +88,6 @@ if (isset($_POST["add"])) {
         "inventory",
         //TRANS: %s is the user login
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
-    );
-    Html::back();
-} else if (isset($_POST["backToStock"])) {
-    $ri->check($_POST["id"], PURGE);
-    $ri->backToStock($_POST);
-
-    Event::log(
-        $_POST['id'],
-        "reservationitem",
-        4,
-        "inventory",
-        //TRANS: %s is the user login
-        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     Html::back();
 } else if (isset($_POST["update"])) {

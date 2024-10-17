@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
-
-include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -48,4 +48,5 @@ if (isset($_POST["add"])) {
     Item_Devices::updateAll($_POST);
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

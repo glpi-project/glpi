@@ -42,6 +42,7 @@ use Glpi\DBAL\QuerySubQuery;
 class ITILFollowup extends CommonDBChild
 {
     use Glpi\Features\ParentStatus;
+    use ITILSubItemRights;
 
    // From CommonDBTM
     public $auto_message_on_action = false;
@@ -52,19 +53,18 @@ class ITILFollowup extends CommonDBChild
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
-    const SEEPUBLIC       =    1;
-    const UPDATEMY        =    2;
-    const ADDMYTICKET     =    4;
-    const UPDATEALL       = 1024;
-    const ADDGROUPTICKET  = 2048;
-    const ADDALLTICKET    = 4096;
-    const SEEPRIVATE      = 8192;
-
     /**
-     * Right allowing the user to add a follow-up as soon as he is an observer of an ITIL object.
-     * @var integer
+     * @deprecated 11.0 Use ITILFollowup::ADDMY
      */
-    const ADD_AS_OBSERVER = 16384;
+    const ADDMYTICKET     = self::ADDMY;
+    /**
+     * @deprecated 11.0 Use ITILFollowup::ADD_AS_GROUP
+     */
+    const ADDGROUPTICKET  = self::ADD_AS_GROUP;
+    /**
+     * @deprecated 11.0 Use ITILFollowup::ADDALLITEM
+     */
+    const ADDALLTICKET    = self::ADDALLITEM;
 
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
@@ -125,13 +125,27 @@ class ITILFollowup extends CommonDBChild
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('change', UPDATE)
-             || Session::haveRight('problem', UPDATE)
-             || (Session::haveRightsOr(
-                 self::$rightname,
-                 [self::ADDALLTICKET, self::ADDMYTICKET, self::ADDGROUPTICKET]
-             )
-             || Session::haveRight('ticket', Ticket::OWN));
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::ADDALLITEM,
+                self::ADD_AS_GROUP,
+                self::ADDMY,
+                self::ADD_AS_OBSERVER,
+                self::ADD_AS_TECHNICIAN
+            ],
+        ));
+    }
+
+    public static function canUpdate(): bool
+    {
+        return (Session::haveRightsOr(
+            self::$rightname,
+            [
+                self::UPDATEALL,
+                self::UPDATEMY,
+            ]
+        ));
     }
 
 
@@ -281,7 +295,6 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-        $this->updateParentStatus($this->input['_job'], $this->input);
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
@@ -291,8 +304,6 @@ class ITILFollowup extends CommonDBChild
             ];
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
         }
-
-        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
        // Add log entry in the ITILObject
         $changes = [
@@ -309,6 +320,9 @@ class ITILFollowup extends CommonDBChild
         );
 
         self::addToMergedTickets();
+
+        $this->updateParentStatus($this->input['_job'], $this->input);
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
         parent::post_addItem();
     }
@@ -895,46 +909,13 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-
-    public function getRights($interface = 'central')
-    {
-
-        $values = parent::getRights();
-        unset($values[UPDATE], $values[CREATE], $values[READ]);
-
-        if ($interface == 'central') {
-            $values[self::UPDATEALL]      = __('Update all');
-            $values[self::ADDALLTICKET]   = __('Add to all tickets');
-            $values[self::SEEPRIVATE]     = __('See private ones');
-        }
-
-        $values[self::ADDGROUPTICKET]
-                                 = ['short' => __('Add followup (associated groups)'),
-                                     'long'  => __('Add a followup to tickets of associated groups')
-                                 ];
-        $values[self::UPDATEMY]    = __('Update followups (author)');
-        $values[self::ADDMYTICKET] = ['short' => __('Add followup (requester)'),
-            'long'  => __('Add a followup to tickets (requester)')
-        ];
-        $values[self::ADD_AS_OBSERVER] = ['short' => __('Add followup (observer)'),
-            'long'  => __('Add a followup to tickets (observer)')
-        ];
-        $values[self::SEEPUBLIC]   = __('See public ones');
-
-        if ($interface == 'helpdesk') {
-            unset($values[PURGE]);
-        }
-
-        return $values;
-    }
-
     public static function showMassiveActionAddFollowupForm()
     {
         echo "<table class='tab_cadre_fixe'>";
-        echo '<tr><th colspan=4>' . __('Add a new followup') . '</th></tr>';
+        echo '<tr><th colspan=4>' . __s('Add a new followup') . '</th></tr>';
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Source of followup') . "</td>";
+        echo "<td>" . __s('Source of followup') . "</td>";
         echo "<td>";
         RequestType::dropdown(
             [
@@ -946,7 +927,7 @@ class ITILFollowup extends CommonDBChild
         echo "</tr>";
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Description') . "</td>";
+        echo "<td>" . __s('Description') . "</td>";
         echo "<td><textarea name='content' cols='50' rows='6'></textarea></td>";
         echo "</tr>";
 
@@ -982,7 +963,10 @@ class ITILFollowup extends CommonDBChild
                 $input = $ma->getInput();
                 $fup   = new self();
                 foreach ($ids as $id) {
-                    if ($item->getFromDB($id)) {
+                    if (
+                        ($item instanceof CommonITILObject)
+                        && $item->getFromDB($id)
+                    ) {
                         if (in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
@@ -1165,7 +1149,7 @@ class ITILFollowup extends CommonDBChild
      *
      * TODO 11.0 move method and `item` property into parent class
      *
-     * @param CommonITILObject Parent item
+     * @param CommonITILObject $parent Parent item
      *
      * @return void
      */

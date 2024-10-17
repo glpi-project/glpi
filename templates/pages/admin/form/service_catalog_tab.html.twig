@@ -1,0 +1,81 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="py-2 px-3 container-narrow ms-0">
+    <h2 class="d-flex align-items-center">
+        <i class="{{ icon }} me-2"></i>
+        {{ __("Service catalog configuration") }}
+    </h2>
+
+    <form
+        method="POST"
+        action="{{ form.getFormURL() }}"
+        data-submit-once
+    >
+        {{ fields.textField(
+            'illustration',
+            form.fields.illustration,
+            __('Illustration'),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+            }
+        ) }}
+
+        {{ fields.textareaField(
+            'description',
+            form.fields.description,
+            __('Description'),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+                'enable_richtext': true,
+                'enable_images': false,
+            }
+        ) }}
+
+        {# Hidden values #}
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="id" value="{{ form.getID() }}" />
+
+        {# Actions #}
+        <div class="d-flex mt-4">
+            <button type="submit" name="update" class="btn btn-primary ms-auto">
+                <i class="ti ti-device-floppy me-1 "></i>
+                {{ __("Save changes") }}
+            </button>
+        </div>
+    </form>
+</div>

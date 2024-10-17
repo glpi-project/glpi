@@ -31,6 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
+[data-glpi-form-editor-container]{
+    &:not(.initialized) {
+        pointer-events: none;
+    }
+}
+
 .form-editor {
     // Use all available parent space
     flex-grow: 1;
@@ -59,6 +65,14 @@
     // Revert border radius change from parent div
     .card {
         border-bottom-left-radius: var(--tblr-border-radius) !important;
+    }
+
+    [data-fix-dropdown-flex] {
+        .select2-selection__rendered {
+            // Weird chrome only css issue that break select2 dropdown for
+            // question type dropdowns...
+            display: flex !important;
+        }
     }
 }
 

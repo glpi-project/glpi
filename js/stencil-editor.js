@@ -32,6 +32,7 @@
  */
 
 // Needed for JS lint validation
+/* eslint no-var: 0 */
 /* global _ */
 
 /**
@@ -44,21 +45,21 @@
  * @returns {StencilEditor} A new StencilEditor instance.
  */
 const StencilEditor = function (container, rand, zones_definition) {
-    let zones = zones_definition;
+    const zones = zones_definition;
 
-    let croppers = [];
+    const croppers = [];
 
-    let _this = this;
+    const _this = this;
 
     _this.init = function () {
 
         // define set of croppers (and initialize them)
-        Array.prototype.forEach.call(document.querySelectorAll('.stencil-image'), function (img) {
+        Array.prototype.forEach.call(document.querySelectorAll('.stencil-image'), (img) => {
             croppers.push(new window.Cropper(img));
         });
 
         // set default state of croppers objects
-        croppers.forEach(function (cropper) {
+        croppers.forEach((cropper) => {
             const cr_selection = cropper.getCropperSelection();
             cr_selection.hidden = true;
             cr_selection
@@ -68,7 +69,7 @@ const StencilEditor = function (container, rand, zones_definition) {
             cropper.getCropperCanvas().disabled = true;
 
             const cr_image = cropper.getCropperImage();
-            cr_image.$ready(function () {
+            cr_image.$ready(() => {
                 // center image (by stretching y axis to max)
                 cr_image.$center('cover');
 
@@ -88,25 +89,25 @@ const StencilEditor = function (container, rand, zones_definition) {
                 e.preventDefault();
                 _this.editorEnable(parseInt($(this).data('zone-index')));
             })
-            .on('click', '#save-zone-data-' + rand, function () {
+            .on('click', `#save-zone-data-${rand}`, () => {
                 _this.saveZoneData();
             })
-            .on('click', '#reset-zone-data-' + rand, function () {
+            .on('click', `#reset-zone-data-${rand}`, () => {
                 _this.resetZoneData();
             })
-            .on('click', '#cancel-zone-data-' + rand, function () {
+            .on('click', `#cancel-zone-data-${rand}`, () => {
                 _this.editorDisable();
             })
-            .on('click', 'button[name="add-new-zone"]', function () {
+            .on('click', 'button[name="add-new-zone"]', () => {
                 _this.addNewZone();
             })
-            .on('click', 'button[name="remove-zone"]', function () {
+            .on('click', 'button[name="remove-zone"]', () => {
                 _this.removeZone();
             });
 
-        $('#clear-data-' + rand)
-            .on('click', function (e) {
-                const submitButton = $('#clear-data-' + rand);
+        $(`#clear-data-${rand}`)
+            .on('click', (e) => {
+                const submitButton = $(`#clear-data-${rand}`);
 
                 if (submitButton.data('delete') != '1') {
                     const originalText = submitButton.text();
@@ -124,7 +125,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // keyboard events
         $(document)
-            .on('keyup', function (e) {
+            .on('keyup', (e) => {
                 if (!_this.isEditorActive()) {
                     return;
                 }
@@ -132,7 +133,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 var keycode = (e.keyCode ? e.keyCode : e.which);
 
                 // Check if one of the cropper as a selection
-                const hasSelection = croppers.some(function (cropper) {
+                const hasSelection = croppers.some((cropper) => {
                     return cropper.getCropperSelection() !== undefined
                         && cropper.getCropperSelection().height > 0
                         && cropper.getCropperSelection().width > 0;
@@ -146,7 +147,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                     e.preventDefault();
                 }
             })
-            .on('keypress', function (e) {
+            .on('keypress', (e) => {
                 if (!_this.isEditorActive()) {
                     return;
                 }
@@ -154,7 +155,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 var keycode = (e.keyCode ? e.keyCode : e.which);
 
                 if (keycode == 13) {
-                    const hasSelection = croppers.some(function (cropper) {
+                    const hasSelection = croppers.some((cropper) => {
                         return cropper.getCropperSelection() !== undefined
                             && cropper.getCropperSelection().height > 0
                             && cropper.getCropperSelection().width > 0;
@@ -170,20 +171,20 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     // open zone definition control (and enable croppers)
     _this.editorEnable = function (current_zone) {
-        let zone = zones[current_zone] ?? { 'side': 0 };
+        const zone = zones[current_zone] ?? { 'side': 0 };
 
         // Hide tooltips to avoid bug : tooltip doesn't disappear when dom is altered
         $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('hide');
 
         $(container).find('.set-zone-data').removeClass('btn-warning'); // remove old active definition
         $(container).find(".defined-zone").remove();
-        $(container).find(".set-zone-data[data-zone-index=" + current_zone + "]").addClass('btn-warning');
-        $(container).find('#general-submit-' + rand).addClass('d-none');
-        $(container).find('#zone-data-' + rand).removeClass('d-none');
-        $(container).find('#zone_label-' + rand).val(zone['label'] ?? current_zone);
-        $(container).find('#zone_number-' + rand).val(zone['number'] ?? current_zone).data('zone-index', current_zone);
+        $(container).find(`.set-zone-data[data-zone-index=${  current_zone  }]`).addClass('btn-warning');
+        $(container).find(`#general-submit-${rand}`).addClass('d-none');
+        $(container).find(`#zone-data-${rand}`).removeClass('d-none');
+        $(container).find(`#zone_label-${rand}`).val(zone['label'] ?? current_zone);
+        $(container).find(`#zone_number-${rand}`).val(zone['number'] ?? current_zone).data('zone-index', current_zone);
 
-        croppers.forEach(function (cropper, side) {
+        croppers.forEach((cropper, side) => {
             cropper.getCropperSelection()
                 .$reset()
                 .hidden = false;
@@ -242,10 +243,10 @@ const StencilEditor = function (container, rand, zones_definition) {
         const sel_rel_y = sel_y - img_y;
 
         // get zone index
-        const zoneIndex = $(container).find('#zone_number-' + rand).data('zone-index');
+        const zoneIndex = $(container).find(`#zone_number-${rand}`).data('zone-index');
 
         // get zone number
-        const zoneNumber = $(container).find('#zone_number-' + rand).val();
+        const zoneNumber = $(container).find(`#zone_number-${rand}`).val();
 
         // set raw cropper data
         zones[zoneIndex] = {
@@ -256,7 +257,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 'width': sel_w,
             },
             'image': cr_image.$getTransform(),
-            'label': $(container).find('#zone_label-' + rand).val(),
+            'label': $(container).find(`#zone_label-${rand}`).val(),
             'number': zoneNumber,
             'side': croppers.indexOf(cropper),
         };
@@ -270,13 +271,13 @@ const StencilEditor = function (container, rand, zones_definition) {
         _this.editorDisable();
 
         // indicate visually that data are saved
-        $(container).find(".set-zone-data[data-zone-index=" + zoneIndex + "]")
+        $(container).find(`.set-zone-data[data-zone-index=${zoneIndex}]`)
             .removeClass('btn-warning')
             .addClass('btn-success')
             .find('i').removeClass('ti-file-unknown').addClass('ti-check');
 
         // update label
-        $(container).find(".set-zone-data[data-zone-index=" + zoneIndex + "]")
+        $(container).find(`.set-zone-data[data-zone-index=${zoneIndex}]`)
             .find('span').text(zones[zoneIndex]['label']);
 
         // update data on server
@@ -287,7 +288,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.sendDataForm = function () {
         $.ajax({
             type: 'POST',
-            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
             data: {
                 'update': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -299,7 +300,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     // reset definition and close controls
     _this.editorDisable = function () {
-        croppers.forEach(function (cropper) {
+        croppers.forEach((cropper) => {
             cropper.getCropperSelection()
                 .$reset()
                 .hidden = true;
@@ -310,15 +311,15 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
 
         $(container).find('.set-zone-data').removeClass('btn-warning');
-        $(container).find('#general-submit-' + rand).removeClass('d-none');
-        $(container).find('#zone-data-' + rand).addClass('d-none');
+        $(container).find(`#general-submit-${rand}`).removeClass('d-none');
+        $(container).find(`#zone-data-${rand}`).addClass('d-none');
 
         _this.redoZones();
     };
 
     // check if editor is active
     _this.isEditorActive = function () {
-        return croppers.some(function (cropper) {
+        return croppers.some((cropper) => {
             return cropper.getCropperCanvas().disabled === false;
         });
     };
@@ -328,7 +329,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         $(container).find(".defined-zone").remove();
 
         for (const [zone_number, zone] of Object.entries(zones)) {
-            $(container).find('.stencil-image[data-side=' + zone['side'] + ']').parent().append(`
+            $(container).find(`.stencil-image[data-side=${zone['side']}]`).parent().append(`
                 <a href="#zone_number_-${rand}${zone_number}"
                 class="defined-zone set-zone-data d-inline-flex align-items-center justify-content-center"
                 data-zone-index="${zone_number}"
@@ -358,7 +359,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.addNewZone = function () {
         $.ajax({
             type: 'POST',
-            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
             data: {
                 'add-new-zone': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -366,9 +367,9 @@ const StencilEditor = function (container, rand, zones_definition) {
             },
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
-                $('form#stencil-editor-form-' + rand + ' button[name="add-new-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
+                $(`form#stencil-editor-form-${rand} button[name="add-new-zone"][data-bs-toggle="tooltip"]`).tooltip('hide');
 
-                var index = $('form#stencil-editor-form-' + rand + ' button.set-zone-data').length + 1;
+                var index = $(`form#stencil-editor-form-${rand} button.set-zone-data`).length + 1;
                 var template = $('#zone-number-template');
                 var newZoneButton = $(template.html());
                 $(newZoneButton).attr('data-zone-index', index);
@@ -382,7 +383,7 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.removeZone = function () {
         $.ajax({
             type: 'POST',
-            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
             data: {
                 'remove-zone': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -390,8 +391,8 @@ const StencilEditor = function (container, rand, zones_definition) {
             },
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
-                $('form#stencil-editor-form-' + rand + ' button[name="remove-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
-                $('form#stencil-editor-form-' + rand + ' button.set-zone-data').sort(function (a, b) {
+                $(`form#stencil-editor-form-${rand} button[name="remove-zone"][data-bs-toggle="tooltip"]`).tooltip('hide');
+                $(`form#stencil-editor-form-${rand} button.set-zone-data`).sort((a, b) => {
                     return $(a).data('zone-index') - $(b).data('zone-index');
                 }).last().remove();
             },
@@ -400,10 +401,10 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     // reset zone data
     _this.resetZoneData = function () {
-        const zoneId = $(container).find('#zone_number-' + rand).data('zone-index');
+        const zoneId = $(container).find(`#zone_number-${rand}`).data('zone-index');
         $.ajax({
             type: 'POST',
-            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            url: `${CFG_GLPI.root_doc}/ajax/stencil.php`,
             data: {
                 'reset-zone': '',
                 'id': $(container).find('input[name=id]').val(),
@@ -412,10 +413,10 @@ const StencilEditor = function (container, rand, zones_definition) {
             },
             success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
-                $('form#stencil-editor-form-' + rand + ' button[name="reset-zone-data"][data-bs-toggle="tooltip"]').tooltip('hide');
+                $(`form#stencil-editor-form-${rand} button[name="reset-zone-data"][data-bs-toggle="tooltip"]`).tooltip('hide');
 
                 // Reset zone data
-                var zoneData = $('.set-zone-data[data-zone-index="' + zoneId + '"]');
+                var zoneData = $(`.set-zone-data[data-zone-index="${zoneId}"]`);
                 zoneData.removeClass('btn-success').removeClass('btn-warning');
                 zoneData.find('span').text(zoneId);
                 zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');

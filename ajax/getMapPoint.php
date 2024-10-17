@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -43,7 +42,7 @@ $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['items_id'] < 1) {
     $result = [
         'success'   => false,
-        'message'   => __('Required argument missing!')
+        'message'   => __s('Required argument missing!')
     ];
 } else {
     $itemtype = $_POST['itemtype'];
@@ -58,12 +57,13 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
         } else {
             $result = [
                 'success'   => false,
-                'message'   => __('Element seems not geolocalized or cannot be found')
+                'message'   => __s('Element seems not geolocalized or cannot be found')
             ];
         }
     }
 
     if (!count($result)) {
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
@@ -76,7 +76,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
             $result = [
                 'success'   => false,
                 'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
-                           "<a href='" . $item->getLinkURL() . "'>" . __("Consider filling latitude and longitude on this location.") . "</a>"
+                           "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>"
             ];
         }
     }

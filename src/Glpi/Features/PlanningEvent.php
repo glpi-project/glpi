@@ -1101,11 +1101,7 @@ trait PlanningEvent
                     return '';
                 }
                 foreach (json_decode($values[$field], true) as $user_id) {
-                    $users[] = sprintf(
-                        '<a href="%s">%s</a>',
-                        User::getFormURLWithID($user_id),
-                        getUserName($user_id, 1)
-                    );
+                    $users[] = getUserLink($user_id);
                 }
                 return implode(', ', $users);
         }

@@ -36,12 +36,15 @@
 namespace Glpi\Cache;
 
 use DirectoryIterator;
+use Glpi\Kernel\Kernel;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Toolbox;
 
 class CacheManager
@@ -175,7 +178,7 @@ class CacheManager
      * @param string|string[] $dsn
      * @param array           $options
      *
-     * @return array
+     * @return void
      */
     public function testConnection($dsn, array $options = []): void
     {
@@ -269,7 +272,6 @@ class CacheManager
 
                 default:
                     throw new \RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
-                    break;
             }
         }
 
@@ -319,13 +321,16 @@ class CacheManager
 
         $success = true;
 
-       // Clear all cache contexts
+        // Clear all cache contexts
         $known_contexts = $this->getKnownContexts();
         foreach ($known_contexts as $context) {
             $success = $this->getCacheInstance($context)->clear() && $success;
         }
 
-       // Clear compiled templates
+        // Clear Symfony cache
+        $this->clearSymfonyCache();
+
+        // Clear compiled templates
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
@@ -560,5 +565,27 @@ PHP;
             self::SCHEME_REDIS      => __('Redis (TCP)'),
             self::SCHEME_REDISS     => __('Redis (TLS)'),
         ];
+    }
+
+    /**
+     * Clears the Symfony cache.
+     */
+    private function clearSymfonyCache(): void
+    {
+        /** @var Kernel|null $kernel */
+        global $kernel;
+
+        $localKernel = $kernel;
+
+        if (!$localKernel instanceof Kernel) {
+            // This must be usable in non-kernel contexts, env vars will get the proper Kernel env.
+            $localKernel = new Kernel();
+        }
+
+        // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
+        // This command will clear the Symfony cache gracefully.
+        $app = new \Symfony\Bundle\FrameworkBundle\Console\Application($localKernel);
+        $app->setAutoExit(false);
+        $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
     }
 }

@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Glpi\Inventory\Conf;
 use Item_Devices;
 
 abstract class Device extends InventoryAsset
@@ -196,5 +197,15 @@ abstract class Device extends InventoryAsset
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
        //to be overrided
+    }
+
+    public function checkConf(Conf $conf): bool
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        /** @var \Item_Devices $item_device */
+        $item_device = $this->getItemtype();
+        $affinities = $item_device::itemAffinity();
+        return in_array('*', $affinities) || in_array($this->item->getType(), $item_device::itemAffinity());
     }
 }

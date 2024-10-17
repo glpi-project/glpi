@@ -92,6 +92,18 @@ final class FormAccessControlManager
         return array_values($controls);
     }
 
+    public function allowUnauthenticatedAccess(Form $form): bool
+    {
+        $access_controls = $this->getActiveAccessControlsForForm($form);
+        return array_reduce(
+            $access_controls,
+            function ($acc, $control) {
+                return $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig());
+            },
+            false
+        );
+    }
+
     /**
      * Check if the current user can answer the given form.
      *
@@ -104,8 +116,8 @@ final class FormAccessControlManager
         Form $form,
         FormAccessParameters $parameters
     ): bool {
-        // Form administrators can preview all forms.
-        if (Session::haveRight(Form::$rightname, READ)) {
+        // Form administrators can bypass restrictions while previewing forms.
+        if ($parameters->isBypassingRestrictions()) {
             return true;
         }
 
@@ -142,27 +154,82 @@ final class FormAccessControlManager
         return $controls;
     }
 
+    /**
+     * Get an array access controls warnings messages (string) for a given
+     * form.
+     *
+     * @param Form $form
+     * @return string[]
+     */
+    public function getWarnings(Form $form): array
+    {
+        $warnings = [];
+        $warnings = $this->addWarningIfFormIsNotActive($form, $warnings);
+        $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
+
+        // Add Access Control Strategy warnings
+        $access_controls = $this->getPossibleAccessControlsStrategies();
+        foreach ($access_controls as $access_control) {
+            $warnings = $access_control->getWarnings($form, $warnings);
+        }
+
+        return $warnings;
+    }
+
+    private function addWarningIfFormIsNotActive(
+        Form $form,
+        array $warnings
+    ): array {
+        if (!$form->isActive()) {
+            $warnings[] = __('This form is not visible to anyone because it is not active.');
+        }
+
+        return $warnings;
+    }
+
+    private function addWarningIfFormHasNoActivePolicies(
+        Form $form,
+        array $warnings
+    ): array {
+        if (count($this->getActiveAccessControlsForForm($form)) === 0) {
+            $warnings[] = __('This form will not be visible to any users as there are currently no active access policies.');
+        }
+
+        return $warnings;
+    }
+
     private function validateAccessControlsPolicies(
         array $policies,
         FormAccessParameters $parameters
     ): bool {
-        // TODO: for now, we use an unanimous decision system.
-        // Future PR will allow to pick between unanimous and affirmative
-        // strategies.
+        /** @var AccessVote[] $votes */
+        $votes = [];
 
         /** @var FormAccessControl[] $policies */
         foreach ($policies as $policiy) {
-            $can_answer = $policiy->getStrategy()->canAnswer(
+            $votes[] = $policiy->getStrategy()->canAnswer(
                 $policiy->getConfig(),
                 $parameters
             );
-
-            if (!$can_answer) {
-                return false;
-            }
         }
 
-        return true;
+        $can_answer = $this->computeVote($votes);
+        return $can_answer;
+    }
+
+    /** @param AccessVote[] $votes */
+    private function computeVote(array $votes): bool
+    {
+        $has_at_least_one_deny_vote = in_array(AccessVote::Deny, $votes);
+        $has_at_least_one_grant_vote = in_array(AccessVote::Grant, $votes);
+
+        if ($has_at_least_one_deny_vote) {
+            return false;
+        } elseif ($has_at_least_one_grant_vote) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

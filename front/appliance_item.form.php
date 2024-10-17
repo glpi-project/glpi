@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
@@ -60,4 +60,4 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

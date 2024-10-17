@@ -38,7 +38,6 @@ use Glpi\Http\Response;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -51,7 +50,6 @@ $itemtype = $_POST["itemtype"] ?? '';
 // Check for required params
 if (empty($itemtype)) {
     Response::sendError(400, "Bad request: itemtype cannot be empty", Response::CONTENT_TYPE_TEXT_HTML);
-    die;
 }
 
 // Check if itemtype is valid in the given context
@@ -81,7 +79,7 @@ if ($isValidItemtype) {
         'multiple'            => (int) ($_POST["multiple"] ?? 0) !== 0,
         'myname'              => $_POST["myname"],
         'rand'                => $_POST["rand"],
-        'width'               => 'calc(100% - 25px)',
+        'width'               => $_POST["width"] ?? 'calc(100% - 25px)',
         '_idor_token'         => Session::getNewIDORToken($itemtype, [
             'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         ]),

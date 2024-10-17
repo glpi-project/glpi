@@ -276,7 +276,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      * Get number of installed licenses of a license
      *
      * @param integer $softwarelicenses_id license ID
-     * @param integer $entity              to search for item in (default = all entities)
+     * @param integer|string $entity       to search for item in (default = all entities)
      *                                     (default '') -1 means no entity restriction
      * @param string $itemtype             Item type to filter on. Use null for all itemtypes
      *
@@ -484,7 +484,8 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<tr class='tab_bg_2'><td colspan='2'>{$data["completename"]}</td></tr>";
                 foreach ($target_types as $itemtype) {
                     $nb = self::countForLicense($softwarelicense_id, $data['id'], $itemtype);
-                    echo "<tr class='tab_bg_2'><td>$tab$tab{$itemtype::getTypeName()}</td>";
+                    $typename = htmlspecialchars($itemtype::getTypeName());
+                    echo "<tr class='tab_bg_2'><td>$tab$tab$typename</td>";
                     echo "<td class='numeric'>{$nb}</td></tr>\n";
                     $tot += $nb;
                 }
@@ -492,10 +493,10 @@ class Item_SoftwareLicense extends CommonDBRelation
         }
 
         if ($tot > 0) {
-            echo "<tr class='tab_bg_1'><td class='center b'>" . __('Total') . "</td>";
+            echo "<tr class='tab_bg_1'><td class='center b'>" . __s('Total') . "</td>";
             echo "<td class='numeric b '>" . $tot . "</td></tr>\n";
         } else {
-            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
+            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No item found') . "</td></tr>\n";
         }
         echo "</table></div>";
     }
@@ -615,7 +616,7 @@ JAVASCRIPT;
 
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('No item found') . "</th></tr>";
+            echo "<tr><th>" . __s('No item found') . "</th></tr>";
             echo "</table></div>\n";
             return;
         }
@@ -787,7 +788,6 @@ JAVASCRIPT;
             $soft       = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $linkUser   = User::canView();
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
@@ -822,6 +822,7 @@ JAVASCRIPT;
             }
 
             foreach ($columns as $key => $val) {
+                $val = htmlspecialchars($val);
                // Non order column
                 if ($key[0] == '_') {
                     $header_end .= "<th>$val</th>";
@@ -849,6 +850,7 @@ JAVASCRIPT;
                     $itemname = sprintf(__('%1$s (%2$s)'), $itemname, $data['iID']);
                 }
 
+                $itemname = htmlspecialchars($itemname);
                 if ($canshowitems[$data['item_type']]) {
                     echo "<td><a href='" . $data['item_type']::getFormURLWithID($data['iID']) . "'>$itemname</a></td>";
                 } else {
@@ -858,17 +860,16 @@ JAVASCRIPT;
                 if ($showEntity) {
                     echo "<td>" . $data['entity'] . "</td>";
                 }
-                echo "<td>" . $data['serial'] . "</td>";
-                echo "<td>" . $data['otherserial'] . "</td>";
-                echo "<td>" . $data['location'] . "</td>";
-                echo "<td>" . $data['state'] . "</td>";
-                echo "<td>" . $data['groupe'] . "</td>";
-                echo "<td>" . formatUserName(
+                echo "<td>" . htmlspecialchars($data['serial']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['otherserial']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['location']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['state']) . "</td>";
+                echo "<td>" . htmlspecialchars($data['groupe']) . "</td>";
+                echo "<td>" . formatUserLink(
                     $data['userid'],
                     $data['username'],
                     $data['userrealname'],
                     $data['userfirstname'],
-                    $linkUser
                 ) . "</td>";
                 echo "</tr>\n";
 
@@ -882,9 +883,9 @@ JAVASCRIPT;
                 Html::closeForm();
             }
         } else { // Not found
-            echo __('No item found');
+            echo __s('No item found');
         }
-        Html::printAjaxPager(__('Affected items'), $start, $number);
+        Html::printAjaxPager(__s('Affected items'), $start, $number);
 
         echo "</div>\n";
     }

@@ -61,7 +61,8 @@
         {{ __("Step %d of %d")|format(section_index, number_of_sections) }}
     </div>
 
-    <div
+    <section
+        aria-label="{{ __("Section details") }}"
         data-glpi-form-editor-section-details
         data-glpi-form-editor-on-click="set-active"
         class="{{ show_section_form ? "" : "d-none" }}"
@@ -90,6 +91,7 @@
 
                     {# Collapse section #}
                     <i
+                        role="button"
                         class="ti ti-selector ms-3 me-3 cursor-pointer"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
@@ -104,22 +106,22 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             role="button"
-                            aria-label="{{ __('Section actions') }}"
+                            title="{{ __('Section actions') }}"
                         ></i>
                         <ul class="dropdown-menu" data-bs-popper="none">
                             <li>
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     class="dropdown-item"
                                     data-glpi-form-editor-on-click="duplicate-section"
                                 >
                                     <i class="ti ti-copy me-2"></i>
                                     <span>{{ __("Duplicate section") }}</span>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     class="dropdown-item"
                                     data-bs-toggle="modal"
                                     data-bs-target="[data-glpi-form-editor-move-section-modal]"
@@ -127,29 +129,29 @@
                                 >
                                     <i class="ti ti-arrows-move-vertical me-2"></i>
                                     <span>{{ __("Move section") }}</span>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     class="dropdown-item {{ section_index == 1 ? "d-none" : "" }}"
                                     aria-label="{{ __('Merge with previous section') }}"
                                     data-glpi-form-editor-on-click="merge-with-previous-section"
                                 >
                                     <i class="ti ti-arrow-merge me-2"></i>
                                     <span>{{ __("Merge with previous section") }}</span>
-                                </a>
+                                </button>
                             </li>
 
                             <li>
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     class="dropdown-item"
                                     data-glpi-form-editor-on-click="delete-section"
                                 >
                                     <i class="ti ti-trash me-2"></i>
                                     <span>{{ __("Delete section") }}</span>
-                                </a>
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -208,7 +210,7 @@
             }, with_context = false) }}
         </div>
 
-    </div>
+    </section>
 
     <div data-glpi-form-editor-section-blocks class="mt-3">
         {% for form_block in section.getBlocks() %}

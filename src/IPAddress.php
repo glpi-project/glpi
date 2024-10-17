@@ -355,17 +355,12 @@ class IPAddress extends CommonDBChild
         }
     }
 
-    /**
-     * @param $item           CommonGLPI object
-     * @param $withtemplate   (default 0)
-     *
-     * @return string
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (
-            $item->getID()
+            ($item instanceof CommonDBTM)
+            && $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
@@ -1070,8 +1065,8 @@ class IPAddress extends CommonDBChild
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 

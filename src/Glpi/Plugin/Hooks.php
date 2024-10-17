@@ -104,6 +104,8 @@ class Hooks
     const SHOW_ITEM_STATS           = 'show_item_stats';
 
    // Item hooks expecting an array parameter (available keys: item, options)
+    const PRE_ITIL_INFO_SECTION   = 'pre_itil_info_section';
+    const POST_ITIL_INFO_SECTION  = 'post_itil_info_section';
     const ITEM_TRANSFER           = 'item_transfer';
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';
@@ -116,6 +118,7 @@ class Hooks
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
     const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
+    const SET_ITEM_IMPACT_ICON    = 'set_item_impact_icon'; // (keys: itemtype, items_id)
 
    // Security hooks (data to encypt)
     const SECURED_FIELDS  = 'secured_fields';

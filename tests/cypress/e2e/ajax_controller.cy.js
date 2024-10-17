@@ -34,7 +34,7 @@
 describe('Ajax Controller', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
     it('refresh tabs on update', () => {
         cy.createWithAPI('Glpi\\Form\\Form', {

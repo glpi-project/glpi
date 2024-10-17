@@ -475,11 +475,11 @@ class ITILCategory extends CommonTreeDropdown
         echo "</a>";
         echo "</th></tr>";
         if (count($iterator)) {
-            echo "<th>" . __('Name') . "</th>";
-            echo "<th>" . __('Incident') . "</th>";
-            echo "<th>" . __('Request') . "</th>";
-            echo "<th>" . Change::getTypeName(1) . "</th>";
-            echo "<th>" . Problem::getTypeName(1) . "</th>";
+            echo "<th>" . __s('Name') . "</th>";
+            echo "<th>" . __s('Incident') . "</th>";
+            echo "<th>" . __s('Request') . "</th>";
+            echo "<th>" . htmlspecialchars(Change::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlspecialchars(Problem::getTypeName(1)) . "</th>";
             echo "</tr>";
 
             foreach ($iterator as $data) {
@@ -488,7 +488,7 @@ class ITILCategory extends CommonTreeDropdown
                 echo "<td>" . $itilcategory->getLink(['comments' => true]) . "</td>";
                 if ($data['tickettemplates_id_incident'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -496,7 +496,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['tickettemplates_id_demand'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -504,7 +504,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['changetemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -512,7 +512,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['problemtemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -520,7 +520,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
             }
         } else {
-            echo "<tr><th colspan='5'>" . __('No item found') . "</th></tr>";
+            echo "<tr><th colspan='5'>" . __s('No item found') . "</th></tr>";
         }
 
         echo "</table></div>";

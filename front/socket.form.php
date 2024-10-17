@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Socket;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 if (!isset($_GET["id"])) {

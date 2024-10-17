@@ -371,7 +371,10 @@ abstract class LevelAgreementLevel extends RuleTicket
             $nb = 0;
             switch ($item->getType()) {
                 case static::$parentclass:
-                    if ($_SESSION['glpishow_count_on_tabs']) {
+                    if (
+                        $_SESSION['glpishow_count_on_tabs']
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         $nb =  countElementsInTable(static::getTable(), [static::$fkparent => $item->getID()]);
                     }
                     return self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -383,6 +386,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === static::$parentclass) {
+            /** @var OlaLevel|SlaLevel $level */
             $level = new static();
             $level->showForParent($item);
         }
@@ -537,5 +541,18 @@ TWIG, ['la_level' => $la_level]);
                 'container'     => 'mass' . static::class . mt_rand(),
             ]
         ]);
+    }
+
+    public function getSpecificMassiveActions($checkitem = null)
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        /**
+         * Remove the export action
+         * A levelAgreementLevel can not be exported
+         */
+        unset($actions[Rule::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export']);
+
+        return $actions;
     }
 }

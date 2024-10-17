@@ -152,8 +152,10 @@ class Process extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         $this->conf = $conf;
-        return $conf->import_process == 1;
+        return $conf->import_process == 1 && in_array($this->item::class, $CFG_GLPI['process_types']);
     }
 
     public function getItemtype(): string

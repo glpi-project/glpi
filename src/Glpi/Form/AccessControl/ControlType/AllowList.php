@@ -35,9 +35,13 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use AbstractRightsDropdown;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\AccessVote;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Form;
 use Group;
 use Override;
 use Profile;
@@ -65,15 +69,24 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(JsonConfigInterface $config): string
+    public function getWarnings(Form $form, array $warnings): array
     {
+        return $warnings;
+    }
+
+    #[Override]
+    public function renderConfigForm(FormAccessControl $access_control): string
+    {
+        $config = $access_control->getConfig();
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/allow_list.html.twig", [
+            'access_control' => $access_control,
             'config' => $config,
+            'label' => $this->getLabel(),
         ]);
     }
 
@@ -87,7 +100,8 @@ final class AllowList implements ControlTypeInterface
     public function createConfigFromUserInput(array $input): AllowListConfig
     {
         $values = $input['_allow_list_dropdown'] ?? [];
-        return AllowListConfig::createFromRawArray([
+        $values = $values ?: []; // No selected values is sent by the html form as an empty string
+        return AllowListConfig::jsonDeserialize([
             'user_ids'    => AllowListDropdown::getPostedIds($values, User::class),
             'group_ids'   => AllowListDropdown::getPostedIds($values, Group::class),
             'profile_ids' => AllowListDropdown::getPostedIds($values, Profile::class),
@@ -96,18 +110,22 @@ final class AllowList implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
-    ): bool {
+    ): AccessVote {
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         if (!$parameters->isAuthenticated()) {
-            return false;
+            return AccessVote::Abstain;
         }
 
-        return $this->isUserAllowed($config, $parameters);
+        if (!$this->isUserAllowed($config, $parameters)) {
+            return AccessVote::Abstain;
+        }
+
+        return AccessVote::Grant;
     }
 
     private function isUserAllowed(
@@ -131,6 +149,15 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
+        $all_users_are_allowed = in_array(
+            AbstractRightsDropdown::ALL_USERS,
+            $config->getUserIds()
+        );
+
+        if ($all_users_are_allowed) {
+            return true;
+        }
+
         return in_array($session_info->getUserId(), $config->getUserIds());
     }
 
@@ -152,5 +179,10 @@ final class AllowList implements ControlTypeInterface
         SessionInfo $session_info
     ): bool {
         return in_array($session_info->getProfileId(), $config->getProfileIds());
+    }
+
+    public function allowUnauthenticated(JsonFieldInterface $config): bool
+    {
+        return false;
     }
 }

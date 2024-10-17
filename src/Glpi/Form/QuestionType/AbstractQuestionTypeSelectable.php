@@ -70,16 +70,25 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
      */
     protected function getFormInlineScript(): string
     {
+        // language=Twig
         $js = <<<TWIG
-            $(document).ready(function() {
+            import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                    new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                        }
+                    });
+
+                    $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
+                        const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
+                        if (question_type === '{{ question_type|escape('js') }}') {
+                            const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
+                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
                         }
                     });
                 {% endif %}
@@ -87,12 +96,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
 TWIG;
 
         return $js;
-    }
-
-    #[Override]
-    public function loadJavascriptFiles(): array
-    {
-        return ['js/form_question_selectable.js'];
     }
 
     #[Override]
@@ -145,11 +148,13 @@ TWIG;
      */
     public function getOptions(?Question $question): array
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeSelectableConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return [];
         }
 
-        return $question->getExtraDatas()['options'] ?? [];
+        return $config->getOptions();
     }
 
     /**
@@ -225,7 +230,7 @@ TWIG;
                 <input
                     data-glpi-form-editor-specific-question-extra-data
                     type="text"
-                    class="w-full"
+                    class="flex-grow-1"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
@@ -260,9 +265,12 @@ TWIG;
             {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
         </div>
 
-
         <script>
-            {$this->getFormInlineScript()}
+            // TODO: avoid this, the script should probably run in a dedicated method that the framework can call at
+            // the right time.
+            $("[data-glpi-form-editor-container]").on('initialized', () => {
+                {$this->getFormInlineScript()}
+            });
         </script>
 TWIG;
 
@@ -294,7 +302,7 @@ TWIG;
                 <label class="form-check">
                     <input
                         type="{{ input_type }}"
-                        name="{{ question.getEndUserInputName() }}"
+                        name="{{ question.getEndUserInputName() }}[]"
                         value="{{ value.value }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
@@ -312,6 +320,16 @@ TWIG;
     }
 
     #[Override]
+    public function formatRawAnswer(mixed $answer): string
+    {
+        if (is_string($answer)) {
+            return $answer;
+        }
+
+        return implode(', ', $answer);
+    }
+
+    #[Override]
     public function renderAnswerTemplate($answers): string
     {
         $template = <<<TWIG
@@ -324,5 +342,17 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'answers' => $answers,
         ]);
+    }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeSelectableConfig::class;
     }
 }

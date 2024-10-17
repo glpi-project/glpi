@@ -129,7 +129,7 @@ class Migration
             echo "<div id='" . htmlspecialchars($this->current_message_area_id) . "'></div>";
         }
 
-        $this->displayMessage(isCommandLine() ? __('Work in progress...') : __s('Work in progress...'));
+        $this->displayMessage(__('Work in progress...'));
     }
 
     /**
@@ -1326,14 +1326,34 @@ class Migration
      *                   Default is ['config' => READ | UPDATE].
      *
      * @return void
+     *
+     * @deprecated 11.0.0
      */
     public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    {
+        Toolbox::deprecated('Migration::updateRight() is deprecated. Use Migration::replaceRight() instead.');
+        $this->replaceRight($name, $rights, $requiredrights);
+    }
+
+    /**
+     * Replace right to profiles that match rights requirements.
+     * Default is to update rights of profiles with READ and UPDATE rights on config.
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get its rights updated.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function replaceRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get all profiles with required rights
-
+        // Get all profiles with required rights
         $join = [];
         $i = 1;
         foreach ($requiredrights as $reqright => $reqvalue) {
@@ -1383,6 +1403,106 @@ class Migration
             ),
             true
         );
+    }
+
+    /**
+     * Give right to profiles that match rights requirements
+     *   Default is to give rights to profiles with READ and UPDATE rights on config
+     *
+     * @param string  $name   Right name
+     * @param integer $rights Right to set
+     * @param array   $requiredrights Array of right name => value
+     *                   A profile must have these rights in order to get its rights added.
+     *                   This array can be empty to add the right to every profile.
+     *                   Default is ['config' => READ | UPDATE].
+     *
+     * @return void
+     */
+    public function giveRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Build JOIN clause to get all profiles with required rights
+        $join = [];
+        $i = 1;
+        foreach ($requiredrights as $reqright => $reqvalue) {
+            $join["glpi_profilerights as right$i"] = [
+                'ON' => [
+                    "right$i"       => 'profiles_id',
+                    'glpi_profiles' => 'id',
+                    [
+                        'AND' => [
+                            "right$i.name"   => $reqright,
+                            new QueryExpression("{$DB::quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                        ]
+                    ]
+                ]
+            ];
+            $i++;
+        }
+
+        // Get all profiles with required rights
+        $prof_iterator = $DB->request(
+            [
+                'SELECT'     => 'glpi_profiles.id',
+                'FROM'       => 'glpi_profiles',
+                'INNER JOIN' => $join,
+            ]
+        );
+
+        $added = false;
+        foreach ($prof_iterator as $profile) {
+            // Check if the right is already present
+            $existingRight = $DB->request([
+                'FROM'  => 'glpi_profilerights',
+                'WHERE' => [
+                    'profiles_id' => $profile['id'],
+                    'name'        => $name,
+                ],
+            ]);
+
+            if ($existingRight->numrows() > 0) {
+                $profile_right = $existingRight->current();
+                // If the value specified is not already included, update the rights by adding the value
+                if (($profile_right['rights'] & $rights) !== $rights) {
+                    // Mettre à jour les droits en ajoutant la valeur spécifiée
+                    $newRights = $profile_right['rights'] | $rights;
+                    $DB->update(
+                        'glpi_profilerights',
+                        ['rights' => $newRights],
+                        ['id' => $profile_right['id']]
+                    );
+                    $added = true;
+                }
+                // If the value specified is already included, do nothing
+            } else {
+                // If the right does not exist, add it
+                $DB->insert(
+                    'glpi_profilerights',
+                    [
+                        'profiles_id'  => $profile['id'],
+                        'name'         => $name,
+                        'rights'       => $rights
+                    ]
+                );
+                $added = true;
+            }
+
+            // Update last rights update for the profile
+            $this->updateProfileLastRightsUpdate($profile['id']);
+        }
+
+        // Display a warning message if rights have been given
+        if ($added) {
+            $this->displayWarning(
+                sprintf(
+                    'Rights have been given for %1$s, you should review ACLs after update',
+                    $name
+                ),
+                true
+            );
+        }
     }
 
     /**
@@ -1497,7 +1617,7 @@ class Migration
         if (null !== $area_id) {
             echo "<script type='text/javascript'>
                   document.getElementById('{$area_id}').innerHTML = '{$msg}';
-               </script>\n";
+               </script>";
             Html::glpi_flush();
         } else {
             echo $msg;
@@ -1526,7 +1646,7 @@ class Migration
         global $DB;
 
         if ($old_itemtype == $new_itemtype) {
-           // Do nothing if new value is same as old one
+            // Do nothing if new value is same as old one
             return;
         }
 
@@ -1591,11 +1711,11 @@ class Migration
                 }
             }
 
-           //1. Rename itemtype table
+            //1. Rename itemtype table
             $this->displayMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
             $this->renameTable($old_table, $new_table);
 
-           //2. Rename foreign key fields
+            //2. Rename foreign key fields
             $this->displayMessage(
                 sprintf(__('Renaming "%s" foreign keys to "%s" in all tables...'), $old_fkey, $new_fkey)
             );
@@ -1618,7 +1738,7 @@ class Migration
             }
         }
 
-       //3. Update "itemtype" values in all tables
+        //3. Update "itemtype" values in all tables
         $this->displayMessage(
             sprintf(__('Renaming "%s" itemtype to "%s" in all tables...'), $old_itemtype, $new_itemtype)
         );
@@ -1742,16 +1862,16 @@ class Migration
                             continue;
                         }
                         $DB->updateOrDie($table, [
-                            'field' => $new_search_opt
+                            'num' => $new_search_opt
                         ], [
-                            'field' => $old_search_opt
+                            'num' => $old_search_opt
                         ]);
                     }
                 }
             }
         }
 
-       // Update saved searches. We have to parse every query to account for the search option in meta criteria
+        // Update saved searches. We have to parse every query to account for the search option in meta criteria
         $iterator = $DB->request([
             'SELECT' => ['id', 'itemtype', 'query'],
             'FROM'   => SavedSearch::getTable(),
@@ -1775,7 +1895,7 @@ class Migration
                         }
                     }
 
-                   // Fix criteria
+                    // Fix criteria
                     if (isset($query['criteria'])) {
                         foreach ($query['criteria'] as $cid => $criterion) {
                              $is_meta = isset($criterion['meta']) && (int)$criterion['meta'] === 1;
@@ -1797,7 +1917,7 @@ class Migration
                 }
             }
 
-           // Write changes if any were made
+            // Write changes if any were made
             if ($is_changed) {
                 $DB->updateOrDie(SavedSearch::getTable(), [
                     'query'  => http_build_query($query)

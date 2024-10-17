@@ -82,6 +82,7 @@ final class DropdownController extends AbstractController
         $schemas = [];
 
         $schemas['Location'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Location::class,
             'description' => Location::getTypeName(1),
@@ -116,6 +117,7 @@ final class DropdownController extends AbstractController
         ];
 
         $schemas['State'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => State::class,
             'description' => State::getTypeName(1),
@@ -137,9 +139,23 @@ final class DropdownController extends AbstractController
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ]
         ];
-        $visiblities = array_map('strtolower', $CFG_GLPI['state_types']);
+
+        // Uses static array for BC/stability. Plugins adding new types should use the related hook to modify the API schema
+        $state_types = [
+            'Computer', 'Monitor', 'NetworkEquipment',
+            'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+            'Certificate', 'Enclosure', 'PDU', 'Line',
+            'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
+            'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
+        ];
+        $visiblities = [];
+        foreach ($state_types as $state_type) {
+            // Handle any cases where there may be a namespace and also make the property lowercase
+            $visiblities[$state_type] = strtolower(str_replace('\\', '_', $state_type));
+        }
 
         $schemas['State_Visibilities'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => []
         ];
@@ -148,7 +164,7 @@ final class DropdownController extends AbstractController
             'x-full-schema' => 'State_Visibilities',
         ];
 
-        foreach ($visiblities as $visiblity) {
+        foreach ($visiblities as $state_type => $visiblity) {
             $schemas['State_Visibilities']['properties'][$visiblity] = [
                 'type' => Doc\Schema::TYPE_BOOLEAN,
                 'x-field' => 'is_visible',
@@ -159,7 +175,7 @@ final class DropdownController extends AbstractController
                     'field' => 'items_id',
                     'condition' => [
                         'itemtype' => 'State',
-                        'visible_itemtype' => $visiblity
+                        'visible_itemtype' => $state_type
                     ]
                 ]
             ];
@@ -167,6 +183,7 @@ final class DropdownController extends AbstractController
         $schemas['State']['properties']['visibilities']['properties'] = $schemas['State_Visibilities']['properties'];
 
         $schemas['Manufacturer'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Manufacturer::class,
             'description' => Manufacturer::getTypeName(1),
@@ -184,6 +201,7 @@ final class DropdownController extends AbstractController
         ];
 
         $schemas['Calendar'] = [
+            'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Calendar::class,
             'description' => Calendar::getTypeName(1),

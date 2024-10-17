@@ -42,8 +42,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Session::checkRight("slm", READ);
 
 if (empty($_GET["id"])) {

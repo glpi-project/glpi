@@ -31,8 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import tinycolor from 'tinycolor2';
-
+/* global tinycolor */
 export class TeamBadgeProvider {
     constructor(display_initials, max_team_images = 3) {
         this.badges = {
@@ -129,7 +128,7 @@ export class TeamBadgeProvider {
 
         $.ajax({
             type: 'POST', // Too much data may break GET limit
-            url: CFG_GLPI['root_doc'] + '/ajax/getUserPicture.php',
+            url: `${CFG_GLPI['root_doc']}/ajax/getUserPicture.php`,
             data: {
                 users_id: users_ids,
                 size: this.team_image_size,
@@ -139,7 +138,7 @@ export class TeamBadgeProvider {
             Object.keys(users_ids).forEach((user_id) => {
                 if (data[user_id] !== undefined) {
                     // Store new image in cache
-                    this.badges['User'][user_id] = "<span>" + data[user_id] + "</span>";
+                    this.badges['User'][user_id] = `<span>${data[user_id]}</span>`;
                     to_reload.push(user_id);
                 }
             });
@@ -194,7 +193,7 @@ export class TeamBadgeProvider {
         context.fill();
         context.fillStyle = this.dark_theme ? 'white' : 'black';
         context.textAlign = 'center';
-        context.font = 'bold ' + (this.team_image_size / 2) + 'px sans-serif';
+        context.font = `bold ${this.team_image_size / 2}px sans-serif`;
         context.textBaseline = 'middle';
         return canvas;
     }
@@ -219,7 +218,7 @@ export class TeamBadgeProvider {
         context.fillText(initials, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
         const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        return "<span><img src='" + src + "' title='" + name + "' data-bs-toggle='tooltip' data-placeholder-users-id='" + team_member["id"] + "'/></span>";
+        return `<span><img src='${src}' title='${name}' data-bs-toggle='tooltip' data-placeholder-users-id='${team_member["id"]}'/></span>`;
     }
 
     /**
@@ -250,8 +249,8 @@ export class TeamBadgeProvider {
         const lightness = (this.dark_theme ? 40 : 80);
         const canvas = this.getBadgeCanvas(`hsl(255, 0%, ${lightness}%, 1)`);
         const context = canvas.getContext('2d');
-        context.fillText("+" + overflow_count, this.team_image_size / 2, this.team_image_size / 2);
+        context.fillText(`+${overflow_count}`, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
-        return "<span class='position-relative'><img src='" + src + "' title='" + __('%d other team members').replace('%d', overflow_count) + "' data-bs-toggle='tooltip'/></span>";
+        return `<span class='position-relative'><img src='${src}' title='${__('%d other team members').replace('%d', overflow_count)}' data-bs-toggle='tooltip'/></span>`;
     }
 }

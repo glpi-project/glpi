@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("datacenter", READ);
 
 Html::header(PDU::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");

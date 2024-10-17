@@ -272,7 +272,7 @@ class AssetDefinition extends DbTestCase
             }
         }
 
-        foreach (AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames() as $system_name) {
+        foreach (AssetDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
             // System name must not be a reserved name
             yield [
                 'input'    => [
@@ -424,12 +424,13 @@ class AssetDefinition extends DbTestCase
     {
         /** @var \Glpi\Asset\AssetDefinition $definition */
         $definition = $this->initAssetDefinition('test');
-        \Glpi\Asset\AssetDefinitionManager::getInstance()->boostrapAssets();
+        \Glpi\Asset\AssetDefinitionManager::getInstance()->bootstrapClasses();
 
         $this->createItem(
             $definition->getAssetClassName(),
             [
                 'name' => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
             ]
         );
 
@@ -451,7 +452,7 @@ class AssetDefinition extends DbTestCase
             profiles: [$super_admin_id => ALLSTANDARDRIGHT]
         );
 
-        $rightname = $definition->getAssetRightname();
+        $rightname = $definition->getCustomObjectRightname();
 
         // Validate that rights are properly defined at creation
         $this->checkProfileRights(
@@ -481,7 +482,7 @@ class AssetDefinition extends DbTestCase
 
         $this->array(getAllDataFromTable('glpi_profilerights', [
             'profiles_id' => $super_admin_id,
-            'name' => $definition->getAssetRightname(),
+            'name' => $definition->getCustomObjectRightname(),
         ]))->size->isEqualTo(0);
 
         // Make the definition active again and verify the rights are added back to the profilerights table

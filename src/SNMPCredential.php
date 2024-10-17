@@ -155,7 +155,6 @@ class SNMPCredential extends CommonDBTM
             default:
                 return '';
         }
-        return '';
     }
 
     /**

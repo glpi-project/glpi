@@ -8,7 +8,7 @@ mkdir -p $(dirname "$LOG_FILE")
 bin/console database:install \
   --ansi --no-interaction \
   --force \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];
@@ -26,3 +26,6 @@ bin/console database:update --ansi --no-interaction | tee $LOG_FILE
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "database:update command FAILED" && exit 1;
 fi
+
+# Defines the base URL to match the default one used in web/e2e tests
+bin/console config:set url_base http://localhost:80

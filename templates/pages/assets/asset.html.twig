@@ -33,6 +33,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
@@ -42,4 +43,9 @@
             _get['Glpi\\Asset\\AssetDefinition'|itemtype_foreign_key]|default(0),
         ) }}
     {% endif %}
+
+    {% for custom_field_definition in custom_field_definitions %}
+        {% set field_name = 'custom_' ~ custom_field_definition.fields['name'] %}
+        {{ custom_field_definition.getFieldType().getFormInput(field_name, item.fields[field_name])|raw }}
+    {% endfor %}
 {% endblock %}

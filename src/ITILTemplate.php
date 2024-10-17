@@ -209,7 +209,7 @@ abstract class ITILTemplate extends CommonDropdown
      * @param boolean $withtypeandcategory (default 0)
      * @param boolean $withitemtype        (default 0)
      **/
-    public static function getAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
 
         static $allowed_fields = [];
@@ -636,7 +636,10 @@ abstract class ITILTemplate extends CommonDropdown
         switch ($ma->getAction()) {
             case 'merge':
                 foreach ($ids as $key) {
-                    if ($item->can($key, UPDATE)) {
+                    if (
+                        ($item instanceof ITILTemplate)
+                        && $item->can($key, UPDATE)
+                    ) {
                         if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                             if (
                                 $item->update(['id'           => $key,

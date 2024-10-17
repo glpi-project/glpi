@@ -854,9 +854,12 @@ class CronTask extends CommonDBTM
                     $i
                 );
                 if ($crontask->getNeedToRun($mode, $name)) {
-                     $_SESSION["glpicronuserrunning"] = "cron_" . $crontask->fields['name'];
+                    $_SESSION["glpicronuserrunning"] = "cron_" . $crontask->fields['name'];
+                    Session::loadEntity(0, true);
+                    $_SESSION["glpigroups"]          = [];
+                    $_SESSION["glpiname"]            = "cron";
 
-                     $function = sprintf('%s::cron%s', $crontask->fields['itemtype'], $crontask->fields['name']);
+                    $function = sprintf('%s::cron%s', $crontask->fields['itemtype'], $crontask->fields['name']);
 
                     if (is_callable($function)) {
                         if ($crontask->start()) { // Lock in DB + log start
@@ -873,7 +876,7 @@ class CronTask extends CommonDBTM
                             try {
                                   $retcode = $function($crontask);
                             } catch (\Throwable $e) {
-                                ErrorHandler::getInstance()->handleException($e);
+                                ErrorHandler::getInstance()->handleException($e, false);
                                 Toolbox::logInFile(
                                     'cron',
                                     sprintf(
@@ -919,7 +922,7 @@ class CronTask extends CommonDBTM
                     Toolbox::logInFile('cron', $msgcron . "\n");
                 }
             }
-            $_SESSION["glpicronuserrunning"] = '';
+
             self::release_lock();
         } else {
             Toolbox::logInFile('cron', __("Can't get DB lock") . "\n");
@@ -970,7 +973,7 @@ class CronTask extends CommonDBTM
             && ($input['allowmode'] & self::MODE_EXTERNAL)
             && !isset($input['mode'])
         ) {
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $input['mode'] = self::MODE_EXTERNAL;
         }
         return $temp->add($input);

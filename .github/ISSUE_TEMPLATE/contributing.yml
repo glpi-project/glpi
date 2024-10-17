@@ -1,0 +1,35 @@
+name: Contribution request
+description: Ask and discuss about a feature/evolution contribution
+body:
+  - type: markdown
+    attributes:
+      value: |
+
+        Dear GLPI user.
+
+        **⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
+
+        BEFORE SUBMITTING YOUR ISSUE, please make sure to read and follow these steps:
+
+        * We do not support community plugins. Contact directly their authors, or use [the community forum](https://forum.glpi-project.org).
+        * This form is discussing about your possible contributions, not requesting we develop ourselves new features. Propose the latter on the [suggest dedicated site](https://suggest.glpi-project.org).
+        * Do not use this form to request support. There is a [dedicated form](https://github.com/glpi-project/glpi/issues/new?assignees=&labels=&projects=&template=bug_report.yml) for that.
+        * Keep this tracker in ENGLISH. If you want support in your language, the [community forum](https://forum.glpi-project.org) is the best place.
+
+        The GLPI team.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow hereinabove rules and [Contribution guide](https://github.com/glpi-project/glpi/blob/main/CONTRIBUTING.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+  - type: markdown
+    attributes:
+      value: |
+        - Any contribution of code (new feature or evolution) must be done on main branch.
+        - Any bugfixes should target the current bugfixes branch (usually the default)
+  - type: textarea
+    attributes:
+      label: Contribution description
+      description: A detailled description of the contribution you want to make.

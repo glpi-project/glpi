@@ -35,8 +35,11 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\AccessVote;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use JsonConfigInterface;
+use Glpi\Form\Form;
 
 interface ControlTypeInterface
 {
@@ -57,18 +60,27 @@ interface ControlTypeInterface
     /**
      * Get the free json config config class name for this object.
      *
-     * @return string Class name which implements JsonConfigInterface
+     * @return string Class name which implements JsonFieldInterface
      */
     public function getConfigClass(): string;
 
     /**
+     * Get the warnings for the given form.
+     *
+     * @param  Form $form
+     * @param  string[] $warnings
+     * @return string[]
+     */
+    public function getWarnings(Form $form, array $warnings): array;
+
+    /**
      * Render the configuration form of this control type.
      *
-     * @param JsonConfigInterface $config
+     * @param FormAccessControl $access_control
      *
      * @return string Rendered content
      */
-    public function renderConfigForm(JsonConfigInterface $config): string;
+    public function renderConfigForm(FormAccessControl $access_control): string;
 
     /**
      * Get weight of this control type (used to sort controls types).
@@ -82,21 +94,29 @@ interface ControlTypeInterface
      *
      * @param array $input
      *
-     * @return JsonConfigInterface
+     * @return JsonFieldInterface
      */
-    public function createConfigFromUserInput(array $input): JsonConfigInterface;
+    public function createConfigFromUserInput(array $input): JsonFieldInterface;
 
 
     /**
      * Check if the current user can answer the given form.
      *
-     * @param JsonConfigInterface $config
+     * @param JsonFieldInterface $config
      * @param FormAccessParameters $parameters
      *
-     * @return bool
+     * @return AccessVote
      */
     public function canAnswer(
-        JsonConfigInterface $config,
+        JsonFieldInterface $config,
         FormAccessParameters $parameters
-    ): bool;
+    ): AccessVote;
+
+    /**
+     * Define if an unauthenticated user can view the form.
+     *
+     * @param JsonFieldInterface $config
+     * @return bool
+     */
+    public function allowUnauthenticated(JsonFieldInterface $config): bool;
 }

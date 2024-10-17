@@ -281,7 +281,6 @@ final class RoutePath
 
     public function getControllerInstance(): AbstractController
     {
-        /** @var ?AbstractController $instance */
         if ($this->controller_instance === null) {
             $this->hydrate();
             $this->controller_instance = $this->controller->newInstance();
@@ -335,6 +334,22 @@ final class RoutePath
             }
         }
         return $result;
+    }
+
+    public function getRouteVersion(): RouteVersion
+    {
+        return $this->getMethod()->getAttributes(RouteVersion::class)[0]->newInstance();
+    }
+
+    /**
+     * Returns true if the route is valid for the given API version
+     * @param string $api_version
+     * @return bool
+     */
+    public function matchesAPIVersion(string $api_version): bool
+    {
+        $version = $this->getRouteVersion();
+        return (version_compare($api_version, $version->introduced, '>=') && (empty($version->removed) || version_compare($api_version, $version->removed, '<')));
     }
 
     private function setPath(string $path)

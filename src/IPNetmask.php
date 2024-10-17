@@ -83,7 +83,7 @@ class IPNetmask extends IPAddress
      * @param $netmask   string   netmask defined as textual
      * @param $version   integer  =4 or =6 : version of IP protocol
      *
-     * @return false if the netmask is not valid or if it does not correspond to version
+     * @return bool false if the netmask is not valid or if it does not correspond to version
      **/
     public function setNetmaskFromString($netmask, $version)
     {

@@ -688,15 +688,15 @@ abstract class CommonITILValidation extends CommonDBChild
                 break;
 
             case self::REFUSED:
-                $style = "#cf9b9b";
+                $style = "#ff0000";
                 break;
 
             case self::ACCEPTED:
-                $style = "#9BA563";
+                $style = "#43e900";
                 break;
 
             default:
-                $style = "#cf9b9b";
+                $style = "#ff0000";
         }
         return $style;
     }
@@ -966,57 +966,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $tID    = $item->fields['id'];
 
         $tmp    = [static::$items_id => $tID];
-        $canadd = $this->can(-1, CREATE, $tmp);
         $rand   = mt_rand();
-
-        if ($canadd) {
-            $itemtype = static::$itemtype;
-            echo "<form method='post' name=form action='" . $itemtype::getFormURL() . "'>";
-        }
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr>";
-        echo "<th colspan='3'>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Global approval status') . "</td>";
-        echo "<td colspan='2'>";
-        echo TicketValidation::getStatus($item->fields["global_validation"], true);
-        echo "</td></tr>";
-
-        echo "<tr>";
-        echo "<th colspan='2'>" . _x('item', 'State') . "</th>";
-        echo "<th colspan='2'>";
-        echo self::getValidationStats($tID);
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Minimum validation required') . "</td>";
-        if ($canadd) {
-            echo "<td>";
-            echo $item->getValueToSelect(
-                'validation_percent',
-                'validation_percent',
-                $item->fields["validation_percent"]
-            );
-            echo "</td>";
-            echo "<td><input type='submit' name='update' class='btn btn-outline-secondary' value='" .
-                    _sx('button', 'Save') . "'>";
-            if (!empty($tID)) {
-                echo "<input type='hidden' name='id' value='$tID'>";
-            }
-            echo "</td>";
-        } else {
-            echo "<td colspan='2'>";
-            echo Dropdown::getValueWithUnit($item->fields["validation_percent"], "%");
-            echo "</td>";
-        }
-        echo "</tr>";
-        echo "</table>";
-        if ($canadd) {
-            Html::closeForm();
-        }
 
         $iterator = $DB->Request([
             'FROM'   => $this->getTable(),
@@ -1024,146 +974,144 @@ abstract class CommonITILValidation extends CommonDBChild
             'ORDER'  => 'submission_date DESC'
         ]);
 
-        $colonnes = ['', _x('item', 'State'), __('Request date'), __('Approval requester'),
-            __('Request comments'), __('Approval status'),
-            __('Requested approver type'), __('Requested approver'),
-        ];
-        $nb_colonnes = count($colonnes);
-
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='" . $nb_colonnes . "'>" . __('Approvals for the ticket') .
-           "</th></tr>";
-
-        if ($canadd) {
-            /** @var CommonITILObject $item */
-            if (
-                !in_array($item->fields['status'], array_merge(
-                    $item->getSolvedStatusArray(),
-                    $item->getClosedStatusArray()
-                ))
-            ) {
-                echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
-                echo "<a class='btn btn-outline-secondary' href='javascript:viewAddValidation" . $tID . "$rand();'>";
-                echo __('Send an approval request') . "</a></td></tr>\n";
-            }
-        }
-        if (count($iterator)) {
-            $header = "<tr>";
-            foreach ($colonnes as $colonne) {
-                $header .= "<th>" . $colonne . "</th>";
-            }
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(
-                $this->getType(),
-                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->fields["name"]
-                                        )
+        Session::initNavigateListItems(
+            static::class,
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            sprintf(
+                __('%1$s = %2$s'),
+                $item::getTypeName(1),
+                $item->fields["name"]
+            )
+        );
+        $values = [];
+        foreach ($iterator as $row) {
+            $canedit = $this->canEdit($row["id"]);
+            Session::addToNavigateListItems($this->getType(), $row["id"]);
+            $status  = sprintf(
+                '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
+                htmlspecialchars(self::getStatusColor($row['status'])),
+                htmlspecialchars(self::getStatus($row['status']))
             );
 
-            foreach ($iterator as $row) {
-                $canedit = $this->canEdit($row["id"]);
-                Session::addToNavigateListItems($this->getType(), $row["id"]);
-                $bgcolor = self::getStatusColor($row['status']);
-                $status  = self::getStatus($row['status']);
+            $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
+            $type_name   = null;
+            $target_name = null;
+            if ($row["itemtype_target"] === User::class) {
+                $type_name   = User::getTypeName();
+                $target_name = getUserName($row["items_id_target"]);
+            } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
+                $target = new $row["itemtype_target"]();
+                $type_name = $target::getTypeName();
+                if ($target->getFromDB($row["items_id_target"])) {
+                    $target_name = $target->getName();
+                }
+            }
+            $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
+            $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
 
-                echo "<tr class='tab_bg_1'>";
+            $doc_item = new Document_Item();
+            $docs = $doc_item->find([
+                "itemtype"          => static::class,
+                "items_id"           => $this->getID(),
+                "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]
+            ]);
 
-                echo "<td>";
-                if ($canedit) {
-                    echo "<span class='far fa-edit' style='cursor:pointer' title='" . __('Edit') . "' ";
-                    echo "onClick=\"viewEditValidation" . $item->fields['id'] . $row["id"] . "$rand();\"";
-                    echo " id='viewvalidation" . $this->fields[static::$items_id] . $row["id"] . "$rand'";
-                    echo "></span>";
-                    echo "\n<script type='text/javascript' >\n";
-                    echo "function viewEditValidation" . $item->fields['id'] . $row["id"] . "$rand() {\n";
-                    $params = ['type'             => $this->getType(),
-                        'parenttype'       => static::$itemtype,
-                        static::$items_id  => $this->fields[static::$items_id],
-                        'id'               => $row["id"]
-                    ];
-                    Ajax::updateItemJsCode(
-                        "viewvalidation" . $item->fields['id'] . "$rand",
-                        $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                        $params
+            $document = "";
+            foreach ($docs as $docs_values) {
+                $doc = new Document();
+                if ($doc->getFromDB($docs_values['documents_id'])) {
+                    $document .= sprintf(
+                        '<a href="%s">%s</a><br />',
+                        htmlspecialchars($doc->getLinkURL()),
+                        htmlspecialchars($doc->getName())
                     );
-                    echo "};";
-                    echo "</script>\n";
                 }
-                echo "</td>";
-
-                echo "<td><div style='background-color:" . $bgcolor . ";'>" . $status . "</div></td>";
-                echo "<td>" . Html::convDateTime($row["submission_date"]) . "</td>";
-                echo "<td>" . getUserName($row["users_id"]) . "</td>";
-                $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
-                echo "<td><div class='rich_text_container'>" . $comment_submission . "</div></td>";
-                echo "<td>" . Html::convDateTime($row["validation_date"]) . "</td>";
-                $type_name   = null;
-                $target_name = null;
-                if ($row["itemtype_target"] === 'User') {
-                    $type_name   = User::getTypeName();
-                    $target_name = getUserName($row["items_id_target"]);
-                } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
-                    $target = new $row["itemtype_target"]();
-                    $type_name = $target->getTypeName();
-                    if ($target->getFromDB($row["items_id_target"])) {
-                        $target_name = $target->getName();
-                    }
-                }
-                echo "<td>" . $type_name . "</td>";
-                echo "<td>" . $target_name . "</td>";
-                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
-                echo "<td>" . ($is_answered ? getUserName($row["users_id_validate"]) : '') . "</td>";
-                $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
-                echo "<td><div class='rich_text_container'>" . $comment_validation . "</div></td>";
-
-                $doc_item = new Document_Item();
-                $docs = $doc_item->find(["itemtype"          => $this->getType(),
-                    "items_id"           => $this->getID(),
-                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]
-                ]);
-                 $out = "";
-                foreach ($docs as $docs_values) {
-                     $doc = new Document();
-                     $doc->getFromDB($docs_values['documents_id']);
-                     $out  .= "<a ";
-                     $out .= "href=\"" . Document::getFormURLWithID($docs_values['documents_id']) . "\">";
-                     $out .= $doc->getField('name') . "</a><br>";
-                }
-                 echo "<td>" . $out . "</td>";
-
-                 echo "</tr>";
             }
-            echo $header;
-        } else {
-           //echo "<div class='center b'>".__('No item found')."</div>";
-            echo "<tr class='tab_bg_1 noHover'><th colspan='" . $nb_colonnes . "'>";
-            echo __('No item found') . "</th></tr>\n";
-        }
-        echo "</table>";
 
-        echo "<div id='viewvalidation" . $tID . "$rand'></div>\n";
+            $script = "";
+            if ($canedit) {
+                $edit_title = __s('Edit');
+                $item_id = htmlspecialchars($item->fields['id']);
+                $row_id = htmlspecialchars($row["id"]);
+                $rand = htmlspecialchars($rand);
+                $view_validation_id = htmlspecialchars($this->fields[static::$items_id]);
+                $root_doc = htmlspecialchars($CFG_GLPI["root_doc"]);
+                $params_json = json_encode([
+                    'type'             => static::class,
+                    'parenttype'       => static::$itemtype,
+                    static::$items_id  => $this->fields[static::$items_id],
+                    'id'               => $row["id"]
+                ]);
 
-        if ($canadd) {
-            echo "<script type='text/javascript' >\n";
-            echo "function viewAddValidation" . $tID . "$rand() {\n";
-            $params = ['type'             => $this->getType(),
-                'parenttype'       => static::$itemtype,
-                static::$items_id  => $tID,
-                'id'               => -1
+                $script = <<<HTML
+                    <span class="far fa-edit" style="cursor:pointer" title="{$edit_title}" 
+                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
+                          id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
+                    </span>
+                    <script>
+                        function viewEditValidation{$item_id}{$row_id}{$rand}() {
+                            $('#viewvalidation{$item_id}{$rand}').load('$root_doc/ajax/viewsubitem.php', $params_json);
+                        };
+                    </script>
+HTML;
+            }
+
+            $values[] = [
+                'edit'                  => $script,
+                'status'                => $status,
+                'type_name'             => $type_name,
+                'target_name'           => $target_name,
+                'is_answered'           => $is_answered,
+                'comment_submission'    => $comment_submission,
+                'comment_validation'    => $comment_validation,
+                'document'              => $document,
+                'submission_date'       => $row["submission_date"],
+                'validation_date'       => $row["validation_date"],
+                'user'                  => getUserName($row["users_id"]),
             ];
-            Ajax::updateItemJsCode(
-                "viewvalidation" . $tID . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>";
         }
+
+        TemplateRenderer::getInstance()->display('components/itilobject/validation.html.twig', [
+            'canadd' => $this->can(-1, CREATE, $tmp),
+            'item' => $item,
+            'itemtype' => static::$itemtype,
+            'tID' => $tID,
+            'donestatus' => array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()),
+            'validation' => $this,
+            'rand' => $rand,
+            'items_id' => static::$items_id,
+        ]);
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'edit' => '',
+                'status' => _x('item', 'State'),
+                'submission_date' => __('Request date'),
+                'user' => __('Approval requester'),
+                'comment_submission' => __('Request comments'),
+                'validation_date' => __('Approval date'),
+                'type_name' => __('Requested approver type'),
+                'target_name' => __('Requested approver'),
+                'comment_validation' => __('Approval Comment'),
+                'document' => __('Documents'),
+            ],
+            'formatters' => [
+                'edit' => 'raw_html',
+                'status' => 'raw_html',
+                'submission_date' => 'date',
+                'comment_submission' => 'raw_html',
+                'validation_date' => 'date',
+                'comment_validation' => 'raw_html',
+                'document' => 'raw_html',
+            ],
+            'entries' => $values,
+            'total_number' => count($values),
+            'showmassiveactions' => false,
+        ]);
     }
 
 

@@ -215,6 +215,7 @@ class HasHistoryCapacity extends DbTestCase
         // Create our test subject
         $asset = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Check that the capacity can't be safely disabled

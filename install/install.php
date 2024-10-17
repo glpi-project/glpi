@@ -41,21 +41,10 @@ use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 
-define('GLPI_ROOT', realpath('..'));
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
-
 /**
- * @var \GLPI $GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $GLPI, $GLPI_CACHE;
-
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
-
-Config::detectRootDoc();
+global $GLPI_CACHE;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
@@ -83,7 +72,7 @@ function header_html($etape)
     echo Html::script("js/glpi_dialog.js");
 
     // CSS
-    echo Html::scss("css/tabler", [], true);
+    echo Html::css('public/lib/tabler.css');
     echo Html::css('public/lib/base.css');
     echo Html::scss("css/install", [], true);
     echo "</head>";
@@ -406,7 +395,6 @@ function step6()
     /** @var \DBmysql $DB */
     global $DB;
 
-    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     $DB = new DB();
 
@@ -429,8 +417,8 @@ function step7()
 // finish installation
 function step8()
 {
-    include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    /** @var DBmysql $DB */
     $DB = new DB();
 
     if (isset($_POST['send_stats'])) {
@@ -442,7 +430,10 @@ function step8()
         );
     }
 
-    $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
+    $referer_url = Html::getRefererUrl();
+    $url_base = $referer_url !== null
+        ? str_replace("/install/install.php", "", $referer_url)
+        : 'http://localhost';
     $DB->update(
         'glpi_configs',
         ['value' => $url_base],
@@ -548,7 +539,6 @@ function checkConfigFile()
     }
 
     Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
-    die();
 }
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
@@ -567,9 +557,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     header_html(__("Select your language"));
     choose_language();
 } else {
-   // Check CSRF: ensure nobody strap first page that checks if config file exists ...
-    Session::checkCSRF($_POST);
-
    // DB clean
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);

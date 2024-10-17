@@ -34,8 +34,7 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 $npv = new NetworkPort_Vlan();
@@ -60,4 +59,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();

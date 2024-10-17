@@ -31,31 +31,28 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro log_entry_tpl(log) %}
-    {% set log_entry_html %}
-        <div class="log_entry d-flex" id="{{ log['id'] }}">
-            {% if log['text']|split("\n")|length > 2 %}
-                <input type="checkbox" class="log_entry_toggle" id="more_{{ log['id'] }}">
-                <label for="more_{{ log['id'] }}" class="log_entry_toggle_lbl" role="button">&nbsp;</label>
-            {% else %}
-                <span class="log_entry_toggle_placeholder"></span>
-            {% endif %}
-            <label class="log_long_text" for="more_{{ log['id'] }}">
-                <a class="log_datetime badge bg-secondary me-1" href="#{{ log['id'] }}">
-                    {{ log['datetime']|formatted_datetime }}
-                </a>
-                <##log_text##>
-            </label>
-        </div>
-    {% endset %}
-    {{ log_entry_html|spaceless|replace({
-        '<##log_text##>': log['text']|trim,
-    })|raw }}
+{% macro log_entry(log) %}
+{% apply spaceless %}
+    <div class="log_entry d-flex" id="{{ log['id'] }}">
+        {% if log['text']|split("\n")|length > 2 %}
+            <input type="checkbox" class="log_entry_toggle" id="more_{{ log['id'] }}">
+            <label for="more_{{ log['id'] }}" class="log_entry_toggle_lbl" role="button">&nbsp;</label>
+        {% else %}
+            <span class="log_entry_toggle_placeholder"></span>
+        {% endif %}
+        <label class="log_long_text" for="more_{{ log['id'] }}">
+            <a class="log_datetime badge bg-secondary me-1" href="#{{ log['id'] }}">
+                {{ log['datetime']|formatted_datetime }}
+            </a>
+            {{- log['text']|trim -}}
+        </label>
+    </div>
+{% endapply %}
 {% endmacro %}
 
-{% set log_entries_html %}
+{% macro log_entries(log_entries) %}
     {% if log_entries|length %}
-        {% for log_entry in log_entries %}{{ _self.log_entry_tpl(log_entry)|trim|raw }}{% endfor %}
+        {% for log_entry in log_entries %}{{ _self.log_entry(log_entry) }}{% endfor %}
     {% elseif not only_content %}
         <div class="empty">
             <div class="empty-icon">
@@ -70,15 +67,15 @@
                 <button type="button" class="btn btn-primary force-auto-refresh">
                     <i class="ti ti-refresh"></i>
                     <span>{{ __("Enable auto-refresh") }}</span>
-                </a>
+                </button>
             </div>
         </div>
     {% endif %}
     <a id="bottom"></a>
-{% endset %}
+{% endmacro %}
 
 {% if only_content %}
-    {{ log_entries_html }}
+    {{ _self.log_entries(log_entries) }}
     <div class="spinner-border mt-3" id="auto-refresh-indicator" role="status"></div>
 {% else %}
     <div class="d-inline-flex flex-wrap flex-md-nowrap align-items-center mb-2">
@@ -156,9 +153,15 @@
             </a>
         </div>
         <div class="log-entries card-body">
-            {{ log_entries_html }}
+            {{ _self.log_entries(log_entries) }}
         </div>
         <div class="card-footer d-flex justify-content-between">
+            <span class="search-limit d-none d-md-block text-muted">
+                {{ __('Last entries to show:') }}
+                {% include 'components/dropdown/limit.html.twig' with {
+                    'no_onchange': fluid_search|default(false),
+                } %}
+            </span>
             <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row flex-nowrap"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
@@ -171,13 +174,6 @@
                     <i class="ti ti-refresh"></i>
                 </span>
             </label>
-
-            {% set limitdropdown = include('components/dropdown/limit.html.twig', {
-                'no_onchange': fluid_search|default(false),
-            }) %}
-            <span class="search-limit d-none d-md-block text-muted">
-                {{ __('display the last %s entries')|format(limitdropdown)|raw }}
-            </span>
         </div>
     </div>
 
@@ -190,7 +186,7 @@
 
         // manage auto-refresh of log
         let autorefresh_interval = null;
-        $("#log-auto-refresh").change(function() {
+        $("#log-auto-refresh").on('change', function() {
             if(this.checked) {
                 const log_entries = $('.log-entries');
                 const reloadContent = function() {
@@ -212,7 +208,7 @@
         });
 
         // force auto-refresh
-        $(".force-auto-refresh").click(function() {
+        $(".force-auto-refresh").on('click', function() {
             $("#log-auto-refresh").prop('checked', true).change();
         });
 

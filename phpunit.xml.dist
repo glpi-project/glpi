@@ -1,12 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="phpunit/bootstrap.php"
-    processIsolation="true"
     colors="true"
 >
   <testsuites>
     <testsuite name="Unit">
-       <directory suffix=".php">phpunit/functional/</directory>
+       <directory>phpunit/functional/</directory>
     </testsuite>
   </testsuites>
+  <php>
+    <ini name="memory_limit" value="1G" />
+  </php>
 </phpunit>
-

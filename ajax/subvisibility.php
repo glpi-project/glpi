@@ -33,15 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
-    $AJAX_INCLUDE = 1;
-    include('../inc/includes.php');
+    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    $this->setAjax();
+
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }
@@ -66,7 +62,7 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
                 $params['toadd'] = [-1 => __('No restriction')];
             }
             echo "<table class='tab_format'><tr><td>";
-            echo Entity::getTypeName(1);
+            echo htmlspecialchars(Entity::getTypeName(1));
             echo "</td><td>";
             Entity::dropdown($params);
             echo "</td><td>";

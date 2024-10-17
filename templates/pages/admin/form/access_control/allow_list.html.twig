@@ -31,16 +31,22 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
 {# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
+{# @var string label #}
 
 {# Multi dropdown (User, Group and Profile) #}
 {{ call(
     "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
-    ["_allow_list_dropdown", {
-        'users_id'   : config.getUserIds(),
-        'groups_id'  : config.getGroupIds(),
-        'profiles_id': config.getProfileIds(),
-    }]
+    [
+        access_control.getNormalizedInputName("_allow_list_dropdown"),
+        {
+            'users_id'   : config.getUserIds(),
+            'groups_id'  : config.getGroupIds(),
+            'profiles_id': config.getProfileIds(),
+        },
+        {'aria_label': label}
+    ]
 )|raw }}
 
 {# Helper link that will be populated using a JS script #}
@@ -50,9 +56,10 @@
 
 <script>
     // Each time the dropdown is modified, populate the helper link
-    $("select[name='_allow_list_dropdown[]']").on('change', async function() {
-        const response = await $.post(
-            CFG_GLPI.root_doc + '/ajax/form/allow_list_dropdown_count_users.php',
+    const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
+    $select.on('change', async function() {
+        const response = await $.get(
+            "{{ path('/Form/AllowListDropdown/CountUsers') }}",
             {
                 values: $(this).val()
             }
@@ -60,8 +67,9 @@
 
         $('[data-glpi-dropdown-count-preview]')
             .attr('href', response.link ?? null)
-            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}".replace("%d", response.count))
+            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}"
+            .replace("%d", response.count))
         ;
     });
-    $("select[name='_allow_list_dropdown[]']").trigger('change');
+    $select.trigger('change');
 </script>

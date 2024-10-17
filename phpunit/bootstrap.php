@@ -36,11 +36,10 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_ENVIRONMENT_TYPE', 'testing');
-// Ensure errors happening during test suite bootstraping are always displayed
-ini_set('display_errors', 'On');
+ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
@@ -49,15 +48,18 @@ define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
+define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
+
 global $CFG_GLPI, $GLPI_CACHE;
 
-include(__DIR__ . "/../inc/based_config.php");
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new Kernel('testing');
+$kernel->loadCommonGlobalConfig();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
 }
-
-include_once __DIR__ . '/../inc/includes.php';
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
@@ -74,15 +76,12 @@ include_once __DIR__ . '/DbTestCase.php';
 //include_once __DIR__ . '/CsvTestCase.php';
 //include_once __DIR__ . '/APIBaseClass.php';
 //include_once __DIR__ . '/FrontBaseClass.php';
+include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/InventoryTestCase.php';
-//include_once __DIR__ . '/functional/CommonITILRecurrent.php';
+include_once __DIR__ . '/abstracts/CommonITILRecurrentTest.php';
 //include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
-//include_once __DIR__ . '/functional/AbstractRightsDropdown.php';
-
-// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
-    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
-}
+include_once __DIR__ . '/AbstractRightsDropdown.php';
+include_once __DIR__ . '/CommonDropdown.php';
 
 loadDataset();
 
@@ -94,3 +93,4 @@ define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
 ErrorHandler::getInstance()->disableOutput();
+ErrorHandler::getInstance()->setForwardToInternalHandler(false);

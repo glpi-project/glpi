@@ -31,6 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-arrow-callback: 0 */
+/* eslint prefer-template: 0 */
+/* eslint no-var: 0 */
+
 // Load cytoscape
 var cytoscape = window.cytoscape;
 
@@ -3670,7 +3674,7 @@ var GLPIImpact = {
                     }
 
                     var str = '<p class="' + cssClass + '" data-id="' + value['id'] + '" data-type="' + itemtype + '">';
-                    str += '<img src="' + $(GLPIImpact.selectors.sideSearch + " img").attr('src') + '"></img>';
+                    str += `<img src='${_.escape(value['image'])}'></img>`;
                     str += value["name"];
 
                     if (isHidden) {

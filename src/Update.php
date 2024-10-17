@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\DefaultFormsManager;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -202,7 +203,6 @@ class Update
 
         if (version_compare($current_version, '0.85.5', 'lt')) {
             die('Upgrade from version < 0.85.5 is not supported!');
-            die(1);
         }
 
         $DB = $this->DB;
@@ -275,6 +275,10 @@ class Update
                 );
             }
         }
+
+        // Create default forms
+        $default_forms_manager = new DefaultFormsManager();
+        $default_forms_manager->createDefaultForms();
 
         // Initalize rules
         $this->migration->displayTitle(__('Initializing rules...'));

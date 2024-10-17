@@ -1,6 +1,8 @@
 # Security Policy
 
-**⚠️ Please never use standard issues to report security problems; vulnerabilities are published once a fix release is available. ⚠️**
+**⚠️ Please never use standard issues to report security problems; vulnerabilities are never published before a fix release is available. ⚠️**
+
+Critical advisories are published one month after the release. All other advisories are published one week after the fix release.
 
 ## Reporting a Vulnerability
 

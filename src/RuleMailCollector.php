@@ -39,12 +39,6 @@ class RuleMailCollector extends Rule
    // From Rule
     public static $rightname = 'rule_mailcollector';
 
-
-    public function maxActionsCount()
-    {
-        return 2;
-    }
-
     public function getTitle()
     {
         return __('Rules for assigning a ticket created through a mails receiver');

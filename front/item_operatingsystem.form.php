@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
@@ -64,7 +64,7 @@ if (isset($_POST['update'])) {
 }
 
 if (!isset($_GET['itemtype']) && !isset($_GET['items_id']) && !isset($_GET['id'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 $params = [];

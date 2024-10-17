@@ -38,8 +38,6 @@ use Glpi\Csv\StatCsvExport;
 use Glpi\Http\Response;
 use Glpi\Stat\StatData;
 
-include('../inc/includes.php');
-
 // Check rights
 Session::checkRight("statistic", READ);
 

@@ -108,6 +108,10 @@ trait InventoryNetworkPort
      */
     public function handlePorts($itemtype = null, $items_id = null)
     {
+        if (!$this->checkPortsConf($this->conf)) {
+            return;
+        }
+
         $this->itemtype = $itemtype ?? $this->item->getType();
         $this->items_id = $items_id ?? $this->item->fields['id'];
 
@@ -678,8 +682,10 @@ trait InventoryNetworkPort
        //does nothing
     }
 
-    public function checkConf(Conf $conf): bool
+    public function checkPortsConf(Conf $conf): bool
     {
-        return $conf->component_networkcard == 1;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        return $conf->component_networkcard == 1 && in_array($this->item::class, $CFG_GLPI['networkport_types']);
     }
 }

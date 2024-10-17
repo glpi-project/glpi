@@ -59,6 +59,7 @@ use User;
 class APIRest extends atoum
 {
     protected $session_token;
+    /** @var GuzzleHttp\Client */
     protected $http_client;
     protected $base_uri = "";
     protected $last_error;
@@ -2605,7 +2606,6 @@ class APIRest extends atoum
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
-                    ["key" => "MassiveAction:add_transfer_list", "label" => "Add to transfer list"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
@@ -2651,7 +2651,6 @@ class APIRest extends atoum
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
-                    ["key" => "MassiveAction:add_transfer_list", "label" => "Add to transfer list"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
@@ -2751,11 +2750,6 @@ class APIRest extends atoum
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/ObjectLock:unlock',
-                'status' => 200,
-                'response' => [],
-            ],
-            [
-                'url' => 'getMassiveActionParameters/Computer/MassiveAction:add_transfer_list',
                 'status' => 200,
                 'response' => [],
             ],

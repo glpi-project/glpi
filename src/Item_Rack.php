@@ -54,21 +54,20 @@ class Item_Rack extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
-        switch ($item->getType()) {
-            default:
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        self::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                    $nb += countElementsInTable(
-                        PDU_Rack::getTable(),
-                        ['racks_id'  => $item->getID()]
-                    );
-                }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+        if (
+            $_SESSION['glpishow_count_on_tabs']
+            && ($item instanceof CommonDBTM)
+        ) {
+            $nb = countElementsInTable(
+                self::getTable(),
+                ['racks_id'  => $item->getID()]
+            );
+            $nb += countElementsInTable(
+                PDU_Rack::getTable(),
+                ['racks_id'  => $item->getID()]
+            );
         }
-        return '';
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -289,13 +288,13 @@ class Item_Rack extends CommonDBRelation
       <div class="racks_row">
          <span class="racks_view_controls">
             <span class="mini_toggle active"
-                  id="toggle_images">' . __('images') . '</span>
+                  id="toggle_images">' . __s('images') . '</span>
             <span class="mini_toggle active"
-                  id="toggle_text">' . __('texts') . '</span>
+                  id="toggle_text">' . __s('texts') . '</span>
             <div class="clearfix"></div>
          </span>
          <div class="racks_col">
-         <h2>' . __('Front') . '</h2>
+         <h2>' . __s('Front') . '</h2>
          <div class="rack_side rack_front">';
         // append some spaces on top for having symetrical view between front and rear
         for ($i = 0; $i < $nb_top_pdu; $i++) {
@@ -305,7 +304,7 @@ class Item_Rack extends CommonDBRelation
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid-front"
                  gs-column="2"
-                 gs-max-row="' . ($rack->fields['number_units'] + 1) . '">';
+                 gs-max-row="' . htmlspecialchars($rack->fields['number_units'] + 1) . '">';
 
         if ($link->canCreate()) {
             echo '<div class="racks_add"></div>';
@@ -316,7 +315,7 @@ class Item_Rack extends CommonDBRelation
         }
         echo '   <div class="grid-stack-item lock-bottom"
                     gs-no-resize="true" gs-no-move="true"
-                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . $rack->fields['number_units'] . '"></div>
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlspecialchars($rack->fields['number_units']) . '"></div>
             </div>
             <ul class="indexes"></ul>';
         // append some spaces on bottom for having symetrical view between front and rear
@@ -334,7 +333,7 @@ class Item_Rack extends CommonDBRelation
             <div class="grid-stack grid-stack-2 grid-rack"
                  id="grid2-rear"
                  gs-column="2"
-                 gs-max-row="' . ($rack->fields['number_units'] + 1) . '">';
+                 gs-max-row="' . htmlspecialchars($rack->fields['number_units'] + 1) . '">';
 
         if ($link->canCreate()) {
             echo '<div class="racks_add"></div>';
@@ -345,7 +344,7 @@ class Item_Rack extends CommonDBRelation
         }
         echo '   <div class="grid-stack-item lock-bottom"
                     gs-no-resize="true" gs-no-move="true"
-                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . $rack->fields['number_units'] . '">
+                    gs-h="1" gs-w="2" gs-x="0" gs-y="' . htmlspecialchars($rack->fields['number_units']) . '">
                </div>
             </div>
             <ul class="indexes"></ul>';
@@ -408,8 +407,8 @@ class Item_Rack extends CommonDBRelation
         }
 
         echo "<div id='switchview'>";
-        echo "<i id='sviewlist' class='pointer ti ti-list' title='" . __('View as list') . "'></i>";
-        echo "<i id='sviewgraph' class='pointer ti ti-server selected' title='" . __('View graphical representation') . "'></i>";
+        echo "<i id='sviewlist' class='pointer ti ti-list' title='" . __s('View as list') . "'></i>";
+        echo "<i id='sviewgraph' class='pointer ti ti-server selected' title='" . __s('View graphical representation') . "'></i>";
         echo "</div>";
 
         echo "<div id='viewlist'>";
@@ -554,7 +553,7 @@ JAVASCRIPT;
         $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_itemtype$rand'>" . __('Item type') . "</label></td>";
+        echo "<td><label for='dropdown_itemtype$rand'>" . __s('Item type') . "</label></td>";
         echo "<td>";
 
         if (isset($options['_onlypdu']) && $options['_onlypdu']) {
@@ -570,6 +569,7 @@ JAVASCRIPT;
         } else {
             $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
             foreach ($types as $type => &$text) {
+                /** @var class-string $type */
                 $text = $type::getTypeName(1);
             }
             Dropdown::showFromArray(
@@ -622,7 +622,7 @@ JAVASCRIPT;
        //TODO: update orientation according to item model depth
 
         echo "</td>";
-        echo "<td><label for='dropdown_items_id$rand'>" . _n('Item', 'Items', 1) . "</label></td>";
+        echo "<td><label for='dropdown_items_id$rand'>" . _sn('Item', 'Items', 1) . "</label></td>";
         echo "<td id='items_id'>";
         if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
@@ -647,11 +647,11 @@ JAVASCRIPT;
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_racks_id$rand'>" . Rack::getTypeName(1) . "</label></td>";
+        echo "<td><label for='dropdown_racks_id$rand'>" . htmlspecialchars(Rack::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
         echo "</td>";
-        echo "<td><label for='dropdown_position$rand'>" . __('Position') . "</label></td>";
+        echo "<td><label for='dropdown_position$rand'>" . __s('Position') . "</label></td>";
         echo "<td >";
         Dropdown::showNumber(
             'position',
@@ -668,7 +668,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_orientation$rand'>" . __('Orientation (front rack point of view)') . "</label></td>";
+        echo "<td><label for='dropdown_orientation$rand'>" . __s('Orientation (front rack point of view)') . "</label></td>";
         echo "<td >";
         Dropdown::showFromArray(
             'orientation',
@@ -682,7 +682,7 @@ JAVASCRIPT;
             ]
         );
         echo "</td>";
-        echo "<td><label for='bgcolor$rand'>" . __('Background color') . "</label></td>";
+        echo "<td><label for='bgcolor$rand'>" . __s('Background color') . "</label></td>";
         echo "<td>";
         Html::showColorField(
             'bgcolor',
@@ -695,7 +695,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_hpos$rand'>" . __('Horizontal position (from rack point of view)') . "</label></td>";
+        echo "<td><label for='dropdown_hpos$rand'>" . __s('Horizontal position (from rack point of view)') . "</label></td>";
         echo "<td>";
         Dropdown::showFromArray(
             'hpos',
@@ -710,7 +710,7 @@ JAVASCRIPT;
             ]
         );
         echo "</td>";
-        echo "<td><label for='dropdown_is_reserved$rand'>" . __('Reserved position?') . "</label></td>";
+        echo "<td><label for='dropdown_is_reserved$rand'>" . __s('Reserved position?') . "</label></td>";
         echo "<td>";
 
         echo Html::scriptBlock("
@@ -1035,6 +1035,10 @@ JAVASCRIPT;
                 }
             }
 
+            /**
+             * @var int $position
+             * @var int $required_units
+             */
             if (
                 $position > $rack->fields['number_units'] ||
                 $position + $required_units  > $rack->fields['number_units'] + 1

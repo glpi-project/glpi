@@ -33,15 +33,15 @@
 
 /* global tinymce */
 
-var GLPI = GLPI || {};
-GLPI.RichText = GLPI.RichText || {};
+window.GLPI = window.GLPI || {};
+window.GLPI.RichText = window.GLPI.RichText || {};
 
 /**
  * Form tags rich text autocompleter.
  *
  * @since 11.0.0
  */
-GLPI.RichText.FormTags = class
+window.GLPI.RichText.FormTags = class
 {
     /**
      * Target tinymce editor.
@@ -85,7 +85,7 @@ GLPI.RichText.FormTags = class
     }
 
     async #fetchItems(filter) {
-        const url = CFG_GLPI.root_doc + '/ajax/form/form_tags.php';
+        const url = `${CFG_GLPI.root_doc}/Form/TagList`;
         const data = await $.get(url, {
             form_id: this.#form_id,
             filter: filter
@@ -101,7 +101,7 @@ GLPI.RichText.FormTags = class
 
     #insertTag(autocompleteApi, range, value) {
         this.#editor.selection.setRng(range);
-        this.#editor.insertContent(value + "&nbsp;");
+        this.#editor.insertContent(`${value}&nbsp;`);
 
         autocompleteApi.hide();
     }

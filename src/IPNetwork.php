@@ -381,8 +381,13 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
            // TODO : what is the best way ? recursive or not ?
             $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
-           // Check unicity !
-            if ($sameNetworks && (count($sameNetworks) > 0)) {
+            // Check unicity !
+            if ($sameNetworks && count($sameNetworks) > 0) {
+                // Info: phpstan think $sameNetworks can't be empty for some reason,
+                // and thus warn us that the condition is always true (see baseline).
+                // This is probably a false positive due to some bad phpdoc somewhere,
+                // but I was not able to fint it.
+                // TODO: investigate.
                 return ['error' => __('Network already defined in visible entities'),
                     'input' => false
                 ];
@@ -755,7 +760,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         if (!empty($condition["where"])) {
-            $WHERE .= " AND " . $condition["where"];
+            $WHERE[] = new QueryExpression($condition["where"]);
         }
 
         $iterator = $DB->request([
@@ -1009,7 +1014,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $end   = [];
         for ($i = 0; $i < 4; ++$i) {
             $start[$i] = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] & $netmask[$i]);
-            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~$netmask[$i]);
+            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~(int)$netmask[$i]);
         }
 
         if ($excludeBroadcastAndNetwork) {
@@ -1032,50 +1037,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * \brief Recreate network tree
-     * Among others, the migration create plan tree network. This method allows to recreate the tree.
-     * You can also use it if you suspect the network tree to be corrupted.
-     *
-     * First, reset the tree, then, update each network by its own field, letting
-     * CommonImplicitTreeDropdown working such as it would in case of standard update
-     *
-     * @return void
-     **/
-    public static function recreateTree()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       // Reset the tree
-        $DB->update(
-            'glpi_ipnetworks',
-            [
-                'ipnetworks_id'   => 0,
-                'level'           => 1,
-                'completename'    => new QueryExpression($DB->quoteName('name'))
-            ],
-            [true]
-        );
-
-       // Foreach IPNetwork ...
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => self::getTable()
-        ]);
-
-        $network = new self();
-
-        foreach ($iterator as $network_entry) {
-            if ($network->getFromDB($network_entry['id'])) {
-                $input = $network->fields;
-                // ... update it by its own entries
-                $network->update($input);
-            }
-        }
-    }
-
-
-    /**
      * @since 0.84
      *
      * @param $itemtype
@@ -1087,8 +1048,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -1116,9 +1077,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         if (empty($item)) {
@@ -1212,35 +1173,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 $CFG_GLPI["root_doc"] . "/ajax/dropdownShowIPNetwork.php",
                 $params
             );
-        }
-    }
-
-
-    /**
-     * Override title function to display the link to reinitialisation of the network tree
-     *
-     * @FIXME Deprecate this method in GLPI 11.0. It is not used anymore.
-     **/
-    public function title()
-    {
-        if (
-            Session::haveRight('internet', UPDATE)
-            && Session::canViewAllEntities()
-        ) {
-            echo "<div class='spaced' id='tabsbody'>";
-            echo "<table class='tab_cadre_fixe'>";
-
-            echo "<tr><td class='center'>";
-            Html::showSimpleForm(
-                IPNetwork::getFormURL(),
-                'reinit_network',
-                __('Reinit the network topology')
-            );
-
-            echo "</td></tr>";
-
-            echo "</table>";
-            echo "</div>";
         }
     }
 }

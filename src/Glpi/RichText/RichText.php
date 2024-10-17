@@ -48,12 +48,12 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content                HTML string to be made safe
-     * @param boolean       $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param null|string   $content        HTML string to be made safe
+     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      * @return string
      */
-    public static function getSafeHtml(?string $content, bool $encode_output_entities = false): string
+    public static function getSafeHtml(?string $content, bool $encode_output = false): string
     {
 
         if (empty($content)) {
@@ -67,8 +67,8 @@ final class RichText
         // Remove extra lines
         $content = trim($content, "\r\n");
 
-        if ($encode_output_entities) {
-            $content = Html::entities_deep($content);
+        if ($encode_output) {
+            $content = htmlspecialchars($content);
         }
 
         return $content;
@@ -82,7 +82,7 @@ final class RichText
      * @param string  $content                HTML string to be made safe
      * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
      * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output_entities Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
      * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
      *
      * @return string
@@ -91,7 +91,7 @@ final class RichText
         string $content,
         bool $keep_presentation = true,
         bool $compact = false,
-        bool $encode_output_entities = false,
+        bool $encode_output = false,
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
@@ -145,14 +145,14 @@ final class RichText
             }
 
             // Content is no more considered as HTML, decode its entities
-            $content = Html::entity_decode_deep($content);
+            $content = html_entity_decode($content);
         }
 
         // Remove extra lines
         $content = trim($content, "\r\n");
 
-        if ($encode_output_entities) {
-            $content = Html::entities_deep($content);
+        if ($encode_output) {
+            $content = htmlspecialchars($content);
         }
 
         return $content;
@@ -235,7 +235,7 @@ final class RichText
             if (preg_match('/(<|>)/', $content)) {
                 // Input was not HTML, and special chars were not saved as HTML entities.
                 // We have to encode them into HTML entities.
-                $content = Html::entities_deep($content);
+                $content = htmlspecialchars($content);
             }
 
             // Plain text line breaks have to be transformed into <br /> tags.

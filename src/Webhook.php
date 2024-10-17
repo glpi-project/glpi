@@ -157,6 +157,14 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'searchtype'         => ['equals', 'notequals']
         ];
 
+        $tab[] = [
+            'id'                 => '7',
+            'table'              => 'glpi_webhookcategories',
+            'field'              => 'completename',
+            'name'               => WebhookCategory::getTypeName(1),
+            'datatype'           => 'dropdown'
+        ];
+
         return $tab;
     }
 
@@ -304,6 +312,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'get'       => 'GET',
             'update'    => 'UPDATE',
             'patch'     => 'PATCH',
+            'put'       => 'PUT',
         ];
     }
 
@@ -321,7 +330,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
     }
 
-    private static function getAPIItemtypeData(): array
+    public static function getAPIItemtypeData(): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -380,7 +389,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
              * @var array $categories
              */
             foreach ($supported as $controller => $categories) {
-                $schemas = $controller::getKnownSchemas();
+                // TODO Allow pinning webhooks to specific API versions
+                $schemas = $controller::getKnownSchemas(Router::API_VERSION);
                 foreach ($categories as $category => $itemtypes) {
                     if ($category === 'main') {
                         foreach ($itemtypes as $i => $supported_itemtype) {
@@ -389,11 +399,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
                                 $supported[$controller][$category][$supported_itemtype] = [
                                     'name' => $schema['name'],
                                 ];
-                                unset($supported[$controller][$category][$i]);
                             }
+                            unset($supported[$controller][$category][$i]);
                         }
                     } else if ($category === 'subtypes' && $controller === ITILController::class) {
-                        /** @var ITILController $controller */
+                        /** @phpstan-var class-string<ITILController> $controller */
                         foreach ($itemtypes as $supported_itemtype => $type_data) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
                         }
@@ -486,42 +496,38 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
         $data = $api_data;
-        if ($data !== null) {
-            $data['item'] = $api_data;
-            $data['event'] = $event;
-            $this->addParentItemData($data, $itemtype, $items_id);
-            if ($raw_output) {
-                return json_encode($data, JSON_PRETTY_PRINT);
-            } else {
-                $payload_template = isset($this->fields['payload']) ? $this->fields['payload'] : null;
-                if ($this->fields['use_default_payload'] === 1) {
-                    $payload_template = null;
-                }
-                if (!empty($payload_template)) {
-                    $fn_desanitize = static function ($value) use (&$fn_desanitize) {
-                        if (is_array($value)) {
-                            foreach ($value as $k => $v) {
-                                $value[$k] = $fn_desanitize($v);
-                            }
-                        } else if (is_string($value)) {
-                            // slash double quotes
-                            $value = str_replace('"', '\\"', $value);
+        $data['item'] = $api_data;
+        $data['event'] = $event;
+        $this->addParentItemData($data, $itemtype, $items_id);
+        if ($raw_output) {
+            return json_encode($data, JSON_PRETTY_PRINT);
+        } else {
+            $payload_template = isset($this->fields['payload']) ? $this->fields['payload'] : null;
+            if ($this->fields['use_default_payload'] === 1) {
+                $payload_template = null;
+            }
+            if (!empty($payload_template)) {
+                $fn_desanitize = static function ($value) use (&$fn_desanitize) {
+                    if (is_array($value)) {
+                        foreach ($value as $k => $v) {
+                            $value[$k] = $fn_desanitize($v);
                         }
-                        return $value;
-                    };
-                    $data = $fn_desanitize($data);
-                    try {
-                        return TemplateManager::render($payload_template, $data, false, [new \Twig\Extra\Markdown\MarkdownExtension()]);
-                    } catch (Throwable $e) {
-                        return null;
+                    } else if (is_string($value)) {
+                        // slash double quotes
+                        $value = str_replace('"', '\\"', $value);
                     }
-                } else {
-                    return json_encode($data, JSON_PRETTY_PRINT);
+                    return $value;
+                };
+                $data = $fn_desanitize($data);
+                try {
+                    return TemplateManager::render($payload_template, $data, false, [new \Twig\Extra\Markdown\MarkdownExtension()]);
+                } catch (Throwable $e) {
+                    return null;
                 }
+            } else {
+                return json_encode($data, JSON_PRETTY_PRINT);
             }
         }
-        // An error occurred, so return nothing.
-        return null;
     }
 
     /**
@@ -886,7 +892,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             echo __('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
-        return $controller_class::getKnownSchemas()[$schema_name] ?? null;
+        // TODO Allow pinning webhooks to specific API versions
+        return $controller_class::getKnownSchemas(Router::API_VERSION)[$schema_name] ?? null;
     }
 
     public static function getMonacoSuggestions(string|null $itemtype): array

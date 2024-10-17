@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84.3
  */
-
-include('../inc/includes.php');
 
 Session::checkLoginUser();
 
@@ -48,4 +48,4 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

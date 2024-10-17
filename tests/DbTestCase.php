@@ -37,6 +37,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -123,11 +124,13 @@ class DbTestCase extends \GLPITestCase
 
         if (count($input)) {
             foreach ($input as $k => $v) {
+                $obj_var = var_export($object->fields[$k], true);
+                $input_var = var_export($v, true);
                 $this->variable($object->fields[$k])->isEqualTo(
                     $v,
                     "
-                '$k' key current value '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
-                is not equal to '$v' (" . gettype($v) . ")"
+                '$k' key current value '{$obj_var}' (" . gettype($object->fields[$k]) . ")
+                is not equal to '$input_var' (" . gettype($v) . ")"
                 );
             }
         }
@@ -189,11 +192,12 @@ class DbTestCase extends \GLPITestCase
     /**
      * Create an item of the given class
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
      *
-     * @return CommonDBTM
+     * @return T
      */
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
@@ -317,8 +321,9 @@ class DbTestCase extends \GLPITestCase
     /**
      * Initialize a definition.
      *
-     * @param string $system_name
+     * @param ?string $system_name
      * @param array $capacities
+     * @param ?array $profiles
      *
      * @return AssetDefinition
      */
@@ -348,15 +353,61 @@ class DbTestCase extends \GLPITestCase
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
+        // Clear definition cache
+        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), []);
+
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryCollectionClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryCollectionClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
 
+        return $definition;
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param ?string $system_name
+     * @param ?array $profiles
+     *
+     * @return DropdownDefinition
+     */
+    protected function initDropdownDefinition(
+        ?string $system_name = null,
+        ?array $profiles = null,
+    ): DropdownDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            DropdownDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'profiles'    => $profiles,
+            ],
+            skip_fields: ['profiles'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
+
         // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
+        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Dropdown\DropdownDefinitionManager::getInstance(), []);
+
+        $manager = \Glpi\Dropdown\DropdownDefinitionManager::getInstance();
+        $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
+        $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
 
         return $definition;
     }

@@ -365,6 +365,13 @@ class Entity extends CommonTreeDropdown
             $input['altitude'] = $parent->fields['altitude'];
         }
 
+        if (!array_key_exists('custom_css_code', $input) || $input['custom_css_code'] === null) {
+            // The `custom_css_code` field is a textfield and therefore has no default value.
+            // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
+            // See https://github.com/glpi-project/glpi/pull/17648
+            $input['custom_css_code'] = '';
+        }
+
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
         }
@@ -389,6 +396,13 @@ class Entity extends CommonTreeDropdown
 
         $input = $this->handleConfigStrategyFields($input);
         $input = $this->handleSatisfactionSurveyConfigOnUpdate($input);
+
+        if (array_key_exists('custom_css_code', $input) && $input['custom_css_code'] === null) {
+            // The `custom_css_code` field is a textfield and therefore has no default value.
+            // The `Entity::getUsedConfig()` does not correctly handle the `null` value found in the root entity.
+            // See https://github.com/glpi-project/glpi/pull/17648
+            $input['custom_css_code'] = '';
+        }
 
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
@@ -559,14 +573,14 @@ class Entity extends CommonTreeDropdown
         return true;
     }
 
-    /**
-     * Print a good title for entity pages
-     *
-     *@return void
-     **/
-    public function title()
+    public function showForm($ID, array $options = [])
     {
-       // Empty title for entities
+        if ((int)$ID === 0) {
+            // Root entity: can edit but cannot delete
+            $options['candel'] = false;
+        }
+
+        return parent::showForm($ID, $options);
     }
 
     /**
@@ -1890,7 +1904,6 @@ class Entity extends CommonTreeDropdown
             $this->fields['id'],
             'custom_css_code'
         );
-
         if (empty($custom_css_code)) {
             return '';
         }
@@ -2912,6 +2925,7 @@ class Entity extends CommonTreeDropdown
      *
      * @param string $entity_string
      * @param string|null $title
+     *
      * @return string
      */
     public static function badgeCompletename(string $entity_string = "", ?string $title = null): string
@@ -3067,7 +3081,7 @@ class Entity extends CommonTreeDropdown
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
 
-                    $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
+                    $title = "<a href='$base_path?active_entity={$entities_id}'>" . htmlspecialchars($entity['name']) . "</a>";
                     $entity['title'] = $title;
                     unset($entity['name']);
 
@@ -3075,7 +3089,7 @@ class Entity extends CommonTreeDropdown
                         $entity['folder'] = true;
 
                         $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
-            <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
+            <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __s('+ sub-entities') . "'></i>
             </a>";
 
                         $children = $adapt_tree($entity['tree']);

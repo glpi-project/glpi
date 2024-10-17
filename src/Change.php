@@ -722,10 +722,7 @@ class Change extends CommonITILObject
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (!Session::haveRight(self::$rightname, self::READALL)) {
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL])) {
             return false;
         }
 
@@ -733,25 +730,28 @@ class Change extends CommonITILObject
             return false;
         }
 
-        $restrict = [];
+        $restrict = self::getListForItemRestrict($item);
+        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
+        $criteria['WHERE']['glpi_changes.is_deleted'] = 0;
+        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+
+        $options = [
+            'metacriteria' => [],
+            'restrict' => $restrict,
+            'criteria' => $criteria,
+            'reset'    => 'reset'
+        ];
 
         switch (get_class($item)) {
-            case User::class:
-                $restrict['glpi_changes_users.users_id'] = $item->getID();
-                break;
-
-            case Supplier::class:
-                $restrict['glpi_changes_suppliers.suppliers_id'] = $item->getID();
-                break;
-
             case Group::class:
-               // Mini search engine
+                // Mini search engine
+                /** @var Group $item */
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                     echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last changes') . "</th></tr>";
+                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
                     echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups');
+                    echo __('Child groups') . "&nbsp;";
                     Dropdown::showYesNo(
                         'tree',
                         $tree,
@@ -762,122 +762,60 @@ class Change extends CommonITILObject
                     $tree = 0;
                 }
                 echo "</td></tr></table>";
+                break;
+        }
+        Change_Item::showListForItem($item, $withtemplate, $options);
+    }
 
-                $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+    public static function getListForItemRestrict(CommonDBTM $item)
+    {
+        $restrict = [];
+
+        switch (get_class($item)) {
+            case User::class:
+                $restrict['glpi_changes_users.users_id'] = $item->getID();
+                $restrict['glpi_changes_users.type'] = CommonITILActor::REQUESTER;
+                break;
+
+            case Supplier::class:
+                $restrict['glpi_changes_suppliers.suppliers_id'] = $item->getID();
+                $restrict['glpi_changes_suppliers.type'] = CommonITILActor::ASSIGN;
+                break;
+
+            case Group::class:
+                /** @var Group $item */
+                if ($item->haveChildren()) {
+                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                } else {
+                    $tree = 0;
+                }
+                $restrict['glpi_groups_changes.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+                $restrict['glpi_groups_changes.type'] = CommonITILActor::REQUESTER;
+                /** @var CommonDBTM $item */
                 break;
 
             default:
-                /** @var CommonDBTM $item */
-                $restrict['items_id'] = $item->getID();
-                $restrict['itemtype'] = $item->getType();
-                break;
-        }
-
-       // Link to open a new change
-        if (
-            $item->getID()
-            && Change::isPossibleToAssignType($item->getType())
-            && self::canCreate()
-            && !(!empty($withtemplate) && $withtemplate == 2)
-            && (!isset($item->fields['is_template']) || $item->fields['is_template'] == 0)
-        ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                Change::getFormURL(),
-                '_add_fromitem',
-                __('New change for this item...'),
-                [
-                    'itemtype'    => $item::class,
-                    'items_id'    => $item->getID(),
-                    'entities_id' => $item->fields['entities_id']
-                ]
-            );
-            echo "</div>";
-        }
-
-        $criteria = self::getCommonCriteria();
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
-        $iterator = $DB->request($criteria);
-        $number = count($iterator);
-
-       // Ticket for the item
-        echo "<div><table class='tab_cadre_fixe'>";
-
-        $colspan = 11;
-        if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $colspan++;
-        }
-        if ($number > 0) {
-            Session::initNavigateListItems(
-                'Change',
-                //TRANS : %1$s is the itemtype name,
-                //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
-            );
-
-            echo "<tr><th colspan='$colspan'>";
-
-           //TRANS : %d is the number of problems
-            echo sprintf(_n('Last %d change', 'Last %d changes', $number), $number);
-
-            echo "</th></tr>";
-        } else {
-            echo "<tr><th>" . __('No change found.') . "</th></tr>";
-        }
-       // Ticket list
-        if ($number > 0) {
-            self::commonListHeader(Search::HTML_OUTPUT);
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('Problem', $data["id"]);
-                self::showShort($data["id"]);
-            }
-            self::commonListHeader(Search::HTML_OUTPUT);
-        }
-
-        echo "</table></div>";
-
-       // Tickets for linked items
-        $linkeditems = $item->getLinkedItems();
-        $restrict = [];
-        if (count($linkeditems)) {
-            foreach ($linkeditems as $ltype => $tab) {
-                foreach ($tab as $lID) {
-                    $restrict[] = ['AND' => ['itemtype' => $ltype, 'items_id' => $lID]];
+                $restrict['glpi_changes_items.items_id'] = $item->getID();
+                $restrict['glpi_changes_items.itemtype'] = $item->getType();
+                // you can only see your tickets
+                if (!Session::haveRight(self::$rightname, self::READALL)) {
+                    $or = [
+                        'glpi_changes.users_id_recipient'   => Session::getLoginUserID(),
+                        [
+                            'AND' => [
+                                'glpi_changes_users.changes_id'  => 'glpi_changes.id',
+                                'glpi_changes_users.users_id'    => Session::getLoginUserID()
+                            ]
+                        ]
+                    ];
+                    if (count($_SESSION['glpigroups'])) {
+                        $or['glpi_groups_changes.groups_id'] = $_SESSION['glpigroups'];
+                    }
+                    $restrict[] = ['OR' => $or];
                 }
-            }
         }
 
-        if (count($restrict)) {
-            $criteria         = self::getCommonCriteria();
-            $criteria['WHERE'] = ['OR' => $restrict]
-            + getEntitiesRestrictCriteria(self::getTable());
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='$colspan'>";
-            echo __('Changes on linked items');
-
-            echo "</th></tr>";
-            if ($number > 0) {
-                self::commonListHeader(Search::HTML_OUTPUT);
-
-                foreach ($iterator as $data) {
-                    // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-                    self::showShort($data["id"]);
-                }
-                self::commonListHeader(Search::HTML_OUTPUT);
-            } else {
-                echo "<tr><th>" . __('No change found.') . "</th></tr>";
-            }
-            echo "</table></div>";
-        }
+        return $restrict;
     }
 
     public static function getDefaultValues($entity = 0)
@@ -1286,9 +1224,8 @@ class Change extends CommonITILObject
                         ) {
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $userdata = getUserName($d["users_id"], 2);
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        $userdata['name'];
+                                        htmlspecialchars(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -1499,7 +1436,7 @@ class Change extends CommonITILObject
         $rand      = mt_rand();
         if ($change->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
-            $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>
@@ -1513,16 +1450,17 @@ class Change extends CommonITILObject
                 && count($change->users[CommonITILActor::REQUESTER])
             ) {
                 foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
-                    if ($d["users_id"] > 0) {
-                         $userdata = getUserName($d["users_id"], 2);
-                         $name     = "<span class='b'>" . $userdata['name'] . "</span>";
+                    $user = new User();
+                    if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
+                         $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
                         if ($viewusers) {
                             $name = sprintf(
-                                __('%1$s %2$s'),
+                                __s('%1$s %2$s'),
                                 $name,
                                 Html::showToolTip(
-                                    $userdata["comment"],
-                                    ['link'    => $userdata["link"],
+                                    $user->getInfoCard(),
+                                    [
+                                        'link'    => $user->getLinkURL(),
                                         'display' => false
                                     ]
                                 )
@@ -1530,7 +1468,7 @@ class Change extends CommonITILObject
                         }
                          echo $name;
                     } else {
-                        echo $d['alternative_email'] . "&nbsp;";
+                        echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -1549,15 +1487,15 @@ class Change extends CommonITILObject
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='change" . $change->fields["id"] . $rand . "' href='" .
+            $link = "<a id='change" . htmlspecialchars($change->fields["id"] . $rand) . "' href='" .
             Change::getFormURLWithID($change->fields["id"]);
             if ($forcetab != '') {
-                $link .= "&amp;forcetab=" . $forcetab;
+                $link .= "&amp;forcetab=" . htmlspecialchars($forcetab);
             }
             $link .= "'>";
-            $link .= "<span class='b'>" . $change->fields["name"] . "</span></a>";
-            $link = printf(
-                __('%1$s %2$s'),
+            $link .= "<span class='b'>" . htmlspecialchars($change->fields["name"]) . "</span></a>";
+            $link = sprintf(
+                __s('%1$s %2$s'),
                 $link,
                 Html::showToolTip(
                     $change->fields['content'],
@@ -1566,6 +1504,7 @@ class Change extends CommonITILObject
                     ]
                 )
             );
+            echo $link;
 
             echo "</td>";
 
@@ -1573,12 +1512,39 @@ class Change extends CommonITILObject
             echo "</tr>";
         } else {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='6' ><i>" . __('No change found.') . "</i></td></tr>";
+            echo "<td colspan='6' ><i>" . __s('No change found.') . "</i></td></tr>";
         }
     }
 
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
-        return [];
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $tab = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $tab[] = [
+                'id'            => 141,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of changes'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+
+        return $tab;
     }
 }

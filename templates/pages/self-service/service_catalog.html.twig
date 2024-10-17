@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set container_size = "xl" %}
+
+{% block content_title %}
+    <div class="d-flex">
+        <span>{{ __('Service catalog') }}</span>
+        <div class="ms-auto input-icon">
+            <input
+                class="form-control"
+                placeholder="{{ __("Search for forms...") }}"
+                data-glpi-service-catalog-filter-forms
+            >
+            <span class="input-icon-addon" style="font-size: 18px;">
+                <i class="ti ti-search"></i>
+            </span>
+        </div>
+    </div>
+{% endblock content_title %}
+
+{% block content_body %}
+    <section
+        aria-label="{{ __("Forms") }}"
+        class="row mb-5"
+        data-glpi-service-catalog-forms
+    >
+        {{ include(
+            'components/helpdesk_forms/forms_list.html.twig',
+            {forms: forms},
+            with_context = false
+        ) }}
+    </section>
+
+    <script>
+        (async function() {
+            const module = await import(
+                "{{ js_path('js/modules/Forms/SelfServiceController.js') }}"
+            );
+            new module.GlpiFormSelfServiceController();
+        })();
+    </script>
+{% endblock content_body %}

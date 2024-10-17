@@ -320,7 +320,6 @@ class Notification extends CommonDBTM implements FilterableInterface
                         'value'               => $values[$field],
                     ]
                 );
-             break;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
@@ -474,7 +473,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         switch ($ma->getAction()) {
             case 'add_template':
                 $notification_notificationtemplate = new Notification_NotificationTemplate();
-                $notification_notificationtemplate->showFormMassiveAction($ma);
+                $notification_notificationtemplate->showFormMassiveAction();
                 return true;
             case 'remove_all_template':
                 echo Html::submit(__('Delete'), ['name' => 'massiveaction']);

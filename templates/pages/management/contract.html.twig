@@ -44,15 +44,22 @@
    ) }}
 
    {% if item.fields['begin_date'] is not empty and item.fields['duration'] is not empty %}
+      {% set end_title = __('End date') %}
+      {% if item.fields['renewal'] == constant('Contract::RENEWAL_TACIT') %}
+         {% set end_title = __('Next renewal date') %}
+      {% endif %}
       {% set warranty_expiration %}
-         <i class="fas fa-arrow-right"></i>
-         {{ call('Infocom::getWarrantyExpir', [
-            item.fields['begin_date'],
-            item.fields['duration'],
-            0,
-            true,
-            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT')
-         ])|raw }}
+         <span title="{{ end_title|default('') }}" data-bs-toggle="tooltip">
+            <i class="fas fa-arrow-right"></i>
+            {{ call('Infocom::getWarrantyExpir', [
+               item.fields['begin_date'],
+               item.fields['duration'],
+               0,
+               true,
+               item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'),
+               item.fields['periodicity']
+            ])|raw }}
+         </span>
       {% endset %}
    {% endif %}
    {{ fields.dropdownNumberField('duration', item.fields['duration'], __('Initial contract period'), {
@@ -72,7 +79,8 @@
             item.fields['begin_date'],
             item.fields['duration'],
             item.fields['notice'],
-            true
+            true,
+            item.fields['periodicity']
          ])|raw }}
       {% endset %}
    {% endif %}

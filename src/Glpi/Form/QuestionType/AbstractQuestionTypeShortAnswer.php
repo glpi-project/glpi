@@ -52,6 +52,47 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     abstract public function getInputType(): string;
 
     #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return new GlpiFormEditorConvertedExtractedDefaultValue(
+                        GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                        input.val()
+                    );
+                },
+                "convertDefaultValue": function (question, value) {
+                    const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
+                        .data('EditorConvertedExtractedDefaultValue')
+                    ;
+
+                    if (value == null) {
+                        return '';
+                    }
+
+                    // Only accept string values
+                    if (value.getDatatype() !== GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING) {
+                        return '';
+                    }
+
+                    const input = question.find('[data-glpi-form-editor-question-type-specific]')
+                        .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
+
+                    return input.val(value.getDefaultValue()).val();
+                }
+            }
+        JS;
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -61,6 +102,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
+                aria-label="{{ __('Default value') }}"
             />
 TWIG;
 
@@ -82,6 +124,7 @@ TWIG;
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
                 value="{{ question.fields.default_value }}"
+                aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
 TWIG;
@@ -90,19 +133,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'   => $question,
             'input_type' => $this->getInputType(),
-        ]);
-    }
-
-    #[Override]
-    public function renderAnswerTemplate($answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => $answer,
+            'label'      => $question->fields['name'],
         ]);
     }
 
@@ -110,5 +141,11 @@ TWIG;
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::SHORT_ANSWER;
+    }
+
+    #[Override]
+    public function isAllowedForUnauthenticatedAccess(): bool
+    {
+        return true;
     }
 }

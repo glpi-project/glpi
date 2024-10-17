@@ -38,8 +38,8 @@
    {% endif %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
-      <div class="card-header mb-3">
-         <h4 class="card-title {{ icon|length ? 'ms-4' : '' }}">
+      <div class="card-header mb-3 pt-2">
+         <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
                   <i class="fa-2x {{ icon }}"></i>
@@ -439,7 +439,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
@@ -467,7 +467,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownTimestampField(name, value, label = '', options = {}) %}
@@ -494,7 +494,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownYesNo(name, value, label = '', options = {}) %}
@@ -520,7 +520,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemTypes(name, value, label = '', options = {}) %}
@@ -549,7 +549,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownItemsFromItemtypes(name, label = '', options = {}) %}
@@ -564,7 +564,7 @@
    {% set field %}
       {% do call('Dropdown::showSelectItemFromItemtypes', [options]) %}
    {% endset %}
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownIcons(name, value, label = '', options = {}) %}
@@ -590,13 +590,12 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownWebIcons(name, value, label = '', options = {}) %}
     {% set options = {
         rand: random(),
-        icon_sets: ['ti'],
     }|merge(options|merge({
         noselect2: true,
     })) %}
@@ -607,7 +606,7 @@
     <script type="module">
         import('{{ js_path('js/modules/Form/WebIconSelector.js') }}').then((m) => {
             const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
-            const selector = new m.default(document.getElementById(dropdown_id), {{ options.icon_sets|json_encode|raw }});
+            const selector = new m.default(document.getElementById(dropdown_id));
             selector.init();
         });
     </script>
@@ -637,7 +636,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownFrequency(name, value, label = '', options = {}) %}
@@ -662,7 +661,7 @@
       }|merge(options)]) %}
    {% endset %}
 
-   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+   {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
@@ -699,7 +698,7 @@
    {% endset %}
 
    {% if field|trim is not empty %}
-      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
+      {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
    {% endif %}
 {% endmacro %}
 
@@ -787,6 +786,7 @@
       'full_width': false,
       'mb': 'mb-3',
       'add_field_class': '',
+      'add_field_attribs': {},
    }|merge(options) %}
 
    {% set class = options.field_class ?? 'col-12 col-sm-6' %}
@@ -795,7 +795,13 @@
    {% endif %}
    {% set class = class ~ ' ' ~ options.add_field_class %}
 
-   <div class="{{ class }} {{ options.mb }}">
+   {% if options.add_field_attribs is not empty %}
+      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+   {% else %}
+      {% set extra_attribs = '' %}
+   {% endif %}
+
+   <div class="{{ class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>
@@ -805,7 +811,6 @@
 {% macro horizontalField(label, field, id, add_field_html = '', options = {}) %}
    {% set options = {
       'full_width': false,
-      'full_width_adapt_column': true,
       'align_label_right': true,
       'mb': 'mb-2',
       'field_class': 'col-12 col-sm-6',
@@ -826,15 +831,8 @@
 
    {% if options.full_width %}
       {% set options = options|merge({
-         field_class: 'col-12',
+         field_class: 'col-12 glpi-full-width',
       }) %}
-
-      {% if options.full_width_adapt_column %}
-         {% set options = {
-            label_class: 'col-xxl-4',
-            input_class: 'col-xxl-8',
-         }|merge(options) %}
-      {% endif %}
    {% endif %}
 
    {% set options = {

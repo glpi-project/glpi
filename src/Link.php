@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Features\AssignableItem;
 use Glpi\Toolbox\URL;
 
 /**
@@ -438,11 +439,21 @@ class Link extends CommonDBTM
             'DOMAIN' => '',
             'NETWORK' => $item->isField('networks_id') ? Dropdown::getDropdownName('glpi_networks', $item->getField('networks_id')) : '',
             'USER' => $item->isField('users_id') ? Dropdown::getDropdownName('glpi_users', $item->getField('users_id')) : '',
-            'GROUP' => $item->isField('groups_id') ? Dropdown::getDropdownName('glpi_groups', $item->getField('groups_id')) : '',
             'REALNAME' => $item->isField('realname') ? $item->getField('realname') : '',
             'FIRSTNAME' => $item->isField('firstname') ? $item->getField('firstname') : '',
             'MODEL' => '',
         ];
+
+        if (Toolbox::hasTrait($item::class, AssignableItem::class)) {
+            $group_names = array_map(static fn ($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
+            $vars['GROUPS'] = $group_names;
+            // GROUP - BC for < GLPI 11
+            $vars['GROUP'] = count($group_names) > 0 ? array_shift($group_names) : '';
+        } else {
+            $vars['GROUPS'] = [];
+            // GROUP - BC for < GLPI 11
+            $vars['GROUP'] = $item->isField('groups_id') ? Dropdown::getDropdownName('glpi_groups', $item->getField('groups_id')) : '';
+        }
 
         $item_fields = $item->fields;
         $item::unsetUndisclosedFields($item_fields);

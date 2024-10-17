@@ -60,6 +60,7 @@ class NetworkPort extends InventoryAsset
     private $current_connection;
     private $vlan_stmt;
     private $pvlan_stmt;
+    protected Conf $conf;
 
     public function prepare(): array
     {
@@ -297,6 +298,12 @@ class NetworkPort extends InventoryAsset
             $rule->getCollectionPart();
             $rule->processAllRules($input, [], ['class' => $this]);
 
+            // Info: phpstan report dead code here (see baseline).
+            // Indeed, $this->connection_ports is initialized as an empty array above,
+            // and we never add anything into it.
+            // Thus, this condition is always true and the code after is never executed.
+            // TODO: Investigate to see if the dead code should be removed or
+            // if this is a real bug and this condition should not always be true (most likely the case).
             if (count($this->connection_ports) != 1) {
                 continue;
             }
@@ -360,7 +367,7 @@ class NetworkPort extends InventoryAsset
         }
         if (count($found_macs) > 1) { // MultipleMac
            //do not manage MAC addresses if we found one NetworkEquipment
-            if (isset($this->connections['NetworkEquipment'])) {
+            if (isset($this->connection_ports['NetworkEquipment'])) {
                 return;
             }
 
@@ -369,6 +376,13 @@ class NetworkPort extends InventoryAsset
                 $this->handleHub($found_macs, $netports_id);
                 return;
             }
+
+            // Info: phpstan report dead code here (see baseline).
+            // Indeed, $this->connection_ports is initialized as an empty array above,
+            // and we never add anything into it.
+            // Thus, this condition above always true and the code under this comment is never executed.
+            // TODO: Investigate to see if the dead code should be removed or
+            // if this is a real bug and this condition should not always be true (most likely the case).
 
             $item_ids = [];
             $real_port_ids = [];
@@ -896,7 +910,10 @@ class NetworkPort extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        return true;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $this->conf = $conf;
+        return in_array($this->item::class, $CFG_GLPI['networkport_types']);
     }
 
     public function getPart($part)

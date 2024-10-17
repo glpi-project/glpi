@@ -33,15 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
-    $AJAX_INCLUDE = 1;
-    include('../inc/includes.php');
+    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    $this->setAjax();
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }
@@ -127,12 +122,12 @@ $options2 = [
 $ticket = new Ticket();
 
 $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-$nb  = $ticket->{$method}($actor_id);
+$nb  = (int) $ticket->{$method}($actor_id);
 
 if ($only_number) {
     echo "<a href='$url'>" . $nb . "</a>";
 } else {
     echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-    printf(__('%1$s: %2$s'), __('Processing'), $nb);
+    printf(__s('%1$s: %2$s'), __('Processing'), $nb);
     echo ")</a>";
 }

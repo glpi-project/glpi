@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint no-var: 0 */
+
 var GLPI = GLPI || {};
 GLPI.Forms = GLPI.Forms || {};
 
@@ -87,7 +89,7 @@ GLPI.Forms.FaIconSelector = class {
                 // Split them to handle the separately.
                 const selectors = rule.selectorText.split(',');
                 for(let k = 0; k < selectors.length; k++) {
-                    let matches = selectors[k].trim().match(/^\.(fa-[a-z-]+)::before$/);
+                    const matches = selectors[k].trim().match(/^\.(fa-[a-z-]+)::before$/);
                     if (matches !== null) {
                         const cls = matches[1];
                         const entry = {
@@ -115,7 +117,7 @@ GLPI.Forms.FaIconSelector = class {
     renderIcon(option) {
         // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
         const faFontFamilies = '\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\'';
-        let container = document.createElement('span');
+        const container = document.createElement('span');
         container.innerHTML = `<i class="fa-lg fa-fw fa ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
         return container;
     }

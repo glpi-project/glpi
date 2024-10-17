@@ -110,7 +110,7 @@ describe('Dashboard', () => {
         dashboard.easter();
 
         let colors = ['', '', ''];
-        let new_colors = ['', '', ''];
+        const new_colors = ['', '', ''];
 
         for (let i = 0; i < 10; i++) {
             jest.advanceTimersByTime(30);
@@ -695,7 +695,7 @@ describe('Dashboard', () => {
                 <div><div class="child-item"></div></div>
             </div>
         `);
-        let items = $('.child-item');
+        const items = $('.child-item');
 
         dashboard.computeWidth(items);
 
@@ -718,7 +718,7 @@ describe('Dashboard', () => {
                 <div><div class="child-item"></div></div>
             </div>
         `);
-        let items = $('.child-item');
+        const items = $('.child-item');
         dashboard.resetComputedWidth(items);
 
         expect(items.eq(0).css('width')).toEqual('100%');
@@ -1805,7 +1805,7 @@ describe('Dashboard', () => {
     });
 
     test('Update CSS and Fit Numbers on Resize', () => {
-        let dashboard = new GLPIDashboard({'rand': '12345'});
+        const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.generateCss = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();

@@ -35,7 +35,10 @@
 
 namespace Glpi\Tests;
 
-use JsonConfigInterface;
+use AbstractRightsDropdown;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -66,6 +69,11 @@ class FormBuilder
      * Form header
      */
     protected string $header;
+
+    /**
+     * Form header
+     */
+    protected string $description;
 
     /**
      * Is this form a draft ?
@@ -99,6 +107,7 @@ class FormBuilder
         $this->is_recursive = true;
         $this->is_active = true;
         $this->header = "";
+        $this->description = "";
         $this->is_draft = false;
         $this->sections = [];
         $this->destinations = [];
@@ -221,6 +230,29 @@ class FormBuilder
     }
 
     /**
+     * Get form description
+     *
+     * @return string Form description
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set form description
+     *
+     * @param string Form description
+     *
+     * @return self To allow chain calls
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
      * Get form draft status
      *
      * @return bool Form draft status
@@ -277,7 +309,7 @@ class FormBuilder
      *
      * @param string $name          Question name
      * @param string $type          Question type
-     * @param string $default_value Question default value
+     * @param mixed  $default_value Question default value
      * @param string $extra_data    Question extra data
      * @param string $description   Question description
      * @param bool   $is_mandatory  Is the question mandatory ?
@@ -287,7 +319,7 @@ class FormBuilder
     public function addQuestion(
         string $name,
         string $type,
-        string $default_value = "",
+        mixed $default_value = "",
         string $extra_data = "",
         string $description = "",
         bool $is_mandatory = false,
@@ -378,15 +410,36 @@ class FormBuilder
      * Add a destination to the form
      *
      * @param string                  $strategy
-     * @param JsonConfigInterface $values
+     * @param JsonFieldInterface $values
      *
      * @return self To allow chain calls
      */
     public function addAccessControl(
         string $strategy,
-        JsonConfigInterface $config
+        JsonFieldInterface $config,
+        bool $is_active = true,
     ): self {
-        $this->access_control[$strategy] = $config;
+        $this->access_control[$strategy] = [
+            'config'    => $config,
+            'is_active' => $is_active,
+        ];
+        return $this;
+    }
+
+    /**
+     * Shorthand to add an allow list without restrictions to the form.
+     *
+     * @return self
+     */
+    public function allowAllUsers(): self
+    {
+        $this->addAccessControl(
+            strategy: AllowList::class,
+            config: new AllowListConfig(
+                user_ids: [AbstractRightsDropdown::ALL_USERS]
+            ),
+            is_active: true,
+        );
         return $this;
     }
 }

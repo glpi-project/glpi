@@ -37,8 +37,6 @@
  * @since 9.1
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("slm", READ);
 
 Html::header(

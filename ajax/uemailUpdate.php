@@ -35,14 +35,10 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-$AJAX_INCLUDE = 1;
 if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
-    include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }
@@ -129,7 +125,7 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlentities($default_email, ENT_QUOTES, 'utf-8') . "'>";
+                        value='" . htmlspecialchars($default_email) . "'>";
     }
 
     echo "$email_string";

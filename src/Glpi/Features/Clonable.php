@@ -135,9 +135,16 @@ trait Clonable
                 }
                 $origin_id = $relation_item->getID();
                 $itemtype = $relation_item->getType();
-                $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
-                $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
-                $relation_newitems[] = $relation_item;
+                if (method_exists($relation_item, 'clone')) {
+                    $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
+                    $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
+                    $relation_newitems[] = $relation_item;
+                } else {
+                    trigger_error(
+                        sprintf('Unable to clone %s', $itemtype),
+                        E_USER_WARNING
+                    );
+                }
             }
             // Update relations between cloned items
             foreach ($relation_newitems as $relation_newitem) {
@@ -155,16 +162,21 @@ trait Clonable
 
     /**
      * Prepare input datas for cloning the item.
-     * This empty method is meant to be redefined in objects that need a specific prepareInputForClone logic.
-     *
-     * @since 10.0.0
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableItem}
      *
      * @param array $input datas used to add the item
      *
      * @return array the modified $input array
+     * @since 10.0.0
+     *
      */
     public function prepareInputForClone($input)
     {
+        if (method_exists($this, 'prepareGroupFields')) {
+            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+            $input = $this->prepareGroupFields($input);
+        }
         return $input;
     }
 
@@ -177,7 +189,7 @@ trait Clonable
      * @param array   $override_input Custom input to override
      * @param boolean $history        Do history log ? (true by default)
      *
-     * @return int|bool the new ID of the clone (or false if fail)
+     * @return bool the new ID of the clone (or false if fail)
      */
     public function cloneMultiple(
         int $n,
@@ -244,6 +256,15 @@ trait Clonable
         if ($newID !== false) {
             $new_item->cloneRelations($this, $history);
             $new_item->post_clone($this, $history);
+
+            if (
+                \Infocom::canApplyOn($this)
+                && isset($new_item->input['states_id'])
+                && !($new_item->input['is_template'] ?? false)
+            ) {
+                //Check if we have to automatically fill dates
+                \Infocom::manageDateOnStatusChange($new_item);
+            }
         }
 
         return $newID;
@@ -292,7 +313,7 @@ trait Clonable
      * The goal is to set the copy name as "{name} (copy {i})" unless it's
      * the first copy: in this case just "{name} (copy)" is acceptable
      *
-     * @param string $current_item The item being copied
+     * @param string $current_name The name of the current item
      * @param int    $copy_index   The index to append to the copy's name
      *
      * @return string The computed name of the new item to be created
@@ -312,12 +333,17 @@ trait Clonable
 
     /**
      * Post clone logic.
-     * This empty method is meant to be redefined in objects that need a specific post_clone logic.
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableItem}
      *
      * @param $source
      * @param $history
      */
     public function post_clone($source, $history)
     {
+        if (method_exists($this, 'updateGroupFields')) {
+            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+            $this->updateGroupFields();
+        }
     }
 }

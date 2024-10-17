@@ -117,22 +117,24 @@
          <tr><td colspan="6">{{ __('No historical matching your filters') }}</td></tr>
       {% else %}
          {% for entry in logs %}
-            <tr>
-               <td>{{ entry['id'] }}</td>
-               <td>{{ entry['date_mod']|formatted_datetime }}</td>
-               <td>{{ entry['user_name'] }}</td>
-               <td>{{ entry['field'] }}</td>
-               <td colspan="2" style="width: 60%">{{ entry['change']|raw }}</td>
-            </tr>
+            {% if entry['display_history'] %}
+               <tr>
+                  <td>{{ entry['id'] }}</td>
+                  <td>{{ entry['date_mod']|formatted_datetime }}</td>
+                  <td>{{ entry['user_name'] }}</td>
+                  <td>{{ entry['field'] }}</td>
+                  <td colspan="2" style="width: 60%">{{ entry['change']|raw }}</td>
+               </tr>
+            {% endif %}
          {% endfor %}
       {% endif %}
       </tbody>
    </table>
    </div>{# .table-responsive #}
 
-   {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2">
-      {{ __('Show %s entries')|format(limitdropdown)|raw }}
+        {{ __('Entries to show:') }}
+        {% include 'components/dropdown/limit.html.twig' %}
    </div>
 {% endif %}
 

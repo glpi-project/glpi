@@ -106,6 +106,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Validate that the subject does not have the contract tab, as the
@@ -139,6 +140,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create some contracts that are ready to be assigned to our item
@@ -204,6 +206,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create a contract
@@ -281,6 +284,7 @@ class HasContractsCapacity extends DbTestCase
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Set display preferences
@@ -295,21 +299,16 @@ class HasContractsCapacity extends DbTestCase
                 'num'      => '129', // Linked contract type
                 'users_id' => 0,
             ],
-            [
-                'itemtype' => $subject::getType(),
-                'num'      => '1', // Asset name
-                'users_id' => 0,
-            ]
         ]);
 
-        // Count display preferences, should be 3 (2 for contract + 1 for asset)
+        // Count display preferences, should be 9 (2 for contract + 7 for asset)
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
                 'itemtype' => $subject::getType(),
             ]
         );
-        $this->integer($count_display_preferences)->isEqualTo(3);
+        $this->integer($count_display_preferences)->isEqualTo(9);
 
         // Disable capacity, display preferences related to contracts should be
         // deleted while display preferences related to the asset should not be
@@ -324,7 +323,7 @@ class HasContractsCapacity extends DbTestCase
                 'itemtype' => $subject::getType(),
             ]
         );
-        $this->integer($count_display_preferences)->isEqualTo(1);
+        $this->integer($count_display_preferences)->isEqualTo(7);
     }
 
     public function testCloneAsset()

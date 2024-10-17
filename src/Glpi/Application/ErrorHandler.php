@@ -110,13 +110,6 @@ class ErrorHandler
     private $logger;
 
     /**
-     * Last fatal error trace.
-     *
-     * @var string
-     */
-    private $last_fatal_trace;
-
-    /**
      * Indicates wether output is disabled.
      *
      * @var bool
@@ -139,17 +132,10 @@ class ErrorHandler
     private $output_handler;
 
     /**
-     * Reserved memory that will be used in case of an "out of memory" error.
-     *
-     * @var string
-     */
-    private $reserved_memory;
-
-    /**
      * @param LoggerInterface|null $logger
      * @param string               $env
      */
-    private function __construct(LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
+    private function __construct(?LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
     {
         $this->logger = $logger;
         $this->env = $env;
@@ -233,9 +219,13 @@ class ErrorHandler
     public function register(): void
     {
         set_error_handler([$this, 'handleError']);
-        set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleFatalError']);
-        $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
+
+        if (isCommandLine() && !defined('TU_USER')) {
+            // Register the exception handler only in CLI context.
+            // In web context, the exception will be catched by the `public/index.php` router
+            // and the error message will be displayed in the error page.
+            set_exception_handler([$this, 'handleException']);
+        }
 
         // Force reporting of all errors, to ensure that all log levels that are supposed to be
         // pushed in logs according to `GLPI_LOG_LVL`/`GLPI_ENVIRONMENT_TYPE` are actually reported.
@@ -257,25 +247,20 @@ class ErrorHandler
      */
     public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
     {
-
-       // Have to false to forward to PHP internal error handler.
+        // Have to false to forward to PHP internal error handler.
         $return = !$this->forward_to_internal_handler;
 
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         array_shift($trace);  // Remove current method from trace
         $error_trace = $this->getTraceAsString($trace);
 
-        if (in_array($error_code, self::FATAL_ERRORS)) {
-           // Fatal errors are handled by shutdown function
-           // (as some are not recoverable and cannot be handled here).
-           // Store backtrace to be able to use it there.
-            $this->last_fatal_trace = $error_trace;
-            return $return;
+        if (in_array($error_code, self::FATAL_ERRORS, true)) {
+            throw $this->convertErrorToThrowable($error_code, $error_message, $filename, $line_number);
         }
 
         if (!(error_reporting() & $error_code)) {
-           // Do not handle error if '@' operator is used on errored expression
-           // see https://www.php.net/manual/en/language.operators.errorcontrol.php
+            // Do not handle error if '@' operator is used on errored expression
+            // see https://www.php.net/manual/en/language.operators.errorcontrol.php
             return $return;
         }
 
@@ -290,7 +275,6 @@ class ErrorHandler
             $filename,
             $line_number
         );
-
         $log_level = self::ERROR_LEVEL_MAP[$error_code];
 
         $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
@@ -412,55 +396,6 @@ class ErrorHandler
     }
 
     /**
-     * Handle fatal errors.
-     *
-     * @retun void
-     */
-    public function handleFatalError(): void
-    {
-       // Free reserved memory to be able to handle "out of memory" errors
-        $this->reserved_memory = null;
-
-        $error = error_get_last();
-        if ($error && in_array($error['type'], self::FATAL_ERRORS)) {
-            $this->exit_code = 255;
-
-            $error_type = sprintf(
-                'PHP %s (%s)',
-                $this->codeToString($error['type']),
-                $error['type']
-            );
-            $error_description = sprintf(
-                '%s in %s at line %s',
-                $error['message'],
-                $error['file'],
-                $error['line']
-            );
-
-           // debug_backtrace is not available in shutdown function
-           // so get stored trace if any exists
-            $error_trace = $this->last_fatal_trace ?? '';
-
-            $log_level = self::ERROR_LEVEL_MAP[$error['type']];
-
-            $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-            $this->outputDebugMessage($error_type, $error_description, $log_level);
-        }
-
-        if ($this->exit_code !== null) {
-           // If an exit code is defined, register a shutdown function that will be called after
-           // thoose that are already defined, in order to exit the script with the correct code.
-            $exit_code = $this->exit_code;
-            register_shutdown_function(
-                'register_shutdown_function',
-                static function () use ($exit_code) {
-                    exit($exit_code);
-                }
-            );
-        }
-    }
-
-    /**
      * Defines if errors should be forward to PHP internal error handler.
      *
      * @param bool $forward_to_internal_handler
@@ -571,7 +506,7 @@ class ErrorHandler
             $this->output_handler->writeln($message, $verbosity);
         } else if (!isCommandLine()) {
             echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
-            . '<span class="b">' . $error_type . ': </span>' . $message . '</div>';
+            . '<span class="b">' . \htmlspecialchars($error_type) . ': </span>' . \htmlspecialchars($message) . '</div>';
         } else {
             echo $error_type . ': ' . $message . "\n";
         }
@@ -641,5 +576,27 @@ class ErrorHandler
         }
 
         return $message;
+    }
+
+    private function convertErrorToThrowable(int $error_code, string $error_message, string $filename, int $line_number): \Throwable
+    {
+        $handler = new \Symfony\Component\ErrorHandler\ErrorHandler(null, $this->isDebug());
+        try {
+            $handler->handleError($error_code, $error_message, $filename, $line_number);
+        } catch (\Throwable $thrownException) {
+            return $thrownException;
+        }
+
+        return new \ErrorException(
+            message: \sprintf("An error occured (code %d, in %s::%d):\n%s", $error_code, $filename, $line_number, $error_message),
+            code: $error_code,
+            filename: $filename,
+            line: $line_number,
+        );
+    }
+
+    private function isDebug(): bool
+    {
+        return $this->env === GLPI::ENV_DEVELOPMENT || $this->env === GLPI::ENV_TESTING;
     }
 }

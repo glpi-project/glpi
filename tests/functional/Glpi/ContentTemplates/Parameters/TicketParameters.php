@@ -97,7 +97,7 @@ class TicketParameters extends AbstractParameters
         $suppliers_id        = getItemByTypeName('Supplier', '_suplier01_name', true);
 
         $now = date('Y-m-d H:i:s');
-        $this->createItem('Ticket', [
+        $created_ticket = $this->createItem('Ticket', [
             'name'                  => 'ticket_testGetValues',
             'content'               => '<p>ticket_testGetValues content</p>',
             'entities_id'           => $test_entity_id,
@@ -114,15 +114,21 @@ class TicketParameters extends AbstractParameters
             '_groups_id_assign'     => [$assigned_groups_id],
             '_suppliers_id_assign'  => [$suppliers_id],
         ]);
+        $tickets_id = $created_ticket->getID();
 
-        $tickets_id = getItemByTypeName('Ticket', 'ticket_testGetValues', true);
+        $kb_item_id = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true);
+        $this->createItem(\KnowbaseItem_Item::class, [
+            'knowbaseitems_id' => $kb_item_id,
+            'itemtype'         => 'Ticket',
+            'items_id'         => $tickets_id,
+        ]);
 
         $parameters = $this->newTestedInstance();
         $values = $parameters->getValues(getItemByTypeName('Ticket', 'ticket_testGetValues'));
         $this->array($values)->isEqualTo([
             'id'        => $tickets_id,
             'ref'       => "#$tickets_id",
-            'link'      => "<a  href='/glpi/front/ticket.form.php?id=$tickets_id'  title=\"ticket_testGetValues\">ticket_testGetValues</a>",
+            'link'      => '<a href="/glpi/front/ticket.form.php?id=' . $tickets_id . '" title="ticket_testGetValues">ticket_testGetValues</a>',
             'name'      => 'ticket_testGetValues',
             'content'   => '<p>ticket_testGetValues content</p>',
             'date'      => $now,
@@ -247,7 +253,14 @@ class TicketParameters extends AbstractParameters
                 'name'         => 'location_testGetValues',
                 'completename' => 'location_testGetValues',
             ],
-            'knowbaseitems' => [],
+            'knowbaseitems' => [
+                [
+                    'id' => $kb_item_id,
+                    'name' => '_knowbaseitem01',
+                    'answer' => "Answer for Knowledge base entry _knowbaseitem01 apple juice turnover",
+                    'link' => '<a href="/glpi/front/knowbaseitem.form.php?id=' . $kb_item_id . '" title="_knowbaseitem01">_knowbaseitem01</a>'
+                ]
+            ],
             'assets'        => [],
         ]);
 

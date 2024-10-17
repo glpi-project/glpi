@@ -35,13 +35,9 @@
 
 use Glpi\Http\Response;
 
-/**
- * @var bool|null $AJAX_INCLUDE
- */
-global $AJAX_INCLUDE;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -51,7 +47,6 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
     $agent = new Agent();
     if (!$agent->getFromDB($_POST['id']) || !$agent->canView()) {
         Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-        return;
     }
     $answer = [];
 

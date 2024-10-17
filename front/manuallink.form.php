@@ -34,9 +34,8 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Response;
-
-include('../inc/includes.php');
 
 Session::checkValidSessionId();
 
@@ -107,5 +106,5 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
         'items_id'    => $items_id
     ]);
 } else {
-    Html::displayErrorAndDie('lost');
+    throw new BadRequestHttpException();
 }

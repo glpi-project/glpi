@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Session::checkLoginUser();
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -96,5 +94,3 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
     }
 }
 Html::redirect($results['redirect']);
-
-Html::popFooter();

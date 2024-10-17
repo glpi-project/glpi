@@ -279,7 +279,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
 
         $kb_item = new KnowbaseItem();
@@ -335,7 +335,6 @@ class KnowbaseItem_Item extends CommonDBRelation
                     }
                 }
                 return ' ';
-            break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
