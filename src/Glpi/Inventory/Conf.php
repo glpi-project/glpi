@@ -359,7 +359,7 @@ class Conf extends CommonGLPI
 
         echo "<th>";
         echo "<label for='enabled_inventory'>";
-        echo __('Enable inventory');
+        echo __s('Enable inventory');
         echo "</label>";
         echo "</th>";
         echo "<td colspan='3'>";
@@ -376,7 +376,7 @@ class Conf extends CommonGLPI
             echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
             echo "<span class='ms-2'>";
             echo "<i class='fas fa-info-circle'> </i> &nbsp;";
-            echo __("The inventory is disabled, remember to activate it if necessary");
+            echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";
         } else {
@@ -400,7 +400,7 @@ class Conf extends CommonGLPI
 
             echo "<tr>";
             echo "<th colspan='4'>";
-            echo __('Import options');
+            echo __s('Import options');
             echo "</th>";
             echo "</tr>";
 
@@ -609,7 +609,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='4'>";
-            echo __('Related configurations');
+            echo __s('Related configurations');
             echo "</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1'>";
@@ -705,7 +705,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='4' style='text-align:right;'>";
-            echo "<span class='red'>" . __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
+            echo "<span class='red'>" . __s('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
             echo "</td>";
             echo "</tr>";
 
@@ -917,7 +917,7 @@ class Conf extends CommonGLPI
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
+            echo "<th colspan=4 >" . __s('Agent cleanup') . "</th></tr>";
             echo "<tr class='tab_bg_1'><td>";
             echo \Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, \Agent::getType());
             echo "</td><td width='20%'>";

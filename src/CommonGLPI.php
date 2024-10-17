@@ -717,6 +717,8 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
     {
+        $text = htmlspecialchars($text);
+
         if (empty($icon)) {
             $icon = static::getTabIconClass($form_itemtype);
         }
