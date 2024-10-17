@@ -34,11 +34,11 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use Session;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +60,7 @@ final class ChangeProfileController extends AbstractController
         // Validate profile
         $profile_id = $request->request->getInt('id');
         if (!isset($_SESSION["glpiprofiles"][$profile_id])) {
-            throw new BadRequestException();
+            throw new AccessDeniedHttpException();
         }
 
         // Apply new profile
