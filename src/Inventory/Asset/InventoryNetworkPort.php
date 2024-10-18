@@ -494,7 +494,7 @@ trait InventoryNetworkPort
                         }
                     }
 
-                    if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
+                    if (count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
                         //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
@@ -521,7 +521,7 @@ trait InventoryNetworkPort
         }
 
         //delete remaining network ports, if any
-        if (!$this->isMainPartial() && count($db_ports)) {
+        if (count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
                 if ($netpdata['name'] != 'management') { //prevent removing internal management port
                     $networkport->delete(['id' => $netpid], true);
