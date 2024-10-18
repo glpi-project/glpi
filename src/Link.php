@@ -58,6 +58,11 @@ class Link extends CommonDBTM
         return _n('External link', 'External links', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "link"];
+    }
+
     /**
      * For plugins, add a tag to the links tags
      *

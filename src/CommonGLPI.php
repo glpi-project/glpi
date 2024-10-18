@@ -592,6 +592,20 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return [];
+    }
+
+    public static function getHeaderParameters(): array
+    {
+        return [
+            static::getTypeName(\Session::getPluralNumber()),
+            '',
+            ...static::getSectorizedDetails(),
+        ];
+    }
+
     /**
      * show Tab content
      *

@@ -49,6 +49,11 @@ class SNMPCredential extends CommonDBTM
         return _n('SNMP credential', 'SNMP credentials', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", \Glpi\Inventory\Inventory::class, "snmpcredential"];
+    }
+
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

@@ -52,6 +52,11 @@ class Datacenter extends CommonDBTM
         return _n('Data center', 'Data centers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["management", "datacenter"];
+    }
+
     public function prepareInputForAdd($input)
     {
         $input = parent::prepareInputForAdd($input);

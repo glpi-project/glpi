@@ -54,6 +54,11 @@ class Lockedfield extends CommonDBTM
         return _n('Locked field', 'Locked fields', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["admin", \Glpi\Inventory\Inventory::class, "lockedfield"];
+    }
+
     public static function canView(): bool
     {
         return self::canUpdate();

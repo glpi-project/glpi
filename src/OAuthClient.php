@@ -49,6 +49,11 @@ final class OAuthClient extends CommonDBTM
         return _n('OAuth client', 'OAuth clients', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "oauthclient"];
+    }
+
     public static function getIcon()
     {
         return 'ti ti-key';

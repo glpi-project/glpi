@@ -83,6 +83,10 @@ class Peripheral extends CommonDBTM
         return _n('Peripheral', 'Peripherals', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["assets", "peripheral"];
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

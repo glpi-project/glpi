@@ -51,6 +51,11 @@ class OLA extends LevelAgreement
         return __('OLA');
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "slm", "ola"];
+    }
+
     public static function getIcon()
     {
         return SLM::getIcon();
