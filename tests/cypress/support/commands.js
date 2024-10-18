@@ -75,6 +75,16 @@ Cypress.Commands.add('logout', () => {
     cy.request('/front/logout.php');
 });
 
+Cypress.Commands.add('getCsrfToken', () => {
+    // Load any light page that have a form
+    return cy.request('/front/computer.php').its('body').then((body) => {
+        // Parse page
+        const $html = Cypress.$(body);
+        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        return csrf;
+    });
+});
+
 /**
  * @memberof Cypress.Chainable.prototype
  * @method changeProfile
@@ -94,12 +104,7 @@ Cypress.Commands.add('changeProfile', (profile) => {
     ]);
     const profile_id = profiles.get(profile);
 
-    // Load any page to steal a CSRF token
-    cy.request('/front/computer.php').its('body').then((body) => {
-        // Parse page
-        const $html = Cypress.$(body);
-        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
-
+    cy.getCsrfToken().then((token) => {
         // Send change profile request
         cy.request({
             method: 'POST',
@@ -107,8 +112,31 @@ Cypress.Commands.add('changeProfile', (profile) => {
             form: true,
             body: {
                 id: profile_id,
-                _glpi_csrf_token: csrf,
+                _glpi_csrf_token: token,
             }
+        });
+    });
+});
+
+Cypress.Commands.add('changeEntity', (entity, is_recursive = false) => {
+    cy.getCsrfToken().then((token) => {
+        const params = {
+            _glpi_csrf_token: token,
+        };
+
+        if (entity == 'all') {
+            params['full_structure'] = true;
+        } else {
+            params['id'] = entity;
+            params['is_recursive'] = is_recursive;
+        }
+
+        // Send change profile request
+        cy.request({
+            method: 'POST',
+            url: '/Session/ChangeEntity',
+            form: true,
+            body: params
         });
     });
 });
