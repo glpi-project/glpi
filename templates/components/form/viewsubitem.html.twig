@@ -30,22 +30,44 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = rand|default(random()) %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+{% set as_modal = as_modal|default(false) %}
+{% set add_new_label = add_new_label|default(__('Add')) %}
+
+{% if as_modal %}
+<div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
+            </div>
+            <div class="modal-body overflow-auto">
+{% endif %}
 <div id='{{ subitem_container_id }}'></div>
+{% if as_modal %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script>
+    function viewAddEditSubItem{{ rand }}(id) {
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
+            type: "{{ type|e('js') }}",
+            parenttype: "{{ parenttype|e('js') }}",
+        {{ items_id }}: {{ id }},
+        id: id
+    }, () => {
+            if (modal_el.length) {
+                modal_el.modal('show');
+            }
+        });
+    }
     $(() => {
-        function viewAddSubItem{{ rand }} (btn) {
-            {% do call('Ajax::updateItemJsCode', [
-                subitem_container_id,
-                config('root_doc') ~ '/ajax/viewsubitem.php',
-                {
-                    'type': type,
-                    'parenttype': parenttype,
-                    (items_id): id,
-                    'id': -1
-                }
-            ]) %}
-        }
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
 
         {% if datatable_id is defined %}
             $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
@@ -54,25 +76,42 @@
                 }
                 const subitem_id = $(e.currentTarget).data('id');
                 if (subitem_id) {
-                    $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
-                        type: "{{ type|e('js') }}",
-                        parenttype: "{{ parenttype|e('js') }}",
-                        {{ items_id }}: {{ id }},
-                        id: subitem_id
-                    });
+                    viewAddEditSubItem{{ rand }}(subitem_id);
                 }
             });
         {% endif %}
 
         $('#addsubitem{{ rand }}').on('click', (e) => {
-            viewAddSubItem{{ rand }}(e.target);
+            viewAddEditSubItem{{ rand }}(-1);
+        });
+        $('#{{ subitem_container_id }}').on('submit', 'form', (e) => {
+            {% if ajax_form_submit %}
+                e.preventDefault();
+                let form_data = $(e.target).serialize();
+                // Add submitter button name/value to form data
+                const submit_btn = $(e.originalEvent.submitter);
+                form_data += '&' + submit_btn.attr('name') + '=' + submit_btn.val();
+
+                const on_finish = () => {
+                    displayAjaxMessageAfterRedirect();
+                    if (modal_el.length) {
+                        modal_el.modal('hide');
+                    }
+                };
+                $.post($(e.target).attr('action'), form_data).then(on_finish, on_finish);
+                return false;
+            {% endif %}
         });
     });
 </script>
 {% if cancreate %}
-    <div class="text-center mt-1 mb-3">
-        <button id="addsubitem{{ rand }}" type="button" class="btn btn-primary">
-            {{ add_new_label|default(__('Add')) }}
+    {% if not add_new_inline %}
+        <div class="text-center mt-1 mb-3">
+    {% endif %}
+        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }}">
+            {{ add_new_label }}
         </button>
-    </div>
+    {% if not add_new_inline %}
+        </div>
+    {% endif %}
 {% endif %}
