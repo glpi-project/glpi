@@ -69,3 +69,34 @@ foreach (
         $appliedPreferences[$dpref['users_id']][$num] = true;
     }
 }
+
+// Add new 'interface' column to glpi_displaypreferences
+$table = "glpi_displaypreferences";
+if (!$DB->fieldExists($table, 'interface')) {
+    $migration->addField($table, 'interface', 'string', [
+        'value' => 'central',
+        'null'  => false,
+    ]);
+
+    // The only way to update a key is to drop it then recreate it
+    // We have to execute the migration after the key is dropped or the addKey
+    // method will not create the ADD query because it will think the key already exists.
+    $migration->dropKey($table, 'unicity');
+    $migration->migrationOneTable($table);
+    $migration->addKey($table, [
+        'users_id',
+        'itemtype',
+        'num',
+        'interface'
+    ], 'unicity', 'UNIQUE');
+
+    // Force the migration of this table to be executed immediately because new preferences
+    // using the new column are added in the same update using $ADDTODISPLAYPREF_HELPDESK
+    $migration->migrationOneTable($table);
+}
+
+$ADDTODISPLAYPREF_HELPDESK[\Ticket::class] = [
+    12, // Status
+    19, // Last update
+    15, // Opening date
+];
