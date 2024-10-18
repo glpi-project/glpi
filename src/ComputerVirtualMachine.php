@@ -493,6 +493,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'massiveaction'      => false,
         ];
 
+        $tab = array_merge($tab, Computer::rawSearchOptionsToAdd("ComputerVirtualMachine"));
+
         return $tab;
     }
 
