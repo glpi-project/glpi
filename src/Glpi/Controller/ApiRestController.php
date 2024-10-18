@@ -54,7 +54,7 @@ final class ApiRestController extends AbstractController
     #[SecurityStrategy('no_check')]
     public function __invoke(Request $request): Response
     {
-        $_SERVER['PATH_INFO'] = $request->get('request_parameters');
+        $_SERVER['PATH_INFO'] = $request->get('request_parameters') . '?' . \http_build_query($request->query->all());
 
         return new HeaderlessStreamedResponse(function () {
             // Ensure errors will not break API output.
