@@ -10,6 +10,6 @@ else
   PHPUNIT_ADDITIONNAL_OPTIONS="--no-coverage";
 fi
 
-vendor/bin/phpunit $PHPUNIT_ADDITIONNAL_OPTIONS
+vendor/bin/phpunit $PHPUNIT_ADDITIONNAL_OPTIONS $@
 
 unset COVERAGE_DIR
