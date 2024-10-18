@@ -5755,8 +5755,10 @@ TWIG, $twig_params);
                 $input['_groups_id_of_user'] = [];
                 foreach ($groups_user as $group) {
                     $item = new Group();
-                    if ($item->getFromDB($group['groups_id'])
-                        && $item->fields['is_itemgroup'] == 1) {
+                    if (
+                        $item->getFromDB($group['groups_id'])
+                        && $item->fields['is_itemgroup'] == 1
+                    ) {
                         $input['_groups_id_of_user'][] = $group['groups_id'];
                     }
                 }
