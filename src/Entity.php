@@ -3063,13 +3063,8 @@ class Entity extends CommonTreeDropdown
 
     public static function getEntitySelectorTree(): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
-        if (Session::getCurrentInterface() === 'helpdesk') {
-            $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
-        }
+        $token = Session::getNewCSRFToken();
+        $twig = TemplateRenderer::getInstance();
 
         $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
@@ -3079,27 +3074,32 @@ class Entity extends CommonTreeDropdown
             $default_entity_id = $default_entity['id'];
             $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
+            $adapt_tree = static function (&$entities) use (&$adapt_tree, $token, $twig) {
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
 
-                    $title = "<a href='$base_path?active_entity={$entities_id}'>" . htmlspecialchars($entity['name']) . "</a>";
-                    $entity['title'] = $title;
-                    unset($entity['name']);
-
                     if (isset($entity['tree']) && count($entity['tree']) > 0) {
                         $entity['folder'] = true;
-
-                        $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
-            <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __s('+ sub-entities') . "'></i>
-            </a>";
+                        $is_recursive = true;
 
                         $children = $adapt_tree($entity['tree']);
                         $entity['children'] = array_values($children);
+                    } else {
+                        $is_recursive = false;
                     }
 
-                    unset($entity['tree']);
+                    $entity['title'] = $twig->render('layout/parts/profile_selector_form.html.twig', [
+                        'id' => $entities_id,
+                        'name' => $entity['name'],
+                        'is_recursive' => $is_recursive,
+                        // To avoid generating one token per entity (which may
+                        // make us reach our token limit too fast), we reuse a
+                        // common one.
+                        'csrf_token' => $token,
+                    ]);
                 }
+
+                unset($entity);
 
                 return $entities;
             };

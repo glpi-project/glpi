@@ -64,11 +64,6 @@
     </div>
 </div>
 
-{% set target = path("front/central.php") %}
-{% if get_current_interface() == "helpdesk" %}
-    {% set target = path("front/helpdesk.public.php") %}
-{% endif %}
-
 {% set current_entity = session('glpiactive_entity_name') %}
 {% set current_entity_short = session('glpiactive_entity_shortname') %}
 {% if current_entity != current_entity_short %}
@@ -105,11 +100,20 @@
                 </span>
             </div>
 
-            <form id="entsearchform{{ rand }}">
-                <div class="input-group">
+            {% set switch_to_full_structure_id = 'switch_to_full_structure_' ~ rand %}
+            <form
+                id="{{ switch_to_full_structure_id }}"
+                method="POST"
+                action="{{ path('/Session/ChangeEntity') }}"
+            >
+                <input type="hidden" name="full_structure" value="true">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+
+            <div class="input-group">
                 <input type="text" class="form-control" name="entsearchtext" id="entsearchtext{{ rand }}"
                         placeholder="{{ __('Search entity') }}" autocomplete="off">
-                <button type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
+                <button id="entsearchsubmit{{ rand }}" type="submit" class="btn btn-icon btn-primary" title="{{ __('Search') }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
                     <i class="ti ti-search"></i>
                 </button>
@@ -117,12 +121,17 @@
                     title="{{ __("Clear search") }}" data-bs-toggle="tooltip" data-bs-placement="top">
                         <i class="ti ti-x"></i>
                 </a>
-                <a href="{{ target }}?active_entity=all" class="btn btn-secondary" role="button"
-                    title="{{ __('Select all') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <button
+                    class="btn btn-secondary"
+                    title="{{ __('Select all') }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    form="{{ switch_to_full_structure_id }}"
+                    type="submit"
+                >
                     <i class="ti ti-eye"></i>
-                </a>
-                </div>
-            </form>
+                </button>
+            </div>
 
             <div class="fancytree-grid-container flexbox-item-grow entity_tree">
                 <table id="tree_entity{{ rand }}" aria-label="{{ __('Entity tree') }}">
@@ -246,7 +255,7 @@
             $.ui.fancytree.getTree("#tree_entity{{ rand }}").filterBranches(search_text);
         }
 
-        $('#entsearchform{{ rand }}').submit(function(event) {
+        $('#entsearchsubmit{{ rand }}').click(function(event) {
             // cancel submit of entity search form
             event.preventDefault();
 

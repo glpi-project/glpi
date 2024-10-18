@@ -37,13 +37,14 @@ describe('Entities selector', () => {
 
         // Go to any page; force the entity to be E2ETestEntity
         cy.blockGLPIDashboards();
-        cy.visit('/front/central.php?active_entity=1');
+        cy.changeEntity(1);
+        cy.visit('/front/preference.php');
         cy.get('header').findByTitle('Root entity > E2ETestEntity').should('exist');
     });
 
     after(() => {
         cy.blockGLPIDashboards();
-        cy.visit('/front/central.php?active_entity=1&is_recursive=1');
+        cy.changeEntity(1, true);
     });
 
     it('Can switch to full structure', () => {
@@ -68,12 +69,16 @@ describe('Entities selector', () => {
 
         // Go to entity 2
         cy.get('header').findByTitle('Root entity > E2ETestEntity > E2ETestSubEntity2').should('not.exist');
-        cy.findByRole('gridcell', {'name': "E2ETestSubEntity2"})
-            .findByRole('link',  {'name': "E2ETestSubEntity2"})
-            .as("entity_link")
+        cy.findByRole('button',  {'name': "E2ETestSubEntity2"})
+            .as('entity_button')
             .click()
         ;
-        cy.get('@entity_link').click(); // Not sure why but the link only work in cypress if you click twice...
+
+        // Not sure why but this button only work in cypress if you click it 3 times...
+        // This is not a timing issue, waiting before a click doesn't change anything.
+        cy.get('@entity_button').click();
+        cy.get('@entity_button').click();
+
         cy.get('header').findByTitle('Root entity > E2ETestEntity > E2ETestSubEntity2').should('exist');
     });
 
@@ -98,9 +103,7 @@ describe('Entities selector', () => {
 
         // Enable sub entities
         cy.get('header').findByTitle('Root entity > E2ETestEntity (tree structure)').should('not.exist');
-        cy.findByRole('gridcell', {'name': "Root entity > E2ETestEntity+ sub-entities"})
-            .findByLabelText('+ sub-entities')
-            .click();
+        cy.findAllByRole('gridcell').findByTitle('+ sub-entities').click();
         cy.get('header').findByTitle('Root entity > E2ETestEntity (tree structure)').should('exist');
     });
 });
