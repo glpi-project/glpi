@@ -1314,10 +1314,10 @@ class EntityTest extends DbTestCase
 
         $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
             foreach ($selector as $item) {
-                // extract entity name from the first <a> element inside the 'title' property
+                // extract entity name from the first <button> element inside the 'title' property
                 $matches = [];
-                preg_match('/>(.+)<\/a>/', $item['title'], $matches);
-                $entity_name = $matches[1];
+                preg_match('/<button.*?>(.*?)<\/button>/s', $item['title'], $matches);
+                $entity_name = trim($matches[1]);
                 foreach ($entities as $child) {
                     if ($child['name'] === $entity_name && $child['entities_id'] === $parent_id) {
                         $found[] = $child['id'];
