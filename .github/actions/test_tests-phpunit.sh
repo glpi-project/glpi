@@ -2,7 +2,7 @@
 set -e -u -x -o pipefail
 
 PHPUNIT_ADDITIONNAL_OPTIONS=""
-if [[ "$CODE_COVERAGE" = true ]]; then
+if [[ "${CODE_COVERAGE:-}" = true ]]; then
   export COVERAGE_DIR="coverage-functional"
   PHPUNIT_ADDITIONNAL_OPTIONS="--coverage-filter src --coverage-clover phpunit/$COVERAGE_DIR/clover.xml"
 
