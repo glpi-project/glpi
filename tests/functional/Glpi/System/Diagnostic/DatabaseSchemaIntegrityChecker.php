@@ -94,7 +94,7 @@ CREATE TABLE `table_{$table_increment}` (
   KEY`is_deleted`(`is_deleted`),
   KEY `values` (
     `value`,
-    `steps`,    
+    `steps`,
     `max`
   )
 ) ENGINE=MyISAM

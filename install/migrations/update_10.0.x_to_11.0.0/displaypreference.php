@@ -88,7 +88,7 @@ if (!$DB->fieldExists($table, 'interface')) {
         'itemtype',
         'num',
         'interface'
-    ], 'unicity', 'UNIQUE', index_type: 'HASH'); // Need hash because the index is too long for BTREE
+    ], 'unicity', 'UNIQUE');
 
     // Force the migration of this table to be executed immediately because new preferences
     // using the new column are added in the same update using $ADDTODISPLAYPREF_HELPDESK

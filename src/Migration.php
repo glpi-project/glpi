@@ -558,11 +558,10 @@ class Migration
      * @param string       $indexname Index name, $fields if empty, defaults to empty
      * @param string       $type      Index type (index or unique - default 'INDEX')
      * @param integer      $len       Field length (default 0)
-     * @param string|null  $index_type Specify the index type (HASH or BTREE).
      *
      * @return void
      **/
-    public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0, ?string $index_type = null)
+    public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0)
     {
         // if no index name, we take that of the field(s)
         if (!$indexname) {
@@ -571,16 +570,6 @@ class Migration
             } else {
                 $indexname = $fields;
             }
-        }
-
-        // Use index_type if specified.
-        // MySQl support HASH and BTREE.
-        // MariaDB support HASH, BTREE and RTREE.
-        // BTREE is the implicit default for both.
-        if ($index_type && in_array($index_type, ['HASH', 'BTREE'])) {
-            $index_type = "USING $index_type ";
-        } else {
-            $index_type = '';
         }
 
         if (!isIndex($table, $indexname)) {
@@ -599,9 +588,9 @@ class Migration
             if ($type === 'FULLTEXT') {
                 $this->fulltexts[$table][] = "ADD $type `$indexname` ($fields)";
             } else if ($type === 'UNIQUE') {
-                $this->uniques[$table][] = "ADD $type `$indexname` $index_type($fields)";
+                $this->uniques[$table][] = "ADD $type `$indexname` ($fields)";
             } else {
-                $this->change[$table][] = "ADD $type `$indexname` $index_type($fields)";
+                $this->change[$table][] = "ADD $type `$indexname` ($fields)";
             }
         }
     }
