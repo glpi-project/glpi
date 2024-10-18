@@ -36,10 +36,8 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
-use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use InvalidArgumentException;
-use Search;
 
 final class DatabaseMapper
 {
@@ -174,5 +172,27 @@ final class DatabaseMapper
             return null;
         }
         return current($rows);
+    }
+
+    /**
+     * Get requirements with invalid context.
+     *
+     * @param DataRequirementSpecification[] $data_requirements
+     * @return DataRequirementSpecification[]
+     */
+    public function getInvalidRequirements(array $data_requirements): array
+    {
+        $invalid_requirements = [];
+
+        foreach ($data_requirements as $requirement) {
+            $itemtype = $requirement->itemtype;
+            $name = $requirement->name;
+
+            if (!$this->contextExist($itemtype, $name)) {
+                $invalid_requirements[] = $requirement;
+            }
+        }
+
+        return $invalid_requirements;
     }
 }
