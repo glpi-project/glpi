@@ -170,6 +170,16 @@ final class AnswersSet extends CommonDBChild
         );
     }
 
+    /** @return Answer[] */
+    public function getAnswersByTypes(array $types): array
+    {
+        $answers = $this->getAnswers();
+        return array_filter(
+            $answers,
+            fn (Answer $answer) => in_array($answer->getRawType(), $types)
+        );
+    }
+
     #[Override]
     public function rawSearchOptions()
     {
