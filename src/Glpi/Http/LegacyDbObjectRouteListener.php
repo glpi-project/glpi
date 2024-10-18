@@ -74,7 +74,7 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
         if ($class = $this->findClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
-            if (\is_a($class, \CommonDropdown::class)) {
+            if (\is_a($class, \CommonDropdown::class, true)) {
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
                 $request->attributes->set('class', $class);
             } else {
@@ -225,6 +225,9 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
 
         if ($is_form && $id !== null) {
             $asset = AssetModel::getById($id);
+            if (!$asset) {
+                return null;
+            }
             $classname = $asset::class;
         } else {
             $definition = new AssetDefinition();
@@ -250,6 +253,9 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
 
         if ($is_form && $id !== null) {
             $asset = AssetType::getById($id);
+            if (!$asset) {
+                return null;
+            }
             $classname = $asset::class;
         } else {
             $definition = new AssetDefinition();
