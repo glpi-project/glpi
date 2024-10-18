@@ -37,5 +37,7 @@ declare namespace Cypress {
         startToDrag(): Chainable<any>
         dropDraggedItemAfter(): Chainable<any>
         checkAndCloseAlert(text: string): Chainable<any>
+        getCsrfToken(): Chainable<any>
+        changeEntity(entity: string|number, is_recursive: boolean): Chainable<any>
     }
 }

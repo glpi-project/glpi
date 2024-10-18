@@ -48,18 +48,6 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     return;
 }
 
-// Manage entity change
-if (isset($_GET["active_entity"])) {
-    if (!isset($_GET["is_recursive"])) {
-        $_GET["is_recursive"] = 0;
-    }
-    if (Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"])) {
-        if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/(\?|&|" . urlencode('?') . "|" . urlencode('&') . ")?(entities_id|active_entity).*/", "", Html::getBackUrl()));
-        }
-    }
-}
-
 Session::checkCentralAccess();
 
 Html::header(Central::getTypeName(1), $_SERVER['PHP_SELF'], 'central', 'central');
