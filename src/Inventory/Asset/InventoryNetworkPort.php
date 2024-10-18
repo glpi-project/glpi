@@ -494,7 +494,7 @@ trait InventoryNetworkPort
                         }
                     }
 
-                    if (!$this->isMainPartial() && count($db_addresses) && count($ips)) {
+                    if (count($db_addresses) && count($ips)) {
                         $ipaddress = new IPAddress();
                         //deleted IP addresses
                         foreach (array_keys($db_addresses) as $id_ipa) {
