@@ -613,6 +613,36 @@ class Computer extends CommonDBTM
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'Computer',
+            'name'               => __('Computers')
+        ];
+
+        $tab[] = [
+            'id'                 => '5',
+            'table'              => Computer::getTable(),
+            'field'              => 'uuid',
+            'name'               => __('Computer UUID'),
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => ComputerVirtualMachine::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        return $tab;
+    }
+
     public static function getIcon()
     {
         return "ti ti-device-laptop";
