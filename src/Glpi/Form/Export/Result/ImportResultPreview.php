@@ -43,8 +43,8 @@ final class ImportResultPreview
     /** @var string[] $invalid_forms */
     private array $invalid_forms = [];
 
-    /** @var string[] $fixed_forms */
-    private array $fixed_forms = [];
+    /** @var string[] $skipped_forms */
+    private array $skipped_forms = [];
 
     public function addValidForm(string $form_name): void
     {
@@ -68,14 +68,14 @@ final class ImportResultPreview
         return $this->invalid_forms;
     }
 
-    public function addFixedForm(string $form_name): void
+    public function addSkippedForm(string $form_name): void
     {
-        $this->fixed_forms[] = $form_name;
+        $this->skipped_forms[] = $form_name;
     }
 
     /** @return string[] */
-    public function getFixedForms(): array
+    public function getSkippedForms(): array
     {
-        return $this->fixed_forms;
+        return $this->skipped_forms;
     }
 }

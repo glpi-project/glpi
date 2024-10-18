@@ -403,9 +403,10 @@ trait FormTesterTrait
 
     private function importForm(
         string $json,
+        array $skipped_forms,
         DatabaseMapper $mapper,
     ): Form {
-        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $import_result = self::$serializer->importFormsFromJson($json, $skipped_forms, $mapper);
         $imported_forms = $import_result->getImportedForms();
         $this->assertCount(1, $imported_forms, "Failed to import form from JSON: $json");
         $form_copy = current($imported_forms);
@@ -418,6 +419,7 @@ trait FormTesterTrait
         $json = $this->exportForm($form);
         $form_copy = $this->importForm(
             $json,
+            [],
             new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 

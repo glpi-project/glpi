@@ -73,9 +73,9 @@
                                             <button
                                                 type="submit"
                                                 class="btn btn-link p-0 text-danger"
-                                                name="remove_form_name"
+                                                name="skipped_forms[]"
                                                 value="{{ forms_name }}"
-                                                formaction="{{ path('Form/Import/Remove') }}"
+                                                formaction="{{ path('Form/Import/Preview') }}"
                                                 title="{{ __('Remove this form from the import list') }}"
                                                 aria-label="{{ __('Remove form') }}"
                                             >
@@ -138,6 +138,10 @@
 
         <input type="hidden" name="json" value="{{ json }}" />
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+        {% for skipped_form in preview.getSkippedForms() %}
+            <input type="hidden" name="skipped_forms[]" value="{{ skipped_form }}" />
+        {% endfor %}
 
         {% for itemtype, replacements_for_itemtype in replacements %}
 			{% for original_name, items_id in replacements_for_itemtype %}

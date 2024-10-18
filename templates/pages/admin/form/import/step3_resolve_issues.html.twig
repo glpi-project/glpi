@@ -96,6 +96,10 @@
 		<input type="hidden" name="json" value="{{ json }}"/>
 		<input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 
+		{% for skipped_form in skipped_forms %}
+			<input type="hidden" name="skipped_forms[]" value="{{ skipped_form }}" />
+		{% endfor %}
+
 		{% for itemtype, replacements_for_itemtype in replacements %}
 			{% for original_name, items_id in replacements_for_itemtype %}
 				<input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>

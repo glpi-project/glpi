@@ -53,8 +53,9 @@ final class Step4ExecuteController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // Get json from hidden input
+        // Get json and skipped forms from hidden inputs
         $json = $request->request->get('json');
+        $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
 
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
@@ -69,7 +70,7 @@ final class Step4ExecuteController extends AbstractController
         return $this->render("pages/admin/form/import/step4_execute.html.twig", [
             'title'   => __("Import results"),
             'menu'    => ['admin', Form::getType()],
-            'results' => $serializer->importFormsFromJson($json, $mapper),
+            'results' => $serializer->importFormsFromJson($json, $skipped_forms, $mapper),
         ]);
     }
 }

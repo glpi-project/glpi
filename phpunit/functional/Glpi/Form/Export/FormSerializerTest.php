@@ -207,6 +207,7 @@ final class FormSerializerTest extends \DbTestCase
         // Import should fail as the entity can't be found
         $import_result = self::$serializer->importFormsFromJson(
             $json,
+            [],
             new DatabaseMapper(Session::getActiveEntities())
         );
         $this->assertCount(0, $import_result->getImportedForms());
@@ -236,7 +237,7 @@ final class FormSerializerTest extends \DbTestCase
         $mapper = new DatabaseMapper(Session::getActiveEntities());
         $mapper->addMappedItem(Entity::class, 'My entity', $another_entity_id);
 
-        $form_copy = $this->importForm($json, $mapper);
+        $form_copy = $this->importForm($json, [], $mapper);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
     }
 
@@ -336,6 +337,7 @@ final class FormSerializerTest extends \DbTestCase
         $results = self::$serializer->exportFormsToJson([$form]);
         $preview = self::$serializer->previewImport(
             $results->getJsonContent(),
+            [],
             new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 
@@ -364,6 +366,7 @@ final class FormSerializerTest extends \DbTestCase
         $this->deleteItem(Entity::class, $entity->getID());
         $preview = self::$serializer->previewImport(
             $json,
+            [],
             new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 
@@ -392,6 +395,7 @@ final class FormSerializerTest extends \DbTestCase
         $this->deleteItem(Entity::class, $entity->getID());
         $preview = self::$serializer->previewImport(
             $json,
+            [],
             new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 
@@ -404,7 +408,7 @@ final class FormSerializerTest extends \DbTestCase
         $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
 
         // Act: preview the import again
-        $preview = self::$serializer->previewImport($json, $mapper);
+        $preview = self::$serializer->previewImport($json, [], $mapper);
 
         // Assert: the form should be fixed
         $this->assertEquals([$form->fields['name']], $preview->getValidForms());
@@ -430,6 +434,7 @@ final class FormSerializerTest extends \DbTestCase
         $result = self::$serializer->exportFormsToJson([$form]);
         $import_result = self::$serializer->importFormsFromJson(
             $result->getJsonContent(),
+            [],
             new DatabaseMapper(Session::getActiveEntities())
         );
 
@@ -456,6 +461,7 @@ final class FormSerializerTest extends \DbTestCase
         $result = self::$serializer->exportFormsToJson([$form]);
         $import_result = self::$serializer->importFormsFromJson(
             $result->getJsonContent(),
+            [],
             new DatabaseMapper(Session::getActiveEntities())
         );
 
@@ -482,6 +488,7 @@ final class FormSerializerTest extends \DbTestCase
         $this->deleteItem(Entity::class, $entity->getID());
         $import_result = self::$serializer->importFormsFromJson(
             $json,
+            [],
             new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
         );
 
@@ -496,7 +503,7 @@ final class FormSerializerTest extends \DbTestCase
         $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
 
         // Act: import the form again
-        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $import_result = self::$serializer->importFormsFromJson($json, [], $mapper);
 
         // Assert: the import should succeed
         $this->assertCount(1, $import_result->getImportedForms());

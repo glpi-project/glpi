@@ -53,9 +53,10 @@ final class Step3ResolveIssuesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // Get json and form name from the request.
+        // Get json, form name and skipped_forms from the request.
         $json      = $request->request->get('json');
         $form_name = $request->request->get('form_name');
+        $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
 
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
@@ -75,6 +76,7 @@ final class Step3ResolveIssuesController extends AbstractController
             'issues'       => $issues,
             'json'         => $json,
             'replacements' => $replacements,
+            'skipped_forms' => $skipped_forms,
         ]);
     }
 }

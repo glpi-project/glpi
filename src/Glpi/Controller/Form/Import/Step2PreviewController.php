@@ -55,34 +55,13 @@ final class Step2PreviewController extends AbstractController
         }
 
         $json = $this->getJsonFormFromRequest($request);
+        $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
         $replacements = $request->request->all()["replacements"] ?? [];
 
-        return $this->previewResponse($json, $replacements);
+        return $this->previewResponse($json, $skipped_forms, $replacements);
     }
 
-    #[Route("/Form/Import/Remove", name: "glpi_form_import_remove", methods: "POST")]
-    public function removeForm(Request $request): Response
-    {
-        if (!Form::canCreate()) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $json = $this->getJsonFormFromRequest($request);
-        $form_name = $request->request->get('remove_form_name');
-        $replacements = $request->request->all()["replacements"] ?? [];
-
-        $serializer = new FormSerializer();
-        $json = $serializer->removeFormFromJson($json, $form_name);
-
-        // If all forms have been removed, redirect to the first step
-        if (!$serializer->isFormsInJson($json)) {
-            return new RedirectResponse('/Form/Import');
-        }
-
-        return $this->previewResponse($json, $replacements);
-    }
-
-    private function previewResponse(string $json, array $replacements): Response
+    private function previewResponse(string $json, array $skipped_forms, array $replacements): Response
     {
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
@@ -92,10 +71,15 @@ final class Step2PreviewController extends AbstractController
             }
         }
 
+        $previewResult = $serializer->previewImport($json, $skipped_forms, $mapper);
+        if (empty($previewResult->getValidForms()) && empty($previewResult->getInvalidForms())) {
+            return new RedirectResponse('/Form/Import');
+        }
+
         return $this->render("pages/admin/form/import/step2_preview.html.twig", [
             'title'        => __("Preview import"),
             'menu'         => ['admin', Form::getType()],
-            'preview'      => $serializer->previewImport($json, $mapper),
+            'preview'      => $previewResult,
             'json'         => $json,
             'replacements' => $replacements,
         ]);

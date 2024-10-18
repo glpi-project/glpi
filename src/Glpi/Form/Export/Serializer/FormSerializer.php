@@ -63,19 +63,6 @@ final class FormSerializer extends AbstractFormSerializer
         return 1;
     }
 
-    public function isFormsInJson(string $json): bool
-    {
-        $export_specification = $this->deserialize($json);
-
-        // Validate version
-        if ($export_specification->version !== $this->getVersion()) {
-            throw new InvalidArgumentException("Unsupported version");
-        }
-
-        // Check if the forms list is empty
-        return !empty($export_specification->forms);
-    }
-
     /** @param array<Form> $forms */
     public function exportFormsToJson(array $forms): ExportResult
     {
@@ -96,6 +83,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function previewImport(
         string $json,
+        array $skipped_forms,
         DatabaseMapper $mapper,
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
@@ -112,6 +100,11 @@ final class FormSerializer extends AbstractFormSerializer
             $mapper->mapExistingItemsForRequirements($requirements);
 
             $form_name = $form_spec->name;
+            if (in_array($form_name, $skipped_forms)) {
+                $results->addSkippedForm($form_name);
+                continue;
+            }
+
             if ($mapper->validateRequirements($requirements)) {
                 $results->addValidForm($form_name);
             } else {
@@ -162,6 +155,7 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function importFormsFromJson(
         string $json,
+        array $skipped_forms,
         DatabaseMapper $mapper,
     ): ImportResult {
         $export_specification = $this->deserialize($json);
@@ -176,6 +170,11 @@ final class FormSerializer extends AbstractFormSerializer
         foreach ($export_specification->forms as $form_spec) {
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
+
+            $form_name = $form_spec->name;
+            if (in_array($form_name, $skipped_forms)) {
+                continue;
+            }
 
             if (!$mapper->validateRequirements($requirements)) {
                 $result->addFailedFormImport(
