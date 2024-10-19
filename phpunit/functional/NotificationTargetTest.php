@@ -586,27 +586,27 @@ class NotificationTargetTest extends DbTestCase
         $user = new \User();
 
         // Create new user with a fake email
-        $this->integer($users_id = $user->add([
+        $this->assertGreaterThan(0, $users_id = $user->add([
             'name'     => __FUNCTION__,
-        ]))->isGreaterThan(0);
+        ]));
         $useremail = new \UserEmail();
-        $this->integer($useremail->add([
+        $this->assertGreaterThan(0, $useremail->add([
             'users_id' => $users_id,
             'email'    => __FUNCTION__ . '@localhost',
             'is_default' => 1,
-        ]))->isGreaterThan(0);
+        ]));
         // Create a new group for this user
-        $this->integer($groups_id = $group->add([
+        $this->assertGreaterThan(0, $groups_id = $group->add([
             'name'     => __FUNCTION__,
-        ]))->isGreaterThan(0);
+        ]));
         $group_user = new \Group_User();
-        $this->integer($group_user->add([
+        $this->assertGreaterThan(0, $group_user->add([
             'groups_id' => $groups_id,
             'users_id'  => $users_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         $notification = new \Notification();
-        $this->integer($fake_notification_id = $notification->add([
+        $this->assertGreaterThan(0, $fake_notification_id = $notification->add([
             'itemtype' => 'Ticket',
             'event'    => 'new',
         ]));
@@ -624,18 +624,18 @@ class NotificationTargetTest extends DbTestCase
             'users_id' => $users_id,
             'usertype' => \NotificationTarget::GLPI_USER,
         ]);
-        $this->array($notification_target->getTargets())->size->isEqualTo(2);
+        $this->assertCount(2, $notification_target->getTargets());
 
-        $this->integer($notification_target->add([
+        $this->assertGreaterThan(0, $notification_target->add([
             'notifications_id' => $fake_notification_id,
             'type' => \Notification::GROUP_TYPE,
             'items_id' => $groups_id,
             'is_exclusion' => 1,
-        ]))->isGreaterThan(0);
+        ]));
         // Only TU_USER should be in the list
         $targets = $notification_target->getTargets();
-        $this->array($targets)->size->isEqualTo(1);
+        $this->assertCount(1, $targets);
         $target = reset($targets);
-        $this->integer($target['users_id'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+        $this->assertEquals(getItemByTypeName('User', TU_USER, true), $target['users_id']);
     }
 }
