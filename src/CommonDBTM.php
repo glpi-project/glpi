@@ -4125,10 +4125,21 @@ class CommonDBTM extends CommonGLPI
             Toolbox::hasTrait(static::class, Clonable::class)
             && $this->isTemplate()
         ) {
-            $excluded[] = '*:clone';
+            $excluded[] = '*:create_template';
         }
 
         return $excluded;
+    }
+
+    /**
+     * Get actions which are forbidden for multiple items. These actions are only meant to be used on single items (from the item's form).
+     * @return array
+     */
+    public function getForbiddenMultipleMassiveActions()
+    {
+        return [
+            '*:create_template', // Only makes sense to create a template from a single item
+        ];
     }
 
     /**
