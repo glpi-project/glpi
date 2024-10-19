@@ -1206,20 +1206,17 @@ HTML;
             }
         }
 
-        if ($theme->isCustomTheme()) {
-            $theme_path = $theme->getKey() . '?is_custom_theme=1';
-
-            // Custom theme files might be modified by external source
-            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
-        } else {
-            $theme_path = $theme->getPath();
-        }
         $tpl_vars['css_files'][] = ['path' => 'public/lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
-        if ($theme->isCustomTheme()) {
+        $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
+        foreach (ThemeManager::getInstance()->getAllThemes() as $info) {
+            if (!$info->isCustomTheme()) {
+                continue;
+            }
+            $theme_path = $info->getKey() . '?is_custom_theme=1';
+            // Custom theme files might be modified by external source
+            $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
             $tpl_vars['css_files'][] = ['path' => $theme_path];
-        } else {
-            $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
         }
 
         // Add specific meta tags for plugins
