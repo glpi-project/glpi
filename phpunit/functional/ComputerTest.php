@@ -697,6 +697,57 @@ class ComputerTest extends DbTestCase
         $this->assertEquals('testCloneWithAutoName (copy)', $computer->fields['name']);
     }
 
+    /**
+     * Test cloning a computer template to a new template
+     * @return void
+     */
+    public function testCloneTemplate()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'is_template' => 1,
+            'template_name' => 'testCloneTemplate'
+        ]);
+
+        $clone_id = $computer->clone(clone_as_template: true);
+        $this->assertGreaterThan(0, $clone_id);
+
+        $clonedComputer = new \Computer();
+        $this->assertTrue($clonedComputer->getFromDB($clone_id));
+        $this->assertEquals(1, $clonedComputer->fields['is_template']);
+        $this->assertEquals('testCloneTemplate (copy)', $clonedComputer->fields['template_name']);
+    }
+
+    /**
+     * Test creating a template from an item using the clone feature
+     * @return void
+     */
+    public function testCreateTemplateFromItem()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'name' => 'testCreateTemplateFromItem'
+        ]);
+
+        $template_id = $computer->clone([
+            'template_name' => 'my_template'
+        ], true, true);
+        $this->assertGreaterThan(0, $template_id);
+
+        $template = new \Computer();
+        $this->assertTrue($template->getFromDB($template_id));
+        $this->assertEquals(1, $template->fields['is_template']);
+        $this->assertEquals('my_template', $template->fields['template_name']);
+    }
+
     public function testTransfer()
     {
         $this->login();

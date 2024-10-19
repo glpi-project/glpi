@@ -764,6 +764,9 @@ class MassiveAction
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
                     $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
+                    if ($item->maybeTemplate()) {
+                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _x('button', 'Create template');
+                    }
                 }
             }
 
@@ -845,6 +848,12 @@ class MassiveAction
                 $item->getForbiddenSingleMassiveActions()
             );
             $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
+        } else if ($items_id === null) {
+            // Remove forbidden actions for multiple items (actions only allowed from a single item context)
+            $forbidden_actions = array_merge(
+                $forbidden_actions,
+                $item->getForbiddenMultipleMassiveActions()
+            );
         }
 
         if (is_array($forbidden_actions) && count($forbidden_actions)) {
@@ -1272,6 +1281,29 @@ class MassiveAction
                 ]);
 
                 return true;
+            case 'create_template':
+                $rand = mt_rand();
+
+                echo "<table class='w-100'><tr>";
+                echo "<td>";
+                echo __s('Name');
+                echo "</td><tr>";
+                echo "<td>" . Html::input("template_name", ['id' => "template_name$rand"]);
+                echo "</td>";
+                echo "</tr></table>";
+
+                echo "<br>";
+
+                $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
+                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+                    $submitname = $ma->POST['submitname'];
+                }
+                echo Html::submit($submitname, [
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
+                ]);
+
+                return true;
 
             case 'add_transfer_list':
                 echo _sn(
@@ -1662,15 +1694,21 @@ class MassiveAction
                 break;
 
             case 'clone':
+            case 'create_template':
                 $input = $ma->POST;
+                $override_input = [];
+                if ($action === 'create_template') {
+                    $override_input['template_name'] = $input['template_name'];
+                }
                 foreach ($ids as $id) {
                    // check rights
                     if ($item->can($id, CREATE)) {
                         // recovers the item from DB
                         if ($item->getFromDB($id)) {
+                            $clone_as_template = $action === 'create_template' || $item->isTemplate();
                             if (
                                 method_exists($item, "cloneMultiple")
-                                && $item->cloneMultiple($input["nb_copy"])
+                                && $item->cloneMultiple($input["nb_copy"] ?? 1, $override_input, true, $clone_as_template)
                             ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
