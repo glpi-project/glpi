@@ -188,13 +188,15 @@ trait Clonable
      * @param int     $n              Number of clones
      * @param array   $override_input Custom input to override
      * @param boolean $history        Do history log ? (true by default)
+     * @param boolean $clone_as_template If true, the resulting clones will be templates
      *
      * @return bool the new ID of the clone (or false if fail)
      */
     public function cloneMultiple(
         int $n,
         array $override_input = [],
-        bool $history = true
+        bool $history = true,
+        bool $clone_as_template = false
     ): bool {
         $failure = false;
 
@@ -202,7 +204,7 @@ trait Clonable
             // Init index cache
             $this->last_clone_index = 0;
             for ($i = 0; $i < $n && !$failure; $i++) {
-                if ($this->clone($override_input, $history) === false) {
+                if ($this->clone($override_input, $history, $clone_as_template) === false) {
                     // Increment clone index cache to use less SQL
                     // queries looking for an available unique clone name
                     $failure = true;
@@ -223,10 +225,11 @@ trait Clonable
      *
      * @param array $override_input custom input to override
      * @param boolean $history do history log ?
+     * @param boolean $clone_as_template If true, the resulting clone will be a template
      *
      * @return false|integer The new ID of the clone (or false if fail)
      */
-    public function clone(array $override_input = [], bool $history = true)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -239,12 +242,21 @@ trait Clonable
         foreach ($override_input as $key => $value) {
             $input[$key] = $value;
         }
+        $template_input = $clone_as_template ? [
+            'template_name' => $input['template_name'],
+            'is_template' => true,
+        ] : [];
         $input = $new_item->cleanCloneInput($input);
+        $input = array_merge($input, $template_input);
 
         // Do not compute a clone name if a new name is specified (Like creating from template)
-        if (!isset($override_input['name'])) {
+        if (!$clone_as_template && !isset($override_input['name'])) {
             if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
                 $input[static::getNameField()] = $copy_name;
+            }
+        } else if ($clone_as_template && !isset($override_input['template_name'])) {
+            if (($copy_name = $this->getUniqueCloneTemplateName($input)) !== null) {
+                $input['template_name'] = $copy_name;
             }
         }
 
@@ -304,6 +316,43 @@ trait Clonable
             // Update index cache
             $this->last_clone_index = $copy_index;
         }
+
+        return $copy_name;
+    }
+
+    /**
+     * Returns unique clone name.
+     *
+     * @param array $input
+     *
+     * @return null|string
+     */
+    protected function getUniqueCloneTemplateName(array $input): ?string
+    {
+        // When creating a template from a template or a template from an item, we will try to name the new template from the original
+        // template name. If the original template name is not set, we will try to name the new template from the original item name/placeholder name.
+        $current_name = $input['template_name'] ?? $input['name'] ?? null;
+
+        if (!isset($current_name)) {
+            return null;
+        }
+
+        $table = static::getTable();
+
+        $copy_index = 0;
+
+        // Use index cache if defined
+        if (!is_null($this->last_clone_index)) {
+            $copy_index = $this->last_clone_index;
+        }
+
+        // Try to find an available name
+        do {
+            $copy_name = $this->computeCloneName($current_name, ++$copy_index);
+        } while (countElementsInTable($table, ['template_name' => $copy_name]) > 0);
+
+        // Update index cache
+        $this->last_clone_index = $copy_index;
 
         return $copy_name;
     }

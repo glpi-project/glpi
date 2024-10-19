@@ -2646,6 +2646,7 @@ class APIRest extends atoum
                 'response' => [
                     ["key" => "MassiveAction:update",            "label" => "Update"],
                     ["key" => "MassiveAction:clone",             "label" => "Clone"],
+                    ["key" => "MassiveAction:create_template",   "label" => "Create template"],
                     ["key" => "Item_Line:add",                   "label" => "Add a line"],
                     ["key" => "Item_Line:remove",                "label" => "Remove a line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
@@ -2737,6 +2738,12 @@ class APIRest extends atoum
                 'response' => [
                     ["name" => "nb_copy", "type" => "number"],
                 ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/MassiveAction:create_template',
+                'status' => 400,
+                'response' => [],
+                'error' => "ERROR_MASSIVEACTION_KEY"
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
