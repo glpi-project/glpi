@@ -317,6 +317,7 @@
         'aria_label': "",
         'statusbar': true,
         'content_style': "",
+        'single_line': false,
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -352,33 +353,36 @@
             options.toolbar,
             options.statusbar,
             options.content_style,
+            options.single_line,
         ]) %}
    {% endif %}
 
-   {% if options.enable_form_tags %}
-        <script>
-            $(function() {
-                const form_tags = new GLPI.RichText.FormTags(
-                    tinymce.get('{{ options.id }}'),
-                    {{ options.form_tags_form_id }},
-                );
-                form_tags.register();
-            });
-        </script>
-    {% endif %}
 
-    {% if options.enable_mentions and config('use_notifications') %}
-        <script>
-            $(function() {
-                const user_mention = new GLPI.RichText.UserMention(
-                    tinymce.get('{{ options.id }}'),
-                    {{ options.entities_id }},
-                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
-                );
-                user_mention.register();
+        <script defer>
+            import('{{ path('js/modules/Form/TinyMCEEditor.js') }}').then(() => {
+                {% if options.enable_form_tags %}
+                import('{{ path('js/modules/Forms/FormTags.js') }}').then((m) => {
+                    const form_tags = new m.default(
+                        tinymce.get('{{ options.id }}'),
+                        {{ options.form_tags_form_id }},
+                    );
+                    form_tags.register();
+                });
+                {% endif %}
+                {% if options.enable_mentions and config('use_notifications') %}
+                import('{{ path('js/modules/Form/UserMention.js') }}').then((m) => {
+                    $(function() {
+                        const user_mention = new m.default(
+                            tinymce.get('{{ options.id }}'),
+                            {{ options.entities_id }},
+                            '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
+                        );
+                        user_mention.register();
+                    });
+                });
+                {% endif %}
             });
         </script>
-    {% endif %}
 {% endmacro %}
 
 
