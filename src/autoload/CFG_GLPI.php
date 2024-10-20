@@ -507,7 +507,6 @@ $CFG_GLPI['javascript'] = [
             'fullcalendar',
             'planning',
             'masonry',
-            'tinymce',
             'dashboard',
         ]
     ],
@@ -521,18 +520,16 @@ $CFG_GLPI['javascript'] = [
     ],
     'helpdesk'  => [
         'dashboard' => ['dashboard'],
-        'planning'  => ['clipboard', 'fullcalendar', 'tinymce', 'planning'],
-        'ticket'    => ['rateit', 'tinymce', 'dashboard'],
-        'problem'   => ['tinymce', 'sortable'],
-        'change'    => ['tinymce', 'sortable', 'rateit'],
+        'planning'  => ['clipboard', 'fullcalendar', 'planning'],
+        'ticket'    => ['rateit', 'dashboard'],
+        'problem'   => ['sortable'],
+        'change'    => ['sortable', 'rateit'],
         'stat'      => ['charts', 'rateit']
     ],
     'tools'     => [
-        'project'                 => ['sortable', 'tinymce'],
-        'knowbaseitem'            => ['tinymce', 'kb'],
-        'knowbaseitemtranslation' => ['tinymce', 'kb'],
-        'reminder'                => ['tinymce'],
-        'remindertranslation'     => ['tinymce'],
+        'project'                 => ['sortable'],
+        'knowbaseitem'            => ['kb'],
+        'knowbaseitemtranslation' => ['kb'],
         'report'                  => ['dashboard'],
         'reservationitem'         => $reservations_libs,
     ],
@@ -543,32 +540,17 @@ $CFG_GLPI['javascript'] = [
     ],
     'config' => [
         'assetdefinition'  => ['sortable'],
-        'commondropdown'  => [
-            'ITILFollowupTemplate'   => ['tinymce'],
-            'ProjectTaskTemplate'    => ['tinymce'],
-            'SolutionTemplate'       => ['tinymce'],
-            'TaskTemplate'           => ['tinymce'],
-            'ITILValidationTemplate' => ['tinymce'],
-        ],
-        'notification' => [
-            'NotificationTemplate' => ['tinymce']
-        ],
         'plugin' => [
             'marketplace' => ['marketplace']
         ],
-        'config' => ['clipboard', 'tinymce'],
+        'config' => ['clipboard'],
         'webhook' => ['monaco'],
         'link' => ['monaco']
     ],
-    'admin'        => ['clipboard', 'monaco', 'tinymce'],
+    'admin'        => ['clipboard', 'monaco'],
     'preference'   => ['clipboard'],
-    'self-service' => array_merge(['tinymce'], $reservations_libs),
-    'tickets'      => [
-        'ticket' => ['tinymce']
-    ],
-    'create_ticket' => ['tinymce'],
-    'reservation'   => array_merge(['tinymce'], $reservations_libs),
-    'faq'           => ['tinymce'],
+    'self-service' => $reservations_libs,
+    'reservation'   => $reservations_libs,
     'helpdesk-home' => ['home-scss-file']
 ];
 

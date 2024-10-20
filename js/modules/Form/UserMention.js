@@ -33,15 +33,12 @@
 
 /* global tinymce */
 
-window.GLPI = window.GLPI || {};
-window.GLPI.RichText = window.GLPI.RichText || {};
-
 /**
  * User mention rich text autocompleter.
  *
  * @since 10.0.0
  */
-window.GLPI.RichText.UserMention = class {
+export default class UserMention {
 
     /**
     * @param {Editor} editor

@@ -30,3 +30,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before {
+   content: attr(data-mce-placeholder);
+   position: absolute;
+}

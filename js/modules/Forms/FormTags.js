@@ -33,16 +33,12 @@
 
 /* global tinymce */
 
-window.GLPI = window.GLPI || {};
-window.GLPI.RichText = window.GLPI.RichText || {};
-
 /**
  * Form tags rich text autocompleter.
  *
  * @since 11.0.0
  */
-window.GLPI.RichText.FormTags = class
-{
+export default class FormTags {
     /**
      * Target tinymce editor.
      * @type {TinyMCE.Editor}

@@ -1098,10 +1098,6 @@ TWIG,
                 Html::requireJs('masonry');
             }
 
-            if (in_array('tinymce', $jslibs)) {
-                Html::requireJs('tinymce');
-            }
-
             if (in_array('clipboard', $jslibs)) {
                 Html::requireJs('clipboard');
             }
@@ -3427,16 +3423,14 @@ JS;
         string $placeholder = '',
         bool $toolbar = true,
         bool $statusbar = true,
-        string $content_style = ''
+        string $content_style = '',
+        bool $single_line = false
     ) {
         /**
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
         global $CFG_GLPI, $DB;
-
-       // load tinymce lib
-        Html::requireJs('tinymce');
 
         $language = $_SESSION['glpilanguage'];
         if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
@@ -3445,9 +3439,8 @@ JS;
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
 
-       // Apply all GLPI styles to editor content
+        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
             'css/glpi.scss',
@@ -3461,14 +3454,13 @@ JS;
         $content_css .= ',' . implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
-        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
 
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/tinymce_empty_skin', ['force_no_version' => true]));
         // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
         // Reverted to the previous version here, but this should be fixed properly
         $skin_url = $CFG_GLPI['root_doc'] . "/lib/tinymce/skins/ui/oxide";
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
-        $readonlyjs   = $readonly ? 'true' : 'false';
 
         $invalid_elements = 'applet,canvas,embed,form,object';
         if (!$enable_images) {
@@ -3497,205 +3489,45 @@ JS;
         if ($DB->use_utf8mb4) {
             $plugins[] = 'emoticons';
         }
-        $pluginsjs = json_encode($plugins);
 
-        $language_opts = '';
-        if ($language !== 'en_GB') {
-            $language_opts = json_encode([
+        $twig_params = [
+            'element_id' => $id,
+            'init' => $init,
+            'config' => [
                 'language' => $language,
-                'language_url' => $language_url
-            ]);
-        }
-
-        $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
-
-        // Add custom classes to tinymce body
-        $body_class = "rich_text_container";
-        foreach ($add_body_classes as $class) {
-            $body_class .= " $class";
-        }
-
-        // Compute init option as "string boolean" so it can be inserted directly into the js output
-        $init = $init ? 'true' : 'false';
-
-        // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
-        $toolbar = $toolbar ? 'true' : 'false';
-
-        // Compute statusbar option as "string boolean" so it can be inserted directly into the js output
-        $statusbar = $statusbar ? 'true' : 'false';
-
-        $js = <<<JS
-            $(function() {
-                const html_el = $('html');
-                var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
-
-                // Store config in global var so the editor can be reinitialized from the client side if needed
-                tinymce_editor_configs['{$id}'] = Object.assign({
-                    license_key: 'gpl',
-
-                    link_default_target: '_blank',
-                    branding: false,
-                    selector: '#' + $.escapeSelector('{$id}'),
-                    text_patterns: false,
-                    paste_webkit_styles: 'all',
-
-                    plugins: {$pluginsjs},
-
-                    // Appearance
-                    skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
-                    body_class: '{$body_class}',
-                    content_css: '{$content_css}',
-                    content_style: '{$content_style}',
-                    highlight_on_focus: false,
-                    autoresize_bottom_margin: 1, // Avoid excessive bottom padding
-                    autoresize_overflow_padding: 0,
-
-                    min_height: $editor_height,
-                    height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
-                    resize: true,
-
-                    // disable path indicator in bottom bar
-                    elementpath: false,
-
-                    placeholder: "{$placeholder}",
-
-                    // inline toolbar configuration
-                    menubar: false,
-                    toolbar_location: '{$toolbar_location}',
-                    toolbar: {$toolbar} && richtext_layout == 'classic'
-                        ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
-                        : false,
-                    quickbars_insert_toolbar: richtext_layout == 'inline'
-                        ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
-                        : false,
-                    quickbars_selection_toolbar: richtext_layout == 'inline'
-                        ? 'bold italic | styles | forecolor backcolor '
-                        : false,
-                    contextmenu: richtext_layout == 'classic'
-                        ? false
-                        : 'copy paste | emoticons table image link | undo redo | code fullscreen',
-
-                    // Status bar configuration
-                    statusbar: {$statusbar},
-
-                    // Content settings
-                    entity_encoding: 'raw',
-                    invalid_elements: '{$invalid_elements}',
-                    readonly: {$readonlyjs},
-                    relative_urls: false,
-                    remove_script_host: false,
-
-                    // Misc options
-                    browser_spellcheck: true,
-                    cache_suffix: '{$cache_suffix}',
-
-                    // Security options
-                    // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
-                    sandbox_iframes: false,
-
-                    init_instance_callback: (editor) => {
-                        const page_root_el = $(document.documentElement);
-                        const root_el = $(editor.dom.doc.documentElement);
-                        // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
-                        const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
-                        for (const attr of to_copy) {
-                            if (page_root_el.attr(attr) !== undefined) {
-                                root_el.attr(attr, page_root_el.attr(attr));
-                            }
-                        }
-                    },
-                    setup: function(editor) {
-                        // "required" state handling
-                        if ($('#$id').attr('required') == 'required') {
-                            $('#$id').removeAttr('required'); // Necessary to bypass browser validation
-
-                            editor.on('submit', function (e) {
-                                if ($('#$id').val() == '') {
-                                    const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                                    alert({$mandatory_field_msg}.replace('%s', field));
-                                    e.preventDefault();
-
-                                    // Prevent other events to run
-                                    // Needed to not break single submit forms
-                                    e.stopPropagation();
-                                }
-                            });
-                            editor.on('keyup', function (e) {
-                                editor.save();
-                                if ($('#$id').val() == '') {
-                                    $(editor.container).addClass('required');
-                                } else {
-                                    $(editor.container).removeClass('required');
-                                }
-                            });
-                            editor.on('init', function (e) {
-                                if (strip_tags($('#$id').val()) == '') {
-                                    $(editor.container).addClass('required');
-                                }
-                            });
-                            editor.on('paste', function (e) {
-                                // Remove required on paste event
-                                // This is only needed when pasting with right click (context menu)
-                                // Pasting with Ctrl+V is already handled by keyup event above
-                                $(editor.container).removeClass('required');
-                            });
-                        }
-                        // Propagate click event to allow other components to
-                        // listen to it
-                        editor.on('click', function (e) {
-                            $(document).trigger('tinyMCEClick', [e]);
-                        });
-
-                        // Simulate focus on content-editable tinymce
-                        editor.on('click focus', function (e) {
-                            // Some focus events don't have the correct target and cant be handled
-                            if (!$(e.target.editorContainer).length) {
-                                return;
-                            }
-
-                            // Clear focus on other editors
-                            $('.simulate-focus').removeClass('simulate-focus');
-
-                            // Simulate input focus on our current editor
-                            $(e.target.editorContainer)
-                                .closest('.content-editable-tinymce')
-                                .addClass('simulate-focus');
-                        });
-
-                        editor.on('Change', function (e) {
-                            // Nothing fancy here. Since this is only used for tracking unsaved changes,
-                            // we want to keep the logic in common.js with the other form input events.
-                            onTinyMCEChange(e);
-
-                            // Propagate event to the document to allow other components to listen to it
-                            $(document).trigger('tinyMCEChange', [e]);
-                        });
-
-                        editor.on('input', function (e) {
-                            // Propagate event to allow other components to listen to it
-                            const textarea = $('#' + e.target.dataset.id);
-                            textarea.trigger('tinyMCEInput', [e]);
-                        });
-
-                        // ctrl + enter submit the parent form
-                        editor.addShortcut('ctrl+13', 'submit', function() {
-                            editor.save();
-                            submitparentForm($('#$id'));
-                        });
-                    }
-                }, {$language_opts});
-
-                // Init tinymce
-                if ({$init}) {
-                    tinyMCE.init(tinymce_editor_configs['{$id}']);
-                }
-            });
-JS;
+                'plugins' => $plugins,
+                'readonly' => $readonly,
+                'content_css' => $content_css,
+                'skin_url' => $skin_url,
+                'cache_suffix' => $cache_suffix,
+                'invalid_elements' => $invalid_elements,
+                'height' => $editor_height,
+                'add_body_class' => implode(' ', $add_body_classes),
+                'toolbar_location' => $toolbar_location,
+                'placeholder' => $placeholder,
+                'show_toolbar' => $toolbar,
+                'show_statusbar' => $statusbar,
+                'content_style' => $content_style,
+                'single_line' => $single_line,
+            ]
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script>
+                {% if not init %}
+                    $(`#\${\$.escapeSelector('{{ element_id }}')}`).data('tinymce_config', {{ config|json_encode|raw }});
+                {% else %}
+                    import('{{ js_path("js/modules/Form/TinyMCEEditor.js") }}').then((m) => {
+                        new m.default('{{ element_id }}', {{ config|json_encode|raw }});
+                    });
+                {% endif %}
+            </script>
+TWIG, $twig_params);
 
         if ($display) {
-            echo  Html::scriptBlock($js);
+            echo $js;
         } else {
-            return  Html::scriptBlock($js);
+            return $js;
         }
     }
 
@@ -3713,19 +3545,19 @@ JS;
     {
         $values = json_encode($values);
 
-        echo Html::scriptBlock(<<<JAVASCRIPT
-         $(
-            function() {
-               var editor_id = $('{$selector}').attr('id');
-               var user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
-                  tinymce.get(editor_id),
-                  {$values}
-               );
-               user_templates_autocomplete.register();
-            }
-         );
-JAVASCRIPT
-        );
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script>
+                import('{{ js_path('js/modules/Form/TinyMCEEditor.js') }}').then(() => {
+                    const editor_id = $('{$selector}').attr('id');
+                    const user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
+                        tinymce.get(editor_id),
+                        {$values}
+                    );
+                    user_templates_autocomplete.register();
+                });
+            </script>
+TWIG, ['selector' => $selector, 'values' => $values]);
     }
 
     /**
@@ -5810,10 +5642,8 @@ HTML;
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
+
             case 'planning':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
                 break;

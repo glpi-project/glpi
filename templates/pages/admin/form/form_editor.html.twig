@@ -379,16 +379,16 @@
     </div>
 {% endif %}
 
-<script defer type="module">
-(async () => {
+<script defer type="module" async>
     const modules = await Promise.all([
+        import("{{ js_path('js/modules/Form/TinyMCEEditor.js') }}"),
         import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
         import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}"),
         import("{{ js_path('js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js') }}")
     ]);
-    const GlpiFormEditorController = modules[0].GlpiFormEditorController;
-    const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
-    const EditorConvertedExtractedSelectableDefaultValue = modules[2].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
+    const GlpiFormEditorController = modules[1].GlpiFormEditorController;
+    const EditorConvertedExtractedDefaultValue = modules[2].GlpiFormEditorConvertedExtractedDefaultValue;
+    const EditorConvertedExtractedSelectableDefaultValue = modules[3].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
 
     const container_selector = "[data-glpi-form-editor-container]";
     const controller = new GlpiFormEditorController(
@@ -404,26 +404,25 @@
     $(container_selector).data('EditorConvertedExtractedSelectableDefaultValue', EditorConvertedExtractedSelectableDefaultValue);
 
     {% for question_type in question_types_manager.getQuestionTypes() %}
-        controller.registerQuestionTypeOptions(
-            '{{ get_class(question_type)|e('js') }}',
-            {{ question_type.getFormEditorJsOptions()|raw }}
-        );
+    controller.registerQuestionTypeOptions(
+        '{{ get_class(question_type)|e('js') }}',
+        {{ question_type.getFormEditorJsOptions()|raw }}
+    );
 
-        {% if question_type.getSubTypes() is not empty %}
-            controller.registerQuestionSubTypesOptions(
-                '{{ get_class(question_type)|e('js') }}',
-                {
-                    'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
-                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
-                    'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
-                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
-                }
-            )
-        {% endif %}
+    {% if question_type.getSubTypes() is not empty %}
+    controller.registerQuestionSubTypesOptions(
+        '{{ get_class(question_type)|e('js') }}',
+        {
+            'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
+            'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
+            'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
+            'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
+        }
+    )
+    {% endif %}
     {% endfor %}
 
     $(container_selector).data('controller', controller);
     $(container_selector).addClass("initialized");
     $(container_selector).trigger("initialized");
-})();
 </script>
