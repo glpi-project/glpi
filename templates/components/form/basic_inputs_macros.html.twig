@@ -432,7 +432,8 @@
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
         locked: false,
-        locked_value: null
+        locked_value: null,
+        tpl_mark: null
     }|merge(options) %}
 
     {% set required_mark = '' %}
@@ -474,5 +475,8 @@
         {{ locked_mark|raw }}
         {{ required_mark|raw }}
         {{ helper|raw }}
+        {% if options.tpl_mark is not empty %}
+            {{ options.tpl_mark|raw }}
+        {% endif %}
     </label>
 {% endmacro %}

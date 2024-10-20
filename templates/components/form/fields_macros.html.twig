@@ -79,16 +79,16 @@
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
    {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
-   {% set tplmark = '' %}
    {% if item.isTemplate() %} {# TODO exluded types #}
-      {% set tplmark = item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value) %}
+       {% set options = options|merge({
+           tpl_mark: item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value)
+       }) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
       {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id']]) %}
    {% else %}
       {% set value = null %}
    {% endif %}
-   {% set label = __('%1$s%2$s')|format(label, tplmark) %}
 
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
