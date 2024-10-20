@@ -4589,10 +4589,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Search by form answer
         $tab[] = [
-            'id'   => 'forms',
-            'name' => __('Forms')
-        ];
-        $tab[] = [
             'id'                 => '120',
             'table'              => AnswersSet::getTable(),
             'field'              => 'name',
