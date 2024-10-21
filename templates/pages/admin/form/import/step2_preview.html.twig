@@ -57,9 +57,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% macro render_row(forms_name, status_icon, status_text, show_resolve_issues_action, show_remove_action) %}
+                    {% macro render_row(form_id, form_name, status_icon, status_text, show_resolve_issues_action, show_remove_action) %}
                         <tr>
-                            <td class="w-50 px-4 align-middle">{{ forms_name }}</td>
+                            <td class="w-50 px-4 align-middle">{{ form_name }}</td>
                             <td class="w-50 px-4 align-middle">
                                 <div class="d-flex align-items-center">
                                     <i class="ti {{ status_icon }} me-2"></i>
@@ -74,7 +74,7 @@
                                                 type="submit"
                                                 class="btn btn-link p-0 text-danger"
                                                 name="skipped_forms[]"
-                                                value="{{ forms_name }}"
+                                                value="{{ form_id }}"
                                                 formaction="{{ path('Form/Import/Preview') }}"
                                                 title="{{ __('Remove this form from the import list') }}"
                                                 aria-label="{{ __('Remove form') }}"
@@ -91,8 +91,8 @@
                                             <button
                                                 type="submit"
                                                 class="btn btn-link p-0"
-                                                name="form_name"
-                                                value="{{ forms_name }}"
+                                                name="form_id"
+                                                value="{{ form_id }}"
                                                 formaction="{{ path('Form/Import/ResolveIssues') }}"
                                             >
                                                 {{ __("Resolve issues") }}
@@ -104,18 +104,20 @@
                         </tr>
                     {% endmacro %}
 
-                    {% for forms_name in preview.getValidForms() %}
+                    {% for form_id, form_name in preview.getValidForms() %}
                         {{ _self.render_row(
-                            forms_name,
+                            form_id,
+                            form_name,
                             'ti-check text-success',
                             __("Ready to be imported"),
                             false,
                             true
                         ) }}
                     {% endfor %}
-                    {% for forms_name in preview.getInvalidForms() %}
+                    {% for form_id, form_name in preview.getInvalidForms() %}
                         {{ _self.render_row(
-                            forms_name,
+                            form_id,
+                            form_name,
                             'ti-x text-danger',
                             __("Can't be imported"),
                             true,
@@ -139,8 +141,8 @@
         <input type="hidden" name="json" value="{{ json }}" />
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
-        {% for skipped_form in preview.getSkippedForms() %}
-            <input type="hidden" name="skipped_forms[]" value="{{ skipped_form }}" />
+        {% for skipped_form_id in preview.getSkippedForms()|keys %}
+            <input type="hidden" name="skipped_forms[]" value="{{ skipped_form_id }}" />
         {% endfor %}
 
         {% for itemtype, replacements_for_itemtype in replacements %}

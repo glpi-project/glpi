@@ -54,8 +54,8 @@ final class Step3ResolveIssuesController extends AbstractController
         }
 
         // Get json, form name and skipped_forms from the request.
-        $json      = $request->request->get('json');
-        $form_name = $request->request->get('form_name');
+        $json          = $request->request->get('json');
+        $form_id       = $request->request->get('form_id');
         $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
 
         $serializer = new FormSerializer();
@@ -68,11 +68,10 @@ final class Step3ResolveIssuesController extends AbstractController
             }
         }
 
-        $issues = $serializer->resolveIssues($mapper, $json)->getIssues()[$form_name];
+        $issues = $serializer->resolveIssues($mapper, $json)->getIssues()[$form_id];
         return $this->render("pages/admin/form/import/step3_resolve_issues.html.twig", [
             'title'        => __("Resolve issues"),
             'menu'         => ['admin', Form::getType()],
-            'form_name'    => $form_name,
             'issues'       => $issues,
             'json'         => $json,
             'replacements' => $replacements,

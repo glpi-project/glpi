@@ -69,9 +69,9 @@ final class FormSerializer extends AbstractFormSerializer
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
 
-        foreach ($forms as $form) {
+        foreach ($forms as $index => $form) {
             // Add forms to the main export spec
-            $form_spec = $this->exportFormToSpec($form);
+            $form_spec = $this->exportFormToSpec($form, $index);
             $export_specification->addForm($form_spec);
         }
 
@@ -99,16 +99,17 @@ final class FormSerializer extends AbstractFormSerializer
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
 
+            $form_id = $form_spec->id;
             $form_name = $form_spec->name;
-            if (in_array($form_name, $skipped_forms)) {
-                $results->addSkippedForm($form_name);
+            if (in_array($form_id, $skipped_forms)) {
+                $results->addSkippedForm($form_id, $form_name);
                 continue;
             }
 
             if ($mapper->validateRequirements($requirements)) {
-                $results->addValidForm($form_name);
+                $results->addValidForm($form_id, $form_name);
             } else {
-                $results->addInvalidForm($form_name);
+                $results->addInvalidForm($form_id, $form_name);
             }
         }
 
@@ -132,7 +133,7 @@ final class FormSerializer extends AbstractFormSerializer
             $mapper->mapExistingItemsForRequirements($requirements);
 
             $results->addIssuesForForm(
-                $form_spec->name,
+                $form_spec->id,
                 $mapper->getInvalidRequirements($requirements)
             );
         }
@@ -214,10 +215,10 @@ final class FormSerializer extends AbstractFormSerializer
         return $filename . ".json";
     }
 
-    private function exportFormToSpec(Form $form): FormContentSpecification
+    private function exportFormToSpec(Form $form, int $form_export_id): FormContentSpecification
     {
         // TODO: questions, ...
-        $form_spec = $this->exportBasicFormProperties($form);
+        $form_spec = $this->exportBasicFormProperties($form, $form_export_id);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
@@ -297,9 +298,11 @@ final class FormSerializer extends AbstractFormSerializer
     }
 
     private function exportBasicFormProperties(
-        Form $form
+        Form $form,
+        int $form_export_id
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
+        $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
         $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];

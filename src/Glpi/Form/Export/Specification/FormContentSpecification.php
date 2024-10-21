@@ -37,6 +37,7 @@ namespace Glpi\Form\Export\Specification;
 
 final class FormContentSpecification
 {
+    public int $id;
     public string $name;
     public string $header;
     public string $entity_name;

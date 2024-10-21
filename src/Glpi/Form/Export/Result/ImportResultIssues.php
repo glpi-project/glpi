@@ -39,19 +39,19 @@ use Glpi\Form\Export\Specification\DataRequirementSpecification;
 
 final class ImportResultIssues
 {
-    /** @var array<string, DataRequirementSpecification[]> $valid_forms */
+    /** @var array<int, DataRequirementSpecification[]> $valid_forms */
     private array $issues = [];
 
     /**
-     * @param string $form_name
+     * @param int $form_id
      * @param DataRequirementSpecification[] $issues
      */
-    public function addIssuesForForm(string $form_name, array $issues): void
+    public function addIssuesForForm(int $form_id, array $issues): void
     {
-        $this->issues[$form_name] = $issues;
+        $this->issues[$form_id] = $issues;
     }
 
-    /** @return array<string, DataRequirementSpecification[]> */
+    /** @return array<int, DataRequirementSpecification[]> */
     public function getIssues(): array
     {
         return $this->issues;
