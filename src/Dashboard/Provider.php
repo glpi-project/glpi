@@ -118,7 +118,7 @@ class Provider
             ];
         } else {
             if ($item->isEntityAssign()) {
-                $where += getEntitiesRestrictCriteria($item::getTable());
+                $where += getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
             }
             $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
