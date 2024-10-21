@@ -1705,6 +1705,9 @@ class Auth extends CommonGLPI
         ]);
         foreach ($iterator as $data) {
             $elements['mail-' . $data['id']] = $data['name'];
+            if ($data['is_default'] == 1) {
+                $elements['_default'] = 'mail-' . $data['id'];
+            }
         }
 
         return $elements;
