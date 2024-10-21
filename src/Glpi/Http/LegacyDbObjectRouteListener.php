@@ -37,9 +37,8 @@ namespace Glpi\Http;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
-use Glpi\Controller\DropdownController;
-use Glpi\Controller\DropdownFormController;
 use Glpi\Controller\GenericListController;
+use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -75,7 +74,7 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
             if (\is_a($class, \CommonDropdown::class, true)) {
-                $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
+                $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             } else {
                 $request->attributes->set('_controller', $is_form ? null : GenericListController::class);

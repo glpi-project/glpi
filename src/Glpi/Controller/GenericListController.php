@@ -34,7 +34,9 @@
 
 namespace Glpi\Controller;
 
+use CommonDBTM;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,24 +44,41 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class GenericListController extends AbstractController
 {
+    #[Route("/Dropdown/{class}", name: "glpi_dropdown")]
     #[Route("/{class}/Search", name: "glpi_generic_list")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
 
+        $this->checkIsValidClass($class);
+
+        if (\is_a($class, \CommonDropdown::class, true)) {
+            return $this->render('search/generic_dropdown.html.twig', [
+                'object_class' => $class,
+            ]);
+        }
+
+        return $this->render('search/generic_list.html.twig', [
+            'object_class' => $class,
+        ]);
+    }
+
+    public function checkIsValidClass(string $class): void
+    {
+        if (!$class) {
+            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
+        }
+
         if (!\class_exists($class)) {
             throw new NotFoundHttpException(\sprintf("Class \"%s\" does not exist.", $class));
         }
-        if (!\is_a($class, \CommonDBTM::class, true)) {
+
+        if (!\is_subclass_of($class, CommonDBTM::class)) {
             throw new NotFoundHttpException(\sprintf("Class \"%s\" is not a DB object.", $class));
         }
 
         if (!$class::canView()) {
             throw new AccessDeniedHttpException();
         }
-
-        return $this->render('search/generic_list.html.twig', [
-            'object_class' => $class,
-        ]);
     }
 }

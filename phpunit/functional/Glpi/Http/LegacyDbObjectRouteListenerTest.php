@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Http;
 
-use Glpi\Controller\DropdownController;
+use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Http\LegacyDbObjectRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -65,7 +65,7 @@ final class LegacyDbObjectRouteListenerTest extends TestCase
         if (\str_contains($path_info, '.form.php')) {
             self::assertSame(DropdownFormController::class, $request->attributes->get('_controller'));
         } else {
-            self::assertSame(DropdownController::class, $request->attributes->get('_controller'));
+            self::assertSame(GenericListController::class, $request->attributes->get('_controller'));
         }
         self::assertSame($expected_class_name, $request->attributes->get('class'));
     }
@@ -340,7 +340,7 @@ final class LegacyDbObjectRouteListenerTest extends TestCase
 
         $listener->onKernelRequest($event);
 
-        self::assertSame(DropdownController::class, $request->attributes->get('_controller'));
+        self::assertSame(GenericListController::class, $request->attributes->get('_controller'));
         self::assertSame($class, $request->attributes->get('class'));
     }
 

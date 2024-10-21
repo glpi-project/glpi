@@ -39,7 +39,7 @@
  * @var LegacyFileLoadController $this
  */
 
-use Glpi\Controller\DropdownController;
+use Glpi\Controller\GenericListController;
 use Glpi\Controller\LegacyFileLoadController;
 
 if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
@@ -52,4 +52,4 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
     'glpi_dropdown',
 ));
 
-DropdownController::loadDropdown($this->request, $dropdown);
+GenericListController::loadDropdown($this->request, $dropdown);
