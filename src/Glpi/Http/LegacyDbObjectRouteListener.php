@@ -79,7 +79,7 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
                 $request->attributes->set('class', $class);
             } else {
                 $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
-                $request->attributes->set('type', $class);
+                $request->attributes->set('class', $class);
             }
         }
     }

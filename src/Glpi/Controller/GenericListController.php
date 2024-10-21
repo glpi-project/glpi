@@ -34,23 +34,24 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class GenericListController extends AbstractController
 {
-    #[Route("/{type}/Search", name: "glpi_generic_list")]
+    #[Route("/{class}/Search", name: "glpi_generic_list")]
     public function __invoke(Request $request): Response
     {
-        $type = $request->attributes->getString('type');
+        $class = $request->attributes->getString('class');
 
-        $class = $this->getClassFromType($type);
-
-        if (!$class) {
-            throw new NotFoundHttpException(\sprintf('No class found for type "%s".', $type));
+        if (!\class_exists($class)) {
+            throw new NotFoundHttpException(\sprintf("Class \"%s\" does not exist.", $class));
+        }
+        if (!\is_a($class, \CommonDBTM::class, true)) {
+            throw new NotFoundHttpException(\sprintf("Class \"%s\" is not a DB object.", $class));
         }
 
         if (!$class::canView()) {
@@ -60,42 +61,5 @@ final class GenericListController extends AbstractController
         return $this->render('search/generic_list.html.twig', [
             'object_class' => $class,
         ]);
-    }
-
-    /**
-     * @return class-string<\CommonGLPI>|null
-     */
-    private function getClassFromType(string $type): ?string
-    {
-        $class = (new \DbUtils())->fixItemtypeCase($type);
-
-        if (
-            $class
-            && \class_exists($class)
-            && \is_subclass_of($class, \CommonGLPI::class)
-        ) {
-            return $this->normalizeClass($class);
-        }
-
-        $namespacedClass = \preg_replace_callback('~\\\([a-z])~Uu', static fn($i) => '\\' . \ucfirst($i[1]), 'Glpi\\' . \str_replace('/', '\\', $class));
-
-        if (
-            $namespacedClass
-            && \class_exists($namespacedClass)
-            && \is_subclass_of($namespacedClass, \CommonGLPI::class)
-        ) {
-            return $this->normalizeClass($namespacedClass);
-        }
-
-        return null;
-    }
-
-    private function normalizeClass(string $class): string
-    {
-        if (!\class_exists($class)) {
-            throw new \RuntimeException('Class "$class" does not exist.');
-        }
-
-        return (new \ReflectionClass($class))->getName();
     }
 }
