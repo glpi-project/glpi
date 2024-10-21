@@ -31,6 +31,14 @@
  */
 
 describe('Display preferences', () => {
+    before(() => {
+        // Create at least one ticket as we will be displaying the ticket list
+        // to validate that the right columns are displayed
+        cy.createWithAPI('Ticket', {
+            'name': 'Open ticket',
+            'content': 'Open ticket',
+        });
+    });
 
     it('can add a column to the global view', () => {
         cy.login();
