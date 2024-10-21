@@ -70,7 +70,7 @@ final class Step4ExecuteController extends AbstractController
         return $this->render("pages/admin/form/import/step4_execute.html.twig", [
             'title'   => __("Import results"),
             'menu'    => ['admin', Form::getType()],
-            'results' => $serializer->importFormsFromJson($json, $skipped_forms, $mapper),
+            'results' => $serializer->importFormsFromJson($json, $mapper, $skipped_forms),
         ]);
     }
 }

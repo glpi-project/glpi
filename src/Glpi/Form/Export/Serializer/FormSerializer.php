@@ -83,8 +83,8 @@ final class FormSerializer extends AbstractFormSerializer
 
     public function previewImport(
         string $json,
-        array $skipped_forms,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
 
@@ -116,7 +116,7 @@ final class FormSerializer extends AbstractFormSerializer
         return $results;
     }
 
-    public function resolveIssues(
+    public function listIssues(
         DatabaseMapper $mapper,
         string $json
     ): ImportResultIssues {
@@ -141,23 +141,10 @@ final class FormSerializer extends AbstractFormSerializer
         return $results;
     }
 
-    public function removeFormFromJson(string $json, string $form_name): string
-    {
-        $export_specification = $this->deserialize($json);
-
-        // Filter the forms to remove the one that matches the given name
-        $export_specification->forms = array_filter(
-            $export_specification->forms,
-            fn($form_spec) => $form_spec->name !== $form_name
-        );
-
-        return $this->serialize($export_specification);
-    }
-
     public function importFormsFromJson(
         string $json,
-        array $skipped_forms,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -172,8 +159,8 @@ final class FormSerializer extends AbstractFormSerializer
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
 
-            $form_name = $form_spec->name;
-            if (in_array($form_name, $skipped_forms)) {
+            $form_id = $form_spec->id;
+            if (in_array($form_id, $skipped_forms)) {
                 continue;
             }
 
