@@ -73,11 +73,11 @@ final class GenericListController extends AbstractController
         }
 
         if (!\class_exists($class)) {
-            throw new NotFoundHttpException(\sprintf("Class \"%s\" does not exist.", $class));
+            throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
         }
 
         if (!\is_subclass_of($class, CommonDBTM::class)) {
-            throw new NotFoundHttpException(\sprintf("Class \"%s\" is not a DB object.", $class));
+            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a DB object.", $class));
         }
 
         if (!$class::canView()) {
