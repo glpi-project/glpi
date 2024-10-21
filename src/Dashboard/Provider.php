@@ -102,7 +102,7 @@ class Provider
         }
 
         if ($item instanceof User) {
-            $where += getEntitiesRestrictCriteria(Profile_User::getTable());
+            $where += getEntitiesRestrictCriteria(Profile_User::getTable(), '', '', true);
             $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
