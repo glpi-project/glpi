@@ -45,4 +45,40 @@ class TicketCost extends CommonITILCost
     public static $items_id  = 'tickets_id';
 
     public static $rightname        = 'ticketcost';
+
+    public function post_updateItem($history = true)
+    {
+        if ($this->fields['tickets_id']) {
+            $item_ticket = new Item_Ticket();
+            $item_tickets = $item_ticket->find([
+                'tickets_id' => $this->fields['tickets_id']
+            ]);
+            foreach ($item_tickets as $it) {
+                $this->updateTCOItem($it['itemtype'], $it['items_id']);
+            }
+        }
+    }
+
+    public function post_addItem()
+    {
+        if ($this->fields['tickets_id']) {
+            $item_ticket = new Item_Ticket();
+            $item_tickets = $item_ticket->find([
+                'tickets_id' => $this->fields['tickets_id']
+            ]);
+            foreach ($item_tickets as $it) {
+                $this->updateTCOItem($it['itemtype'], $it['items_id']);
+            }
+        }
+    }
+
+    public function updateTCOItem($itemtype, $items_id)
+    {
+        $item = getItemForItemtype($itemtype);
+        $item->getFromDB($items_id);
+        $updated_item = [];
+        $updated_item['id'] = $items_id;
+        $updated_item['ticket_tco'] = Ticket::computeTco($item);
+        $item->update($updated_item);
+    }
 }
