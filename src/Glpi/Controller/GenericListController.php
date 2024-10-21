@@ -35,11 +35,14 @@
 namespace Glpi\Controller;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Search;
+use Html;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class GenericListController extends AbstractController

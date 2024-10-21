@@ -39,8 +39,9 @@
  * @var LegacyFileLoadController $this
  */
 
-use Glpi\Controller\GenericListController;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\LegacyFileLoadController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
     throw new LogicException();
@@ -52,4 +53,10 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
     'glpi_dropdown',
 ));
 
-GenericListController::loadDropdown($this->request, $dropdown);
+if (!$dropdown::canView()) {
+    throw new AccessDeniedHttpException();
+}
+
+TemplateRenderer::getInstance()->display('search/generic_dropdown.html.twig', [
+    'object_class' => $dropdown::class,
+]);
