@@ -36,6 +36,18 @@
 .qtip {
    max-width: none;
 
+    .qtip-titlebar {
+        background-color: var(--tblr-bg-surface);
+        border-bottom: 1px solid var(--tblr-border-color);
+
+        .ui-icon {
+            color: var(--tblr-body-color);
+            &:hover {
+                color: var(--tblr-body-color);
+            }
+        }
+    }
+
    .qtip-content {
       max-height: 250px;
       max-width: 400px;
