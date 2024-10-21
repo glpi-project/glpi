@@ -84,7 +84,8 @@
             });
         }
         $(document).ready(function() {
-            var form = document.querySelector('form[action="/main/public/front/massiveaction.php"]');
+            const form = document.querySelector('form[action*="front/massiveaction.php"]');
+            console.log(form);
             if (form) {
                 var modalDialogs = form.querySelectorAll('.modal-dialog');
                 modalDialogs.forEach(function(modalDialog) {
@@ -124,6 +125,12 @@
             </div>
         </div>
     </div>
+    <script>
+        let printPreviewButton = document.getElementById('print-preview');
+        if (printPreviewButton) {
+            printPreviewButton.disabled = true;
+        };
+    </script>
     <div class="preview p-2">
         <div class="title-card card my-0 border-start-0 border-end-0 border-bottom-0 shadow-none">
             <div class="card-header">
@@ -138,4 +145,10 @@
             {% include 'components/printpreview/asset_print_preview.html.twig' %}
         {% endif %}
     <div>
+    <script>
+        printPreviewButton = document.getElementById('print-preview');
+        if (printPreviewButton) {
+            printPreviewButton.disabled = false;
+        };
+    </script>
 {% endif %}
