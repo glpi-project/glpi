@@ -36,31 +36,26 @@
 namespace tests\units;
 
 use DbTestCase;
-use Barcode;
+use BarcodeManager;
 use Software;
+use Computer;
 
-/* Test for inc/computer.class.php */
-
-class BarcodeTest extends DbTestCase
+class BarcodeManagerTest extends DbTestCase
 {
     private function getNewComputer(): \Computer
     {
-        $computer = getItemByTypeName('Computer', '_test_pc01');
-        $fields   = $computer->fields;
-        unset($fields['id']);
-        unset($fields['date_creation']);
-        unset($fields['date_mod']);
-        $fields['name'] = $this->getUniqueString();
-        $this->assertGreaterThan(0, (int)$computer->add($fields));
-        return $computer;
+        return $this->createItem(Computer::class, [
+            'name' => 'my computer name',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
     }
 
     public function testValidQrCodeGeneration()
     {
         global $CFG_GLPI;
         $computer = $this->getNewComputer();
-
-        $qrcode = Barcode::generateQRCode($computer);
+        $barcode_manager = new BarcodeManager();
+        $qrcode = $barcode_manager->generateQRCode($computer);
         $this->assertInstanceOf(\Com\Tecnick\Barcode\Type\Square\QrCode::class, $qrcode);
         $qrcodeInfos = $qrcode->getArray();
         $this->assertEquals($qrcodeInfos["code"], $CFG_GLPI["url_base"] . $computer->getLinkURL());
@@ -69,19 +64,20 @@ class BarcodeTest extends DbTestCase
     public function testInvalidQrCodeGeneration()
     {
         $softaware = new Software();
-        $qrcode = Barcode::generateQRCode($softaware);
+        $barcode_manager = new BarcodeManager();
+        $qrcode = $barcode_manager->generateQRCode($softaware);
         $this->assertFalse($qrcode);
     }
 
     public function testValidRenderQrCode()
     {
         $computer = $this->getNewComputer();
-        $this->assertIsString(Barcode::renderQRCode($computer));
+        $this->assertIsString(BarcodeManager::renderQRCode($computer));
     }
 
     public function testInalidRenderQrCode()
     {
         $softaware = new Software();
-        $this->assertFalse(Barcode::renderQRCode($softaware));
+        $this->assertFalse(BarcodeManager::renderQRCode($softaware));
     }
 }

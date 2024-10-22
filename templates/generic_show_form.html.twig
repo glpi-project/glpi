@@ -685,7 +685,7 @@
 
                      {% if item_type in config("asset_types") %}
                         {% set barcode %}
-                           {{ call('Barcode::renderQRCode', [
+                           {{ call('BarcodeManager::renderQRCode', [
                               item
                            ])|raw }}
                         {% endset %}

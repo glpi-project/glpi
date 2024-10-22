@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-class Barcode extends CommonGLPI
+class BarcodeManager
 {
-    public static function generateQRCode(CommonDBTM $item)
+    public function generateQRCode(CommonDBTM $item)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -59,7 +59,8 @@ class Barcode extends CommonGLPI
 
     public static function renderQRCode(CommonDBTM $item)
     {
-        $qrcode = self::generateQRCode($item);
+        $barcode_manager = new self();
+        $qrcode = $barcode_manager->generateQRCode($item);
         if ($qrcode) {
             return $qrcode->getHtmlDiv();
         }
