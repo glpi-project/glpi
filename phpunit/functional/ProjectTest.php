@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Team\Team;
+use Glpi\Toolbox\Sanitizer;
 use ProjectState;
 use ProjectTask;
 use ProjectTeam;
@@ -451,6 +452,40 @@ class ProjectTest extends DbTestCase
 
         // Compare tasks
         $this->assertEquals($expected, $tasks_clone);
+    }
+
+    public function testCloneWithOverridenInput()
+    {
+        $project = $this->createItem(
+            'Project',
+            [
+                'name' => __FUNCTION__,
+            ]
+        );
+
+        $raw_description = <<<PLAINTEXT
+            > a
+            > multiline
+            > description
+PLAINTEXT;
+
+        $sanitized_description = <<<PLAINTEXT
+            &#62; a
+            &#62; multiline
+            &#62; description
+PLAINTEXT;
+
+        // Clone with raw input
+        $projects_id_clone = $project->clone(['content' => $raw_description]);
+        $project_clone = new \Project();
+        $this->assertTrue($project_clone->getFromDB($projects_id_clone));
+        $this->assertEquals($sanitized_description, $project_clone->fields['content']);
+
+        // Clone with already sanitized input
+        $projects_id_clone = $project->clone(Sanitizer::sanitize(['content' => $raw_description]));
+        $project_clone = new \Project();
+        $this->assertTrue($project_clone->getFromDB($projects_id_clone));
+        $this->assertEquals($sanitized_description, $project_clone->fields['content']);
     }
 
     /**
