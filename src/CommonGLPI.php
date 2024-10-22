@@ -725,7 +725,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlspecialchars($icon)) : '';
-        $counter_html = $nb !== 0 ? sprintf('<span class="badge glpi-badge">%d</span>', $nb) : '';
+        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', $nb) : '';
 
         return sprintf(
             '<span class="d-flex align-items-center">%s%s%s</span>',
