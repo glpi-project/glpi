@@ -34,8 +34,8 @@
 {% set theme = config('palette')|default('auror') %}
 {% if css_files is not defined %}
    {% set css_files = [
-       {'path': 'public/lib/base.css'},
-       {'path': 'public/lib/tabler.css'},
+       {'path': 'lib/base.css'},
+       {'path': 'lib/tabler.css'},
        {'path': 'css/glpi.scss'},
        {'path': 'css/core_palettes.scss'}
    ] %}
@@ -43,9 +43,9 @@
 {% endif %}
 {% if js_files is not defined %}
    {% set js_files = [
-       {'path': 'public/lib/base.js'},
+       {'path': 'lib/base.js'},
        {'path': 'js/common.js'},
-       {'path': 'public/lib/fuzzy.js'}
+       {'path': 'lib/fuzzy.js'}
    ] %}
 {% endif %}
 

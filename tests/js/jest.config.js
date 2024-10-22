@@ -42,6 +42,7 @@ module.exports = {
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
                 '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
+                '/lib/tablericons-definitions.js$': '<rootDir>/../../public/lib/tablericons-definitions.js',
             },
             transform: {},
             transformIgnorePatterns: [

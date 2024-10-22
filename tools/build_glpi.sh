@@ -51,12 +51,19 @@ $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platf
 echo "Compiling locale files..."
 $WORKING_DIR/bin/console locales:compile
 
+echo "Moving JS files into the /public directory..."
+for file in $(find $WORKING_DIR/js -type f ! -path "$WORKING_DIR/js/src/*")
+do
+  mkdir --parents `echo $(dirname $file) | sed s#$WORKING_DIR/js#$WORKING_DIR/public/js#`
+  mv $file `echo $file | sed s#$WORKING_DIR/js#$WORKING_DIR/public/js#`
+done
+
 echo "Minifying stylesheets..."
-find $WORKING_DIR/css $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.css" ! -iname "*.min.css" \) \
+find $WORKING_DIR/public \( -iname "*.css" ! -iname "*.min.css" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/csso {} --output $(dirname {})/$(basename {} ".css").min.css' \;
 
 echo "Minifying javascripts..."
-find $WORKING_DIR/js $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.js" ! -iname "*.min.js" \) \
+find $WORKING_DIR/public \( -iname "*.js" ! -iname "*.min.js" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/terser {} --mangle --output $(dirname {})/$(basename {} ".js").min.js' \;
 
 echo "Compiling SCSS..."
@@ -75,7 +82,7 @@ dev_nodes=(
     "composer.lock"
     "docker-compose.yaml"
     "eslint.config.mjs"
-    "js/src/vue"
+    "js"
     "jsconfig.json"
     "locales/glpi.pot"
     "Makefile"
