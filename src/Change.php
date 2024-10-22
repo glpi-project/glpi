@@ -588,8 +588,8 @@ class Change extends CommonITILObject
         ];
 
         $tab[] = [
-            'id'                 => 'change',
-            'name'               => __('Changes')
+            'id'                 => 'problem',
+            'name'               => Problem::getTypeName(Session::getPluralNumber())
         ];
 
         $tab[] = [
@@ -615,7 +615,7 @@ class Change extends CommonITILObject
 
         $tab[] = [
             'id'                 => 'change',
-            'name'               => __('Changes')
+            'name'               => self::getTypeName(Session::getPluralNumber())
         ];
 
         if ($itemtype == "Ticket") {
