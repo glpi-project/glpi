@@ -1851,10 +1851,7 @@ class CommonDBTM extends CommonGLPI
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
         ) {
             $fields = array_values($this->updates);
-            $idx = array_search('date_mod', $fields);
-            if ($idx !== false) {
-                unset($fields[$idx]);
-            }
+            $fields = array_filter($fields, fn($f) => $f !== 'date_mod');
             $stmt = $DB->prepare(
                 $DB->buildInsert(
                     $lockedfield->getTable(),
