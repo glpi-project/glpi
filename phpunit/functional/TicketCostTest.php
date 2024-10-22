@@ -47,7 +47,7 @@ class TicketCostTest extends DbTestCase
     {
         return $this->createItem(Ticket::class, [
             'name' => 'my ticket name',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'entities_id' => $this->getTestRootEntity(true),
             '_users_id_assign'   => getItemByTypeName('User', 'tech', true),
             'content'            => '',
         ]);
@@ -57,7 +57,7 @@ class TicketCostTest extends DbTestCase
     {
         return $this->createItem(Computer::class, [
             'name' => 'my computer name',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
     }
 
@@ -65,7 +65,7 @@ class TicketCostTest extends DbTestCase
     {
         return $this->createItem(TicketCost::class, [
             'name' => $values['name'] ?? 'my ticket cost name',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'entities_id' => $this->getTestRootEntity(true),
             'tickets_id' => $values['tickets_id'],
             'cost_time' => $values['cost_time'] ?? 0.,
             'cost_fixed' => $values['cost_fixed'] ?? 0.,
