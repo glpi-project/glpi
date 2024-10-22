@@ -72,6 +72,12 @@ class ClearCommand extends Command
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             __('Cache context to clear (i.e. \'core\' or \'plugin:plugin_name\'). All contexts are cleared by default.')
         );
+        $this->addOption(
+            'database',
+            'd',
+            InputOption::VALUE_NONE,
+            __('Clear database stored cache.')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -95,6 +101,10 @@ class ClearCommand extends Command
             foreach ($contexts as $context) {
                 $success = $cache_manager->getCacheInstance($context)->clear() && $success;
             }
+        }
+
+        if ($input->getOption('database')) {
+            $success = $cache_manager->clearDatabaseCache() && $success;
         }
 
         if (!$success) {

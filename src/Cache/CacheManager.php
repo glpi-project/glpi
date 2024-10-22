@@ -561,4 +561,48 @@ PHP;
             self::SCHEME_REDISS     => __('Redis (TLS)'),
         ];
     }
+
+    /**
+     * Clear database stored cache
+     *
+     * @return bool
+     */
+    public function clearDatabaseCache(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $success = true;
+        $db_cached_tables = [
+            'glpi_businesscriticities',
+            'glpi_documentcategories',
+            'glpi_entities',
+            'glpi_groups',
+            'glpi_ipnetworks',
+            'glpi_itilcategories',
+            'glpi_knowbaseitemcategories',
+            'glpi_locations',
+            'glpi_softwarecategories',
+            'glpi_softwarelicenses',
+            'glpi_softwarelicensetypes',
+            'glpi_states',
+            'glpi_taskcategories'
+        ];
+
+        foreach ($db_cached_tables as $db_cached_table) {
+            $res = $DB->update(
+                $db_cached_table,
+                [
+                    'ancestors_cache' => null,
+                    'sons_cache' => null
+                ],
+                [1]
+            );
+            if ($res === false) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
 }
