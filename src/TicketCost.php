@@ -48,18 +48,20 @@ class TicketCost extends CommonITILCost
 
     public function post_updateItem($history = true)
     {
-        if ($this->fields['tickets_id']) {
-            $item_ticket = new Item_Ticket();
-            $item_tickets = $item_ticket->find([
-                'tickets_id' => $this->fields['tickets_id']
-            ]);
-            foreach ($item_tickets as $it) {
-                $this->updateTCOItem($it['itemtype'], $it['items_id']);
-            }
-        }
+        $this->verifTCOItem();
     }
 
     public function post_addItem()
+    {
+        $this->verifTCOItem();
+    }
+
+    public function post_purgeItem()
+    {
+        $this->verifTCOItem();
+    }
+
+    public function verifTCOItem()
     {
         if ($this->fields['tickets_id']) {
             $item_ticket = new Item_Ticket();
