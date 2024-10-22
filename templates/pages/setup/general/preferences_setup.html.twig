@@ -48,7 +48,7 @@
       {{ fields.largeTitle(__('Default values'), 'ti ti-adjustments') }}
    {% endif %}
 
-   {% if not can_edit_config or constant('GLPI_DEMO_MODE') %}
+   {% if not can_edit_config %}
       {% set lang_dropdown = '' %}
    {% else %}
       {% set lang_dropdown %}

@@ -141,13 +141,6 @@
             </div>
          </div>
       </div>
-
-   {% elseif constant('GLPI_DEMO_MODE') %}
-      <div class="dropdown-item">
-         <i class="fas fa-fw fa-language"></i>
-         {{ call('User::showSwitchLangForm')|raw }}
-      </div>
-
    {% endif %}
 </div>
 

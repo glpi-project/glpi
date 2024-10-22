@@ -62,12 +62,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/stat.graph.php',
 ];
 $ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/user.form.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
@@ -281,12 +275,6 @@ $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
@@ -1869,7 +1857,7 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.offset
-	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DEMO_MODE\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
+	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
 ];
@@ -2172,12 +2160,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ErrorController.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/IndexController.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.unusedType
@@ -4678,12 +4660,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
 	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 5,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanAnd.rightAlwaysFalse
-	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
