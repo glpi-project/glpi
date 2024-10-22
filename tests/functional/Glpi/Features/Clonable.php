@@ -63,5 +63,19 @@ class Clonable extends \DbTestCase
         $ma_prefix = 'MassiveAction' . \MassiveAction::CLASS_ACTION_SEPARATOR;
         $actions = \MassiveAction::getAllMassiveActions($class);
         $this->boolean(array_key_exists($ma_prefix . 'clone', $actions))->isIdenticalTo($result);
+        // Create template option never should exist when not targetting a single item
+        $this->boolean(array_key_exists($ma_prefix . 'create_template', $actions))->isIdenticalTo(false);
+
+        if ($result === true) {
+            $item = $this->createItem($class, [
+                'name' => 'Test',
+                'entities_id' => $this->getTestRootEntity(true),
+                'content' => ''
+            ], ['content']);
+            if ($item->maybeTemplate()) {
+                $specific_actions = \MassiveAction::getAllMassiveActions($class, false, $item, $item->getID());
+                $this->boolean(array_key_exists($ma_prefix . 'create_template', $specific_actions))->isIdenticalTo(true);
+            }
+        }
     }
 }

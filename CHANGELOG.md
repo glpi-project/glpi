@@ -33,6 +33,8 @@ The present file will list all changes made to the project; according to the
 - `ODS` and `XLS` export of search results.
 - Support for the well-known `change-password" URI which can be used by some password managers to automatically (or assist with) changing a user's password.
 - CLI commands for creating local GLPI users, enabling/disabling/deleting users, resetting local GLPI user passwords and granting profile assignments.
+- Cloning templates (such as computer templates)
+- Creating a template from an existing item (such as a computer). This action is only available from the Actions menu within the item form (bulk action not allowed).
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -94,6 +96,7 @@ The present file will list all changes made to the project; according to the
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 - `fetchSessionMessages()` global JS function to display new session messages as toast notifications without requiring a page reload.
+- `CommonDBTM::getForbiddenMultipleMassiveActions()` method to allow specifying which actions should only be shown from the item form.
 
 #### Changes
 - Many methods have their signature changed to specify both their return type and the types of their parameters.
@@ -169,6 +172,7 @@ The present file will list all changes made to the project; according to the
 - `Group::getDataItems()` signature changed. The two first parameters `$types` and `$field` were replaced
   by a unique boolean `$tech` parameter that is used to compute the `$types` and `$field` values automatically.
 - `CartridgeItem::addCompatibleType()` method is now static.
+- `Clonable::clone()` and `Clonable::cloneMultiple()` methods now accept a `$clone_as_template` parameter to allow creating templates.
 - `Transfer` class is now final.
 - `Transfer::addNotToBeTransfer()` method is now private.
 - `Transfer::addToAlreadyTransfer()` method is now private.
