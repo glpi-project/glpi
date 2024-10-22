@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { WebIconSelector } from '../../../../js/modules/Form/WebIconSelector.js';
+import { WebIconSelector } from '../../../../public/js/modules/Form/WebIconSelector.js';
 
 describe('Web Icon Selector', () => {
     beforeEach(() => {

@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { initObjectLock } from '../../../js/modules/ObjectLock.js';
+import { initObjectLock } from '../../../public/js/modules/ObjectLock.js';
 import {jest} from '@jest/globals';
 
 describe('Object Lock', () => {

@@ -33,7 +33,7 @@
 
 /* global GLPI */
 
-import SearchInput from "../../../../js/modules/SearchTokenizer/SearchInput.js";
+import SearchInput from "../../../../public/js/modules/SearchTokenizer/SearchInput.js";
 
 describe('Search Tokenizer Input', () => {
 

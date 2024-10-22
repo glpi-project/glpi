@@ -33,7 +33,7 @@
 
 /* global GLPI */
 
-import {GLPIDashboard} from '../../../../js/modules/Dashboard/Dashboard.js';
+import {GLPIDashboard} from '../../../../public/js/modules/Dashboard/Dashboard.js';
 import {jest} from '@jest/globals';
 
 describe('Dashboard', () => {

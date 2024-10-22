@@ -451,11 +451,11 @@ class ToolboxTest extends DbTestCase
     {
         // Save an image twice
         $test_file = __DIR__ . '/../../tests/files/test.png';
-        copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+        copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $first_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $first_pict); // generated random name inside subdir
 
-        copy(__DIR__ . '/../../pics/add_dropdown.png', $test_file); // saved image will be removed from FS
+        copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $second_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $second_pict); // generated random name inside subdir
 

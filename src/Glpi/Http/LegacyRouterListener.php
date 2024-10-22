@@ -103,9 +103,9 @@ final class LegacyRouterListener implements EventSubscriberInterface
         $target_file = $this->getTargetFile($path);
 
         if (
-            $target_file === null
+            $target_file === $this->glpi_root . '/public/index.php' // prevent infinite loop
+            || $target_file === null
             || !$this->isTargetAPhpScript($path)
-            || !$this->isPathAllowed($path)
         ) {
             // Let the previous router do the trick, it's fine.
             return null;

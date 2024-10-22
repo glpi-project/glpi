@@ -42,7 +42,7 @@ if (!($_SESSION['telemetry_from_install'] ?? false)) {
     Session::checkRight("config", READ);
 }
 
-echo Html::css("public/lib/monaco.css");
+echo Html::css("lib/monaco.css");
 
 $twig_params = [
     'info' => json_encode(Telemetry::getTelemetryInfos(), JSON_PRETTY_PRINT),

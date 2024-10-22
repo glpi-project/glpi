@@ -179,8 +179,8 @@ final class CoreController extends AbstractController
             str_ends_with($request->getUri()->getPath(), '.json');
         if (!$requested_json) {
             $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
-            $swagger_content .= \Html::script('/public/lib/swagger-ui.js');
-            $swagger_content .= \Html::css('/public/lib/swagger-ui.css');
+            $swagger_content .= \Html::script('/lib/swagger-ui.js');
+            $swagger_content .= \Html::css('/lib/swagger-ui.css');
             $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
             $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
             $swagger_content .= <<<HTML

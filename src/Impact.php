@@ -806,8 +806,8 @@ JS);
      */
     public static function loadLibs(): void
     {
-        echo Html::css('public/lib/cytoscape.css');
-        echo Html::script("public/lib/cytoscape.js");
+        echo Html::css('lib/cytoscape.css');
+        echo Html::script("lib/cytoscape.js");
     }
 
     /**

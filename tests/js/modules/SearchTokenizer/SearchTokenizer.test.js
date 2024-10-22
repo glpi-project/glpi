@@ -33,8 +33,8 @@
 
 /* global GLPI */
 
-import SearchTokenizer from "../../../../js/modules/SearchTokenizer/SearchTokenizer.js";
-import SearchToken from "../../../../js/modules/SearchTokenizer/SearchToken.js";
+import SearchTokenizer from "../../../../public/js/modules/SearchTokenizer/SearchTokenizer.js";
+import SearchToken from "../../../../public/js/modules/SearchTokenizer/SearchToken.js";
 
 describe('Search Tokenizer', () => {
 

@@ -562,7 +562,7 @@ final class AdministrationController extends AbstractController
         if ($picture_path !== null) {
             $picture_path = GLPI_PICTURE_DIR . '/' . $picture_path;
         } else {
-            $picture_path = 'pics/picture.png';
+            $picture_path = 'public/pics/picture.png';
         }
         return \Toolbox::sendFile($picture_path, $username, null, false, true);
     }

@@ -41,7 +41,7 @@ module.exports = {
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
-                '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
+                '^/js/modules/(.*)$': '<rootDir>/../../public/js/modules/$1',
             },
             transform: {},
             transformIgnorePatterns: [
