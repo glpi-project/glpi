@@ -647,11 +647,11 @@ class Conf extends CommonGLPI
                 $collection = new $col_class();
                 $rules = $collection->getRuleClass();
                 echo "<td colspan='2'>";
-                echo \Rule::createTabEntry(sprintf(
-                    "<a href='%s'>%s</a>",
+                echo sprintf(
+                    '<a href="%s">%s</a>',
                     $rules::getSearchURL(),
-                    \htmlspecialchars($collection->getTitle())
-                ), 0, \Rule::getType());
+                    \Rule::createTabEntry($collection->getTitle(), 0, \Rule::getType())
+                );
                 echo "</td>";
             }
             echo "</tr>";
@@ -659,11 +659,11 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
 
-            echo \NetworkPort::createTabEntry(sprintf(
-                "<a href='%s'>%s</a>",
+            echo sprintf(
+                '<a href="%s">%s</a>',
                 NetworkPortType::getSearchURL(),
-                \htmlspecialchars(NetworkPortType::getTypeName())
-            ), 0, \NetworkPort::getType());
+                \NetworkPort::createTabEntry(NetworkPortType::getTypeName(), 0, \NetworkPort::getType())
+            );
             echo "</td>";
             echo "</tr>";
 
