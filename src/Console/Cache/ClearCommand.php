@@ -44,7 +44,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ClearCommand extends Command
 {
     /**
-     * Error code returned when failed to clear chache.
+     * Error code returned when failed to clear cache.
      *
      * @var integer
      */

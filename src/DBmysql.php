@@ -1439,7 +1439,7 @@ class DBmysql
                         str_replace(
                             '%clause',
                             $key,
-                            'Trying to use an unknonw clause (%clause) building update query!'
+                            'Trying to use an unknown clause (%clause) building update query!'
                         )
                     );
                 }
@@ -1502,7 +1502,7 @@ class DBmysql
 
     /**
      * Update a row in the database or die
-     * (optionnaly with a message) if it fails
+     * (optionally with a message) if it fails
      *
      * @since 9.3
      *
