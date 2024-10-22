@@ -70,6 +70,7 @@ The present file will list all changes made to the project; according to the
 - The debug tab that was present, for some items, when the debug mode was active, no longer exists. The corresponding features have been either moved, either removed.
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
+- Notifications can now specify exclusions for recipients.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -94,6 +95,7 @@ The present file will list all changes made to the project; according to the
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 - `fetchSessionMessages()` global JS function to display new session messages as toast notifications without requiring a page reload.
+- `is_exclusion` column added to `glpi_notificationtargets` table.
 
 #### Changes
 - Many methods have their signature changed to specify both their return type and the types of their parameters.
