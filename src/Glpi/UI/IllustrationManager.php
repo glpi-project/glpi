@@ -39,7 +39,7 @@ use DirectoryIterator;
 final class IllustrationManager
 {
     public function __construct(
-        private string $illustration_dir = GLPI_ROOT . "/pics/illustration"
+        private string $illustration_dir = GLPI_ROOT . "/resources/illustration"
     ) {
     }
 

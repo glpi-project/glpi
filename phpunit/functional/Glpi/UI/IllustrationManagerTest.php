@@ -155,7 +155,7 @@ final class IllustrationManagerTest extends GLPITestCase
         // We can't use VFS here because the `realpath` function used in
         // isValidIllustrationName() will always return false with them
         $glpi_dir          = realpath(FIXTURE_DIR . '/mocked_glpi_dir_for_illustrations');
-        $illustrations_dir = "$glpi_dir/pics/illustration";
+        $illustrations_dir = "$glpi_dir/resources/illustration";
 
         $valid_svg               = "valid_svg.svg"; // Control subject
         $svg_path_outside_folder = "../../my_svg.svg";

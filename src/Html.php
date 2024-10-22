@@ -1026,27 +1026,27 @@ HTML;
             'js_files'  => [],
         ];
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/base.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
         }
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/leaflet.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/leaflet.css'];
         Html::requireJs('leaflet');
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr.css'];
         // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr/themes/dark.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr/themes/dark.css'];
         Html::requireJs('flatpickr');
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
         $is_monaco_added = false;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
-            $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
+            $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             $is_monaco_added = true;
         }
 
@@ -1079,7 +1079,7 @@ HTML;
             }
 
             if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/fullcalendar.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
                 Html::requireJs('fullcalendar');
             }
 
@@ -1089,7 +1089,7 @@ HTML;
             }
 
             if (in_array('rateit', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
                 Html::requireJs('rateit');
             }
 
@@ -1112,7 +1112,7 @@ HTML;
             }
 
             if (in_array('gridstack', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/gridstack.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/gridstack.css'];
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/gridstack-grids.scss'];
                 Html::requireJs('gridstack');
             }
@@ -1139,7 +1139,7 @@ HTML;
 
             if (in_array('monaco', $jslibs) && !$is_monaco_added) {
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             }
 
             if (in_array('home-scss-file', $jslibs)) {
@@ -1148,7 +1148,7 @@ HTML;
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
-            $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
+            $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
             Html::requireJs('rateit');
         }
 
@@ -1195,7 +1195,7 @@ HTML;
             }
         }
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/tabler.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
         foreach (ThemeManager::getInstance()->getAllThemes() as $info) {
@@ -1221,9 +1221,9 @@ HTML;
         $tpl_vars['custom_header_tags'] = $custom_header_tags;
 
 
-        $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
-        $tpl_vars['js_modules'][] = ['path' => 'public/build/vue/app.js'];
+        $tpl_vars['js_modules'][] = ['path' => 'build/vue/app.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
@@ -1726,10 +1726,10 @@ HTML;
         if (isset($_SESSION['glpilanguage'])) {
            // select2
             $filename = sprintf(
-                'public/lib/select2/js/i18n/%s.js',
+                'lib/select2/js/i18n/%s.js',
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
             );
-            if (file_exists(GLPI_ROOT . '/' . $filename)) {
+            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
             }
         }
@@ -3528,7 +3528,7 @@ JS;
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
+        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
@@ -3539,8 +3539,8 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
-        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/tabler.css', ['force_no_version' => true]));
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
@@ -3548,7 +3548,7 @@ JS;
 
         // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
         // Reverted to the previous version here, but this should be fixed properly
-        $skin_url = $CFG_GLPI['root_doc'] . "/public/lib/tinymce/skins/ui/oxide";
+        $skin_url = $CFG_GLPI['root_doc'] . "/lib/tinymce/skins/ui/oxide";
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -5876,7 +5876,7 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
                 break;
             case 'tinymce':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
@@ -5885,24 +5885,24 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
                 break;
             case 'flatpickr':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/flatpickr.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
-                    $filename = "public/lib/flatpickr/l10n/" .
+                    $filename = "lib/flatpickr/l10n/" .
                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
-                    if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                    if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
             case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     foreach ([2, 3] as $loc) {
-                        $filename = "public/lib/fullcalendar/core/locales/" .
+                        $filename = "lib/fullcalendar/core/locales/" .
                          strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                             $_SESSION['glpi_js_toload'][$name][] = $filename;
                             break;
                         }
@@ -5910,20 +5910,20 @@ HTML;
                 }
                 break;
             case 'rateit':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
                 break;
             case 'fileupload':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-file-upload.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
                 break;
             case 'charts':
-                $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/echarts.js';
+                $_SESSION['glpi_js_toload']['charts'][] = 'lib/echarts.js';
                 break;
             case 'notifications_ajax':
                 $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
                 break;
             case 'fuzzy':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
                 break;
             case 'dashboard':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
@@ -5932,25 +5932,25 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
                 break;
             case 'gridstack':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack.js';
                 break;
             case 'masonry':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/masonry.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/masonry.js';
                 break;
             case 'sortable':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/sortable.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/sortable.js';
                 break;
             case 'rack':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
                 break;
             case 'leaflet':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet.js';
                 break;
             case 'log_filters':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
                 break;
             case 'photoswipe':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
                 break;
             case 'reservations':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
@@ -6010,9 +6010,9 @@ HTML;
        //locales for js libraries
         if (isset($_SESSION['glpilanguage'])) {
            // select2
-            $filename = "public/lib/select2/js/i18n/" .
+            $filename = "lib/select2/js/i18n/" .
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
-            if (file_exists(GLPI_ROOT . '/' . $filename)) {
+            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
         }
@@ -6553,7 +6553,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/css_compiled';
+        return $root_dir . '/public/css_compiled';
     }
 
     /**

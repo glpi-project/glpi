@@ -57,19 +57,19 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 
 **Tickets**
 
-![Tickets Timeline](pics/screenshots/ticket.png)
+![Tickets Timeline](/public/pics/screenshots/ticket.png)
 
 **DCIM**
 
-![DCIM drag&drop](pics/screenshots/dcim_racks_draganddrop.gif)
+![DCIM drag&drop](/public/pics/screenshots/dcim_racks_draganddrop.gif)
 
 **Assets**
 
-![asset view](pics/screenshots/asset.png)
+![asset view](/public/pics/screenshots/asset.png)
 
 **Dashboards**
 
-![Asset dashboard](pics/screenshots/dashboard.png)
+![Asset dashboard](/public/pics/screenshots/dashboard.png)
 
 ## Prerequisites
 

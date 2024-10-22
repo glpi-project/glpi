@@ -315,7 +315,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -349,7 +349,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -373,7 +373,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/pics/picture.png'));
+                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');

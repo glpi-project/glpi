@@ -178,11 +178,11 @@ echo "<head>";
 echo "<meta charset='utf-8'>";
 echo "<title>Setup GLPI</title>";
 //JS
-echo Html::script("public/lib/base.js");
+echo Html::script("lib/base.js");
 echo Html::script("js/glpi_dialog.js");
 // CSS
-echo Html::css('public/lib/tabler.css');
-echo Html::css('public/lib/base.css');
+echo Html::css('lib/tabler.css');
+echo Html::css('lib/base.css');
 echo Html::scss("css/install", [], true);
 echo "</head>";
 echo "<body>";
