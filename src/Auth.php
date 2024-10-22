@@ -1135,41 +1135,26 @@ class Auth extends CommonGLPI
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?? getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {
-                if (GLPI_DEMO_MODE) {
-                    // not translation in GLPI_DEMO_MODE
-                    Event::log(0, "system", 3, "login", $login_name . " log in from " . $ip);
-                } else {
-                    //TRANS: %1$s is the login of the user and %2$s its IP address
+                //TRANS: %1$s is the login of the user and %2$s its IP address
+                Event::log(0, "system", 3, "login", sprintf(
+                    __('%1$s log in from IP %2$s'),
+                    $login_name,
+                    $ip
+                ));
+            } else {
+                if ($this->denied_by_rule) {
                     Event::log(0, "system", 3, "login", sprintf(
-                        __('%1$s log in from IP %2$s'),
+                        __('Login for %1$s denied by authorization rules from IP %2$s'),
                         $login_name,
                         $ip
                     ));
-                }
-            } else {
-                if (GLPI_DEMO_MODE) {
-                    Event::log(
-                        0,
-                        "system",
-                        3,
-                        "login",
-                        "Connection failed for " . $login_name . " ($ip)"
-                    );
                 } else {
-                    if ($this->denied_by_rule) {
-                        Event::log(0, "system", 3, "login", sprintf(
-                            __('Login for %1$s denied by authorization rules from IP %2$s'),
-                            $login_name,
-                            $ip
-                        ));
-                    } else {
-                        //TRANS: %1$s is the login of the user and %2$s its IP address
-                        Event::log(0, "system", 3, "login", sprintf(
-                            __('Failed login for %1$s from IP %2$s'),
-                            $login_name,
-                            $ip
-                        ));
-                    }
+                    //TRANS: %1$s is the login of the user and %2$s its IP address
+                    Event::log(0, "system", 3, "login", sprintf(
+                        __('Failed login for %1$s from IP %2$s'),
+                        $login_name,
+                        $ip
+                    ));
                 }
             }
         }

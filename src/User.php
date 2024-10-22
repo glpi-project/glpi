@@ -1237,10 +1237,6 @@ class User extends CommonDBTM
             }
         }
 
-        if (isset($input['language']) && GLPI_DEMO_MODE) {
-            unset($input['language']);
-        }
-
         if (array_key_exists('timezone', $input) && empty($input['timezone'])) {
             $input['timezone'] = 'NULL';
         }
@@ -2854,14 +2850,10 @@ JAVASCRIPT;
         }
 
         echo "<tr class='tab_bg_1'>";
-        if (!GLPI_DEMO_MODE) {
-            $activerand = mt_rand();
-            echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
-            Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
-            echo "</td>";
-        } else {
-            echo "<td colspan='2'></td>";
-        }
+        $activerand = mt_rand();
+        echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
+        Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
+        echo "</td>";
         echo "<td>" . _sn('Email', 'Emails', Session::getPluralNumber());
         UserEmail::showAddEmailButton($this);
         echo "</td><td>";
@@ -2869,7 +2861,7 @@ JAVASCRIPT;
         echo "</td>";
         echo "</tr>";
 
-        if ((!$simplified_form) && (!GLPI_DEMO_MODE)) {
+        if (!$simplified_form) {
             $sincerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='showdate$sincerand'>" . __s('Valid since') . "</label></td><td>";
@@ -3274,25 +3266,21 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'>";
 
-            if (!GLPI_DEMO_MODE) {
-                $langrand = mt_rand();
-                echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
-               // Language is stored as null in DB if value is same as the global config.
-                $language = $this->fields["language"];
-                if (null === $this->fields["language"] || !isset($CFG_GLPI['languages'][$this->fields["language"]])) {
-                    $language = $CFG_GLPI['language'];
-                }
-                Dropdown::showLanguages(
-                    "language",
-                    [
-                        'rand'  => $langrand,
-                        'value' => $language,
-                    ]
-                );
-                echo "</td>";
-            } else {
-                echo "<td colspan='2'>&nbsp;</td>";
+            $langrand = mt_rand();
+            echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
+           // Language is stored as null in DB if value is same as the global config.
+            $language = $this->fields["language"];
+            if (null === $this->fields["language"] || !isset($CFG_GLPI['languages'][$this->fields["language"]])) {
+                $language = $CFG_GLPI['language'];
             }
+            Dropdown::showLanguages(
+                "language",
+                [
+                    'rand'  => $langrand,
+                    'value' => $language,
+                ]
+            );
+            echo "</td>";
             echo "</tr>";
 
            //do some rights verification
@@ -3443,10 +3431,7 @@ JAVASCRIPT;
             echo "</td>";
 
             $entities = $this->getEntities();
-            if (
-                !GLPI_DEMO_MODE
-                && (count($_SESSION['glpiactiveentities']) > 1)
-            ) {
+            if (count($_SESSION['glpiactiveentities']) > 1) {
                 $entrand = mt_rand();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __s('Default entity') . "</td><td>";
                 $toadd = [];

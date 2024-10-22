@@ -83,13 +83,6 @@
                     <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
                 </div>
 
-                {% if constant('GLPI_DEMO_MODE') %}
-                    <div class="mb-3">
-                        <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
-                        {{ languages_dropdown|raw }}
-                    </div>
-                {% endif %}
-
                 {% if config('display_login_source') %}
                     <div class="mb-3">
                         <label class="form-label" for="dropdown_auth{{ rand }}">{{ __('Login source') }}</label>

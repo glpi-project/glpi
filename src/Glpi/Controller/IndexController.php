@@ -220,10 +220,9 @@ final class IndexController extends AbstractController
                 ]);
             }
         }
+
         // call cron
-        if (!GLPI_DEMO_MODE) {
-            CronTask::callCronForce();
-        }
+        CronTask::callCronForce();
 
         echo "</body></html>";
     }

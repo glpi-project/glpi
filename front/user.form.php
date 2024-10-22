@@ -156,7 +156,7 @@ if (isset($_GET['getvcard'])) {
         User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
     }
     Html::back();
-} else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
+} else if (isset($_POST['language'])) {
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
