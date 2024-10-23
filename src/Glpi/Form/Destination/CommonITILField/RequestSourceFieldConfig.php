@@ -60,7 +60,7 @@ final class RequestSourceFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_request_source: $data[self::REQUEST_SOURCE],
+            specific_request_source: $data[self::REQUEST_SOURCE] ?? null,
         );
     }
 

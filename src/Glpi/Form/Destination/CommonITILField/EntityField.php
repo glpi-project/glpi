@@ -91,14 +91,14 @@ class EntityField extends AbstractConfigField
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select an entity..."),
                 'value'           => $config->getSpecificEntityId() ?? 0,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::ENTITY_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_ENTITY_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . EntityFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getEntityQuestionsValuesForDropdown($form),
             ],
         ]);

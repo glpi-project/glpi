@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Override;
 use Session;
@@ -63,5 +64,19 @@ class ObserverField extends ITILActorField
     public function getWeight(): int
     {
         return 30;
+    }
+
+    #[Override]
+    public function getConfigClass(): string
+    {
+        return ObserverFieldConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultConfig(Form $form): ObserverFieldConfig
+    {
+        return new ObserverFieldConfig(
+            ITILActorFieldStrategy::FROM_TEMPLATE,
+        );
     }
 }

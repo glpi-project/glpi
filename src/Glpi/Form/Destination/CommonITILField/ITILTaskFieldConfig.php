@@ -36,9 +36,13 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
+use TaskTemplate;
 
-final class ITILTaskFieldConfig implements JsonFieldInterface
+final class ITILTaskFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -48,6 +52,14 @@ final class ITILTaskFieldConfig implements JsonFieldInterface
         private ITILTaskFieldStrategy $strategy,
         private ?array $specific_itiltasktemplates_ids = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyArrayHandler(key: self::TASKTEMPLATE_IDS, itemtype: TaskTemplate::class)
+        ];
     }
 
     #[Override]

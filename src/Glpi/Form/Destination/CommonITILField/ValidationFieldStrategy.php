@@ -135,10 +135,10 @@ enum ValidationFieldStrategy: string
         }
 
         $actors = [];
-        foreach ($specific_actors as $fk => $actor_ids) {
+        foreach ($specific_actors as $itemtype => $actor_ids) {
             foreach ($actor_ids as $actor_id) {
                 $actors[] = [
-                    'itemtype' => getItemtypeForForeignKeyField($fk),
+                    'itemtype' => $itemtype,
                     'items_id' => $actor_id,
                 ];
             }
