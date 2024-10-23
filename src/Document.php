@@ -1670,6 +1670,7 @@ class Document extends CommonDBTM
         $p['used']    = [];
         $p['display'] = true;
         $p['hide_if_no_elements'] = false;
+        $p['readonly'] = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
