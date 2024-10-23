@@ -83,8 +83,7 @@ class TicketCost extends CommonITILCost
     public function updateTCOItem(string $itemtype, int $items_id): void
     {
         $item = getItemForItemtype($itemtype);
-        if ($item) {
-            $item->getFromDB($items_id);
+        if ($item && $item->getFromDB($items_id);
             $item->update([
                 'id' => $items_id,
                 'ticket_tco' => Ticket::computeTco($item)
