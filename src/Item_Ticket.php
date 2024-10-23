@@ -107,6 +107,8 @@ class Item_Ticket extends CommonItilObject_Item
         }
 
         $ticket->update($input);
+        $ticket_cost = new TicketCost();
+        $ticket_cost->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
         parent::post_addItem();
     }
 
@@ -123,7 +125,8 @@ class Item_Ticket extends CommonItilObject_Item
             $input['_forcenotif'] = true;
         }
         $ticket->update($input);
-
+        $ticket_cost = new TicketCost();
+        $ticket_cost->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
         parent::post_purgeItem();
     }
 
