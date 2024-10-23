@@ -57,7 +57,7 @@ final class GenericListController extends AbstractController
 
     private function checkIsValidClass(string $class): void
     {
-        if (!$class) {
+        if ($class === '') {
             throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
         }
 
