@@ -77,7 +77,7 @@ Cypress.Commands.add('logout', () => {
 
 Cypress.Commands.add('getCsrfToken', () => {
     // Load any light page that have a form
-    return cy.request('/front/computer.php').its('body').then((body) => {
+    return cy.request('/front/preference.php').its('body').then((body) => {
         // Parse page
         const $html = Cypress.$(body);
         const csrf = $html.find('input[name=_glpi_csrf_token]').val();
