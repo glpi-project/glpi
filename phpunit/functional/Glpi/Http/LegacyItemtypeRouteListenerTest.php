@@ -143,7 +143,6 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/domainrelation.php' => \DomainRelation::class,
             '/front/domaintype.form.php' => \DomainType::class,
             '/front/domaintype.php' => \DomainType::class,
-            '/front/dropdown.common.php' => \Dropdown::class,
             '/front/dropdown/dropdowndefinition.php' => \Glpi\Dropdown\DropdownDefinition::class,
             '/front/enclosure.php' => \Enclosure::class,
             '/front/enclosuremodel.form.php' => \EnclosureModel::class,
