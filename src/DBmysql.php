@@ -1537,11 +1537,8 @@ class DBmysql
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
-        $req = $this->request(array_merge(['FROM' => $table], $where));
-        $data = array_merge($where, $params);
-
         try {
-            $query = $this->buildUpdateOrInsert($table, $data, $where, $onlyone);
+            $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
             return $this->doQueryOrDie($query, 'Unable to create new element or update existing one');
         } catch (\RuntimeException $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
@@ -1558,7 +1555,7 @@ class DBmysql
         } elseif ($req->count() == 1 || !$onlyone) {
             return $this->buildUpdate($table, $data, $where);
         } else {
-            throw new RuntimeException('Update would change too many rows!', E_USER_WARNING);
+            throw new RuntimeException('Update would change too many rows!');
         }
     }
 
