@@ -1119,10 +1119,6 @@ HTML;
                 Html::requireJs('masonry');
             }
 
-            if (in_array('tinymce', $jslibs)) {
-                Html::requireJs('tinymce');
-            }
-
             if (in_array('clipboard', $jslibs)) {
                 Html::requireJs('clipboard');
             }
@@ -3540,8 +3536,8 @@ JS;
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static function ($path) {
-                return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
-            }, $content_css_paths));
+            return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
+        }, $content_css_paths));
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
@@ -3601,7 +3597,7 @@ JS;
                 {% if not init %}
                     $(`#\${\$.escapeSelector('{{ element_id }}')}`).data('tinymce_config', {{ config|json_encode|raw }});
                 {% else %}
-                    import('{{ path("js/modules/Form/TinyMCEEditor.js") }}').then((m) => {
+                    import('{{ js_path("js/modules/Form/TinyMCEEditor.js") }}').then((m) => {
                         new m.default('{{ element_id }}', {{ config|json_encode|raw }});
                     });
                 {% endif %}
@@ -3629,19 +3625,19 @@ TWIG, $twig_params);
     {
         $values = json_encode($values);
 
-        echo Html::scriptBlock(<<<JAVASCRIPT
-         $(
-            function() {
-               var editor_id = $('{$selector}').attr('id');
-               var user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
-                  tinymce.get(editor_id),
-                  {$values}
-               );
-               user_templates_autocomplete.register();
-            }
-         );
-JAVASCRIPT
-        );
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script>
+                import('{{ js_path('js/modules/Form/TinyMCEEditor.js') }}').then(() => {
+                    const editor_id = $('{$selector}').attr('id');
+                    const user_templates_autocomplete = new GLPI.RichText.ContentTemplatesParameters(
+                        tinymce.get(editor_id),
+                        {$values}
+                    );
+                    user_templates_autocomplete.register();
+                });
+            </script>
+TWIG, ['selector' => $selector, 'values' => $values]);
     }
 
     /**
@@ -5714,12 +5710,6 @@ HTML;
                 break;
             case 'clipboard':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
-                break;
-            case 'tinymce':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/Forms/FormTags.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/Form/UserMention.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
             case 'planning':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
