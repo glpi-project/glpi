@@ -90,7 +90,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
     /**
      * @phpstan-return class-string<CommonGLPI>|null
      */
-    public function findClass(Request $request): ?string
+    private function findClass(Request $request): ?string
     {
         $path_info = $request->getPathInfo();
 
