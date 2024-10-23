@@ -43,7 +43,7 @@ $(function() {
 
         const tables = preview.querySelectorAll('table, .table');
 
-        tables.forEach(function(table) {
+        tables.forEach(table => {
             Object.assign(table.style, {
                 width: '100%',
                 maxWidth: '100%',
@@ -52,7 +52,7 @@ $(function() {
                 overflowX: 'hidden'
             });
 
-            table.querySelectorAll('td, a, span').forEach(function(child) {
+            table.querySelectorAll('td, a, span').forEach(child => {
                 Object.assign(child.style, {
                     whiteSpace: 'normal',
                     wordWrap: 'break-word',
@@ -60,15 +60,15 @@ $(function() {
                 });
             });
 
-            table.querySelectorAll('tfoot, tr[class*="noHover"]').forEach(function(element) {
+            table.querySelectorAll('tfoot, tr[class*="noHover"]').forEach(element => {
                 element.style.display = 'none';
             });
 
-            table.querySelectorAll('th').forEach(function(th, index) {
+            table.querySelectorAll('th').forEach((th, index) => {
                 if (th.querySelector('input[type="checkbox"]') || th.querySelector('div input[type="checkbox"]')) {
                     th.remove();
                 } else if (th.textContent.trim() === '' || th.textContent.trim() === '\u00A0' || th.textContent.trim() === ' ') {
-                    table.querySelectorAll('tr').forEach(function(row) {
+                    table.querySelectorAll('tr').forEach(row => {
                         if (row.children[index - 1] && (row.children[index - 1].innerHTML.trim() === '' || row.children[index - 1].textContent.trim() === '')) {
                             row.children[index - 1].remove();
                         }
@@ -79,15 +79,15 @@ $(function() {
                 }
             });
 
-            table.querySelectorAll('td').forEach(function(td) {
+            table.querySelectorAll('td').forEach(td => {
                 if (td.querySelector('input[type="checkbox"]') || td.querySelector('div input[type="checkbox"]')) {
                     td.remove();
                 }
             });
 
-            table.querySelectorAll('td.subheader').forEach(function(td, index) {
+            table.querySelectorAll('td.subheader').forEach((td, index) => {
                 if (td.textContent.trim() === '' || td.textContent.trim() === '\u00A0') {
-                    table.querySelectorAll('tr').forEach(function(row) {
+                    table.querySelectorAll('tr').forEach(row => {
                         if (row.children[index] && row.children[index].innerHTML.trim() === '') {
                             row.children[index].remove();
                         }
@@ -96,9 +96,9 @@ $(function() {
                 }
             });
 
-            table.querySelectorAll('td').forEach(function(td, index) {
+            table.querySelectorAll('td').forEach((td, index) => {
                 if ((td.querySelector('a') && td.querySelector('a').textContent.trim() === 'Update') || td.textContent.trim() === 'Yes') {
-                    table.querySelectorAll('tr').forEach(function(row) {
+                    table.querySelectorAll('tr').forEach(row => {
                         if (row.children[index]) {
                             row.children[index].remove();
                         }
@@ -108,7 +108,7 @@ $(function() {
             });
 
             if (!table.classList.contains('netport-legend')) {
-                table.querySelectorAll('tr').forEach(function(row) {
+                table.querySelectorAll('tr').forEach(row => {
                     const remainingCells = Array.from(row.querySelectorAll('th, td'));
                     const remainder = 55 % remainingCells.length;
                     let baseColspan = Math.floor(55 / remainingCells.length);
@@ -117,7 +117,7 @@ $(function() {
                         baseColspan = 55;
                     }
 
-                    remainingCells.forEach(function(cell, index) {
+                    remainingCells.forEach((cell, index) => {
                         let colspan = baseColspan;
                         if (index < remainder) {
                             colspan += 1;
@@ -128,26 +128,26 @@ $(function() {
             }
         });
 
-        preview.querySelectorAll('label.col-form-label').forEach(function(label) {
+        preview.querySelectorAll('label.col-form-label').forEach(label => {
             label.classList.add('col-sm-4');
             label.classList.replace('text-xxl-end', 'text-xxl-start');
             label.classList.replace('col-xxl-5', 'col-xxl-4');
         });
 
-        preview.querySelectorAll('div.field-container').forEach(function(content) {
+        preview.querySelectorAll('div.field-container').forEach(content => {
             content.classList.add('col-sm-8');
             content.classList.replace('col-xxl-7', 'col-xxl-8');
         });
 
-        preview.querySelectorAll('div.card-footer').forEach(function(content) {
+        preview.querySelectorAll('div.card-footer').forEach(content => {
             content.classList.add('ps-2');
         });
 
-        preview.querySelectorAll('span.sp-colorize-container').forEach(function(span) {
+        preview.querySelectorAll('span.sp-colorize-container').forEach(span => {
             span.classList.remove('sp-colorize-container');
         });
 
-        preview.querySelectorAll('input[type="text"], input[type="search"]').forEach(function(input) {
+        preview.querySelectorAll('input[type="text"], input[type="search"]').forEach(input => {
             const span = document.createElement('span');
             span.textContent = input.value;
             const inlineStyle = input.getAttribute('style');
@@ -178,7 +178,7 @@ $(function() {
             input.parentNode.replaceChild(span, input);
         });
 
-        preview.querySelectorAll('span.select2-selection__rendered').forEach(function(renderedSpan) {
+        preview.querySelectorAll('span.select2-selection__rendered').forEach(renderedSpan => {
             const parentSpan = renderedSpan.closest('span.select2-selection.select2-selection--single');
             if (parentSpan) {
                 const newSpan = document.createElement('span');
@@ -187,7 +187,7 @@ $(function() {
             }
         });
 
-        preview.querySelectorAll('select').forEach(function(select) {
+        preview.querySelectorAll('select').forEach(select => {
             const onchangeAttr = select.getAttribute('onchange');
             if (onchangeAttr && onchangeAttr.includes('javascript:reloadTab(')) {
                 const parentDiv = select.closest('div');

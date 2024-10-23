@@ -39,7 +39,7 @@ $(function() {
             const lastFormField = formFields[formFields.length - 1];
             const formLabels = lastFormField.querySelectorAll('.form-check');
             const ports = [];
-            formLabels.forEach(function(formLabel) {
+            formLabels.forEach(formLabel => {
                 const formInput = formLabel.querySelector('.form-check-input');
                 if (formInput.type === 'checkbox' && formInput.checked) {
                     const spanElement = formLabel.querySelector('.form-check-label');

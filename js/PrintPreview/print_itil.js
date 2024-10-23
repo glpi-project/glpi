@@ -43,7 +43,7 @@ $(function() {
 
         const tables = preview.querySelectorAll('table, .table');
 
-        tables.forEach(function(table) {
+        tables.forEach(table => {
             Object.assign(table.style, {
                 width: '100%',
                 maxWidth: '100%',
@@ -52,7 +52,7 @@ $(function() {
                 overflowX: 'hidden'
             });
 
-            table.querySelectorAll('td, a, span').forEach(function(child) {
+            table.querySelectorAll('td, a, span').forEach(child => {
                 Object.assign(child.style, {
                     whiteSpace: 'normal',
                     wordWrap: 'break-word',
@@ -60,11 +60,11 @@ $(function() {
                 });
             });
 
-            table.querySelectorAll('tfoot, tr[class*="noHover"]').forEach(function(element) {
+            table.querySelectorAll('tfoot, tr[class*="noHover"]').forEach(element => {
                 element.style.display = 'none';
             });
 
-            table.querySelectorAll('th').forEach(function(th) {
+            table.querySelectorAll('th').forEach((th, index) => {
                 if (
                     th.querySelector('input[type="checkbox"]') ||
                     th.querySelector('div input[type="checkbox"]') ||
@@ -77,7 +77,7 @@ $(function() {
                 }
             });
 
-            table.querySelectorAll('td').forEach(function(td) {
+            table.querySelectorAll('td').forEach(td => {
                 if (
                     td.querySelector('input[type="checkbox"]') ||
                     td.querySelector('div input[type="checkbox"]') ||
@@ -88,19 +88,19 @@ $(function() {
             });
         });
 
-        preview.querySelectorAll('div.card-footer').forEach(function(content) {
+        preview.querySelectorAll('div.card-footer').forEach(content => {
             content.classList.add('ps-2');
         });
 
-        preview.querySelectorAll('.state.state_1').forEach(function(span) {
+        preview.querySelectorAll('.state.state_1').forEach(span => {
             span.className = 'ti ti-square';
         });
 
-        preview.querySelectorAll('.state.state_2').forEach(function(span) {
+        preview.querySelectorAll('.state.state_2').forEach(span => {
             span.className = 'ti ti-square-check';
         });
 
-        preview.querySelectorAll('input[type="text"], input[type="search"]').forEach(function(input) {
+        preview.querySelectorAll('input[type="text"], input[type="search"]').forEach(input => {
             const span = document.createElement('span');
             span.textContent = input.value;
             const inlineStyle = input.getAttribute('style');
@@ -131,7 +131,7 @@ $(function() {
             input.parentNode.replaceChild(span, input);
         });
 
-        preview.querySelectorAll('span.select2-selection__rendered').forEach(function(renderedSpan) {
+        preview.querySelectorAll('span.select2-selection__rendered').forEach(renderedSpan => {
             const parentSpan = renderedSpan.closest('span.select2-selection.select2-selection--single');
             if (parentSpan) {
                 const newSpan = document.createElement('span');
@@ -151,7 +151,7 @@ $(function() {
             const previousDiv = currentDiv.previousElementSibling;
 
             if (previousDiv) {
-                previousDiv.querySelectorAll('label').forEach(function(label) {
+                previousDiv.querySelectorAll('label').forEach(label => {
                     previousDiv.parentNode.insertBefore(label, previousDiv);
                 });
                 previousDiv.remove();
@@ -161,7 +161,7 @@ $(function() {
             currentDiv.remove();
         });
 
-        preview.querySelectorAll('select').forEach(function(select) {
+        preview.querySelectorAll('select').forEach(select => {
             const onchangeAttr = select.getAttribute('onchange');
             if (select.getAttribute('class') === 'form-select') {
                 const newSpan = document.createElement('span');
@@ -180,18 +180,18 @@ $(function() {
             }
         });
 
-        preview.querySelectorAll('label.col-form-label').forEach(function(label) {
+        preview.querySelectorAll('label.col-form-label').forEach(label => {
             label.classList.add('col-sm-4');
             label.classList.replace('text-xxl-end', 'text-xxl-start');
             label.classList.replace('col-xxl-5', 'col-xxl-4');
         });
 
-        preview.querySelectorAll('div.field-container').forEach(function(content) {
+        preview.querySelectorAll('div.field-container').forEach(content => {
             content.classList.add('col-sm-8');
             content.classList.replace('col-xxl-7', 'col-xxl-8');
         });
 
-        window.addEventListener('beforeprint', function() {
+        window.addEventListener('beforeprint', () => {
             const sections = document.querySelectorAll('.content-card');
 
             function addBreakClass(sections, startIndex, accumulatedHeight) {
