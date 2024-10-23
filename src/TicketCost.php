@@ -46,22 +46,28 @@ class TicketCost extends CommonITILCost
 
     public static $rightname        = 'ticketcost';
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
+        parent::post_updateItem($history);
+
         $this->verifTCOItem();
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
+        parent::post_updateItem();
+
         $this->verifTCOItem();
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
+        parent::post_updateItem();
+
         $this->verifTCOItem();
     }
 
-    public function verifTCOItem()
+    private function verifTCOItem(): void
     {
         if ($this->fields['tickets_id']) {
             $item_ticket = new Item_Ticket();
@@ -74,13 +80,15 @@ class TicketCost extends CommonITILCost
         }
     }
 
-    public function updateTCOItem($itemtype, $items_id)
+    public function updateTCOItem(string $itemtype, int $items_id): void
     {
         $item = getItemForItemtype($itemtype);
-        $item->getFromDB($items_id);
-        $item->update([
-            'id' => $items_id,
-            'ticket_tco' => Ticket::computeTco($item)
-        ]);
+        if ($item) {
+            $item->getFromDB($items_id);
+            $item->update([
+                'id' => $items_id,
+                'ticket_tco' => Ticket::computeTco($item)
+            ]);
+        }
     }
 }
