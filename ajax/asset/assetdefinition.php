@@ -89,7 +89,7 @@ if ($_GET['action'] === 'get_all_fields') {
             }
         }
     }
-    $custom_field->fields['field_options'] = array_merge($custom_field->fields['field_options'], $_GET['field_options'] ?? []);
+    $custom_field->fields['field_options'] = array_merge($custom_field->fields['field_options'] ?? [], $_GET['field_options'] ?? []);
     $custom_field->fields['field_options']['disabled'] = true;
     echo $custom_field->getFieldType()->getFormInput('', null);
     exit();
