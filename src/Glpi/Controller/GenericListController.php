@@ -51,12 +51,6 @@ final class GenericListController extends AbstractController
 
         $this->checkIsValidClass($class);
 
-        if (\is_a($class, \CommonDropdown::class, true)) {
-            return $this->render('search/generic_dropdown.html.twig', [
-                'object_class' => $class,
-            ]);
-        }
-
         return $this->render('search/generic_list.html.twig', [
             'object_class' => $class,
         ]);

@@ -43,8 +43,6 @@ class FieldUnicity extends CommonDropdown
    // From CommonDBTM
     public $dohistory          = true;
 
-    public $first_level_menu   = "config";
-    public $second_level_menu  = "fieldunicity";
     public $can_be_translated  = false;
 
     public static $rightname          = 'config';
