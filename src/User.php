@@ -3486,7 +3486,7 @@ HTML;
         ) {
            // extauth ldap case
             if (
-                $_SESSION["glpiextauth"]
+                isset($_SESSION["glpiextauth"]) && $_SESSION["glpiextauth"]
                 && ($this->fields["authtype"] == Auth::LDAP
                  || Auth::isAlternateAuth($this->fields["authtype"]))
             ) {
