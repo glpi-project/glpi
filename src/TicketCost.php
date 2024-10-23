@@ -78,9 +78,9 @@ class TicketCost extends CommonITILCost
     {
         $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
-        $updated_item = [];
-        $updated_item['id'] = $items_id;
-        $updated_item['ticket_tco'] = Ticket::computeTco($item);
-        $item->update($updated_item);
+        $item->update([
+            'id' => $items_id,
+            'ticket_tco' => Ticket::computeTco($item)
+        ]);
     }
 }
