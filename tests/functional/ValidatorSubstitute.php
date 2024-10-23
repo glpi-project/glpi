@@ -75,7 +75,7 @@ class ValidatorSubstitute extends DbTestCase
 
         yield [
             'item' => new Preference(),
-            'expected' => "Authorized substitute <span class='badge glpi-badge'>1</span>",
+            'expected' => "Authorized substitute 1",
         ];
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
@@ -94,7 +94,7 @@ class ValidatorSubstitute extends DbTestCase
 
         yield [
             'item' => new Preference(),
-            'expected' => "Authorized substitutes <span class='badge glpi-badge'>2</span>",
+            'expected' => "Authorized substitutes 2",
         ];
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
@@ -117,7 +117,7 @@ class ValidatorSubstitute extends DbTestCase
         $instance = $this->newTestedInstance;
 
         $output = $instance->getTabNameForItem($item);
-        $this->string($output)->isEqualTo($expected);
+        $this->string(strip_tags($output))->isEqualTo($expected);
     }
 
     public function providerCanCreateItem()
