@@ -1714,7 +1714,7 @@ class Document extends CommonDBTM
             $values[$data['id']] = $data['name'];
         }
         $rand = mt_rand();
-        $readonly = $p['readonly'] ?? false;
+        $readonly = $p['readonly'];
         $out = '';
         $width = '30%';
         if ($readonly) {
