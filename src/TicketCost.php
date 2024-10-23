@@ -46,21 +46,21 @@ class TicketCost extends CommonITILCost
 
     public static $rightname        = 'ticketcost';
 
-    public function post_updateItem($history = true): void
+    public function post_updateItem($history = true)
     {
         parent::post_updateItem($history);
 
         $this->verifTCOItem();
     }
 
-    public function post_addItem(): void
+    public function post_addItem()
     {
         parent::post_addItem();
 
         $this->verifTCOItem();
     }
 
-    public function post_purgeItem(): void
+    public function post_purgeItem()
     {
         parent::post_purgeItem();
 
