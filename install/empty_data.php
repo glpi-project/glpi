@@ -1988,10 +1988,9 @@ $empty_data_builder = new class
         // Set interface to previously defined values.
         // TODO: the previous values should probably use $ADDTODISPLAYPREF to be
         // more maintainable...
-        foreach ($tables['glpi_displaypreferences'] as &$row) {
-            $row['interface'] = 'central';
+        foreach (array_keys($tables['glpi_displaypreferences']) as $index) {
+            $tables['glpi_displaypreferences'][$index]['interface'] = 'central';
         }
-        unset($row);
 
         $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
         $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
