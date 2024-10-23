@@ -1687,7 +1687,10 @@ class CommonDBTM extends CommonGLPI
                         // is a non blacklist field exists
                         if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
                             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
-                            $this->updates[$x++]      = 'date_mod';
+                            //prevent twice 'date_mod'
+                            if (array_search('date_mod', $this->updates) === false) {
+                                $this->updates[$x++]      = 'date_mod';
+                            }
                         }
                     }
                     $this->pre_updateInDB();
