@@ -49,7 +49,7 @@ describe ('Export forms', () => {
         cy.wait('@download_request').then((res) => {
             // The filename is dynamic, we must read it from the reponse's headers
             const filename = res.response.headers['content-disposition'].split('filename=')[1];
-            cy.readFile(`cypress/downloads/${filename}`).then((json) => {
+            cy.readFile(`tests/cypress/downloads/${filename}`).then((json) => {
                 cy.wrap(json.forms).should('have.length', 1);
             });
         });
@@ -73,7 +73,7 @@ describe ('Export forms', () => {
         cy.wait('@download_request').then((res) => {
             // The filename is dynamic, we must read it from the reponse's headers
             const filename = res.response.headers['content-disposition'].split('filename=')[1];
-            cy.readFile(`cypress/downloads/${filename}`).then((json) => {
+            cy.readFile(`tests/cypress/downloads/${filename}`).then((json) => {
                 cy.wrap(json.forms).should('have.length', 3);
             });
         });
