@@ -37,8 +37,8 @@ namespace Glpi\Exception;
 class AuthenticationFailedException extends \Exception
 {
     public function __construct(
-        string $message = '""',
-        int $code = null,
+        string $message = '',
+        int $code = 0,
         ?\Throwable $previous = null,
         private array $authentication_errors = []
     ) {
