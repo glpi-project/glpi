@@ -34,7 +34,6 @@
 
 namespace Glpi\Http;
 
-use Plugin;
 use Symfony\Component\HttpFoundation\Request;
 use Toolbox;
 
@@ -58,96 +57,6 @@ trait LegacyRouterTrait
         return preg_match('/^php\d*$/', pathinfo($path, PATHINFO_EXTENSION)) === 1;
     }
 
-    protected function isPathAllowed(string $path): bool
-    {
-        // Check global exclusion patterns.
-        $excluded_path_patterns = [
-            // hidden file or `.`/`..` path traversal component
-            '\/\.',
-            // config files
-            '^\/config\/',
-            // data files
-            '^\/files\/',
-            // tests files (should anyway not be present in dist)
-            '^\/tests\/',
-            // old-styles CLI tools (should anyway not be present in dist)
-            '^\/tools\/',
-            // `node_modules` and `vendor`, in GLPI root directory or in any plugin root directory
-            '^(\/plugins\/[^\/]+)?\/(node_modules|vendor)\/',
-        ];
-
-        if (preg_match('/(' . implode('|', $excluded_path_patterns) . ')/i', $path) === 1) {
-            return false;
-        }
-
-        // Check rules related to PHP files.
-        // Check extension on path even if file not exists, to be able to send a 403 error even if file not exists.
-        if ($this->isTargetAPhpScript($path)) {
-            $glpi_path_patterns = [
-                // `/ajax/` scripts
-                'ajax\/',
-                // `/front/` scripts
-                'front\/',
-                // install/update scripts
-                'install\/(install|update)\.php$',
-            ];
-
-            $plugins_path_patterns = [
-                // `/ajax/` scripts
-                'ajax\/',
-                // `/front/` scripts
-                'front\/',
-                // `/public/` scripts
-                'public\/',
-                // Any `index.php` script
-                '(.+\/)?index\.php',
-                // PHP scripts located in root directory, except `setup.php` and `hook.php`
-                '(?!setup\.php|hook\.php)[^\/]+\.php',
-                // dynamic CSS and JS files
-                '.+\.(css|js)\.php',
-                // `reports` plugin specific URLs (used by many plugins)
-                'report\/',
-            ];
-
-            $allowed_path_pattern = '/^'
-                . '('
-                . sprintf('\/(%s)', implode('|', $glpi_path_patterns))
-                . '|'
-                . sprintf('\/plugins\/[^\/]+\/(%s)', implode('|', $plugins_path_patterns))
-                . ')'
-                . '/';
-            return preg_match($allowed_path_pattern, $path) === 1;
-        }
-
-        // Check rules related to non-PHP files.
-        $allowed_path_pattern = [
-            // files in `/public` directories
-            '^(\/plugins\/[^\/]+)?\/public\/',
-            // static pages
-            '\.html?$',
-            // JS/CSS files
-            '\.(js|css)$',
-            // JS/CSS files sourcemaps used in dev env (it is to the publisher responsibility to remove them in dist packages)
-            '\.(js|css)\.map$',
-            // Vue components
-            '\.vue$',
-            // images
-            '\.(gif|jpe?g|png|svg)$',
-            // audios
-            '\.(mp3|ogg|wav)$',
-            // videos
-            '\.(mp4|ogm|ogv|webm)$',
-            // webfonts
-            '\.(eot|otf|ttf|woff2?)$',
-            // JSON files in plugins (except `composer.json`, `package.json` and `package-lock.json` located on root)
-            '^\/plugins\/[^\/]+\/(?!composer\.json|package\.json|package-lock\.json).+\.json$',
-            // favicon
-            '(^|\/)favicon\.ico$',
-        ];
-
-        return preg_match('/(' . implode('|', $allowed_path_pattern) . ')/i', $path) === 1;
-    }
-
     protected function getTargetFile(string $path): ?string
     {
         $path_matches = [];
@@ -164,9 +73,29 @@ trait LegacyRouterTrait
                 // The requested plugin does not exist, the target file does not exists.
                 return null;
             }
-            $filename = $plugin_dir . $path_matches['plugin_resource'];
-        } else {
+
+            $relative_path = $path_matches['plugin_resource'];
+            if (
+                $this->isTargetAPhpScript($path)
+                && \preg_match('#^/(ajax|front|report)/#', $relative_path)
+                && is_file($plugin_dir . $relative_path)
+            ) {
+                // legacy scripts located in the `/ajax`, `/front` or `/report` directory
+                $filename = $plugin_dir . $relative_path;
+            } else {
+                // preprend `/public` to expose the public resources only
+                $filename = $plugin_dir . '/public' . $relative_path;
+            }
+        } elseif (
+            $this->isTargetAPhpScript($path)
+            && \preg_match('#^/(ajax|front)/#', $path)
+            && is_file($this->glpi_root . $path)
+        ) {
+            // legacy scripts located in the `/ajax` or `/front` directory
             $filename = $this->glpi_root . $path;
+        } else {
+            // preprend `/public` to expose the public resources only
+            $filename = $this->glpi_root . '/public' . $path;
         }
 
         return is_file($filename) ? $filename : null;

@@ -84,10 +84,6 @@ final class LegacyAssetsListener implements EventSubscriberInterface
     {
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
-        if ($this->isPathAllowed($path) === false) {
-            return null;
-        }
-
         $target_file = $this->getTargetFile($path);
 
         if (

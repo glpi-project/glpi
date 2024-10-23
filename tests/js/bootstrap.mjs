@@ -186,4 +186,4 @@ class AjaxMock {
 }
 window.AjaxMock = new AjaxMock();
 
-await import('../../js/common.js');
+await import('../../public/js/common.js');

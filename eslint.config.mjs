@@ -14,8 +14,8 @@ export default [
             "marketplace/*",
             "node_modules/*",
             "plugins/*",
-            "public/lib/*",
             "public/build/*",
+            "public/lib/*",
             "tests/config/*",
             "vendor/*",
             "**/*.min.js"
@@ -90,7 +90,7 @@ export default [
     },
     {
         // Modules
-        files: ["js/modules/**", "eslint.config.mjs"],
+        files: ["public/js/modules/**", "eslint.config.mjs"],
         languageOptions: {
             sourceType: "module"
         }

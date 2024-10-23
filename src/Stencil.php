@@ -268,7 +268,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public static function loadLibs(): void
     {
-        echo Html::script("public/lib/cropper.js");
+        echo Html::script("lib/cropper.js");
         echo Html::script("js/stencil-editor.js");
         echo Html::scss('css/standalone/stencil-editor.scss');
     }

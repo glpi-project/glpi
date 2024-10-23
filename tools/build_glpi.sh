@@ -52,11 +52,11 @@ echo "Compiling locale files..."
 $WORKING_DIR/bin/console locales:compile
 
 echo "Minifying stylesheets..."
-find $WORKING_DIR/css $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.css" ! -iname "*.min.css" \) \
+find $WORKING_DIR/public \( -iname "*.css" ! -iname "*.min.css" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/csso {} --output $(dirname {})/$(basename {} ".css").min.css' \;
 
 echo "Minifying javascripts..."
-find $WORKING_DIR/js $WORKING_DIR/lib $WORKING_DIR/public/lib \( -iname "*.js" ! -iname "*.min.js" \) \
+find $WORKING_DIR/public \( -iname "*.js" ! -iname "*.min.js" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/terser {} --mangle --output $(dirname {})/$(basename {} ".js").min.js' \;
 
 echo "Compiling SCSS..."

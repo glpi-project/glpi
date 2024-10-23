@@ -33,8 +33,8 @@
 
 /* global GLPI */
 
-import '../../../../js/modules/Search/ResultsView.js';
-import '../../../../js/modules/Search/Table.js';
+import '../../../../public/js/modules/Search/ResultsView.js';
+import '../../../../public/js/modules/Search/Table.js';
 import {jest} from '@jest/globals';
 
 describe('Search ResultsView', () => {

@@ -120,7 +120,7 @@ const config = {
         new MiniCssExtractPlugin(), // Extract styles into CSS files
         new MonacoWebpackPlugin({
             'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss', 'shell'],
-            'publicPath': '/public/lib/'
+            'publicPath': '/lib/'
         }),
     ],
     resolve: {

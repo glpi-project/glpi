@@ -66,14 +66,14 @@ function header_html($etape)
     echo Html::getCoreVariablesForJavascript();
 
     // LIBS
-    echo Html::script("public/lib/base.js");
-    echo Html::script("public/lib/fuzzy.js");
+    echo Html::script("lib/base.js");
+    echo Html::script("lib/fuzzy.js");
     echo Html::script("js/common.js");
     echo Html::script("js/glpi_dialog.js");
 
     // CSS
-    echo Html::css('public/lib/tabler.css');
-    echo Html::css('public/lib/base.css');
+    echo Html::css('lib/tabler.css');
+    echo Html::css('lib/base.css');
     echo Html::scss("css/install", [], true);
     echo "</head>";
     echo "<body>";
