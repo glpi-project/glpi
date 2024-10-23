@@ -55,14 +55,14 @@ class TicketCost extends CommonITILCost
 
     public function post_addItem(): void
     {
-        parent::post_updateItem();
+        parent::post_addItem();
 
         $this->verifTCOItem();
     }
 
     public function post_purgeItem(): void
     {
-        parent::post_updateItem();
+        parent::post_purgeItem();
 
         $this->verifTCOItem();
     }
