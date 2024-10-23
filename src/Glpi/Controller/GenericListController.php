@@ -50,12 +50,12 @@ final class GenericListController extends AbstractController
 
         $this->checkIsValidClass($class);
 
-        return $this->render('search/generic_list.html.twig', [
-            'object_class' => $class,
+        return $this->render('pages/generic_list.html.twig', [
+            'class' => $class,
         ]);
     }
 
-    public function checkIsValidClass(string $class): void
+    private function checkIsValidClass(string $class): void
     {
         if (!$class) {
             throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');

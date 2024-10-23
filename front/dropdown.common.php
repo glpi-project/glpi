@@ -57,6 +57,6 @@ if (!$dropdown::canView()) {
     throw new AccessDeniedHttpException();
 }
 
-TemplateRenderer::getInstance()->display('search/generic_list.html.twig', [
+TemplateRenderer::getInstance()->display('pages/generic_list.html.twig', [
     'object_class' => $dropdown::class,
 ]);

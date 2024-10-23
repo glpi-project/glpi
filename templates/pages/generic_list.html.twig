@@ -30,10 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set header_params = call(object_class ~ '::getHeaderParameters') %}
+{% set header_params = call(class ~ '::getHeaderParameters') %}
 
 {{ call('Html::header', header_params) }}
 
-{{ call('Glpi\\Search\\SearchEngine::show', [object_class]) }}
+{{ call('Glpi\\Search\\SearchEngine::show', [class]) }}
 
 {{ call('Html::footer') }}
