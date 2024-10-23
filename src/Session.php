@@ -578,11 +578,14 @@ class Session
                 Search::resetSaveSearch();
                 $active_entity_done = false;
 
-               // Try to load default entity if it is a root entity
+                // Try to load default entity if it is a root entity
                 foreach ($data['entities'] as $val) {
                     if ($val['id'] == $_SESSION["glpidefault_entity"]) {
+                        if ($_SESSION["glpidefault_entity"] == 0 && count($data['entities']) > 1) {
+                            $val['is_recursive'] = true;
+                        }
                         if (self::changeActiveEntities($val['id'], $val['is_recursive'])) {
-                             $active_entity_done = true;
+                            $active_entity_done = true;
                         }
                     }
                 }
