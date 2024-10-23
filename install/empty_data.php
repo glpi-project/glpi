@@ -1985,6 +1985,12 @@ $empty_data_builder = new class
                 'rank' => '6',
             ],
         ];
+        // Set interface to previously defined values.
+        // TODO: the previous values should probably use $ADDTODISPLAYPREF to be
+        // more maintainable...
+        foreach (array_keys($tables['glpi_displaypreferences']) as $index) {
+            $tables['glpi_displaypreferences'][$index]['interface'] = 'central';
+        }
 
         $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
         $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
@@ -2006,6 +2012,11 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
         $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
         $ADDTODISPLAYPREF[Consumable::class] = [2, 8, 3, 4, 5, 6, 7];
+        $ADDTODISPLAYPREF_HELPDESK[\Ticket::class] = [
+            12, // Status
+            19, // Last update
+            15, // Opening date
+        ];
 
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;
@@ -2014,6 +2025,18 @@ $empty_data_builder = new class
                     'itemtype' => $type,
                     'num' => $newval,
                     'rank' => $rank++,
+                    'interface' => 'central',
+                ];
+            }
+        }
+        foreach ($ADDTODISPLAYPREF_HELPDESK as $type => $options) {
+            $rank = 1;
+            foreach ($options as $newval) {
+                $tables['glpi_displaypreferences'][] = [
+                    'itemtype' => $type,
+                    'num' => $newval,
+                    'rank' => $rank++,
+                    'interface' => 'helpdesk',
                 ];
             }
         }

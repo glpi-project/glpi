@@ -87,6 +87,12 @@ class Ticket extends CommonITILObject
     const CHANGEPRIORITY   =  65536;
     const READNEWTICKET    = 262144;
 
+    #[Override]
+    public static function supportHelpdeskDisplayPreferences(): bool
+    {
+        return true;
+    }
+
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -3171,7 +3177,7 @@ JAVASCRIPT;
             ],
         ];
 
-       // Filter search fields for helpdesk
+        // Filter search fields for helpdesk
         if (
             !Session::isCron() // no filter for cron
             && (Session::getCurrentInterface() != 'central')

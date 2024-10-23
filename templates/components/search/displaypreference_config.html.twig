@@ -83,6 +83,7 @@
                             add_field_html: add_opt_btn,
                             templateResult: result_template_js,
                             mb: '',
+                            aria_label: __('Select an option to add'),
                         }) }}
 
                         {% if not is_global %}
@@ -148,6 +149,7 @@
                     'action': 'update_order',
                     'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
                     'users_id': config_forms.find(`input[name="users_id"]`).val(),
+                    'interface': '{{ interface }}',
                     'opts': opts,
                 },
             }).then(() => {

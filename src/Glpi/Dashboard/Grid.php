@@ -467,7 +467,13 @@ HTML;
         ]);
         $js = <<<JAVASCRIPT
       $(function () {
-         new GLPIDashboard({$js_params})
+        // Sometimes GLPIDashboard is undefined and it messes with e2e tests
+        // by throwing a blocking error
+        // TODO: investigate why this happens
+        if (typeof GLPIDashboard === 'undefined') {
+          return;
+        }
+        new GLPIDashboard({$js_params})
       });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);

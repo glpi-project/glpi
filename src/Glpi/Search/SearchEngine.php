@@ -405,7 +405,7 @@ final class SearchEngine
         $data['meta_toview'] = [];
         if (!$forcetoview) {
             // Add items to display depending of personal prefs
-            $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID());
+            $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID(), \Session::getCurrentInterface());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
                     array_push($data['toview'], $val);

@@ -197,6 +197,15 @@ class CommonDBTM extends CommonGLPI
     private static $search_options_cache = [];
 
     /**
+     * If this method return true, a third 'Helpdesk view' display preference
+     * will be configurable and used for the helpdesk interface.
+     */
+    public static function supportHelpdeskDisplayPreferences(): bool
+    {
+        return false;
+    }
+
+    /**
      * Return the table used to store this object
      *
      * @param string $classname Force class (to avoid late_binding on inheritance)

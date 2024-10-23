@@ -94,7 +94,7 @@ CREATE TABLE `table_{$table_increment}` (
   KEY`is_deleted`(`is_deleted`),
   KEY `values` (
     `value`,
-    `steps`,    
+    `steps`,
     `max`
   )
 ) ENGINE=MyISAM
@@ -2206,5 +2206,43 @@ DIFF);
         }
 
         return $db;
+    }
+
+    public function testIndexTypesAreNormalized(): void
+    {
+        // Arrange: get the SQL of a table that uses index types
+        $sql = <<<SQL
+CREATE TABLE `glpi_displaypreferences` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity2` (`users_id`,`itemtype`,`num`,`interface`) USING BTREE,
+  UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`) USING HASH,
+  UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL;
+
+        // Act: normalize the SQL
+        // TODO: the sql should be normalized by an independent service to
+        // make testing easier and promote the single responsibility principle
+        $db = $this->geDbMock();
+        $integrity_checker = new \Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker(
+            $db,
+        );
+        $normalized_sql = $this->callPrivateMethod(
+            $integrity_checker,
+            'getNormalizedSql',
+            $sql
+        );
+
+        // Assert: the index types should be removed are normalized
+        $this->string($normalized_sql)->isEqualTo(<<<SQL
+CREATE TABLE `glpi_displaypreferences` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity2` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL);
     }
 }
