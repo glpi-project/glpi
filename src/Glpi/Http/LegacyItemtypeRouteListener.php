@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacyDbObjectRouteListener implements EventSubscriberInterface
+final readonly class LegacyItemtypeRouteListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -151,7 +151,7 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
         }
 
         if (!$matches['basename']) {
-            throw new \RuntimeException('Could not extract basename from URL to match legacy DB objects.');
+            throw new \RuntimeException('Could not extract basename from URL to match itemtype.');
         }
 
         $basename = $matches['basename'];
@@ -291,7 +291,7 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
         }
 
         if (!$matches['basename']) {
-            throw new \RuntimeException('Could not extract basename from URL to match legacy dropdowns.');
+            throw new \RuntimeException('Could not extract basename from URL to match itemtype.');
         }
 
         $basename = $matches['basename'];
@@ -300,13 +300,13 @@ final readonly class LegacyDbObjectRouteListener implements EventSubscriberInter
             return null;
         }
 
-        // PluginMyPluginDropdown -> /plugins/myplugin/front/dropdown.php
+        // PluginMyPluginItem -> /plugins/myplugin/front/item.php
         $legacy_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($basename)));
         if (is_a($legacy_classname, \CommonDBTM::class, true)) {
             return $legacy_classname;
         }
 
-        // GlpiPlugin\MyPlugin\Dropdown -> /plugins/myplugin/front/dropdown.php
+        // GlpiPlugin\MyPlugin\Item -> /plugins/myplugin/front/item.php
         $namespaced_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('GlpiPlugin\%s\%s', ucfirst($plugin), ucfirst($basename)));
         if (is_a($namespaced_classname, \CommonDBTM::class, true)) {
             return $namespaced_classname;

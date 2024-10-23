@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Http;
 
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
-use Glpi\Http\LegacyDbObjectRouteListener;
+use Glpi\Http\LegacyItemtypeRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -45,7 +45,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-final class LegacyDbObjectRouteListenerTest extends TestCase
+final class LegacyItemtypeRouteListenerTest extends TestCase
 {
     public function setUp(): void
     {
@@ -56,7 +56,7 @@ final class LegacyDbObjectRouteListenerTest extends TestCase
     #[DataProvider('provideDbClasses')]
     public function testFindDbClass(string $path_info, string $expected_class_name): void
     {
-        $listener = new LegacyDbObjectRouteListener();
+        $listener = new LegacyItemtypeRouteListener();
         $request = $this->createRequest($path_info);
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
 
@@ -334,7 +334,7 @@ final class LegacyDbObjectRouteListenerTest extends TestCase
     #[DataProvider('provideDropdownClassesForPlugin')]
     public function testFindDropdownClassForPlugin(string $path_info, string $class): void
     {
-        $listener = new LegacyDbObjectRouteListener();
+        $listener = new LegacyItemtypeRouteListener();
         $request = $this->createRequest($path_info);
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
 

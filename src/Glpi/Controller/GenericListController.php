@@ -65,7 +65,7 @@ final class GenericListController extends AbstractController
     public function checkIsValidClass(string $class): void
     {
         if (!$class) {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
+            throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
         }
 
         if (!\class_exists($class)) {
@@ -73,7 +73,7 @@ final class GenericListController extends AbstractController
         }
 
         if (!\is_subclass_of($class, CommonDBTM::class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a DB object.", $class));
+            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
         }
 
         if (!$class::canView()) {
