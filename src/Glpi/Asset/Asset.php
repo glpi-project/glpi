@@ -96,6 +96,11 @@ abstract class Asset extends CommonDBTM
         return AssetDefinition::class;
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', static::getDefinition()->getAssetClassName()];
+    }
+
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();

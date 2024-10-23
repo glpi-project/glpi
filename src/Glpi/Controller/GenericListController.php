@@ -34,7 +34,7 @@
 
 namespace Glpi\Controller;
 
-use CommonDBTM;
+use CommonGLPI;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,7 +66,7 @@ final class GenericListController extends AbstractController
             throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
         }
 
-        if (!\is_subclass_of($class, CommonDBTM::class)) {
+        if (!\is_subclass_of($class, CommonGLPI::class)) {
             throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
         }
 

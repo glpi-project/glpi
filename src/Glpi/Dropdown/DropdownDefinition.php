@@ -34,6 +34,7 @@
 
 namespace Glpi\Dropdown;
 
+use CommonDropdown;
 use CommonGLPI;
 use Glpi\CustomObject\AbstractDefinition;
 use Session;
@@ -46,6 +47,11 @@ final class DropdownDefinition extends AbstractDefinition
     public static function getTypeName($nb = 0)
     {
         return _n('Dropdown definition', 'Dropdown definitions', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', CommonDropdown::class, self::class];
     }
 
     public static function getCustomObjectBaseClass(): string

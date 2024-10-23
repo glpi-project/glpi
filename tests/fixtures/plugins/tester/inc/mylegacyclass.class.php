@@ -32,10 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-final class PluginTesterMyLegacyClass extends CommonDropdown
+final class PluginTesterMyLegacyClass extends CommonDBTM
 {
     public static function getTypeName($nb = 0): string
     {
-        return 'Tester plugin legacy dropdown';
+        return 'Tester plugin legacy itemtype';
     }
 }

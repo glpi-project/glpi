@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,17 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\AssetDefinition;
-
-Session::checkRight(AssetDefinition::$rightname, READ);
-
-Html::header(
-    AssetDefinition::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    'config',
-    AssetDefinition::class
-);
-
-Search::show(AssetDefinition::class);
-
-Html::footer();
+final class PluginTesterMyPseudoPsr4Dropdown extends CommonDropdown
+{
+    public static function getTypeName($nb = 0): string
+    {
+        return 'Tester plugin pseudo-PSR4 dropdown';
+    }
+}

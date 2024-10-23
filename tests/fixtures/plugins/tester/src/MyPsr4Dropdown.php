@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,23 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\AssetDefinition;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Search\SearchEngine;
+namespace GlpiPlugin\Tester;
 
-$definition = new AssetDefinition();
-$classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getAssetClassName()
-    : null;
+use CommonDropdown;
 
-if ($classname === null || !class_exists($classname)) {
-    throw new BadRequestHttpException('Bad request');
+final class MyPsr4Dropdown extends CommonDropdown
+{
+    public static function getTypeName($nb = 0): string
+    {
+        return 'Tester plugin PSR4 dropdown';
+    }
 }
-
-Session::checkRightsOr($classname::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
-
-Html::header($classname::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', $classname);
-
-SearchEngine::show($classname);
-
-Html::footer();
