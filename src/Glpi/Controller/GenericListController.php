@@ -43,7 +43,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class GenericListController extends AbstractController
 {
-    #[Route("/Dropdown/{class}", name: "glpi_dropdown")]
     #[Route("/{class}/Search", name: "glpi_generic_list")]
     public function __invoke(Request $request): Response
     {
