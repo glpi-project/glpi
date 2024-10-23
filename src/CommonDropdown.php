@@ -49,10 +49,6 @@ abstract class CommonDropdown extends CommonDBTM
     public $must_be_replace = false;
 
    //Menu & navigation
-    public $first_level_menu  = "config";
-    public $second_level_menu = "commondropdown";
-    public $third_level_menu  = "";
-
     public $display_dropdowntitle  = true;
 
    //This dropdown can be translated
@@ -69,6 +65,11 @@ abstract class CommonDropdown extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Dropdown', 'Dropdowns', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class, static::class];
     }
 
 
@@ -233,23 +234,6 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         return $ong;
-    }
-
-    public static function displayCentralHeader(
-        ?string $title = null,
-        ?array $menus = null
-    ): void {
-        if (empty($menus)) {
-            $dropdown = new static();
-
-            $menus = [
-                $dropdown->first_level_menu,
-                $dropdown->second_level_menu,
-                $dropdown->third_level_menu ?: $dropdown->getType()
-            ];
-        }
-
-        parent::displayCentralHeader($title, $menus);
     }
 
     /**

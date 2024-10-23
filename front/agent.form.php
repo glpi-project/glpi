@@ -102,7 +102,7 @@ if (isset($_POST["delete"])) {
     );
     Html::back();
 } else {//print agent information
-    $menus = ["admin", "glpi\inventory\inventory", "agent"];
+    $menus = ["admin", "glpi\inventory\inventory", "Agent"];
     Agent::displayFullPageForItem((int) $_GET['id'], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true",

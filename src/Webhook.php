@@ -79,6 +79,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return _n('Webhook', 'Webhooks', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
+
     public static function canCreate(): bool
     {
         return static::canUpdate();

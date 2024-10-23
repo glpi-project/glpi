@@ -2288,18 +2288,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetModel\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyDropdownRouteListener.php',
-];
-$ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetType\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyDropdownRouteListener.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysFalse
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'count' => 1,

@@ -72,6 +72,10 @@ class Change extends CommonITILObject
         return _n('Change', 'Changes', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', self::class];
+    }
 
     public function canSolve()
     {

@@ -50,9 +50,6 @@ class Entity extends CommonTreeDropdown
     public $must_be_replace             = true;
     public $dohistory                   = true;
 
-    public $first_level_menu            = "admin";
-    public $second_level_menu           = "entity";
-
     public static $rightname            = 'entity';
     protected $usenotepad               = true;
 
@@ -232,6 +229,11 @@ class Entity extends CommonTreeDropdown
     public static function getTypeName($nb = 0)
     {
         return _n('Entity', 'Entities', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', self::class];
     }
 
     public static function canCreate(): bool

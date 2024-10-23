@@ -66,6 +66,11 @@ class NotificationTemplate extends CommonDBTM
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', Notification::class, self::class];
+    }
+
     public static function getIcon()
     {
         return 'ti ti-template';

@@ -322,6 +322,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::showDebugInfo()`
 - `CommonDevice::title()`
+- `CommonDropdown::$first_level_menu`, `CommonDropdown::$second_level_menu` and `CommonDropdown::$third_level_menu` properties.
 - `CommonDropdown::displayHeader()`
 - `CommonGLPI::$type` property.
 - `CommonGLPI::getAvailableDisplayOptions()`

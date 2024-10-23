@@ -34,47 +34,43 @@
 
 namespace Glpi\Controller;
 
-use CommonDropdown;
+use CommonGLPI;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\HeaderlessStreamedResponse;
-use Html;
-use Search;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DropdownController extends AbstractController
+final class GenericListController extends AbstractController
 {
-    #[Route("/Dropdown/{class}", name: "glpi_dropdown")]
+    #[Route("/{class}/Search", name: "glpi_generic_list")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
 
-        if (!$class) {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
-        }
+        $this->checkIsValidClass($class);
 
-        if (!\is_subclass_of($class, CommonDropdown::class)) {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for dropdown routes.');
-        }
-
-        return new HeaderlessStreamedResponse(function () use ($class, $request) {
-            $dropdown = new $class();
-            $this->loadDropdown($request, $dropdown);
-        });
+        return $this->render('pages/generic_list.html.twig', [
+            'class' => $class,
+        ]);
     }
 
-    public static function loadDropdown(Request $request, CommonDropdown $dropdown): void
+    private function checkIsValidClass(string $class): void
     {
-        if (!$dropdown->canView()) {
-            throw new AccessDeniedHttpException();
+        if ($class === '') {
+            throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
         }
 
-        $dropdown::displayCentralHeader();
+        if (!\class_exists($class)) {
+            throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
+        }
 
-        Search::show($dropdown::class);
+        if (!\is_subclass_of($class, CommonGLPI::class)) {
+            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
+        }
 
-        Html::footer();
+        if (!$class::canView()) {
+            throw new AccessDeniedHttpException();
+        }
     }
 }

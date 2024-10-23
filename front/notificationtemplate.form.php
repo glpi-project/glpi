@@ -84,6 +84,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["config", "notification", "notificationtemplate"];
+    $menus = ["config", "notification", "NotificationTemplate"];
     NotificationTemplate::displayFullPageForItem($_GET["id"], $menus);
 }

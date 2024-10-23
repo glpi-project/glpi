@@ -77,6 +77,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return _n('Project task', 'Project tasks', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', Project::class, self::class];
+    }
+
     public static function getIcon()
     {
         return 'ti ti-list-check';

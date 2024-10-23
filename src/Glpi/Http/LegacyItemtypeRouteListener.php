@@ -34,10 +34,14 @@
 
 namespace Glpi\Http;
 
+use CommonDevice;
+use CommonDropdown;
+use CommonGLPI;
+use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
-use Glpi\Controller\DropdownController;
+use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
@@ -46,7 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacyDropdownRouteListener implements EventSubscriberInterface
+final readonly class LegacyItemtypeRouteListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -70,45 +74,90 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
             return;
         }
 
-        if ($class = $this->findDropdownClass($request)) {
+        if ($class = $this->findClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
-            $request->attributes->set('_controller', $is_form ? DropdownFormController::class : DropdownController::class);
-            $request->attributes->set('class', $class);
+            if (\is_a($class, CommonDropdown::class, true)) {
+                $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
+                $request->attributes->set('class', $class);
+            } else {
+                $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
+                $request->attributes->set('class', $class);
+            }
         }
     }
 
-    public function findDropdownClass(Request $request): ?string
+    /**
+     * @phpstan-return class-string<CommonGLPI>|null
+     */
+    private function findClass(Request $request): ?string
     {
         $path_info = $request->getPathInfo();
 
-        if ($model_class = $this->findPluginClass($path_info)) {
-            return $this->normalizeClass($model_class);
+        if ($plugin_class = $this->findPluginClass($path_info)) {
+            return $plugin_class;
         }
 
-        if ($model_class = $this->findCustomDropdownClass($request)) {
-            return $this->normalizeClass($model_class);
-        }
-
-        if ($model_class = $this->findGenericClass($path_info)) {
-            return $this->normalizeClass($model_class);
-        }
-
-        if ($device_class = $this->findDeviceClass($request)) {
-            return $this->normalizeClass($device_class);
+        if ($asset_class = $this->findCustomAssetClass($request)) {
+            return $asset_class;
         }
 
         if ($asset_model_class = $this->findAssetModelclass($request)) {
-            return $this->normalizeClass($asset_model_class);
+            return $asset_model_class;
         }
 
         if ($asset_type_class = $this->findAssetTypeclass($request)) {
-            return $this->normalizeClass($asset_type_class);
+            return $asset_type_class;
+        }
+
+        if ($dropdown_class = $this->findCustomDropdownClass($request)) {
+            return $dropdown_class;
+        }
+
+        if ($device_class = $this->findDeviceClass($request)) {
+            return $device_class;
+        }
+
+        if ($model_class = $this->findGenericClass($path_info)) {
+            return $model_class;
         }
 
         return null;
     }
 
+    /**
+     * @phpstan-return class-string<Asset>|null
+     */
+    private function findCustomAssetClass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/asset(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+
+        if ($is_form && $id !== null && !Asset::isNewId($id)) {
+            $asset = Asset::getById($id);
+            if ($asset instanceof Asset) {
+                $classname = $asset::class;
+            }
+        } else {
+            $definition = new AssetDefinition();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getAssetClassName();
+            }
+        }
+
+        return $classname;
+    }
+
+    /**
+     * @phpstan-return class-string<Dropdown>|null
+     */
     private function findCustomDropdownClass(Request $request): ?string
     {
         $matches = [];
@@ -121,7 +170,7 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
 
         $classname = null;
 
-        if ($is_form && $id !== null) {
+        if ($is_form && $id !== null && !Dropdown::isNewId($id)) {
             $dropdown = Dropdown::getById($id);
             if ($dropdown instanceof Dropdown) {
                 $classname = $dropdown::class;
@@ -136,44 +185,44 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         return $classname;
     }
 
+    /**
+     * @phpstan-return class-string<CommonGLPI>|null
+     */
     private function findGenericClass(string $path_info): ?string
     {
-        $path_regex = '~^/front/(?<basename>.+)(?<form>\.form)?\.php~isUu';
+        $path_regex = '~^/front/(?<itemtype>.+)(?<form>\.form)?\.php~isUu';
 
         $matches = [];
         if (!\preg_match($path_regex, $path_info, $matches)) {
             return null;
         }
 
-        if (!$matches['basename']) {
-            throw new \RuntimeException('Could not extract basename from URL to match legacy dropdowns.');
+        $itemtype = $matches['itemtype'];
+
+        $item = \getItemForItemtype($itemtype);
+
+        if ($item instanceof CommonGLPI) {
+            return $item::class;
         }
 
-        $basename = $matches['basename'];
+        $namespaced_itemtype = \preg_replace_callback(
+            '~\\\([a-z])~Uu',
+            static fn($i) => '\\' . \ucfirst($i[1]),
+            'Glpi\\' . \str_replace('/', '\\', $itemtype)
+        );
 
-        $class = (new \DbUtils())->fixItemtypeCase($basename);
+        $namespaced_item = \getItemForItemtype($namespaced_itemtype);
 
-        if (
-            $class
-            && \class_exists($class)
-            && \is_subclass_of($class, \CommonDropdown::class)
-        ) {
-            return $class;
-        }
-
-        $namespacedClass = \preg_replace_callback('~\\\([a-z])~Uu', static fn($i) => '\\' . \ucfirst($i[1]), 'Glpi\\' . \str_replace('/', '\\', $class));
-
-        if (
-            $namespacedClass
-            && \class_exists($namespacedClass)
-            && \is_subclass_of($namespacedClass, \CommonDropdown::class)
-        ) {
-            return $namespacedClass;
+        if ($namespaced_item instanceof CommonGLPI) {
+            return $namespaced_item::class;
         }
 
         return null;
     }
 
+    /**
+     * @phpstan-return class-string<CommonDevice>|null
+     */
     private function findDeviceClass(Request $request): ?string
     {
         $device_paths = [
@@ -189,22 +238,23 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
             return null;
         }
 
-        $item_type = $request->query->get('itemtype') ?: $request->request->get('itemtype');
+        $itemtype = $request->query->get('itemtype') ?: $request->request->get('itemtype');
 
-        if (!$item_type || !\class_exists($item_type)) {
-            throw new \RuntimeException(
-                'Missing or incorrect device type called!'
-            );
-        }
-
-        $class = \getItemForItemtype($item_type) ?: null;
-        if (!$class) {
+        if ($itemtype === null) {
             return null;
         }
 
-        return \get_class($class);
+        $item = \getItemForItemtype($itemtype);
+        if ($item instanceof CommonDevice) {
+            return $item::class;
+        }
+
+        return null;
     }
 
+    /**
+     * @return class-string<AssetModel>|null
+     */
     private function findAssetModelclass(Request $request): ?string
     {
         $matches = [];
@@ -217,8 +267,11 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
 
         $classname = null;
 
-        if ($is_form && $id !== null) {
+        if ($is_form && $id !== null && !AssetModel::isNewId($id)) {
             $asset = AssetModel::getById($id);
+            if (!$asset) {
+                return null;
+            }
             $classname = $asset::class;
         } else {
             $definition = new AssetDefinition();
@@ -230,6 +283,9 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         return $classname;
     }
 
+    /**
+     * @return class-string<AssetType>|null
+     */
     private function findAssetTypeclass(Request $request): ?string
     {
         $matches = [];
@@ -242,8 +298,11 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
 
         $classname = null;
 
-        if ($is_form && $id !== null) {
+        if ($is_form && $id !== null && !AssetType::isNewId($id)) {
             $asset = AssetType::getById($id);
+            if (!$asset) {
+                return null;
+            }
             $classname = $asset::class;
         } else {
             $definition = new AssetDefinition();
@@ -255,44 +314,40 @@ final readonly class LegacyDropdownRouteListener implements EventSubscriberInter
         return $classname;
     }
 
-    private function normalizeClass(string $class): string
-    {
-        if (!\class_exists($class)) {
-            throw new \RuntimeException('Class "$class" does not exist.');
-        }
-
-        return (new \ReflectionClass($class))->getName();
-    }
-
+    /**
+     * @phpstan-return class-string<CommonGLPI>|null
+     */
     private function findPluginClass(string $path_info): ?string
     {
-        $path_regex = '~^/(plugins|marketplace)/(?<plugin>[^/]+)/front/(?<basename>.+)(?<form>\.form)?.php~isUu';
+        $path_regex = '~^/(plugins|marketplace)/(?<plugin>[^/]+)/front/(?<itemtype>.+)(?<form>\.form)?.php~isUu';
 
         $matches = [];
         if (\preg_match($path_regex, $path_info, $matches) !== 1) {
             return null;
         }
 
-        if (!$matches['basename']) {
-            throw new \RuntimeException('Could not extract basename from URL to match legacy dropdowns.');
-        }
-
-        $basename = $matches['basename'];
+        $itemtype = $matches['itemtype'];
         $plugin = $matches['plugin'];
         if (!$this->isPluginActive($plugin)) {
             return null;
         }
 
-        // PluginMyPluginDropdown -> /plugins/myplugin/front/dropdown.php
-        $legacy_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($basename)));
-        if (is_a($legacy_classname, \CommonDropdown::class, true)) {
-            return $legacy_classname;
+        $item = \getItemForItemtype($itemtype);
+
+        if ($item instanceof CommonGLPI) {
+            return $item::class;
         }
 
-        // GlpiPlugin\MyPlugin\Dropdown -> /plugins/myplugin/front/dropdown.php
-        $namespaced_classname = (new \DbUtils())->fixItemtypeCase(\sprintf('GlpiPlugin\%s\%s', ucfirst($plugin), ucfirst($basename)));
-        if (is_a($namespaced_classname, \CommonDropdown::class, true)) {
-            return $namespaced_classname;
+        // PluginMyPluginItem -> /plugins/myplugin/front/item.php
+        $legacy_item = \getItemForItemtype(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($itemtype)));
+        if ($legacy_item instanceof CommonGLPI) {
+            return $legacy_item::class;
+        }
+
+        // GlpiPlugin\MyPlugin\Item -> /plugins/myplugin/front/item.php
+        $namespaced_item = \getItemForItemtype(\sprintf('GlpiPlugin\%s\%s', ucfirst($plugin), ucfirst($itemtype)));
+        if ($namespaced_item instanceof CommonGLPI) {
+            return $namespaced_item::class;
         }
 
         return null;

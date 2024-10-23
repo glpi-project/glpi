@@ -246,14 +246,14 @@ class Rule extends CommonDBTM
             $menu['rule']['page']  = static::getSearchURL(false);
             $menu['rule']['icon']  = static::getIcon();
 
-            $menu['rule']['options']['transfer']['title']           = __('Transfer');
-            $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
-            $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
+            $menu['rule']['options'][Transfer::class]['title']           = __('Transfer');
+            $menu['rule']['options'][Transfer::class]['page']            = "/front/transfer.php";
+            $menu['rule']['options'][Transfer::class]['links']['search'] = "/front/transfer.php";
 
             if (Session::haveRightsOr("transfer", [CREATE, UPDATE])) {
-                $menu['rule']['options']['transfer']['links']['transfer_list']
+                $menu['rule']['options'][Transfer::class]['links']['transfer_list']
                                                                  = "/front/transfer.action.php";
-                $menu['rule']['options']['transfer']['links']['add'] = Transfer::getFormURL(false);
+                $menu['rule']['options'][Transfer::class]['links']['add'] = Transfer::getFormURL(false);
             }
         }
 

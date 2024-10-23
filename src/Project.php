@@ -88,6 +88,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Project', 'Projects', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', self::class];
+    }
+
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
@@ -217,7 +222,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public static function getAdditionalMenuOptions()
     {
         return [
-            'task' => [
+            ProjectTask::class => [
                 'title' => __('My tasks'),
                 'page'  => ProjectTask::getSearchURL(false),
                 'links' => [

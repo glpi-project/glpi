@@ -54,6 +54,11 @@ use Session;
  */
 final class AssetDefinition extends AbstractDefinition
 {
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
+
     public static function getCustomObjectBaseClass(): string
     {
         return Asset::class;

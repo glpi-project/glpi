@@ -76,6 +76,11 @@ class DatabaseInstance extends CommonDBTM
         return _n('Database instance', 'Database instances', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', Database::class, self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

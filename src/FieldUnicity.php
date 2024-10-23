@@ -43,8 +43,6 @@ class FieldUnicity extends CommonDropdown
    // From CommonDBTM
     public $dohistory          = true;
 
-    public $first_level_menu   = "config";
-    public $second_level_menu  = "fieldunicity";
     public $can_be_translated  = false;
 
     public static $rightname          = 'config';
@@ -53,6 +51,11 @@ class FieldUnicity extends CommonDropdown
     public static function getTypeName($nb = 0)
     {
         return __('Fields unicity');
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
     }
 
     public static function canCreate(): bool

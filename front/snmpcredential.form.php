@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["admin", "glpi\inventory\inventory", "snmpcredential"];
+    $menus = ["admin", "glpi\inventory\inventory", "SNMPCredential"];
     SNMPCredential::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"

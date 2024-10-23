@@ -82,6 +82,6 @@ if (isset($_POST["add"])) {
     );
     Html::redirect($CFG_GLPI["root_doc"] . "/front/config.form.php");
 } else {
-    $menus = ["config", "config", "apiclient"];
+    $menus = ["config", "config", "APIClient"];
     APIClient::displayFullPageForItem($_GET["id"], $menus);
 }

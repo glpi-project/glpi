@@ -97,6 +97,11 @@ class Cartridge extends CommonDBRelation
         return _n('Cartridge', 'Cartridges', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public function prepareInputForAdd($input)
     {
         $item = static::getItemFromArray(CartridgeItem::class, CartridgeItem::getForeignKeyField(), $input);

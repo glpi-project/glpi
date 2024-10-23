@@ -69,6 +69,11 @@ class Certificate extends CommonDBTM
         return _n('Certificate', 'Certificates', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     /**
      * Clean certificate items
      */

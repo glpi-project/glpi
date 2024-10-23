@@ -112,6 +112,11 @@ class User extends CommonDBTM
         return _n('User', 'Users', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', self::class];
+    }
+
     public static function getMenuShorcut()
     {
         return 'u';

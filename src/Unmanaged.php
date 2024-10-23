@@ -55,6 +55,11 @@ class Unmanaged extends CommonDBTM
         return _n('Unmanaged asset', 'Unmanaged assets', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public function defineTabs($options = [])
     {
 

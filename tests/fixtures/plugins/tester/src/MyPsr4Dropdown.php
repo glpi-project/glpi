@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-Session::checkRightsOr(Software::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
+namespace GlpiPlugin\Tester;
 
-Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
+use CommonDropdown;
 
-Search::show('Software');
-
-Html::footer();
+final class MyPsr4Dropdown extends CommonDropdown
+{
+    public static function getTypeName($nb = 0): string
+    {
+        return 'Tester plugin PSR4 dropdown';
+    }
+}

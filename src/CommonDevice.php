@@ -48,13 +48,14 @@ abstract class CommonDevice extends CommonDropdown
    // From CommonDBTM
     public $dohistory           = true;
 
-    public $first_level_menu  = "config";
-    public $second_level_menu = "commondevice";
-    public $third_level_menu  = "";
-
     public static function getTypeName($nb = 0)
     {
         return _n('Component', 'Components', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class, static::class];
     }
 
     /**

@@ -482,7 +482,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
-                strtolower($type) => $menu,
+                $type => $menu,
             ];
            // Force overwrite existing menu
             foreach ($data as $key => $val) {
@@ -590,6 +590,20 @@ class CommonGLPI implements CommonGLPIInterface
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return '';
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return [];
+    }
+
+    public static function getHeaderParameters(): array
+    {
+        return [
+            static::getTypeName(\Session::getPluralNumber()),
+            '',
+            ...static::getSectorizedDetails(),
+        ];
     }
 
     /**
