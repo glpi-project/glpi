@@ -49,7 +49,7 @@ class TicketTemplate extends ITILTemplate
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", Ticket::class, self::class];
+        return ['helpdesk', Ticket::class, self::class];
     }
 
     public function getCloneRelations(): array

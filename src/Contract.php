@@ -73,7 +73,7 @@ class Contract extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "contract"];
+        return ['management', self::class];
     }
 
     public function post_getEmpty()

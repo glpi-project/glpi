@@ -63,7 +63,7 @@ class Document extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "document"];
+        return ['management', self::class];
     }
 
     /**

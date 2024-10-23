@@ -99,7 +99,7 @@ class Cartridge extends CommonDBRelation
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "cartridgeitem"];
+        return ['assets', self::class];
     }
 
     public function prepareInputForAdd($input)

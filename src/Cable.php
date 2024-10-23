@@ -55,7 +55,7 @@ class Cable extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "cable"];
+        return ['assets', self::class];
     }
 
     public static function getFieldLabel()
@@ -111,7 +111,7 @@ class Cable extends CommonDBTM
     {
         if (static::canView()) {
             return [
-                'socket' => [
+                Socket::class => [
                     'title' => Socket::getTypeName(Session::getPluralNumber()),
                     'page'  => Socket::getSearchURL(false),
                     'links' => [

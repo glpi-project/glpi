@@ -88,7 +88,7 @@ class Phone extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "phone"];
+        return ['assets', self::class];
     }
 
     /**

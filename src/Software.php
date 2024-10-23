@@ -74,7 +74,7 @@ class Software extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['assets', 'software'];
+        return ['assets', self::class];
     }
 
     public static function getMenuShorcut()

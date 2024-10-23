@@ -69,7 +69,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "commondropdown", "DefaultFilter"];
+        return ['config', 'commondropdown', self::class];
     }
 
     public static function getIcon()

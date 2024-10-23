@@ -49,7 +49,7 @@ class ChangeTemplate extends ITILTemplate
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", Change::class, self::class];
+        return ['helpdesk', Change::class, self::class];
     }
 
     public function getCloneRelations(): array

@@ -47,7 +47,7 @@ class RecurrentChange extends CommonITILRecurrent
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", self::class];
+        return ['helpdesk', self::class];
     }
 
     public static function getConcreteClass()

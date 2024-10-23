@@ -60,7 +60,7 @@ class Line extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "line"];
+        return ['management', self::class];
     }
 
     /**

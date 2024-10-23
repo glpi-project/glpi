@@ -86,7 +86,7 @@ final class Transfer extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['admin', 'rule', 'transfer'];
+        return ['admin', Rule::class, self::class];
     }
 
     public function maxActionsCount()

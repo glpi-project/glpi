@@ -76,7 +76,7 @@ class Problem extends CommonITILObject
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", "problem"];
+        return ['helpdesk', self::class];
     }
 
     public function canSolve()

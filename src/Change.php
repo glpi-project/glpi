@@ -74,7 +74,7 @@ class Change extends CommonITILObject
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", "change"];
+        return ['helpdesk', self::class];
     }
 
     public function canSolve()

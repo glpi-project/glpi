@@ -68,7 +68,7 @@ class NotificationTemplate extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "notification", "notificationtemplate"];
+        return ['config', Notification::class, self::class];
     }
 
     public static function getIcon()

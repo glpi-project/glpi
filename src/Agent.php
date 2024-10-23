@@ -80,7 +80,7 @@ class Agent extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", Inventory::class, "agent"];
+        return ['admin', Inventory::class, self::class];
     }
 
     public function rawSearchOptions()

@@ -56,7 +56,7 @@ class PassiveDCEquipment extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "passivedcequipment"];
+        return ['assets', self::class];
     }
 
     public function defineTabs($options = [])

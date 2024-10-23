@@ -83,7 +83,7 @@ class Monitor extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "monitor"];
+        return ['assets', self::class];
     }
 
     /**

@@ -64,7 +64,7 @@ class Event extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", LogViewer::class, __CLASS__];
+        return ['admin', LogViewer::class, self::class];
     }
 
     public function prepareInputForAdd($input)

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Inventory;
 
 /**
  * SNMP credentials
@@ -51,7 +52,7 @@ class SNMPCredential extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", \Glpi\Inventory\Inventory::class, "snmpcredential"];
+        return ['admin', Inventory::class, self::class];
     }
 
     public static function rawSearchOptionsToAdd()

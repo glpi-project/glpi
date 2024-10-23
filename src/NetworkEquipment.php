@@ -87,7 +87,7 @@ class NetworkEquipment extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "networkequipment"];
+        return ['assets', self::class];
     }
 
     public static function getAdditionalMenuOptions()
@@ -95,7 +95,7 @@ class NetworkEquipment extends CommonDBTM
 
         if (static::canView()) {
             $options = [
-                'networkport' => [
+                NetworkPort::class => [
                     'title' => NetworkPort::getTypeName(Session::getPluralNumber()),
                     'page'  => NetworkPort::getFormURL(false),
                 ],

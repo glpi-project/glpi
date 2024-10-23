@@ -72,7 +72,7 @@ class NetworkName extends FQDNLabel
 
     public static function getSectorizedDetails(): array
     {
-        return ['config', 'commondropdown', 'NetworkName'];
+        return ['config', CommonDropdown::class, self::class];
     }
 
     public function useDeletedToLockIfDynamic()

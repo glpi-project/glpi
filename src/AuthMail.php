@@ -50,7 +50,7 @@ class AuthMail extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['config", "auth", "imap'];
+        return ['config', Auth::class, self::class];
     }
 
     public function prepareInputForUpdate($input)

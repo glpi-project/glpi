@@ -64,7 +64,7 @@ class Group extends CommonTreeDropdown
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", "group"];
+        return ['admin', self::class];
     }
 
     public static function getAdditionalMenuOptions()

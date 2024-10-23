@@ -85,7 +85,7 @@ class Peripheral extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "peripheral"];
+        return ['assets', self::class];
     }
 
     /**

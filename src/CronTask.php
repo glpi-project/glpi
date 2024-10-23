@@ -90,7 +90,7 @@ class CronTask extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['config', 'crontask'];
+        return ['config', self::class];
     }
 
     public function defineTabs($options = [])

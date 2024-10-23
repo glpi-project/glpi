@@ -60,7 +60,7 @@ class SLM extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "slm"];
+        return ['config', self::class];
     }
 
     public function defineTabs($options = [])
@@ -239,21 +239,21 @@ TWIG, $twig_params);
                 $menu['links']['add'] = SLM::getFormURL(false);
             }
 
-            $menu['options']['sla']['title']           = SLA::getTypeName(1);
-            $menu['options']['sla']['page']            = SLA::getSearchURL(false);
-            $menu['options']['sla']['links']['search'] = SLA::getSearchURL(false);
+            $menu['options'][SLA::class]['title']           = SLA::getTypeName(1);
+            $menu['options'][SLA::class]['page']            = SLA::getSearchURL(false);
+            $menu['options'][SLA::class]['links']['search'] = SLA::getSearchURL(false);
 
-            $menu['options']['ola']['title']           = OLA::getTypeName(1);
-            $menu['options']['ola']['page']            = OLA::getSearchURL(false);
-            $menu['options']['ola']['links']['search'] = OLA::getSearchURL(false);
+            $menu['options'][OLA::class]['title']           = OLA::getTypeName(1);
+            $menu['options'][OLA::class]['page']            = OLA::getSearchURL(false);
+            $menu['options'][OLA::class]['links']['search'] = OLA::getSearchURL(false);
 
-            $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
-            $menu['options']['slalevel']['page']            = SlaLevel::getSearchURL(false);
-            $menu['options']['slalevel']['links']['search'] = SlaLevel::getSearchURL(false);
+            $menu['options'][SlaLevel::class]['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
+            $menu['options'][SlaLevel::class]['page']            = SlaLevel::getSearchURL(false);
+            $menu['options'][SlaLevel::class]['links']['search'] = SlaLevel::getSearchURL(false);
 
-            $menu['options']['olalevel']['title']           = OlaLevel::getTypeName(Session::getPluralNumber());
-            $menu['options']['olalevel']['page']            = OlaLevel::getSearchURL(false);
-            $menu['options']['olalevel']['links']['search'] = OlaLevel::getSearchURL(false);
+            $menu['options'][OlaLevel::class]['title']           = OlaLevel::getTypeName(Session::getPluralNumber());
+            $menu['options'][OlaLevel::class]['page']            = OlaLevel::getSearchURL(false);
+            $menu['options'][OlaLevel::class]['links']['search'] = OlaLevel::getSearchURL(false);
         }
         if (count($menu)) {
             return $menu;

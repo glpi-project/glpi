@@ -74,7 +74,7 @@ class Rack extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "rack"];
+        return ['assets', self::class];
     }
 
     public function defineTabs($options = [])

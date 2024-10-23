@@ -86,6 +86,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["config", "slm", "sla"];
+    $menus = ["config", "slm", "SLA"];
     SLA::displayFullPageForItem($_GET["id"], $menus);
 }

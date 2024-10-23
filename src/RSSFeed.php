@@ -62,7 +62,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function getSectorizedDetails(): array
     {
-        return ["tools", "rssfeed"];
+        return ['tools', self::class];
     }
 
     public static function canCreate(): bool

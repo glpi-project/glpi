@@ -45,6 +45,7 @@ use Sabre\VObject\Component\VTodo;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
+use Glpi\Features\PlanningEvent;
 
 /**
  * Planning Class
@@ -145,7 +146,7 @@ class Planning extends CommonGLPI
     {
         if (PlanningExternalEvent::canView()) {
             return [
-                'external' => [
+                PlanningEvent::class => [
                     'title' => PlanningExternalEvent::getTypeName(Session::getPluralNumber()),
                     'page'  => PlanningExternalEvent::getSearchURL(false),
                     'links' => [

@@ -114,7 +114,7 @@ class User extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", "user"];
+        return ['admin', self::class];
     }
 
     public static function getMenuShorcut()

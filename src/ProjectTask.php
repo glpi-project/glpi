@@ -79,7 +79,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public static function getSectorizedDetails(): array
     {
-        return ["tools", "project", "task"];
+        return ['tools', Project::class, self::class];
     }
 
     public static function getIcon()

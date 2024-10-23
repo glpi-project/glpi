@@ -69,7 +69,7 @@ abstract class CommonDropdown extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", self::class, static::class];
+        return ['config', self::class, static::class];
     }
 
 

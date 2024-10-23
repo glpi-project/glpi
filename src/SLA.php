@@ -57,7 +57,7 @@ class SLA extends LevelAgreement
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "slm", "sla"];
+        return ['config', SLM::class, self::class];
     }
 
     public static function getIcon()

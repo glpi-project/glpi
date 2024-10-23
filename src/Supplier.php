@@ -62,7 +62,7 @@ class Supplier extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "supplier"];
+        return ['management', self::class];
     }
 
     public function post_getEmpty()

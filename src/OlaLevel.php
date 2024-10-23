@@ -58,7 +58,7 @@ class OlaLevel extends LevelAgreementLevel
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "ola", "olalevel"];
+        return ['config', OLA::class, self::class];
     }
 
     public function cleanDBonPurge()

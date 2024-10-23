@@ -51,7 +51,7 @@ final class OAuthClient extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "oauthclient"];
+        return ['config', self::class];
     }
 
     public static function getIcon()

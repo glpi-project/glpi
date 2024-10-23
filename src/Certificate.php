@@ -71,7 +71,7 @@ class Certificate extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "certificate"];
+        return ['management', self::class];
     }
 
     /**

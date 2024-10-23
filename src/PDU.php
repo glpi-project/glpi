@@ -65,7 +65,7 @@ class PDU extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "pdu"];
+        return ['assets', self::class];
     }
 
     public function defineTabs($options = [])

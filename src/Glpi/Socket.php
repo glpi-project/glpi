@@ -321,7 +321,7 @@ class Socket extends CommonDBChild
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "cable", "socket"];
+        return ['assets', Cable::class, self::class];
     }
 
     public function rawSearchOptions()

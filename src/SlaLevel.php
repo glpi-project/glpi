@@ -52,7 +52,7 @@ class SlaLevel extends LevelAgreementLevel
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "sla", "slalevel"];
+        return ['config', SLA::class, self::class];
     }
 
     public function cleanDBonPurge()

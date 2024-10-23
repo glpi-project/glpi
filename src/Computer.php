@@ -94,7 +94,7 @@ class Computer extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "computer"];
+        return ['assets', self::class];
     }
 
     public function useDeletedToLockIfDynamic()

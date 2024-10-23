@@ -60,7 +60,7 @@ class Contact extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "contact"];
+        return ['management', self::class];
     }
 
     public function prepareInputForAdd($input)

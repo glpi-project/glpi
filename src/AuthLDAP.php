@@ -185,7 +185,7 @@ class AuthLDAP extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['config', 'auth', 'ldap'];
+        return ['config', Auth::class, self::class];
     }
 
     public static function canCreate(): bool

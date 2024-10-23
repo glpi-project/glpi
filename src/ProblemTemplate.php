@@ -49,7 +49,7 @@ class ProblemTemplate extends ITILTemplate
 
     public static function getSectorizedDetails(): array
     {
-        return ["helpdesk", Problem::class, self::class];
+        return ['helpdesk', Problem::class, self::class];
     }
 
     public function getCloneRelations(): array

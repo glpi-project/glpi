@@ -55,7 +55,7 @@ abstract class CommonDevice extends CommonDropdown
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", self::class, static::class];
+        return ['config', self::class, static::class];
     }
 
     /**

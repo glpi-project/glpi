@@ -54,7 +54,7 @@ class Datacenter extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "datacenter"];
+        return ['management', self::class];
     }
 
     public function prepareInputForAdd($input)
@@ -217,7 +217,7 @@ class Datacenter extends CommonDBTM
     {
         if (static::canView()) {
             return [
-                'dcroom' => [
+                DCRoom::class => [
                     'title' => DCRoom::getTypeName(Session::getPluralNumber()),
                     'page'  => DCRoom::getSearchURL(false),
                     'icon'  => DCRoom::getIcon(),

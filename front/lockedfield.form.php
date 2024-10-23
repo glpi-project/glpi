@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {//print locked field information
-    $menus = ["admin", "glpi\inventory\inventory", "lockedfield"];
+    $menus = ["admin", "glpi\inventory\inventory", "Lockedfield"];
     $lockedfield->displayFullPageForItem($_GET['id'], $menus, [
         'formoptions'  => "data-track-changes=true"
     ]);

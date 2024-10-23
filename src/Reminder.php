@@ -72,7 +72,7 @@ class Reminder extends CommonDBVisible implements
 
     public static function getSectorizedDetails(): array
     {
-        return ["tools", "reminder"];
+        return ['tools', self::class];
     }
 
     public static function canCreate(): bool

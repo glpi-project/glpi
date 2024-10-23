@@ -136,7 +136,7 @@ class Profile extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", "profile"];
+        return ['admin', self::class];
     }
 
     public function defineTabs($options = [])

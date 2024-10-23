@@ -89,7 +89,7 @@ final class Form extends CommonDBTM
     #[Override]
     public static function getSectorizedDetails(): array
     {
-        return ["admin", self::class];
+        return ['admin', self::class];
     }
 
     #[Override]

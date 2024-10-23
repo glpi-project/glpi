@@ -60,7 +60,7 @@ class Link extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "link"];
+        return ['config', self::class];
     }
 
     /**

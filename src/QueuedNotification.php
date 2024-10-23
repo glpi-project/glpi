@@ -53,7 +53,7 @@ class QueuedNotification extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", "queuednotification"];
+        return ['admin', self::class];
     }
 
     public static function canCreate(): bool

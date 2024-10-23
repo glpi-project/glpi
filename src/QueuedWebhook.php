@@ -55,7 +55,7 @@ class QueuedWebhook extends CommonDBChild
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", \Webhook::class];
+        return ['config', Webhook::class];
     }
 
     public static function canCreate(): bool

@@ -114,7 +114,7 @@ class MailCollector extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "mailcollector"];
+        return ['config', self::class];
     }
 
     public static function canCreate(): bool
@@ -135,7 +135,7 @@ class MailCollector extends CommonDBTM
         if (static::canView()) {
             return [
                 'options' => [
-                    'notimportedemail' => [
+                    NotImportedEmail::class => [
                         'links' => [
                             'search' => '/front/notimportedemail.php',
                         ],

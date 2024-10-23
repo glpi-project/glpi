@@ -80,6 +80,6 @@ if (isset($_POST["add"])) {
     $extevent->update($_POST);
     Html::back();
 } else {
-    $menus = ["helpdesk", "planning", "external"];
+    $menus = ["helpdesk", "planning", "PlanningExternalEvent"];
     PlanningExternalEvent::displayFullPageForItem($_GET["id"], $menus);
 }

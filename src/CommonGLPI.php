@@ -482,7 +482,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
-                strtolower($type) => $menu,
+                $type => $menu,
             ];
            // Force overwrite existing menu
             foreach ($data as $key => $val) {

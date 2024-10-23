@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 
 /**
@@ -53,7 +54,7 @@ class RefusedEquipment extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["admin", \Glpi\Inventory\Inventory::class, "refusedequipment"];
+        return ['admin', Inventory::class, self::class];
     }
 
     public function rawSearchOptions()

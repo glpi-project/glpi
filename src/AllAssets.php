@@ -51,7 +51,7 @@ class AllAssets extends CommonGLPI
 
     public static function getSectorizedDetails(): array
     {
-        return ['assets', 'allassets'];
+        return ['assets', self::class];
     }
 
     public static function getTypeName($nb = 0)

@@ -62,7 +62,7 @@ class Cluster extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "cluster"];
+        return ['management', self::class];
     }
 
     public function defineTabs($options = [])

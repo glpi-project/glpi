@@ -65,7 +65,7 @@ class NotImportedEmail extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "mailcollector", "notimportedemails"];
+        return ['config', MailCollector::class, self::class];
     }
 
     public function getSpecificMassiveActions($checkitem = null)

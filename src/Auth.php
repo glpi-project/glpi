@@ -132,7 +132,7 @@ class Auth extends CommonGLPI
                 'links'   => [],
             ];
 
-            $menu['options']['ldap'] = [
+            $menu['options'][AuthLDAP::class] = [
                 'icon'  => AuthLDAP::getIcon(),
                 'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
                 'page'  => AuthLDAP::getSearchURL(false),
@@ -142,7 +142,7 @@ class Auth extends CommonGLPI
                 ],
             ];
 
-            $menu['options']['imap'] = [
+            $menu['options'][AuthMail::class] = [
                 'icon'  => AuthMail::getIcon(),
                 'title' => AuthMail::getTypeName(Session::getPluralNumber()),
                 'page'  => AuthMail::getSearchURL(false),

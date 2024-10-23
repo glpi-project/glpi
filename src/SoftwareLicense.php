@@ -82,7 +82,7 @@ class SoftwareLicense extends CommonTreeDropdown
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "softwarelicense"];
+        return ['management', self::class];
     }
 
     public function pre_updateInDB()

@@ -88,7 +88,7 @@ class Printer extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "printer"];
+        return ['assets', self::class];
     }
 
     /**

@@ -54,7 +54,7 @@ class DCRoom extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["management", "datacenter", "dcroom"];
+        return ['management', Datacenter::class, self::class];
     }
 
     public function defineTabs($options = [])

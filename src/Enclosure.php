@@ -68,7 +68,7 @@ class Enclosure extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["assets", "enclosure"];
+        return ['assets', self::class];
     }
 
     public function defineTabs($options = [])
