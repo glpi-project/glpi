@@ -35,7 +35,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
-Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
+Html::header(__('Transfer'), '', 'admin', 'rule', 'Transfer');
 
 $transfer = new Transfer();
 
