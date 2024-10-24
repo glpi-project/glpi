@@ -39,8 +39,6 @@
 
 use Glpi\Application\ErrorHandler;
 
-Session::checkLoginUser();
-
 // Ensure warnings will not break ajax output.
 ErrorHandler::getInstance()->disableOutput();
 

@@ -45,8 +45,6 @@ global $DB;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (isset($_POST["table"], $_POST["value"])) {
     // Security
     if (!$DB->tableExists($_POST['table'])) {

@@ -43,8 +43,6 @@ global $CFG_GLPI;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 try {
     $ma = new MassiveAction($_POST, $_GET, 'initial');
 } catch (\Throwable $e) {

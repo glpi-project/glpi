@@ -46,8 +46,6 @@ if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = '';
 }
 
-Session::checkLoginUser();
-
 $project = new Project();
 if (isset($_POST["add"])) {
     $project->check(-1, CREATE, $_POST);

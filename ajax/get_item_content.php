@@ -41,8 +41,6 @@ use Glpi\RichText\RichText;
  * Ajax tooltip endpoint for CommonITILObjects
  */
 
-Session::checkLoginUser();
-
 // Read parameters
 $itemtype = $_GET['itemtype'] ?? null;
 $items_id = $_GET['items_id'] ?? null;

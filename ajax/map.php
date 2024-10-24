@@ -38,8 +38,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
     throw new BadRequestHttpException();

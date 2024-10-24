@@ -37,8 +37,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $setupdisplay = new DisplayPreference();
 
 if (isset($_POST['users_id']) && (int) $_POST['users_id'] !== (int) Session::getLoginUserID()) {

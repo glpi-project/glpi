@@ -38,5 +38,4 @@ if (strpos($_SERVER['PHP_SELF'], "ldapdaterestriction.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
 AuthLDAP::showDateRestrictionForm($_POST);

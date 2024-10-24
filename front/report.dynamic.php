@@ -43,7 +43,6 @@ $itemtype = $_GET['item_type'];
 if ($itemtype === 'AllAssets') {
     Session::checkCentralAccess();
 } else {
-    Session::checkValidSessionId();
     $item = new $itemtype();
     if (!$item::canView()) {
         throw new AccessDeniedHttpException();

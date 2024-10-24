@@ -45,6 +45,8 @@ if (!isset($_REQUEST["action"])) {
 $request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
+// Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
+// to be able to adapt the checks depending on the request.
 $embed = false;
 if (
     in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])

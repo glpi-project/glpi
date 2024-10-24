@@ -41,8 +41,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @var CommonItilObject_Item $item_obj
  */
 
-Session::checkLoginUser();
-
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
     throw new BadRequestHttpException('Bad request');
 }

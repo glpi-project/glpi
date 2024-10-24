@@ -45,8 +45,6 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 // Mandatory parameter: validationtemplates_id
 $validationtemplates_id = $_POST['validationtemplates_id'] ?? null;
 if ($validationtemplates_id === null) {

@@ -46,8 +46,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @var CommonITILValidation $validation
  */
 
-Session::checkLoginUser();
-
 if (!($validation instanceof CommonITILValidation)) {
     throw new BadRequestHttpException();
 }

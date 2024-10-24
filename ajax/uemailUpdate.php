@@ -43,8 +43,6 @@ if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
     || (isset($_POST['allow_email']) && $_POST['allow_email'])

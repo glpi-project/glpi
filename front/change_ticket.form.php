@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $item = new Change_Ticket();
 if (isset($_POST["add"])) {
     if (!empty($_POST['tickets_id']) && empty($_POST['changes_id'])) {

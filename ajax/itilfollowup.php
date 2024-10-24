@@ -45,8 +45,6 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 // Mandatory parameter: itilfollowuptemplates_id
 $itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
 if ($itilfollowuptemplates_id === null) {

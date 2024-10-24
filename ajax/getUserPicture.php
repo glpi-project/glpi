@@ -41,8 +41,6 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (!isset($_REQUEST['users_id'])) {
     throw new BadRequestHttpException("Missing users_id parameter");
 } else if (!is_array($_REQUEST['users_id'])) {

@@ -40,8 +40,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     throw new AccessDeniedHttpException();
 }

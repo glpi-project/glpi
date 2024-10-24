@@ -35,8 +35,6 @@
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (
     !isset($_REQUEST['itemtype'])
     && !is_subclass_of($_REQUEST['itemtype'], 'CommonDBTM')

@@ -39,8 +39,6 @@ if (strpos($_SERVER['PHP_SELF'], "private_public.php")) {
 }
 
 if (isset($_POST['is_private'])) {
-    Session::checkLoginUser();
-
     switch ($_POST['is_private']) {
         case true:
             echo "<input type='hidden' name='is_private' value='1'>\n";

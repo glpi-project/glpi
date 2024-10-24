@@ -35,8 +35,6 @@
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $domainrecordtype = new DomainRecordType();
 if (
     !array_key_exists('domainrecordtypes_id', $_REQUEST)
