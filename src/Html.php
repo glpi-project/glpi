@@ -3051,11 +3051,11 @@ HTML;
 
         $date_format = Toolbox::getDateFormat('js') . " H:i:S";
 
-        $min_attr = !empty($p['min'])
-         ? "minDate: '{$p['min']}',"
+        $min_attr = !empty($p['mindate'])
+         ? "minDate: '{$p['mindate']}',"
          : "";
-        $max_attr = !empty($p['max'])
-         ? "maxDate: '{$p['max']}',"
+        $max_attr = !empty($p['maxdate'])
+         ? "maxDate: '{$p['maxdate']}',"
          : "";
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
