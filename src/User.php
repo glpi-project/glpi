@@ -827,8 +827,11 @@ class User extends CommonDBTM
             $input["is_deleted"] = 0;
         }
 
-        if (!isset($input["entities_id"])) {
-            $input["entities_id"] = 0;
+        if (
+            (!isset($input["entities_id"]))
+            || ($input["entities_id"] == -1)
+        ) {
+            $input["entities_id"] = 'NULL'; // = Full structure
         }
 
         if (!isset($input["profiles_id"])) {
