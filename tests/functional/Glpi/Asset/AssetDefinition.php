@@ -666,4 +666,64 @@ class AssetDefinition extends DbTestCase
             $this->variable($category->examples)->isEqualTo($expected[$index]['examples']);
         }
     }
+
+    public function testSyncExtraProfileFields()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            ['system_name' => 'test', 'is_active' => 1]
+        );
+
+        $it = iterator_to_array($DB->request([
+            'SELECT' => ['helpdesk_item_type'],
+            'FROM' => 'glpi_profiles'
+        ]), false);
+        $this->array(
+            array_filter(
+                array_column($it, 'helpdesk_item_type'),
+                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]'), true)
+            )
+        )->isEmpty();
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            'profiles_extra' => [
+                getItemByTypeName('Profile', 'Super-Admin', true) => ['helpdesk_item_type' => 1],
+                getItemByTypeName('Profile', 'Technician', true) => ['helpdesk_item_type' => 1],
+            ]
+        ]))->isTrue();
+        $it = iterator_to_array($DB->request([
+            'SELECT' => ['helpdesk_item_type'],
+            'FROM' => 'glpi_profiles'
+        ]), false);
+        $this->array(
+            array_filter(
+                array_column($it, 'helpdesk_item_type'),
+                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]', true), true)
+            )
+        )->hasSize(2);
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            'profiles_extra' => [
+                getItemByTypeName('Profile', 'Super-Admin', true) => ['helpdesk_item_type' => 1],
+                getItemByTypeName('Profile', 'Technician', true) => ['helpdesk_item_type' => 0],
+            ]
+        ]))->isTrue();
+        $it = iterator_to_array($DB->request([
+            'SELECT' => ['helpdesk_item_type'],
+            'FROM' => 'glpi_profiles'
+        ]), false);
+        $this->array(
+            array_filter(
+                $it,
+                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v['helpdesk_item_type'] ?? '[]', true), true)
+            )
+        )->hasSize(1);
+    }
 }
