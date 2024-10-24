@@ -34,8 +34,9 @@
 
 namespace tests\units\Glpi\Http;
 
-use org\bovigo\vfs\vfsStream;
 use Glpi\Http\Firewall;
+use org\bovigo\vfs\vfsStream;
+use Symfony\Component\HttpFoundation\Request;
 
 class FirewallTest extends \GLPITestCase
 {
@@ -113,7 +114,7 @@ class FirewallTest extends \GLPITestCase
         );
 
         $default_for_core_legacy    = 'authenticated';
-        $default_for_plugins_legacy = 'no_check';
+        $default_for_plugins_legacy = 'authenticated';
         $default_for_symfony_routes = 'central_access';
 
         $default_mapping = [
@@ -137,26 +138,17 @@ class FirewallTest extends \GLPITestCase
             '/myplugindir/pluginb/Route/To/Something'   => $default_for_symfony_routes,
         ];
 
-        foreach ($default_mapping as $path => $expected_strategy) {
-            $this->dotestComputeFallbackStrategy(
-                root_doc:          '',
-                path:              $path,
-                expected_strategy: $expected_strategy,
-            );
-            $this->dotestComputeFallbackStrategy(
-                root_doc:          '/glpi',
-                path:              '/glpi' . $path,
-                expected_strategy: $expected_strategy,
-            );
-            $this->dotestComputeFallbackStrategy(
-                root_doc:          '/path/to/app',
-                path:              '/path/to/app' . $path,
-                expected_strategy: $expected_strategy,
-            );
-        }
-
-        // Hardcoded strategies
         foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
+            // Default strategies
+            foreach ($default_mapping as $path => $expected_strategy) {
+                $this->dotestComputeFallbackStrategy(
+                    root_doc:          $root_doc,
+                    path:              $root_doc . $path,
+                    expected_strategy: $expected_strategy,
+                );
+            }
+
+            // Hardcoded strategies
             // `/front/central.php` has a specific strategy only if some get parameters are defined
             $this->dotestComputeFallbackStrategy(
                 root_doc:          $root_doc,
@@ -220,6 +212,47 @@ class FirewallTest extends \GLPITestCase
                     expected_strategy: 'no_check',
                 );
             }
+
+            // Specific strategies defined by plugins
+            Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^.*/foo.php#', 'faq_access');
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                expected_strategy: 'faq_access',
+            );
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                expected_strategy: 'faq_access',
+            );
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                expected_strategy: $default_for_plugins_legacy, // does not match the pattern
+            );
+            Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/front/dir/#', 'helpdesk_access');
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                expected_strategy: 'faq_access',
+            );
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                expected_strategy: 'faq_access',
+            );
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                expected_strategy: 'helpdesk_access',
+            );
+            Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/PluginRoute$#', 'helpdesk_access');
+            $this->dotestComputeFallbackStrategy(
+                root_doc:          $root_doc,
+                path:              $root_doc . '/marketplace/myplugin/PluginRoute',
+                expected_strategy: $default_for_symfony_routes, // fallback strategies MUST NOT apply to symfony routes
+            );
+            Firewall::resetPluginsStrategies();
         }
     }
 
@@ -229,13 +262,19 @@ class FirewallTest extends \GLPITestCase
         string $expected_strategy
     ) {
         $instance = new Firewall(
-            $root_doc,
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/myplugindir'), vfsStream::url('glpi/marketplace')]
         );
+
+        $request = new Request();
+        $request->server->set('SCRIPT_FILENAME', $root_doc . '/index.php');
+        $request->server->set('SCRIPT_NAME', $root_doc . '/index.php');
+        $request->server->set('REQUEST_URI', $path);
+
         $this->assertEquals(
             $expected_strategy,
-            $instance->computeFallbackStrategy($path)
+            $instance->computeFallbackStrategy($request),
+            $path
         );
     }
 }

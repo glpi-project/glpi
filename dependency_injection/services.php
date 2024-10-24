@@ -35,8 +35,6 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Http\Firewall;
-use Glpi\Http\FirewallInterface;
 use Glpi\Log\LegacyGlobalLogger;
 
 return static function (ContainerConfigurator $container): void {
@@ -60,12 +58,6 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
     $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
-
-    $services->set(Firewall::class)
-        ->factory([Firewall::class, 'createDefault'])
-        ->tag('proxy', ['interface' => FirewallInterface::class])
-        ->lazy()
-    ;
 
     /**
      * Override Symfony's logger.
