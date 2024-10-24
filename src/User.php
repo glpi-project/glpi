@@ -1093,12 +1093,15 @@ class User extends CommonDBTM
         }
 
        // Security on default entity  update
-        if (
-            isset($input['entities_id'])
-            && ($input['entities_id'] > 0)
-            && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
-        ) {
-            unset($input['entities_id']);
+        if (isset($input['entities_id'])) {
+            if (
+                ($input['entities_id'] > 0)
+                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+            ) {
+                unset($input['entities_id']);
+            } elseif ($input['entities_id'] == -1) {
+                $input['entities_id'] = 'NULL';
+            }
         }
 
        // Security on default group  update
@@ -2923,14 +2926,12 @@ HTML;
                 $entrand = mt_rand();
                 echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields["entities_id"],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
                 echo "</td></tr>";
 
@@ -3316,14 +3317,12 @@ HTML;
             ) {
                 $entrand = mt_rand();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __('Default entity') . "</td><td>";
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields['entities_id'],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
             } else {
                 echo "<td colspan='2'>&nbsp;";
