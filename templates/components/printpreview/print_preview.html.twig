@@ -1,0 +1,154 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+{% if is_render == false %}
+    <div class="hr-text mt-2 mb-5">
+        <span style="font-size: 1.5em;" >{{ __('Select tabs to print') }}</span>
+    </div>
+    <form name="print_form"method="post" action="{{ call('PrintPreview::getFormUrl') }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="itemtype" value="{{ itemtype }}">
+        <input type="hidden" name="items_id" value="{{ items_id }}">
+        <div class="container">
+            <div class="row center">
+                {{ alerts.alert_info(
+                    __("If some tabs are not visible, they are empty.")
+                ) }}
+                {% for key, tab in tabs %}
+                    <div class="col-1 my-2 align-items-center text-end">
+                        {{ _inputs.checkbox(key, key == itemtype ? 1 : 0, {'disabled': key == itemtype ? true : false}) }}
+                    </div>
+                    <div class="col-5 text-start my-2">
+                        {{ tab|raw }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="hr my-2"></div>
+            <div class="row">
+                <div class="col-8 my-2">
+                </div>
+                <div class="col-1 my-2 align-items-center text-end">
+                    <input type="checkbox" class="form-check-input" name="select_all" onclick="selectAllCheckboxes(this.checked)"/>
+                </div>
+                <div class="col-3 text-start my-2">
+                    <i class="ti ti-checks me-1"></i>
+                    {{ __('All') }}
+                </div>
+            </div>
+        </div>
+        <div class="hr my-2"></div>
+        <div class="container text-center">
+            <input name="generate_preview" class="btn btn-primary mt-2" type="submit" value="{{ __('Generate preview') }}" />
+        </div>
+    </form>
+    <script>
+        function selectAllCheckboxes(isChecked) {
+            var checkboxes = document.querySelector('form[name="print_form"]').querySelectorAll('input[type=checkbox]:not([disabled])');
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        }
+        $(document).ready(function() {
+            const form = document.querySelector('form[action*="front/massiveaction.php"]');
+            console.log(form);
+            if (form) {
+                var modalDialogs = form.querySelectorAll('.modal-dialog');
+                modalDialogs.forEach(function(modalDialog) {
+                    modalDialog.classList.add('modal-lg');
+                });
+            }
+        })
+    </script>
+{% else %}
+    <div class="preview-summary">
+        <div class="row g-3 justify-content-evenly m-0">
+            <div class="card border-0 shadow-none">
+                <div class="card-header">
+                    <h4 class="card-title ps-4">
+                        <i class="ti ti-file-text me-1"></i>
+                        {{ __('Print preview summary') }}
+                    </h4>
+                </div>
+                <div class="card-body d-flex flex-wrap">
+                    <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+                        <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                            <div class="row flex-row align-items-start flex-grow-1">
+                                <div class="row flex-row">
+                                    {% set print_btn %}
+                                        <button type="button" class="btn btn-primary" id="print-preview" onclick="window.print();">
+                                            <i class="ti ti-printer me-1"></i>
+                                            {{ __('Print preview') }}
+                                        </button>
+                                    {% endset %}
+                                    {{ fields.htmlField('last_preview_date', last_preview_date|formatted_datetime(true), __('Last preview date')) }}
+                                    {{ fields.htmlField('print-preview', print_btn) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let printPreviewButton = document.getElementById('print-preview');
+        if (printPreviewButton) {
+            printPreviewButton.disabled = true;
+        };
+    </script>
+    <div class="preview p-2">
+        <div class="title-card card my-0 border-start-0 border-end-0 border-bottom-0 shadow-none">
+            <div class="card-header">
+                <h4 class="card-title ps-4">
+                    <i class="{{ call(item.getIcon()) }}"></i>{{ item.getTypeName() }}
+                </h4>
+            </div>
+        </div>
+        {% if instance == 'ITILObject' %}
+            {% include 'components/printpreview/itil_print_preview.html.twig' %}
+        {% else %}
+            {% include 'components/printpreview/asset_print_preview.html.twig' %}
+        {% endif %}
+    <div>
+    <script>
+        printPreviewButton = document.getElementById('print-preview');
+        if (printPreviewButton) {
+            printPreviewButton.disabled = false;
+        };
+    </script>
+{% endif %}
