@@ -108,7 +108,7 @@ class Provider
         }
 
         if ($item instanceof User) {
-            $where += getEntitiesRestrictCriteria(Profile_User::getTable());
+            $where += getEntitiesRestrictCriteria(Profile_User::getTable(), '', '', true);
             $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
@@ -124,7 +124,7 @@ class Provider
             ];
         } else {
             if ($item->isEntityAssign()) {
-                $where += getEntitiesRestrictCriteria($item::getTable());
+                $where += getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
             }
             $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],

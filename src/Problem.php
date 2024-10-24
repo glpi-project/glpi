@@ -552,6 +552,10 @@ class Problem extends CommonITILObject
             ]
         ];
 
+        if (Session::haveRight('change', READ)) {
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Problem'));
+        }
+
         return $tab;
     }
 

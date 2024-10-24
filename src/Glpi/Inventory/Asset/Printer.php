@@ -388,12 +388,12 @@ class Printer extends NetworkEquipment
                     //try to find IP (get from discovery) from known IP of Printer
                     //if found refuse update
                     //if no, printer IP have changed so  we allow the update from discovery
-                    $ipadress = new IPAddress($ip);
+                    $ipaddress = new IPAddress($ip);
                     $tmp['mainitems_id'] = $item->fields['id'];
                     $tmp['mainitemtype'] = $item::getType();
                     $tmp['is_dynamic']   = 1;
-                    $tmp['name']         = $ipadress->getTextual();
-                    if ($ipadress->getFromDBByCrit($tmp)) {
+                    $tmp['name']         = $ipaddress->getTextual();
+                    if ($ipaddress->getFromDBByCrit($tmp)) {
                         return false;
                     }
                     return true;

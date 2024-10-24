@@ -610,6 +610,25 @@ class Change extends CommonITILObject
             ]
         ];
 
+        $tab[] = [
+            'id'                 => 'problem',
+            'name'               => Problem::getTypeName(Session::getPluralNumber())
+        ];
+
+        $tab[] = [
+            'id'                 => '165',
+            'table'              => 'glpi_changes_problems',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of problems'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'jointype'           => 'child'
+            ]
+        ];
+
         return $tab;
     }
 
@@ -644,15 +663,31 @@ class Change extends CommonITILObject
             ];
         }
 
-        if ($itemtype == "Ticket") {
-            $tab[] = [
-                'id'                 => 'change',
-                'name'               => __('Changes')
-            ];
+        $tab[] = [
+            'id'                 => 'change',
+            'name'               => self::getTypeName(Session::getPluralNumber())
+        ];
 
+        if ($itemtype == "Ticket") {
             $tab[] = [
                 'id'                 => '210',
                 'table'              => 'glpi_changes_tickets',
+                'field'              => 'id',
+                'name'               => _x('quantity', 'Number of changes'),
+                'forcegroupby'       => true,
+                'usehaving'          => true,
+                'datatype'           => 'count',
+                'massiveaction'      => false,
+                'joinparams'         => [
+                    'jointype'           => 'child'
+                ]
+            ];
+        }
+
+        if ($itemtype == "Problem") {
+            $tab[] = [
+                'id'                 => '211',
+                'table'              => 'glpi_changes_problems',
                 'field'              => 'id',
                 'name'               => _x('quantity', 'Number of changes'),
                 'forcegroupby'       => true,
