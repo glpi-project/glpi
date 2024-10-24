@@ -34,13 +34,17 @@
 
 namespace tests\units\Glpi\Http;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\Firewall;
+use KnowbaseItem;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class FirewallTest extends \GLPITestCase
+class FirewallTest extends \DbTestCase
 {
-    public function testComputeFallbackStrategy()
+    public function testComputeFallbackStrategy(): void
     {
         vfsStream::setup(
             'glpi',
@@ -260,7 +264,7 @@ class FirewallTest extends \GLPITestCase
         string $root_doc,
         string $path,
         string $expected_strategy
-    ) {
+    ): void {
         $instance = new Firewall(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/myplugindir'), vfsStream::url('glpi/marketplace')]
@@ -276,5 +280,166 @@ class FirewallTest extends \GLPITestCase
             $instance->computeFallbackStrategy($request),
             $path
         );
+    }
+
+    public static function provideStrategy(): iterable
+    {
+        yield ['strategy' => Firewall::STRATEGY_AUTHENTICATED];
+        yield ['strategy' => Firewall::STRATEGY_CENTRAL_ACCESS];
+        yield ['strategy' => Firewall::STRATEGY_FAQ_ACCESS];
+        yield ['strategy' => Firewall::STRATEGY_HELPDESK_ACCESS];
+    }
+
+    #[DataProvider('provideStrategy')]
+    public function testApplyStrategyWhenLoggedOut(string $strategy): void
+    {
+        $this->expectException(SessionExpiredException::class);
+
+        $instance = new Firewall();
+        $instance->applyStrategy($strategy);
+    }
+
+    #[DataProvider('provideStrategy')]
+    public function testApplyStrategyWhenSessionIsCorrupted(string $strategy): void
+    {
+        $this->login();
+
+        $_SESSION = [];
+
+        $this->expectException(SessionExpiredException::class);
+
+        $instance = new Firewall();
+        $instance->applyStrategy($strategy);
+    }
+
+    public static function provideStrategyResults(): iterable
+    {
+        $central_users = [
+            TU_USER     => TU_PASS,
+            'glpi'      => 'glpi',
+            'tech'      => 'tech',
+            'normal'    => 'normal',
+        ];
+
+        foreach ($central_users as $login => $pass) {
+            yield [
+                'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_FAQ_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_HELPDESK_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('The current profile does not use the simplified interface'),
+            ];
+        }
+
+        $helpdesk_users = [
+            'post-only' => 'postonly',
+        ];
+        foreach ($helpdesk_users as $login => $pass) {
+            yield [
+                'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('The current profile does not use the standard interface'),
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_FAQ_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_HELPDESK_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+        }
+    }
+
+    #[DataProvider('provideStrategyResults')]
+    public function testApplyStrategyWithUser(string $strategy, array $credentials, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        }
+
+        $instance = new Firewall();
+        $instance->applyStrategy($strategy);
+    }
+
+    public static function provideFaqAccessStrategyResults(): iterable
+    {
+        yield [
+            'use_public_faq'    => false,
+            'knowbase_rights'   => KnowbaseItem::READFAQ,
+            'exception'         => null,
+        ];
+
+        yield [
+            'use_public_faq'    => false,
+            'knowbase_rights'   => READ,
+            'exception'         => null,
+        ];
+
+        yield [
+            'use_public_faq'    => false,
+            'knowbase_rights'   => 0,
+            'exception'         => new AccessDeniedHttpException('Missing FAQ right'),
+        ];
+
+        yield [
+            'use_public_faq'    => true,
+            'knowbase_rights'   => KnowbaseItem::READFAQ,
+            'exception'         => null,
+        ];
+
+        yield [
+            'use_public_faq'    => true,
+            'knowbase_rights'   => READ,
+            'exception'         => null,
+        ];
+
+        yield [
+            'use_public_faq'    => true,
+            'knowbase_rights'   => 0,
+            'exception'         => null,
+        ];
+    }
+
+    #[DataProvider('provideFaqAccessStrategyResults')]
+    public function testApplyStrategyFaqAccess(bool $use_public_faq, int $knowbase_rights, ?\Throwable $exception): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_public_faq'] = $use_public_faq;
+
+        $_SESSION['glpiactiveprofile']['knowbase'] = $knowbase_rights;
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        }
+
+        $instance = new Firewall();
+        $instance->applyStrategy(Firewall::STRATEGY_FAQ_ACCESS);
     }
 }
