@@ -38,8 +38,6 @@ use Glpi\Event;
 /** @var \DBmysql $DB */
 global $DB;
 
-Session::checkLoginUser();
-
 $solution = new ITILSolution();
 $track = getItemForItemtype($_POST['itemtype']);
 $track->getFromDB($_POST['items_id']);

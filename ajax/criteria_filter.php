@@ -40,8 +40,6 @@ use Glpi\Exception\Http\UnprocessableEntityHttpException;
 use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
 
-Session::checkLoginUser();
-
 // Read endpoint
 $action = $_POST['action'] ?? false;
 switch ($action) {

@@ -46,8 +46,6 @@ if (isset($_POST['language']) && !Session::getLoginUserID()) {
     Html::back();
 }
 
-Session::checkLoginUser();
-
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
 }

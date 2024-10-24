@@ -53,8 +53,6 @@ global $CFG_GLPI;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 switch ($_SERVER['REQUEST_METHOD']) {
    // GET request: build the impact graph for a given asset
     case 'GET':

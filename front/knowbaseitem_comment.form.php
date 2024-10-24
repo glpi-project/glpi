@@ -37,8 +37,6 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $comment = new KnowbaseItem_Comment();
 if (!isset($_POST['knowbaseitems_id'])) {
     Session::addMessageAfterRedirect(__s('Mandatory fields are not filled!'), false, ERROR);

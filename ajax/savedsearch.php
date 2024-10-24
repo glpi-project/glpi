@@ -36,8 +36,6 @@
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $savedsearch = new SavedSearch();
 
 if (isset($_POST["name"])) {

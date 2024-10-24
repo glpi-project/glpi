@@ -42,8 +42,6 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownDelegationUsers.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 $_POST['_users_id_requester'] = 0;
 $_POST['_right'] = "delegate";
 if ($_POST["nodelegate"] == 1) {

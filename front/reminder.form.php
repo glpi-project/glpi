@@ -39,7 +39,6 @@ if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
 $remind = new Reminder();
-Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
     $remind->check(-1, CREATE, $_POST);

@@ -37,8 +37,6 @@ use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
-Session::checkValidSessionId();
-
 $link = new ManualLink();
 if (array_key_exists('id', $_REQUEST) && !$link->getFromDB($_REQUEST['id'])) {
     throw new NotFoundHttpException('No item found for given id');

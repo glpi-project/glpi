@@ -42,8 +42,6 @@ if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 // Non define case
 if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     if (!isset($_POST["field"])) {

@@ -64,8 +64,6 @@ if (
     }
 }
 
-Session::checkValidSessionId();
-
 Html::helpHeader(__('Home'));
 
 $password_alert = "";

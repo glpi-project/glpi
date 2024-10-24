@@ -42,8 +42,6 @@ if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
     $prefix = '';
     $suffix = '';

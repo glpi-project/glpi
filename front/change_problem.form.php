@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $item = new Change_Problem();
 if (isset($_POST["add"])) {
     $item->check(-1, CREATE, $_POST);

@@ -41,8 +41,6 @@ if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 // save value and force boolval for security of $_REQUEST['only_number]
 $only_number = boolval($_REQUEST['only_number'] ?? false);
 

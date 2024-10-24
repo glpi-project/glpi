@@ -40,8 +40,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 header("Content-Type: application/json; charset=UTF-8");
 
-Session::checkLoginUser();
-
 // Tech only
 if (Session::getCurrentInterface() !== "central") {
     throw new AccessDeniedHttpException();

@@ -42,8 +42,6 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (isset($_POST['action']) && isset($_POST['id'])) {
     $agent = new Agent();
     if (!$agent->getFromDB($_POST['id'])) {

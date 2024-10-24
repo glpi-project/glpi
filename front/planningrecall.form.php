@@ -39,8 +39,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @since 0.84.3
  */
 
-Session::checkLoginUser();
-
 $pr = new PlanningRecall();
 
 if (isset($_POST["update"])) {

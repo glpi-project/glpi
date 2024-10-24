@@ -42,7 +42,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
  */
 global $CFG_GLPI, $DB;
 
-Session::checkLoginUser();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {

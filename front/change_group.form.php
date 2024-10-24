@@ -46,8 +46,6 @@ global $CFG_GLPI;
 $link = new Change_Group();
 $item = new Change();
 
-Session::checkLoginUser();
-
 if (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);

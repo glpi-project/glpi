@@ -42,8 +42,6 @@ if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 /** @var Rule $rule */
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
     $criterias = $rule->getAllCriteria();

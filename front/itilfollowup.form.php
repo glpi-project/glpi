@@ -39,8 +39,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 /** @var \DBmysql $DB */
 global $DB;
 
-Session::checkLoginUser();
-
 $fup = new ITILFollowup();
 
 $redirect = null;

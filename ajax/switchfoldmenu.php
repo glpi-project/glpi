@@ -36,8 +36,6 @@
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $user = new User();
 $success = $user->update(
     [

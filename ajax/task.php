@@ -46,8 +46,6 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 // Mandatory parameter: tasktemplates_id
 $tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
 if ($tasktemplates_id === null) {
