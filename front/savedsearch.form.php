@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -64,6 +66,42 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET['create_notif'])) {
     $savedsearch->check($_GET['id'], UPDATE);
     $savedsearch->createNotif();
+    Html::back();
+} else if (isset($_POST["addvisibility"])) {
+    if (
+        isset($_POST["_type"]) && !empty($_POST["_type"])
+        && isset($_POST["savedsearches_id"]) && $_POST["savedsearches_id"]
+    ) {
+        $item = null;
+        switch ($_POST["_type"]) {
+            case 'User':
+                if (isset($_POST['users_id']) && $_POST['users_id']) {
+                    $item = new SavedSearch_UserTarget();
+                    $_POST['itemtype'] = $savedsearch->getType();
+                }
+                break;
+
+            case 'Group':
+                if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+                    $item = new Group_SavedSearch();
+                }
+                break;
+            case 'Entity':
+                $item = new Entity_SavedSearch();
+                break;
+        }
+        if (!is_null($item)) {
+            $item->add($_POST);
+            Event::log(
+                $_POST["savedsearches_id"],
+                "savedsearch",
+                4,
+                "tools",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+            );
+        }
+    }
     Html::back();
 } else {
     $menus = [
