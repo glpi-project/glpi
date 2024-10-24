@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $impact_item = new ImpactItem();
 
@@ -42,7 +42,7 @@ if (isset($_POST["update"])) {
 
    // Can't update, id is missing
     if ($id === 0) {
-        Response::sendError(400, "Can't update the target impact item, id is missing", Response::CONTENT_TYPE_TEXT_HTML);
+        throw new BadRequestHttpException("Can't update the target impact item, id is missing");
     }
 
    // Load item and check rights

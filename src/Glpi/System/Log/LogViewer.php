@@ -79,7 +79,7 @@ final class LogViewer extends CommonGLPI
             ];
 
             if (Event::canView()) {
-                $menu['options']['Glpi\\Event'] = [
+                $menu['options'][Event::class] = [
                     'title' => Event::getTypeName(Session::getPluralNumber()),
                     'page'  => Event::getSearchURL(false),
                     'icon'  => Event::getIcon(),

@@ -63,6 +63,11 @@ class NotImportedEmail extends CommonDBTM
         return _n('Refused email', 'Refused emails', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', MailCollector::class, self::class];
+    }
+
     public function getSpecificMassiveActions($checkitem = null)
     {
 

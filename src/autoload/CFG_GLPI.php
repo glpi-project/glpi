@@ -529,7 +529,7 @@ $CFG_GLPI['javascript'] = [
     ],
     'management' => [
         'datacenter' => [
-            'dcroom' => ['gridstack', 'rack']
+            'DCRoom' => ['gridstack', 'rack']
         ],
     ],
     'config' => [
@@ -541,7 +541,7 @@ $CFG_GLPI['javascript'] = [
             'ITILValidationTemplate' => ['tinymce'],
         ],
         'notification' => [
-            'notificationtemplate' => ['tinymce']
+            'NotificationTemplate' => ['tinymce']
         ],
         'plugin' => [
             'marketplace' => ['marketplace']

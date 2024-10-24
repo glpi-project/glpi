@@ -82,7 +82,7 @@ final class ApiController extends AbstractController
             // Include the legacy API entrypoint and then die
             $api = new \Glpi\Api\APIRest();
             $api->call();
-            die();
+            return;
         }
 
         $supported_versions = Router::getAPIVersions();

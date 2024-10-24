@@ -84,28 +84,6 @@ header {
     }
 }
 
-// Hack to hide some columns until we can add proper display preferences for
-// this list.
-.tickets-banner [data-searchopt-id="1"],
-.tickets-banner  [data-searchopt-content-id="1"],
-.tickets-banner [data-searchopt-id="2"],
-.tickets-banner  [data-searchopt-content-id="2"],
-.tickets-banner [data-searchopt-id="80"],
-.tickets-banner  [data-searchopt-content-id="80"],
-.tickets-banner [data-searchopt-id="12"],
-.tickets-banner  [data-searchopt-content-id="12"],
-.tickets-banner [data-searchopt-id="19"],
-.tickets-banner  [data-searchopt-content-id="19"],
-.tickets-banner [data-searchopt-id="15"],
-.tickets-banner  [data-searchopt-content-id="15"] {
-    display: table-cell !important;
-}
-
-.tickets-banner [data-searchopt-id],
-.tickets-banner  [data-searchopt-content-id] {
-    display: none;
-}
-
 .helpdesk-home-container {
     height: 100vh;
 

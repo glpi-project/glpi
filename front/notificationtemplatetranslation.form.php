@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
         $options = [];
     }
 
-    $menus = ["config", "notification", "notificationtemplate"];
+    $menus = ["config", "notification", "NotificationTemplate"];
     NotificationTemplateTranslation::displayFullPageForItem(
         $_GET["id"],
         $menus,

@@ -55,7 +55,7 @@ if (
     TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
         'messages_only' => true,
     ]);
-    exit();
+    return;
 }
 
 $user = new User();
@@ -75,5 +75,3 @@ if (isset($_REQUEST['password_forget_token'])) {
         User::showPasswordForgetRequestForm();
     }
 }
-
-exit();

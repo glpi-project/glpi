@@ -86,6 +86,10 @@ class Printer extends CommonDBTM
         return _n('Printer', 'Printers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

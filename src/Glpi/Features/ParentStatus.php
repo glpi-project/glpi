@@ -137,7 +137,11 @@ trait ParentStatus
                 ) {
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
-                    if (!empty($this->fields['begin']) && $parentitem->isStatusExists(CommonITILObject::PLANNED)) {
+                    if (
+                        ($this instanceof \CommonITILTask)
+                        && ($this->countPlannedTasks() > 0)
+                        && $parentitem->isStatusExists(CommonITILObject::PLANNED)
+                    ) {
                         $update['status'] = CommonITILObject::PLANNED;
                     } else {
                         $update['status'] = CommonITILObject::ASSIGNED;
@@ -166,30 +170,24 @@ trait ParentStatus
 
         if (!$is_set_pending) {
             if (
-                !empty($this->fields['begin'])
+                $this instanceof \CommonITILTask
+                && $this->countPlannedTasks() > 0
                 && $parentitem->isStatusExists(CommonITILObject::PLANNED)
-                && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
-                    || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
-                    || $needupdateparent)
+                && (
+                    in_array(
+                        $parentitem->fields["status"],
+                        [CommonITILObject::INCOMING, CommonITILObject::ASSIGNED, CommonITILObject::PLANNED],
+                        true
+                    )
+                    || $needupdateparent
+                )
             ) {
                 $input['_status'] = CommonITILObject::PLANNED;
             } elseif (
-                $parentitem->fields["status"] == CommonITILObject::PLANNED
-                && in_array('begin', $this->updates)
-                && $this->isField('begin')
+                $this instanceof \CommonITILTask
+                && $parentitem->fields["status"] == CommonITILObject::PLANNED
             ) {
-                /** @var \DBmysql $DB */
-                global $DB;
-                $criteria = [
-                    'DISTINCT' => true,
-                    'FROM' => $this->getTable(),
-                    'WHERE' => [
-                        $parentitem->getForeignKeyField() => $parentitem->getID(),
-                        ['NOT'   => ['begin' => null]]
-                    ],
-                ];
-                $iterator = $DB->request($criteria);
-                if ($iterator->numrows() > 0) {
+                if ($this->countPlannedTasks() > 0) {
                     $input['_status'] = CommonITILObject::PLANNED;
                 } elseif (
                     $parentitem->isStatusExists(CommonITILObject::ASSIGNED)

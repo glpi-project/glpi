@@ -34,6 +34,7 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Session;
 use Auth;
 use DBConnection;
@@ -67,19 +68,23 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
 
         Config::detectRootDoc();
 
-        $skip_checks = false;
+        $skip_db_checks = false;
+        $skip_maintenance_checks = false;
         if (array_key_exists('REQUEST_URI', $_SERVER)) {
-            $no_checks_scripts = [
+            if (preg_match('#^' . $CFG_GLPI['root_doc'] . '/front/(css|locale).php#', $_SERVER['REQUEST_URI']) === 1) {
+                $skip_db_checks  = true;
+                $skip_maintenance_checks = true;
+            }
+
+            $no_db_checks_scripts = [
                 '#^' . $CFG_GLPI['root_doc'] . '/$#',
                 '#^' . $CFG_GLPI['root_doc'] . '/index.php#',
-                '#^' . $CFG_GLPI['root_doc'] . '/front/css.php#',
-                '#^' . $CFG_GLPI['root_doc'] . '/front/locale.php#',
                 '#^' . $CFG_GLPI['root_doc'] . '/install/install.php#',
                 '#^' . $CFG_GLPI['root_doc'] . '/install/update.php#',
             ];
-            foreach ($no_checks_scripts as $pattern) {
+            foreach ($no_db_checks_scripts as $pattern) {
                 if (preg_match($pattern, $_SERVER['REQUEST_URI']) === 1) {
-                    $skip_checks = true;
+                    $skip_db_checks = true;
                     break;
                 }
             }
@@ -100,7 +105,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             //Database connection
             if (
                 !DBConnection::establishDBConnection(false, false, false)
-                && !$skip_checks
+                && !$skip_db_checks
             ) {
                 DBConnection::displayMySQLError();
                 die(1);
@@ -109,12 +114,12 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             //Options from DB, do not touch this part.
             if (
                 !Config::loadLegacyConfiguration()
-                && !$skip_checks
+                && !$skip_db_checks
             ) {
                 echo "Error accessing config table";
                 exit();
             }
-        } elseif (!$skip_checks) {
+        } elseif (!$skip_db_checks) {
             Session::loadLanguage('', false);
 
             if (!isCommandLine()) {
@@ -194,7 +199,7 @@ TWIG, $twig_params);
 
         // Check maintenance mode
         if (
-            !$skip_checks
+            !$skip_maintenance_checks
             && isset($CFG_GLPI["maintenance_mode"])
             && $CFG_GLPI["maintenance_mode"]
         ) {
@@ -218,7 +223,7 @@ TWIG, $twig_params);
         }
 
         // Check version
-        if (!$skip_checks && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (!$skip_db_checks && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             Session::checkCookieSecureConfig();
 
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
@@ -236,8 +241,11 @@ TWIG, $twig_params);
             /** @var \DBmysql $DB */
             global $DB;
 
+            $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+            $requirements->add(new DatabaseTablesEngine($DB));
+
             $twig_params = [
-                'core_requirements' => (new RequirementsManager())->getCoreRequirementList($DB),
+                'core_requirements' => $requirements,
                 'try_again'         => __('Try again'),
                 'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
                 'upgrade'           => _sx('button', 'Upgrade'),

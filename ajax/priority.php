@@ -35,8 +35,6 @@
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (
     isset($_REQUEST["urgency"])
     && isset($_REQUEST["impact"])

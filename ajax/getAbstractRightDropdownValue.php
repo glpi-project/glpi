@@ -35,7 +35,6 @@
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
-Session::checkLoginUser();
 
 function show_rights_dropdown(string $class)
 {

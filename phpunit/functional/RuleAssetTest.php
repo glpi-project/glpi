@@ -413,6 +413,47 @@ class RuleAssetTest extends DbTestCase
         }
     }
 
+    public function testTriggerUpdateCommentRegex()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // prepare rule
+        $this->createRuleCommentRegex(\RuleAsset::ONUPDATE);
+        $this->createRuleLocation(\RuleAsset::ONUPDATE);
+
+        foreach ($CFG_GLPI['asset_types'] as $itemtype) {
+            $item     = new $itemtype();
+            $item_input = [
+                'name'        => "$itemtype 3",
+                'entities_id' => $root_ent_id,
+                'is_dynamic'  => 1,
+                'comment'     => 'mycomment'
+            ];
+            if ($itemtype == 'SoftwareLicense') {
+                $item_input['softwares_id'] = 1;
+            }
+            $items_id = $item->add($item_input);
+            $this->assertGreaterThan(0, (int)$items_id);
+
+            // Trigger update
+            $update = $item->update([
+                'id'    => $item->getID(),
+                'name'  => 'updated name',
+                '_auto' => 1,
+            ]);
+            $this->assertTrue($update);
+
+            $this->assertTrue((bool)$item->getFromDB($items_id));
+            $this->assertEquals($itemtype . 'test', (string)$item->getField('comment'));
+            $this->assertGreaterThan(0, (int)$item->getField('locations_id'));
+        }
+    }
+
     private function createRuleComment($condition)
     {
         $ruleasset  = new \RuleAsset();
@@ -447,6 +488,44 @@ class RuleAssetTest extends DbTestCase
             'action_type' => 'assign',
             'field'       => 'comment',
             'value'       => 'comment1'
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+    }
+
+    private function createRuleCommentRegex($condition)
+    {
+        $ruleasset  = new \RuleAsset();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruleid = $ruleasset->add($ruleinput = [
+            'name'         => "rule comment regex",
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => $condition,
+            'is_recursive' => 1
+        ]);
+        $this->checkInput($ruleasset, $ruleid, $ruleinput);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruleid,
+            'criteria'  => '_itemtype',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/(.*)/s"
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruleid,
+            'criteria'  => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 1
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruleid,
+            'action_type' => 'regex_result',
+            'field'       => 'comment',
+            'value'       => '#0test'
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }

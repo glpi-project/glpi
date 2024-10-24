@@ -69,5 +69,5 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-$menus = ["config", "auth", "imap"];
+$menus = ["config", "auth", "AuthMail"];
 AuthMail::displayFullPageForItem($_GET['id'], $menus);

@@ -90,6 +90,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["config", "slm", "ola"];
+    $menus = ["config", "slm", "OLA"];
     OLA::displayFullPageForItem($_GET["id"], $menus);
 }

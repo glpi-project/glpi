@@ -102,11 +102,20 @@ class MailCollector extends CommonDBTM
         'passwd',
     ];
 
+    public $history_blacklist = [
+        'errors',
+        'last_collect_date',
+    ];
+
     public static function getTypeName($nb = 0)
     {
         return _n('Receiver', 'Receivers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
 
     public static function canCreate(): bool
     {
@@ -126,7 +135,7 @@ class MailCollector extends CommonDBTM
         if (static::canView()) {
             return [
                 'options' => [
-                    'notimportedemail' => [
+                    NotImportedEmail::class => [
                         'links' => [
                             'search' => '/front/notimportedemail.php',
                         ],

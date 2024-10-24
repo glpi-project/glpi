@@ -39,8 +39,6 @@ if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }
 
-Session::checkLoginUser();
-
 // as _actors virtual field stores json, bypass automatic escaping
 if (isset($_POST['_actors'])) {
     $_POST['_actors'] = json_decode($_POST['_actors'], true);

@@ -35,13 +35,11 @@
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\Response;
-
-Session::checkValidSessionId();
+use Glpi\Exception\Http\NotFoundHttpException;
 
 $link = new ManualLink();
 if (array_key_exists('id', $_REQUEST) && !$link->getFromDB($_REQUEST['id'])) {
-    Response::sendError(404, 'No item found for given id', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new NotFoundHttpException('No item found for given id');
 }
 
 if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {

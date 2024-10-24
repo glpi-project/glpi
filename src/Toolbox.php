@@ -2995,6 +2995,16 @@ HTML;
     {
         $fg_color = "FFFFFF";
         if ($color !== "") {
+            if (preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/', $color, $matches)) {
+                $rgb_color = [
+                    "R" => intval($matches[1]),
+                    "G" => intval($matches[2]),
+                    "B" => intval($matches[3])
+                ];
+                $alpha = isset($matches[4]) ? str_pad(dechex((int)round(floatval($matches[4]) * 255)), 2, '0', STR_PAD_LEFT) : '';
+                $color = Color::rgbToHex($rgb_color) . $alpha;
+            }
+
             $color = str_replace("#", "", $color);
 
            // if transparency present, get only the color part

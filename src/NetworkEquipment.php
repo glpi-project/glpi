@@ -85,13 +85,17 @@ class NetworkEquipment extends CommonDBTM
         return _n('Network device', 'Network devices', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
 
     public static function getAdditionalMenuOptions()
     {
 
         if (static::canView()) {
             $options = [
-                'networkport' => [
+                NetworkPort::class => [
                     'title' => NetworkPort::getTypeName(Session::getPluralNumber()),
                     'page'  => NetworkPort::getFormURL(false),
                 ],

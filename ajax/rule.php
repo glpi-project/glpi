@@ -36,8 +36,6 @@
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
-Session::checkLoginUser();
-
 switch ($_REQUEST['action']) {
     case "move_rule":
         $rule_collection = getItemForItemtype($_POST['collection_classname']);

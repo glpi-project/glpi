@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Features\CacheableListInterface;
+use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -194,6 +195,15 @@ class CommonDBTM extends CommonGLPI
     public $right;
 
     private static $search_options_cache = [];
+
+    /**
+     * If this method return true, a third 'Helpdesk view' display preference
+     * will be configurable and used for the helpdesk interface.
+     */
+    public static function supportHelpdeskDisplayPreferences(): bool
+    {
+        return false;
+    }
 
     /**
      * Return the table used to store this object
@@ -1856,11 +1866,7 @@ class CommonDBTM extends CommonGLPI
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
         ) {
             $fields = array_values($this->updates);
-            $idx = array_search('date_mod', $fields);
-            if ($idx !== false) {
-                unset($fields[$idx]);
-            }
-
+            $fields = array_filter($fields, fn($f) => $f !== 'date_mod');
             $stmt = $DB->prepare(
                 $DB->buildInsert(
                     $lockedfield->getTable(),
@@ -4065,6 +4071,13 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
+        if (
+            Toolbox::hasTrait(static::class, Clonable::class)
+            && $this->isTemplate()
+        ) {
+            $excluded[] = '*:clone';
+        }
+
         return $excluded;
     }
 
@@ -5754,7 +5767,13 @@ TWIG, $twig_params);
                 $groups_user = $group_user->find(['users_id' => $input["users_id"]]);
                 $input['_groups_id_of_user'] = [];
                 foreach ($groups_user as $group) {
-                    $input['_groups_id_of_user'][] = $group['groups_id'];
+                    $item = new Group();
+                    if (
+                        $item->getFromDB($group['groups_id'])
+                        && $item->fields['is_itemgroup'] == 1
+                    ) {
+                        $input['_groups_id_of_user'][] = $group['groups_id'];
+                    }
                 }
                 $input['_locations_id_of_user']      = $user->fields['locations_id'];
                 $input['_default_groups_id_of_user'] = $user->fields['groups_id'];

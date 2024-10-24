@@ -46,9 +46,6 @@ abstract class ITILTemplate extends CommonDropdown
    // From CommonDBTM
     public $dohistory                 = true;
 
-   // From CommonDropdown
-    public $first_level_menu          = "helpdesk";
-
     public $display_dropdowntitle     = false;
 
     public static $rightname                 = 'itiltemplate';

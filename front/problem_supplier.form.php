@@ -42,7 +42,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 $link = new Problem_Supplier();
 
-Session::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {

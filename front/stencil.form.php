@@ -34,15 +34,13 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Http\Response;
-
-Session::checkLoginUser();
+use Glpi\Exception\Http\NotFoundHttpException;
 
 if (isset($_POST['id'])) {
     $stencil = Stencil::getStencilFromID($_POST['id']);
 
     if (!$stencil) {
-        Response::sendError(404, 'Stencil not found');
+        throw new NotFoundHttpException('Stencil not found');
     }
 
     $stencil->check($_POST['id'], READ);

@@ -2545,8 +2545,9 @@ CREATE TABLE `glpi_displaypreferences` (
   `num` int NOT NULL DEFAULT '0',
   `rank` int NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
+  `interface` varchar(255) NOT NULL DEFAULT 'central',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`),
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
   KEY `rank` (`rank`),
   KEY `num` (`num`),
   KEY `itemtype` (`itemtype`)
@@ -5003,9 +5004,11 @@ CREATE TABLE `glpi_notificationtargets` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '0',
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
+  `is_exclusion` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`),
-  KEY `notifications_id` (`notifications_id`)
+  KEY `notifications_id` (`notifications_id`),
+  KEY `is_exclusion` (`is_exclusion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

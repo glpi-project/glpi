@@ -62,6 +62,11 @@ class Group extends CommonTreeDropdown
         return _n('Group', 'Groups', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', self::class];
+    }
+
     public static function getAdditionalMenuOptions()
     {
         if (Session::haveRight('user', User::UPDATEAUTHENT)) {
@@ -485,6 +490,8 @@ class Group extends CommonTreeDropdown
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];
+
+        $tab = array_merge($tab, Group_User::rawSearchOptionsToAdd());
 
         return $tab;
     }

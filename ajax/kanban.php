@@ -39,7 +39,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
-use Glpi\Http\Response;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
@@ -47,10 +46,8 @@ $this->setAjax();
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (!isset($_REQUEST['action'])) {
-    Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException("Missing action parameter");
 }
 $action = $_REQUEST['action'];
 
@@ -64,7 +61,7 @@ if (isset($_REQUEST['itemtype'])) {
     if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
        // Bad request
        // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
-        Response::sendError(400, "Invalid itemtype parameter", Response::CONTENT_TYPE_TEXT_HTML);
+        throw new BadRequestHttpException("Invalid itemtype parameter");
     }
     /** @var CommonDBTM $item */
     $itemtype = $_REQUEST['itemtype'];
@@ -119,7 +116,7 @@ if ($item !== null) {
 $checkParams = static function ($required) {
     foreach ($required as $param) {
         if (!isset($_REQUEST[$param])) {
-            Response::sendError(400, "Missing $param parameter");
+            throw new BadRequestHttpException("Missing $param parameter");
         }
     }
 };

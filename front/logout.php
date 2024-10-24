@@ -71,9 +71,9 @@ $toADD = "";
 
 // Redirect management
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-    $toADD = "?redirect=" . $_POST['redirect'];
+    $toADD = "?redirect=" . rawurlencode($_POST['redirect']);
 } else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
-    $toADD = "?redirect=" . $_GET['redirect'];
+    $toADD = "?redirect=" . rawurlencode($_GET['redirect']);
 }
 
 if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {

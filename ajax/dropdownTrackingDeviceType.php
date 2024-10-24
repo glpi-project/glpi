@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -41,15 +41,13 @@ global $CFG_GLPI;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 // Read parameters
 $context  = $_POST['context'] ?? '';
 $itemtype = $_POST["itemtype"] ?? '';
 
 // Check for required params
 if (empty($itemtype)) {
-    Response::sendError(400, "Bad request: itemtype cannot be empty", Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException("Bad request: itemtype cannot be empty");
 }
 
 // Check if itemtype is valid in the given context

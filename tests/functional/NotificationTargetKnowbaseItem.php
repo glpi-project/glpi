@@ -107,7 +107,8 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                     'id' => $ntarget->fields['id'],
                     'items_id' => $group->fields['id'],
                     'type' => Notification::GROUP_TYPE,
-                    'notifications_id' => $kbnotif['id']
+                    'notifications_id' => $kbnotif['id'],
+                    'is_exclusion' => 0,
                 ]
             );
         }

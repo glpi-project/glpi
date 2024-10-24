@@ -4416,7 +4416,7 @@ HTML,
         $this->login('post-only', 'postonly');
         $this->assertFalse((bool)$ticket->canAddFollowups());
 
-       // Add user right
+        // Add user rights
         $DB->update(
             'glpi_profilerights',
             [
@@ -4428,7 +4428,25 @@ HTML,
             ]
         );
 
-       // User is requester and have ADD_AS_GROUP, he should be able to add followup
+        // User is requester and have ADD_AS_GROUP bot not UPDATEMY, he shouldn't be able to add followup
+        $this->login();
+        $this->assertfalse((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertFalse((bool)$ticket->canAddFollowups());
+
+        // Add user rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights' => \ITILFollowup::ADD_AS_GROUP | \ITILFollowup::ADDMY
+            ],
+            [
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
+            ]
+        );
+
+        // User is requester and have ADD_AS_GROUP & UPDATEMY, he should be able to add followup
         $this->login();
         $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
@@ -4623,13 +4641,13 @@ HTML,
         $this->assertGreaterThan(0, (int) $ticket_user->add($input_ticket_user));
         $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
 
-       // Cannot add followup as user do not have ADD_AS_FOLLOWUP right
+        // Cannot add followup as user do not have ADD_AS_OBSERVER right
         $this->login();
         $this->assertFalse((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
         $this->assertFalse((bool)$ticket->canAddFollowups());
 
-       // Add user right
+        // Add user right
         $DB->update(
             'glpi_profilerights',
             [
@@ -4641,7 +4659,62 @@ HTML,
             ]
         );
 
-       // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+        // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+        $this->login();
+        $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertTrue((bool)$ticket->canAddFollowups());
+
+        // Remove user as observer
+        $this->assertGreaterThan(0, (int) $ticket_user->deleteByCriteria([
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $post_only_id,
+            'type'       => \CommonITILActor::OBSERVER
+        ]));
+        $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
+
+        // Add user to a group and assign the group as observer
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->assertGreaterThan(0, (int)$group_id);
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int)$group_user->add([
+                'groups_id' => $group_id,
+                'users_id'  => $post_only_id,
+            ])
+        );
+
+        $group_ticket = new \Group_Ticket();
+        $input_group_ticket = [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group_id,
+            'type'       => \CommonITILActor::OBSERVER
+        ];
+        $this->assertGreaterThan(0, (int) $group_ticket->add($input_group_ticket));
+        $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
+
+        // User is in a group that is observer and has ADD_AS_OBSERVER rights but not ADD_AS_GROUP
+        $this->login();
+        $this->assertFalse((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertFalse((bool)$ticket->canAddFollowups());
+
+        // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights' => \ITILFollowup::ADD_AS_OBSERVER | \ITILFollowup::ADD_AS_GROUP
+            ],
+            [
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
+            ]
+        );
+
+        // User is observer and have ADD_AS_OBSERVER & ADD_AS_GROUP, he should be able to add followup
         $this->login();
         $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
@@ -7042,6 +7115,17 @@ HTML
             ]
         );
 
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task assigned to normal user',
+                'is_private'    => 1,
+                'users_id_tech' => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
         // tech has rights to see all private followups/tasks
         yield [
             'login'              => 'tech',
@@ -7055,6 +7139,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task assigned to normal user',
                 'private task of tech user',
                 'public task',
             ],
@@ -7072,6 +7157,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task assigned to normal user',
                 'public task',
             ],
         ];
@@ -7107,6 +7193,7 @@ HTML
                 ],
                 'expected_tasks'     => [
                     'private task of normal user',
+                    'private task assigned to normal user',
                     'private task of tech user',
                     'public task',
                 ],

@@ -62,12 +62,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/stat.graph.php',
 ];
 $ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/front/user.form.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysFalse
 	'message' => '#^If condition is always false\\.$#',
 	'count' => 1,
@@ -172,7 +166,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: foreach.emptyArray
 	'message' => '#^Empty array passed to foreach\\.$#',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
@@ -281,12 +275,6 @@ $ignoreErrors[] = [
 	// identifier: nullCoalesce.expr
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
@@ -1095,13 +1083,13 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#11 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
 	// identifier: parameter.defaultValue
-	'message' => '#^Default value of the parameter \\#11 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
@@ -1869,7 +1857,7 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: nullCoalesce.offset
-	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DEMO_MODE\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
+	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
 ];
@@ -2174,12 +2162,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ErrorController.php',
 ];
 $ignoreErrors[] = [
-	// identifier: booleanNot.alwaysTrue
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/IndexController.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.unusedType
 	'message' => '#^Method Glpi\\\\Controller\\\\LegacyFileLoadController\\:\\:getRequest\\(\\) never returns null so it can be removed from the return type\\.$#',
 	'count' => 1,
@@ -2288,18 +2270,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetModel\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyDropdownRouteListener.php',
-];
-$ignoreErrors[] = [
-	// identifier: classConstant.nonObject
-	'message' => '#^Cannot access constant class on Glpi\\\\Asset\\\\AssetType\\|false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/LegacyDropdownRouteListener.php',
-];
-$ignoreErrors[] = [
 	// identifier: booleanNot.alwaysFalse
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'count' => 1,
@@ -2352,12 +2322,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	// identifier: property.onlyWritten
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\Monitor\\:\\:\\$import_monitor_on_partial_sn is never read, only written\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Monitor.php',
 ];
 $ignoreErrors[] = [
 	// identifier: property.notFound
@@ -3002,6 +2966,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
+	// identifier: offsetAccess.notFound
+	'message' => '#^Offset \'max\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: empty.offset
+	'message' => '#^Offset \'max\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: offsetAccess.notFound
+	'message' => '#^Offset \'min\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	// identifier: empty.offset
+	'message' => '#^Offset \'min\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
 	// identifier: phpDoc.parseError
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 656$#',
 	'count' => 1,
@@ -3440,12 +3428,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
-	// identifier: identical.alwaysFalse
-	'message' => '#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
 	// identifier: if.alwaysTrue
 	'message' => '#^If condition is always true\\.$#',
 	'count' => 1,
@@ -3656,14 +3638,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset mixed does not exist on array\\{\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
-];
-$ignoreErrors[] = [
 	// identifier: identical.alwaysFalse
-	'message' => '#^Strict comparison using \\=\\=\\= between mixed and \'NetworkEquipment\' will always evaluate to false\\.$#',
+	'message' => '#^Strict comparison using \\=\\=\\= between mixed~\'NetworkEquipment\' and \'NetworkEquipment\' will always evaluate to false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort_NetworkPort.php',
 ];
@@ -3681,7 +3657,7 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	// identifier: isset.offset
-	'message' => '#^Offset 2 on array\\{array\\<int, string\\>, array\\<int, non\\-empty\\-string\\>, array\\<int, numeric\\-string\\>, array\\<int, non\\-empty\\-string\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'message' => '#^Offset 2 on array\\{array\\<int, string\\>, array\\<int, \'"\'\\|\'\\\\\'\'\\>, array\\<int, numeric\\-string\\>, array\\<int, \'"\'\\|\'\\\\\'\'\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
@@ -4672,12 +4648,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
 	'message' => '#^Negated boolean expression is always true\\.$#',
-	'count' => 5,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	// identifier: booleanAnd.rightAlwaysFalse
-	'message' => '#^Right side of && is always false\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];

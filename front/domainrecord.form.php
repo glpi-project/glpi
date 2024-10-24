@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
     $record->showForm($_GET["id"], ['domains_id' => $_GET['domains_id'] ?? null]);
     Html::popFooter();
 } else {
-    $menus = ["management", "domain", "domainrecord"];
+    $menus = ["management", "domain", "DomainRecord"];
     $options = [
         'withtemplate' => $_GET["withtemplate"]
     ];

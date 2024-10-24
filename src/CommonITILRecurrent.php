@@ -48,11 +48,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public $dohistory = true;
 
     /**
-     * @var string From CommonDropdown
-     */
-    public $first_level_menu = "helpdesk";
-
-    /**
      * @var bool From CommonDropdown
      */
     public $display_dropdowntitle = false;

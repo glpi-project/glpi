@@ -54,6 +54,11 @@ class PassiveDCEquipment extends CommonDBTM
         return _n('Passive device', 'Passive devices', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Plugin\Hooks;
 
 const DELTA_ACTION_ADD    = 1;
@@ -52,8 +53,6 @@ global $CFG_GLPI;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 switch ($_SERVER['REQUEST_METHOD']) {
    // GET request: build the impact graph for a given asset
     case 'GET':
@@ -68,7 +67,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 // Check required params
                 if (empty($itemtype)) {
-                    Response::sendError(400, "Missing itemtype");
+                    throw new BadRequestHttpException("Missing itemtype");
                 }
                 $icon = $CFG_GLPI["impact_asset_types"][$itemtype];
                 // Execute search
@@ -96,12 +95,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                // Check required params
                 if (empty($itemtype) || empty($items_id)) {
-                    Response::sendError(400, "Missing itemtype or items_id");
+                    throw new BadRequestHttpException("Missing itemtype or items_id");
                 }
 
                // Check that the target asset exist
                 if (!Impact::assetExist($itemtype, $items_id)) {
-                    Response::sendError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
+                    throw new BadRequestHttpException("Object[class=$itemtype, id=$items_id] doesn't exist");
                 }
 
                // Prepare graph
@@ -127,7 +126,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
 
             default:
-                Response::sendError(400, "Missing or invalid 'action' parameter");
+                throw new BadRequestHttpException("Missing or invalid 'action' parameter");
         }
         break;
 
@@ -135,13 +134,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
        // Check required params
         if (!isset($_POST['impacts'])) {
-            Response::sendError(400, "Missing 'impacts' payload");
+            throw new BadRequestHttpException("Missing 'impacts' payload");
         }
 
        // Decode data (should be json)
         $data = Toolbox::jsonDecode($_POST['impacts'], true);
         if (!is_array($data)) {
-            Response::sendError(400, "Payload should be an array");
+            throw new BadRequestHttpException("Payload should be an array");
         }
 
         $readonly = true;
@@ -162,7 +161,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
        // Stop here if readonly graph
         if ($readonly) {
-            Response::sendError(403, "Missing rights");
+            throw new AccessDeniedHttpException("Missing rights");
         }
 
         $context_id = 0;

@@ -519,6 +519,24 @@ class ITILTemplateTest extends DbTestCase
         $this->assertSame($category_tpl_id, (int)$tt->fields['id']);
     }
 
+    /**
+     * Check that all predefined fields are set in the default values
+     */
+    #[DataProvider('itilProvider')]
+    public function testGetDefaultValues($itiltype)
+    {
+        $itemtype       = '\\' . $itiltype;
+        $default_values = $itemtype::getDefaultValues();
+        $tt_class       = $itiltype . 'Template';
+        $tt             = new $tt_class();
+        $fields         = $tt->getAllowedFields(true, true);
+        $tt_predefined  = $tt_class . 'PredefinedField';
+        $fields         = array_diff_key($fields, $tt_predefined::getExcludedFields());
+        foreach ($fields as $field) {
+            $this->assertArrayHasKey($field, $default_values);
+        }
+    }
+
     private function createTemplate($itiltype)
     {
         //create template

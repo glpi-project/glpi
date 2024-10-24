@@ -67,6 +67,23 @@ class Item_Ticket extends CommonItilObject_Item
         return parent::canCreateItem();
     }
 
+    public function post_addItem()
+    {
+        $ticket_cost = new TicketCost();
+        $ticket_cost->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
+
+        parent::post_addItem();
+    }
+
+
+    public function post_purgeItem()
+    {
+        $ticket_cost = new TicketCost();
+        $ticket_cost->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
+
+        parent::post_purgeItem();
+    }
+
     public function prepareInputForAdd($input)
     {
 

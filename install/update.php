@@ -226,7 +226,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
         $result = Config::displayCheckDbEngine(true);
         echo "</p>";
         if ($result > 0) {
-            die(1);
+            return;
         }
         if (
             $update->isExpectedSecurityKeyFileMissing()

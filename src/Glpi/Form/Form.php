@@ -87,6 +87,12 @@ final class Form extends CommonDBTM
     }
 
     #[Override]
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', self::class];
+    }
+
+    #[Override]
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();

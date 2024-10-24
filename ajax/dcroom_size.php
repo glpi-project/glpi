@@ -35,8 +35,6 @@
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (!isset($_REQUEST['id'])) {
     throw new \RuntimeException('Required argument missing!');
 }

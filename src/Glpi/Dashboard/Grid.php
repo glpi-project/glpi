@@ -467,7 +467,13 @@ HTML;
         ]);
         $js = <<<JAVASCRIPT
       $(function () {
-         new GLPIDashboard({$js_params})
+        // Sometimes GLPIDashboard is undefined and it messes with e2e tests
+        // by throwing a blocking error
+        // TODO: investigate why this happens
+        if (typeof GLPIDashboard === 'undefined') {
+          return;
+        }
+        new GLPIDashboard({$js_params})
       });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
@@ -1281,7 +1287,7 @@ HTML;
                         ]
                     ],
                     'cache'      => false,
-                    'filters'    => Filter::getAppliableFilters($itemtype::getTable()),
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 
                 $cards["table_count_tickets_$case"] = [
@@ -1296,7 +1302,7 @@ HTML;
                             'validation_check_user' => true,
                         ]
                     ],
-                    'filters'    => Filter::getAppliableFilters($itemtype::getTable()),
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
             }
 

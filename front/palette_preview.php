@@ -52,7 +52,7 @@ if ($preview === null) {
     $blank = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
     header(sprintf('Content-Length: %s', strlen($blank)));
     echo $blank;
-    exit();
+    return;
 }
 
 header('Cache-Control: public, max-age=2592000, must-revalidate'); // 1 month cache

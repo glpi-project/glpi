@@ -34,11 +34,14 @@
 
 namespace Glpi\Http;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\AuthenticationFailedException;
+use Glpi\Exception\SessionExpiredException;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -59,14 +62,14 @@ final class AccessErrorListener implements EventSubscriberInterface
             return;
         }
 
+        $request = $event->getRequest();
         $throwable = $event->getThrowable();
 
         $response = null;
 
-        if ($throwable instanceof SessionExpiredHttpException) {
+        if ($throwable instanceof SessionExpiredException) {
             Session::destroy(); // destroy the session to prevent pesistence of unexcpected data
 
-            $request = $event->getRequest();
             $response = new RedirectResponse(
                 sprintf(
                     '%s/?redirect=%s&error=3',
@@ -86,6 +89,25 @@ final class AccessErrorListener implements EventSubscriberInterface
                     '%s/front/central.php',
                     $request->getBasePath()
                 )
+            );
+        } elseif ($throwable instanceof AuthenticationFailedException) {
+            $login_url = sprintf(
+                '%s/front/logout.php?noAUTO=1',
+                $request->getBasePath()
+            );
+            $redirect = $request->request->get('redirect') ?: $request->query->get('redirect') ?: null;
+            if ($redirect !== null) {
+                $login_url .= '&redirect=' . \rawurlencode($redirect);
+            }
+            $response = new Response(
+                content: TemplateRenderer::getInstance()->render(
+                    'pages/login_error.html.twig',
+                    [
+                        'errors'    => $throwable->getAuthenticationErrors(),
+                        'login_url' => $login_url,
+                    ]
+                ),
+                status: 400
             );
         }
 

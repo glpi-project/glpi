@@ -633,6 +633,130 @@ class TicketTaskTest extends DbTestCase
     }
 
     /**
+     * Check that the parent ticket status is updated when tasks are added or updated
+     *
+     * @return void
+     */
+    public function testUpdateParentStatusOnTaskUpdate(): void
+    {
+        $this->login();
+        $ticket_id = $this->getNewTicket();
+
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $date_begin = new \DateTime(); // ==> now
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+        $date_end = new \DateTime(); // ==> +2days
+        $date_end->add(new \DateInterval('P2D'));
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        $task1 = new \TicketTask();
+        $task1_id = $task1->add([
+            'tickets_id'         => $ticket_id,
+            'content'            => "Task with schedule",
+            'state'              => \Planning::TODO,
+            'users_id_tech'      => $uid,
+            'begin'              => $date_begin_string,
+            'end'                => $date_end_string,
+        ]);
+        $this->assertGreaterThan(
+            0,
+            $task1_id
+        );
+
+        $this->assertEquals(
+            \Ticket::PLANNED,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $date_begin = new \DateTime(); // ==> +3days
+        $date_begin->add(new \DateInterval('P3D'));
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+        $date_end = new \DateTime(); // ==> +4days
+        $date_end->add(new \DateInterval('P4D'));
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        $task2 = new \TicketTask();
+        $task2_id = $task2->add([
+            'tickets_id'         => $ticket_id,
+            'content'            => "Task with schedule",
+            'state'              => \Planning::TODO,
+            'users_id_tech'      => $uid,
+            'begin'              => $date_begin_string,
+            'end'                => $date_end_string,
+        ]);
+
+        $this->assertGreaterThan(
+            0,
+            $task2_id
+        );
+
+        $this->assertEquals(
+            \Ticket::PLANNED,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $this->assertTrue(
+            $task1->update([
+                'id'        => $task1_id,
+                'state'     => \Planning::DONE,
+            ])
+        );
+
+        $this->assertEquals(
+            \Ticket::PLANNED,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $this->assertTrue(
+            $task2->update([
+                'id'        => $task2_id,
+                'state'     => \Planning::DONE,
+            ])
+        );
+
+        $this->assertEquals(
+            \Ticket::ASSIGNED,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $this->assertTrue(
+            \Ticket::getById($ticket_id)->update([
+                'id'        => $ticket_id,
+                'status'    => \Ticket::WAITING,
+            ])
+        );
+
+        $this->assertEquals(
+            \Ticket::WAITING,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $this->assertTrue(
+            $task1->update([
+                'id'        => $task1_id,
+                'state'     => \Planning::TODO,
+            ])
+        );
+
+        $this->assertEquals(
+            \Ticket::WAITING,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+
+        $this->assertTrue(
+            $task2->update([
+                'id'        => $task2_id,
+                'state'     => \Planning::TODO,
+            ])
+        );
+
+        $this->assertEquals(
+            \Ticket::WAITING,
+            \Ticket::getById($ticket_id)->fields['status']
+        );
+    }
+
+    /**
      * Test that the task duration is correctly updated
      *
      * @return void

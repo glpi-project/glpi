@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-$menus = ['admin', 'rule', 'transfer'];
+$menus = ['admin', 'rule', 'Transfer'];
 Transfer::displayFullPageForItem($_GET["id"], $menus, [
     'target' => $transfer->getFormURL()
 ]);

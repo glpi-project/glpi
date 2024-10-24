@@ -34,7 +34,6 @@
  */
 
 use Glpi\Event;
-use Glpi\Http\Response;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 /**
@@ -42,10 +41,8 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @var CommonItilObject_Item $item_obj
  */
 
-Session::checkLoginUser();
-
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException('Bad request');
 }
 
 $obj_fkey = $obj->getForeignKeyField();

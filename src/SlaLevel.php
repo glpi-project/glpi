@@ -45,10 +45,14 @@ class SlaLevel extends LevelAgreementLevel
    // No criteria
     protected $rulecriteriaclass = 'SlaLevelCriteria';
 
-
     public static function getTable($classname = null)
     {
         return CommonDBTM::getTable(__CLASS__);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', SLA::class, self::class];
     }
 
     public function cleanDBonPurge()

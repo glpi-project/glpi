@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 
 /**
@@ -49,6 +50,11 @@ class RefusedEquipment extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Equipment refused by rules log', 'Equipments refused by rules log', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
     }
 
     public function rawSearchOptions()

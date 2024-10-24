@@ -132,7 +132,7 @@ class Auth extends CommonGLPI
                 'links'   => [],
             ];
 
-            $menu['options']['ldap'] = [
+            $menu['options'][AuthLDAP::class] = [
                 'icon'  => AuthLDAP::getIcon(),
                 'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
                 'page'  => AuthLDAP::getSearchURL(false),
@@ -142,7 +142,7 @@ class Auth extends CommonGLPI
                 ],
             ];
 
-            $menu['options']['imap'] = [
+            $menu['options'][AuthMail::class] = [
                 'icon'  => AuthMail::getIcon(),
                 'title' => AuthMail::getTypeName(Session::getPluralNumber()),
                 'page'  => AuthMail::getSearchURL(false),
@@ -671,7 +671,7 @@ class Auth extends CommonGLPI
                 }
                 break;
             case self::COOKIE:
-                $cookie_name   = session_name() . '_rememberme';
+                $cookie_name   = Session::buildSessionName() . '_rememberme';
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     $data = null;
@@ -1135,41 +1135,26 @@ class Auth extends CommonGLPI
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?? getenv("REMOTE_ADDR");
 
             if ($this->auth_succeded) {
-                if (GLPI_DEMO_MODE) {
-                    // not translation in GLPI_DEMO_MODE
-                    Event::log(0, "system", 3, "login", $login_name . " log in from " . $ip);
-                } else {
-                    //TRANS: %1$s is the login of the user and %2$s its IP address
+                //TRANS: %1$s is the login of the user and %2$s its IP address
+                Event::log(0, "system", 3, "login", sprintf(
+                    __('%1$s log in from IP %2$s'),
+                    $login_name,
+                    $ip
+                ));
+            } else {
+                if ($this->denied_by_rule) {
                     Event::log(0, "system", 3, "login", sprintf(
-                        __('%1$s log in from IP %2$s'),
+                        __('Login for %1$s denied by authorization rules from IP %2$s'),
                         $login_name,
                         $ip
                     ));
-                }
-            } else {
-                if (GLPI_DEMO_MODE) {
-                    Event::log(
-                        0,
-                        "system",
-                        3,
-                        "login",
-                        "Connection failed for " . $login_name . " ($ip)"
-                    );
                 } else {
-                    if ($this->denied_by_rule) {
-                        Event::log(0, "system", 3, "login", sprintf(
-                            __('Login for %1$s denied by authorization rules from IP %2$s'),
-                            $login_name,
-                            $ip
-                        ));
-                    } else {
-                        //TRANS: %1$s is the login of the user and %2$s its IP address
-                        Event::log(0, "system", 3, "login", sprintf(
-                            __('Failed login for %1$s from IP %2$s'),
-                            $login_name,
-                            $ip
-                        ));
-                    }
+                    //TRANS: %1$s is the login of the user and %2$s its IP address
+                    Event::log(0, "system", 3, "login", sprintf(
+                        __('Failed login for %1$s from IP %2$s'),
+                        $login_name,
+                        $ip
+                    ));
                 }
             }
         }
@@ -1521,7 +1506,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $cookie_name = session_name() . '_rememberme';
+        $cookie_name = Session::buildSessionName() . '_rememberme';
         if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
@@ -1752,7 +1737,7 @@ class Auth extends CommonGLPI
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $cookie_name     = session_name() . '_rememberme';
+        $cookie_name     = Session::buildSessionName() . '_rememberme';
         $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');

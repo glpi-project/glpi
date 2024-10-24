@@ -913,18 +913,6 @@ class HtmlTest extends \GLPITestCase
             'expected' => 'https://localhost/glpi/front/computer.form.php?id=1',
         ];
 
-        // Outside GLPI
-        yield 'http://localhost/not-glpi/front/computer.form.php?id=1' => [
-            'referer'  => 'http://localhost/not-glpi/front/computer.form.php?id=1',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi',
-        ];
-        yield 'http://notglpi/front/computer.form.php?id=1' => [
-            'referer'  => 'http://notglpi/front/computer.form.php?id=1',
-            'base_url' => 'http://localhost/glpi',
-            'expected' => 'http://localhost/glpi',
-        ];
-
         // Invalid referer
         yield '/invalid/referer' => [
             'referer'  => '/invalid/referer',

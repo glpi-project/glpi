@@ -70,6 +70,11 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', CommonDropdown::class, self::class];
+    }
+
     public function useDeletedToLockIfDynamic()
     {
         return false;

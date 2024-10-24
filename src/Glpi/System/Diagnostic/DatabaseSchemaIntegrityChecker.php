@@ -536,6 +536,10 @@ class DatabaseSchemaIntegrityChecker
             // Ignore length on indexes when value is `250`
             // MariaDB in some recent version (at least 10.11.7) seems to mention it on some indexes, but we do not know why.
             '/(`\w+`)\(250\)/' => '$1',
+            // Mysql and MariaDB does not always have the same default value for index type depending on the index
+            // for example, the create query might return "UNIQUE KEY `unicity` USING HASH (`users_id`)" one one side
+            // and "UNIQUE KEY `unicity` (`users_id`)" on the other side, despite being the same index.
+            '/(UNIQUE KEY|FULLTEXT KEY|KEY) (.*) USING (\w+)/i' => '$1 $2',
         ];
         $indexes = preg_replace(array_keys($indexes_replacements), array_values($indexes_replacements), $indexes);
         if (!$this->strict) {
@@ -674,7 +678,6 @@ class DatabaseSchemaIntegrityChecker
                 $is_quoted = !$is_quoted;
                 continue;
             } else if ($is_quoted) {
-                //exit();
                 continue;
             }
 

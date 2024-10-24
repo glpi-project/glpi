@@ -67,6 +67,11 @@ class Appliance extends CommonDBTM
         ];
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Appliance', 'Appliances', $nb);

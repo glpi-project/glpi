@@ -65,6 +65,11 @@ class Budget extends CommonDropdown
         return _n('Budget', 'Budgets', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public function defineTabs($options = [])
     {
 

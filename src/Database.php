@@ -54,6 +54,11 @@ class Database extends CommonDBChild
         return _n('Database', 'Databases', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -468,7 +473,7 @@ class Database extends CommonDBChild
     {
         if (static::canView()) {
             return [
-                'databaseinstance' => [
+                DatabaseInstance::class => [
                     'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
                     'page'  => DatabaseInstance::getSearchURL(false),
                     'icon'  => DatabaseInstance::getIcon(),

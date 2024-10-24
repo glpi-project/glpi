@@ -43,8 +43,6 @@ use RuleImportAssetCollection;
 
 class Monitor extends InventoryAsset
 {
-    private $import_monitor_on_partial_sn = false;
-
     public function prepare(): array
     {
         $serials = [];
@@ -234,7 +232,6 @@ class Monitor extends InventoryAsset
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $this->import_monitor_on_partial_sn = $conf->import_monitor_on_partial_sn;
         return $conf->import_monitor == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }
 

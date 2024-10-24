@@ -34,12 +34,12 @@
 
 namespace GlpiPlugin\Tester;
 
-use CommonDropdown;
+use CommonDBTM;
 
-final class MyPsr4Class extends CommonDropdown
+final class MyPsr4Class extends CommonDBTM
 {
     public static function getTypeName($nb = 0): string
     {
-        return 'Tester plugin PSR4 dropdown';
+        return 'Tester plugin PSR4 itemtype';
     }
 }

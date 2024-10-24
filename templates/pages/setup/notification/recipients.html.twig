@@ -51,7 +51,13 @@
                   }) }}
 
                   {{ fields.nullField() }}
+                  {{ fields.dropdownArrayField('_exclusions', null, all_exclusion_targets, _n('Exclusion', 'Exclusions', get_plural_number()), {
+                     multiple: true,
+                     readonly: not params['canedit'],
+                     values: excluded_targets
+                  }) }}
                   {{ fields.nullField() }}
+                   {{ fields.nullField() }}
                   {{ fields.htmlField('', inputs.submit('update', _x('button', 'Update'), 1), '') }}
                </div>
             </div>

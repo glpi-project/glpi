@@ -104,6 +104,6 @@ if (isset($_POST["update"])) {
 
     Html::back();
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
-    $menus = ["config", "slm", "olalevel"];
+    $menus = ["config", "slm", "OlaLevel"];
     OlaLevel::displayFullPageForItem($_GET["id"], $menus);
 }

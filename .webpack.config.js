@@ -199,6 +199,14 @@ const filesToCopy = [
 ];
 
 const copyPatterns = [];
+
+// See https://github.com/glpi-project/glpi/issues/17745
+copyPatterns.push({
+    from:    path.resolve(__dirname, 'node_modules/flatpickr/dist/l10n/cat.js'),
+    to:      path.resolve(__dirname, libOutputPath + '/flatpickr/l10n/ca.js'),
+    toType:  'file',
+});
+
 for (let s = 0; s < filesToCopy.length; s++) {
     const specs = filesToCopy[s];
     const to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package

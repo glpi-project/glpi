@@ -74,6 +74,10 @@ class Problem extends CommonITILObject
         return _n('Problem', 'Problems', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', self::class];
+    }
 
     public function canSolve()
     {
@@ -547,6 +551,10 @@ class Problem extends CommonITILObject
                 'jointype'           => 'child'
             ]
         ];
+
+        if (Session::haveRight('change', READ)) {
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Problem'));
+        }
 
         return $tab;
     }
@@ -1482,12 +1490,19 @@ class Problem extends CommonITILObject
             'entities_id'                => $_SESSION['glpiactive_entity'],
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
-            'date'                      => 'NULL',
+            'date'                       => 'NULL',
             '_add_validation'            => 0,
             '_validation_targets'        => [],
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
-            '_actors'                     => [],
+            '_actors'                    => [],
+            'status'                     => self::INCOMING,
+            'time_to_resolve'            => 'NULL',
+            'itemtype'                   => '',
+            'locations_id'               => 0,
+            'impactcontent'              => '',
+            'causecontent'               => '',
+            'symptomcontent'             => '',
         ];
     }
 

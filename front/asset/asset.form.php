@@ -40,7 +40,7 @@
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Event;
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $asset = Asset::getById($_REQUEST['id']);
@@ -58,7 +58,7 @@ if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
 }
 
 if ($asset === null) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException('Bad request');
 }
 
 Session::checkRightsOr($asset::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);

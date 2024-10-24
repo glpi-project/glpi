@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Inventory;
 
 /**
  * SNMP credentials
@@ -47,6 +48,11 @@ class SNMPCredential extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('SNMP credential', 'SNMP credentials', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
     }
 
     public static function rawSearchOptionsToAdd()

@@ -994,7 +994,16 @@ abstract class CommonITILObject extends CommonDBTM
             || (
                 Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_GROUP)
                 && isset($_SESSION["glpigroups"])
-                && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                && (
+                    (
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                        && Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY)
+                    )
+                    || (
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['glpigroups'])
+                        && Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_OBSERVER)
+                    )
+                )
             )
             || (
                 Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADD_AS_TECHNICIAN)
@@ -1031,7 +1040,16 @@ abstract class CommonITILObject extends CommonDBTM
             || (
                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_GROUP)
                 && isset($_SESSION["glpigroups"])
-                && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                && (
+                    (
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])
+                        && Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADDMY)
+                    )
+                    || (
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION['glpigroups'])
+                        && Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_OBSERVER)
+                    )
+                )
             )
             || (
                 Session::haveRight(CommonITILTask::$rightname, CommonITILTask::ADD_AS_TECHNICIAN)
@@ -4571,10 +4589,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Search by form answer
         $tab[] = [
-            'id'   => 'forms',
-            'name' => __('Forms')
-        ];
-        $tab[] = [
             'id'                 => '120',
             'table'              => AnswersSet::getTable(),
             'field'              => 'name',
@@ -7788,6 +7802,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => [
                         'is_private' => 0,
                         'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
+                        'users_id_tech' => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
                     ]
                 ];
             }
@@ -10728,6 +10743,10 @@ abstract class CommonITILObject extends CommonDBTM
         // Add global validation
         if (!$this->isNewItem() && $this->isField('global_validation') && !isset($input['global_validation'])) {
             $input['global_validation'] = $this->fields['global_validation'];
+        }
+
+        if (!$this->isNewItem() && !isset($input['priority'])) {
+            $input['priority'] = $this->fields['priority'];
         }
     }
 

@@ -66,6 +66,11 @@ class Enclosure extends CommonDBTM
         return _n('Enclosure', 'Enclosures', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

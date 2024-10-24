@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-Session::checkLoginUser();
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -53,7 +51,7 @@ try {
     echo "</div>";
 
     Html::popFooter();
-    exit();
+    return;
 }
 Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 

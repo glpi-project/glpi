@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $item = new KnowbaseItem_Item();
 
 if (isset($_POST["add"])) {

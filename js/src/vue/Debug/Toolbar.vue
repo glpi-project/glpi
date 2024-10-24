@@ -329,9 +329,12 @@
                 'ajax_id': ajax_id,
             }
         }).done((data) => {
+            if (!data) {
+                return;
+            }
             ajax_request.profile = data;
 
-            $.each(ajax_request.profile.sql.queries, (i, query) => {
+            $.each(ajax_request.profile.sql.queries || [], (i, query) => {
                 cleanSQLQuery(query.query).then((clean_query) => {
                     ajax_request.profile.sql.queries[i].query = clean_query;
                 });

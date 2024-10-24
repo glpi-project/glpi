@@ -87,6 +87,12 @@ class Ticket extends CommonITILObject
     const CHANGEPRIORITY   =  65536;
     const READNEWTICKET    = 262144;
 
+    #[Override]
+    public static function supportHelpdeskDisplayPreferences(): bool
+    {
+        return true;
+    }
+
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -2072,7 +2078,16 @@ class Ticket extends CommonITILObject
             || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLITEM, $entity_id)
             || (
                 Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_GROUP, $entity_id)
-                && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+                && (
+                    (
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+                        && Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMY, $entity_id)
+                    )
+                    || (
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $user_groups_ids)
+                        && Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
+                    )
+                )
             )
             || (
                 Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_TECHNICIAN, $entity_id)
@@ -3106,6 +3121,10 @@ JAVASCRIPT;
             );
         }
 
+        if (Session::haveRight('change', READ)) {
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Ticket'));
+        }
+
         $tab[] = [
             'id'                 => 'tools',
             'name'               => __('Tools')
@@ -3158,7 +3177,7 @@ JAVASCRIPT;
             ],
         ];
 
-       // Filter search fields for helpdesk
+        // Filter search fields for helpdesk
         if (
             !Session::isCron() // no filter for cron
             && (Session::getCurrentInterface() != 'central')
@@ -3834,33 +3853,6 @@ JAVASCRIPT;
             }
         }
 
-        // Check category / type validity
-        if ($options['itilcategories_id']) {
-            $cat = new ITILCategory();
-            if ($cat->getFromDB($options['itilcategories_id'])) {
-                switch ($options['type']) {
-                    case self::INCIDENT_TYPE:
-                        if (!$cat->getField('is_incident')) {
-                             $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    case self::DEMAND_TYPE:
-                        if (!$cat->getField('is_request')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                // Check category / entity validity
-                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
-                    $options['itilcategories_id'] = 0;
-                }
-            }
-        }
-
         // Default check
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -3883,6 +3875,34 @@ JAVASCRIPT;
                 $this->fields["entities_id"] = $first_entity;
                 // Pass to values
                 $options['entities_id']      = $first_entity;
+            }
+        }
+
+        // Check category / type validity
+        if ($options['itilcategories_id']) {
+            $cat = new ITILCategory();
+            if ($cat->getFromDB($options['itilcategories_id'])) {
+                switch ($options['type']) {
+                    case self::INCIDENT_TYPE:
+                        if (!$cat->getField('is_incident')) {
+                            $options['itilcategories_id'] = 0;
+                        }
+                        break;
+
+                    case self::DEMAND_TYPE:
+                        if (!$cat->getField('is_request')) {
+                            $options['itilcategories_id'] = 0;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+                // Check category / entity validity
+                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
+                    $options['itilcategories_id'] = 0;
+                    $this->fields['itilcategories_id'] = 0;
+                }
             }
         }
 

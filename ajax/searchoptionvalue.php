@@ -41,8 +41,6 @@ if (strpos($_SERVER['PHP_SELF'], "searchoptionvalue.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 if (isset($_POST['searchtype'])) {
     $searchopt      = $_POST['searchopt'];
     if ($ajax) {

@@ -482,7 +482,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($data = $item->getAdditionalMenuContent()) {
             $newmenu = [
-                strtolower($type) => $menu,
+                $type => $menu,
             ];
            // Force overwrite existing menu
             foreach ($data as $key => $val) {
@@ -590,6 +590,20 @@ class CommonGLPI implements CommonGLPIInterface
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return '';
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return [];
+    }
+
+    public static function getHeaderParameters(): array
+    {
+        return [
+            static::getTypeName(\Session::getPluralNumber()),
+            '',
+            ...static::getSectorizedDetails(),
+        ];
     }
 
     /**
@@ -717,21 +731,22 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
     {
-        if (empty($icon)) {
+        if ($icon === '') {
             $icon = static::getTabIconClass($form_itemtype);
         }
         if (str_contains($icon, 'fa-empty-icon')) {
             $icon = '';
         }
-        $icon = !empty($icon) ? "<i class='$icon me-2'></i>" : '';
-        if (!empty($icon)) {
-            $text = '<span class="d-flex align-items-center">' . $icon . $text . '</span>';
-        }
-        if ($nb) {
-           //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$nb</span>");
-        }
-        return $text;
+
+        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlspecialchars($icon)) : '';
+        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', $nb) : '';
+
+        return sprintf(
+            '<span class="d-flex align-items-center">%s%s%s</span>',
+            $icon_html,
+            htmlspecialchars($text),
+            $counter_html
+        );
     }
 
     /**

@@ -38,8 +38,6 @@ use Glpi\Security\TOTPManager;
 
 $user = new User();
 
-Session::checkLoginUser();
-
 // Manage 2FA
 if (isset($_POST['disable_2fa'])) {
     $totp_manager = new TOTPManager();

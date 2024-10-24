@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: "app"
+    container_name: "glpi-test-app"
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
     environment:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"

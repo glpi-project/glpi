@@ -72,6 +72,11 @@ class Rack extends CommonDBTM
         return _n('Rack', 'Racks', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

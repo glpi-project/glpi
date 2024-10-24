@@ -45,7 +45,5 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 echo json_encode(Entity::getEntitySelectorTree());
 return;

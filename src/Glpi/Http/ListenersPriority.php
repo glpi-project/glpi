@@ -49,10 +49,18 @@ final class ListenersPriority
         // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
 
-        // Plugins dropdowns requires plugins to be initialized, therefore config must be already set.
-        // Also, keep it after the `LegacyRouterListener` to not map to the generic dropdown controller if a
+        // Plugins itemtypes requires plugins to be initialized, therefore config must be already set.
+        // Also, keep it after the `LegacyRouterListener` to not map to the generic controller if a
         // legacy script exists for the requested URI.
-        LegacyDropdownRouteListener::class => 300,
+        LegacyItemtypeRouteListener::class => 300,
+
+        // This listener allows matching plugins routes at runtime,
+        //   that's why it's executed right after Symfony's Router,
+        //   and also after GLPI's config is set.
+        //
+        // Symfony's Router priority is 32.
+        // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
+        PluginsRouterListener::class => 31,
     ];
 
     private function __construct()

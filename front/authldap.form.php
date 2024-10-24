@@ -81,5 +81,5 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-$menus = ['config', 'auth', 'ldap'];
+$menus = ['config', 'auth', 'AuthLDAP'];
 AuthLDAP::displayFullPageForItem($_GET['id'], $menus, $_GET);

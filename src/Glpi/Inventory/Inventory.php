@@ -512,7 +512,7 @@ class Inventory
         ];
 
         if (Session::haveRight(Agent::$rightname, READ)) {
-            $menu['options']['agent'] = [
+            $menu['options'][Agent::class] = [
                 'icon'  => Agent::getIcon(),
                 'title' => Agent::getTypeName(Session::getPluralNumber()),
                 'page'  => Agent::getSearchURL(false),
@@ -523,7 +523,7 @@ class Inventory
         }
 
         if (Session::haveRight(Lockedfield::$rightname, UPDATE)) {
-            $menu['options']['lockedfield'] = [
+            $menu['options'][Lockedfield::class] = [
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
@@ -534,7 +534,7 @@ class Inventory
         }
 
         if (Session::haveRight(RefusedEquipment::$rightname, READ)) {
-            $menu['options']['refusedequipment'] = [
+            $menu['options'][RefusedEquipment::class] = [
                 'icon'  => RefusedEquipment::getIcon(),
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
                 'page'  => RefusedEquipment::getSearchURL(false),
@@ -543,7 +543,7 @@ class Inventory
         }
 
         if (Session::haveRight(SNMPCredential::$rightname, READ)) {
-            $menu['options']['snmpcredential'] = [
+            $menu['options'][SNMPCredential::class] = [
                 'icon'  => SNMPCredential::getIcon(),
                 'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
                 'page'  => SNMPCredential::getSearchURL(false),

@@ -43,6 +43,7 @@ use DBConnection;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\System\Log\LogViewer;
 use Html;
 use Infocom;
 use ITILSolution;
@@ -59,6 +60,11 @@ class Event extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Event log', 'Event logs', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', LogViewer::class, self::class];
     }
 
     public function prepareInputForAdd($input)

@@ -77,6 +77,11 @@ class Domain extends CommonDBTM
         return _n('Domain', 'Domains', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public function cleanDBonPurge()
     {
         /** @var \DBmysql $DB */
@@ -860,7 +865,7 @@ class Domain extends CommonDBTM
     {
         if (static::canManageRecords()) {
             return [
-                'domainrecord' => [
+                DomainRecord::class => [
                     'icon'  => DomainRecord::getIcon(),
                     'title' => DomainRecord::getTypeName(Session::getPluralNumber()),
                     'page'  => DomainRecord::getSearchURL(false),

@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-Session::checkLoginUser();
-
 if (!isset($_GET["id"])) {
     $_GET["id"] = -1;
 }

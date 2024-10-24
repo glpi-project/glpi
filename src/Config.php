@@ -96,11 +96,11 @@ class Config extends CommonDBTM
             $menu['page']    = Config::getFormURL(false);
             $menu['icon']    = Config::getIcon();
 
-            $menu['options']['apiclient']['icon']            = APIClient::getIcon();
-            $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
-            $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
-            $menu['options']['apiclient']['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
-            $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
+            $menu['options'][APIClient::class]['icon']            = APIClient::getIcon();
+            $menu['options'][APIClient::class]['title']           = APIClient::getTypeName(Session::getPluralNumber());
+            $menu['options'][APIClient::class]['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
+            $menu['options'][APIClient::class]['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
+            $menu['options'][APIClient::class]['links']['add']    = '/front/apiclient.form.php';
         }
         if (count($menu)) {
             return $menu;
@@ -1068,6 +1068,9 @@ class Config extends CommonDBTM
             ],
             [ 'name'    => 'psr/cache',
                 'check'   => 'Psr\\Cache\\CacheItemPoolInterface'
+            ],
+            [ 'name'    => 'psr/container',
+                'check'   => 'Psr\\Container\\ContainerInterface'
             ],
             [ 'name'    => 'league/csv',
                 'check'   => 'League\\Csv\\Writer'

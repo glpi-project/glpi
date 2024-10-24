@@ -319,6 +319,11 @@ class Socket extends CommonDBChild
         return _n('Socket', 'Sockets', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', Cable::class, self::class];
+    }
+
     public function rawSearchOptions()
     {
         $tab  = parent::rawSearchOptions();

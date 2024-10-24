@@ -37,7 +37,7 @@ namespace tests\units;
 
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\SessionExpiredException;
 use ReflectionClass;
 
 /* Test for inc/session.class.php */
@@ -1242,7 +1242,7 @@ class Session extends \DbTestCase
             function () {
                 \Session::checkValidSessionId();
             }
-        )->isInstanceOf(SessionExpiredHttpException::class);
+        )->isInstanceOf(SessionExpiredException::class);
     }
 
     protected function checkCentralAccessProvider(): iterable

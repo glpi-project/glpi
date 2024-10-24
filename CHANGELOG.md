@@ -70,6 +70,7 @@ The present file will list all changes made to the project; according to the
 - The debug tab that was present, for some items, when the debug mode was active, no longer exists. The corresponding features have been either moved, either removed.
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
+- Notifications can now specify exclusions for recipients.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -94,6 +95,7 @@ The present file will list all changes made to the project; according to the
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 - `fetchSessionMessages()` global JS function to display new session messages as toast notifications without requiring a page reload.
+- `is_exclusion` column added to `glpi_notificationtargets` table.
 
 #### Changes
 - Many methods have their signature changed to specify both their return type and the types of their parameters.
@@ -205,6 +207,9 @@ The present file will list all changes made to the project; according to the
 - `comments` and `icon` options have been removed from `CommonDBTM::getName()`.
 - `comments` and `icon` options have been removed from `CommonDBTM::getNameID()`.
 - The `$keepDb` parameter has been removed from `Html::footer()`.
+- `DBConnection::createMainConfig()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBConnection::createSlaveConnectionFile()` signature changed. The `$allow_myisam` parameter has been removed.
+- `DBmysql::$allow_myisam` property has been removed.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
@@ -245,6 +250,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
 - `Glpi\Features\DCBreadcrumb::isEnclosurePart()`
 - `Glpi\Features\DCBreadcrumb::isRackPart()`
+- `Glpi\Http\Response::sendError()`. Throw a `Glpi\Exception\Http\*HttpException` exception instead.
 - `Glpi\Toolbox\Sanitizer::dbEscape()`
 - `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
 - `Glpi\Toolbox\Sanitizer::dbUnescape()`
@@ -290,6 +296,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
+- `GLPI_DEMO_MODE` constant.
 - `$CFG_GLPI_PLUGINS` global variable.
 - `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
 - `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
@@ -316,6 +323,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::showDebugInfo()`
 - `CommonDevice::title()`
+- `CommonDropdown::$first_level_menu`, `CommonDropdown::$second_level_menu` and `CommonDropdown::$third_level_menu` properties.
 - `CommonDropdown::displayHeader()`
 - `CommonGLPI::$type` property.
 - `CommonGLPI::getAvailableDisplayOptions()`

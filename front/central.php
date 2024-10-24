@@ -45,36 +45,7 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     Html::zeroSecurityIframedHeader($grid->getDashboard()->getTitle(), 'central', 'central');
     $grid->embed($_REQUEST);
     Html::popFooter();
-    exit;
-}
-
-// Change profile system
-if (isset($_REQUEST['newprofile'])) {
-    if (isset($_SESSION["glpiprofiles"][$_REQUEST['newprofile']])) {
-        Session::changeProfile($_REQUEST['newprofile']);
-        if (Session::getCurrentInterface() == "helpdesk") {
-            if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-                Html::redirect($CFG_GLPI['root_doc'] . "/ServiceCatalog");
-            } else {
-                Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
-            }
-        }
-        $_SESSION['_redirected_from_profile_selector'] = true;
-        Html::back();
-    }
-    Html::redirect(preg_replace("/entities_id.*/", "", Html::getBackUrl()));
-}
-
-// Manage entity change
-if (isset($_GET["active_entity"])) {
-    if (!isset($_GET["is_recursive"])) {
-        $_GET["is_recursive"] = 0;
-    }
-    if (Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"])) {
-        if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/(\?|&|" . urlencode('?') . "|" . urlencode('&') . ")?(entities_id|active_entity).*/", "", Html::getBackUrl()));
-        }
-    }
+    return;
 }
 
 Session::checkCentralAccess();
