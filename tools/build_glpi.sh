@@ -66,9 +66,6 @@ echo "Removing dev files and directories..."
 # Remove PHP dev dependencies that are not anymore used
 composer update nothing --ansi --no-interaction --ignore-platform-reqs --no-dev --no-scripts --working-dir=$WORKING_DIR
 
-# Remove user generated files (i.e. cache and log from CLI commands ran during release)
-find $WORKING_DIR/files -depth -mindepth 2 -exec rm -rf {} \;
-
 # Remove hidden files and directories
 find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 
@@ -77,11 +74,17 @@ dev_nodes=(
     "composer.json"
     "composer.lock"
     "docker-compose.yaml"
+    "eslint.config.mjs"
+    "js/src/vue"
+    "jsconfig.json"
     "locales/glpi.pot"
+    "Makefile"
     "node_modules"
     "package.json"
     "package-lock.json"
     "phpstan.neon"
+    "phpstan.neon.dist"
+    "phpunit"
     "phpunit.xml.dist"
     "stubs"
     "tests"
@@ -96,3 +99,7 @@ done
 
 echo "Generating file manifest..."
 $WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
+
+echo "Removing user generated files..."
+# Remove user generated files (i.e. cache and log from CLI commands ran during release)
+find $WORKING_DIR/files -depth -mindepth 2 -exec rm -rf {} \;
