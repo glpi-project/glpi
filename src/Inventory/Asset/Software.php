@@ -867,7 +867,7 @@ class Software extends InventoryAsset
 
         $stmt = null;
         foreach ($this->data as $val) {
-            $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
+            $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id ?? 0);
             $softwares_id = $this->softwares[$skey];
 
             $vkey = $this->getVersionKey(
