@@ -42,6 +42,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
 use Ticket;
@@ -158,22 +159,41 @@ class AssociatedItemsField extends AbstractConfigField
     private function getAssociatedItemsQuestionsValuesForDropdown(Form $form): array
     {
         $values = [];
-        $questions = $form->getQuestionsByType(QuestionTypeItem::class);
+        $questions = array_merge(
+            $this->getValidItemQuestions($form),
+            $this->getUserDeviceQuestions($form)
+        );
 
         foreach ($questions as $question) {
-            if (
-                !in_array(
-                    (new QuestionTypeItem())->getDefaultValueItemtype($question),
-                    array_keys(CommonITILObject::getAllTypesForHelpdesk())
-                )
-            ) {
-                continue;
-            }
-
             $values[$question->getId()] = $question->fields['name'];
         }
 
         return $values;
+    }
+
+    private function getValidItemQuestions(Form $form): array
+    {
+        $questions = $form->getQuestionsByType(QuestionTypeItem::class);
+        $valid_itemtypes = array_keys(CommonITILObject::getAllTypesForHelpdesk());
+
+        $valid_questions = [];
+        foreach ($questions as $question) {
+            if (
+                in_array(
+                    (new QuestionTypeItem())->getDefaultValueItemtype($question),
+                    $valid_itemtypes
+                )
+            ) {
+                $valid_questions[] = $question;
+            }
+        }
+
+        return $valid_questions;
+    }
+
+    private function getUserDeviceQuestions(Form $form): array
+    {
+        return $form->getQuestionsByType(QuestionTypeUserDevice::class);
     }
 
     #[Override]

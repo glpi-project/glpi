@@ -116,10 +116,17 @@ final class QuestionTypesManager
      */
     public function getTypesForCategory(QuestionTypeCategory $category): array
     {
-        return array_filter(
+        $filtered_types = array_filter(
             $this->question_types,
             fn(QuestionTypeInterface $type) => $type->getCategory() === $category
         );
+
+        uasort(
+            $filtered_types,
+            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
+        );
+
+        return $filtered_types;
     }
 
     /**
