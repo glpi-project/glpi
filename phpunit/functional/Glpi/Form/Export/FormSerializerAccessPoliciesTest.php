@@ -243,7 +243,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         $mapper->addMappedItem(Profile::class, "Profile 2", $profile_4->getID());
 
         $json = $this->exportForm($form);
-        $form_copy = $this->importForm($json, $mapper);
+        $form_copy = $this->importForm($json, $mapper, []);
 
         // Assert: validate allow list policy config
         $policies = $form_copy->getAccessControls();

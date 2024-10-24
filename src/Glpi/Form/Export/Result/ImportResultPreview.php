@@ -35,8 +35,6 @@
 
 namespace Glpi\Form\Export\Result;
 
-use Glpi\Form\Form;
-
 final class ImportResultPreview
 {
     /** @var string[] $valid_forms */
@@ -45,9 +43,12 @@ final class ImportResultPreview
     /** @var string[] $invalid_forms */
     private array $invalid_forms = [];
 
-    public function addValidForm(string $form_name): void
+    /** @var string[] $skipped_forms */
+    private array $skipped_forms = [];
+
+    public function addValidForm(int $form_id, string $form_name): void
     {
-        $this->valid_forms[] = $form_name;
+        $this->valid_forms[$form_id] = $form_name;
     }
 
     /** @return string[] */
@@ -56,14 +57,25 @@ final class ImportResultPreview
         return $this->valid_forms;
     }
 
-    public function addInvalidForm(string $form_name): void
+    public function addInvalidForm(int $form_id, string $form_name): void
     {
-        $this->invalid_forms[] = $form_name;
+        $this->invalid_forms[$form_id] = $form_name;
     }
 
     /** @return string[] */
     public function getInvalidForms(): array
     {
         return $this->invalid_forms;
+    }
+
+    public function addSkippedForm(int $form_id, string $form_name): void
+    {
+        $this->skipped_forms[$form_id] = $form_name;
+    }
+
+    /** @return string[] */
+    public function getSkippedForms(): array
+    {
+        return $this->skipped_forms;
     }
 }

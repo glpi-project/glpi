@@ -43,6 +43,7 @@ use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
@@ -68,9 +69,9 @@ final class FormSerializer extends AbstractFormSerializer
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
 
-        foreach ($forms as $form) {
+        foreach ($forms as $index => $form) {
             // Add forms to the main export spec
-            $form_spec = $this->exportFormToSpec($form);
+            $form_spec = $this->exportFormToSpec($form, $index);
             $export_specification->addForm($form_spec);
         }
 
@@ -83,6 +84,7 @@ final class FormSerializer extends AbstractFormSerializer
     public function previewImport(
         string $json,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
 
@@ -97,12 +99,43 @@ final class FormSerializer extends AbstractFormSerializer
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
 
+            $form_id = $form_spec->id;
             $form_name = $form_spec->name;
-            if ($mapper->validateRequirements($requirements)) {
-                $results->addValidForm($form_name);
-            } else {
-                $results->addInvalidForm($form_name);
+            if (in_array($form_id, $skipped_forms)) {
+                $results->addSkippedForm($form_id, $form_name);
+                continue;
             }
+
+            if ($mapper->validateRequirements($requirements)) {
+                $results->addValidForm($form_id, $form_name);
+            } else {
+                $results->addInvalidForm($form_id, $form_name);
+            }
+        }
+
+        return $results;
+    }
+
+    public function listIssues(
+        DatabaseMapper $mapper,
+        string $json
+    ): ImportResultIssues {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        $results = new ImportResultIssues();
+        foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($requirements);
+
+            $results->addIssuesForForm(
+                $form_spec->id,
+                $mapper->getInvalidRequirements($requirements)
+            );
         }
 
         return $results;
@@ -111,6 +144,7 @@ final class FormSerializer extends AbstractFormSerializer
     public function importFormsFromJson(
         string $json,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -124,6 +158,11 @@ final class FormSerializer extends AbstractFormSerializer
         foreach ($export_specification->forms as $form_spec) {
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
+
+            $form_id = $form_spec->id;
+            if (in_array($form_id, $skipped_forms)) {
+                continue;
+            }
 
             if (!$mapper->validateRequirements($requirements)) {
                 $result->addFailedFormImport(
@@ -163,10 +202,10 @@ final class FormSerializer extends AbstractFormSerializer
         return $filename . ".json";
     }
 
-    private function exportFormToSpec(Form $form): FormContentSpecification
+    private function exportFormToSpec(Form $form, int $form_export_id): FormContentSpecification
     {
         // TODO: questions, ...
-        $form_spec = $this->exportBasicFormProperties($form);
+        $form_spec = $this->exportBasicFormProperties($form, $form_export_id);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
@@ -246,9 +285,11 @@ final class FormSerializer extends AbstractFormSerializer
     }
 
     private function exportBasicFormProperties(
-        Form $form
+        Form $form,
+        int $form_export_id
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
+        $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
         $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
