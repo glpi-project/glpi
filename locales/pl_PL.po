@@ -31,6 +31,8 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 755b53b8defa5252602576c1e1f602ce_2928438, 2024
 # wolvverine <wolvverinepld@gmail.com>, 2024
+# awiamo, 2024
+# Łukasz Smoliński, 2024
 # 
 #, fuzzy
 msgid ""
@@ -39,7 +41,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: wolvverine <wolvverinepld@gmail.com>, 2024\n"
+"Last-Translator: Łukasz Smoliński, 2024\n"
 "Language-Team: Polish (Poland) (https://app.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1089,7 +1091,7 @@ msgstr[3] "%d godziny"
 #: src/CommonItilObject_Item.php:640
 #, php-format
 msgid "%d linked %s"
-msgstr ""
+msgstr "%d połączono z %s"
 
 #: src/Dropdown.php:2384 src/Dropdown.php:2388 src/LevelAgreement.php:725
 #: src/PlanningRecall.php:297
@@ -1754,7 +1756,7 @@ msgstr[3] "%s miesiące"
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%s miesięcy temu"
 
 #: src/Project.php:2315
 #, php-format
@@ -2206,7 +2208,7 @@ msgstr[3] "%s lata"
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "%s lat temu"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2561,6 +2563,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Wystąpił błąd krytyczny podczas wykonywania tego zapisanego wyszukiwania. "
+"Nie można go użyć."
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2668,7 +2672,7 @@ msgstr ""
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "Wymagany jest adres URL."
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2681,7 +2685,7 @@ msgstr "Użytkownik w zespole elementu"
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "Wymagane jest wybranie użytkownika"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -2760,7 +2764,7 @@ msgstr "O"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "Accept"
-msgstr ""
+msgstr "Akceptuj"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #: src/ITILSolution.php:437
@@ -3074,7 +3078,7 @@ msgstr "Dodaj kryteria"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Add a custom header"
-msgstr ""
+msgstr "Dodaj niestandardowy nagłówek"
 
 #: src/Database.php:435
 msgid "Add a database"
@@ -3097,7 +3101,7 @@ msgstr "Dodaj dokument"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Dodaj domenę"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -3955,6 +3959,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"Pozwól zalogować się do API i uzyskać token sesji z zewnętrznym tokenem "
+"użytkownika. Zobacz Klucz zdalnego dostępu w zakładce Ustawienia "
+"użytkownika."
 
 #: src/Console/Database/UpdateCommand.php:101
 msgid "Allow update to an unstable version"
@@ -5850,6 +5857,8 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"Nie można zmienić interfejsu w tym profilu, ponieważ jest to jedyny "
+"pozostały profil z uprawnieniami do modyfikowania profili z tym interfejsem."
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -17075,7 +17084,7 @@ msgstr "Nie znaleziono kategorii"
 
 #: src/Inventory/Conf.php:966
 msgid "No change"
-msgstr ""
+msgstr "Brak zmian"
 
 #: src/Change.php:831 src/Change.php:878 src/Change.php:1588
 msgid "No change found."
@@ -25493,6 +25502,8 @@ msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
+"Aby włączyć lub wyłączyć wysyłanie telemetrii, proszę zmienić automatyczną "
+"akcję \"telemetria\"."
 
 #: src/Html.php:2671
 msgid ""
@@ -28272,7 +28283,7 @@ msgstr "Wcieliłeś się w %s."
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "Nie masz uprawnień do zmiany flag widzialności dla pododdziałów."
+msgstr "Nie masz uprawnień do zmiany flagi widoczności dla bytów podrzędnych."
 
 #: src/DomainRecord.php:297
 msgid "You are not allowed to edit this type of records"
@@ -28527,6 +28538,8 @@ msgid ""
 "You may use the same placeholder tags as in the payload content and header "
 "values."
 msgstr ""
+"Możesz używać tych samych znaczników zastępczych, co w treści danych "
+"użytkowych i wartościach nagłówków."
 
 #: index.php:115
 msgid "You must accept cookies to reach this application"
@@ -28573,7 +28586,7 @@ msgstr "Musisz wybrać wersję SNMP"
 
 #: src/ITILTemplatePredefinedField.php:82
 msgid "You must select an associated item"
-msgstr ""
+msgstr "Musisz wybrać powiązany element."
 
 #: src/Marketplace/View.php:824
 #, php-format
@@ -28614,6 +28627,8 @@ msgid ""
 "You should apply the following recommendations for configuring the web "
 "server."
 msgstr ""
+"Powinieneś zastosować następujące zalecenia dotyczące konfiguracji serwera "
+"web."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:260
 msgid ""
@@ -29112,12 +29127,16 @@ msgid ""
 "must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for"
 " dates higher than 6 months ago)"
 msgstr ""
+"musi być datą (RRRR-MM-DD) lub względną liczbą miesięcy (np. > -6 dla dat "
+"starszych niż 6 miesięcy)"
 
 #: src/Search/Input/QueryBuilder.php:959
 msgid ""
 "must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months "
 "(e.g. > -6 for dates higher than 6 months ago)"
 msgstr ""
+"musi być datą i godziną (RRRR-MM-DD GG:mm:SS) lub względną liczbą miesięcy "
+"(np. > -6 dla dat starszych niż 6 miesięcy)"
 
 #: src/Search/Input/QueryBuilder.php:954
 msgid "must be a number"

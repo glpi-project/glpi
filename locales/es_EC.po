@@ -11473,7 +11473,7 @@ msgstr ""
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Para obtener más información, consulte los registros GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."

@@ -2494,6 +2494,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Ocurrió un error grave al ejecutar esta búsqueda guardada. No se puede "
+"utilizar."
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2502,7 +2504,7 @@ msgstr "Un grupo en el equipo del elemento"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "Se requiere una selección de grupo"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2602,7 +2604,7 @@ msgstr ""
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "Se requiere una URL"
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2615,7 +2617,7 @@ msgstr "Un usuario en el equipo del elemento"
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "Se requiere una selección de usuario"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -11470,7 +11472,7 @@ msgstr "Para %s cerrado después"
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Para obtener más información, consulte los registros GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -19182,7 +19184,7 @@ msgstr ""
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "Selecciona un elemento para agregar"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
@@ -23648,7 +23650,7 @@ msgstr[2] "Modelos de placa base"
 
 #: src/Profile.php:986 src/Profile.php:3168
 msgid "System logs"
-msgstr ""
+msgstr "Registros del sistema"
 
 #: src/CronTask.php:1920
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -28330,7 +28332,7 @@ msgstr "Contraseña actualizada exitosamente."
 
 #: src/User.php:6612
 msgid "Your password has expired."
-msgstr ""
+msgstr "Tu contraseña he expirado"
 
 #: src/User.php:5537
 msgid "Your password has expired. You must change it to be able to login."

@@ -14,6 +14,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # Legastelois François <flegastelois@teclib.com>, 2024
+# Jordan B, 2024
 # Cédric Anne, 2024
 # 
 #, fuzzy
@@ -6488,7 +6489,7 @@ msgstr "Nettoyer les champs LDAP et forcer la synchronisation"
 
 #: src/Inventory/Conf.php:281
 msgid "Clean agents"
-msgstr "Agents nettoyés"
+msgstr "Nettoyer les agents"
 
 #: src/CronTask.php:1924
 msgid "Clean expired sessions"
@@ -11485,7 +11486,7 @@ msgstr ""
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Pour plus d'informations, consultez le journal d'erreur de GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."

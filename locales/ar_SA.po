@@ -10,6 +10,9 @@
 # Mohammad Mousa <mm84010@gmail.com>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Emirhan özfidan, 2024
+# MaryamMo, 2024
+# Lama N, 2024
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: Lama N, 2024\n"
 "Language-Team: Arabic (Saudi Arabia) (https://app.transifex.com/glpi/teams/1637/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +32,7 @@ msgstr ""
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr ""
+msgstr "%sيتم استخدام نظام ذاكرة التخزين المؤقت"
 
 #: src/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
@@ -45,7 +48,7 @@ msgstr "اداة \"تنظيف الإنتقال\""
 
 #: src/Agent.php:503
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "\"معرف الجهاز\" إلزامي!"
 
 #: src/System/Requirement/SessionsConfiguration.php:66
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
@@ -2869,12 +2872,12 @@ msgstr "رقم الحساب"
 #: ajax/massiveaction.php:76
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "لا افعال"
+msgstr[1] "فعل"
+msgstr[2] "فعلان"
+msgstr[3] "أفعال"
+msgstr[4] "أفعال"
+msgstr[5] "إجراءات"
 
 #: src/CronTask.php:211 src/CronTask.php:337
 msgid "Action aborted"
@@ -5018,11 +5021,11 @@ msgstr ""
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Auto Login"
-msgstr ""
+msgstr "تسجيل دخول تلقائي"
 
 #: src/Auth.php:684
 msgid "Auto login disabled"
-msgstr ""
+msgstr "تسجيل الدخول التلقائي معطل"
 
 #: src/NotificationTargetCommonITILObject.php:2146
 msgid "Auto resolution deadline"
@@ -15617,7 +15620,7 @@ msgstr ""
 
 #: templates/pages/login.html.twig
 msgid "Login source"
-msgstr ""
+msgstr "مصدر تسجيل الدخول"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"

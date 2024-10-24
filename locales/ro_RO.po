@@ -4,12 +4,12 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Drastic Solutions <yixay88559@win-777.net>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2023
 # Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Estalog Toust <estalogtoust@yahoo.com>, 2024
+# Drastic Solutions <yixay88559@win-777.net>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Estalog Toust <estalogtoust@yahoo.com>, 2024\n"
+"Last-Translator: Drastic Solutions <yixay88559@win-777.net>, 2024\n"
 "Language-Team: Romanian (Romania) (https://app.transifex.com/glpi/teams/1637/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,11 +33,11 @@ msgstr ""
 
 #: src/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "„-p foo” va seta valoarea paramului „foo” la true"
 
 #: src/Console/Plugin/InstallCommand.php:72
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "„-p foo=bar” va seta valoarea parametrului „foo” la „bar”"
 
 #: front/migrationcleaner.php:63
 msgid "\"Migration cleaner\" tool"
@@ -45,19 +45,21 @@ msgstr "Instrument de Înlăturare migrare"
 
 #: src/Agent.php:503
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "\"deviceid\" este obligatoriu"
 
 #: src/System/Requirement/SessionsConfiguration.php:66
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
 msgstr ""
+"\"session.auto_start\" and \"session.use_trans_sid\" trebuie sa fie "
+"dezactivate."
 
 #: src/System/Requirement/SessionsConfiguration.php:68
 msgid "\"session.auto_start\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" trebuie dezactivat."
 
 #: src/System/Requirement/SessionsConfiguration.php:70
 msgid "\"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.use_trans_sid\" trebuie dezactivat."
 
 #. TRANS: %f is the speed
 #: src/NetworkPortEthernet.php:294 src/NetworkPortFiberchannel.php:272
@@ -462,7 +464,7 @@ msgstr ""
 #: front/socket.form.php:103
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$sadaugă mai multe socketuri"
 
 #. TRANS: %1$s is the user login, %2$s is the name of the item to add
 #. TRANS: %1$s is the user login, %2$s is the name of the item

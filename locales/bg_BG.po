@@ -9,9 +9,9 @@
 # Z K, 2022
 # Emil Yakimov <yakimov@engineer.bg>, 2023
 # Yoan Bojilov <admin@videnov.bg>, 2024
-# Zornitsa Koleva <zkoleva_@abv.bg>, 2024
 # Nikolay Zaynelov <mravunko@yahoo.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Zornitsa Koleva <zkoleva_@abv.bg>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: Zornitsa Koleva <zkoleva_@abv.bg>, 2024\n"
 "Language-Team: Bulgarian (Bulgaria) (https://app.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -78,8 +78,8 @@ msgstr[1] "%1$d бази данни"
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$d ден %2$dч %3$s"
+msgstr[1] "%1$d дни %2$dч%3$s"
 
 #: src/Html.php:4471
 #, php-format
@@ -176,7 +176,7 @@ msgstr "%1$s (%2$d%%) "
 #: src/Item_Devices.php:1060
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s (%2$s%%) "
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -257,7 +257,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:686
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Статус %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:111
 #, php-format
@@ -1083,8 +1083,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d нова заявка"
+msgstr[1] "%d нови заявки"
 
 #: js/src/vue/Kanban/TeamBadgeProvider.js:293
 #, javascript-format

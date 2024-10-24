@@ -9,7 +9,6 @@
 # Javier García, 2022
 # JM B <transifex.com@misejoh.es>, 2022
 # David Abad Ruiz, 2022
-# Óscar Beiro, 2023
 # José Javier Alamá Izquierdo, 2023
 # Mario Torres <rhaegar@hotmail.es>, 2023
 # Ayto El Ejido, 2023
@@ -19,6 +18,9 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # FranciscoFJ <dev-ooo@satel-sa.com>, 2024
 # Pier Jose Gotta Perez <piegope@protonmail.com>, 2024
+# Javier Achirica, 2024
+# Javier Camarasa, 2024
+# Óscar Beiro, 2024
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Pier Jose Gotta Perez <piegope@protonmail.com>, 2024\n"
+"Last-Translator: Óscar Beiro, 2024\n"
 "Language-Team: Spanish (Spain) (https://app.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1718,7 +1720,7 @@ msgstr[2] "%s meses"
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "Hace %s meses"
 
 #: src/Project.php:2315
 #, php-format
@@ -1945,7 +1947,7 @@ msgstr[2] "%s segundos"
 #: js/common.js:1176
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "Hace %s segundos"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -2163,7 +2165,7 @@ msgstr[2] "%s años"
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "Hace %s años"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2401,7 +2403,7 @@ msgstr "24/7"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "2FA Enabled"
-msgstr ""
+msgstr "2FA habilitado"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA Setup"
@@ -2441,7 +2443,7 @@ msgstr ""
 
 #: src/User.php:4186
 msgid "2FA status"
-msgstr ""
+msgstr "estado del 2FA"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:146
 msgid "3) Actions on the user's authorizations:"
@@ -2474,6 +2476,8 @@ msgid ""
 "A PHP version maintained by the PHP community should be used to get the "
 "benefits of PHP security and bug fixes."
 msgstr ""
+"Se debería usar una versión de PHP con mantenimiento, para beneficiarse de "
+"parches de seguridad y corrección de errores."
 
 #: src/NotificationAjax.php:107
 #, php-format
@@ -2498,6 +2502,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Un error fatal ha ocurrido al ejecutar la búsqueda guardada. No es posible "
+"usarla."
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2506,7 +2512,7 @@ msgstr "Un grupo en el equipo del elemento"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "Se requiere seleccionar un grupo"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2605,7 +2611,7 @@ msgstr ""
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "Se requiere un URL"
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2618,7 +2624,7 @@ msgstr "Un usuario en el equipo del elemento"
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "Se requiere seleccionar un usuario"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -6072,9 +6078,9 @@ msgstr ""
 #: src/NotificationTargetProject.php:792 src/NotificationTargetProject.php:810
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Cambios"
+msgstr[1] "Cambios"
+msgstr[2] "Cambios"
 
 #: src/AuthLDAP.php:3906 src/AuthLDAP.php:3938
 msgctxt "button"
@@ -6912,7 +6918,7 @@ msgstr "Comunidad"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "Empresa"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
@@ -7782,7 +7788,7 @@ msgstr "Contraseña actual"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:68
 msgid "Currently only available for Software dictionary."
-msgstr ""
+msgstr "Sólo disponible para diccionario de software"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
@@ -8979,11 +8985,11 @@ msgstr[2] ""
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
 msgid "Dictionary of computer models"
-msgstr ""
+msgstr "Diccionario de modelos de ordenador"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:46
 msgid "Dictionary of computer types"
-msgstr ""
+msgstr "Diccionario de de tipos de ordenador"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
@@ -10593,6 +10599,8 @@ msgid ""
 "Even if GLPI still supports this PHP version, an upgrade to a more recent "
 "PHP version is recommended."
 msgstr ""
+"Aunque GLPI soporta esta versión de PHP, se recomienda actualizar a una "
+"versión más reciente."
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 #: templates/pages/setup/webhook/webhook.html.twig
@@ -14765,9 +14773,9 @@ msgstr "Enlaces con elementos para la creación de peticiones"
 #: src/RuleImportAsset.php:181
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Activo enlazado"
+msgstr[1] "Activos enlazados"
+msgstr[2] "Activos enlazados"
 
 #: src/CommonITILObject_CommonITILObject.php:49
 msgid "Linked assistance object"
@@ -15312,7 +15320,7 @@ msgstr "Texto de mantenimiento"
 #: src/CommonITILObject.php:3313
 msgctxt "priority"
 msgid "Major"
-msgstr "Primordial"
+msgstr "Bloqueante"
 
 #: js/planning.js:361
 msgid "Make a choice"
@@ -18382,7 +18390,7 @@ msgstr "Megabytes de salida"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Propietario"
 
 #: src/RegisteredID.php:54
 msgid "PCI"
@@ -28314,7 +28322,7 @@ msgstr "Su contraseña ha sido correctamente actualizada."
 
 #: src/User.php:6612
 msgid "Your password has expired."
-msgstr ""
+msgstr "Su clave ha caducado."
 
 #: src/User.php:5537
 msgid "Your password has expired. You must change it to be able to login."
@@ -28390,11 +28398,11 @@ msgstr "hace un minuto"
 
 #: js/common.js:1185
 msgid "a month ago"
-msgstr ""
+msgstr "hace un mes"
 
 #: js/common.js:1183
 msgid "a week ago"
-msgstr ""
+msgstr "hace una semana"
 
 #: js/common.js:1187
 msgid "a year ago"

@@ -255,7 +255,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:686
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Estatus %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:111
 #, php-format
@@ -1460,7 +1460,7 @@ msgstr "Hace %s días"
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s eliminar una tarea"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -1600,7 +1600,7 @@ msgstr[2] "%s horas"
 #: src/Ticket.php:3255
 #, php-format
 msgid "%s hours %s minutes"
-msgstr ""
+msgstr "%s horas %s minutos"
 
 #: src/Html.php:7038 js/common.js:1180
 #, javascript-format, php-format
@@ -1691,9 +1691,9 @@ msgstr "hace %s minuto"
 #, php-format
 msgid "%s model"
 msgid_plural "%s models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s modelo"
+msgstr[1] "%s de modelos"
+msgstr[2] "%s modelos"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1868
@@ -1884,7 +1884,7 @@ msgstr "%s restaura una instancia de base de datos"
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s restaura una tarea"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:124
@@ -1977,9 +1977,9 @@ msgstr "%s intenta utilizar una ruta no estándar."
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de %s"
+msgstr[1] "Tipos de %s"
+msgstr[2] "Tipos de %s"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2508,7 +2508,7 @@ msgstr "Un grupo en el equipo del elemento"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr "Se requiere una selección de grupo."
+msgstr "Se requiere una selección de grupo"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2684,7 +2684,7 @@ msgstr "Identificador API"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ASC"
 
 #: src/DevicePowerSupply.php:53 src/DevicePowerSupply.php:77
 msgid "ATX"
@@ -3016,7 +3016,7 @@ msgstr "Agregar un criterio"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Add a custom header"
-msgstr ""
+msgstr "Agregar un encabezado personalizado"
 
 #: src/Database.php:435
 msgid "Add a database"
@@ -3039,7 +3039,7 @@ msgstr "Agregar un documento"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Agregar un dominio"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -3138,7 +3138,7 @@ msgstr "Agregar una toma nueva"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "Agregar un nuevo puerto"
 
 #: src/Change_Ticket.php:292 src/Problem_Ticket.php:276 src/Problem.php:418
 #: src/Ticket.php:2224
@@ -3275,7 +3275,7 @@ msgstr "Agregar un tipo de elemento"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "Agregar otro tipo"
 
 #: src/Impact.php:1122
 msgid "Add asset"
@@ -3320,7 +3320,7 @@ msgstr "Agregar date_mod a %s"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Add documents"
-msgstr ""
+msgstr "Agregar documentos"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into ticket notifications"
@@ -3461,7 +3461,7 @@ msgstr "Agregar usuarios desde una fuente externa"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "Agregar zona"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/Remove items from software versions"
@@ -3496,7 +3496,7 @@ msgstr "Agregando indices de unicidad  - %s"
 
 #: src/DefaultFilter.php:57
 msgid "Additional default filter"
-msgstr ""
+msgstr "Filtro predeterminado adicional"
 
 #: src/QueuedNotification.php:286 src/QueuedNotification.php:790
 msgid "Additional headers"
@@ -3591,7 +3591,7 @@ msgstr "Después"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr ""
+msgstr "Después de 12 horas, ya no podrás modificar tu respuesta."
 
 #: src/PendingReason.php:296
 msgid "After one follow-up"
@@ -3777,7 +3777,7 @@ msgstr "Todos los tableros"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:69
 msgid "All documents"
-msgstr ""
+msgstr "Todos los documentos"
 
 #: src/Profile.php:3919 src/Profile.php:3925
 msgid "All items"
@@ -3793,7 +3793,7 @@ msgstr "Todos mis artículos"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "Todas las páginas"
 
 #: src/Dropdown.php:2576
 msgid "All pages in CSV"
@@ -3879,7 +3879,7 @@ msgstr "Permitir creación de casos anónimos (helpdesk.receiver)"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:84
 msgid "Allow downloading the GLPI release if needed"
-msgstr ""
+msgstr "Permitir descargar la versión GLPI si es necesario"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/Notification.php:445
@@ -3897,6 +3897,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"Permitir iniciar sesión en API y obtener un token de sesión con un token "
+"externo de usuario. Ver Clave de acceso remoto en la pestaña Configuración "
+"del usuario"
 
 #: src/Console/Database/UpdateCommand.php:101
 msgid "Allow update to an unstable version"
@@ -4063,7 +4066,7 @@ msgstr "Se produjo un error al intentar conectarse al recopilador."
 
 #: src/Api/HL/APIException.php:52
 msgid "An error occurred while processing your request."
-msgstr ""
+msgstr "Se produjo un error al procesar su solicitud."
 
 #: src/Inventory/Conf.php:240
 #, php-format
@@ -4077,11 +4080,11 @@ msgstr "Se produce un error al intentar desbloquear la tarea \"%s\"."
 
 #: src/Webhook.php:1254
 msgid "An event is required"
-msgstr ""
+msgstr "Se requiere un evento"
 
 #: src/Api/HL/Search.php:112
 msgid "An internal error occured while trying to fetch the data."
-msgstr ""
+msgstr "Se produjo un error interno al intentar recuperar los datos."
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4434,9 +4437,9 @@ msgstr[2] "Activos"
 #: src/Asset/AssetDefinition.php:54
 msgid "Asset definition"
 msgid_plural "Asset definitions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Definición de activo"
+msgstr[1] "Definiciones de activos"
+msgstr[2] "Definiciones de activos"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -5049,7 +5052,7 @@ msgstr "Crear usuario automáticamente desde el correo electrónico"
 #: src/NotificationTemplate.php:248
 #, php-format
 msgid "Automatically generated by %s"
-msgstr ""
+msgstr "Generada automáticamente por %s"
 
 #: src/Migration.php:883
 #, php-format
@@ -5299,15 +5302,15 @@ msgstr "Número mayor"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log GTID:"
-msgstr ""
+msgstr "GTID de registro binario:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "Archivo de registro binario:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "Posición del registro binario:"
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
@@ -5331,7 +5334,7 @@ msgstr "Impresiones en blanco y negro"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "Paginas en blanco y negro"
 
 #: src/Blacklist.php:109 src/RuleCollection.php:2072
 msgid "Blacklist"
@@ -5583,11 +5586,11 @@ msgstr "Uso de CPU"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA Challenge"
-msgstr ""
+msgstr "Desafío ADR"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "Resultado de la ADR"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -5844,7 +5847,7 @@ msgstr "No se puede encontrar la versión especificada del complemento."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:137
 msgid "Cannot generate a diff on a development version."
-msgstr ""
+msgstr "No se puede generar una diferencia en una versión de desarrollo."
 
 #: src/CommonDBConnexity.php:319
 #, php-format
@@ -5870,7 +5873,7 @@ msgstr "No se puede cambiar este atributo. Se hereda de su padre."
 #: src/Asset/AssetDefinition.php:105 src/Asset/AssetDefinition.php:312
 #: src/Asset/AssetDefinition.php:572
 msgid "Capacities"
-msgstr ""
+msgstr "Capacidades"
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:83 src/DeviceBattery.php:123
@@ -6059,16 +6062,21 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"La autenticación de desafío-respuesta se puede utilizar para validar la "
+"identidad del servidor de destino antes de que se envíen datos desde GLPI. "
+"Esto utiliza el secreto compartido que se generó en la sección anterior."
 
 #: src/Webhook.php:1042
 msgid ""
 "Challenge–response authentication failed, the answer returned by target is "
 "different"
 msgstr ""
+"La autenticación de desafío-respuesta falló, la respuesta devuelta por el "
+"objetivo es diferente"
 
 #: src/Webhook.php:1037
 msgid "Challenge–response authentication validated"
-msgstr ""
+msgstr "Autenticación de desafío-respuesta validada"
 
 #: src/NotificationTargetProblem.php:225 src/NotificationTargetProblem.php:239
 #: src/Stat.php:1788 src/NotificationTargetTicket.php:736
@@ -6102,9 +6110,9 @@ msgstr "Cambiar todo"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Cambiar aprobación"
+msgstr[1] "Cambiar aprobaciones"
+msgstr[2] "Cambiar aprobaciones"
 
 #: src/SavedSearch.php:85
 msgid "Change count method"
@@ -6229,7 +6237,7 @@ msgstr "Características"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:73
 msgid "Check GLPI source code file integrity."
-msgstr ""
+msgstr "Verifique la integridad del archivo de código fuente GLPI."
 
 #: templates/components/datatable.html.twig src/Html.php:2230 src/Lock.php:918
 msgid "Check all"
@@ -6544,7 +6552,7 @@ msgstr "Limpiar"
 
 #: templates/stencil/editor.html.twig
 msgid "Clear data"
-msgstr ""
+msgstr "Borrar datos"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
@@ -6556,7 +6564,7 @@ msgstr "Limpiar estado"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Clear the list of elements to be transferred"
-msgstr ""
+msgstr "Borrar la lista de elementos a transferir"
 
 #: js/impact.js:2307
 msgid "Click on an element to remove it from the network"
@@ -6931,7 +6939,7 @@ msgstr "Compañía"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
-msgstr ""
+msgstr "Comparar"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid ""
@@ -6949,7 +6957,7 @@ msgstr "Comparar revisiones seleccionadas"
 #: src/Csv/PrinterLogCsvExportComparison.php:70
 #: src/Csv/PrinterLogCsvExportComparison.php:71
 msgid "Comparison"
-msgstr ""
+msgstr "Comparación"
 
 #: src/DbUtils.php:1453 src/NotificationTargetProjectTask.php:657
 #: src/CommonTreeDropdown.php:752
@@ -6962,7 +6970,7 @@ msgstr "Nombre completo"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Complete output from the API"
-msgstr ""
+msgstr "Salida completa de la API"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: front/devices.php:44 src/Dropdown.php:1088 src/Item_Devices.php:274
@@ -7583,7 +7591,7 @@ msgstr "Crear para solicitud"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr ""
+msgstr "Créalo ahora"
 
 #: src/CommonITILRecurrentCron.php:54
 msgid "Create recurrent tickets and changes"
@@ -7774,7 +7782,7 @@ msgstr "Archivo actual"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "Página actual"
 
 #: src/Dropdown.php:2572
 msgid "Current page in CSV"
@@ -7802,14 +7810,14 @@ msgstr "Actualmente sólo está disponible para diccionario de software."
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
-msgstr ""
+msgstr "CSS personalizado está deshabilitado"
 
 #: src/Webhook.php:754
 msgid "Custom header"
 msgid_plural "Custom headers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Encabezado personalizado"
+msgstr[1] "Encabezados personalizados"
+msgstr[2] "Encabezados personalizados"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
@@ -7855,7 +7863,7 @@ msgstr "Depurar"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "DESC"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:464 src/Certificate.php:227
@@ -8258,9 +8266,9 @@ msgstr ""
 #: src/DefaultFilter.php:67
 msgid "Default filter"
 msgid_plural "Default filters"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Filtro predeterminado"
+msgstr[1] "Filtros predeterminados"
+msgstr[2] "Filtros predeterminados"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
@@ -8349,6 +8357,8 @@ msgstr "Búsqueda por defecto"
 msgid ""
 "Default search filter, applied in addition to the user's search criteria."
 msgstr ""
+"Filtro de búsqueda predeterminado, aplicado además de los criterios de "
+"búsqueda del usuario."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default search results limit (page)"
@@ -8410,11 +8420,11 @@ msgstr "Valores por defecto"
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "Definir datos del puerto en la imagen"
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "Definir zona en imagen"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Delay before account deactivation (in days)"
@@ -8472,7 +8482,7 @@ msgstr "Eliminar una regla"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "Eliminar una clasificación"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1909
 msgid "Delete all"
@@ -8597,7 +8607,7 @@ msgstr ""
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "Eliminar vista personal"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete relation between items"
@@ -8646,7 +8656,7 @@ msgstr "Cambio borrado"
 #: src/NotificationTargetKnowbaseItem.php:42
 #: src/NotificationTargetKnowbaseItem.php:89
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "Eliminar un elemento de la base de conocimientos"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
@@ -8702,7 +8712,7 @@ msgstr "Denegar"
 
 #: src/RuleRight.php:384
 msgid "Deny login"
-msgstr ""
+msgstr "Denegar inicio de sesión"
 
 #: src/Impact.php:1094
 msgid "Depends"
@@ -8889,9 +8899,9 @@ msgstr[2] "Modelos de discos duros del dispositivo"
 #: src/DeviceHardDriveType.php:40
 msgid "Device hard drive type"
 msgid_plural "Device hard drive types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tipo de disco duro"
+msgstr[1] "Tipos de discos duros"
+msgstr[2] "Tipos de discos duros"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:121
 #: src/Agent.php:315
@@ -9162,6 +9172,8 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
+"Deshabilite las notificaciones de forma predeterminada en la configuración "
+"del actor de objetos ITIL, con la capacidad de derogarlas."
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -9410,7 +9422,7 @@ msgstr "Documento"
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
 msgid "Document ID"
-msgstr ""
+msgstr "Identificación del documento"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: src/CommonDBTM.php:5588
@@ -9421,7 +9433,7 @@ msgstr "Documentar caso %d"
 #: src/NotificationTargetKnowbaseItem.php:68
 #: src/NotificationTargetKnowbaseItem.php:183
 msgid "Document URL"
-msgstr ""
+msgstr "URL del documento"
 
 #: src/Document.php:1259 src/Document.php:1367
 msgid "Document copy succeeded."
@@ -9430,12 +9442,14 @@ msgstr "Documento copiado exitosamente."
 #: src/NotificationTargetKnowbaseItem.php:67
 #: src/NotificationTargetKnowbaseItem.php:182
 msgid "Document download URL"
-msgstr ""
+msgstr "URL de descarga del documento"
 
 #: src/NotificationTargetKnowbaseItem.php:69
 #: src/NotificationTargetKnowbaseItem.php:184
 msgid "Document filename"
 msgstr ""
+"Nombre \n"
+"del documento"
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -9463,7 +9477,7 @@ msgstr "Documento movido exitosamente."
 #: src/NotificationTargetKnowbaseItem.php:66
 #: src/NotificationTargetKnowbaseItem.php:181
 msgid "Document name"
-msgstr ""
+msgstr "Nombre del documento"
 
 #: src/DocumentType.php:70
 msgid "Document type"
@@ -9475,7 +9489,7 @@ msgstr[2] "Tipos de documento"
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:185
 msgid "Document weblink"
-msgstr ""
+msgstr "Enlace web del documento"
 
 #: src/NotificationTargetKnowbaseItem.php:212
 msgid "Documents"
@@ -9681,7 +9695,7 @@ msgstr "Tambor"
 
 #: src/Printer_CartridgeInfo.php:168
 msgid "Drum percentage"
-msgstr ""
+msgstr "Porcentaje del tambor"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Due date progression"
@@ -9987,7 +10001,7 @@ msgstr "Dirección del remitente de correo electrónico"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Email sender email address"
-msgstr ""
+msgstr "Dirección de correo electrónico del remitente"
 
 #: templates/pages/admin/entity/notifications.html.twig
 #: templates/pages/setup/notification/mailing_setting.html.twig
@@ -9997,7 +10011,7 @@ msgstr "Nombre del remitente del correo electrónico"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Email sending test result"
-msgstr ""
+msgstr "Resultado de la prueba de envío de correo electrónico"
 
 #: src/AuthMail.php:96 src/Auth.php:1301 src/RuleRight.php:252
 msgid "Email server"
@@ -10067,7 +10081,7 @@ msgstr "Habilitar personalización CSS"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable REST API"
-msgstr ""
+msgstr "Habilitar API REST"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
@@ -10351,7 +10365,7 @@ msgstr "Asegúrese de que se aplica la seguridad en las cookies de sesión."
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Enter"
-msgstr ""
+msgstr "Intro"
 
 #: ajax/dropdownTrackingDeviceType.php:73
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -10458,9 +10472,9 @@ msgstr "Reporte de equipamiento por año"
 #: js/glpi_dialog.js:415
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Error"
+msgstr[1] "Errores"
+msgstr[2] "Errores"
 
 #: src/Plugin.php:2210 src/Plugin.php:2610
 msgid "Error / to clean"
@@ -10551,7 +10565,7 @@ msgstr "Error: las contraseñas no concuerdan"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:147
 msgid "Errors occurred during diff generation:"
-msgstr ""
+msgstr "Se produjeron errores durante la generación de diferencias:"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:246
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
@@ -10564,7 +10578,7 @@ msgstr "Se produjeron errores durante la migración."
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/LevelAgreementLevel.php:93 src/Ticket.php:2890 src/Ticket.php:2941
@@ -10807,7 +10821,7 @@ msgstr "Fecha que expira + Preaviso"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr ""
+msgstr "Retraso de vencimiento"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
@@ -10842,11 +10856,11 @@ msgstr "Exportar"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Export data in CSV"
-msgstr ""
+msgstr "Exportar datos en CSV"
 
 #: src/Stat.php:1979 src/Stat.php:2101
 msgid "Export to CSV"
-msgstr ""
+msgstr "Exportar a CSV"
 
 #: src/Impact.php:376
 msgid "Export to csv"
@@ -10867,7 +10881,7 @@ msgstr "Externo"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "External ID"
-msgstr ""
+msgstr "Identificación externa"
 
 #: front/auth.others.php:52 front/auth.settings.php:43 front/setup.auth.php:42
 msgid "External authentication sources"
@@ -11005,7 +11019,7 @@ msgstr "Error al eliminar el caso %d"
 #: src/Console/Build/GenerateCodeManifestCommand.php:72
 #, php-format
 msgid "Failed to generate manifest. Error was: %s"
-msgstr ""
+msgstr "Error al generar manifiesto. El error fue: %s"
 
 #: src/Ticket.php:6100
 #, php-format
@@ -11025,6 +11039,7 @@ msgstr "Error al cambiar el tamaño de la imagen"
 #, php-format
 msgid "Failed to validate GLPI source code integrity. Error was: %s"
 msgstr ""
+"No se pudo validar la integridad del código fuente GLPI. El error fue: %s"
 
 #: src/UploadHandler.php:387
 msgid "Failed to write file to disk"
@@ -11294,7 +11309,7 @@ msgstr "Filtro para búsqueda en los grupos"
 #: src/Search/Output/HTMLSearchOutput.php:155
 #, php-format
 msgid "Filtered by %s"
-msgstr ""
+msgstr "Filtrada por %s"
 
 #: src/Dashboard/Grid.php:763
 msgid "Filters"
@@ -11484,7 +11499,7 @@ msgstr "Para %s cerrado después"
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Para obtener más información, consulte los registros GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11747,7 +11762,7 @@ msgstr "Versión base de datos GLPI"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "GLPI history delay:"
-msgstr ""
+msgstr "Retraso del historial GLPI:"
 
 #: src/Auth.php:1355 src/Auth.php:1671
 msgid "GLPI internal database"
@@ -11764,15 +11779,15 @@ msgstr "Zona horaria del servidor GLPI"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:116
 msgid "GLPI source code integrity is not validated."
-msgstr ""
+msgstr "La integridad del código fuente GLPI no está validada."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:112
 msgid "GLPI source code integrity is validated."
-msgstr ""
+msgstr "Se valida la integridad del código fuente GLPI."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
-msgstr ""
+msgstr "Actualización GLPI"
 
 #: src/Console/Database/UpdateCommand.php:168
 msgid "GLPI version"
@@ -11828,12 +11843,16 @@ msgid ""
 "Generate GLPI source code manifest that could be used to validate source "
 "code integrity."
 msgstr ""
+"Genere un manifiesto de código fuente GLPI que pueda utilizarse para validar"
+" la integridad del código fuente."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:165
 msgid ""
 "Generating the source code diff could require downloading the GLPI release "
 "archive. Do you want to allow this operation?"
 msgstr ""
+"Para generar la diferencia del código fuente podría ser necesario descargar "
+"el archivo de lanzamiento de GLPI. ¿Quieres permitir esta operación?"
 
 #: src/CommonITILObject.php:10273
 msgid "Generation of satisfaction surveys"
@@ -11966,7 +11985,7 @@ msgstr "Subsidios"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "Definición de ranura gráfica"
 
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
@@ -12102,7 +12121,7 @@ msgstr "Se ha corregido la codificación HTML."
 
 #: templates/pages/setup/webhook/webhook.html.twig src/QueuedWebhook.php:397
 msgid "HTTP method"
-msgstr ""
+msgstr "Método HTTP"
 
 #: src/NetworkPort.php:1107
 msgid "Half"
@@ -12146,7 +12165,7 @@ msgstr "Tiene copia de seguridad"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:58
 msgid "Hash algorithm to use"
-msgstr ""
+msgstr "Algoritmo hash a utilizar"
 
 #: src/RuleImportAsset.php:111
 msgid "Having the status"
@@ -12164,7 +12183,7 @@ msgstr ""
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:323
 msgid "Headers"
-msgstr ""
+msgstr "Encabezados"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/NotificationTargetProjectTask.php:631 src/KnowbaseItem.php:1237
@@ -12265,7 +12284,7 @@ msgstr "Página principal"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Horizontal (menu in header"
-msgstr ""
+msgstr "Horizontal (menú en el encabezado"
 
 #: src/Dashboard/Widget.php:231
 msgid "Horizontal bars"
@@ -12405,7 +12424,7 @@ msgstr "INFORMACIÓN"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
-msgstr ""
+msgstr "E/S en ejecución:"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:184
 #: src/RuleLocation.php:101 src/Blacklist.php:247 src/RuleImportAsset.php:128
@@ -12592,6 +12611,7 @@ msgstr "Si las impresoras no se utilizan más"
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If set, it will be used for notifications that doesnʼt expect a reply."
 msgstr ""
+"Si se configura, se utilizará para notificaciones que no esperan respuesta."
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If software are no longer used"
@@ -12643,6 +12663,8 @@ msgid ""
 "If the name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Si el nombre es una dirección de correo electrónico válida, se agregará "
+"automáticamente a los remitentes de la lista negra."
 
 #: src/CommonDropdown.php:630
 msgid ""
@@ -12656,6 +12678,8 @@ msgid ""
 "If you have \"session.save_handler\" set to something besides \"files\" in "
 "your php.ini, this is not required."
 msgstr ""
+"Si tiene \"session.save_handler\" configurado en algo además de \"archivos\""
+" en su php.ini, esto no es necesario."
 
 #: src/ITILFollowup.php:432
 msgid "If you reject the solution, you must specify a reason"
@@ -12677,6 +12701,11 @@ msgid ""
 "\"Automatically add users from an external authentication source\", in the "
 "Authentication settings in order to avoid the generation of duplicate users."
 msgstr ""
+"Si utiliza esta opción y es probable que este recopilador reciba solicitudes"
+" de usuarios que se autentican vía LDAP, le recomendamos activar la opción "
+"\"Agregar usuarios automáticamente desde una fuente de autenticación "
+"externa\", en la configuración de Autenticación para evitar la generación de"
+" usuarios duplicados."
 
 #: src/Marketplace/View.php:385
 msgid ""
@@ -12868,7 +12897,7 @@ msgstr "El proceso de importación está completo."
 
 #: templates/pages/admin/rules/import.html.twig
 msgid "Import rules from an XML file"
-msgstr ""
+msgstr "Importar reglas desde un archivo XML"
 
 #: src/Inventory/Conf.php:637
 msgid "Import virtual machines"
@@ -13203,7 +13232,7 @@ msgstr "Inicialización de la base de datos"
 
 #: install/install.php:322 install/install.php:350 install/install.php:380
 msgid "Initializing database tables and default data..."
-msgstr ""
+msgstr "Inicializando tablas de base de datos y datos predeterminados..."
 
 #: src/Update.php:280
 msgid "Initializing rules..."
@@ -13215,7 +13244,7 @@ msgstr "En línea (sin barras de herramientas)"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr ""
+msgstr "Entrada"
 
 #: src/NetworkPortMetrics.php:213
 msgid "Input errors"
@@ -13460,11 +13489,11 @@ msgstr "JSON inválido usado para definir campos."
 #: src/Api/HL/RSQL/Parser.php:69
 #, php-format
 msgid "Invalid RSQL array: %s"
-msgstr ""
+msgstr "Matriz RSQL no válida: %s"
 
 #: src/Api/HL/RSQL/Lexer.php:97
 msgid "Invalid RSQL query"
-msgstr ""
+msgstr "Consulta RSQL no válida"
 
 #: src/Auth.php:1063
 msgid "Invalid TOTP code"
@@ -13768,7 +13797,7 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "It is strongly advised to use the HTTPS protocol."
-msgstr ""
+msgstr "Se recomienda encarecidamente utilizar el protocolo HTTPS."
 
 #: src/FieldUnicity.php:503
 msgid "It's mandatory to select a type and at least one field"
@@ -14004,7 +14033,7 @@ msgstr "Tipo de elemento"
 #: src/DefaultFilter.php:181
 #, php-format
 msgid "Itemtype %s is already in use"
-msgstr ""
+msgstr "El tipo de elemento %s ya está en uso"
 
 #: src/Console/Task/UnlockCommand.php:84
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -14403,7 +14432,7 @@ msgstr "Último trimestre"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Last response"
-msgstr ""
+msgstr "Última respuesta"
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1506
 msgid "Last run"
@@ -14420,7 +14449,7 @@ msgstr "Estado de la última solución"
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:378
 msgid "Last status code"
-msgstr ""
+msgstr "Último código de estado"
 
 #: src/User.php:4013
 msgid "Last synchronization"
@@ -15046,7 +15075,7 @@ msgstr "Bloquear campos actualizados durante la transferencia"
 
 #: src/ObjectLock.php:632
 msgid "Lock status"
-msgstr ""
+msgstr "Estado de bloqueo"
 
 #: src/Log.php:1096
 msgid "Lock the item"
@@ -15130,7 +15159,7 @@ msgstr "Volver a ingresar"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Log in item history"
-msgstr ""
+msgstr "Iniciar sesión en el historial de elementos"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Log out fallback URL"
@@ -15160,6 +15189,7 @@ msgstr "Campo de usuario"
 #, php-format
 msgid "Login for %1$s denied by authorization rules from IP %2$s"
 msgstr ""
+"Inicio de sesión para %1$s denegado por reglas de autorización de IP %2$s"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
@@ -15177,6 +15207,8 @@ msgstr "Inicio de sesión con un token externo desactivado"
 msgid ""
 "Logins are not possible at this time. Please contact your administrator."
 msgstr ""
+"No es posible iniciar sesión en este momento. Por favor contacte a su "
+"administrador."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Logout"
@@ -15496,7 +15528,7 @@ msgstr "Los campos obligatorios no fueron completados. Por favor corregir: %s"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:70
 msgid "Manifest successfully generated."
-msgstr ""
+msgstr "Manifiesto generado exitosamente."
 
 #: src/ManualLink.php:52
 msgid "Manual link"
@@ -15625,7 +15657,7 @@ msgstr "Notificaciones de vencimiento máximo para enviar de una vez"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Maximum number of automatic actions (run by CLI)"
-msgstr ""
+msgstr "Número máximo de acciones automáticas (ejecutadas por CLI)"
 
 #: src/UploadHandler.php:407
 msgid "Maximum number of files exceeded"
@@ -16245,7 +16277,7 @@ msgstr "Mis artículos sin publicar"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
-msgstr ""
+msgstr "El servidor MySQL devolvió un error:"
 
 #: src/DbUtils.php:1769 src/Search/Input/QueryBuilder.php:307
 #: src/User.php:4800 src/Dashboard/Filters/UserTechFilter.php:148
@@ -16666,7 +16698,7 @@ msgstr "Nuevo comentario"
 
 #: src/NotificationTargetCommonITILObject.php:146
 msgid "New document"
-msgstr ""
+msgstr "Nuevo documento"
 
 #: src/NotificationTargetCommonITILObject.php:141
 msgid "New followup"
@@ -16692,7 +16724,7 @@ msgstr "Nuevo elemento"
 #: src/NotificationTargetKnowbaseItem.php:41
 #: src/NotificationTargetKnowbaseItem.php:86
 msgid "New knowledge base item"
-msgstr ""
+msgstr "Nuevo elemento de la base de conocimientos"
 
 #: src/Reminder.php:602 src/RSSFeed.php:684
 msgid "New note"
@@ -16955,7 +16987,7 @@ msgstr "No seleccionó un directorio"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:68
 msgid "No documents"
-msgstr ""
+msgstr "Sin documentos"
 
 #: templates/pages/admin/rules/engine_preview_criteria.html.twig
 msgid "No element to be tested"
@@ -17022,7 +17054,7 @@ msgstr "No importar"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
-msgstr ""
+msgstr "Sin entrada"
 
 #: templates/pages/admin/events_list.html.twig
 #: templates/pages/setup/notification/group_notifications.html.twig
@@ -17191,7 +17223,7 @@ msgstr "No hay reservas"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "No response given"
-msgstr ""
+msgstr "No se ha dado respuesta"
 
 #: ajax/subvisibility.php:64
 msgid "No restriction"
@@ -17386,7 +17418,7 @@ msgstr "Sin tareas planeadas"
 
 #: src/QueuedWebhook.php:410
 msgid "Not sent/no response"
-msgstr ""
+msgstr "No enviado/sin respuesta"
 
 #: src/Dashboard/Provider.php:275 src/Change.php:621 src/Problem.php:679
 #: src/Ticket.php:3375
@@ -17437,7 +17469,7 @@ msgstr "Preaviso"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notifcation location"
-msgstr ""
+msgstr "Lugar de notificación"
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -17456,7 +17488,7 @@ msgstr "Notificación deshabilitada"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Notification does not exist"
-msgstr ""
+msgstr "La notificación no existe"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid "Notification frequency"
@@ -17792,7 +17824,7 @@ msgstr "Número de resultados"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
-msgstr ""
+msgstr "Número de reintentos"
 
 #: src/DCRoom.php:155 src/DCRoom.php:324
 msgid "Number of rows"
@@ -17907,7 +17939,7 @@ msgstr "Número de casos creados"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
-msgstr ""
+msgstr "Autenticación OAuth"
 
 #: src/OAuthClient.php:49
 msgid "OAuth client"
@@ -18025,7 +18057,7 @@ msgstr "De acuerdo"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
-msgstr "En sábado"
+msgstr "Sábados"
 
 #: src/PDU_Rack.php:441 src/PDU_Rack.php:449 src/PDU_Rack.php:453
 msgid "On left"
@@ -18095,6 +18127,7 @@ msgstr "Solo criterios de esta regla en datos"
 #: src/NotificationMailingSetting.php:70
 msgid "Only documents related to the item that triggers the event"
 msgstr ""
+"Sólo documentos relacionados con el elemento que desencadena el evento"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:89
 msgid "Only update existing users (will not handle deleted users)"
@@ -18532,6 +18565,8 @@ msgstr "Extensiones de PHP para la tienda"
 msgctxt "glpi_status"
 msgid "PHP is not configured to use the \"files\" session save handler"
 msgstr ""
+"PHP no está configurado para usar el controlador de guardado de sesión de "
+"\"archivos\""
 
 #: src/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
@@ -18778,17 +18813,17 @@ msgstr ""
 #: src/QueuedWebhook.php:332
 msgid "Payload"
 msgid_plural "Payloads"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Carga útil"
+msgstr[1] "Cargas útiles"
+msgstr[2] "Cargas útiles"
 
 #: src/Webhook.php:753
 msgid "Payload editor"
-msgstr ""
+msgstr "Editor de carga útil"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Payload output"
-msgstr ""
+msgstr "Salida de carga útil"
 
 #: src/Dashboard/Provider.php:1302 src/Dashboard/Provider.php:1656
 #: src/CommonITILObject.php:5721 src/CommonITILObject.php:7001
@@ -19048,7 +19083,7 @@ msgstr "Pivot"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Plan this task"
-msgstr "Planear esta tarea"
+msgstr "Planear tarea"
 
 #: src/CommonITILObject.php:6997
 msgid "Planification"
@@ -19200,11 +19235,11 @@ msgstr "Por favor, seleccione una versión!"
 
 #: ajax/webhook.php:121
 msgid "Please select an event"
-msgstr ""
+msgstr "Por favor seleccione un evento"
 
 #: ajax/webhook.php:117
 msgid "Please select an item"
-msgstr ""
+msgstr "Por favor selecciona un elemento"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
@@ -19212,7 +19247,7 @@ msgstr "Por favor seleccione un elemento para agregar"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
-msgstr ""
+msgstr "Por favor selecciona un tipo de elemento"
 
 #: src/System/Requirement/InstallationNotOverriden.php:93
 msgid ""
@@ -19543,7 +19578,7 @@ msgstr "Puerto (opcional)"
 
 #: src/NetworkEquipmentModelStencil.php:56
 msgid "Port Label"
-msgstr ""
+msgstr "Etiqueta de puerto"
 
 #: src/NetworkEquipmentModelStencil.php:57 src/Report.php:508
 msgid "Port Number"
@@ -19745,15 +19780,15 @@ msgstr ""
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary"
-msgstr ""
+msgstr "Primaria"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log file:"
-msgstr ""
+msgstr "Archivo de registro binario primario:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log position:"
-msgstr ""
+msgstr "Posición del registro binario primario:"
 
 #: src/Cartridge.php:1141
 msgid "Printed pages"
@@ -20095,7 +20130,7 @@ msgstr "¡La propiedad %1$s no existe!"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Proxy configuration"
-msgstr ""
+msgstr "Configuración de proxy"
 
 #: templates/pages/tools/savedsearch/form.html.twig ajax/private_public.php:69
 msgid "Public"
@@ -20211,9 +20246,9 @@ msgstr "Calificación"
 #: src/Webhook.php:755
 msgid "Query log"
 msgid_plural "Queries log"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Registro de consultas"
+msgstr[1] "Registro de consultas"
+msgstr[2] "Registro de consultas"
 
 #: src/Search/Provider/SQLProvider.php:5003
 #: src/Search/Provider/SQLProvider.php:5050 src/Rule.php:1952
@@ -20231,20 +20266,25 @@ msgstr "RAID"
 #, php-format
 msgid "RSQL query has an incomplete operator in filter for property \"%1$s\""
 msgstr ""
+"La consulta RSQL tiene un operador incompleto en el filtro de la propiedad "
+"\"%1$s\""
 
 #: src/Api/HL/RSQL/Lexer.php:209
 msgid "RSQL query has one or more unclosed groups"
-msgstr ""
+msgstr "La consulta RSQL tiene uno o más grupos abiertos"
 
 #: src/Api/HL/RSQL/Lexer.php:151 src/Api/HL/RSQL/Lexer.php:193
 #, php-format
 msgid "RSQL query is missing a value in filter for property \"%1$s\""
 msgstr ""
+"A la consulta RSQL le falta un valor en el filtro para la propiedad \"%1$s\""
 
 #: src/Api/HL/RSQL/Lexer.php:134
 #, php-format
 msgid "RSQL query is missing an operator in filter for property \"%1$s\""
 msgstr ""
+"A la consulta RSQL le falta un operador en el filtro para la propiedad "
+"\"%1$s\""
 
 #: src/Central.php:73 src/RSSFeed.php:79
 msgid "RSS feed"
@@ -20374,7 +20414,7 @@ msgstr "Leer autenticación de usuario, método de sincronización y 2FA"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr ""
+msgstr "Solo lectura"
 
 #: src/Marketplace/View.php:570
 msgid "Readme"
@@ -20768,7 +20808,7 @@ msgstr "Discos extraíbles"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Remove"
-msgstr ""
+msgstr "Eliminar"
 
 #: src/Contract.php:1716
 msgctxt "button"
@@ -20783,7 +20823,7 @@ msgstr "Eliminar un documento"
 #: src/Computer.php:379
 msgctxt "button"
 msgid "Remove a domain"
-msgstr ""
+msgstr "Eliminar un dominio"
 
 #: src/Line.php:236
 msgctxt "button"
@@ -20830,7 +20870,7 @@ msgstr "Remover del grupo"
 
 #: src/NetworkEquipmentModelStencil.php:60
 msgid "Remove last port"
-msgstr ""
+msgstr "Eliminar el último puerto"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -20970,11 +21010,11 @@ msgstr "Repetir las reglas del diccionario"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica"
-msgstr ""
+msgstr "Réplica"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica configuration"
-msgstr ""
+msgstr "Configuración de réplica"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
@@ -21001,7 +21041,7 @@ msgstr "El retraso de la replicación es demasiado alto"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
-msgstr ""
+msgstr "Estado de replicación"
 
 #: src/Change.php:707
 msgid "Reply to survey (my change)"
@@ -21184,7 +21224,7 @@ msgstr "Ubicación del solicitante"
 
 #: src/DbUtils.php:1776 src/RuleAction.php:596
 msgid "Requester's manager"
-msgstr ""
+msgstr "Administrador del solicitante"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -21242,11 +21282,11 @@ msgstr "Requerimientos"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Resend"
-msgstr ""
+msgstr "Reenviar"
 
 #: src/ReservationItem.php:306
 msgid "Reservable"
-msgstr ""
+msgstr "Reservable"
 
 #: src/ReservationItem.php:72
 msgid "Reservable item"
@@ -21320,12 +21360,12 @@ msgstr "Restablecer reglas"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "Restablecer clasificación"
 
 #: src/DisplayPreference.php:568
 msgctxt "button"
 msgid "Reset to default"
-msgstr ""
+msgstr "Restablecen a los predeterminados"
 
 #: src/Stat.php:613 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -21378,7 +21418,7 @@ msgstr "Fecha de respuesta a la encuesta de satisfacción"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Response date to the satisfaction survey."
-msgstr ""
+msgstr "Fecha de respuesta a la encuesta de satisfacción."
 
 #: src/Api/APIRest.php:51
 msgid "Rest API"
@@ -21438,7 +21478,7 @@ msgstr "Resultado"
 
 #: ajax/webhook.php:125
 msgid "Result can't be loaded :"
-msgstr ""
+msgstr "El resultado no se puede cargar:"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2042
@@ -21754,7 +21794,7 @@ msgstr "Nivel ANS para el caso"
 
 #: templates/components/search/controls.html.twig
 msgid "SLK"
-msgstr ""
+msgstr "SLK"
 
 #: src/LevelAgreement.php:185 src/LevelAgreement.php:694 src/Profile.php:1134
 #: src/Profile.php:2851
@@ -21815,7 +21855,7 @@ msgstr "Replica SQL: solo lectura"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL running:"
-msgstr ""
+msgstr "Ejecución de SQL:"
 
 #: src/DBConnection.php:783
 msgid "SQL server"
@@ -21884,7 +21924,7 @@ msgstr "Configuración encuesta de satisfacción (%s)"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Satisfaction survey expired."
-msgstr ""
+msgstr "La encuesta de satisfacción expiró."
 
 #: src/Entity.php:1409 src/Entity.php:1446
 #, php-format
@@ -21966,15 +22006,15 @@ msgstr "Guardar nueva contraseña"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
-msgstr ""
+msgstr "Guardar datos del puerto"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Save response body"
-msgstr ""
+msgstr "Guardar cuerpo de respuesta"
 
 #: templates/stencil/editor.html.twig
 msgid "Save zone data"
-msgstr ""
+msgstr "Guardar datos de zona"
 
 #: js/modules/Dashboard/Dashboard.js:459
 msgid "Saved"
@@ -22117,7 +22157,7 @@ msgstr "Secundario"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
-msgstr ""
+msgstr "Segundos detrás de primaria:"
 
 #: templates/pages/2fa/macros.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -22195,7 +22235,7 @@ msgstr "Ver hardware de mis grupos"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr ""
+msgstr "Ver entrada"
 
 #: src/Ticket.php:5553
 msgid "See my ticket"
@@ -22222,7 +22262,7 @@ msgstr "Ver públicos"
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgctxt "button"
 msgid "See result"
-msgstr ""
+msgstr "Ver resultado"
 
 #: src/Planning.php:2765
 msgid "See schedule of people in my groups"
@@ -22254,7 +22294,7 @@ msgstr "Seleccionar un par para %s:"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select a statistic to compare"
-msgstr ""
+msgstr "Seleccione una estadística para comparar"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -22280,7 +22320,7 @@ msgstr "Seleccionar campos del elemento que se debe desbloquear"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr ""
+msgstr "Seleccione impresoras para comparar"
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -22357,7 +22397,7 @@ msgstr "Enviar notificación"
 
 #: src/Log.php:1184
 msgid "Send a queued webhook"
-msgstr ""
+msgstr "Enviar un webhook en cola"
 
 #: src/NotificationAjaxSetting.php:134
 msgid "Send a test browser notification to you"
@@ -22560,7 +22600,7 @@ msgstr "Servidor"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr ""
+msgstr "ID del servidor:"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/DCRoom.php:53
@@ -22572,7 +22612,7 @@ msgstr[2] "Cuartos de servidores"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
-msgstr ""
+msgstr "Versión del servidor:"
 
 #: templates/pages/admin/events_list.html.twig src/Event.php:308
 #: src/Event.php:387 src/Event.php:486
@@ -22635,11 +22675,11 @@ msgstr "Especificar notificaciones para todos"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
-msgstr ""
+msgstr "Establecer número de puertos"
 
 #: templates/stencil/editor.html.twig
 msgid "Set number of zones"
-msgstr ""
+msgstr "Establecer número de zonas"
 
 #: ajax/private_public.php:75
 msgid "Set personal"
@@ -22723,7 +22763,7 @@ msgstr "Ver como mapa"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "Mostrar como tabla"
 
 #: src/Impact.php:1088
 msgid "Show depends"
@@ -22731,7 +22771,7 @@ msgstr "Ver dependencias"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:78
 msgid "Show diff of altered files"
-msgstr ""
+msgstr "Mostrar diferencias de archivos modificados"
 
 #: templates/pages/assistance/stats/tracking_form.html.twig
 #: front/stat.location.php:126
@@ -22782,11 +22822,11 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "Mostrar búsquedas guardadas"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search form above results"
-msgstr ""
+msgstr "Mostrar formulario de búsqueda encima de los resultados"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -23100,7 +23140,7 @@ msgstr ""
 #: templates/components/search/controls.html.twig
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "Ordenar"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -23117,7 +23157,7 @@ msgstr "Ordenado por tamaño"
 #: src/Search/Output/HTMLSearchOutput.php:171
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "Ordenada por %s"
 
 #: src/NotificationAjaxSetting.php:74 src/NotificationAjaxSetting.php:75
 #: src/NotificationAjaxSetting.php:76 src/NotificationAjaxSetting.php:77
@@ -23385,7 +23425,7 @@ msgstr "Apropiarse de un caso"
 
 #: src/Stencil.php:48
 msgid "Stencil"
-msgstr ""
+msgstr "Plantilla"
 
 #. TRANS %s is step number
 #: install/install.php:593 install/install.php:603 install/install.php:609
@@ -23696,7 +23736,7 @@ msgstr ""
 #: templates/pages/admin/assetdefinition/main.html.twig
 #: src/Asset/AssetDefinition.php:299 src/Asset/AssetDefinition.php:521
 msgid "System name"
-msgstr ""
+msgstr "Nombre del sistema"
 
 #: front/report.infocom.php:186
 msgid "TCO"
@@ -23803,11 +23843,11 @@ msgstr[2] "Objetivos"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Target authentication"
-msgstr ""
+msgstr "Autenticación de objetivos"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr ""
+msgstr "Entidad objetivo"
 
 #: src/RuleImportAsset.php:93
 msgid "Target entity for the asset"
@@ -23987,7 +24027,7 @@ msgstr "Datos de telemetría"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry enabled"
-msgstr ""
+msgstr "Telemetría habilitada"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/form/header_content.html.twig
@@ -24153,7 +24193,7 @@ msgstr "El campo %s es obligatorio"
 #: src/Api/HL/Router.php:586
 msgctxt "api"
 msgid "The Authorization header is missing or invalid"
-msgstr ""
+msgstr "El encabezado de Autorización falta o no es válido"
 
 #: src/Console/Marketplace/SearchCommand.php:67
 #: src/Console/Marketplace/DownloadCommand.php:67
@@ -24224,7 +24264,7 @@ msgstr "La categoría del artículo"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
 msgid "The class of assets related to current definition is \"%s\"."
-msgstr ""
+msgstr "La clase de activos relacionada con la definición actual es \"%s\"."
 
 #: src/Console/Application.php:141
 msgid "The command to execute"
@@ -24290,14 +24330,15 @@ msgstr ""
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
 msgstr ""
+"El motor pasa el resultado de cada regla a la siguiente regla coincidente."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will run all matching rules."
-msgstr ""
+msgstr "El motor ejecutará todas las reglas coincidentes."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
-msgstr ""
+msgstr "El motor se detendrá después de la primera regla coincidente."
 
 #: src/System/Requirement/DirectoryWriteAccess.php:129
 #, php-format
@@ -24326,7 +24367,7 @@ msgstr "Error en acciones automáticas del seguimiento. Requiere intervención."
 #: src/Asset/AssetDefinition.php:326
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "El siguiente campo tiene un valor incorrecto: \"%s\"."
 
 #: src/User.php:5820
 msgid ""
@@ -24346,7 +24387,7 @@ msgstr "La hora interna se recalcula al asignar el AOS"
 
 #: src/Inventory/Conf.php:378
 msgid "The inventory is disabled, remember to activate it if necessary"
-msgstr ""
+msgstr "El inventario está deshabilitado, recuerda activarlo si es necesario"
 
 #: src/ITILSolution.php:234
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -24390,6 +24431,10 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"El tamaño máximo de carga está determinado principalmente por las "
+"configuraciones de PHP \"upload_max_filesize\" y \"post_max_size\". La "
+"siguiente configuración es para restringir aún más las cargas solo para "
+"GLPI."
 
 #: front/updatepassword.php:80
 msgid "The new password must be different from current password"
@@ -24456,7 +24501,7 @@ msgstr ""
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The rules are conditional based on a type of action."
-msgstr ""
+msgstr "Las reglas son condicionales en función de un tipo de acción."
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
@@ -24479,7 +24524,7 @@ msgstr "El servidor ha respondido: %s"
 
 #: src/Asset/AssetDefinition.php:274
 msgid "The system name cannot be changed."
-msgstr ""
+msgstr "El nombre del sistema no se puede cambiar."
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
@@ -24488,10 +24533,13 @@ msgid ""
 "which will correspond to the current definition. For example, assets linked "
 "to the system name \"%s\" will have the class \"%s\"."
 msgstr ""
+"El nombre del sistema corresponde a la parte personalizable de la clase de "
+"activo que corresponderá a la definición actual. Por ejemplo, los activos "
+"vinculados al nombre del sistema \"%s\" tendrán la clase \"%s\"."
 
 #: src/Asset/AssetDefinition.php:251
 msgid "The system name is mandatory."
-msgstr ""
+msgstr "El nombre del sistema es obligatorio."
 
 #: src/Project.php:2554 src/CommonITILObject.php:9830
 msgctxt "filters"
@@ -24553,6 +24601,8 @@ msgid ""
 "The value must contains only letters and must not end by \"Model\" or "
 "\"Type\"."
 msgstr ""
+"El valor debe contener solo letras y no debe terminar con \"Modelo\" o "
+"\"Tipo\"."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -24560,6 +24610,9 @@ msgid ""
 "validate requests are actually coming from the GLPI server and that the "
 "content was not modified between GLPI and the target."
 msgstr ""
+"El secreto del webhook se puede compartir con un servidor de destino para "
+"permitirle validar que las solicitudes realmente provienen del servidor GLPI"
+" y que el contenido no se modificó entre GLPI y el destino."
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
@@ -24569,6 +24622,8 @@ msgstr "Hay algunos casos en espera de aprobación"
 msgid ""
 "There is currently no profile with access to assets with current definition."
 msgstr ""
+"Actualmente no existe ningún perfil con acceso a activos con definición "
+"actual."
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
@@ -24610,16 +24665,20 @@ msgid ""
 "These preferences are used by everyone that does not have a personal view "
 "configured."
 msgstr ""
+"Estas preferencias las utilizan todos aquellos que no tienen configurada una"
+" vista personal."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences cannot be edited at this time. The item type no longer "
 "exists or is provided by a plugin that is not enabled."
 msgstr ""
+"Estas preferencias no se pueden editar en este momento. El tipo de elemento "
+"ya no existe o lo proporciona un complemento que no está habilitado."
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
-msgstr ""
+msgstr "Piense en hacer una copia de seguridad antes de transferir elementos."
 
 #: src/SupplierType.php:41
 msgid "Third party type"
@@ -24657,13 +24716,15 @@ msgstr "Esta categoría contiene artículos"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
-msgstr ""
+msgstr "Esta entrada es \"interna\" (visible sólo para técnicos)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid ""
 "This indicates the delay between the primary and the replica for GLPI "
 "history (table: glpi_logs, column: date_mod)."
 msgstr ""
+"Esto indica el retraso entre el principal y la réplica para el historial "
+"GLPI (tabla: glpi_logs, columna: date_mod)."
 
 #: src/User.php:6826
 msgid "This is a special user used for automated actions. "
@@ -24713,6 +24774,8 @@ msgid ""
 "This itemtype is not supported by the API. Maybe a plugin is "
 "missing/disabled?"
 msgstr ""
+"Este tipo de elemento no es compatible con la API. ¿Quizás falta un "
+"complemento o está deshabilitado?"
 
 #: src/Marketplace/View.php:760
 msgid "This plugin is not available for your GLPI version."
@@ -24792,10 +24855,14 @@ msgid ""
 "This will only work for types from GLPI itself or enabled plugins that "
 "support this action."
 msgstr ""
+"Esto solo funcionará para tipos del propio GLPI o complementos habilitados "
+"que admitan esta acción."
 
 #: src/DisplayPreference.php:83
 msgid "This will reset the columns to the defaults for a new installation."
 msgstr ""
+"Esto restablecerá las columnas a los valores predeterminados para una nueva "
+"instalación."
 
 #: src/Item_DeviceProcessor.php:71
 msgid "Threads"
@@ -24849,9 +24916,9 @@ msgstr "Caso #%1$s %2$s"
 #: src/TicketValidation.php:61
 msgid "Ticket approval"
 msgid_plural "Ticket approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Aprobación del caso"
+msgstr[1] "Aprobaciones del caso"
+msgstr[2] "Aprobaciones del caso"
 
 #: src/CommonITILCost.php:600 src/Profile.php:3356
 msgid "Ticket cost"
@@ -24999,7 +25066,7 @@ msgstr[2] "Rangos de tiempo"
 
 #: src/Ticket.php:2658
 msgid "Time since opening"
-msgstr ""
+msgstr "Tiempo desde la apertura"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
@@ -25211,6 +25278,8 @@ msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
+"Para habilitar o deshabilitar el envío de telemetría, cambie la acción "
+"automática \"telemetría\"."
 
 #: src/Html.php:2671
 msgid ""
@@ -25243,7 +25312,7 @@ msgstr "Hoy"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "Alternar filtros predeterminados adicionales"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
@@ -25299,7 +25368,7 @@ msgstr "Tóner"
 
 #: src/Printer_CartridgeInfo.php:150
 msgid "Toner percentage"
-msgstr ""
+msgstr "Porcentaje de tóner"
 
 #: src/MailCollector.php:1481
 msgid "Too large attached file"
@@ -26118,7 +26187,7 @@ msgstr "Desmarcar todo"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Undefined"
-msgstr ""
+msgstr "Indefinida"
 
 #: src/CronTask.php:939
 #, php-format
@@ -26215,7 +26284,7 @@ msgstr "Usuario desconocido"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Unkown"
-msgstr ""
+msgstr "Desconocido"
 
 #: templates/pages/management/softwarelicense.html.twig
 #: templates/pages/management/contract.html.twig
@@ -26488,7 +26557,7 @@ msgstr "Actualización de un seguimiento"
 #: src/NotificationTargetKnowbaseItem.php:43
 #: src/NotificationTargetKnowbaseItem.php:92
 msgid "Update of a knowledge base item"
-msgstr ""
+msgstr "Actualización de un elemento de la base de conocimientos"
 
 #: src/NotificationTargetProblem.php:50
 msgid "Update of a problem"
@@ -26679,7 +26748,7 @@ msgstr "Utilice \"común\" si varios inquilinos comparten su aplicación."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge ?"
-msgstr ""
+msgstr "¿Usar el desafío ADR?"
 
 #: src/AuthLDAP.php:905 src/AuthLDAP.php:1189
 msgid "Use DN in the search"
@@ -26695,7 +26764,7 @@ msgstr "Utilizar GLPI en modo"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use OAuth"
-msgstr ""
+msgstr "Usar OAuth"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Use Reply-To as requester (when available)"
@@ -26740,11 +26809,11 @@ msgstr "Fecha de uso"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 msgid "Use default payload"
-msgstr ""
+msgstr "Usar carga útil predeterminada"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Use global config"
-msgstr ""
+msgstr "Usar configuración global"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
@@ -27594,21 +27663,23 @@ msgstr "Webcal"
 #: src/Webhook.php:78 src/Webhook.php:1292
 msgid "Webhook"
 msgid_plural "Webhooks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Webhook"
+msgstr[1] "Webhooks"
+msgstr[2] "Webhooks"
 
 #: src/QueuedWebhook.php:50
 msgid "Webhook queue"
-msgstr ""
+msgstr "Cola de webhook"
 
 #: src/Webhook.php:1327
 msgid "Webhook target filter"
-msgstr ""
+msgstr "Filtro de destino de webhook"
 
 #: src/Webhook.php:1332
 msgid "Webhooks will only be sent for items that match the defined filter."
 msgstr ""
+"Los webhooks solo se enviarán para los elementos que coincidan con el filtro"
+" definido."
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/address.html.twig src/Contact_Supplier.php:174
@@ -27814,7 +27885,7 @@ msgstr "Cartuchos deteriorados"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Writable"
-msgstr ""
+msgstr "Escribible"
 
 #: src/Profile.php:3808
 msgid "Write"
@@ -28013,6 +28084,8 @@ msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now."
 msgstr ""
+"Puede continuar agregando elementos para transferir o ejecutar la "
+"transferencia ahora."
 
 #: src/CommonDBTM.php:5694
 msgid "You can define an autofill template"
@@ -28043,7 +28116,7 @@ msgstr ""
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "You can use \"%s\" command to configure cache system."
-msgstr ""
+msgstr "Puede utilizar el comando \"%s\" para configurar el sistema de caché."
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -28233,6 +28306,8 @@ msgid ""
 "You may use the same placeholder tags as in the payload content and header "
 "values."
 msgstr ""
+"Puede utilizar las mismas etiquetas de marcador de posición que en el "
+"contenido de la carga útil y los valores del encabezado."
 
 #: index.php:115
 msgid "You must accept cookies to reach this application"
@@ -28418,7 +28493,7 @@ msgstr "Su sesión ha expirado."
 
 #: index.php:123
 msgid "Your session has expired. Please log in again."
-msgstr ""
+msgstr "Su sesión ha caducado. Por favor inicie sesión nuevamente."
 
 #: front/tracking.injector.php:90
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -28446,11 +28521,11 @@ msgstr "Sus casos a convalidar"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone label"
-msgstr ""
+msgstr "Etiqueta de zona"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone number"
-msgstr ""
+msgstr "Número de zona"
 
 #: js/common.js:1177
 msgid "a minute ago"
@@ -28711,7 +28786,7 @@ msgstr "justo ahora"
 
 #: templates/components/search/controls.html.twig
 msgid "landscape PDF"
-msgstr ""
+msgstr "el PDF a lo ancho"
 
 #: src/Html.php:3353
 msgid "last Friday"
@@ -28807,27 +28882,31 @@ msgstr[2] "meses"
 
 #: src/Search/Input/QueryBuilder.php:939
 msgid "must be a boolean (0 or 1)"
-msgstr ""
+msgstr "debe ser un booleano (0 o 1)"
 
 #: src/Search/Input/QueryBuilder.php:944
 msgid "must be a color (6 hexadecimal characters)"
-msgstr ""
+msgstr "debe ser un color (6 caracteres hexadecimales)"
 
 #: src/Search/Input/QueryBuilder.php:965
 msgid ""
 "must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for"
 " dates higher than 6 months ago)"
 msgstr ""
+"debe ser una fecha (AAAA-MM-DD) o un número relativo de meses (por ejemplo, "
+"> -6 para fechas anteriores a hace 6 meses)"
 
 #: src/Search/Input/QueryBuilder.php:959
 msgid ""
 "must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months "
 "(e.g. > -6 for dates higher than 6 months ago)"
 msgstr ""
+"debe ser una fecha y hora (AAAA-MM-DD HH:mm:SS) o un número relativo de "
+"meses (por ejemplo, > -6 para fechas anteriores a hace 6 meses)"
 
 #: src/Search/Input/QueryBuilder.php:954
 msgid "must be a number"
-msgstr ""
+msgstr "tiene que ser un número"
 
 #: src/Item_Rack.php:847 src/Rack.php:943 src/PDU_Rack.php:582
 msgid "name"
@@ -28924,7 +29003,7 @@ msgstr "colocado al lado del rack"
 
 #: templates/components/search/controls.html.twig
 msgid "portrait PDF"
-msgstr ""
+msgstr "el PDF a lo largo"
 
 #: templates/install/step8.html.twig
 msgid "post-only/postonly for the postonly account"

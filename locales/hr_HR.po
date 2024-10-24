@@ -11,6 +11,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Milo Ivir <mail@milotype.de>, 2024
+# Domagoj Hržić, 2024
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Milo Ivir <mail@milotype.de>, 2024\n"
+"Last-Translator: Domagoj Hržić, 2024\n"
 "Language-Team: Croatian (Croatia) (https://app.transifex.com/glpi/teams/1637/hr_HR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3254,7 +3255,7 @@ msgstr "Dodaj inventar"
 
 #: src/Impact.php:1006
 msgid "Add assets"
-msgstr "Dodaj inventar"
+msgstr "Dodaj imovinu"
 
 #: src/Cartridge.php:984
 msgid "Add cartridges"
@@ -4089,7 +4090,7 @@ msgstr "Anonimiziraj agente podrške"
 #: src/CommonITILObject.php:7132 src/CommonITILObject.php:7133
 msgctxt "button"
 msgid "Answer"
-msgstr "Odgvor"
+msgstr "Odgovori"
 
 #: src/Stat.php:592 src/Stat/Data/Sglobal/StatDataSatisfaction.php:59
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:56
@@ -4391,7 +4392,7 @@ msgid "Asset"
 msgid_plural "Assets"
 msgstr[0] "Inventar"
 msgstr[1] "Inventari"
-msgstr[2] "Inventari"
+msgstr[2] "Imovina"
 
 #: src/Asset/AssetDefinition.php:54
 msgid "Asset definition"
@@ -4407,11 +4408,11 @@ msgstr "Životni ciklus inventara"
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:176
 #: src/Webhook.php:417
 msgid "Assets"
-msgstr "Inventari"
+msgstr "Imovina"
 
 #: front/dashboard_assets.php:57
 msgid "Assets Dashboard"
-msgstr "Pregledna ploča inventara"
+msgstr "Nadzorna ploča imovine"
 
 #. TRANS: short for : Assign a ticket
 #: templates/components/itilobject/service_levels.html.twig
@@ -6046,9 +6047,9 @@ msgstr "Promijeni sve"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Odobrenje promjene"
+msgstr[1] "Odobrenje promjene"
+msgstr[2] "Odobrenje promjene"
 
 #: src/SavedSearch.php:85
 msgid "Change count method"
@@ -7461,7 +7462,7 @@ msgstr "Stvori zadatak"
 
 #: src/Html.php:1553 src/Profile.php:3286 src/Ticket.php:4845
 msgid "Create a ticket"
-msgstr "Stvori nalog"
+msgstr "Novi nalog"
 
 #: src/TicketRecurrent.php:109
 msgid "Create a ticket per linked element"
@@ -7473,11 +7474,11 @@ msgstr "Stvori zahtjev za provjerom za jedan zahtjev"
 
 #: src/TicketValidation.php:113
 msgid "Create a validation request for an incident"
-msgstr "Stvori zahtjev za provjerom za jedan slučaj"
+msgstr "Stvori zahtjev za provjerom za jedan nalog"
 
 #: src/Socket.php:291
 msgid "Create both"
-msgstr ""
+msgstr "Kreiraj oboje"
 
 #: src/Inventory/Conf.php:680
 msgid "Create components for virtual machines"
@@ -7489,7 +7490,7 @@ msgstr ""
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
-msgstr "Stvori za slučaj"
+msgstr "Stvori za nalog"
 
 #: src/TicketValidation.php:108
 msgid "Create for request"
@@ -7501,7 +7502,7 @@ msgstr ""
 
 #: src/CommonITILRecurrentCron.php:54
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "Kreiraj ponavljajuće naloge i promjene"
 
 #: src/Entity.php:1418 src/Entity.php:1455
 #, php-format
@@ -7519,7 +7520,7 @@ msgstr "Stvori mapu %s"
 
 #: src/Ticket.php:127
 msgid "Create ticket"
-msgstr "Stvori nalog"
+msgstr "Novi nalog"
 
 #: templates/components/user/create_user.html.twig
 msgid "Create user"
@@ -8167,7 +8168,7 @@ msgstr[2] ""
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
-msgstr "Standardno za inventar"
+msgstr "Standardno za imovinu"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assistance"
@@ -8630,7 +8631,7 @@ msgstr "Izravno pri lociranju (ne tijekom traženja)"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Describe the incident or request"
-msgstr "Opiši slučaj ili zahtjev"
+msgstr "Opiši nalog ili zahtjev"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Describe your issue"
@@ -9528,11 +9529,11 @@ msgstr "Povuci i ispusti datoteku ovdje ili"
 
 #: js/impact.js:2300
 msgid "Draw a line between two assets to add an impact relation"
-msgstr "Povuci crtu između dva inventara kako bi se dodao odnos utjecaja"
+msgstr "Povuci crtu između dvije imovine kako bi se dodao odnos utjecaja"
 
 #: js/impact.js:2315
 msgid "Draw a square containing the assets you wish to group"
-msgstr "Nacrtaj kvadrat koji sadrži inventar koji želiš grupirati"
+msgstr "Nacrtaj kvadrat koji sadrži imovinu koju želiš grupirati"
 
 #: src/DeviceDrive.php:43
 msgid "Drive"
@@ -11128,7 +11129,7 @@ msgstr "Filter pristupa"
 
 #: src/Impact.php:1045
 msgid "Filter assets..."
-msgstr "Filtriraj inventar …"
+msgstr "Filtriraj imovinu …"
 
 #: templates/pages/setup/dropdowns_list.html.twig
 msgid "Filter dropdowns"
@@ -12917,11 +12918,11 @@ msgstr "Neaktivan"
 
 #: src/ITILCategory.php:492 src/Ticket.php:3325 src/Ticket.php:3343
 msgid "Incident"
-msgstr "Slučaj"
+msgstr "Nalog"
 
 #: js/impact.js:2444
 msgid "Incidents"
-msgstr "Slučajevi"
+msgstr "Nalozi"
 
 #: templates/pages/setup/mailcollector/server_config_fields.html.twig
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -14618,9 +14619,9 @@ msgstr "Poveznica s predmetima za stvaranje naloga"
 #: src/RuleImportAsset.php:181
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Povezana imovina"
+msgstr[1] "Povezana imovina"
+msgstr[2] "Povezana imovina"
 
 #: src/CommonITILObject_CommonITILObject.php:49
 msgid "Linked assistance object"
@@ -15739,7 +15740,7 @@ msgstr "Prekretnica"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:345
 msgid "Mini tickets dashboard"
-msgstr "Mala pregledna ploča naloga"
+msgstr "Mala nadzorna ploča naloga"
 
 #: templates/pages/setup/crontask/statistics.html.twig
 msgid "Minimal count"
@@ -17648,7 +17649,7 @@ msgstr "Broj naloga"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Broj delegiranih naloga"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:4102
 msgid "Number of tickets as requester"
@@ -17867,7 +17868,7 @@ msgstr "Još jedna stvar prije nego što počnete"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
-msgstr "Tekući nalozi"
+msgstr "Nalozi u tijeku"
 
 #: src/Api/APIRest.php:236
 msgid "Only HTTP verb PUT is allowed"
@@ -18589,7 +18590,7 @@ msgstr ""
 
 #: src/Dashboard/Provider.php:377 src/Dashboard/Grid.php:1211
 msgid "Pending tickets"
-msgstr "Nalozi u stanju čekanja"
+msgstr "Nalozi u čekanju"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -23733,7 +23734,7 @@ msgstr "Predložak za zahtjev"
 
 #: src/ITILCategory.php:134 src/ITILCategory.php:191
 msgid "Template for an incident"
-msgstr "Predložak za slučaj"
+msgstr "Predložak za nalog"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/form/header_content.html.twig src/Phone.php:450
@@ -23994,7 +23995,7 @@ msgid ""
 "instance ?"
 msgstr ""
 "Povlačeni događaj je ponavljajući događaj. Želiš li promijeniti seriju ili "
-"slučaj?"
+"nalog?"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
@@ -24157,7 +24158,7 @@ msgid ""
 "instance ?"
 msgstr ""
 "Promijenjeni događaj je ponavljajući događaj. Želiš li promijeniti seriju "
-"ili slučaj?"
+"ili nalog?"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The rules are conditional based on a type of action."
@@ -24540,9 +24541,9 @@ msgstr "Nalog br. %1$s %2$s"
 #: src/TicketValidation.php:61
 msgid "Ticket approval"
 msgid_plural "Ticket approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Odobrenje naloga"
+msgstr[1] "Odobrenje naloga"
+msgstr[2] "Odobrenje naloga"
 
 #: src/CommonITILCost.php:600 src/Profile.php:3356
 msgid "Ticket cost"
@@ -26712,7 +26713,7 @@ msgstr "Provjeri zahtjev"
 
 #: src/TicketValidation.php:118
 msgid "Validate an incident"
-msgstr "Provjeri slučaj"
+msgstr "Provjeri nalog"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:56
 msgid "Validate files integrity for GLPI's documents."
@@ -26947,7 +26948,7 @@ msgstr "Prikaži grafički prikaz"
 
 #: src/Ticket.php:5580
 msgid "View new tickets"
-msgstr ""
+msgstr "Preglednih novih naloga"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "View other actions"
@@ -27038,7 +27039,7 @@ msgstr "Vidljivo za zahtjev"
 #: src/ITILCategory.php:94 src/ITILCategory.php:217 src/SolutionType.php:54
 #: src/SolutionType.php:89
 msgid "Visible for an incident"
-msgstr "Vidljivo za slučaj"
+msgstr "Vidljivo za nalog"
 
 #: templates/pages/admin/group.html.twig
 msgid "Visible in a project"
@@ -27929,7 +27930,7 @@ msgstr ""
 
 #: js/impact.js:2481
 msgid "You need to select at least 2 assets to make a group"
-msgstr "Moraš odabrati barem dva inventara za stvaranje grupe"
+msgstr "Moraš odabrati barem dvije imovine za stvaranje grupe"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -28496,7 +28497,7 @@ msgstr "ili"
 
 #: js/planning.js:363
 msgid "or just add an exception by deleting this instance?"
-msgstr "ili samo dadati iznimku, uklanjajući ovaj slučaj?"
+msgstr "ili samo dodati iznimku, uklanjajući ovaj nalog?"
 
 #: src/Marketplace/View.php:170
 msgid "or please check later"
@@ -28528,7 +28529,7 @@ msgstr "nedostaju parametri prijave, lozinke ili user_token"
 
 #: src/Api/API.php:1160
 msgid "parent itemtype not found or not an instance of CommonDBTM"
-msgstr "nadređena vrsta predmeta nije pronađena ili nije slučaj CommonDBTM-a"
+msgstr "nadređena vrsta predmeta nije pronađena ili nije dio CommonDBTM-a"
 
 #: src/PDU_Rack.php:489
 msgid "placed at rack side"
@@ -28580,7 +28581,7 @@ msgstr "regularni izraz se podudara"
 
 #: src/Api/APIRest.php:421
 msgid "resource not found or not an instance of CommonDBTM"
-msgstr "resurs nije pronađen ili nije slučaj CommonDBTM-a"
+msgstr "resurs nije pronađen ili nije dio CommonDBTM-a"
 
 #: src/KnowbaseItem_Revision.php:202
 msgid "restore"

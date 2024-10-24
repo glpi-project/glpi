@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
+# DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
-# DOMBRE Julien <moyo@indepnet.net>, 2024
 # Cédric Anne, 2024
 # Kaya Zeren <kayazeren@gmail.com>, 2024
 # 
@@ -255,7 +255,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:686
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Durum %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:111
 #, php-format
@@ -1439,7 +1439,7 @@ msgstr "%s gün önce"
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s bir görev sildi"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -1576,7 +1576,7 @@ msgstr[1] "%s saat"
 #: src/Ticket.php:3255
 #, php-format
 msgid "%s hours %s minutes"
-msgstr ""
+msgstr "%s saat %s dakika"
 
 #: src/Html.php:7038 js/common.js:1180
 #, javascript-format, php-format
@@ -1664,8 +1664,8 @@ msgstr "%s dakika önce"
 #, php-format
 msgid "%s model"
 msgid_plural "%s models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s model"
+msgstr[1] "%s model"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1868
@@ -1854,7 +1854,7 @@ msgstr "%s bir veri tabanı kopyasını geri yükledi"
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s bir görevi geri yükledi"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:124
@@ -1944,8 +1944,8 @@ msgstr "%s standart olmayan bir yol kullanmayı deniyor."
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s tür"
+msgstr[1] "%s tür"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2631,7 +2631,7 @@ msgstr "API kodu"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ARTAN"
 
 #: src/DevicePowerSupply.php:53 src/DevicePowerSupply.php:77
 msgid "ATX"
@@ -2958,7 +2958,7 @@ msgstr "Ölçüt ekle"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Add a custom header"
-msgstr ""
+msgstr "Özel üst bilgi ekle"
 
 #: src/Database.php:435
 msgid "Add a database"
@@ -2981,7 +2981,7 @@ msgstr "Belge ekle"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Etki alanı ekle"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -3080,7 +3080,7 @@ msgstr "Fiş ekle"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "Yeni bağlantı noktası ekle"
 
 #: src/Change_Ticket.php:292 src/Problem_Ticket.php:276 src/Problem.php:418
 #: src/Ticket.php:2224
@@ -3217,7 +3217,7 @@ msgstr "Öge türü ekle"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "Başka sıralama ekle"
 
 #: src/Impact.php:1122
 msgid "Add asset"
@@ -3262,7 +3262,7 @@ msgstr "%s içine date_mod ekle"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Add documents"
-msgstr ""
+msgstr "Belge ekle"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into ticket notifications"
@@ -3403,7 +3403,7 @@ msgstr "Dış kaynaktan kullanıcılar ekle"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "Bölge ekle"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/Remove items from software versions"
@@ -3438,7 +3438,7 @@ msgstr "Birlik dizinleri ekleniyor - %s"
 
 #: src/DefaultFilter.php:57
 msgid "Additional default filter"
-msgstr ""
+msgstr "Ek varsayılan süzgeç"
 
 #: src/QueuedNotification.php:286 src/QueuedNotification.php:790
 msgid "Additional headers"
@@ -3532,7 +3532,7 @@ msgstr "Sonra"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr ""
+msgstr "12 saat sonra yanıtınızı değiştiremeyeceksiniz."
 
 #: src/PendingReason.php:296
 msgid "After one follow-up"
@@ -3716,7 +3716,7 @@ msgstr "Tüm panolar"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:69
 msgid "All documents"
-msgstr ""
+msgstr "Tüm belgeler"
 
 #: src/Profile.php:3919 src/Profile.php:3925
 msgid "All items"
@@ -3732,7 +3732,7 @@ msgstr "Tüm yazılarım"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "Tüm sayfalar"
 
 #: src/Dropdown.php:2576
 msgid "All pages in CSV"
@@ -3818,7 +3818,7 @@ msgstr "Anonim destek kaydı oluşturulabilsin (destekmerkezi.alıcı)"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:84
 msgid "Allow downloading the GLPI release if needed"
-msgstr ""
+msgstr "Gerekirse GLPI sürümü indirilebilsin"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/Notification.php:445
@@ -3836,6 +3836,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"Dış kullanıcı kodu ile API oturumu açılmasını ve bir oturum kodu alınmasını "
+"sağlar. Kullanıcı ayarları sekmesindeki uzak erişim anahtarı bölümüne "
+"bakabilirsiniz"
 
 #: src/Console/Database/UpdateCommand.php:101
 msgid "Allow update to an unstable version"
@@ -4002,7 +4005,7 @@ msgstr "Toplayıcı bağlantısı kurulmaya çalışılırken bir sorun çıktı
 
 #: src/Api/HL/APIException.php:52
 msgid "An error occurred while processing your request."
-msgstr ""
+msgstr "İsteğiniz işlenirken bir sorun çıktı."
 
 #: src/Inventory/Conf.php:240
 #, php-format
@@ -4016,11 +4019,11 @@ msgstr "\"%s\" görevinin kilidi açılırken bir sorun çıktı."
 
 #: src/Webhook.php:1254
 msgid "An event is required"
-msgstr ""
+msgstr "Bir etkinlik seçilmelidir"
 
 #: src/Api/HL/Search.php:112
 msgid "An internal error occured while trying to fetch the data."
-msgstr ""
+msgstr "Veriler alınırken bir iç sorun çıktı."
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4362,8 +4365,8 @@ msgstr[1] "Varlıklar"
 #: src/Asset/AssetDefinition.php:54
 msgid "Asset definition"
 msgid_plural "Asset definitions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Varlık tanımı"
+msgstr[1] "Varlık tanımları"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -4962,7 +4965,7 @@ msgstr "E-posta adresinden otomatik olarak kullanıcı eklensin"
 #: src/NotificationTemplate.php:248
 #, php-format
 msgid "Automatically generated by %s"
-msgstr ""
+msgstr "%s tarafından otomatik olarak oluşturuldu"
 
 #: src/Migration.php:883
 #, php-format
@@ -5210,15 +5213,15 @@ msgstr "Büyük sayı"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log GTID:"
-msgstr ""
+msgstr "Binary günlük GTID:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "Binary günlük dosyası:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "Binary günlük konumu:"
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
@@ -5242,7 +5245,7 @@ msgstr "Siyah beyaz yazdırılan"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "Siyah ve beyaz sayfalar"
 
 #: src/Blacklist.php:109 src/RuleCollection.php:2072
 msgid "Blacklist"
@@ -5489,11 +5492,11 @@ msgstr "İşlemci kullanımı"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA Challenge"
-msgstr ""
+msgstr "Soru/yanıt doğrulaması sorusu"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "Soru/yanıt doğrulaması yanıtı"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -5742,7 +5745,7 @@ msgstr "Uygulama ekinin belirtilen sürümü bulunamadı."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:137
 msgid "Cannot generate a diff on a development version."
-msgstr ""
+msgstr "Geliştirme sürümü üzerinde bir fark oluşturulamaz."
 
 #: src/CommonDBConnexity.php:319
 #, php-format
@@ -5761,12 +5764,12 @@ msgstr "\"%s\" klasörüne yazılamadı."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr "Üst ögeden devir alındığı için bu öznitelik değiştirilemez."
+msgstr "Üst ögeden devralındığı için bu öznitelik değiştirilemez."
 
 #: src/Asset/AssetDefinition.php:105 src/Asset/AssetDefinition.php:312
 #: src/Asset/AssetDefinition.php:572
 msgid "Capacities"
-msgstr ""
+msgstr "Kapasiteler"
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:83 src/DeviceBattery.php:123
@@ -5950,16 +5953,20 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"GLPI üzerinden herhangi bir veri gönderilmeden önce hedef sunucunun "
+"kimliğini doğrulamak için soru/yanıt kimlik doğrulaması kullanılabilir. Bu "
+"işlemde, yukarıdaki bölümde oluşturulan paylaşılan parola kullanılır."
 
 #: src/Webhook.php:1042
 msgid ""
 "Challenge–response authentication failed, the answer returned by target is "
 "different"
 msgstr ""
+"Soru/yanıt doğrulaması geçilemedi. Hedef tarafından verilen yanıt farklı"
 
 #: src/Webhook.php:1037
 msgid "Challenge–response authentication validated"
-msgstr ""
+msgstr "Soru/yanıt doğrulaması geçildi"
 
 #: src/NotificationTargetProblem.php:225 src/NotificationTargetProblem.php:239
 #: src/Stat.php:1788 src/NotificationTargetTicket.php:736
@@ -5992,8 +5999,8 @@ msgstr "Tümünü değiştir"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Onayı değiştir"
+msgstr[1] "Onayları değiştir"
 
 #: src/SavedSearch.php:85
 msgid "Change count method"
@@ -6114,7 +6121,7 @@ msgstr "Özellikler"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:73
 msgid "Check GLPI source code file integrity."
-msgstr ""
+msgstr "GLPI kaynak kodu bütünlüğünü denetle"
 
 #: templates/components/datatable.html.twig src/Html.php:2230 src/Lock.php:918
 msgid "Check all"
@@ -6419,7 +6426,7 @@ msgstr "Temizle"
 
 #: templates/stencil/editor.html.twig
 msgid "Clear data"
-msgstr ""
+msgstr "Verileri temizle"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
@@ -6431,7 +6438,7 @@ msgstr "Durum temizlensin"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Clear the list of elements to be transferred"
-msgstr ""
+msgstr "Aktarılacak ögelerin listesini temizle"
 
 #: js/impact.js:2307
 msgid "Click on an element to remove it from the network"
@@ -6801,7 +6808,7 @@ msgstr "Kuruluş"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
-msgstr ""
+msgstr "Karşılaştır"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid ""
@@ -6817,7 +6824,7 @@ msgstr "Seçilmiş sürümleri karşılaştır"
 #: src/Csv/PrinterLogCsvExportComparison.php:70
 #: src/Csv/PrinterLogCsvExportComparison.php:71
 msgid "Comparison"
-msgstr ""
+msgstr "Karşılaştırma"
 
 #: src/DbUtils.php:1453 src/NotificationTargetProjectTask.php:657
 #: src/CommonTreeDropdown.php:752
@@ -6830,7 +6837,7 @@ msgstr "Tam ad"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Complete output from the API"
-msgstr ""
+msgstr "Tam API çıktısı"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: front/devices.php:44 src/Dropdown.php:1088 src/Item_Devices.php:274
@@ -7435,7 +7442,7 @@ msgstr "İstek için ekle"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr ""
+msgstr "Şimdi ekle"
 
 #: src/CommonITILRecurrentCron.php:54
 msgid "Create recurrent tickets and changes"
@@ -7625,7 +7632,7 @@ msgstr "Geçerli dosya"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "Geçerli sayfa"
 
 #: src/Dropdown.php:2572
 msgid "Current page in CSV"
@@ -7653,13 +7660,13 @@ msgstr "Şu anda yalnızca Yazılım sözlüğü ile kullanılabilir."
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
-msgstr ""
+msgstr "Özel CSS kullanılmıyor"
 
 #: src/Webhook.php:754
 msgid "Custom header"
 msgid_plural "Custom headers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Özel üst bilgi"
+msgstr[1] "Özel üst bilgiler"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
@@ -7705,7 +7712,7 @@ msgstr "DEBUG"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "AZALAN"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:464 src/Certificate.php:227
@@ -8094,8 +8101,8 @@ msgstr ""
 #: src/DefaultFilter.php:67
 msgid "Default filter"
 msgid_plural "Default filters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Varsayılan süzgeç"
+msgstr[1] "Varsayılan süzgeçler"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
@@ -8183,7 +8190,7 @@ msgstr "Varsayılan arama"
 #: src/DefaultFilter.php:62
 msgid ""
 "Default search filter, applied in addition to the user's search criteria."
-msgstr ""
+msgstr "Varsayılan arama süzgeci, kullanıcının arama ölçütlerine eklenir."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default search results limit (page)"
@@ -8244,11 +8251,11 @@ msgstr "Varsayılan değerler"
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "Görseldeki bağlantı noktası verilerini tanımla"
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "Görseldeki bölgeyi tanımla"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Delay before account deactivation (in days)"
@@ -8306,7 +8313,7 @@ msgstr "Bir kuralı sil"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "Bir sıralamayı sil"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1909
 msgid "Delete all"
@@ -8429,7 +8436,7 @@ msgstr "Seçilmiş bileşenlerle olan bağlantıyı kalıcı olarak sil"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "Kişisel görünümü sil"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete relation between items"
@@ -8478,7 +8485,7 @@ msgstr "Değişikliği silme"
 #: src/NotificationTargetKnowbaseItem.php:42
 #: src/NotificationTargetKnowbaseItem.php:89
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "Bir bilgi bankası kaydının silinmesi"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
@@ -8534,7 +8541,7 @@ msgstr "Reddet"
 
 #: src/RuleRight.php:384
 msgid "Deny login"
-msgstr ""
+msgstr "Oturum açmayı reddet"
 
 #: src/Impact.php:1094
 msgid "Depends"
@@ -8711,8 +8718,8 @@ msgstr[1] "Aygıt sabit disk modelleri"
 #: src/DeviceHardDriveType.php:40
 msgid "Device hard drive type"
 msgid_plural "Device hard drive types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aygıt sabit disk türü"
+msgstr[1] "Aygıt sabit disk türleri"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:121
 #: src/Agent.php:315
@@ -8974,6 +8981,8 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
+"Bildirimleri, ITIL nesneleri aktör yapılandırmasında varsayılan olarak "
+"kullanımdan kaldırma özelliğiyle kullanımdan kaldırın."
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -9214,7 +9223,7 @@ msgstr "Belge"
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
 msgid "Document ID"
-msgstr ""
+msgstr "Belge kimliği"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: src/CommonDBTM.php:5588
@@ -9225,7 +9234,7 @@ msgstr "Belge destek kaydı %d"
 #: src/NotificationTargetKnowbaseItem.php:68
 #: src/NotificationTargetKnowbaseItem.php:183
 msgid "Document URL"
-msgstr ""
+msgstr "Belge adresi"
 
 #: src/Document.php:1259 src/Document.php:1367
 msgid "Document copy succeeded."
@@ -9234,12 +9243,12 @@ msgstr "Belge kopyalandı."
 #: src/NotificationTargetKnowbaseItem.php:67
 #: src/NotificationTargetKnowbaseItem.php:182
 msgid "Document download URL"
-msgstr ""
+msgstr "Belge indirme adresi"
 
 #: src/NotificationTargetKnowbaseItem.php:69
 #: src/NotificationTargetKnowbaseItem.php:184
 msgid "Document filename"
-msgstr ""
+msgstr "Belge dosya adı"
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -9265,7 +9274,7 @@ msgstr "Belge taşındı."
 #: src/NotificationTargetKnowbaseItem.php:66
 #: src/NotificationTargetKnowbaseItem.php:181
 msgid "Document name"
-msgstr ""
+msgstr "Belge adı"
 
 #: src/DocumentType.php:70
 msgid "Document type"
@@ -9276,7 +9285,7 @@ msgstr[1] "Belge türleri"
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:185
 msgid "Document weblink"
-msgstr ""
+msgstr "Belge İnternet bağlantısı"
 
 #: src/NotificationTargetKnowbaseItem.php:212
 msgid "Documents"
@@ -9389,7 +9398,7 @@ msgstr "Kapalı"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Down"
-msgstr "Kapalı"
+msgstr "Aşağı"
 
 #: src/Marketplace/View.php:806 src/Impact.php:1127
 msgid "Download"
@@ -9471,7 +9480,7 @@ msgstr "Drum"
 
 #: src/Printer_CartridgeInfo.php:168
 msgid "Drum percentage"
-msgstr ""
+msgstr "Drum yüzdesi"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Due date progression"
@@ -9775,7 +9784,7 @@ msgstr "E-posta göndericinin adresi"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Email sender email address"
-msgstr ""
+msgstr "E-posta göndericinin e-posta adresi"
 
 #: templates/pages/admin/entity/notifications.html.twig
 #: templates/pages/setup/notification/mailing_setting.html.twig
@@ -9785,7 +9794,7 @@ msgstr "E-posta göndericinin adı"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Email sending test result"
-msgstr ""
+msgstr "E-posta gönderme denemesi sonucu"
 
 #: src/AuthMail.php:96 src/Auth.php:1301 src/RuleRight.php:252
 msgid "Email server"
@@ -9855,7 +9864,7 @@ msgstr "Özel CSS kullanılsın"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable REST API"
-msgstr ""
+msgstr "REST API kullanılsın"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
@@ -10135,7 +10144,7 @@ msgstr "Oturum çerezlerinde güvenliğin dayatıldığından emin olun."
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Enter"
-msgstr ""
+msgstr "Enter"
 
 #: ajax/dropdownTrackingDeviceType.php:73
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -10239,8 +10248,8 @@ msgstr "Aygıtın yılara göre raporu"
 #: js/glpi_dialog.js:415
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hata"
+msgstr[1] "Hatalar"
 
 #: src/Plugin.php:2210 src/Plugin.php:2610
 msgid "Error / to clean"
@@ -10262,7 +10271,7 @@ msgstr ""
 
 #: install/install.php:389
 msgid "Error in creating database!"
-msgstr "Vertiabanı oluşturulurken sorun çıktı!"
+msgstr "Veri tabanı oluşturulurken sorun çıktı!"
 
 #: src/CommonITILTask.php:381 src/CommonITILTask.php:609
 #: src/Reservation.php:198 src/Reservation.php:325
@@ -10332,7 +10341,7 @@ msgstr "Hata : parola ve onayı aynı değil"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:147
 msgid "Errors occurred during diff generation:"
-msgstr ""
+msgstr "Fark oluşturma sırasında sorun çıktı:"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:246
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
@@ -10345,7 +10354,7 @@ msgstr "Aktarım sırasında sorun çıktı."
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/LevelAgreementLevel.php:93 src/Ticket.php:2890 src/Ticket.php:2941
@@ -10585,7 +10594,7 @@ msgstr "Geçerlilik sonu + bildirim"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr ""
+msgstr "Geçerlilik sonu gecikmesi"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
@@ -10620,7 +10629,7 @@ msgstr "Dışa aktar"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Export data in CSV"
-msgstr ""
+msgstr "Verileri CSV olarak dışa aktar"
 
 #: src/Stat.php:1979 src/Stat.php:2101
 msgid "Export to CSV"
@@ -10645,7 +10654,7 @@ msgstr "Dış"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "External ID"
-msgstr ""
+msgstr "Dış kimlik"
 
 #: front/auth.others.php:52 front/auth.settings.php:43 front/setup.auth.php:42
 msgid "External authentication sources"
@@ -10780,7 +10789,7 @@ msgstr "%d destek kaydı silinemedi"
 #: src/Console/Build/GenerateCodeManifestCommand.php:72
 #, php-format
 msgid "Failed to generate manifest. Error was: %s"
-msgstr ""
+msgstr "Dosya listesi oluşturulamadı. Hata: %s"
 
 #: src/Ticket.php:6100
 #, php-format
@@ -10799,7 +10808,7 @@ msgstr "Görsel yeniden boyutlandırılamadı"
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:97
 #, php-format
 msgid "Failed to validate GLPI source code integrity. Error was: %s"
-msgstr ""
+msgstr "GLPI kaynak kodunun bütünlüğü dorulanamadı. Hata: %s"
 
 #: src/UploadHandler.php:387
 msgid "Failed to write file to disk"
@@ -11065,7 +11074,7 @@ msgstr "Grup araması süzgeci"
 #: src/Search/Output/HTMLSearchOutput.php:155
 #, php-format
 msgid "Filtered by %s"
-msgstr ""
+msgstr "%s ile süzüldü"
 
 #: src/Dashboard/Grid.php:763
 msgid "Filters"
@@ -11254,7 +11263,7 @@ msgstr "Şu zamandan sonra kapanmış %s için"
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Ayrıntılı bilgi almak için GLPI günlüğü kayıtlarına bakın."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11502,7 +11511,7 @@ msgstr "GLPI veri tabanı sürümü"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "GLPI history delay:"
-msgstr ""
+msgstr "GLPI geçmişi gecikmesi:"
 
 #: src/Auth.php:1355 src/Auth.php:1671
 msgid "GLPI internal database"
@@ -11518,15 +11527,15 @@ msgstr "GLPI sunucusunun saat dilimi"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:116
 msgid "GLPI source code integrity is not validated."
-msgstr ""
+msgstr "GLPI kaynak kodunun bütünlüğü doğrulanamadı."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:112
 msgid "GLPI source code integrity is validated."
-msgstr ""
+msgstr "GLPI kaynak kodunun bütünlüğü doğrulandı."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
-msgstr ""
+msgstr "GLPI güncelleme"
 
 #: src/Console/Database/UpdateCommand.php:168
 msgid "GLPI version"
@@ -11582,12 +11591,16 @@ msgid ""
 "Generate GLPI source code manifest that could be used to validate source "
 "code integrity."
 msgstr ""
+"Kaynak kodu bütünlüğünü doğrulamak için kullanılabilecek GLPI kaynak kodu "
+"dosya listesini oluşturur."
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:165
 msgid ""
 "Generating the source code diff could require downloading the GLPI release "
 "archive. Do you want to allow this operation?"
 msgstr ""
+"Kaynak kod farkını oluşturmak için GLPI sürüm arşivinin indirilmesi "
+"gerekebilir. Bu işlemin yapılmasına izin veriyor musunuz?"
 
 #: src/CommonITILObject.php:10273
 msgid "Generation of satisfaction surveys"
@@ -11717,7 +11730,7 @@ msgstr "İzinler"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "Grafik yuvası açıklaması"
 
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
@@ -11851,7 +11864,7 @@ msgstr "HTML kodlaması düzeltildi."
 
 #: templates/pages/setup/webhook/webhook.html.twig src/QueuedWebhook.php:397
 msgid "HTTP method"
-msgstr ""
+msgstr "HTTP yöntemi"
 
 #: src/NetworkPort.php:1107
 msgid "Half"
@@ -11894,7 +11907,7 @@ msgstr "Yedeği var"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:58
 msgid "Hash algorithm to use"
-msgstr ""
+msgstr "Kullanılacak karma algoritması"
 
 #: src/RuleImportAsset.php:111
 msgid "Having the status"
@@ -11912,7 +11925,7 @@ msgstr ""
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:323
 msgid "Headers"
-msgstr ""
+msgstr "Üst bilgiler"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/NotificationTargetProjectTask.php:631 src/KnowbaseItem.php:1237
@@ -12012,7 +12025,7 @@ msgstr "Giriş"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Horizontal (menu in header"
-msgstr ""
+msgstr "Yatay (menü üst bilgide"
 
 #: src/Dashboard/Widget.php:231
 msgid "Horizontal bars"
@@ -12152,7 +12165,7 @@ msgstr "BİLGİLER"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
-msgstr ""
+msgstr "Çalışan GÇ:"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:184
 #: src/RuleLocation.php:101 src/Blacklist.php:247 src/RuleImportAsset.php:128
@@ -12331,7 +12344,7 @@ msgstr "Yazıcılar artık kullanılmıyorsa"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If set, it will be used for notifications that doesnʼt expect a reply."
-msgstr ""
+msgstr "Ayarlandığında yanıt beklenmeyen bildirimler için kullanılır."
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If software are no longer used"
@@ -12382,6 +12395,8 @@ msgid ""
 "If the name is a valid email address, it will be automatically added to "
 "blacklisted senders."
 msgstr ""
+"Ad geçerli bir e-posta adresi ise, otomatik olarak kara listeye alınan "
+"göndericilere eklenir."
 
 #: src/CommonDropdown.php:630
 msgid ""
@@ -12395,6 +12410,8 @@ msgid ""
 "If you have \"session.save_handler\" set to something besides \"files\" in "
 "your php.ini, this is not required."
 msgstr ""
+"php.ini dosyanızda \"session.save_handler\", \"files\" dışında bir şeye "
+"ayarlanmışsa, buna gerek yoktur."
 
 #: src/ITILFollowup.php:432
 msgid "If you reject the solution, you must specify a reason"
@@ -12416,6 +12433,11 @@ msgid ""
 "\"Automatically add users from an external authentication source\", in the "
 "Authentication settings in order to avoid the generation of duplicate users."
 msgstr ""
+"Bu seçeneği kullanırsanız ve bu toplayıcı LDAP ile kimlik doğrulaması yapan "
+"kullanıcılardan istek alabiliyorsa, yinelenen kullanıcı verilerinin "
+"oluşturulmasını önlemek için Kimlik doğrulama ayarlarında \"Kullanıcılar bir"
+" dış kimlik doğrulama kaynağından otomatik olarak eklensin\" seçeneğini "
+"etkinleştirmenizi öneririz."
 
 #: src/Marketplace/View.php:385
 msgid ""
@@ -12605,7 +12627,7 @@ msgstr "İçe aktarma tamamlandı."
 
 #: templates/pages/admin/rules/import.html.twig
 msgid "Import rules from an XML file"
-msgstr ""
+msgstr "Kuralları XML dosyasından içe aktar"
 
 #: src/Inventory/Conf.php:637
 msgid "Import virtual machines"
@@ -12938,7 +12960,7 @@ msgstr "Veri tabanı hazırlanıyor"
 
 #: install/install.php:322 install/install.php:350 install/install.php:380
 msgid "Initializing database tables and default data..."
-msgstr ""
+msgstr "Veri tabanı tabloları ve varsayılan veriler hazırlanıyor..."
 
 #: src/Update.php:280
 msgid "Initializing rules..."
@@ -12950,7 +12972,7 @@ msgstr "Satır arası (araç çubuğu yok)"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr ""
+msgstr "Giriş"
 
 #: src/NetworkPortMetrics.php:213
 msgid "Input errors"
@@ -13190,11 +13212,11 @@ msgstr "Alanları tanımlamak için kullanılan JSON geçersiz."
 #: src/Api/HL/RSQL/Parser.php:69
 #, php-format
 msgid "Invalid RSQL array: %s"
-msgstr ""
+msgstr "RSQL dizisi geçersiz: %s"
 
 #: src/Api/HL/RSQL/Lexer.php:97
 msgid "Invalid RSQL query"
-msgstr ""
+msgstr "RSQL sorgusu geçersiz"
 
 #: src/Auth.php:1063
 msgid "Invalid TOTP code"
@@ -13494,7 +13516,7 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "It is strongly advised to use the HTTPS protocol."
-msgstr ""
+msgstr "HTTPS iletişim kuralını kullanmanız önemle önerilir."
 
 #: src/FieldUnicity.php:503
 msgid "It's mandatory to select a type and at least one field"
@@ -13697,7 +13719,7 @@ msgstr "Öğeler"
 #: templates/pages/management/databaseinstance.html.twig
 msgctxt "Item"
 msgid "Items"
-msgstr "Öğeler"
+msgstr "Ögeler"
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: src/Search/Output/PDFSearchOutput.php:103
@@ -13727,7 +13749,7 @@ msgstr "Öge türü"
 #: src/DefaultFilter.php:181
 #, php-format
 msgid "Itemtype %s is already in use"
-msgstr ""
+msgstr "%s öge türü zaten kullanılıyor"
 
 #: src/Console/Task/UnlockCommand.php:84
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -14107,7 +14129,7 @@ msgstr "Son üç ay"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Last response"
-msgstr ""
+msgstr "Son yanıt"
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1506
 msgid "Last run"
@@ -14124,7 +14146,7 @@ msgstr "Son çözülme durumu"
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:378
 msgid "Last status code"
-msgstr ""
+msgstr "Son durum kodu"
 
 #: src/User.php:4013
 msgid "Last synchronization"
@@ -14723,7 +14745,7 @@ msgstr "Aktarım sırasında alanlar kilitlensin"
 
 #: src/ObjectLock.php:632
 msgid "Lock status"
-msgstr ""
+msgstr "Kilit durumu"
 
 #: src/Log.php:1096
 msgid "Lock the item"
@@ -14805,7 +14827,7 @@ msgstr "Yeniden oturum açın"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Log in item history"
-msgstr ""
+msgstr "Öge geçmişi günlüğüne kaydedilsin"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Log out fallback URL"
@@ -14835,6 +14857,7 @@ msgstr "Oturum açma alanı"
 #, php-format
 msgid "Login for %1$s denied by authorization rules from IP %2$s"
 msgstr ""
+"%1$s oturumu açma işlemi %2$s IP adresi izin kuralları nedeniyle reddedildi"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
@@ -14851,7 +14874,7 @@ msgstr "Dış kod ile oturum açma kapalı"
 #: index.php:119
 msgid ""
 "Logins are not possible at this time. Please contact your administrator."
-msgstr ""
+msgstr "Şu anda oturum açılamaz. Lütfen GLPI yöneticiniz ile görüşün."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Logout"
@@ -15166,7 +15189,7 @@ msgstr "Doldurulmamış zorunlu alanlar var. Lütfen düzeltin: %s"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:70
 msgid "Manifest successfully generated."
-msgstr ""
+msgstr "Dosya listesi oluşturuldu."
 
 #: src/ManualLink.php:52
 msgid "Manual link"
@@ -15293,7 +15316,7 @@ msgstr "Bir kerede gönderilecek en fazla geçerlilik sonu bildirimi sayısı"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Maximum number of automatic actions (run by CLI)"
-msgstr ""
+msgstr "Otomatik olarak yapılacak en fazla işlem sayısı (CLI üzerinden)"
 
 #: src/UploadHandler.php:407
 msgid "Maximum number of files exceeded"
@@ -15895,7 +15918,7 @@ msgstr "Yayınlanmamış yazılarım"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
-msgstr ""
+msgstr "MySQL sunucusu bir hata bildirdi:"
 
 #: src/DbUtils.php:1769 src/Search/Input/QueryBuilder.php:307
 #: src/User.php:4800 src/Dashboard/Filters/UserTechFilter.php:148
@@ -16299,7 +16322,7 @@ msgstr "Not ekle"
 
 #: src/NotificationTargetCommonITILObject.php:146
 msgid "New document"
-msgstr ""
+msgstr "Yeni belge"
 
 #: src/NotificationTargetCommonITILObject.php:141
 msgid "New followup"
@@ -16325,7 +16348,7 @@ msgstr "Yeni öge"
 #: src/NotificationTargetKnowbaseItem.php:41
 #: src/NotificationTargetKnowbaseItem.php:86
 msgid "New knowledge base item"
-msgstr ""
+msgstr "Yeni bilgi bankası ögesi"
 
 #: src/Reminder.php:602 src/RSSFeed.php:684
 msgid "New note"
@@ -16588,7 +16611,7 @@ msgstr "Henüz bir dizin seçilmemiş"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:68
 msgid "No documents"
-msgstr ""
+msgstr "Herhangi bir belge yok"
 
 #: templates/pages/admin/rules/engine_preview_criteria.html.twig
 msgid "No element to be tested"
@@ -16655,7 +16678,7 @@ msgstr "İçe herhangi bir şey aktarılmadı"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
-msgstr ""
+msgstr "Herhangi bir giriş yapılmadı"
 
 #: templates/pages/admin/events_list.html.twig
 #: templates/pages/setup/notification/group_notifications.html.twig
@@ -16824,7 +16847,7 @@ msgstr "Ayırtılmamış"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "No response given"
-msgstr ""
+msgstr "Herhangi bir yanıt verilmedi"
 
 #: ajax/subvisibility.php:64
 msgid "No restriction"
@@ -17017,7 +17040,7 @@ msgstr "Planlanmamış görevler"
 
 #: src/QueuedWebhook.php:410
 msgid "Not sent/no response"
-msgstr ""
+msgstr "Gönderilmedi / yanıt yok"
 
 #: src/Dashboard/Provider.php:275 src/Change.php:621 src/Problem.php:679
 #: src/Ticket.php:3375
@@ -17067,7 +17090,7 @@ msgstr "Bildirim"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notifcation location"
-msgstr ""
+msgstr "Bildirim konumu"
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -17085,7 +17108,7 @@ msgstr "Bildirim kapalı"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Notification does not exist"
-msgstr ""
+msgstr "Bildirim bulunamadı"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid "Notification frequency"
@@ -17418,7 +17441,7 @@ msgstr "Sonuç sayısı"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
-msgstr ""
+msgstr "Yeniden deneme sayısı"
 
 #: src/DCRoom.php:155 src/DCRoom.php:324
 msgid "Number of rows"
@@ -17534,7 +17557,7 @@ msgstr "Yazılmış destek kaydı sayısı"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
-msgstr ""
+msgstr "OAuth kimlik doğrulaması"
 
 #: src/OAuthClient.php:49
 msgid "OAuth client"
@@ -17717,7 +17740,7 @@ msgstr "Verilerdeki yalnızca bu kuralın ölçütleri"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:70
 msgid "Only documents related to the item that triggers the event"
-msgstr ""
+msgstr "Yalnızca öge ile ilgili belgeler etkinliği tetikler"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:89
 msgid "Only update existing users (will not handle deleted users)"
@@ -18137,7 +18160,7 @@ msgstr "Mağaza için PHP eklentileri"
 #: src/System/Status/StatusChecker.php:538
 msgctxt "glpi_status"
 msgid "PHP is not configured to use the \"files\" session save handler"
-msgstr ""
+msgstr "PHP \"files\" oturum işleyicisini kullanmak üzere yapılandırılmamış"
 
 #: src/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
@@ -18380,16 +18403,16 @@ msgstr ""
 #: src/QueuedWebhook.php:332
 msgid "Payload"
 msgid_plural "Payloads"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yük"
+msgstr[1] "Yükler"
 
 #: src/Webhook.php:753
 msgid "Payload editor"
-msgstr ""
+msgstr "Yük düzenleyici"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Payload output"
-msgstr ""
+msgstr "Yük çıktısı"
 
 #: src/Dashboard/Provider.php:1302 src/Dashboard/Provider.php:1656
 #: src/CommonITILObject.php:5721 src/CommonITILObject.php:7001
@@ -18790,11 +18813,11 @@ msgstr "Lütfen bir sürüm seçin!"
 
 #: ajax/webhook.php:121
 msgid "Please select an event"
-msgstr ""
+msgstr "Lütfen bir etkinlik seçin"
 
 #: ajax/webhook.php:117
 msgid "Please select an item"
-msgstr ""
+msgstr "Lütfen bir öge seçin"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
@@ -18802,7 +18825,7 @@ msgstr "Lütfen eklenecek bir öge seçin"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
-msgstr ""
+msgstr "Lütfen bir öge türü seçin"
 
 #: src/System/Requirement/InstallationNotOverriden.php:93
 msgid ""
@@ -19125,7 +19148,7 @@ msgstr "Bağlantı noktası (isteğe bağlı)"
 
 #: src/NetworkEquipmentModelStencil.php:56
 msgid "Port Label"
-msgstr ""
+msgstr "Bağlantı noktası etiketi"
 
 #: src/NetworkEquipmentModelStencil.php:57 src/Report.php:508
 msgid "Port Number"
@@ -19323,15 +19346,15 @@ msgstr ""
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary"
-msgstr ""
+msgstr "Birincil"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log file:"
-msgstr ""
+msgstr "Birincil binary günlük dosyası:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log position:"
-msgstr ""
+msgstr "Birincil binary günlüğü konumu:"
 
 #: src/Cartridge.php:1141
 msgid "Printed pages"
@@ -19654,7 +19677,7 @@ msgstr "%1$s özelliği bulunamadı!"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Proxy configuration"
-msgstr ""
+msgstr "Vekil sunucu yapılandırması"
 
 #: templates/pages/tools/savedsearch/form.html.twig ajax/private_public.php:69
 msgid "Public"
@@ -19767,8 +19790,8 @@ msgstr "Nitelik"
 #: src/Webhook.php:755
 msgid "Query log"
 msgid_plural "Queries log"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sorgu günlüğü"
+msgstr[1] "Sorgular günlüğü"
 
 #: src/Search/Provider/SQLProvider.php:5003
 #: src/Search/Provider/SQLProvider.php:5050 src/Rule.php:1952
@@ -19786,20 +19809,22 @@ msgstr "RAID"
 #, php-format
 msgid "RSQL query has an incomplete operator in filter for property \"%1$s\""
 msgstr ""
+"RSQL sorgusunda süzgeç içinde \"%1$s\" özelliği için tamamlanmamış bir işlem"
+" var"
 
 #: src/Api/HL/RSQL/Lexer.php:209
 msgid "RSQL query has one or more unclosed groups"
-msgstr ""
+msgstr "RSQL sorgusunda bir ya da birkaç kapatılmamış grup var"
 
 #: src/Api/HL/RSQL/Lexer.php:151 src/Api/HL/RSQL/Lexer.php:193
 #, php-format
 msgid "RSQL query is missing a value in filter for property \"%1$s\""
-msgstr ""
+msgstr "RSQL sorgusunda süzgeç içinde \"%1$s\" özelliği için bir değer eksik"
 
 #: src/Api/HL/RSQL/Lexer.php:134
 #, php-format
 msgid "RSQL query is missing an operator in filter for property \"%1$s\""
-msgstr ""
+msgstr "RSQL sorgusunda süzgeç içinde \"%1$s\" özelliği için bir işlem eksik"
 
 #: src/Central.php:73 src/RSSFeed.php:79
 msgid "RSS feed"
@@ -19926,7 +19951,7 @@ msgstr ""
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr ""
+msgstr "Salt okunur"
 
 #: src/Marketplace/View.php:570
 msgid "Readme"
@@ -20313,51 +20338,51 @@ msgstr "Çıkarılabilir sürücüler"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Remove"
-msgstr ""
+msgstr "Kaldır"
 
 #: src/Contract.php:1716
 msgctxt "button"
 msgid "Remove a contract"
-msgstr "Sözleşme sil"
+msgstr "Bir sözleşmeyi kaldır"
 
 #: src/Document.php:1750
 msgctxt "button"
 msgid "Remove a document"
-msgstr "Belgeyi sil"
+msgstr "Bir belgeyi kaldır"
 
 #: src/Computer.php:379
 msgctxt "button"
 msgid "Remove a domain"
-msgstr ""
+msgstr "Bir etki alanını kaldır"
 
 #: src/Line.php:236
 msgctxt "button"
 msgid "Remove a line"
-msgstr "Bir hattı sil"
+msgstr "Bir hattı kaldır"
 
 #: src/Group.php:291
 msgctxt "button"
 msgid "Remove a user"
-msgstr "Kullanıcıyı sil"
+msgstr "Bir kullanıcıyı kaldır"
 
 #: src/CommonDBRelation.php:1475
 msgid "Remove all at once"
-msgstr "Tümünü bir kerede sil"
+msgstr "Tümünü bir kerede kaldır"
 
 #: src/Notification.php:466
 msgctxt "button"
 msgid "Remove all notification templates"
-msgstr "Tüm bildirim kalıplarını sil"
+msgstr "Tüm bildirim kalıplarını kaldır"
 
 #: src/Appliance.php:451 src/Document.php:1756 src/Line.php:240
 #: src/Contract.php:423 src/Ticket.php:2236
 msgctxt "button"
 msgid "Remove an item"
-msgstr "Bir ögeyi sil"
+msgstr "Bir ögeyi kaldır"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:180
 msgid "Remove existing core data"
-msgstr "Var olan çekirdek verilerini sil"
+msgstr "Var olan çekirdek verilerini kaldır"
 
 #: src/CommonDBTM.php:4130
 msgctxt "button"
@@ -20375,7 +20400,7 @@ msgstr "Gruptan çıkar"
 
 #: src/NetworkEquipmentModelStencil.php:60
 msgid "Remove last port"
-msgstr ""
+msgstr "Son bağlantı noktasını kaldır"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -20384,7 +20409,7 @@ msgstr "Kurulumu ve sürümü olmayan yazılım sürümleri kaldırılsın"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Remove the domain of logins like login@domain"
-msgstr "KullanıcıAdı@EtkiAlanı gibi oturumları sil"
+msgstr "KullanıcıAdı@EtkiAlanı gibi oturumları kaldır"
 
 #: js/impact.js:1348
 msgid "Remove this asset from the group"
@@ -20511,11 +20536,11 @@ msgstr "Kurallar sözlüğünü yeniden işle"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica"
-msgstr ""
+msgstr "Kopya"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica configuration"
-msgstr ""
+msgstr "Kopya yapılandırması"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
@@ -20541,7 +20566,7 @@ msgstr "Eşitleme gecikmesi çok yüksek"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
-msgstr ""
+msgstr "Kopyalama durumu"
 
 #: src/Change.php:707
 msgid "Reply to survey (my change)"
@@ -20720,7 +20745,7 @@ msgstr "İstekte bulunan konumu"
 
 #: src/DbUtils.php:1776 src/RuleAction.php:596
 msgid "Requester's manager"
-msgstr ""
+msgstr "İstekte bulunanın yöneticisi"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -20778,11 +20803,11 @@ msgstr "Gereksinim"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Resend"
-msgstr ""
+msgstr "Yeniden gönder"
 
 #: src/ReservationItem.php:306
 msgid "Reservable"
-msgstr ""
+msgstr "Ayırtılabilir"
 
 #: src/ReservationItem.php:72
 msgid "Reservable item"
@@ -20854,12 +20879,12 @@ msgstr "Kuralları sıfırla"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "Sıralamayı sıfırla"
 
 #: src/DisplayPreference.php:568
 msgctxt "button"
 msgid "Reset to default"
-msgstr ""
+msgstr "Varsayılana sıfırla"
 
 #: src/Stat.php:613 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -20910,7 +20935,7 @@ msgstr "Memnuniyet anketini yanıtlama tarihi"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Response date to the satisfaction survey."
-msgstr ""
+msgstr "Memnuniyet anketinin yanıtlanma tarihi."
 
 #: src/Api/APIRest.php:51
 msgid "Rest API"
@@ -20970,7 +20995,7 @@ msgstr "Sonuç"
 
 #: ajax/webhook.php:125
 msgid "Result can't be loaded :"
-msgstr ""
+msgstr "Sonuç yüklenemedi:"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2042
@@ -21281,7 +21306,7 @@ msgstr "Destek kaydının hizmet düzeyi sözleşmesi düzeyi"
 
 #: templates/components/search/controls.html.twig
 msgid "SLK"
-msgstr ""
+msgstr "SLK"
 
 #: src/LevelAgreement.php:185 src/LevelAgreement.php:694 src/Profile.php:1134
 #: src/Profile.php:2851
@@ -21340,7 +21365,7 @@ msgstr "SQL kopyası: salt okunur"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL running:"
-msgstr ""
+msgstr "Çalışan SQL:"
 
 #: src/DBConnection.php:783
 msgid "SQL server"
@@ -21409,7 +21434,7 @@ msgstr "Memnuniyet anketi yapılandırması (%s)"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Satisfaction survey expired."
-msgstr ""
+msgstr "Memnuniyet anketinin geçerlilik süresi dolmuş."
 
 #: src/Entity.php:1409 src/Entity.php:1446
 #, php-format
@@ -21491,15 +21516,15 @@ msgstr "Yeni parolayı kaydet"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
-msgstr ""
+msgstr "Bağlantı noktasını kaydet"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Save response body"
-msgstr ""
+msgstr "Yanıt metnini kaydet"
 
 #: templates/stencil/editor.html.twig
 msgid "Save zone data"
-msgstr ""
+msgstr "Bölge verilerini kaydet"
 
 #: js/modules/Dashboard/Dashboard.js:459
 msgid "Saved"
@@ -21640,7 +21665,7 @@ msgstr "İkinci"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
-msgstr ""
+msgstr "Birincilden sonraki saniye:"
 
 #: templates/pages/2fa/macros.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -21717,7 +21742,7 @@ msgstr "Gruplarımdaki donanımları görüntüle"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr ""
+msgstr "Girişi görüntüle"
 
 #: src/Ticket.php:5553
 msgid "See my ticket"
@@ -21744,7 +21769,7 @@ msgstr "Herkese açık olanları görüntüle"
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgctxt "button"
 msgid "See result"
-msgstr ""
+msgstr "Sonucu görüntüle"
 
 #: src/Planning.php:2765
 msgid "See schedule of people in my groups"
@@ -21774,7 +21799,7 @@ msgstr "%s için bir eş seçin:"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select a statistic to compare"
-msgstr ""
+msgstr "Karşılaştırılacak bir istatistik seçin"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -21800,7 +21825,7 @@ msgstr "Ögenin kilidinin açılması gereken alanları seçin"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr ""
+msgstr "Karşılaştırılacak yazıcıları seçin"
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -21877,11 +21902,11 @@ msgstr "Bildirim gönderilsin"
 
 #: src/Log.php:1184
 msgid "Send a queued webhook"
-msgstr ""
+msgstr "Kuyruğa eklenmiş bir İnternet kancası gönder"
 
 #: src/NotificationAjaxSetting.php:134
 msgid "Send a test browser notification to you"
-msgstr "Kendinize bir tarayıcı bildirimi denemesi gönderin"
+msgstr "Bana bir tarayıcı bildirimi denemesi gönder"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Send a test email to the administrator"
@@ -22072,7 +22097,7 @@ msgstr "Sunucu"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr ""
+msgstr "Sunucu kimliği:"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/DCRoom.php:53
@@ -22083,7 +22108,7 @@ msgstr[1] "Sunucu odaları"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
-msgstr ""
+msgstr "Sunucu sürümü:"
 
 #: templates/pages/admin/events_list.html.twig src/Event.php:308
 #: src/Event.php:387 src/Event.php:486
@@ -22142,11 +22167,11 @@ msgstr "Tüm aktörler için bildirimleri ayarla"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
-msgstr ""
+msgstr "Bağlantı noktası sayısını ayarla"
 
 #: templates/stencil/editor.html.twig
 msgid "Set number of zones"
-msgstr ""
+msgstr "Bölge sayısını ayarla"
 
 #: ajax/private_public.php:75
 msgid "Set personal"
@@ -22229,7 +22254,7 @@ msgstr "Harita olarak görüntüle"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "Tablo olarak görüntüle"
 
 #: src/Impact.php:1088
 msgid "Show depends"
@@ -22237,7 +22262,7 @@ msgstr "Bağımlılıkları görüntüle"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:78
 msgid "Show diff of altered files"
-msgstr ""
+msgstr "Farkı ya da değiştirilmiş dosyaları görüntüle"
 
 #: templates/pages/assistance/stats/tracking_form.html.twig
 #: front/stat.location.php:126
@@ -22287,11 +22312,11 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "Kaydedilmiş aramaları görüntüle"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search form above results"
-msgstr ""
+msgstr "Arama formu sonuçların üzerinde görüntülensin"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -22592,7 +22617,7 @@ msgstr ""
 #: templates/components/search/controls.html.twig
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "Sırala"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -22609,7 +22634,7 @@ msgstr "Boyuta göre sırala"
 #: src/Search/Output/HTMLSearchOutput.php:171
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "%s sıralaması"
 
 #: src/NotificationAjaxSetting.php:74 src/NotificationAjaxSetting.php:75
 #: src/NotificationAjaxSetting.php:76 src/NotificationAjaxSetting.php:77
@@ -22871,7 +22896,7 @@ msgstr "Destek kaydını devral"
 
 #: src/Stencil.php:48
 msgid "Stencil"
-msgstr ""
+msgstr "Şablon"
 
 #. TRANS %s is step number
 #: install/install.php:593 install/install.php:603 install/install.php:609
@@ -23176,7 +23201,7 @@ msgstr "Sistem günlüklerinin saklanma aralığı (gün, sınırsız olması i�
 #: templates/pages/admin/assetdefinition/main.html.twig
 #: src/Asset/AssetDefinition.php:299 src/Asset/AssetDefinition.php:521
 msgid "System name"
-msgstr ""
+msgstr "Sistem adı"
 
 #: front/report.infocom.php:186
 msgid "TCO"
@@ -23282,11 +23307,11 @@ msgstr[1] "Hedefler"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Target authentication"
-msgstr ""
+msgstr "Hedef kimlik doğrulaması"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr ""
+msgstr "Hedef birim"
 
 #: src/RuleImportAsset.php:93
 msgid "Target entity for the asset"
@@ -23461,7 +23486,7 @@ msgstr "Uzaktan algılama verileri"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry enabled"
-msgstr ""
+msgstr "Uzaktan algılama açık"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/form/header_content.html.twig
@@ -23627,7 +23652,7 @@ msgstr "%s alanının doldurulması zorunludur"
 #: src/Api/HL/Router.php:586
 msgctxt "api"
 msgid "The Authorization header is missing or invalid"
-msgstr ""
+msgstr "Kimlik doğrulama üst bilgisi eksik ya da geçersiz"
 
 #: src/Console/Marketplace/SearchCommand.php:67
 #: src/Console/Marketplace/DownloadCommand.php:67
@@ -23697,7 +23722,7 @@ msgstr "Ögenin kategorisi"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
 msgid "The class of assets related to current definition is \"%s\"."
-msgstr ""
+msgstr "Geçerli tanımla ilişkili varlıkların sınıfı \"%s\"."
 
 #: src/Console/Application.php:141
 msgid "The command to execute"
@@ -23757,15 +23782,15 @@ msgstr ""
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
-msgstr ""
+msgstr "İşleyici her kuralın sonucunu sonraki eşleşen kurala aktarır."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will run all matching rules."
-msgstr ""
+msgstr "İşleyici eşleşen tüm kuralları işler."
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
-msgstr ""
+msgstr "İşleyici ilk eşleşen kuraldan sonra durur."
 
 #: src/System/Requirement/DirectoryWriteAccess.php:129
 #, php-format
@@ -23794,7 +23819,7 @@ msgstr "Aşağıdaki otomatik işlemlerde sorun çıkmış. İlgilenilmesi gerek
 #: src/Asset/AssetDefinition.php:326
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "Şu alanda yanlış bir değer var: %s"
 
 #: src/User.php:5820
 msgid ""
@@ -23812,7 +23837,7 @@ msgstr "İşletme sözleşmesi atandığında yeniden hesaplanacak iç süre"
 
 #: src/Inventory/Conf.php:378
 msgid "The inventory is disabled, remember to activate it if necessary"
-msgstr ""
+msgstr "Envanter kullanımda değil. Gerekiyorsa kullanıma almayı unutmayın"
 
 #: src/ITILSolution.php:234
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -23856,6 +23881,9 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"En büyük yükleme boyutu öncelikle \"upload_max_filesize\" ve "
+"\"post_max_size\" PHP ayarlarıyla belirlenir. Aşağıdaki ayar, yüklemeleri "
+"yalnızca GLPI üzerinde daha çok sınırlamak içindir."
 
 #: front/updatepassword.php:80
 msgid "The new password must be different from current password"
@@ -23921,7 +23949,7 @@ msgstr ""
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The rules are conditional based on a type of action."
-msgstr ""
+msgstr "Kurallar, işlem türüne göre koşulludur."
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
@@ -23944,7 +23972,7 @@ msgstr "Sunucu yanıtı: %s"
 
 #: src/Asset/AssetDefinition.php:274
 msgid "The system name cannot be changed."
-msgstr ""
+msgstr "Sistem adı değiştirilemez."
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
@@ -23953,10 +23981,13 @@ msgid ""
 "which will correspond to the current definition. For example, assets linked "
 "to the system name \"%s\" will have the class \"%s\"."
 msgstr ""
+"Sistem adı, varlık sınıfının geçerli tanımına karşı gelen özelleştirilebilir"
+" bölümüne karşılık gelir. Örneğin, \"%s\" sistem adına bağlı varlıklar "
+"\"%s\" sınıfında olur."
 
 #: src/Asset/AssetDefinition.php:251
 msgid "The system name is mandatory."
-msgstr ""
+msgstr "Sistem adının yazılması zorunludur."
 
 #: src/Project.php:2554 src/CommonITILObject.php:9830
 msgctxt "filters"
@@ -24017,6 +24048,8 @@ msgid ""
 "The value must contains only letters and must not end by \"Model\" or "
 "\"Type\"."
 msgstr ""
+"Değer yalnızca harflerden oluşmalı ve \"Model\" ya da \"Tür\" ile "
+"bitmemelidir."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -24024,6 +24057,9 @@ msgid ""
 "validate requests are actually coming from the GLPI server and that the "
 "content was not modified between GLPI and the target."
 msgstr ""
+"İnternet kancası parolası, isteklerin gerçekten GLPI sunucusundan geldiğini "
+"ve içeriğin GLPI ile hedef arasında değiştirilmediğini doğrulamak için hedef"
+" sunucu ile paylaşılabilir."
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
@@ -24032,7 +24068,7 @@ msgstr "Onay bekleyen bazı destek kayıtları var"
 #: templates/pages/admin/assetdefinition/main.html.twig
 msgid ""
 "There is currently no profile with access to assets with current definition."
-msgstr ""
+msgstr "Şu anda geçerli tanımda varlıklara erişimi olan bir profil yok."
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
@@ -24074,16 +24110,19 @@ msgid ""
 "These preferences are used by everyone that does not have a personal view "
 "configured."
 msgstr ""
+"Bu ayarlar kişisel görünümünü yapılandırmamış herkes tarafından kullanılır."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences cannot be edited at this time. The item type no longer "
 "exists or is provided by a plugin that is not enabled."
 msgstr ""
+"Bu ayarlar şu anda düzenlenemiyor. Öge türü artık yok ya da kullanıma "
+"alınmamış bir eklenti tarafından sunuluyor."
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
-msgstr ""
+msgstr "Ögeleri aktarmadan önce yedek almanız önerilir."
 
 #: src/SupplierType.php:41
 msgid "Third party type"
@@ -24120,13 +24159,15 @@ msgstr "Bu kategoride yazılar var"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
-msgstr ""
+msgstr "Bu bir \"iç\" kayıttır (yalnızca teknisyenler görebilir)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid ""
 "This indicates the delay between the primary and the replica for GLPI "
 "history (table: glpi_logs, column: date_mod)."
 msgstr ""
+"GLPI geçmişinin birincil ve kopya arasındaki gecikmesi (tablo: glpi_logs, "
+"sütun: date_mod)."
 
 #: src/User.php:6826
 msgid "This is a special user used for automated actions. "
@@ -24174,6 +24215,8 @@ msgid ""
 "This itemtype is not supported by the API. Maybe a plugin is "
 "missing/disabled?"
 msgstr ""
+"Bu öge türü API tarafından desteklenmiyor. Bir uygulama eki eksik ya da "
+"kullanım dışı olabilir mi?"
 
 #: src/Marketplace/View.php:760
 msgid "This plugin is not available for your GLPI version."
@@ -24252,10 +24295,13 @@ msgid ""
 "This will only work for types from GLPI itself or enabled plugins that "
 "support this action."
 msgstr ""
+"Bu yalnızca GLPI tarafından ya da bu işlemi destekleyen kullanımdaki "
+"uygulama eklerinden gelen türlerde işe yarar."
 
 #: src/DisplayPreference.php:83
 msgid "This will reset the columns to the defaults for a new installation."
 msgstr ""
+"Bu işlem, yeni bir kurulum için sütunları varsayılan değerlerine sıfırlar."
 
 #: src/Item_DeviceProcessor.php:71
 msgid "Threads"
@@ -24307,8 +24353,8 @@ msgstr "Destek kaydı no %1$s %2$s"
 #: src/TicketValidation.php:61
 msgid "Ticket approval"
 msgid_plural "Ticket approvals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Destek kaydı onayı"
+msgstr[1] "Destek kaydı onayları"
 
 #: src/CommonITILCost.php:600 src/Profile.php:3356
 msgid "Ticket cost"
@@ -24448,7 +24494,7 @@ msgstr[1] "Saat aralıkları"
 
 #: src/Ticket.php:2658
 msgid "Time since opening"
-msgstr ""
+msgstr "Açılışından bu yana geçen süre"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
@@ -24658,6 +24704,8 @@ msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
+"Uzaktan algılama verilerini göndermeyi açmak ya da kapatmak için lütfen "
+"\"uzaktan algılama\" otomatik işlemini değiştirin."
 
 #: src/Html.php:2671
 msgid ""
@@ -24690,7 +24738,7 @@ msgstr "Bugün"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "Ek varsayılan süzgeçleri aç/kapat"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
@@ -24746,7 +24794,7 @@ msgstr "Toner"
 
 #: src/Printer_CartridgeInfo.php:150
 msgid "Toner percentage"
-msgstr ""
+msgstr "Toner yüzdesi"
 
 #: src/MailCollector.php:1481
 msgid "Too large attached file"
@@ -25554,7 +25602,7 @@ msgstr "Tümünü bırak"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Undefined"
-msgstr ""
+msgstr "Tanımlanmamış"
 
 #: src/CronTask.php:939
 #, php-format
@@ -25651,7 +25699,7 @@ msgstr "Kullanıcı bilinmiyor"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Unkown"
-msgstr ""
+msgstr "Bilinmiyor"
 
 #: templates/pages/management/softwarelicense.html.twig
 #: templates/pages/management/contract.html.twig
@@ -25778,7 +25826,7 @@ msgstr "Açık"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Up"
-msgstr "Açık"
+msgstr "Yukarı"
 
 #: templates/components/form/item_antivirus.html.twig
 #: src/ItemAntivirus.php:344
@@ -25919,7 +25967,7 @@ msgstr "İzlemenin güncellenmesi"
 #: src/NotificationTargetKnowbaseItem.php:43
 #: src/NotificationTargetKnowbaseItem.php:92
 msgid "Update of a knowledge base item"
-msgstr ""
+msgstr "Bir bilgi bankası kaydının güncellenmesi"
 
 #: src/NotificationTargetProblem.php:50
 msgid "Update of a problem"
@@ -26108,7 +26156,7 @@ msgstr "Uygulamanızı birden çok kiracı paylaşıyorsa \"common\" olarak seç
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge ?"
-msgstr ""
+msgstr "Soru/yanıt doğrulama sorusu kullanılsın mı?"
 
 #: src/AuthLDAP.php:905 src/AuthLDAP.php:1189
 msgid "Use DN in the search"
@@ -26124,7 +26172,7 @@ msgstr "GLPI çalışma kipi"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use OAuth"
-msgstr ""
+msgstr "OAuth kullanılsın"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Use Reply-To as requester (when available)"
@@ -26169,11 +26217,11 @@ msgstr "Kullanıldığı tarih"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 msgid "Use default payload"
-msgstr ""
+msgstr "Varsayılan yük kullanılsın"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Use global config"
-msgstr ""
+msgstr "Genel yapılandırma kullanılsın"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
@@ -26181,7 +26229,7 @@ msgstr "Değişen palet kullanılsın"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Use locks"
-msgstr "Kilit kullanılsın"
+msgstr "Kilitler kullanılsın"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Use mail date, instead of collect one"
@@ -27004,20 +27052,22 @@ msgstr "Webcal"
 #: src/Webhook.php:78 src/Webhook.php:1292
 msgid "Webhook"
 msgid_plural "Webhooks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "İnternet kancası"
+msgstr[1] "İnternet kancaları"
 
 #: src/QueuedWebhook.php:50
 msgid "Webhook queue"
-msgstr ""
+msgstr "İnternet kancası kuyruğu"
 
 #: src/Webhook.php:1327
 msgid "Webhook target filter"
-msgstr ""
+msgstr "İnternet kancası hedef süzgeci"
 
 #: src/Webhook.php:1332
 msgid "Webhooks will only be sent for items that match the defined filter."
 msgstr ""
+"İnternet kancaları yalnızca belirtilen süzgece uyan ögeler için "
+"gönderilecek."
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/address.html.twig src/Contact_Supplier.php:174
@@ -27230,7 +27280,7 @@ msgstr "Yıpranmış kartuşlar"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Writable"
-msgstr ""
+msgstr "Yazılabilir"
 
 #: src/Profile.php:3808
 msgid "Write"
@@ -27427,6 +27477,8 @@ msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now."
 msgstr ""
+"Aktarılacak ögeleri eklemeye devam edebilir ya da aktarımı "
+"başlatabilirsiniz."
 
 #: src/CommonDBTM.php:5694
 msgid "You can define an autofill template"
@@ -27456,7 +27508,7 @@ msgstr ""
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "You can use \"%s\" command to configure cache system."
-msgstr ""
+msgstr "Ön bellek sistemini yapılandırmak için \"%s\" komutunu yürütebilirsiniz."
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -27638,6 +27690,8 @@ msgid ""
 "You may use the same placeholder tags as in the payload content and header "
 "values."
 msgstr ""
+"Yük içeriği ve üst bilgi değerlerinde olduğu gibi aynı yer belirtici "
+"etiketlerini kullanabilirsiniz."
 
 #: index.php:115
 msgid "You must accept cookies to reach this application"
@@ -27826,7 +27880,7 @@ msgstr "Oturumunuzun süresi dolmuş."
 
 #: index.php:123
 msgid "Your session has expired. Please log in again."
-msgstr ""
+msgstr "Oturumunuzun geçerlilik süresi dolmuş. Lütfen yeniden oturum açın."
 
 #: front/tracking.injector.php:90
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -27854,11 +27908,11 @@ msgstr "Onaylanacak destek kayıtlarınız"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone label"
-msgstr ""
+msgstr "Bölge etiketi"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone number"
-msgstr ""
+msgstr "Bölge sayısı"
 
 #: js/common.js:1177
 msgid "a minute ago"
@@ -28119,7 +28173,7 @@ msgstr "şimdi"
 
 #: templates/components/search/controls.html.twig
 msgid "landscape PDF"
-msgstr ""
+msgstr "yatay PDF"
 
 #: src/Html.php:3353
 msgid "last Friday"
@@ -28214,27 +28268,31 @@ msgstr[1] "ay"
 
 #: src/Search/Input/QueryBuilder.php:939
 msgid "must be a boolean (0 or 1)"
-msgstr ""
+msgstr "ikili bir değer olmalı (0 ya da 1)"
 
 #: src/Search/Input/QueryBuilder.php:944
 msgid "must be a color (6 hexadecimal characters)"
-msgstr ""
+msgstr "bir renk olmalı (6 onaltılık karakter)"
 
 #: src/Search/Input/QueryBuilder.php:965
 msgid ""
 "must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for"
 " dates higher than 6 months ago)"
 msgstr ""
+"bir tarih (YYYY-AA-GG) veya göreceli bir ay sayısı olmalı (örneğin 6 aydan "
+"eski tarihler için > -6)"
 
 #: src/Search/Input/QueryBuilder.php:959
 msgid ""
 "must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months "
 "(e.g. > -6 for dates higher than 6 months ago)"
 msgstr ""
+"bir tarih saat (YYYY-AA-GG HH:mm:SS) veya göreceli bir ay sayısı olmalı "
+"(örneğin 6 aydan eski tarihler için > -6)"
 
 #: src/Search/Input/QueryBuilder.php:954
 msgid "must be a number"
-msgstr ""
+msgstr "bir sayı olmalı"
 
 #: src/Item_Rack.php:847 src/Rack.php:943 src/PDU_Rack.php:582
 msgid "name"
@@ -28329,7 +28387,7 @@ msgstr "yanda dikey"
 
 #: templates/components/search/controls.html.twig
 msgid "portrait PDF"
-msgstr ""
+msgstr "dikey PDF"
 
 #: templates/install/step8.html.twig
 msgid "post-only/postonly for the postonly account"

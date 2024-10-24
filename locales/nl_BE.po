@@ -9,6 +9,7 @@
 # Ben V <murdochservice@gmail.com>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Steven <Nevets82@gmail.com>, 2024
+# Victor Penson, 2024
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Steven <Nevets82@gmail.com>, 2024\n"
+"Last-Translator: Victor Penson, 2024\n"
 "Language-Team: Dutch (Belgium) (https://app.transifex.com/glpi/teams/1637/nl_BE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,7 +33,7 @@ msgstr "\"%s\" cache systeem wordt gebruikt"
 
 #: src/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "'-p foo\" zet de \"foo\" parameter waarde op waar"
 
 #: src/Console/Plugin/InstallCommand.php:72
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
@@ -44,7 +45,7 @@ msgstr "Migratie opschoon tool"
 
 #: src/Agent.php:503
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "\"deviceid\" is verplicht!"
 
 #: src/System/Requirement/SessionsConfiguration.php:66
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
@@ -528,6 +529,7 @@ msgstr "%1$s door %2$s"
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
 msgstr ""
+"1%1$s kolommen maken gebruik van het verouderde datetime storage veld-type"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:91

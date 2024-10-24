@@ -10,6 +10,8 @@
 # liAnGjiA <liangjia@qq.com>, 2024
 # Cédric Anne, 2024
 # WangHongbin <wanghongbin@outlook.com>, 2024
+# aleixcox, 2024
+# DWXXX, 2024
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: WangHongbin <wanghongbin@outlook.com>, 2024\n"
+"Last-Translator: DWXXX, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -172,7 +174,7 @@ msgstr "%1$s (%2$d%%) "
 #: src/Item_Devices.php:1060
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s（%2$s%%）"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -253,7 +255,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:686
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (状态 %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:111
 #, php-format
@@ -685,7 +687,7 @@ msgstr "%1$s 满意度调查 (%2$s)"
 #: src/Marketplace/View.php:166 src/GLPINetwork.php:90
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
-msgstr ""
+msgstr "%1$s 服务网站在你的网络中不可用或已下线"
 
 #: src/Session.php:1963
 #, php-format
@@ -1038,7 +1040,7 @@ msgstr[0] "%d 小时"
 #: src/CommonItilObject_Item.php:640
 #, php-format
 msgid "%d linked %s"
-msgstr ""
+msgstr "%d 连接到 %s"
 
 #: src/Dropdown.php:2384 src/Dropdown.php:2388 src/LevelAgreement.php:725
 #: src/PlanningRecall.php:297
@@ -1327,7 +1329,7 @@ msgstr "%s 添加一个审批"
 #: front/networkname.form.php:52 front/networkport.form.php:74
 #, php-format
 msgid "%s adds an item"
-msgstr "%s 添加一个项目"
+msgstr "%s 添加一个品项"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:58
@@ -1369,7 +1371,7 @@ msgstr "%s 关联VLAN到网络端口"
 #: front/networkname.form.php:135
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr "%s 把网络名和项目关联"
+msgstr "%s 把网络名和物品关联"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:54
@@ -1381,7 +1383,7 @@ msgstr "%s 关联到一个类型"
 #: front/item_softwarelicense.form.php:60
 #, php-format
 msgid "%s associates an item and a license"
-msgstr "%s 关联一个条目和一份许可"
+msgstr "%s 关联一个物品和一份许可"
 
 #: src/Dashboard/Grid.php:1190
 #, php-format
@@ -1420,7 +1422,7 @@ msgstr "%s天前"
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s 删除一个任务"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -1461,7 +1463,7 @@ msgstr "%s 删除一个角色"
 #: front/queuedwebhook.form.php:61 front/passivedcequipment.form.php:77
 #, php-format
 msgid "%s deletes an item"
-msgstr "%s 删除一个项目"
+msgstr "%s 删除一个物品"
 
 #. TRANS: %s is the user login
 #: front/networkportmigration.form.php:85
@@ -1555,7 +1557,7 @@ msgstr[0] "%s小时"
 #: src/Ticket.php:3255
 #, php-format
 msgid "%s hours %s minutes"
-msgstr ""
+msgstr "%s 小时 %s 分钟"
 
 #: src/Html.php:7038 js/common.js:1180
 #, javascript-format, php-format
@@ -1592,12 +1594,12 @@ msgstr "%s 无法写入"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] "%s 项目"
+msgstr[0] "%s 物品"
 
 #: templates/pages/setup/crontask/statistics.html.twig
 #, php-format
 msgid "%s items/sec"
-msgstr "%s 项目/秒"
+msgstr "%s 项/秒"
 
 #: src/NetworkPort.php:1136
 #, php-format
@@ -1638,7 +1640,7 @@ msgstr "%s分钟前"
 #, php-format
 msgid "%s model"
 msgid_plural "%s models"
-msgstr[0] ""
+msgstr[0] "%s 型号"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1868
@@ -1650,7 +1652,7 @@ msgstr[0] "%s 月"
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%s个月前"
 
 #: src/Project.php:2315
 #, php-format
@@ -1671,7 +1673,7 @@ msgstr "%s 推动工单后续追踪 %s"
 #: src/Ticket.php:1829
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s 推进工单任务 %s"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:71
@@ -1825,7 +1827,7 @@ msgstr "%s恢复了一个数据库实例"
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s 恢复一项任务"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:124
@@ -1873,7 +1875,7 @@ msgstr[0] "%s 秒"
 #: js/common.js:1176
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "%s秒前"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -1909,7 +1911,7 @@ msgstr "%s 尝试使用非标准路径"
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
+msgstr[0] "%s 类型"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2081,7 +2083,7 @@ msgstr[0] "%s 年"
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "%s年前"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2362,7 +2364,7 @@ msgstr "一个PHP 扩展停止了文件上传"
 msgid ""
 "A PHP version maintained by the PHP community should be used to get the "
 "benefits of PHP security and bug fixes."
-msgstr ""
+msgstr "使用PHP社区支持的版本能够获取软件的安全与缺陷修复。"
 
 #: src/NotificationAjax.php:107
 #, php-format
@@ -2386,7 +2388,7 @@ msgstr "设备ID是必填项"
 msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
-msgstr ""
+msgstr "一个致命错误在执行保存的查询时发生。无法使用。"
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2395,7 +2397,7 @@ msgstr "项目组"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "必须选定一个组"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2407,11 +2409,11 @@ msgstr "必须链接到一个项目"
 
 #: src/Lock.php:91
 msgid "A locked field is a manually modified field."
-msgstr ""
+msgstr "锁定字段是手动编辑字段。"
 
 #: src/Lock.php:335
 msgid "A locked item is a manually deleted item, for example a monitor."
-msgstr ""
+msgstr "锁定物品是手动删除，如显示器。"
 
 #: src/System/Requirement/MemoryLimit.php:79
 #, php-format
@@ -2485,11 +2487,11 @@ msgstr "项成员"
 #: templates/install/step1.html.twig src/Console/Application.php:564
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
-msgstr ""
+msgstr "以下文件的临时写权限是必须的: %s."
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "URL是必须的"
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2502,7 +2504,7 @@ msgstr ""
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "必须选择一个用户"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -2562,7 +2564,7 @@ msgstr "API令牌"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "升序"
 
 #: src/DevicePowerSupply.php:53 src/DevicePowerSupply.php:77
 msgid "ATX"
@@ -2622,14 +2624,14 @@ msgctxt "oauth"
 msgid ""
 "Access token does not provide a refresh token, please verify application "
 "configuration."
-msgstr ""
+msgstr "访问令牌不支持刷新的令牌，请验证应用程序配置。"
 
 #: front/smtp_oauth2_callback.php:97
 msgctxt "oauth"
 msgid ""
 "Access token does not provide an email address, please verify token claims "
 "configuration."
-msgstr ""
+msgstr "访问令牌不支持提供的邮件地址，请检查令牌声明配置。"
 
 #: src/NotificationTargetUser.php:207
 msgid "Account lock date if password is not changed"
@@ -2677,7 +2679,7 @@ msgstr "动作类型"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "从LDAP目录恢复用户时的操作"
 
 #: templates/components/form/single-action.html.twig src/User.php:2482
 #: src/Plugin.php:2369
@@ -2690,7 +2692,7 @@ msgstr "拒绝动作"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Actions when a user is deleted from the LDAP directory"
-msgstr ""
+msgstr "从LDAP目录中删除用户时的操作"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/tools/savedsearch/alert.html.twig
@@ -2906,7 +2908,7 @@ msgstr "添加文档"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "增加域"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -3005,7 +3007,7 @@ msgstr "添加新插件"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "增加新端口"
 
 #: src/Change_Ticket.php:292 src/Problem_Ticket.php:276 src/Problem.php:418
 #: src/Ticket.php:2224
@@ -3128,7 +3130,7 @@ msgstr "增加事件"
 #: src/Item_Project.php:112 src/Appliance_Item.php:153 src/Domain_Item.php:208
 #: src/Contract_Item.php:579
 msgid "Add an item"
-msgstr "添加项目"
+msgstr "添加物品"
 
 #: src/Appliance.php:450 src/Document.php:1755 src/Line.php:239
 #: src/SoftwareLicense.php:940 src/Contract.php:422 src/Ticket.php:2210
@@ -3138,11 +3140,11 @@ msgstr "添加项目"
 
 #: src/Link_Itemtype.php:101
 msgid "Add an item type"
-msgstr "添加项目类型"
+msgstr "添加物品类型"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "增加另一个排序"
 
 #: src/Impact.php:1122
 msgid "Add asset"
@@ -3187,7 +3189,7 @@ msgstr "添加 date_mod 至 %s"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Add documents"
-msgstr ""
+msgstr "增加文档"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into ticket notifications"
@@ -3204,7 +3206,7 @@ msgstr "增加过滤器"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add financial information to an item"
-msgstr "将财务信息添加到项目"
+msgstr "将财务信息添加到物品"
 
 #: src/ITILFollowup.php:890
 msgid "Add followup (associated groups)"
@@ -3273,7 +3275,7 @@ msgstr "添加关系"
 
 #: js/reservations.js:234
 msgid "Add reservation"
-msgstr ""
+msgstr "增加预订"
 
 #: src/NetworkPort.php:783
 msgid "Add several ports"
@@ -3281,12 +3283,12 @@ msgstr "添加多个端口"
 
 #: templates/pages/assets/socket_short_form.html.twig
 msgid "Add several sockets"
-msgstr ""
+msgstr "增加多个套接字"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1088
 #: src/NotificationTargetFieldUnicity.php:49
 msgid "Add the item"
-msgstr "添加项目"
+msgstr "添加物品"
 
 #: src/RuleAction.php:447
 msgid "Add the result of regular expression"
@@ -3328,7 +3330,7 @@ msgstr "从外部数据源中添加用户"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "增加区域"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/Remove items from software versions"
@@ -3363,7 +3365,7 @@ msgstr "添加唯一索引 - %s"
 
 #: src/DefaultFilter.php:57
 msgid "Additional default filter"
-msgstr ""
+msgstr "额外的默认过滤器"
 
 #: src/QueuedNotification.php:286 src/QueuedNotification.php:790
 msgid "Additional headers"
@@ -3456,7 +3458,7 @@ msgstr "之后"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr ""
+msgstr "已过12小时，你已不能修改你的回应。"
 
 #: src/PendingReason.php:296
 msgid "After one follow-up"
@@ -3473,15 +3475,15 @@ msgstr "两个跟进行动后"
 #: src/Agent.php:77
 msgid "Agent"
 msgid_plural "Agents"
-msgstr[0] ""
+msgstr[0] "代理"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Agent base URL"
-msgstr ""
+msgstr "基于URL代理"
 
 #: src/Inventory/Conf.php:906
 msgid "Agent cleanup"
-msgstr ""
+msgstr "代理器清理"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
@@ -3638,11 +3640,11 @@ msgstr "全部看板"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:69
 msgid "All documents"
-msgstr ""
+msgstr "所有文档"
 
 #: src/Profile.php:3919 src/Profile.php:3925
 msgid "All items"
-msgstr "所有项目"
+msgstr "所有项"
 
 #: src/Ticket.php:3006
 msgid "All linked tickets"
@@ -3654,7 +3656,7 @@ msgstr "我的所有文章"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "所有页"
 
 #: src/Dropdown.php:2576
 msgid "All pages in CSV"
@@ -3694,7 +3696,7 @@ msgstr "所有部分"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "All time"
-msgstr ""
+msgstr "所有时间"
 
 #: src/KnowbaseItem.php:1469
 msgid "All unpublished articles"
@@ -3740,7 +3742,7 @@ msgstr "允许匿名用户创建工单(技术支持.收件人)"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:84
 msgid "Allow downloading the GLPI release if needed"
-msgstr ""
+msgstr "如有必要允许下载GLPI发布版本"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/Notification.php:445
@@ -3759,12 +3761,12 @@ msgstr ""
 
 #: src/Console/Database/UpdateCommand.php:101
 msgid "Allow update to an unstable version"
-msgstr ""
+msgstr "允许更新一个不稳定版本"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:62
 #, php-format
 msgid "Allow usage statistics sending to Telemetry service (%s)"
-msgstr ""
+msgstr "允许发送使用统计数据到遥测服务 (%s)"
 
 #: src/ITILTemplate.php:185
 msgid "Allowed status"
@@ -3872,7 +3874,7 @@ msgstr "需要一个应用"
 
 #: src/Appliance_Item_Relation.php:131
 msgid "An appliance item is required"
-msgstr ""
+msgstr "至少有一个应用项"
 
 #: src/NotificationTargetChange.php:239 src/NotificationTargetTicket.php:522
 #, php-format
@@ -3895,7 +3897,7 @@ msgstr "需要一个附件"
 
 #: src/Entity.php:191
 msgid "An entity with that name already exists at the same level."
-msgstr ""
+msgstr "同一级存在相同的实体名称。"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "An error occured"
@@ -3917,17 +3919,17 @@ msgstr "连接控制器时发生错误。"
 
 #: src/Api/HL/APIException.php:52
 msgid "An error occurred while processing your request."
-msgstr ""
+msgstr "处理你的请求时发生错误。"
 
 #: src/Inventory/Conf.php:240
 #, php-format
 msgid "An error occurs during import: `%s`."
-msgstr ""
+msgstr "导入过程中发生错误: `%s`."
 
 #: src/Console/Task/UnlockCommand.php:147
 #, php-format
 msgid "An error occurs while trying to unlock \"%s\" task."
-msgstr ""
+msgstr "尝试解锁任务时发生错误 \"%s\" 。"
 
 #: src/Webhook.php:1254
 msgid "An event is required"
@@ -3935,7 +3937,7 @@ msgstr ""
 
 #: src/Api/HL/Search.php:112
 msgid "An internal error occured while trying to fetch the data."
-msgstr ""
+msgstr "尝试获取数据时发生一个内部错误。"
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -3967,7 +3969,7 @@ msgstr "分析影响"
 
 #: src/GLPINetwork.php:80
 msgid "And retrieve your key to paste it below"
-msgstr ""
+msgstr "获取你的密钥并保存到下面"
 
 #: src/Entity.php:2282
 msgid "Anonymize support agents"
@@ -4030,12 +4032,12 @@ msgstr "应用"
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:197
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr ""
+msgstr "应用插件字段 \"%s\" 缺失。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:189
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr ""
+msgstr "应用插件表\"%s\"缺失。"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:158
 msgid "Application token"
@@ -4047,7 +4049,7 @@ msgstr "申请的"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 #: src/ContentTemplates/Parameters/TicketParameters.php:79
 #: src/CommonITILValidation.php:104 src/Change.php:608
@@ -4133,7 +4135,7 @@ msgstr "批准解决方案/回复调查（我的工单）"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
-msgstr ""
+msgstr "批准的设备"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/ITILValidationTemplate.php:62 src/NotificationTargetChange.php:327
@@ -4230,7 +4232,7 @@ msgstr "尽快"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:209
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "要求代理器提供当前状态"
 
 #: src/ObjectLock.php:301
 msgid "Ask for unlock"
@@ -4238,12 +4240,12 @@ msgstr "要求解锁"
 
 #: src/ObjectLock.php:246
 msgid "Ask for unlock this item?"
-msgstr ""
+msgstr "要求解锁此项？"
 
 #: src/CommonITILObject.php:7173
 msgctxt "button"
 msgid "Ask for validation"
-msgstr ""
+msgstr "要求验证"
 
 #: templates/pages/admin/transfer.html.twig
 #: templates/pages/assets/cable.html.twig src/Html.php:1328 src/Event.php:164
@@ -4265,7 +4267,7 @@ msgstr[0] "资产"
 #: src/Asset/AssetDefinition.php:54
 msgid "Asset definition"
 msgid_plural "Asset definitions"
-msgstr[0] ""
+msgstr[0] "资产定义"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -4473,12 +4475,12 @@ msgstr[0] "相关元素"
 #: src/NotificationTargetProject.php:711
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "关联项目"
+msgstr[0] "关联的条目"
 
 #: src/Socket.php:361 src/QueuedNotification.php:341 src/QueuedWebhook.php:360
 #: src/Contract_Item.php:160
 msgid "Associated item ID"
-msgstr "相关的项目ID"
+msgstr "关联的条目ID"
 
 #: src/KnowbaseItem.php:2378 src/Item_Devices.php:183 src/Socket.php:346
 #: src/CommonItilObject_Item.php:1317 src/Cable.php:177 src/Cable.php:199
@@ -4486,7 +4488,7 @@ msgstr "相关的项目ID"
 #: src/Ticket.php:2831
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "关联项目类型"
+msgstr[0] "关联的条目类型"
 
 #: src/Contact.php:353 src/Contract.php:735
 msgid "Associated supplier"
@@ -4612,7 +4614,7 @@ msgstr "在邮件服务器中验证"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Authentication setup"
-msgstr ""
+msgstr "认证配置"
 
 #: src/RuleRight.php:239
 msgid "Authentication type"
@@ -4629,7 +4631,7 @@ msgstr[0] "授权"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorization code"
-msgstr ""
+msgstr "授权码"
 
 #: src/CommonGLPI.php:1554
 msgid "Authorization error"
@@ -4640,7 +4642,7 @@ msgstr "授权错误"
 #, php-format
 msgctxt "oauth"
 msgid "Authorization failed with error: %s"
-msgstr ""
+msgstr "授权失败产生错误：%s"
 
 #: src/Dropdown.php:1261 src/RuleRightCollection.php:55 src/RuleRight.php:55
 #: src/Profile.php:1043 src/Profile.php:2985
@@ -4680,7 +4682,7 @@ msgstr "禁用自动登陆"
 
 #: src/NotificationTargetCommonITILObject.php:2146
 msgid "Auto resolution deadline"
-msgstr ""
+msgstr "自动解决期限"
 
 #: src/RuleMailCollector.php:112
 msgid "Auto-Submitted email header"
@@ -4709,7 +4711,7 @@ msgstr "自动"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "自动化资产"
 
 #: src/CronTask.php:87
 msgid "Automatic action"
@@ -4718,7 +4720,7 @@ msgstr[0] "定时任务"
 
 #: src/NotificationTargetCronTask.php:97
 msgid "Automatic actions list"
-msgstr ""
+msgstr "自动化操作清单"
 
 #: src/OlaLevel_Ticket.php:155
 msgid "Automatic actions of OLA"
@@ -4734,7 +4736,7 @@ msgstr "自动分配工单"
 
 #: src/Entity.php:2237
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "自动分配工单，变更和问题"
 
 #: src/Ticket.php:5300
 msgid "Automatic closed tickets purge"
@@ -4755,23 +4757,23 @@ msgstr "自动字段（用*标记）"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
-msgstr ""
+msgstr "自动跟进"
 
 #: src/PendingReason.php:174
 msgid "Automatic follow-up disabled"
-msgstr ""
+msgstr "禁用自动跟进"
 
 #: src/PendingReason.php:114
 msgid "Automatic follow-up frequency"
-msgstr ""
+msgstr "自动跟进频率"
 
 #: src/PendingReason.php:81
 msgid "Automatic follow-up/solution frequency"
-msgstr ""
+msgstr "自动跟进/解决频率"
 
 #: src/PendingReasonCron.php:196
 msgid "Automatic followups / resolution"
-msgstr ""
+msgstr "自动跟进/解决"
 
 #: templates/pages/admin/entity/assets.html.twig src/ItemAntivirus.php:339
 #: src/ComputerVirtualMachine.php:294 src/Item_Devices.php:652
@@ -4792,7 +4794,7 @@ msgstr "自动清除已关闭的工单自"
 #: src/ITILReminder.php:46
 msgid "Automatic reminder"
 msgid_plural "Automatic reminders"
-msgstr[0] ""
+msgstr[0] "自动提醒"
 
 #: src/OlaLevel.php:220
 msgid "Automatic reminders of OLA"
@@ -4812,16 +4814,16 @@ msgstr "SLA自动提醒"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic resolution"
-msgstr ""
+msgstr "自动解决"
 
 #: src/PendingReason.php:237
 msgid "Automatic resolution disabled"
-msgstr ""
+msgstr "禁用自动解决"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Automatic resolution scheduled on %s"
-msgstr ""
+msgstr "自动解决预定在%s"
 
 #: src/Ticket.php:5294
 msgid "Automatic tickets closing"
@@ -4841,16 +4843,16 @@ msgstr "自动添加外部验证来源用户"
 
 #: templates/pages/tools/project_task.html.twig src/Project.php:1659
 msgid "Automatically calculate"
-msgstr ""
+msgstr "自动计算"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Automatically create user from email"
-msgstr ""
+msgstr "自动从邮件创建用户"
 
 #: src/NotificationTemplate.php:248
 #, php-format
 msgid "Automatically generated by %s"
-msgstr ""
+msgstr "由 %s 自动生成"
 
 #: src/Migration.php:883
 #, php-format
@@ -4977,7 +4979,7 @@ msgstr "背景图片（蓝图）"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
-msgstr ""
+msgstr "备份代码"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Backup codes (This is the only time these will be shown)"
@@ -5006,7 +5008,7 @@ msgstr "基于类别，然后是条目"
 
 #: src/Entity.php:2885
 msgid "Based on the item then the category"
-msgstr "根据项目，然后是类别"
+msgstr "根据条目，然后是类别"
 
 #: src/DeviceBattery.php:42
 msgid "Battery"
@@ -5090,15 +5092,15 @@ msgstr "大写数字"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log GTID:"
-msgstr ""
+msgstr "二进制日志GTID:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "二进制日志文件："
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "二进制日志位置："
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
@@ -5114,7 +5116,7 @@ msgstr "黑白复印"
 
 #: src/PrinterLog.php:388
 msgid "Black & White pages"
-msgstr ""
+msgstr "黑白页数"
 
 #: src/PrinterLog.php:398
 msgid "Black & White prints"
@@ -5122,7 +5124,7 @@ msgstr "黑白打印"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "黑白页数"
 
 #: src/Blacklist.php:109 src/RuleCollection.php:2072
 msgid "Blacklist"
@@ -5233,7 +5235,7 @@ msgstr[0] "商业评审"
 
 #: src/RuleCommonITILObject.php:958 src/RuleAsset.php:225
 msgid "Business rules (entity parent)"
-msgstr ""
+msgstr "业务规则(父实体)"
 
 #: src/RuleAssetCollection.php:45 src/Profile.php:1072 src/RuleAsset.php:48
 msgid "Business rules for assets"
@@ -5241,20 +5243,20 @@ msgstr "资产的商业规则"
 
 #: src/RuleChangeCollection.php:44 src/RuleChange.php:43 src/Profile.php:2927
 msgid "Business rules for changes"
-msgstr ""
+msgstr "变更的业务规则"
 
 #: src/Profile.php:1066
 msgid "Business rules for changes (entity)"
-msgstr ""
+msgstr "变更的业务规则(实体)"
 
 #: src/RuleProblemCollection.php:44 src/RuleProblem.php:43
 #: src/Profile.php:2942
 msgid "Business rules for problems"
-msgstr ""
+msgstr "问题的业务规则"
 
 #: src/Profile.php:1069
 msgid "Business rules for problems (entity)"
-msgstr ""
+msgstr "问题的业务规则(实体)"
 
 #: src/RuleTicketCollection.php:44 src/RuleTicket.php:43 src/Profile.php:2912
 msgid "Business rules for tickets"
@@ -5366,7 +5368,7 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "SRA结果"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -5502,7 +5504,7 @@ msgstr "来电号码"
 #: src/DeviceCamera.php:42
 msgid "Camera"
 msgid_plural "Cameras"
-msgstr[0] ""
+msgstr[0] "照相机"
 
 #: src/Group.php:505
 msgid "Can be in charge of a task"
@@ -5551,12 +5553,12 @@ msgstr "无法获得DB锁"
 msgid ""
 "Can't remove update right on this profile as it is the only remaining "
 "profile with this right."
-msgstr ""
+msgstr "不能移除此配置文件的更新权限，因为这是仅剩的拥有此权限的配置文件。"
 
 #: src/User.php:1196
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
-msgstr ""
+msgstr "无法设置用户为禁用，因为这是仅有的超级管理员。"
 
 #: src/CronTask.php:934 src/CronTask.php:946
 msgid "Can't start"
@@ -5583,7 +5585,7 @@ msgstr "取消审批申请 至 %s"
 #: src/Change.php:616
 msgctxt "status"
 msgid "Cancelled"
-msgstr ""
+msgstr "已取消"
 
 #: front/networkportmigration.form.php:103
 msgid "Cannot change a migration network port to an unknown one"
@@ -5595,11 +5597,11 @@ msgstr ""
 
 #: src/Marketplace/Controller.php:180
 msgid "Cannot find the specified version of the plugin."
-msgstr ""
+msgstr "无法找到指定的插件版本。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:137
 msgid "Cannot generate a diff on a development version."
-msgstr ""
+msgstr "在开发版本中无法生成差异。"
 
 #: src/CommonDBConnexity.php:319
 #, php-format
@@ -5614,16 +5616,16 @@ msgstr ""
 #: src/Console/Application.php:385
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr ""
+msgstr "无法写入“%s”目录。"
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "无法更改此属性，其继承于父级。"
 
 #: src/Asset/AssetDefinition.php:105 src/Asset/AssetDefinition.php:312
 #: src/Asset/AssetDefinition.php:572
 msgid "Capacities"
-msgstr ""
+msgstr "容量"
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:83 src/DeviceBattery.php:123
@@ -5648,7 +5650,7 @@ msgstr[0] "打印耗材"
 #: src/Printer_CartridgeInfo.php:46
 msgctxt "Cartridge inventoried information"
 msgid "Cartridge inventoried information"
-msgstr ""
+msgstr "打印耗材库存信息"
 
 #: src/CartridgeItem.php:59 src/Cartridge.php:1134 src/Cartridge.php:1292
 msgid "Cartridge model"
@@ -5835,7 +5837,7 @@ msgstr "更改全部"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
+msgstr[0] "变更审批"
 
 #: src/SavedSearch.php:85
 msgid "Change count method"
@@ -5892,7 +5894,7 @@ msgstr "改变优先级"
 
 #: src/Inventory/Conf.php:282 src/Inventory/Conf.php:956
 msgid "Change the status"
-msgstr ""
+msgstr "修改状态"
 
 #: src/SavedSearch.php:88
 msgid "Change visibility"
@@ -5900,11 +5902,11 @@ msgstr "变更可见度"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "变更在子实体中的可见性"
 
 #: src/Marketplace/View.php:577
 msgid "Changelog"
-msgstr ""
+msgstr "更改日志"
 
 #: js/impact.js:2445
 msgid "Changes"
@@ -6269,26 +6271,26 @@ msgstr ""
 #: templates/pages/setup/webhook/webhook_security.html.twig
 #: src/OAuthClient.php:95
 msgid "Client ID"
-msgstr ""
+msgstr "客户端ID"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgctxt "oauth"
 msgid "Client ID"
-msgstr ""
+msgstr "客户端ID"
 
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Client Secret"
-msgstr ""
+msgstr "客户端密钥"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Client credentials"
-msgstr ""
+msgstr "客户端资质"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgctxt "oauth"
 msgid "Client secret"
-msgstr ""
+msgstr "客户端密钥"
 
 #: js/planning.js:280
 msgid "Clone"
@@ -6302,7 +6304,7 @@ msgstr "克隆"
 
 #: src/Dashboard/Grid.php:286
 msgid "Clone this dashboard"
-msgstr ""
+msgstr "克隆此仪表板"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/modal.html.twig
@@ -6323,7 +6325,7 @@ msgstr "结案日期"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
-msgstr ""
+msgstr "关闭面板"
 
 #: src/Entity.php:2391
 msgid "Close ticket action is disabled."
@@ -6396,7 +6398,7 @@ msgstr[0] "集群"
 #: src/Item_Cluster.php:50
 msgid "Cluster item"
 msgid_plural "Cluster items"
-msgstr[0] ""
+msgstr[0] "集群项"
 
 #: src/ClusterType.php:40
 msgid "Cluster type"
@@ -6423,7 +6425,7 @@ msgstr "表示工单类别的代码已被使用"
 
 #: src/DbUtils.php:1469
 msgid "Code:"
-msgstr ""
+msgstr "代码："
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -6436,7 +6438,7 @@ msgstr "收集数据"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Collect only unread mail"
-msgstr ""
+msgstr "仅收集未读邮件"
 
 #: templates/pages/assets/cable.html.twig
 #: templates/impact/edit_compound_modal.html.twig src/ProjectState.php:59
@@ -6446,11 +6448,11 @@ msgstr "颜色"
 
 #: src/PrinterLog.php:406
 msgid "Color copies"
-msgstr ""
+msgstr "彩色份数"
 
 #: templates/components/printer_graph_buttons.html.twig src/PrinterLog.php:390
 msgid "Color pages"
-msgstr ""
+msgstr "彩色页数"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Color palette"
@@ -6458,7 +6460,7 @@ msgstr "调色板"
 
 #: src/PrinterLog.php:400
 msgid "Color prints"
-msgstr ""
+msgstr "彩色打印"
 
 #: src/Impact.php:1091
 msgid "Colors"
@@ -6471,7 +6473,7 @@ msgstr ""
 
 #: src/Item_Process.php:155
 msgid "Command"
-msgstr ""
+msgstr "命令"
 
 #: src/Console/AbstractCommand.php:271
 msgid "Command execution may take a long time and should not be interrupted."
@@ -6608,11 +6610,11 @@ msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "公司"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
-msgstr ""
+msgstr "对比"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid ""
@@ -6628,7 +6630,7 @@ msgstr "比对所选修正"
 #: src/Csv/PrinterLogCsvExportComparison.php:70
 #: src/Csv/PrinterLogCsvExportComparison.php:71
 msgid "Comparison"
-msgstr ""
+msgstr "对比"
 
 #: src/DbUtils.php:1453 src/NotificationTargetProjectTask.php:657
 #: src/CommonTreeDropdown.php:752
@@ -6659,7 +6661,7 @@ msgstr[0] "电脑"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:184
 msgid "Computer inventory"
-msgstr ""
+msgstr "计算机库存"
 
 #: src/Rule.php:295 src/ComputerModel.php:41
 msgid "Computer model"
@@ -6694,12 +6696,12 @@ msgstr "配置已更新"
 
 #: src/Console/Config/SetCommand.php:72
 msgid "Configuration value:"
-msgstr ""
+msgstr "配置值："
 
 #: src/Migration.php:1179
 #, php-format
 msgid "Configuration values added for %1$s (%2$s)."
-msgstr ""
+msgstr "增加%1$s(%2$s)的配置值"
 
 #: src/Link.php:607 src/Inventory/Conf.php:1113 src/Plugin.php:2419
 #: src/Plugin.php:2421 src/Marketplace/View.php:885
@@ -6713,7 +6715,7 @@ msgstr "设置满意度调查"
 #: src/Entity.php:2489
 #, php-format
 msgid "Configuring the satisfaction survey: %s"
-msgstr ""
+msgstr "配置满意度调查: %s"
 
 #: src/CommonDropdown.php:638 js/glpi_dialog.js:292
 msgctxt "button"
@@ -6760,7 +6762,7 @@ msgstr "连接到项目"
 #: src/NetworkPortConnectionLog.php:137 src/NetworkPort.php:1233
 #: src/NetworkPort.php:1257
 msgid "Connected"
-msgstr ""
+msgstr "已连接"
 
 #: src/CommonItilObject_Item.php:1026
 msgid "Connected devices"
@@ -6768,7 +6770,7 @@ msgstr "连接的设备"
 
 #: src/NetworkPortConnectionLog.php:122
 msgid "Connected item"
-msgstr ""
+msgstr "关联的物品"
 
 #: src/NetworkPortDialup.php:55 src/NetworkPortDialup.php:79
 #: src/NetworkPortEthernet.php:129 src/NetworkPortEthernet.php:145
@@ -6986,15 +6988,15 @@ msgstr[0] "控制器"
 
 #: src/Unmanaged.php:208 src/Unmanaged.php:220
 msgid "Convert"
-msgstr ""
+msgstr "转换"
 
 #: src/Console/Migration/TimestampsCommand.php:66
 msgid "Convert \"datetime\" fields to \"timestamp\" to use timezones."
-msgstr ""
+msgstr "转换 \"datetime\" 字段为 \"timestamp\" 来使用时区。"
 
 #: src/Console/Migration/Utf8mb4Command.php:87
 msgid "Convert database character set from \"utf8\" to \"utf8mb4\"."
-msgstr ""
+msgstr "转换数据库字符集从 \"utf8\" 到 \"utf8mb4\"。"
 
 #: src/Console/Migration/DynamicRowFormatCommand.php:65
 msgid ""
@@ -7004,11 +7006,11 @@ msgstr ""
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Copied"
-msgstr ""
+msgstr "已复制"
 
 #: src/PrinterLog.php:402
 msgid "Copies"
-msgstr ""
+msgstr "份数"
 
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:3192
 msgid "Copy"
@@ -7016,11 +7018,11 @@ msgstr "复制"
 
 #: src/Planning.php:1190
 msgid "Copy CalDAV URL to clipboard"
-msgstr ""
+msgstr "复制CalDAV URL到剪贴版"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Copy backup codes"
-msgstr ""
+msgstr "复制备份代码"
 
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:3212
 msgid "Copy computer status"
@@ -7044,7 +7046,7 @@ msgstr "从用户复制"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2580
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "复制名称到剪贴版"
 
 #: src/Planning.php:1793 src/Dashboard/Dashboard.php:389
 #, php-format
@@ -7053,7 +7055,7 @@ msgstr "备份%s"
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Copy system information"
-msgstr ""
+msgstr "复制系统信息"
 
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1673
 #: src/Entity.php:1683 src/Entity.php:3101 src/Entity.php:3305
@@ -7158,11 +7160,11 @@ msgstr "创建"
 #: templates/components/form/link_existing_or_new.html.twig
 #, php-format
 msgid "Create a %s from this %s"
-msgstr ""
+msgstr "创建 %s 从 %s"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "Create a filter"
-msgstr ""
+msgstr "创建过滤器"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database or use an existing one:"
@@ -7183,7 +7185,7 @@ msgstr "从项目的任务中创建一个子任务"
 #: src/CommonITILObject.php:7142
 msgctxt "button"
 msgid "Create a task"
-msgstr ""
+msgstr "创建任务"
 
 #: src/Html.php:1553 src/Profile.php:3286 src/Ticket.php:4845
 msgid "Create a ticket"
@@ -7191,7 +7193,7 @@ msgstr "创建工单"
 
 #: src/TicketRecurrent.php:109
 msgid "Create a ticket per linked element"
-msgstr ""
+msgstr "每关联的元素创建一个工单"
 
 #: src/TicketValidation.php:109
 msgid "Create a validation request for a request"
@@ -7203,7 +7205,7 @@ msgstr "为事件建立验证请求"
 
 #: src/Socket.php:291
 msgid "Create both"
-msgstr ""
+msgstr "都创建"
 
 #: src/Inventory/Conf.php:680
 msgid "Create components for virtual machines"
@@ -7211,7 +7213,7 @@ msgstr "创建虚拟机组件"
 
 #: src/Inventory/Conf.php:668
 msgid "Create computer for virtual machines"
-msgstr ""
+msgstr "为虚拟机创建计算机"
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
@@ -7223,16 +7225,16 @@ msgstr "创建请求"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr ""
+msgstr "立刻创建"
 
 #: src/CommonITILRecurrentCron.php:54
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "创建循环工单和变更"
 
 #: src/Entity.php:1418 src/Entity.php:1455
 #, php-format
 msgid "Create satisfaction survey after (%s)"
-msgstr ""
+msgstr "在 (%s)之后创建满意度调查"
 
 #: ajax/commonitilsatisfaction.php:67
 msgid "Create survey after"
@@ -7249,7 +7251,7 @@ msgstr "创建工单"
 
 #: templates/components/user/create_user.html.twig
 msgid "Create user"
-msgstr ""
+msgstr "创建用户"
 
 #: templates/components/form/dates.html.twig
 #: templates/components/form/header_content.html.twig
@@ -7272,17 +7274,17 @@ msgstr "已创建的工单"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "创建：%1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "创建：%1$s 由 %2$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s for the group %3$s"
-msgstr ""
+msgstr "创建: %1$s 由 %2$s 基于组 %3$s"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:427
 msgid "Creating Appliance Environment..."
@@ -7306,11 +7308,11 @@ msgstr "创建应用..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:464
 msgid "Creating datacenter..."
-msgstr ""
+msgstr "正在创建数据中心..."
 
 #: src/Console/Database/InstallCommand.php:271
 msgid "Creating the database..."
-msgstr ""
+msgstr "正在创建数据库..."
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig src/Phone.php:353
 #: src/NotificationTargetProjectTask.php:534
@@ -7375,11 +7377,11 @@ msgstr "严重状态的阈值"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Current"
@@ -7390,7 +7392,7 @@ msgstr "当前"
 msgid ""
 "Current GLPI version not found for database named \"%s\". Update cannot be "
 "done."
-msgstr ""
+msgstr "当前GLPI版本在数据库 \"%s\"中未发现。 更新无法完成。"
 
 #: src/Reservation.php:1004
 msgid "Current and future reservations"
@@ -7402,7 +7404,7 @@ msgstr "页面当前计数"
 
 #: src/System/Diagnostic/DatabaseSchemaIntegrityChecker.php:169
 msgid "Current database schema"
-msgstr ""
+msgstr "当前数据库架构"
 
 #: src/Document.php:457
 msgid "Current file"
@@ -7410,7 +7412,7 @@ msgstr "当前文件"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "当前页面"
 
 #: src/Dropdown.php:2572
 msgid "Current page in CSV"
@@ -7438,7 +7440,7 @@ msgstr ""
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
-msgstr ""
+msgstr "定制CSS已禁用"
 
 #: src/Webhook.php:754
 msgid "Custom header"
@@ -7469,15 +7471,15 @@ msgstr "D=动态, R=递归"
 
 #: src/System/Requirement/DbConfiguration.php:55
 msgid "DB configuration"
-msgstr ""
+msgstr "数据库配置"
 
 #: src/System/Requirement/DbEngine.php:53
 msgid "DB engine version"
-msgstr ""
+msgstr "数据库引擎版本"
 
 #: src/System/Requirement/DbTimezones.php:53
 msgid "DB timezone data"
-msgstr ""
+msgstr "数据库时区数据"
 
 #: src/Toolbox.php:2635
 msgid "DD-MM-YYYY"
@@ -7489,7 +7491,7 @@ msgstr "调试"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "降序"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:464 src/Certificate.php:227
@@ -7516,7 +7518,7 @@ msgstr "日"
 
 #: src/Inventory/Asset/Cartridge.php:78 src/Inventory/Asset/Cartridge.php:80
 msgid "Dark grey"
-msgstr ""
+msgstr "深灰色"
 
 #: templates/layout/parts/menu.html.twig src/Html.php:6676 src/Central.php:78
 msgid "Dashboard"
@@ -7739,7 +7741,7 @@ msgstr "日期格式"
 
 #: src/MailCollector.php:341
 msgid "Date of last collection"
-msgstr ""
+msgstr "最后收集时间"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1345
 #: src/Infocom.php:1578
@@ -7795,7 +7797,7 @@ msgstr "12月"
 
 #: src/NetworkPortType.php:54 src/NetworkPortType.php:78
 msgid "Decimal"
-msgstr ""
+msgstr "小数"
 
 #: templates/pages/admin/entity/assets.html.twig
 #: templates/components/infocom.html.twig src/Entity.php:1486
@@ -7822,7 +7824,7 @@ msgstr "默认（个人配置）"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default central tab"
-msgstr ""
+msgstr "默认居中标签"
 
 #: src/Profile.php:1265
 msgid "Default change template"
@@ -7834,7 +7836,7 @@ msgstr "默认字符限制(文本框摘要)"
 
 #: src/Entity.php:1330 src/Entity.php:2332
 msgid "Default contract"
-msgstr ""
+msgstr "默认合同"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default decimals limit"
@@ -7861,7 +7863,7 @@ msgstr "根据邮件接收者限制默认导入文件的大小"
 #: src/DefaultFilter.php:67
 msgid "Default filter"
 msgid_plural "Default filters"
-msgstr[0] ""
+msgstr[0] "默认过滤器"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
@@ -7922,11 +7924,11 @@ msgstr "默认提示音"
 
 #: src/PendingReason.php:62
 msgid "Default pending reason"
-msgstr ""
+msgstr "默认搁置原因"
 
 #: src/Profile.php:1283
 msgid "Default problem template"
-msgstr ""
+msgstr "默认问题模版"
 
 #: src/User.php:2983 src/User.php:3345 src/User.php:4069
 #: src/RuleCommonITILObject.php:700 src/RuleRight.php:377 src/Profile.php:797
@@ -7936,7 +7938,7 @@ msgstr "默认配置文件"
 
 #: ajax/commonitilsatisfaction.php:125
 msgid "Default rate"
-msgstr ""
+msgstr "默认比率"
 
 #: src/Report.php:81
 msgid "Default report"
@@ -8070,7 +8072,7 @@ msgstr "删除一条规则"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "删除一个排序"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1909
 msgid "Delete all"
@@ -8078,11 +8080,11 @@ msgstr "删除全部"
 
 #: src/AuthLDAP.php:4319
 msgid "Delete all authorizations"
-msgstr ""
+msgstr "删除所有授权"
 
 #: src/AuthLDAP.php:4305
 msgid "Delete all groups"
-msgstr ""
+msgstr "删除所有组"
 
 #: templates/components/form/reservation.html.twig
 msgid "Delete all repetition"
@@ -8090,7 +8092,7 @@ msgstr "删除所有重复"
 
 #: src/RuleCollection.php:658
 msgid "Delete all rules and recreate them by default"
-msgstr ""
+msgstr "删除所有组并创建默认规划"
 
 #: src/Log.php:1172
 msgid "Delete an item"
@@ -8098,7 +8100,7 @@ msgstr "删除项目"
 
 #: src/User.php:3617
 msgid "Delete associated emails"
-msgstr ""
+msgstr "删除相关邮件"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete component"
@@ -8106,15 +8108,15 @@ msgstr "删除组件"
 
 #: src/AuthLDAP.php:4318
 msgid "Delete dynamic authorizations"
-msgstr ""
+msgstr "删除动态授权"
 
 #: src/AuthLDAP.php:4304
 msgid "Delete dynamic groups"
-msgstr ""
+msgstr "删除动态组"
 
 #: src/Impact.php:1125 js/impact.js:1356
 msgid "Delete element"
-msgstr ""
+msgstr "删除元素"
 
 #: src/NotImportedEmail.php:78
 msgid "Delete emails"
@@ -8123,7 +8125,7 @@ msgstr "删除的邮件"
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
 msgid "Delete file"
-msgstr ""
+msgstr "删除文件"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1915
 #, php-format
@@ -8133,7 +8135,7 @@ msgstr[0] "删除早于 %s 月前"
 
 #: src/PlanningExternalEvent.php:377
 msgid "Delete instance"
-msgstr ""
+msgstr "删除实例"
 
 #: src/CommonItilObject_Item.php:1182 src/Consumable.php:880
 #: src/NetworkPort.php:1519 src/CommonITILObject_CommonITILObject.php:132
@@ -8192,7 +8194,7 @@ msgstr "永久删除与选定元素的关系"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "删除个人视图"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete relation between items"
@@ -8200,7 +8202,7 @@ msgstr "删除两个项目之间的关联"
 
 #: src/PlanningExternalEvent.php:373
 msgid "Delete serie"
-msgstr ""
+msgstr "删除系列"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1092
 msgid "Delete the item"
@@ -8212,11 +8214,11 @@ msgstr "删除重复事件的整个系列"
 
 #: src/Dashboard/Grid.php:612 js/modules/Dashboard/Dashboard.js:632
 msgid "Delete this card"
-msgstr ""
+msgstr "删除此卡片"
 
 #: src/Dashboard/Grid.php:282 js/modules/Dashboard/Dashboard.js:980
 msgid "Delete this dashboard"
-msgstr ""
+msgstr "删除仪表板"
 
 #: templates/components/form/header_content.html.twig
 #: front/report.contract.list.php:222 front/report.year.list.php:193
@@ -8228,7 +8230,7 @@ msgstr "已删除"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:450
 msgid "Deleted from LDAP"
-msgstr ""
+msgstr "从LDAP中删除"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/User.php:4021
 msgid "Deleted user in LDAP directory"
@@ -8241,7 +8243,7 @@ msgstr "删除变更"
 #: src/NotificationTargetKnowbaseItem.php:42
 #: src/NotificationTargetKnowbaseItem.php:89
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "删除一项知识库条目"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
@@ -8293,11 +8295,11 @@ msgstr "送货单"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "Deny"
-msgstr ""
+msgstr "拒绝"
 
 #: src/RuleRight.php:384
 msgid "Deny login"
-msgstr ""
+msgstr "拒绝登录"
 
 #: src/Impact.php:1094
 msgid "Depends"
@@ -8383,19 +8385,19 @@ msgstr "切断同步SQL副本"
 
 #: src/PlanningExternalEvent.php:366
 msgid "Detach instance"
-msgstr ""
+msgstr "拆分实例"
 
 #: src/PlanningExternalEvent.php:368
 msgid "Detach this instance from the series to create an independent event"
-msgstr ""
+msgstr "从系列中拆分此实例并创建为独立事件"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Details"
-msgstr ""
+msgstr "详细信息"
 
 #: src/Inventory/Asset/Cartridge.php:63
 msgid "Developer"
-msgstr ""
+msgstr "开发者"
 
 #: src/Peripheral.php:78 src/Dashboard/Grid.php:1142
 #: src/Dashboard/Grid.php:1151 src/Dashboard/Grid.php:1163
@@ -8414,7 +8416,7 @@ msgstr "设备 2"
 #: src/USBVendor.php:58 src/USBVendor.php:80 src/PCIVendor.php:58
 #: src/PCIVendor.php:80
 msgid "Device ID"
-msgstr ""
+msgstr "设备ID"
 
 #: src/DeviceBatteryModel.php:44
 msgid "Device battery model"
@@ -8469,7 +8471,7 @@ msgstr[0] ""
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:121
 #: src/Agent.php:315
 msgid "Device id"
-msgstr ""
+msgstr "设备id"
 
 #: front/report.year.list.php:56 src/NotificationTargetConsumableItem.php:112
 #: src/NotificationTargetInfocom.php:103 src/Budget.php:609
@@ -8529,7 +8531,7 @@ msgstr[0] "设备类型"
 
 #: src/RuleImportAsset.php:143
 msgid "Device_id"
-msgstr ""
+msgstr "设备 ID"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -8638,7 +8640,7 @@ msgstr ""
 #: src/DBConnection.php:790 src/DBConnection.php:794
 #: src/NotificationTargetDBConnection.php:81
 msgid "Difference between main and replica"
-msgstr ""
+msgstr "主从间差异"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Digit"
@@ -8686,11 +8688,11 @@ msgstr "对用户失效双因素验证"
 
 #: src/Console/Application.php:178
 msgid "Disable ANSI output"
-msgstr ""
+msgstr "禁用ANSI输出"
 
 #: src/Console/Application.php:196
 msgid "Disable GLPI plugins (unless commands forces plugins loading)"
-msgstr ""
+msgstr "彬GLPI插件(命令强制加载除外)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
@@ -8946,7 +8948,7 @@ msgstr "文档"
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
 msgid "Document ID"
-msgstr ""
+msgstr "文档ID"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: src/CommonDBTM.php:5588
@@ -8957,7 +8959,7 @@ msgstr "工单文档 %d"
 #: src/NotificationTargetKnowbaseItem.php:68
 #: src/NotificationTargetKnowbaseItem.php:183
 msgid "Document URL"
-msgstr ""
+msgstr "文档URL"
 
 #: src/Document.php:1259 src/Document.php:1367
 msgid "Document copy succeeded."
@@ -8966,12 +8968,12 @@ msgstr "文档拷贝成功."
 #: src/NotificationTargetKnowbaseItem.php:67
 #: src/NotificationTargetKnowbaseItem.php:182
 msgid "Document download URL"
-msgstr ""
+msgstr "文档下载URL"
 
 #: src/NotificationTargetKnowbaseItem.php:69
 #: src/NotificationTargetKnowbaseItem.php:184
 msgid "Document filename"
-msgstr ""
+msgstr "文档文件名"
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -8986,7 +8988,7 @@ msgstr[0] "文档标题"
 #: src/Document_Item.php:56
 msgid "Document item"
 msgid_plural "Document items"
-msgstr[0] ""
+msgstr[0] "文档条目"
 
 #: src/Document.php:1252
 msgid "Document move succeeded."
@@ -8995,7 +8997,7 @@ msgstr "文档移动成功."
 #: src/NotificationTargetKnowbaseItem.php:66
 #: src/NotificationTargetKnowbaseItem.php:181
 msgid "Document name"
-msgstr ""
+msgstr "文档名"
 
 #: src/DocumentType.php:70
 msgid "Document type"
@@ -9005,7 +9007,7 @@ msgstr[0] "文档类型"
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:185
 msgid "Document weblink"
-msgstr ""
+msgstr "文档网页链接"
 
 #: src/NotificationTargetKnowbaseItem.php:212
 msgid "Documents"
@@ -9045,7 +9047,7 @@ msgstr "域名 %1$s 将于 %2$s 过期"
 #: src/Domain_Item.php:49
 msgid "Domain item"
 msgid_plural "Domain items"
-msgstr[0] ""
+msgstr[0] "域条目"
 
 #: src/AuthLDAP.php:1287
 msgid "Domain name used by inventory tool"
@@ -9063,7 +9065,7 @@ msgstr[0] "域名记录"
 #: src/DomainRelation.php:58
 msgid "Domain relation"
 msgid_plural "Domains relations"
-msgstr[0] ""
+msgstr[0] "域关系"
 
 #: src/DomainType.php:42
 msgid "Domain type"
@@ -9143,11 +9145,11 @@ msgstr ""
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Download file"
-msgstr ""
+msgstr "下载文件"
 
 #: src/Console/Marketplace/DownloadCommand.php:53
 msgid "Download plugin from the GLPI marketplace"
-msgstr ""
+msgstr "从GLPI市场下载插件"
 
 #: src/User.php:2529
 msgid "Download user VCard"
@@ -9239,7 +9241,7 @@ msgstr "调查期间"
 
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:56
 msgid "Duration unit"
-msgstr ""
+msgstr "持续时间单位"
 
 #: src/Group_User.php:252 src/Group_User.php:286 src/Group_User.php:610
 #: src/Group_User.php:639 src/Group_User.php:756 src/Domain_Item.php:551
@@ -9285,7 +9287,7 @@ msgstr "每位访客都将拥有此活动的只读副本"
 
 #: src/Alert.php:117
 msgid "Each hour"
-msgstr ""
+msgstr "每小时"
 
 #: src/Dropdown.php:2403 src/Entity.php:3060 src/Alert.php:129
 #: src/Features/PlanningEvent.php:759
@@ -9351,7 +9353,7 @@ msgstr "编辑机柜关系"
 
 #: js/reservations.js:261
 msgid "Edit reservation"
-msgstr ""
+msgstr "编辑预定"
 
 #: src/Dashboard/Grid.php:611 js/modules/Dashboard/Dashboard.js:374
 #: js/modules/Dashboard/Dashboard.js:631
@@ -9364,7 +9366,7 @@ msgstr "可编辑 Markdown"
 
 #: src/Dashboard/Grid.php:1366
 msgid "Editable markdown card"
-msgstr ""
+msgstr "可编辑markdown卡片"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/OperatingSystemEdition.php:42
@@ -9499,7 +9501,7 @@ msgstr "电子邮件发件人名称"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Email sending test result"
-msgstr ""
+msgstr "邮件发送测试结果"
 
 #: src/AuthMail.php:96 src/Auth.php:1301 src/RuleRight.php:252
 msgid "Email server"
@@ -9529,7 +9531,7 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:800
 msgid "Embed in another application"
-msgstr ""
+msgstr "嵌入另一个应用程序"
 
 #: src/Html.php:4264
 msgid "Empty array"
@@ -9538,7 +9540,7 @@ msgstr "空数组"
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
 msgid "Empty file"
-msgstr ""
+msgstr "空文件"
 
 #: templates/generic_show_form.html.twig
 msgid "Empty for infinite"
@@ -9550,7 +9552,7 @@ msgstr "用户名或密码为空"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
-msgstr ""
+msgstr "空地址"
 
 #: src/AuthLDAP.php:4334 src/Plugin.php:2715 src/Marketplace/View.php:860
 msgid "Enable"
@@ -9567,11 +9569,11 @@ msgstr "启用CSS自定义"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable REST API"
-msgstr ""
+msgstr "启用REST API"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
-msgstr ""
+msgstr "启用自动刷新"
 
 #: src/System/RequirementsManager.php:169
 msgid "Enable email sending using SSL/TLS."
@@ -9626,7 +9628,7 @@ msgstr ""
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable notifications"
-msgstr ""
+msgstr "启用通知"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:982
 msgid "Enable notifications by default"
@@ -9661,7 +9663,7 @@ msgstr ""
 
 #: src/System/Requirement/DbTimezones.php:54
 msgid "Enable usage of timezones."
-msgstr ""
+msgstr "启用时区"
 
 #: src/User.php:4220
 msgid "Enabled"
@@ -9762,7 +9764,7 @@ msgstr "结束日期"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "End date "
-msgstr ""
+msgstr "结束日期"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:121
 #, php-format
@@ -9906,7 +9908,7 @@ msgstr "条目翻译列表"
 #: src/Item_Environment.php:51 src/Appliance.php:225
 msgid "Environment"
 msgid_plural "Environments"
-msgstr[0] ""
+msgstr[0] "环境"
 
 #: src/NetworkPort.php:853
 msgid "Equipment in trunk or tagged mode"
@@ -9937,7 +9939,7 @@ msgstr "设备报告（按年）"
 #: js/glpi_dialog.js:415
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
+msgstr[0] "错误"
 
 #: src/Plugin.php:2210 src/Plugin.php:2610
 msgid "Error / to clean"
@@ -10116,7 +10118,7 @@ msgstr[0] "事件类别"
 #: src/Event.php:61
 msgid "Event log"
 msgid_plural "Event logs"
-msgstr[0] ""
+msgstr[0] "事件日志"
 
 #: src/Planning.php:1568
 msgid "Event type"
@@ -10129,12 +10131,12 @@ msgstr "事件类别"
 #: src/Alert.php:125
 #, php-format
 msgid "Every %1$s days"
-msgstr ""
+msgstr "每 %1$s 天"
 
 #: src/Alert.php:119
 #, php-format
 msgid "Every %1$s hours"
-msgstr ""
+msgstr "每 %1$s 小时"
 
 #: src/PendingReason.php:203
 msgid "Every day"
@@ -10203,12 +10205,12 @@ msgstr "执行"
 
 #: src/Console/Migration/MigrateAllCommand.php:51
 msgid "Execute all recommended optional migrations."
-msgstr ""
+msgstr "执行所有推荐选择迁移。"
 
 #: src/Console/Migration/MigrateAllCommand.php:74
 #, php-format
 msgid "Executing command \"%s\"..."
-msgstr ""
+msgstr "执行命令 \"%s\"..."
 
 #: src/SlaLevel.php:104 src/SlaLevel.php:150 src/SlaLevel.php:256
 #: src/OlaLevel.php:110 src/OlaLevel.php:154 src/OlaLevel.php:258
@@ -10218,7 +10220,7 @@ msgstr "执行"
 
 #: src/CronTask.php:334
 msgid "Execution error"
-msgstr ""
+msgstr "执行错误"
 
 #: src/Console/Task/UnlockCommand.php:68
 msgid ""
@@ -10234,7 +10236,7 @@ msgstr "判断任务执行被卡住的时间（秒）（默认值：1800）"
 
 #: src/System/Diagnostic/DatabaseSchemaIntegrityChecker.php:168
 msgid "Expected database schema"
-msgstr ""
+msgstr "预期的数据库架构"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedNotification.php:214 src/QueuedNotification.php:754
@@ -10267,11 +10269,11 @@ msgstr "到期日+通知"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr ""
+msgstr "过期推迟"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
-msgstr ""
+msgstr "过期的域"
 
 #: src/Domain.php:582
 msgid "Expired or expiring domains"
@@ -10283,7 +10285,7 @@ msgstr ""
 
 #: src/NotificationTargetDomain.php:42 src/NotificationTargetDomain.php:78
 msgid "Expiring domains"
-msgstr ""
+msgstr "将过期的域"
 
 #: templates/components/datatable.html.twig
 #: templates/components/logs.html.twig
@@ -10300,7 +10302,7 @@ msgstr "导出"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Export data in CSV"
-msgstr ""
+msgstr "导出数据为CSV"
 
 #: src/Stat.php:1979 src/Stat.php:2101
 msgid "Export to CSV"
@@ -10325,7 +10327,7 @@ msgstr "外部"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "External ID"
-msgstr ""
+msgstr "外部ID"
 
 #: front/auth.others.php:52 front/auth.settings.php:43 front/setup.auth.php:42
 msgid "External authentication sources"
@@ -10343,12 +10345,12 @@ msgstr "外部日历"
 #: src/PlanningExternalEvent.php:56
 msgid "External event"
 msgid_plural "External events"
-msgstr[0] ""
+msgstr[0] "外部事件"
 
 #: src/PlanningExternalEventTemplate.php:55
 msgid "External events template"
 msgid_plural "External events templates"
-msgstr[0] ""
+msgstr[0] "外部事件模版"
 
 #: src/Link.php:56 src/Link.php:718 src/Profile.php:2652
 msgid "External link"
@@ -10401,21 +10403,21 @@ msgstr "操作失败"
 #: src/Ticket.php:6070
 #, php-format
 msgid "Failed to add document to ticket %d"
-msgstr ""
+msgstr "增加文档到工单 %d 失败"
 
 #: src/Ticket.php:6006 src/Ticket.php:6021
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr ""
+msgstr "增加跟进到工单 %d 失败"
 
 #: src/Ticket.php:6042
 #, php-format
 msgid "Failed to add task to ticket %d"
-msgstr ""
+msgstr "增加任务到工单 %d 失败"
 
 #: src/Console/Cache/ClearCommand.php:102
 msgid "Failed to clear cache."
-msgstr ""
+msgstr "清除缓存失败。"
 
 #: src/Toolbox.php:1400
 #, php-format
@@ -10425,7 +10427,7 @@ msgstr "连接到代理服务器失败(%s)"
 #: src/CommonITILRecurrentCron.php:107 src/CommonITILRecurrentCron.php:121
 #, php-format
 msgid "Failed to create recurrent item %s"
-msgstr ""
+msgstr "创建循环项 %s 失败"
 
 #: src/Document.php:1545
 #, php-format
@@ -10436,12 +10438,12 @@ msgstr "创建目录 %s 失败。检查您是否拥有正确的权限。"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
-msgstr ""
+msgstr "删除过滤器失败"
 
 #: src/Document.php:1235 src/Document.php:1353 src/Document.php:1450
 #, php-format
 msgid "Failed to delete the file %1$s"
-msgstr ""
+msgstr "删除文件 %1$s 失败"
 
 #: src/Document.php:202
 #, php-format
@@ -10456,12 +10458,12 @@ msgstr "无法删除工单%d"
 #: src/Console/Build/GenerateCodeManifestCommand.php:72
 #, php-format
 msgid "Failed to generate manifest. Error was: %s"
-msgstr ""
+msgstr "生成清单失败。错误为: %s"
 
 #: src/Ticket.php:6100
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "关联工单 %d 与 %d 失败"
 
 #: src/Ticket.php:5991
 #, php-format
@@ -10475,7 +10477,7 @@ msgstr "无法调整图像大小"
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:97
 #, php-format
 msgid "Failed to validate GLPI source code integrity. Error was: %s"
-msgstr ""
+msgstr "验证GLPI源代码的完整性失败。错误为: %s"
 
 #: src/UploadHandler.php:387
 msgid "Failed to write file to disk"
@@ -10484,7 +10486,7 @@ msgstr "文件写盘失败"
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:212
 #, php-format
 msgid "Failed to write rollback SQL queries in \"%s\" file."
-msgstr ""
+msgstr "回写SQL查询文件 \"%s\" 失败。"
 
 #: src/NotificationEventMailing.php:482
 #, php-format
@@ -10517,7 +10519,7 @@ msgstr "2月"
 
 #: src/RSSFeed.php:656
 msgid "Feed URL is invalid."
-msgstr ""
+msgstr "Feed URL无效。"
 
 #: src/NetworkPortFiberchannel.php:47
 msgid "Fiber channel port"
@@ -10586,17 +10588,17 @@ msgstr "文件"
 #: src/Inventory/Inventory.php:956
 #, php-format
 msgid "File %1$s %2$s has been removed"
-msgstr ""
+msgstr "文件 %1$s %2$s 已经被移除"
 
 #: src/Inventory/Inventory.php:950
 #, php-format
 msgid "File %1$s %2$s has not been removed"
-msgstr ""
+msgstr "文件 %1$s %2$s 未被移除"
 
 #: src/Inventory/Inventory.php:873
 #, php-format
 msgid "File %1$s has been removed"
-msgstr ""
+msgstr "文件 %1$s 被移除"
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:207
 #, php-format
@@ -10722,7 +10724,7 @@ msgstr "过滤器插件列表"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Filter saved"
-msgstr ""
+msgstr "过滤器已保存"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:103
 msgid "Filter to apply on LDAP search"
@@ -10735,7 +10737,7 @@ msgstr "在群组中筛选搜索"
 #: src/Search/Output/HTMLSearchOutput.php:155
 #, php-format
 msgid "Filtered by %s"
-msgstr ""
+msgstr "按 %s 过滤"
 
 #: src/Dashboard/Grid.php:763
 msgid "Filters"
@@ -10858,11 +10860,11 @@ msgstr "焦距"
 
 #: src/PendingReason.php:133
 msgid "Follow-up template"
-msgstr ""
+msgstr "跟进模版"
 
 #: src/PendingReason.php:93 src/PendingReason.php:123
 msgid "Follow-ups before automatic resolution"
-msgstr ""
+msgstr "自动解决前跟进"
 
 #: src/Item_Rack.php:277
 msgid "Following elements are out of rack bounds"
@@ -10875,12 +10877,12 @@ msgstr "以下元素不在房间范围内"
 #: src/System/Requirement/ExtensionGroup.php:83
 #, php-format
 msgid "Following extensions are installed: %s."
-msgstr ""
+msgstr "下面的扩展被安装: %s."
 
 #: src/System/Requirement/ExtensionGroup.php:89
 #, php-format
 msgid "Following extensions are missing: %s."
-msgstr ""
+msgstr "下面的扩展缺失: %s."
 
 #: src/System/Requirement/ExtensionGroup.php:87
 #, php-format
@@ -10916,7 +10918,7 @@ msgstr ""
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "更多信息，请查看GLPI日志。"
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -10953,19 +10955,19 @@ msgstr "强制 ANSI 输出"
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgctxt "oauth"
 msgid "Force OAuth authentication refresh"
-msgstr ""
+msgstr "强制OAuth认证刷新"
 
 #: src/Console/Marketplace/DownloadCommand.php:56
 msgid "Force download even if the plugin is already downloaded"
-msgstr ""
+msgstr "强制下载，即使插件已经下载"
 
 #: src/Console/Plugin/InstallCommand.php:88
 msgid "Force execution of installation, even if plugin is already installed"
-msgstr ""
+msgstr "强行执行安装，即使插件已经安装"
 
 #: src/Console/Database/InstallCommand.php:111
 msgid "Force execution of installation, overriding existing database"
-msgstr ""
+msgstr "强行安装，覆盖存在的数据库"
 
 #: src/Console/Database/UpdateCommand.php:115
 msgid ""
@@ -10998,7 +11000,7 @@ msgstr "强制解锁此项目吗?"
 
 #: templates/password_form.html.twig
 msgid "Forget it,"
-msgstr ""
+msgstr "忘记它，"
 
 #: front/initpassword.php:56
 msgid "Forgotten initialization"
@@ -11078,7 +11080,7 @@ msgstr "星期五"
 
 #: templates/pages/assets/socket.html.twig
 msgid "From"
-msgstr ""
+msgstr "从"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: src/Html.php:4181 src/Html.php:4395
@@ -11118,7 +11120,7 @@ msgstr "前面的照片"
 
 #: src/NetworkPort.php:1110
 msgid "Full"
-msgstr ""
+msgstr "全部"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:75
 msgid "Full name"
@@ -11145,7 +11147,7 @@ msgstr "GLPI"
 
 #: src/AutoUpdateSystem.php:49
 msgid "GLPI Native Inventory"
-msgstr ""
+msgstr "GLPI原年库存"
 
 #: front/config.form.php:69
 msgid "GLPI cache reset successful"
@@ -11173,15 +11175,15 @@ msgstr "GLPI服务器时区"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:116
 msgid "GLPI source code integrity is not validated."
-msgstr ""
+msgstr "GLPI源代码完整性无法验证。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:112
 msgid "GLPI source code integrity is validated."
-msgstr ""
+msgstr "GLPI源代码完整性已验证。"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
-msgstr ""
+msgstr "GLPI更新"
 
 #: src/Console/Database/UpdateCommand.php:168
 msgid "GLPI version"
@@ -11225,7 +11227,7 @@ msgstr "常规"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "General API"
-msgstr ""
+msgstr "通用API"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Config.php:1322
 #: src/Profile.php:2666
@@ -11236,13 +11238,13 @@ msgstr "常规设置"
 msgid ""
 "Generate GLPI source code manifest that could be used to validate source "
 "code integrity."
-msgstr ""
+msgstr "生成GLPI源代码清单用于验证源代码完整性。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:165
 msgid ""
 "Generating the source code diff could require downloading the GLPI release "
 "archive. Do you want to allow this operation?"
-msgstr ""
+msgstr "生成源代码差异需要下载GLPI存档发行版本。是否允许此操作？"
 
 #: src/CommonITILObject.php:10273
 msgid "Generation of satisfaction surveys"
@@ -11369,7 +11371,7 @@ msgstr ""
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "显卡分辨率"
 
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
@@ -11408,7 +11410,7 @@ msgstr "包含自身用户的群组属性"
 
 #: src/Group.php:521
 msgid "Group code"
-msgstr ""
+msgstr "群组代码"
 
 #: src/NotificationTarget.php:1027
 msgid "Group except manager users"
@@ -11430,11 +11432,11 @@ msgstr "负责群组"
 
 #: src/NotificationTargetCertificate.php:60
 msgid "Group in charge of the certificate"
-msgstr ""
+msgstr "负责此证书的群组"
 
 #: src/NotificationTargetDomain.php:54
 msgid "Group in charge of the domain"
-msgstr ""
+msgstr "负责此域的群组"
 
 #: src/Asset/Asset.php:283
 msgid "Group in charge of the hardware"
@@ -11480,11 +11482,11 @@ msgstr "群组树"
 
 #: src/CommonITILValidation.php:895 src/CommonITILValidation.php:1788
 msgid "Group user(s)"
-msgstr ""
+msgstr "群组用户"
 
 #: src/RuleCommonITILObject.php:889
 msgid "Group users"
-msgstr ""
+msgstr "群组用户"
 
 #: src/NotificationTargetPlanningRecall.php:57
 #: src/PlanningExternalEvent.php:264 src/Features/PlanningEvent.php:1052
@@ -11501,7 +11503,7 @@ msgstr "HTML 编码已修正。"
 
 #: templates/pages/setup/webhook/webhook.html.twig src/QueuedWebhook.php:397
 msgid "HTTP method"
-msgstr ""
+msgstr "HTTP方式"
 
 #: src/NetworkPort.php:1107
 msgid "Half"
@@ -11696,7 +11698,7 @@ msgstr "您想创建多少份?"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "However, you can reactivate the notifications for this ticket."
-msgstr ""
+msgstr "然而你可能重新激活此工单的通知"
 
 #: src/NetworkPort.php:854
 msgid "Hub "
@@ -12141,7 +12143,7 @@ msgstr ""
 #: src/MassiveAction.php:264 src/MassiveAction.php:273
 #: src/MassiveAction.php:392 src/MassiveAction.php:1128
 msgid "Implementation error!"
-msgstr ""
+msgstr "执行错误！"
 
 #: src/Inventory/Conf.php:1110 src/NetworkPortType.php:59
 #: src/NetworkPortType.php:86
@@ -12166,12 +12168,12 @@ msgstr "导入资产盘点工具的类别"
 
 #: src/Inventory/Conf.php:1114
 msgid "Import configuration"
-msgstr ""
+msgstr "导入配置"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 #: src/RuleImportAsset.php:232
 msgid "Import denied (no log)"
-msgstr ""
+msgstr "导入拒绝(无日志)"
 
 #: src/User.php:4982
 msgid "Import from directories"
@@ -12188,11 +12190,11 @@ msgstr "从其他来源导入"
 #: src/RuleMatchedLog.php:102 src/RuleMatchedLog.php:108
 #: src/RuleMatchedLog.php:113 src/RuleMatchedLog.php:131
 msgid "Import information"
-msgstr ""
+msgstr "导入信息"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid "Import inventory files"
-msgstr ""
+msgstr "导入库存文件"
 
 #: src/Inventory/Conf.php:583
 msgid "Import monitor on serial partial match"
@@ -12205,7 +12207,7 @@ msgstr "导入新用户"
 #: src/Console/Ldap/SynchronizeUsersCommand.php:358
 #, php-format
 msgid "Import new users from server \"%s\"..."
-msgstr ""
+msgstr "从服务器 \"%s\" 导入新用户..."
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Import of new groups"
@@ -12217,15 +12219,15 @@ msgstr "导入选项"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Import process is complete."
-msgstr ""
+msgstr "导入进程已结束。"
 
 #: templates/pages/admin/rules/import.html.twig
 msgid "Import rules from an XML file"
-msgstr ""
+msgstr "从XML文件导入规则"
 
 #: src/Inventory/Conf.php:637
 msgid "Import virtual machines"
-msgstr ""
+msgstr "导入虚拟机"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:448
 msgid "Imported"
@@ -12459,7 +12461,7 @@ msgstr "用户名或密码错误"
 
 #: src/CommonITILObject.php:2996
 msgid "Incorrect value for date field."
-msgstr ""
+msgstr "数据字段的值不正确。"
 
 #: src/Console/Application.php:160
 msgid ""
@@ -12490,7 +12492,7 @@ msgstr "无限"
 #: js/glpi_dialog.js:393 js/misc.js:45
 msgid "Information"
 msgid_plural "Informations"
-msgstr[0] ""
+msgstr[0] "消息"
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Information about system installation and configuration"
@@ -12529,7 +12531,7 @@ msgstr "继承父系组织"
 
 #: src/Entity.php:1899
 msgid "Inherits configuration from the parent entity"
-msgstr ""
+msgstr "从父实体继承配置"
 
 #: templates/pages/management/contract.html.twig src/Contract_Item.php:347
 #: src/Contract_Supplier.php:186
@@ -12546,7 +12548,7 @@ msgstr "数据库初始化"
 
 #: install/install.php:322 install/install.php:350 install/install.php:380
 msgid "Initializing database tables and default data..."
-msgstr ""
+msgstr "初始化数据库表及默认数据..."
 
 #: src/Update.php:280
 msgid "Initializing rules..."
@@ -12558,7 +12560,7 @@ msgstr ""
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr ""
+msgstr "输入"
 
 #: src/NetworkPortMetrics.php:213
 msgid "Input errors"
@@ -12601,7 +12603,7 @@ msgstr "安装软件"
 
 #: src/Console/Plugin/ListCommand.php:100
 msgid "Install method"
-msgstr ""
+msgstr "安装方式"
 
 #: src/SoftwareVersion.php:363 src/Software.php:993
 #: src/Item_SoftwareVersion.php:57
@@ -12630,7 +12632,7 @@ msgstr "安装/卸载项目软件"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Installation/uninstallation versions on software"
-msgstr ""
+msgstr "软件安装/卸载版本"
 
 #: src/Marketplace/View.php:116
 msgid "Installed"
@@ -12691,11 +12693,11 @@ msgstr "内部"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTO"
-msgstr ""
+msgstr "内部 TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTR"
-msgstr ""
+msgstr "内部 TTR"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal Time to own"
@@ -12707,7 +12709,7 @@ msgstr ""
 
 #: src/NetworkPort.php:1682
 msgid "Internal status"
-msgstr ""
+msgstr "内部状态"
 
 #: src/Entity.php:2502 src/Entity.php:3329 src/CommonITILSatisfaction.php:298
 #: src/CommonITILSatisfaction.php:334
@@ -12744,7 +12746,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1990
 #: src/NotificationTargetCommonITILObject.php:2136
 msgid "Internal type"
-msgstr ""
+msgstr "内部类型"
 
 #: src/Dropdown.php:1245 src/Profile.php:947 src/Profile.php:2270
 msgid "Internet"
@@ -12761,7 +12763,7 @@ msgstr "Internet信息"
 
 #: src/Features/PlanningEvent.php:785
 msgid "Interval"
-msgstr ""
+msgstr "时间间隔"
 
 #: templates/pages/management/softwarelicense.html.twig src/Html.php:127
 msgctxt "adjective"
@@ -12771,11 +12773,11 @@ msgstr "无效"
 #: src/Console/Application.php:225
 #, php-format
 msgid "Invalid \"--lang\" option value \"%s\"."
-msgstr ""
+msgstr "选项 \"--lang\" 的值 \"%s\" 无效。"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:103
 msgid "Invalid \"dictionary\" value."
-msgstr ""
+msgstr "无效的 \"dictionary\" 值。"
 
 #: src/IPAddress.php:159 src/NetworkPortMigration.php:119
 msgid "Invalid IP address"
@@ -12784,7 +12786,7 @@ msgstr "无效的IP地址"
 #: src/Api/HL/Router.php:558
 msgctxt "api"
 msgid "Invalid JSON body"
-msgstr ""
+msgstr "无效的JSON主体"
 
 #: src/DomainRecordType.php:293 src/DomainRecordType.php:299
 msgid "Invalid JSON used to define fields."
@@ -12793,19 +12795,19 @@ msgstr ""
 #: src/Api/HL/RSQL/Parser.php:69
 #, php-format
 msgid "Invalid RSQL array: %s"
-msgstr ""
+msgstr "无效的 RSQL 数组: %s"
 
 #: src/Api/HL/RSQL/Lexer.php:97
 msgid "Invalid RSQL query"
-msgstr ""
+msgstr "无效的 RSQL 查询"
 
 #: src/Auth.php:1063
 msgid "Invalid TOTP code"
-msgstr ""
+msgstr "无效的 TOTP 代码"
 
 #: src/ManualLink.php:207
 msgid "Invalid URL"
-msgstr ""
+msgstr "无效的URL"
 
 #: src/NetworkPortMigration.php:228
 msgid "Invalid address or netmask"
@@ -12817,7 +12819,7 @@ msgstr "无效的附件"
 
 #: src/Auth.php:1066
 msgid "Invalid backup code"
-msgstr ""
+msgstr "无效的备份代码"
 
 #: src/Config.php:184
 msgid "Invalid base URL!"
@@ -12826,7 +12828,7 @@ msgstr ""
 #: src/Console/Cache/ConfigureCommand.php:173
 #, php-format
 msgid "Invalid cache DSN: \"%s\"."
-msgstr ""
+msgstr "无效的缓存 DSN: \"%s\"."
 
 #: src/Console/Cache/ConfigureCommand.php:136
 #: src/Console/Cache/ClearCommand.php:91 src/Console/Cache/DebugCommand.php:80
@@ -12836,11 +12838,11 @@ msgstr ""
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:167
 msgid "Invalid checksum"
-msgstr ""
+msgstr "无效的校验值"
 
 #: index.php:150 front/preference.php:56
 msgid "Invalid code"
-msgstr ""
+msgstr "无效的代码"
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
 #: src/MailCollector.php:1654
@@ -12897,7 +12899,7 @@ msgstr "无效的internet名称：%s"
 
 #: src/Document.php:306 src/Document.php:404
 msgid "Invalid link"
-msgstr ""
+msgstr "无效的链接"
 
 #: src/NetworkPortMigration.php:115
 msgid "Invalid network (already defined or with invalid addresses)"
@@ -12917,7 +12919,7 @@ msgstr "无效的计划日期。日期没有更新。"
 #: src/Console/Plugin/InstallCommand.php:300
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr ""
+msgstr "无效的插件目录 \"%s\"."
 
 #: src/MassiveAction.php:399
 msgid "Invalid process"
@@ -13185,7 +13187,7 @@ msgstr ""
 
 #: src/Csv/PlanningCsv.php:74
 msgid "Item id"
-msgstr ""
+msgstr "条目ID"
 
 #: src/CommonDBTM.php:4484
 msgid "Item in the trashbin"
@@ -13357,7 +13359,7 @@ msgstr ""
 
 #: src/Html.php:7032
 msgid "Just now"
-msgstr ""
+msgstr "现在"
 
 #: src/Project.php:170 src/Features/Kanban.php:176
 msgid "Kanban"
@@ -13385,7 +13387,7 @@ msgstr "保持状态"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "删除此项时保留设备"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Keep tickets when purging hardware in the inventory"
@@ -13429,7 +13431,7 @@ msgstr[0] "知识库类别"
 
 #: src/CommonItilObject_Item.php:423
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "知识库条目"
 
 #: src/KnowbaseItem_Item.php:57
 msgid "Knowledge base item"
@@ -13502,7 +13504,7 @@ msgstr "LDAP目录时区"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:284
 msgid "LDAP filter"
-msgstr ""
+msgstr "LDAP 过滤器"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -13516,12 +13518,12 @@ msgstr "LDAP 服务器"
 #, php-format
 msgid ""
 "LDAP server \"%s\" is inactive, no synchronization will be done against it."
-msgstr ""
+msgstr "LDAP 服务器 \"%s\" 未激活, 没有同步会被完成。"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:339
 #, php-format
 msgid "LDAP server \"%s\" size limit exceeded."
-msgstr ""
+msgstr "LDAP 服务器 \"%s\" 超过大小限制。"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:283
 msgid "LDAP servers"
@@ -13576,27 +13578,27 @@ msgstr[0] "最后 %d 问题"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 2 passwords"
-msgstr ""
+msgstr "前两个密码"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 3 passwords"
-msgstr ""
+msgstr "前三个密码"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last 30 days"
-msgstr ""
+msgstr "前30天"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 4 passwords"
-msgstr ""
+msgstr "前4个密码"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 5 passwords"
-msgstr ""
+msgstr "前5个密码"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last 7 days"
-msgstr ""
+msgstr "前7天"
 
 #: templates/pages/management/databaseinstance.html.twig src/Database.php:128
 #: src/Database.php:244 src/Database.php:359
@@ -13618,7 +13620,7 @@ msgstr "最新更改"
 
 #: src/NetworkPort.php:1754
 msgid "Last connection"
-msgstr ""
+msgstr "最新连接"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: templates/components/form/inventory_info.html.twig src/Agent.php:109
@@ -16322,7 +16324,7 @@ msgstr "没有发现机柜"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1357
 msgid "No rack items found."
-msgstr ""
+msgstr "没发现机架物品"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:854
 #: src/Console/Migration/RacksPluginToCoreCommand.php:935
@@ -18248,11 +18250,11 @@ msgstr ""
 
 #: ajax/webhook.php:117
 msgid "Please select an item"
-msgstr ""
+msgstr "请选择一项"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "请选择一项增加"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
@@ -18849,7 +18851,7 @@ msgstr[0] "问题"
 #: src/Item_Problem.php:53
 msgid "Problem item"
 msgid_plural "Problem items"
-msgstr[0] ""
+msgstr[0] "问题项"
 
 #: src/NotificationTargetProblem.php:51
 msgid "Problem solved"
@@ -19003,7 +19005,7 @@ msgstr[0] "项目"
 #: src/Item_Project.php:55
 msgid "Project item"
 msgid_plural "Project items"
-msgstr[0] ""
+msgstr[0] "项目条目"
 
 #: src/ProjectState.php:45
 msgid "Project state"
@@ -19983,7 +19985,7 @@ msgstr "申请日期"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:212
 msgid "Request inventory"
-msgstr ""
+msgstr "申请存货"
 
 #: src/ObjectLock.php:256
 msgid "Request sent to"
@@ -20017,11 +20019,11 @@ msgstr "请求写入"
 
 #: src/CommonITILValidation.php:1095
 msgid "Requested approver"
-msgstr ""
+msgstr "申请的批准人"
 
 #: src/CommonITILValidation.php:1095 src/CommonITILValidation.php:1347
 msgid "Requested approver type"
-msgstr ""
+msgstr "申请的批准类型"
 
 #: src/Agent.php:794
 #, php-format
@@ -20096,7 +20098,7 @@ msgstr "请求者地点"
 
 #: src/DbUtils.php:1776 src/RuleAction.php:596
 msgid "Requester's manager"
-msgstr ""
+msgstr "申请人的经理"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -20144,15 +20146,15 @@ msgstr "所需单位"
 
 #: src/Console/System/CheckRequirementsCommand.php:67
 msgid "Requirement"
-msgstr ""
+msgstr "需求"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Resend"
-msgstr ""
+msgstr "重发"
 
 #: src/ReservationItem.php:306
 msgid "Reservable"
-msgstr ""
+msgstr "可预定"
 
 #: src/ReservationItem.php:72
 msgid "Reservable item"
@@ -20184,7 +20186,7 @@ msgstr "预订一个项目"
 
 #: src/ReservationItem.php:732
 msgid "Reserve this item"
-msgstr ""
+msgstr "预定此项"
 
 #: src/Reservation.php:574
 #, php-format
@@ -20193,7 +20195,7 @@ msgstr ""
 
 #: src/Item_Rack.php:713
 msgid "Reserved position?"
-msgstr ""
+msgstr "预留位置？"
 
 #: templates/pages/setup/general/performance.html.twig
 #: templates/stencil/editor.html.twig
@@ -20218,16 +20220,16 @@ msgstr "重设密码成功。"
 
 #: src/RuleCollection.php:659
 msgid "Reset rules"
-msgstr ""
+msgstr "重置规则"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "重置排序"
 
 #: src/DisplayPreference.php:568
 msgctxt "button"
 msgid "Reset to default"
-msgstr ""
+msgstr "重置到默认"
 
 #: src/Stat.php:613 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -20239,13 +20241,13 @@ msgstr "决议"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: src/ImageResolution.php:42
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
+msgstr[0] "分辨率"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:67
@@ -20260,11 +20262,11 @@ msgstr "解决时间"
 
 #: src/Ticket.php:2417
 msgid "Resolve"
-msgstr ""
+msgstr "解决"
 
 #: src/Ticket.php:2262
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "解决选择工单"
 
 #: src/CommonITILSatisfaction.php:395
 msgid "Response date"
@@ -20291,7 +20293,7 @@ msgstr "恢复"
 
 #: src/AuthLDAP.php:4333
 msgid "Restore (move out of trashbin)"
-msgstr ""
+msgstr "恢复(从垃圾桶移出)"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1104
 msgid "Restore the item"
@@ -20299,7 +20301,7 @@ msgstr "恢复项目"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:451
 msgid "Restored from LDAP"
-msgstr ""
+msgstr "从LDAP中恢复"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #, php-format
@@ -20332,11 +20334,11 @@ msgstr ""
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Result"
-msgstr ""
+msgstr "结果"
 
 #: ajax/webhook.php:125
 msgid "Result can't be loaded :"
-msgstr ""
+msgstr "结果无法加载："
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2042
@@ -20370,7 +20372,7 @@ msgstr "检索邮件（邮件收件人）"
 
 #: templates/display_and_die.html.twig
 msgid "Return to previous page"
-msgstr ""
+msgstr "返回到前一页"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Reverse order (old items on bottom, recent on top)"
@@ -20403,7 +20405,7 @@ msgstr "权利分配"
 
 #: templates/components/kanban/kanban.html.twig
 msgid "Role"
-msgstr ""
+msgstr "角色"
 
 #: src/NotificationTargetTicket.php:600 src/NotificationTargetTicket.php:659
 #: src/Location.php:106 src/Location.php:228 src/Location.php:279
@@ -20447,11 +20449,11 @@ msgstr ""
 
 #: src/Rule.php:1941
 msgid "Rule is active"
-msgstr ""
+msgstr "规则已启用"
 
 #: src/Rule.php:1941
 msgid "Rule is inactive"
-msgstr ""
+msgstr "规则已禁用"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Rule name"
@@ -20485,7 +20487,7 @@ msgstr "分配类别到软件的规则"
 
 #: src/Profile.php:1051
 msgid "Rules for assigning a computer to a location"
-msgstr ""
+msgstr "分配电脑到地点的规则"
 
 #: src/Profile.php:1047 src/Profile.php:2971
 msgid "Rules for assigning a computer to an entity"
@@ -20502,7 +20504,7 @@ msgstr "分配项目到组织的规则"
 
 #: src/RuleImportAssetCollection.php:81
 msgid "Rules for import and link equipments"
-msgstr ""
+msgstr "导入及关联设备的规则"
 
 #: src/RuleCollection.php:358
 msgid "Rules list"
@@ -20526,7 +20528,7 @@ msgstr "使用物件的规则已被停用"
 
 #: src/RuleCollection.php:656
 msgid "Rules will be erased and recreated from default. Are you sure?"
-msgstr ""
+msgstr "规则会被清除并重建到默认。是否同意？"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:590
 #, php-format
@@ -20605,11 +20607,11 @@ msgstr ""
 
 #: src/System/Requirement/SeLinux.php:46
 msgid "SELinux configuration"
-msgstr ""
+msgstr "SELinux配置"
 
 #: src/System/Requirement/SeLinux.php:152
 msgid "SELinux configuration is OK."
-msgstr ""
+msgstr "SELinux已配置"
 
 #. TRANS: %s is mode name (Permissive, Enforcing, Disabled or Unknown)
 #: src/System/Requirement/SeLinux.php:97
@@ -20623,7 +20625,7 @@ msgstr "SHA1"
 
 #: src/Console/System/CheckRequirementsCommand.php:76
 msgid "SKIPPED"
-msgstr ""
+msgstr "跳过"
 
 #: src/SLA.php:55 src/NotificationTargetTicket.php:561
 #: src/NotificationTargetTicket.php:564 src/NotificationTargetTicket.php:569
@@ -20696,7 +20698,7 @@ msgstr "SQL 复制：只读"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL running:"
-msgstr ""
+msgstr "SQL运行："
 
 #: src/DBConnection.php:783
 msgid "SQL server"
@@ -20765,7 +20767,7 @@ msgstr ""
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Satisfaction survey expired."
-msgstr ""
+msgstr "满意度调查已过期。"
 
 #: src/Entity.php:1409 src/Entity.php:1446
 #, php-format
@@ -20829,12 +20831,12 @@ msgstr "保存并添加到知识库"
 
 #: src/SavedSearch.php:377
 msgid "Save as a new search"
-msgstr ""
+msgstr "保存一份新查询"
 
 #: src/Stat.php:1992 src/Stat.php:2111 src/Dashboard/Widget.php:670
 #: src/Dashboard/Widget.php:1161 src/Dashboard/Widget.php:1519
 msgid "Save as image"
-msgstr ""
+msgstr "保存为图片"
 
 #: templates/pages/tools/savedsearch/save_button.html.twig
 #: js/modules/Search/GenericView.js:95
@@ -20843,11 +20845,11 @@ msgstr "保存当前搜索"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "保存新密码"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
-msgstr ""
+msgstr "保存端口数据"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Save response body"
@@ -20881,7 +20883,7 @@ msgstr "正在保存配置文件…"
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:391
 msgid "Scanning database for items to fix..."
-msgstr ""
+msgstr "为修复品项扫描数据库..."
 
 #: src/PrinterLog.php:392
 msgid "Scans"
@@ -20894,11 +20896,11 @@ msgstr "已排定"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Scopes"
-msgstr ""
+msgstr "范围"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Scroll to bottom"
-msgstr ""
+msgstr "滚动到底部"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 #: templates/components/search/controls.html.twig
@@ -20937,7 +20939,7 @@ msgstr "搜索引擎"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr ""
+msgstr "搜索实体"
 
 #: src/Entity.php:944
 msgid "Search filter (if needed)"
@@ -20957,7 +20959,7 @@ msgstr "筛选没有被保存。"
 
 #: src/Dashboard/Widget.php:265
 msgid "Search result"
-msgstr ""
+msgstr "搜索结果"
 
 #: src/DisplayPreference.php:667
 msgid "Search result default display"
@@ -20999,7 +21001,7 @@ msgstr ""
 #: templates/pages/2fa/macros.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Secret"
-msgstr ""
+msgstr "密钥"
 
 #: templates/install/blocks/requirements_table.html.twig src/Event.php:172
 #: src/Group.php:156 src/Entity.php:531
@@ -21010,7 +21012,7 @@ msgstr "安全"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:46
 msgid "Security configuration for sessions"
-msgstr ""
+msgstr "会话的安全配置"
 
 #: install/install.php:276 src/Console/Database/InstallCommand.php:226
 msgid "Security key cannot be generated!"
@@ -21026,7 +21028,7 @@ msgstr "查看（作者）"
 
 #: src/System/Requirement/SessionsConfiguration.php:74
 msgid "See .htaccess file in the GLPI root for more information."
-msgstr ""
+msgstr "更多信息请查看GLPI根目录的.htaccess文件"
 
 #: src/Project.php:145 src/Dashboard/Widget.php:1792 src/Change.php:704
 #: src/Problem.php:1514
@@ -21070,7 +21072,7 @@ msgstr "查看我的群组的硬件"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr ""
+msgstr "查看输入"
 
 #: src/Ticket.php:5553
 msgid "See my ticket"
@@ -21097,7 +21099,7 @@ msgstr "查看公共的"
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgctxt "button"
 msgid "See result"
-msgstr ""
+msgstr "查看结果"
 
 #: src/Planning.php:2765
 msgid "See schedule of people in my groups"
@@ -21127,7 +21129,7 @@ msgstr "选择一个匹配的为  %s:"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select a statistic to compare"
-msgstr ""
+msgstr "选择一项统计对比"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -21149,11 +21151,11 @@ msgstr "选择显示出来的默认项目"
 
 #: src/Lock.php:1163
 msgid "Select fields of the item that must be unlock"
-msgstr ""
+msgstr "选择需要解锁的条目字段"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr ""
+msgstr "选择打印机对比"
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -21194,7 +21196,7 @@ msgstr "全选/不选"
 
 #: src/Ticket.php:2506
 msgid "Selected Problem can't be loaded"
-msgstr ""
+msgstr "选择的问题无法被加载"
 
 #: src/Html.php:2669
 msgid "Selection too large, massive action disabled."
@@ -21230,7 +21232,7 @@ msgstr "发送通知"
 
 #: src/Log.php:1184
 msgid "Send a queued webhook"
-msgstr ""
+msgstr "发送一个查询的webhook"
 
 #: src/NotificationAjaxSetting.php:134
 msgid "Send a test browser notification to you"
@@ -21276,7 +21278,7 @@ msgstr "发送审批的请求"
 
 #: src/User.php:2743
 msgid "Send an email to the user to set their own new password."
-msgstr ""
+msgstr "发送一封邮箱给用户去设置他们的新密码。"
 
 #: src/PendingReasonCron.php:50
 msgid ""
@@ -21323,7 +21325,7 @@ msgstr "发送预订警报失败"
 
 #: src/Telemetry.php:282
 msgid "Send telemetry information"
-msgstr ""
+msgstr "发送遥测信息"
 
 #: src/QueuedNotification.php:232 src/QueuedNotification.php:767
 msgid "Sender email"
@@ -21352,7 +21354,7 @@ msgstr[0] "传感器"
 
 #: src/DeviceCamera.php:91 src/DeviceCamera.php:151
 msgid "Sensor size"
-msgstr ""
+msgstr "传感器尺寸"
 
 #: src/DeviceSensorType.php:43
 msgid "Sensor type"
@@ -21410,7 +21412,7 @@ msgstr "操作系统的序列号"
 
 #: js/planning.js:365 js/planning.js:487 js/planning.js:530
 msgid "Serie"
-msgstr ""
+msgstr "系列"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 #: templates/pages/setup/mailcollector/server_config_fields.html.twig
@@ -21421,7 +21423,7 @@ msgstr "服务器"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr ""
+msgstr "服务器ID:"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/DCRoom.php:53
@@ -21431,7 +21433,7 @@ msgstr[0] "服务器房间"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
-msgstr ""
+msgstr "服务器版本："
 
 #: templates/pages/admin/events_list.html.twig src/Event.php:308
 #: src/Event.php:387 src/Event.php:486
@@ -21454,19 +21456,19 @@ msgstr[0] "补丁服务包"
 
 #: src/System/Requirement/SessionsConfiguration.php:46
 msgid "Sessions configuration"
-msgstr ""
+msgstr "会话配置"
 
 #: src/System/Requirement/SessionsConfiguration.php:80
 msgid "Sessions configuration is OK."
-msgstr ""
+msgstr "会话配置已完成"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:95
 msgid "Sessions configuration is secured."
-msgstr ""
+msgstr "会话配置是安全的。"
 
 #: src/Console/Config/SetCommand.php:61
 msgid "Set configuration value"
-msgstr ""
+msgstr "调整配置值"
 
 #: src/MapGeolocation.php:117
 msgid "Set location here"
@@ -21486,7 +21488,7 @@ msgstr "为所有参与者设置通知"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
-msgstr ""
+msgstr "调整端口数"
 
 #: templates/stencil/editor.html.twig
 msgid "Set number of zones"
@@ -21512,7 +21514,7 @@ msgstr "用地址/掩码CIDR方式设置网络"
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "调整处理中的状态"
 
 #: src/Preference.php:44 src/Impact.php:380 src/Impact.php:1070
 #: src/Impact.php:1129 src/Config.php:1316
@@ -21538,7 +21540,7 @@ msgstr "多个网络名可用！到“网络名字”标签去管理它们。"
 
 #: src/Dashboard/Grid.php:281 js/modules/Dashboard/Dashboard.js:218
 msgid "Share or embed this dashboard"
-msgstr ""
+msgstr "分享或嵌入此仪表盘"
 
 #: src/Infocom.php:802
 msgctxt "button"
@@ -21572,7 +21574,7 @@ msgstr "显示为地图"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "以表格显示"
 
 #: src/Impact.php:1088
 msgid "Show depends"
@@ -21597,11 +21599,11 @@ msgstr ""
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show labels on chart"
-msgstr ""
+msgstr "在图上显示标签"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show legend"
-msgstr ""
+msgstr "显示图例"
 
 #: templates/pages/setup/notification/translation.html.twig
 msgid "Show list of available tags"
@@ -21629,7 +21631,7 @@ msgstr "在新工单表格中显示个人信息（简单界面）"
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "显示保存的查询"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search form above results"
@@ -21641,7 +21643,7 @@ msgstr "查看垃圾桶"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
-msgstr ""
+msgstr "显示未发布"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -21726,26 +21728,26 @@ msgstr "默认大小"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Skip"
-msgstr ""
+msgstr "跳过"
 
 #: src/Console/Cache/ConfigureCommand.php:104
 msgid "Skip connection checks"
-msgstr ""
+msgstr "跳过连接检查"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:306
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:245
 #, php-format
 msgid "Skip existing %s \"%s\"."
-msgstr ""
+msgstr "跳过存在的 %s \"%s\"."
 
 #: src/Rule.php:2819
 msgid "Skip remaining rules"
-msgstr ""
+msgstr "跳过剩下的规则"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1297
 #, php-format
 msgid "Skipping item %s (%s) which is already linked to a rack."
-msgstr ""
+msgstr "跳过物品 %s (%s) 已经连接到一个机架上。"
 
 #: src/System/RequirementsManager.php:186
 msgid "Slightly enhance performances."
@@ -21811,7 +21813,7 @@ msgstr[0] "解决方案"
 #: src/CommonITILObject.php:7153
 msgctxt "button"
 msgid "Solution"
-msgstr ""
+msgstr "解决方案"
 
 #: src/ITILFollowup.php:410
 msgid "Solution approved"
@@ -21883,20 +21885,20 @@ msgstr "已解决的工单"
 #: src/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
 msgid "Some errors are related to following plugins: %s."
-msgstr ""
+msgstr "相同错误被关联到下面的插件: %s."
 
 #: src/Console/Application.php:528
 msgid "Some mandatory system requirements are missing."
-msgstr ""
+msgstr "有些强制的系统要求缺失。"
 
 #: src/Console/AbstractCommand.php:208
 msgid "Some optional system requirements are missing."
-msgstr ""
+msgstr "有些可选的系统要求缺失。"
 
 #: src/Inventory/Conf.php:1052
 #, php-format
 msgid "Some properties are not known: %1$s"
-msgstr ""
+msgstr "有些属性未知: %1$s"
 
 #: src/Marketplace/NotificationTargetController.php:99
 msgid "Some updates are available for your installed plugins!"
@@ -21915,29 +21917,29 @@ msgstr "来自于 %s的子项"
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
-msgstr ""
+msgstr "抱歉由于有些维护正在执行而造成的不便。我们很快会恢复上线！"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "排序"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
-msgstr ""
+msgstr "按日期排序"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by file path"
-msgstr ""
+msgstr "按文件路径排序"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
-msgstr ""
+msgstr "按大小排序"
 
 #: src/Search/Output/HTMLSearchOutput.php:171
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "按 %s 排序"
 
 #: src/NotificationAjaxSetting.php:74 src/NotificationAjaxSetting.php:75
 #: src/NotificationAjaxSetting.php:76 src/NotificationAjaxSetting.php:77
@@ -22054,7 +22056,7 @@ msgstr "开始日期"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Start date "
-msgstr ""
+msgstr "开始日期"
 
 #: templates/pages/admin/entity/assets.html.twig
 #: templates/components/infocom.html.twig front/report.infocom.php:187
@@ -22353,11 +22355,11 @@ msgstr "星期天和假日"
 #: src/AuthLDAP.php:984 src/AuthLDAP.php:1278 src/User.php:3029
 #: src/User.php:4158 src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Supervisor"
-msgstr ""
+msgstr "主管"
 
 #: src/RuleCommonITILObject.php:880
 msgid "Supervisor of the requester"
-msgstr ""
+msgstr "申请人的主管"
 
 #: src/Supplier.php:62 src/NotificationTargetCommonITILObject.php:1937
 #: src/NotificationTargetCommonITILObject.php:2165 src/Profile.php:960
@@ -22391,7 +22393,7 @@ msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Supported tasks"
-msgstr ""
+msgstr "支持的任务"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -22447,7 +22449,7 @@ msgstr "仅同步连接到此LDAP服务器的用户"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:76
 msgid "Synchronize users against LDAP server information"
-msgstr ""
+msgstr "基于LDAP服务器信息同步用户"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:364
 #, php-format
@@ -22483,7 +22485,7 @@ msgstr[0] "主板型号"
 
 #: src/Profile.php:986 src/Profile.php:3168
 msgid "System logs"
-msgstr ""
+msgstr "系统日志"
 
 #: src/CronTask.php:1920
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -22492,7 +22494,7 @@ msgstr "系统日志保留期限（以天为单位，0表示无限期）"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #: src/Asset/AssetDefinition.php:299 src/Asset/AssetDefinition.php:521
 msgid "System name"
-msgstr ""
+msgstr "系统名称"
 
 #: front/report.infocom.php:186
 msgid "TCO"
@@ -22516,7 +22518,7 @@ msgstr "TLS密钥文件"
 
 #: src/AuthLDAP.php:710
 msgid "TLS Version"
-msgstr ""
+msgstr "TLS版本"
 
 #: src/AuthLDAP.php:4821
 msgid "TLS certificate path is incorrect"
@@ -22540,7 +22542,7 @@ msgstr "TTR"
 
 #: src/Item_Process.php:159
 msgid "TTY"
-msgstr ""
+msgstr "TTY"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:203
 #, php-format
@@ -22584,7 +22586,7 @@ msgstr "考虑到的时间"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
-msgstr ""
+msgstr "回到主页"
 
 #: templates/pages/setup/webhook/webhook.html.twig src/KnowbaseItem.php:255
 #: src/KnowbaseItem.php:1089 src/KnowbaseItem.php:2394
@@ -22601,7 +22603,7 @@ msgstr ""
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr ""
+msgstr "目标实体"
 
 #: src/RuleImportAsset.php:93
 msgid "Target entity for the asset"
@@ -22730,11 +22732,11 @@ msgstr "技术负责人"
 
 #: src/NotificationTargetCertificate.php:56
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "负责此证书的技术员"
 
 #: src/NotificationTargetDomain.php:50
 msgid "Technician in charge of the domain"
-msgstr ""
+msgstr "负责此域的技术员"
 
 #: src/Asset/Asset.php:273
 msgid "Technician in charge of the hardware"
@@ -22771,7 +22773,7 @@ msgstr "遥测数据"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry enabled"
-msgstr ""
+msgstr "遥测已启用"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/form/header_content.html.twig
@@ -22827,7 +22829,7 @@ msgstr "模板配置"
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "因维护临时停用"
 
 #: src/Document.php:1299
 msgid "Temporary directory doesn't exist"
@@ -22836,7 +22838,7 @@ msgstr "模板目录不存在"
 #: src/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
 msgid "Tenant ID"
-msgstr ""
+msgstr "租户ID"
 
 #: src/NetworkPort.php:1057
 msgid "Test"
@@ -22928,7 +22930,7 @@ msgstr "此 \"%s\" 依赖已安装好了"
 #: src/Html.php:3902
 #, php-format
 msgid "The %s field is mandatory"
-msgstr ""
+msgstr " %s 字段必填"
 
 #: src/Api/HL/Router.php:586
 msgctxt "api"
@@ -22939,17 +22941,17 @@ msgstr ""
 #: src/Console/Marketplace/DownloadCommand.php:67
 #: src/Console/Marketplace/InfoCommand.php:64
 msgid "The GLPI Network registration key is missing or invalid"
-msgstr ""
+msgstr "GLPI网络注册码缺失或无效"
 
 #: inc/config.php:207 inc/config.php:250 src/Console/Application.php:263
 msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
-msgstr ""
+msgstr "GLPI代码库已经被更新。必须更新GLPI数据库。"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "PHP语法中LDAP扩展没有安装"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The PHP mail function is unknown or is not activated on your system."
@@ -22979,13 +22981,13 @@ msgstr "身份验证方法配置不允许您更改密码"
 msgid ""
 "The automatic inventory will no longer handle this item, unless you unlock "
 "it."
-msgstr ""
+msgstr "自动化资产不会处理此项，除非你解锁它。"
 
 #: src/Lock.php:93
 msgid ""
 "The automatic inventory will no longer modify this field, unless you unlock "
 "it."
-msgstr ""
+msgstr "自动化资产不会修改此字段，除非你解决它。"
 
 #: src/CommonITILObject.php:9838
 msgctxt "filters"
@@ -22995,16 +22997,16 @@ msgstr "项的类别"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
 msgid "The class of assets related to current definition is \"%s\"."
-msgstr ""
+msgstr "当前定义的资产分类是 \"%s\"."
 
 #: src/Console/Application.php:141
 msgid "The command to execute"
-msgstr ""
+msgstr "执行命令"
 
 #: src/System/Requirement/ExtensionConstant.php:80
 #, php-format
 msgid "The constant %s is missing."
-msgstr ""
+msgstr "常量 %s 遗失。"
 
 #: src/System/Requirement/ExtensionConstant.php:76
 #, php-format
@@ -23019,31 +23021,31 @@ msgstr ""
 #: src/Project.php:2566 src/CommonITILObject.php:9842
 msgctxt "filters"
 msgid "The content of the item"
-msgstr ""
+msgstr "此项的内容"
 
 #: src/Console/Database/UpdateCommand.php:227
 msgid "The database schema integrity check has been skipped."
-msgstr ""
+msgstr "数据库架构完整性检查被跳过。"
 
 #: install/update.php:129 src/Console/Database/UpdateCommand.php:245
 msgid "The database schema is not consistent with the current GLPI version."
-msgstr ""
+msgstr "数据库架构与当前GLPI版本不一致。"
 
 #: src/Console/Database/UpdateCommand.php:296
 #, php-format
 msgid ""
 "The database schema is not consistent with the installed GLPI version (%s)."
-msgstr ""
+msgstr "数据库架构与当前安装的GLPI版本(%s)不一致。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:135
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr ""
+msgstr "当前目录无法在%s创建。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
 msgid "The directory was created in %s but could not be removed."
-msgstr ""
+msgstr "目录已经在%s创建，但无法被移除。"
 
 #: js/planning.js:527
 msgid ""
@@ -23057,11 +23059,11 @@ msgstr ""
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will run all matching rules."
-msgstr ""
+msgstr "引擎将运行所有匹配的规则。"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
-msgstr ""
+msgstr "引擎将在匹配第一个规则后停止。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:129
 #, php-format
@@ -23079,7 +23081,7 @@ msgstr "文件有效，上载成功。"
 #: src/System/Requirement/DirectoryWriteAccess.php:126
 #, php-format
 msgid "The file was created in %s but can't be deleted."
-msgstr ""
+msgstr "文件在%s被创建，但无法删除。"
 
 #: src/NotificationTargetCronTask.php:104
 msgid ""
@@ -23090,7 +23092,7 @@ msgstr "下列定时任务出错，需要人工介入。"
 #: src/Asset/AssetDefinition.php:326
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "以下字段存在无效的值：\"%s\"。"
 
 #: src/User.php:5820
 msgid ""
@@ -23108,11 +23110,11 @@ msgstr "分配OLA时会重新计算内部时间"
 
 #: src/Inventory/Conf.php:378
 msgid "The inventory is disabled, remember to activate it if necessary"
-msgstr ""
+msgstr "此存货被禁用，如有需要请记得激活"
 
 #: src/ITILSolution.php:234
 msgid "The item is already solved, did anyone pushed a solution before you?"
-msgstr ""
+msgstr "此项已解决，是否有人推送解决方案给你？"
 
 #: install/update.php:160 src/Console/Database/UpdateCommand.php:196
 #, php-format
@@ -23125,15 +23127,15 @@ msgstr "用于加密/解密敏感数据的密钥文件\"%s\"丢失。您应该�
 #: src/System/Requirement/LogsWriteAccess.php:74
 #, php-format
 msgid "The log file could not be created in %s."
-msgstr ""
+msgstr "日志文件无法在%s被创建。"
 
 #: src/System/Requirement/LogsWriteAccess.php:71
 msgid "The log file has been created successfully."
-msgstr ""
+msgstr "日志文件已经成功建立。"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "The log file is empty"
-msgstr ""
+msgstr "日志文件为空"
 
 #: src/User.php:754
 msgid "The login is not valid. Unable to add the user."
@@ -23160,7 +23162,7 @@ msgstr "PDU将是"
 
 #: src/Marketplace/View.php:776
 msgid "The plugin has an available update but its directory is not writable."
-msgstr ""
+msgstr "插件有可用更新但其目录不可写入。"
 
 #: src/Marketplace/View.php:794
 msgid ""
@@ -23211,7 +23213,7 @@ msgstr ""
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
-msgstr ""
+msgstr "查询期限"
 
 #: src/CommonITILValidation.php:374
 #, php-format
@@ -23228,7 +23230,7 @@ msgstr "服务器反馈信息: %s"
 
 #: src/Asset/AssetDefinition.php:274
 msgid "The system name cannot be changed."
-msgstr ""
+msgstr "系统名称无法更改。"
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
@@ -23240,7 +23242,7 @@ msgstr ""
 
 #: src/Asset/AssetDefinition.php:251
 msgid "The system name is mandatory."
-msgstr ""
+msgstr "系统名称是必须的。"
 
 #: src/Project.php:2554 src/CommonITILObject.php:9830
 msgctxt "filters"
@@ -23285,17 +23287,17 @@ msgstr ""
 
 #: src/Session.php:1881
 msgid "The user doesn't have any profile."
-msgstr ""
+msgstr "用户无任何配置文件。"
 
 #: src/Session.php:1874
 msgid "The user is not active."
-msgstr ""
+msgstr "用户未激活。"
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 msgid ""
 "The value must contains only letters and must not end by \"Model\" or "
 "\"Type\"."
-msgstr ""
+msgstr "此值只能包含字母并且不能以 \"Model\" 或 \"Type\"结尾。"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -23306,7 +23308,7 @@ msgstr ""
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "有工单等待审批"
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 msgid ""
@@ -23315,11 +23317,11 @@ msgstr ""
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
-msgstr ""
+msgstr "此项无定义的过滤器。"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "There is no notes on this entity"
-msgstr ""
+msgstr "此实体无注释"
 
 #: src/Api/API.php:203
 msgid ""
@@ -23334,7 +23336,7 @@ msgstr "已经有这个语言的翻译"
 #: templates/pages/2fa/2fa_status.html.twig
 msgid ""
 "These are one-time use codes in case your authenticator is inaccessible"
-msgstr ""
+msgstr "这是一次性代码以防你的验证器不可用。"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid ""
@@ -23584,7 +23586,7 @@ msgstr "登录后创建工单"
 #: src/Item_Ticket.php:53
 msgid "Ticket item"
 msgid_plural "Ticket items"
-msgstr[0] ""
+msgstr[0] "工单项"
 
 #: src/Item_TicketRecurrent.php:53
 msgid "Ticket recurrent item"

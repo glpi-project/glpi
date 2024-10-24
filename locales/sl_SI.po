@@ -28316,7 +28316,7 @@ msgstr "Tega predmeta ne morete rešiti!"
 
 #: src/CommonITILObject.php:2875
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Vnaprej določenega opisa ne morete uporabiti dobesedno"
 
 #: install/install.php:395
 msgid "You didn't select a database!"
@@ -28647,11 +28647,11 @@ msgstr "pred minuto"
 
 #: js/common.js:1185
 msgid "a month ago"
-msgstr ""
+msgstr "pred enim mesecem"
 
 #: js/common.js:1183
 msgid "a week ago"
-msgstr ""
+msgstr "pred enim tednom"
 
 #: js/common.js:1187
 msgid "a year ago"
@@ -28694,7 +28694,7 @@ msgstr "bps"
 
 #: src/Item_Devices.php:359
 msgid "bus ID"
-msgstr ""
+msgstr "ID vodila"
 
 #: src/MassiveAction.php:1495 src/MassiveAction.php:1504
 msgid "but you can do it by the form of the item"

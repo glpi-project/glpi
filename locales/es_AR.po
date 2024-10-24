@@ -1725,7 +1725,7 @@ msgstr[2] "%s meses"
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%s meses atrás"
 
 #: src/Project.php:2315
 #, php-format
@@ -1952,7 +1952,7 @@ msgstr[2] "%s segundos"
 #: js/common.js:1176
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "%s segundos atrás"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -2172,7 +2172,7 @@ msgstr[2] "%s años"
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "%s años atrás"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2489,6 +2489,8 @@ msgid ""
 "A PHP version maintained by the PHP community should be used to get the "
 "benefits of PHP security and bug fixes."
 msgstr ""
+"Se debe utilizar una versión de PHP mantenida por la comunidad PHP para "
+"obtener los beneficios de la seguridad y las correcciones de errores de PHP."
 
 #: src/NotificationAjax.php:107
 #, php-format
@@ -2513,6 +2515,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Se ha producido un error fatal al ejecutar esta búsqueda guardada. No se "
+"puede utilizar."
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2521,7 +2525,7 @@ msgstr "Un grupo en el equipo del elemento"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "Es necesario seleccionar un grupo"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2617,10 +2621,11 @@ msgstr "Un miembro del equipo para el elemento"
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
 msgstr ""
+"Se requiere un acceso temporal de escritura a los siguientes archivos: %s."
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "Se requiere una url"
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2633,7 +2638,7 @@ msgstr "Un usuario en el equipo del elemento"
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "Se requiere una selección del usuario"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -6373,10 +6378,12 @@ msgid ""
 "Checking the session cookie configuration of the web server cannot be done "
 "in the CLI context."
 msgstr ""
+"La comprobación de la configuración de las cookies de sesión del servidor "
+"web no puede realizarse en el contexto de la CLI."
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Comprobación del acceso de escritura a los archivos de configuración"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetChange.php:283 src/Change.php:571
@@ -6929,7 +6936,7 @@ msgstr "Comunidad"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "Empresa"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
@@ -7802,7 +7809,7 @@ msgstr "Contraseña actual"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:68
 msgid "Currently only available for Software dictionary."
-msgstr ""
+msgstr "Actualmente sólo está disponible para el diccionario de Software."
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
@@ -8999,19 +9006,19 @@ msgstr[2] ""
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
 msgid "Dictionary of computer models"
-msgstr ""
+msgstr "Diccionario de modelos de computadora"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:46
 msgid "Dictionary of computer types"
-msgstr ""
+msgstr "Diccionario de tipos de computadora"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
-msgstr ""
+msgstr "Diccionario de modelos de dispositivos"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:46
 msgid "Dictionary of device types"
-msgstr ""
+msgstr "Diccionario de tipos de dispositivos"
 
 #: src/RuleDictionnaryManufacturerCollection.php:49
 msgid "Dictionary of manufacturers"
@@ -9019,68 +9026,68 @@ msgstr "Diccionario de Fabricantes"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:46
 msgid "Dictionary of monitor types"
-msgstr ""
+msgstr "Diccionario de tipos de monitor"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:46
 msgid "Dictionary of network equipment types"
-msgstr ""
+msgstr "Diccionario de tipos de equipos de red"
 
 #: src/RuleDictionnaryNetworkEquipmentModelCollection.php:46
 msgid "Dictionary of networking equipment models"
-msgstr ""
+msgstr "Diccionario de modelos de equipos de red"
 
 #: src/RuleDictionnaryOperatingSystemArchitectureCollection.php:46
 msgid "Dictionary of operating system architectures"
-msgstr ""
+msgstr "Diccionario de arquitecturas de sistemas operativos"
 
 #: src/RuleDictionnaryOperatingSystemEditionCollection.php:46
 msgid "Dictionary of operating system editions"
-msgstr ""
+msgstr "Diccionario de ediciones de sistemas operativos"
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:46
 msgid "Dictionary of operating system versions"
-msgstr ""
+msgstr "Diccionario de versiones de sistemas operativos"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:46
 msgid "Dictionary of operating systems"
-msgstr ""
+msgstr "Diccionario de sistemas operativos"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:46
 msgid "Dictionary of phone models"
-msgstr ""
+msgstr "Diccionario de modelos de teléfono"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:46
 msgid "Dictionary of phone types"
-msgstr ""
+msgstr "Diccionario de tipos de teléfono"
 
 #: src/RuleDictionnaryPrinterModelCollection.php:46
 msgid "Dictionary of printer models"
-msgstr ""
+msgstr "Diccionario de modelos de impresoras"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:46
 msgid "Dictionary of printer types"
-msgstr ""
+msgstr "Diccionario de tipos de impresora"
 
 #: src/RuleDictionnaryPrinter.php:49
 #: src/RuleDictionnaryPrinterCollection.php:52
 msgid "Dictionary of printers"
-msgstr ""
+msgstr "Diccionario de impresoras"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:46
 msgid "Dictionary of service packs"
-msgstr ""
+msgstr "Diccionario de Service Packs"
 
 #. TRANS: software in plural
 #. TRANS: plural for software
 #: src/RuleDictionnarySoftwareCollection.php:53
 #: src/RuleDictionnarySoftware.php:56
 msgid "Dictionary of software"
-msgstr ""
+msgstr "Diccionario de software"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:58
 #, php-format
 msgid "Dictionary to use. Possible values are: %s"
-msgstr ""
+msgstr "Diccionario a utilizar. Los valores posibles son: %s"
 
 #: src/DBConnection.php:790 src/DBConnection.php:794
 #: src/NotificationTargetDBConnection.php:81
@@ -9326,6 +9333,8 @@ msgid ""
 "Do not check database schema integrity before and after performing the "
 "update"
 msgstr ""
+"No comprobar la integridad del esquema de la base de datos antes y después "
+"de realizar la actualización"
 
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:3194
 msgid "Do not copy"
@@ -10045,7 +10054,7 @@ msgstr "Usuario o contraseña vacío"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
-msgstr ""
+msgstr "Vaciar la ubicación"
 
 #: src/AuthLDAP.php:4334 src/Plugin.php:2715 src/Marketplace/View.php:860
 msgid "Enable"
@@ -10610,6 +10619,8 @@ msgid ""
 "Even if GLPI still supports this PHP version, an upgrade to a more recent "
 "PHP version is recommended."
 msgstr ""
+"Aunque GLPI siga soportando esta versión de PHP, se recomienda una "
+"actualización a una versión de PHP más reciente."
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 #: templates/pages/setup/webhook/webhook.html.twig
@@ -12275,7 +12286,7 @@ msgstr "Barras horizontales apiladas"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Host ID"
-msgstr ""
+msgstr "ID de host"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: src/LevelAgreement.php:262
@@ -13107,6 +13118,8 @@ msgstr ""
 msgid ""
 "Indeed, this PHP version may contain unpatched security vulnerabilities."
 msgstr ""
+"De hecho, esta versión de PHP puede contener vulnerabilidades de seguridad "
+"sin parchear."
 
 #: src/AuthLDAP.php:527
 msgid ""
@@ -13427,7 +13440,7 @@ msgstr "Valor de opción \"--lang\" no válido \"%s\"."
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:103
 msgid "Invalid \"dictionary\" value."
-msgstr ""
+msgstr "Valor de \"diccionario\" no válido."
 
 #: src/IPAddress.php:159 src/NetworkPortMigration.php:119
 msgid "Invalid IP address"
@@ -13488,7 +13501,7 @@ msgstr "Contexto de caché no válido: \"%s\"."
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:167
 msgid "Invalid checksum"
-msgstr ""
+msgstr "Suma de comprobación (checksum) no válida"
 
 #: index.php:150 front/preference.php:56
 msgid "Invalid code"
@@ -13748,6 +13761,8 @@ msgid ""
 "It is recommended to run the \"%s\" command to validate that the database "
 "schema is consistent with the current GLPI version."
 msgstr ""
+"Se recomienda ejecutar el comando \"%s\" para validar que el esquema de la "
+"base de datos es coherente con la versión GLPI actual."
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "It is strongly advised to use the HTTPS protocol."
@@ -18399,7 +18414,7 @@ msgstr "Megabytes de salida"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Propietario"
 
 #: src/RegisteredID.php:54
 msgid "PCI"
@@ -18458,7 +18473,7 @@ msgstr "PHP"
 #: src/System/Requirement/PhpSupportedVersion.php:70
 #, php-format
 msgid "PHP %s is no longer maintained by its community."
-msgstr ""
+msgstr "PHP %s ya no es mantenido por su comunidad."
 
 #: front/config.form.php:61
 msgid "PHP OPcache reset successful"
@@ -18513,7 +18528,7 @@ msgstr ""
 
 #: src/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
-msgstr ""
+msgstr "Versión actualizada de PHP"
 
 #: src/System/Requirement/IntegerSize.php:43
 msgid "PHP maximal integer size"
@@ -19185,7 +19200,7 @@ msgstr ""
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "Seleccione un ítem para añadir"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
@@ -19765,7 +19780,7 @@ msgstr[2] "Tipos de impresora"
 
 #: src/Profile.php:1089
 msgid "Printers dictionary"
-msgstr ""
+msgstr "Diccionario de impresoras"
 
 #: src/PrinterLog.php:396
 msgid "Prints"
@@ -20908,7 +20923,7 @@ msgstr "Replay dictionary rules for manufacturers (----- = All)"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:51
 msgid "Replay dictionary rules on existing items"
-msgstr ""
+msgstr "Reproducir las reglas del diccionario en los ítems existentes"
 
 #: src/RuleDictionnarySoftwareCollection.php:236
 #: src/RuleDictionnaryDropdownCollection.php:306
@@ -23453,7 +23468,7 @@ msgstr "Subtarea"
 
 #: src/Rule.php:747
 msgid "Subtype"
-msgstr ""
+msgstr "Subtipo"
 
 #: js/glpi_dialog.js:382
 msgid "Success"
@@ -23650,7 +23665,7 @@ msgstr[2] ""
 
 #: src/Profile.php:986 src/Profile.php:3168
 msgid "System logs"
-msgstr ""
+msgstr "Registros del sistema"
 
 #: src/CronTask.php:1920
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -24220,6 +24235,7 @@ msgstr "El contenido del ítem"
 #: src/Console/Database/UpdateCommand.php:227
 msgid "The database schema integrity check has been skipped."
 msgstr ""
+"Se ha omitido la comprobación de integridad del esquema de la base de datos."
 
 #: install/update.php:129 src/Console/Database/UpdateCommand.php:245
 msgid "The database schema is not consistent with the current GLPI version."
@@ -27636,7 +27652,7 @@ msgstr "¿Dónde quiere importar \"%s\"?"
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:80
 msgid "Which dictionary do you want to replay?"
-msgstr ""
+msgstr "¿Qué diccionario quiere reproducir?"
 
 #: src/Console/Marketplace/InfoCommand.php:89
 msgid "Which plugin do you want information on?"
@@ -27782,7 +27798,7 @@ msgstr "Escritura"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Acceso de escritura denegado para archivos de configuración"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:122
 #, php-format
@@ -27793,6 +27809,8 @@ msgstr "Se ha validado el acceso de escritura a %s."
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
+"El acceso de escritura a estos archivos puede eliminarse una vez finalizada "
+"la operación."
 
 #: front/stat.tracking.php:106 src/NotificationTargetProjectTask.php:541
 #: src/KnowbaseItem.php:1013 src/KnowbaseItem.php:1286
@@ -28274,6 +28292,7 @@ msgid ""
 "You should apply the following recommendations for configuring the web "
 "server."
 msgstr ""
+"Debe aplicar las siguientes recomendaciones para configurar el servidor web."
 
 #: src/Console/Migration/UnsignedKeysCommand.php:260
 msgid ""
@@ -28336,7 +28355,7 @@ msgstr "Su contraseña ha sido actualizada satisfactoriamente."
 
 #: src/User.php:6612
 msgid "Your password has expired."
-msgstr ""
+msgstr "Su contraseña ha caducado."
 
 #: src/User.php:5537
 msgid "Your password has expired. You must change it to be able to login."
@@ -28412,11 +28431,11 @@ msgstr "hace un minuto"
 
 #: js/common.js:1185
 msgid "a month ago"
-msgstr ""
+msgstr "hace un mes"
 
 #: js/common.js:1183
 msgid "a week ago"
-msgstr ""
+msgstr "hace una semana"
 
 #: js/common.js:1187
 msgid "a year ago"

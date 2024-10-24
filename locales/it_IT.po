@@ -1466,7 +1466,7 @@ msgstr "%s giorni fa"
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s elimina un'attività"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -1605,7 +1605,7 @@ msgstr[2] "%s ore"
 #: src/Ticket.php:3255
 #, php-format
 msgid "%s hours %s minutes"
-msgstr ""
+msgstr "%s ore %s minuti"
 
 #: src/Html.php:7038 js/common.js:1180
 #, javascript-format, php-format
@@ -1696,9 +1696,9 @@ msgstr "%s minuti fa"
 #, php-format
 msgid "%s model"
 msgid_plural "%s models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s modello"
+msgstr[1] "%s modelli"
+msgstr[2] "%s modelli"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1868
@@ -1889,7 +1889,7 @@ msgstr "%s recupera un'istanza di database"
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s ripristina un'attività"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:124
@@ -1984,9 +1984,9 @@ msgstr "%s prova ad utilizzare un percorso non standard."
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s tipo"
+msgstr[1] "%s tipi"
+msgstr[2] "%s tipi"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2694,7 +2694,7 @@ msgstr "API token"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ASC"
 
 #: src/DevicePowerSupply.php:53 src/DevicePowerSupply.php:77
 msgid "ATX"
@@ -3023,7 +3023,7 @@ msgstr "Aggiungi un criterio"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Add a custom header"
-msgstr ""
+msgstr "Aggiungi un'intestazione personalizzata"
 
 #: src/Database.php:435
 msgid "Add a database"
@@ -3046,7 +3046,7 @@ msgstr "Aggiungi un documento"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "Aggiungi un dominio"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -3145,7 +3145,7 @@ msgstr "Aggiungi un nuovo connettore"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "Aggiungi una nuova porta"
 
 #: src/Change_Ticket.php:292 src/Problem_Ticket.php:276 src/Problem.php:418
 #: src/Ticket.php:2224
@@ -3282,7 +3282,7 @@ msgstr "Aggiungi un tipo di elemento"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "Aggiungi un ordinamento"
 
 #: src/Impact.php:1122
 msgid "Add asset"
@@ -3327,7 +3327,7 @@ msgstr "Aggiungi date_mod a %s"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Add documents"
-msgstr ""
+msgstr "Aggiungi documenti"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into ticket notifications"
@@ -3471,7 +3471,7 @@ msgstr "Aggiunta di utenti da una fonte esterna"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "Aggiungi una zona"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/Remove items from software versions"
@@ -3506,7 +3506,7 @@ msgstr "Aggiungi indice univoco - %s"
 
 #: src/DefaultFilter.php:57
 msgid "Additional default filter"
-msgstr ""
+msgstr "Filtro di default addizionale"
 
 #: src/QueuedNotification.php:286 src/QueuedNotification.php:790
 msgid "Additional headers"
@@ -3786,7 +3786,7 @@ msgstr "Tutti i cruscotti"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:69
 msgid "All documents"
-msgstr ""
+msgstr "Tutti i documenti"
 
 #: src/Profile.php:3919 src/Profile.php:3925
 msgid "All items"
@@ -3802,7 +3802,7 @@ msgstr "Tutti i miei articoli"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "Tutte le pagine"
 
 #: src/Dropdown.php:2576
 msgid "All pages in CSV"
@@ -4086,7 +4086,7 @@ msgstr "Si è verificato un errore nello sbloccare l'attività \"%s\"."
 
 #: src/Webhook.php:1254
 msgid "An event is required"
-msgstr ""
+msgstr "E' richiesto un evento"
 
 #: src/Api/HL/Search.php:112
 msgid "An internal error occured while trying to fetch the data."

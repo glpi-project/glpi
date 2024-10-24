@@ -8,6 +8,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # Jens Hyllegaard <jens.hyllegaard@gmail.com>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Mikkel Holst, 2024
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: Mikkel Holst, 2024\n"
 "Language-Team: Danish (Denmark) (https://app.transifex.com/glpi/teams/1637/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1076,8 +1077,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ny sag"
+msgstr[1] "%d nye sager"
 
 #: js/src/vue/Kanban/TeamBadgeProvider.js:293
 #, javascript-format
@@ -3968,7 +3969,7 @@ msgstr ""
 
 #: src/Api/HL/APIException.php:52
 msgid "An error occurred while processing your request."
-msgstr ""
+msgstr "En fejl opstod under behandling af din forespørgsel."
 
 #: src/Inventory/Conf.php:240
 #, php-format
@@ -5771,7 +5772,7 @@ msgstr[1] ""
 #: src/NotificationTargetKnowbaseItem.php:60
 #: src/NotificationTargetKnowbaseItem.php:173
 msgid "Categories"
-msgstr ""
+msgstr "Kategorier"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #: templates/components/user/info_card.html.twig
@@ -5800,8 +5801,8 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2075
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kategori"
+msgstr[1] "Kategorier"
 
 #: src/NotificationTargetCommonITILObject.php:2076
 msgid "Category comment"
@@ -8465,11 +8466,11 @@ msgstr ""
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Describe the incident or request"
-msgstr "Beskriv problemet/løsningen"
+msgstr "Beskriv problemet/forespørgsel"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Describe your issue"
-msgstr ""
+msgstr "Beskriv dit problem"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/admin/rules/form.html.twig
@@ -14478,8 +14479,8 @@ msgstr "Lokale regler: %s"
 #: src/RuleLocation.php:120 src/Location.php:136
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lokation"
+msgstr[1] "Lokationer"
 
 #: src/Location.php:210 src/Location.php:389
 msgid "Location alias"
@@ -18599,6 +18600,8 @@ msgid ""
 "Please update GLPI by following the procedure described in the installation "
 "documentation."
 msgstr ""
+"Opdater venligst GLPI ved at følge proceduren beskrevet i installations "
+"dokumentationen."
 
 #: src/Plug.php:41
 msgid "Plug"
@@ -19255,23 +19258,23 @@ msgstr ""
 #: src/Ticket.php:3377 ajax/actorinformation.php:130
 #: ajax/actorinformation.php:131
 msgid "Processing"
-msgstr "Behandler"
+msgstr "Behandles"
 
 #: src/NotificationTargetCommonITILObject.php:2167
 #: src/NotificationTargetCommonITILObject.php:2190
 #, php-format
 msgid "Processing %1$s"
-msgstr ""
+msgstr "Behandler %1$s"
 
 #: src/Dashboard/Provider.php:1286 src/Problem.php:670 src/Ticket.php:3367
 msgctxt "status"
 msgid "Processing (assigned)"
-msgstr "Behandler (tildelt)"
+msgstr "Behandles (tildelt)"
 
 #: src/Dashboard/Provider.php:1294 src/Problem.php:671 src/Ticket.php:3368
 msgctxt "status"
 msgid "Processing (planned)"
-msgstr "Behandler (planlagt)"
+msgstr "Behandles (planlagt)"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:308
 #, php-format
@@ -20550,8 +20553,8 @@ msgstr[1] ""
 #: src/Reservation.php:57 src/Profile.php:2533
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Reservation"
+msgstr[1] "Reservationer"
 
 #: front/reservation.form.php:165
 #, php-format
@@ -20564,7 +20567,7 @@ msgstr "Reservation udløbet"
 
 #: src/Reservation.php:920
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Reservationer for denne enhed"
 
 #: src/ReservationItem.php:342
 msgid "Reserve an item"

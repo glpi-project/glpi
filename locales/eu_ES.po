@@ -8,6 +8,7 @@
 # Jokin Zengotitabengoa <jzengotitabengoa@olabide.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Iñigo Salbidea, 2024
 # Alexander Gabilondo <alexgabi@disroot.org>, 2024
 # 
 #, fuzzy
@@ -32,11 +33,11 @@ msgstr "\"%s\" cache sistema erabiltzen da"
 
 #: src/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\"-k \"foo\" parametroaren balioa egia gisa ezarriko du"
 
 #: src/Console/Plugin/InstallCommand.php:72
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\"-ek \"foo\" parametroaren balioa \"bar\" ezarriko du"
 
 #: front/migrationcleaner.php:63
 msgid "\"Migration cleaner\" tool"
@@ -541,7 +542,7 @@ msgstr "%1$s-(e)k %2$s lizentzia ezabatu du"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$s-ek nabigatzailearen jakinarazpenen konfigurazioa editatu du"
 
 #: front/notificationmailingsetting.form.php:48
 #, php-format
@@ -573,7 +574,7 @@ msgstr ""
 #: src/Search/Output/PDFSearchOutput.php:353
 #, php-format
 msgid "%1$s is empty"
-msgstr ""
+msgstr "%1$s hutsik dago"
 
 #: templates/components/itilobject/add_items.html.twig
 #, php-format
@@ -630,7 +631,7 @@ msgstr "%1$s, %2$s-an %3$s-ek aldatua"
 #: src/Rack.php:796
 #, php-format
 msgid "%1$s position is not available"
-msgstr ""
+msgstr "%1$s posizioa ez dago eskuragarri"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:103
@@ -653,7 +654,7 @@ msgstr "%1$s-(e)k %2$s bertsioa ezabatu du"
 #, php-format
 msgctxt "%1$s remaining page"
 msgid "%1$s remaining pages"
-msgstr ""
+msgstr "Gainerako  %1$s orrialdeak"
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:70
@@ -15483,19 +15484,19 @@ msgstr ""
 
 #: install/update.php:155
 msgid "Missing security key file"
-msgstr ""
+msgstr "Segurtasun-giltzaren fitxategia falta da"
 
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 msgid "Mobile"
-msgstr ""
+msgstr "Mugikorra"
 
 #: src/LineOperator.php:55 src/LineOperator.php:75
 msgid "Mobile Country Code"
-msgstr ""
+msgstr "Mugikorreko herrialde kodea"
 
 #: src/LineOperator.php:60 src/LineOperator.php:83
 msgid "Mobile Network Code"
-msgstr ""
+msgstr "Mugikorren sare-kodea"
 
 #: src/Item_DeviceSimcard.php:106
 msgid "Mobile Subscriber Identification Number"
@@ -15504,6 +15505,7 @@ msgstr ""
 #: src/LineOperator.php:116
 msgid "Mobile country code and network code combination must be unique!"
 msgstr ""
+"Mugikorreko herrialde-kode eta sare-kode konbinazioa bakarra izan behar du!"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -21520,7 +21522,7 @@ msgstr "Ikusi publikoak direnak"
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgctxt "button"
 msgid "See result"
-msgstr ""
+msgstr "Emaitza ikusi"
 
 #: src/Planning.php:2765
 msgid "See schedule of people in my groups"
@@ -21609,7 +21611,7 @@ msgstr "Aukeratu desblokeatu behar den elementuaren mota"
 
 #: install/install.php:566
 msgid "Select your language"
-msgstr ""
+msgstr "Aukeratu zure hizkuntza"
 
 #: templates/components/checkbox_matrix.html.twig src/Profile.php:4330
 msgid "Select/unselect all"

@@ -11,12 +11,12 @@
 # Sebastian Espinosa, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # Andres Felipe Hurtado Admin Soporte TIC, 2023
-# Fabian Gonzalez <fabian.gonzalez@outlook.com>, 2023
 # Vladimir Támara Patiño <vtamara@pasosdeJesus.org>, 2023
 # Joaquin Etchegaray, 2023
 # Haider López <hlopez@itsoluciones.com.co>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Andrey Amado Benavides <andrey66@gmail.com>, 2024
+# Fabian Gonzalez <fabian.gonzalez@outlook.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Andrey Amado Benavides <andrey66@gmail.com>, 2024\n"
+"Last-Translator: Fabian Gonzalez <fabian.gonzalez@outlook.com>, 2024\n"
 "Language-Team: Spanish (Colombia) (https://app.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -185,7 +185,7 @@ msgstr "%1$s (%2$d%%) "
 #: src/Item_Devices.php:1060
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s (%2$s%%) "
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -554,12 +554,14 @@ msgstr "%1$s borrar las licencias %2$s"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$s editó la configuración de notificaciones de los navegadores"
 
 #: front/notificationmailingsetting.form.php:48
 #, php-format
 msgid "%1$s edited the emails notifications configuration"
 msgstr ""
+"%1$s editó la configuración de notificaciones de mensajes de correo "
+"electrónico"
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:62
@@ -1721,7 +1723,7 @@ msgstr[2] ""
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%s mes(es) atrás"
 
 #: src/Project.php:2315
 #, php-format
@@ -1904,7 +1906,7 @@ msgstr ""
 #: front/computervirtualmachine.form.php:124
 #, php-format
 msgid "%s restores a virtual machine"
-msgstr ""
+msgstr "%s restaura una máquina virtual"
 
 #. TRANS: %s is the user login
 #: front/rack.form.php:90 front/budget.form.php:91 front/contract.form.php:92
@@ -1948,7 +1950,7 @@ msgstr[2] ""
 #: js/common.js:1176
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "Hace %s segundos"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -2166,7 +2168,7 @@ msgstr[2] ""
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "Hace %s año(s)"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2481,6 +2483,8 @@ msgid ""
 "A PHP version maintained by the PHP community should be used to get the "
 "benefits of PHP security and bug fixes."
 msgstr ""
+"Una versión de PHP mantenida por la comunidad de PHP podría ser utilizada "
+"para obtener los beneficios de seguridad y corrección de errores."
 
 #: src/NotificationAjax.php:107
 #, php-format
@@ -2505,6 +2509,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Se ha producido un error fatal al ejecutar esta búsqueda guardada. No se "
+"puede utilizar."
 
 #: src/Project.php:2582 src/CommonITILObject.php:9854
 msgctxt "filters"
@@ -2513,7 +2519,7 @@ msgstr "Un grupo en el equipo del elemento"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "Es necesario seleccionar un grupo"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2610,6 +2616,7 @@ msgstr "Un miembro del equipo para el elemento"
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
 msgstr ""
+"Se requiere un acceso temporal de escritura a los siguientes archivos: %s."
 
 #: src/Planning.php:1529
 msgid "A url is required"

@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Микола Якименко <yakimuseg@gmail.com>, 2022
-# Ігор Козаченко, 2023
 # Роман Злуницын, 2023
 # Null Null, 2023
 # Alexey Telezhenko, 2023
 # Pablo Luchiano, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
-# Andriy Smilyanets <smile.andriy@gmail.com>, 2024
 # khvalera <khvalera@ukr.net>, 2024
+# Andriy Smilyanets <smile.andriy@gmail.com>, 2024
+# Ігор Козаченко, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Vladimir Prodan, 2024
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-01 13:13+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: khvalera <khvalera@ukr.net>, 2024\n"
+"Last-Translator: Vladimir Prodan, 2024\n"
 "Language-Team: Ukrainian (Ukraine) (https://app.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -463,7 +464,7 @@ msgstr "1 %1$s додає елемент"
 #: front/lockedfield.form.php:57
 #, php-format
 msgid "%1$s adds global lock on %2$s"
-msgstr ""
+msgstr "%1$sдодано глобальне блокування о %2$s"
 
 #: front/socket.form.php:103
 #, php-format
@@ -549,12 +550,12 @@ msgstr "%1$s видалив ліцензію %2$s"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$sвідредагована конфігурація попереджень переглядача WEB"
 
 #: front/notificationmailingsetting.form.php:48
 #, php-format
 msgid "%1$s edited the emails notifications configuration"
-msgstr ""
+msgstr "%1$sзмінена конфігурація попереджень програми електронних листів "
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:62
@@ -1118,6 +1119,8 @@ msgstr "%d інші учасники команди"
 #, php-format
 msgid "%d primary or foreign keys columns are using signed integers."
 msgstr ""
+"%dу стовпцях первинного або зовнішнього ключів використовуються цілі числа "
+"зі знаком."
 
 #: src/Cartridge.php:916
 #, php-format
@@ -1202,7 +1205,7 @@ msgstr "%s (%s)"
 #: src/Features/Clonable.php:310
 #, php-format
 msgid "%s (copy %d)"
-msgstr ""
+msgstr "%s (копіювання %d)"
 
 #: src/Features/Clonable.php:306
 #, php-format
@@ -1732,7 +1735,7 @@ msgstr[3] "%s місяці"
 #: js/common.js:1186
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%sмісяців тому"
 
 #: src/Project.php:2315
 #, php-format
@@ -1916,7 +1919,7 @@ msgstr ""
 #: front/computervirtualmachine.form.php:124
 #, php-format
 msgid "%s restores a virtual machine"
-msgstr ""
+msgstr "%sвідновив віртуальну машину "
 
 #. TRANS: %s is the user login
 #: front/rack.form.php:90 front/budget.form.php:91 front/contract.form.php:92
@@ -1961,7 +1964,7 @@ msgstr[3] "%s секунд"
 #: js/common.js:1176
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "%sсекунд тому"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -2148,7 +2151,7 @@ msgstr "%s змінив рівень OLA"
 #, php-format
 msgctxt "glpi_status"
 msgid "%s variable is not a directory"
-msgstr ""
+msgstr "%sзмінна не є каталогом"
 
 #: src/System/Status/StatusChecker.php:533
 #, php-format
@@ -2184,7 +2187,7 @@ msgstr[3] "%s роки"
 #: js/common.js:1188
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "%sроків тому"
 
 #: src/Dropdown.php:1897
 #, php-format
@@ -2236,7 +2239,7 @@ msgstr "(%1$d проблем аутентифікації, %2$d помилок)"
 #: front/massiveaction.php:81
 #, php-format
 msgid "(%1$d items required no action)"
-msgstr ""
+msgstr "(1 %1$dелементів не потребують дій)"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig
 #: src/Features/DCBreadcrumb.php:82 src/Features/DCBreadcrumb.php:95
@@ -2539,7 +2542,7 @@ msgstr "Група в команді елементу"
 
 #: src/Planning.php:1359 src/Planning.php:1466
 msgid "A group selection is required"
-msgstr ""
+msgstr "потрібен груповий вибір"
 
 #: src/Item_Line.php:522
 msgid "A line is required"
@@ -2637,7 +2640,7 @@ msgstr ""
 
 #: src/Planning.php:1529
 msgid "A url is required"
-msgstr ""
+msgstr "потрібне посилання"
 
 #: src/ValidatorSubstitute.php:191
 msgid "A user cannot be their own substitute."
@@ -2650,7 +2653,7 @@ msgstr "Користувач в команді елементу"
 
 #: src/Planning.php:1309
 msgid "A user selection is required"
-msgstr ""
+msgstr "Потрібно вибрати користувача"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:719
 msgid "A validation request has been submitted"
@@ -4273,7 +4276,7 @@ msgstr "Запит схвалення"
 #: src/CommonITILValidation.php:535
 #, php-format
 msgid "Approval request sent to %s"
-msgstr ""
+msgstr "Запит схвалення надіслано %s"
 
 #: src/RuleCommonITILObject.php:911
 msgid "Approval request to requester group manager"
@@ -5497,7 +5500,7 @@ msgstr[3] "Критичності бізнесу"
 
 #: src/RuleCommonITILObject.php:958 src/RuleAsset.php:225
 msgid "Business rules (entity parent)"
-msgstr ""
+msgstr "Бізнес правила"
 
 #: src/RuleAssetCollection.php:45 src/Profile.php:1072 src/RuleAsset.php:48
 msgid "Business rules for assets"
@@ -5812,6 +5815,8 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"Неможливо змінити інтерфейс цього профілю, оскільки це єдиний профіль з "
+"правами на зміну профілів з цим інтерфейсом"
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -6163,10 +6168,10 @@ msgstr "Змінити спосіб обрахунку"
 #: src/Change_Item.php:53
 msgid "Change item"
 msgid_plural "Change items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зміна елемента"
+msgstr[1] "Зміна елементів"
+msgstr[2] "Зміна елементів"
+msgstr[3] "Зміна елементів"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
@@ -6199,7 +6204,7 @@ msgstr[3] "Змінити завдання"
 
 #: src/CommonITILTask.php:1695
 msgid "Change tasks to do"
-msgstr ""
+msgstr "Задачі змін для виконання"
 
 #: src/ChangeTemplate.php:50 src/Entity.php:2140
 msgid "Change template"
@@ -6220,7 +6225,7 @@ msgstr "Зміна пріоритету"
 
 #: src/Inventory/Conf.php:282 src/Inventory/Conf.php:956
 msgid "Change the status"
-msgstr ""
+msgstr "Змінити статус"
 
 #: src/SavedSearch.php:88
 msgid "Change visibility"
@@ -6228,11 +6233,11 @@ msgstr "Змінити видимість"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Змінити видимість у дочерних Елементах"
 
 #: src/Marketplace/View.php:577
 msgid "Changelog"
-msgstr ""
+msgstr "Журнал змін"
 
 #: js/impact.js:2445
 msgid "Changes"
@@ -6387,7 +6392,7 @@ msgstr "Перевірка цілісності схеми бази даних..
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:70
 #, php-format
 msgid "Checking document #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "Перевірка документа # %s\"%s\" (%s)..."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -7020,7 +7025,7 @@ msgstr[3] "Комп’ютери"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:184
 msgid "Computer inventory"
-msgstr ""
+msgstr "Інвентаризація комп'ютера"
 
 #: src/Rule.php:295 src/ComputerModel.php:41
 msgid "Computer model"
@@ -8535,7 +8540,7 @@ msgstr "Видалити всі повторення"
 
 #: src/RuleCollection.php:658
 msgid "Delete all rules and recreate them by default"
-msgstr ""
+msgstr "Видалити всі правила і створити типові"
 
 #: src/Log.php:1172
 msgid "Delete an item"
@@ -9064,11 +9069,11 @@ msgstr[3] "Довідники"
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
 msgid "Dictionary of computer models"
-msgstr ""
+msgstr "Каталог моделей комп’ютерів"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:46
 msgid "Dictionary of computer types"
-msgstr ""
+msgstr "Каталог типів комп’ютерів"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
@@ -9084,52 +9089,52 @@ msgstr "Каталог виробників"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:46
 msgid "Dictionary of monitor types"
-msgstr ""
+msgstr "Каталог типів моніторів"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:46
 msgid "Dictionary of network equipment types"
-msgstr ""
+msgstr "Каталог типів мережевих пристроїв"
 
 #: src/RuleDictionnaryNetworkEquipmentModelCollection.php:46
 msgid "Dictionary of networking equipment models"
-msgstr ""
+msgstr "Каталог моделей мережевих пристроїв"
 
 #: src/RuleDictionnaryOperatingSystemArchitectureCollection.php:46
 msgid "Dictionary of operating system architectures"
-msgstr ""
+msgstr "Каталог архітектур операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemEditionCollection.php:46
 msgid "Dictionary of operating system editions"
-msgstr ""
+msgstr "Каталог редакцій операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:46
 msgid "Dictionary of operating system versions"
-msgstr ""
+msgstr "Каталог версій операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:46
 msgid "Dictionary of operating systems"
-msgstr ""
+msgstr "Каталог операційних систем"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:46
 msgid "Dictionary of phone models"
-msgstr ""
+msgstr "Каталог моделей телефонів"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:46
 msgid "Dictionary of phone types"
-msgstr ""
+msgstr "Каталог типів телефонів"
 
 #: src/RuleDictionnaryPrinterModelCollection.php:46
 msgid "Dictionary of printer models"
-msgstr ""
+msgstr "Каталог моделей принтерів"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:46
 msgid "Dictionary of printer types"
-msgstr ""
+msgstr "Каталог типів принтерів"
 
 #: src/RuleDictionnaryPrinter.php:49
 #: src/RuleDictionnaryPrinterCollection.php:52
 msgid "Dictionary of printers"
-msgstr ""
+msgstr "Каталог принтерів"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:46
 msgid "Dictionary of service packs"
@@ -9380,7 +9385,7 @@ msgstr "Не рахувати"
 
 #: src/Inventory/Conf.php:539
 msgid "Do not change"
-msgstr ""
+msgstr "Не змінювати"
 
 #: src/Console/Database/UpdateCommand.php:108
 msgid ""
@@ -9829,7 +9834,7 @@ msgstr "ESSID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:192
 msgid "ESX remote inventory"
-msgstr ""
+msgstr "Віддалена інвентаризація VMWare ESX"
 
 #: src/Dropdown.php:2397 src/Entity.php:3054 src/Alert.php:122
 #: src/Features/PlanningEvent.php:757
@@ -11557,7 +11562,7 @@ msgstr ""
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Для додаткової інформації дивіться системні журнали"
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11680,10 +11685,10 @@ msgstr ""
 #, php-format
 msgid "Found %d item to fix."
 msgid_plural "Found %d items to fix."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Знайдено %d елемент для виправлення"
+msgstr[1] "Знайдено %d елементів для виправлення"
+msgstr[2] "Знайдено %d елементів для виправлення"
+msgstr[3] "Знайдено %dелементів для виправлення"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:75
 #, php-format
@@ -11800,7 +11805,7 @@ msgstr "GLPI"
 
 #: src/AutoUpdateSystem.php:49
 msgid "GLPI Native Inventory"
-msgstr ""
+msgstr "Вбудована інвентаризація"
 
 #: front/config.form.php:69
 msgid "GLPI cache reset successful"
@@ -13272,7 +13277,7 @@ msgstr ""
 
 #: src/Update.php:280
 msgid "Initializing rules..."
-msgstr ""
+msgstr "Ініціалізація правил..."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Inline (no toolbars)"
@@ -13966,10 +13971,10 @@ msgstr "Елемент не пов’язаний з об’єктом"
 #: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Операційна система елементу"
+msgstr[1] "Операційні системи елементу"
+msgstr[2] "Операційні системи елементу"
+msgstr[3] "Операційні системи елементу"
 
 #: src/Infocom.php:556
 #, php-format
@@ -14342,10 +14347,10 @@ msgstr "Останні %d подій"
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d остання Проблема"
+msgstr[1] "%d останніх Проблем"
+msgstr[2] "%d останніх Проблем"
+msgstr[3] "%d останніх Проблем"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last 2 passwords"
@@ -14427,7 +14432,7 @@ msgstr "Остання інвентаризація"
 #: src/Phone.php:286 src/Printer.php:660 src/Computer.php:466
 #: src/NetworkEquipment.php:495
 msgid "Last inventory date"
-msgstr ""
+msgstr "Дата останньої інвентаризації"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:156
 msgid "Last inventory update"
@@ -14767,18 +14772,18 @@ msgstr[3] ""
 #: src/Contact_Supplier.php:49
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язок Контакт/Постачальник"
+msgstr[1] "Зв’язки Контакт/Постачальник"
+msgstr[2] "Зв’язки Контакт/Постачальник"
+msgstr[3] "Зв’язки Контакт/Постачальник"
 
 #: src/Contract_Item.php:88
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язок Договір/Елемент"
+msgstr[1] "Зв’язки Договір/Елемент"
+msgstr[2] "Зв’язки Договір/Елемент"
+msgstr[3] "Зв’язки Договір/Елемент"
 
 #: src/CommonITILObject.php:4053
 msgctxt "button"
@@ -14788,10 +14793,10 @@ msgstr ""
 #: src/Change_Problem.php:57
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язки Проблеми/Зміни"
+msgstr[1] "Зв’язки Проблеми/Зміни"
+msgstr[2] "Зв’язки Проблеми/Зміни"
+msgstr[3] "Зв’язки Проблеми/Зміни"
 
 #: src/Problem_Problem.php:54
 msgid "Link Problem/Problem"
@@ -14804,34 +14809,34 @@ msgstr[3] ""
 #: src/Itil_Project.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язок Проект/ITIL"
+msgstr[1] "Зв’язки Проект/ITIL"
+msgstr[2] "Зв’язки Проект/ITIL"
+msgstr[3] "Зв’язки Проект/ITIL"
 
 #: src/Change_Ticket.php:55
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язки Заявки/Зміни"
+msgstr[1] "Зв’язки Заявки/Зміни"
+msgstr[2] "Зв’язки Заявки/Зміни"
+msgstr[3] "Зв’язки Заявки/Зміни"
 
 #: src/Problem_Ticket.php:49
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язок Заявки/Проблеми"
+msgstr[1] "Зв’язки Заявки/Проблеми"
+msgstr[2] "Зв’язки Заявки/Проблеми"
+msgstr[3] "Зв’язки Заявки/Проблеми"
 
 #: src/ProjectTask_Ticket.php:69
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв’язок Заявки/Завдання проекту"
+msgstr[1] "Зв’язки Заявки/Завдання проекту"
+msgstr[2] "Зв’язки Заявки/Завдання проекту"
+msgstr[3] "Зв’язки Заявки/Завдання проекту"
 
 #: src/KnowbaseItem_Item.php:130
 msgid "Link a knowledge base entry"
@@ -14880,10 +14885,10 @@ msgstr "Зв’язувати з елементами при створенні 
 #: src/RuleImportAsset.php:181
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв'язаний актив"
+msgstr[1] "Зв'язані активи"
+msgstr[2] "Зв'язані активи"
+msgstr[3] "Зв'язані активи"
 
 #: src/CommonITILObject_CommonITILObject.php:49
 msgid "Linked assistance object"
@@ -14910,10 +14915,10 @@ msgstr[3] ""
 #: src/KnowbaseItem_Item.php:176
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Пов'язаний елемент"
+msgstr[1] "Пов'язані елементи"
+msgstr[2] "Пов'язані елементи"
+msgstr[3] "Пов'язані елементи"
 
 #: src/NotificationTargetCommonITILObject.php:2170
 #: src/NotificationTargetCommonITILObject.php:2193
@@ -16067,7 +16072,7 @@ msgstr "Не заповнені обов'язкові поля"
 
 #: src/IPNetwork.php:335
 msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr ""
+msgstr "Відсутні налаштування мережі (In CIDR notation. Ex: 192.168.1.1/24)"
 
 #: install/update.php:155
 msgid "Missing security key file"
@@ -16229,7 +16234,7 @@ msgstr "Щомісячне TCO"
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:527
 #, php-format
 msgid "More than one Computer linked to %s #%s."
-msgstr ""
+msgstr "Більше ніж один комп'ютер зв'язаний з %s #%s."
 
 #: src/Impact.php:1052
 msgid "More..."
@@ -18038,7 +18043,7 @@ msgstr "Колір гарного стану"
 #, php-format
 msgctxt "glpi_status"
 msgid "OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d"
-msgstr ""
+msgstr "ОК: %d, ПОПЕРЕДЖЕНЬ: %d, ПРОБЛЕМ: %d, ЗАГАЛОМ: %d"
 
 #: src/OLA.php:51 src/NotificationTargetTicket.php:574
 #: src/NotificationTargetTicket.php:579 src/RuleTicket.php:241
@@ -18871,7 +18876,7 @@ msgstr "Шлях"
 msgid ""
 "Path of file where will be stored SQL queries that can be used to rollback "
 "changes"
-msgstr ""
+msgstr "Шлях для збереження SQL запитів для відкату змін"
 
 #: src/QueuedWebhook.php:332
 msgid "Payload"
@@ -19326,7 +19331,7 @@ msgstr ""
 msgid ""
 "Please update GLPI by following the procedure described in the installation "
 "documentation."
-msgstr ""
+msgstr "Оновіть GLPIзгідно процедури, зазначеної у документації по інсталяції"
 
 #: src/Plug.php:41
 msgid "Plug"
@@ -19540,6 +19545,7 @@ msgid ""
 "Plugin %1$s version changed. It has been deactivated as its update process "
 "has to be launched."
 msgstr ""
+"Версія Плугін %1$s змінена. Він деактивований, процес оновлення запущений."
 
 #: src/Console/Marketplace/DownloadCommand.php:101
 #, php-format
@@ -19885,7 +19891,7 @@ msgstr[3] "Типи принтерів"
 
 #: src/Profile.php:1089
 msgid "Printers dictionary"
-msgstr ""
+msgstr "Каталог принтерів"
 
 #: src/PrinterLog.php:396
 msgid "Prints"
@@ -19949,10 +19955,10 @@ msgstr[3] "Проблеми"
 #: src/Item_Problem.php:53
 msgid "Problem item"
 msgid_plural "Problem items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Проблемний елемент"
+msgstr[1] "Проблемні елементи"
+msgstr[2] "Проблемні елементи"
+msgstr[3] "Проблемні елементи"
 
 #: src/NotificationTargetProblem.php:51
 msgid "Problem solved"
@@ -20946,7 +20952,7 @@ msgstr "Видалити існуючі дані з основних табли�
 #: src/CommonDBTM.php:4130
 msgctxt "button"
 msgid "Remove from a rack"
-msgstr ""
+msgstr "Видалити з шафи"
 
 #: src/Appliance.php:470
 msgctxt "button"
@@ -21057,7 +21063,7 @@ msgstr "Виконати правила каталогу для виробник
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:51
 msgid "Replay dictionary rules on existing items"
-msgstr ""
+msgstr "Повторно задіяти правила для існуючих елементів"
 
 #: src/RuleDictionnarySoftwareCollection.php:236
 #: src/RuleDictionnaryDropdownCollection.php:306
@@ -21101,7 +21107,7 @@ msgstr ""
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
-msgstr ""
+msgstr "Реплицирована База даних не синхронізована"
 
 #: src/AuthLDAP.php:781 src/AuthLDAP.php:4467
 msgid "Replicate"
@@ -21121,7 +21127,7 @@ msgstr "Реплікувати %s"
 #: src/System/Status/StatusChecker.php:209
 msgctxt "glpi_status"
 msgid "Replication delay is too high"
-msgstr ""
+msgstr "Дуже велика затримка реплицирування"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
@@ -21394,7 +21400,7 @@ msgstr[3] "Резервування"
 #: front/reservation.form.php:165
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr "резервування додано до елементу %sо %s"
 
 #: src/NotificationTargetReservation.php:46
 msgid "Reservation expired"
@@ -21723,7 +21729,7 @@ msgstr "Правила призначення категорії для ПЗ"
 
 #: src/Profile.php:1051
 msgid "Rules for assigning a computer to a location"
-msgstr ""
+msgstr "Правила призначення комп’ютера до розташуванню"
 
 #: src/Profile.php:1047 src/Profile.php:2971
 msgid "Rules for assigning a computer to an entity"
@@ -21764,7 +21770,7 @@ msgstr "Правила, використовуючи об’єкт, були в�
 
 #: src/RuleCollection.php:656
 msgid "Rules will be erased and recreated from default. Are you sure?"
-msgstr ""
+msgstr "Правила будуть видалені і перестворені типові. Ви впевнені?"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:590
 #, php-format
@@ -23025,7 +23031,7 @@ msgstr ""
 
 #: src/Rule.php:2819
 msgid "Skip remaining rules"
-msgstr ""
+msgstr "Пропустити правила"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1297
 #, php-format
@@ -23821,7 +23827,7 @@ msgstr[3] "Моделі системних плат"
 
 #: src/Profile.php:986 src/Profile.php:3168
 msgid "System logs"
-msgstr ""
+msgstr "Системні журнали"
 
 #: src/CronTask.php:1920
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -24746,7 +24752,7 @@ msgstr[3] "Типи третьої сторони"
 
 #: src/Console/Plugin/UninstallCommand.php:56
 msgid "This action will permanently delete data"
-msgstr ""
+msgstr "Ця дія повністю видалить дані!"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid ""
@@ -24981,10 +24987,10 @@ msgstr "Форма створення заявки після входу"
 #: src/Item_Ticket.php:53
 msgid "Ticket item"
 msgid_plural "Ticket items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Заявка по елементам"
+msgstr[1] "Заявки по елементам"
+msgstr[2] "Заявки по елементам"
+msgstr[3] "Заявки по елементам"
 
 #: src/Item_TicketRecurrent.php:53
 msgid "Ticket recurrent item"
@@ -25183,7 +25189,7 @@ msgstr "Хронологічний Тиждень"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Timeline date display"
-msgstr ""
+msgstr "Часова діаграма"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "Timeline filter"
@@ -25800,7 +25806,7 @@ msgstr "URL"
 #: src/RSSFeed.php:788 src/RSSFeed.php:855
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "посилання \" %s \" заборонено Адміністратором системи"
 
 #: src/Toolbox.php:1329 src/System/Status/StatusChecker.php:407
 #, php-format
@@ -25813,7 +25819,7 @@ msgstr "Необхідно вказати URL"
 
 #: src/Marketplace/NotificationTargetController.php:131
 msgid "URL of GLPI marketplace"
-msgstr ""
+msgstr "Посилання на магазин застосунків"
 
 #: src/NotificationTargetReservation.php:166
 msgid "URL of item reserved"
@@ -25953,6 +25959,8 @@ msgid ""
 "Unable to create security key file! You have to run the \"%s\" command to "
 "manually create this file."
 msgstr ""
+"неможливо створити файл з секретним ключем. Виконайте команду \" %s \" "
+"вручну."
 
 #: src/CronTask.php:1662
 #, php-format
@@ -25971,7 +25979,7 @@ msgstr "Не можу розкрити архів плугіну."
 #, php-format
 msgctxt "oauth"
 msgid "Unable to fetch authorization code. Error is: %s"
-msgstr ""
+msgstr "Неможливо прочитати код авторизації. Помилка: %s"
 
 #: src/Marketplace/View.php:365
 #, php-format
@@ -26181,6 +26189,8 @@ msgid ""
 "Unable to update model because it is used by an asset in the \"%s\" rack and"
 " the new required units do not fit into the rack"
 msgstr ""
+"Неможливо оновити модель, тому що вона використовується у Шафі \"%s\" або "
+"відсутні вільні юніти у Шафі."
 
 #: src/System/Requirement/DbConfiguration.php:67
 msgid "Unable to validate database configuration variables."
@@ -27168,7 +27178,7 @@ msgstr "Перевірити інциндент"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:56
 msgid "Validate files integrity for GLPI's documents."
-msgstr ""
+msgstr "Перевірте цілісність GLPI's документів."
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
@@ -29188,7 +29198,7 @@ msgstr "Ват"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "when reported by GLPI agent via native inventory"
-msgstr ""
+msgstr "Звіт GLPI агента по інвентаризації "
 
 #: src/RuleMailCollector.php:210
 msgid "with email response"

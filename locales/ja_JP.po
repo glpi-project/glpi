@@ -6,9 +6,9 @@
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2023
-# 青海K, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Cédric Anne, 2024
+# Trans City, 2024
 # INOUE Daisuke, 2024
 # 
 #, fuzzy
@@ -253,7 +253,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:686
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s ( 状態 %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:111
 #, php-format
@@ -1420,7 +1420,7 @@ msgstr "%s 日前"
 #: front/projecttask.form.php:97
 #, php-format
 msgid "%s delete a task"
-msgstr ""
+msgstr "%s がタスクを削除"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -1555,7 +1555,7 @@ msgstr[0] "%s時間"
 #: src/Ticket.php:3255
 #, php-format
 msgid "%s hours %s minutes"
-msgstr ""
+msgstr "%s 時間 %s 分"
 
 #: src/Html.php:7038 js/common.js:1180
 #, javascript-format, php-format
@@ -1638,7 +1638,7 @@ msgstr "%s 分前"
 #, php-format
 msgid "%s model"
 msgid_plural "%s models"
-msgstr[0] ""
+msgstr[0] "%s モデル"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1868
@@ -1666,12 +1666,12 @@ msgstr[0] "%s プラグイン"
 #: src/Ticket.php:1813
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr "%s がチケット %s からのフォローを催促"
+msgstr "%s がチケット %s からのフォローを促進"
 
 #: src/Ticket.php:1829
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr "%s が %s チケットのタスクを催促"
+msgstr "%s が %s チケットのタスクを促進"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:71
@@ -1825,7 +1825,7 @@ msgstr "%s がデータベースインスタンスをリストア"
 #: front/projecttask.form.php:84
 #, php-format
 msgid "%s restores a task"
-msgstr ""
+msgstr "%s がタスクを復元"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:124
@@ -1903,13 +1903,13 @@ msgstr[0] "このアイテムの %s チケットは対応中か最近解決し�
 #: front/pluginimage.send.php:81
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr "%s が通常とは異なるパスを使用しようとしています。"
+msgstr "%s が標準とは異なるパスを使用しようとしています。"
 
 #: src/Asset/AssetType.php:61
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
+msgstr[0] "%s 型"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2064,7 +2064,7 @@ msgstr "%s があなたの GLPI アカウントへのアクセスを求めてい
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
 msgid "%s was already promoted"
-msgstr "%s は催促済み"
+msgstr "%s は促進済み"
 
 #: src/Html.php:7048 js/common.js:1184
 #, javascript-format, php-format
@@ -2364,7 +2364,7 @@ msgstr "PHP 拡張モジュールはファイルのアップロードを停止�
 msgid ""
 "A PHP version maintained by the PHP community should be used to get the "
 "benefits of PHP security and bug fixes."
-msgstr "PHP のバージョンは、セキュリティやバグ修正において有利な PHP コミュニティによって保守されているものを使用すべきです。"
+msgstr "PHP のバージョンは、セキュリティやバグ修正において優位性があるため PHP コミュニティーが保守しているものを使用すべきです。"
 
 #: src/NotificationAjax.php:107
 #, php-format
@@ -2564,7 +2564,7 @@ msgstr "APIトークン"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "昇順"
 
 #: src/DevicePowerSupply.php:53 src/DevicePowerSupply.php:77
 msgid "ATX"
@@ -2679,7 +2679,7 @@ msgstr "アクションの型"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Action when a user is restored in the LDAP directory"
-msgstr "LDAP ディレクトリーでユーザーが復元された際のアクション"
+msgstr "LDAP ディレクトリーでユーザーが復元された際の操作"
 
 #: templates/components/form/single-action.html.twig src/User.php:2482
 #: src/Plugin.php:2369
@@ -2813,7 +2813,7 @@ msgstr "API クライアントを追加"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Add CC users as observer"
-msgstr "CC のユーザーをオブザーバーに追加する"
+msgstr "CC のユーザーを関係者に追加する"
 
 #: js/rack.js:101
 msgid "Add PDU"
@@ -2826,7 +2826,7 @@ msgstr "%s を追加"
 
 #: src/AuthLdapReplicate.php:91
 msgid "Add a LDAP directory replica"
-msgstr "LDAP ディレクトリの複製を追加"
+msgstr "LDAP ディレクトリーのレプリカを追加"
 
 #: js/planning.js:706
 msgid "Add a calendar"
@@ -2885,7 +2885,7 @@ msgstr "抽出条件の追加"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Add a custom header"
-msgstr ""
+msgstr "カスタム ヘッダを追加"
 
 #: src/Database.php:435
 msgid "Add a database"
@@ -2908,7 +2908,7 @@ msgstr "ドキュメントを追加"
 #: src/Computer.php:376
 msgctxt "button"
 msgid "Add a domain"
-msgstr ""
+msgstr "ドメインを追加"
 
 #: js/modules/Dashboard/Dashboard.js:410
 msgid "Add a filter"
@@ -2916,11 +2916,11 @@ msgstr "フィルターを追加"
 
 #: src/ITILFollowup.php:898
 msgid "Add a followup to tickets (observer)"
-msgstr "チケットにフォローを追加 ( オブザーバー )"
+msgstr "チケットにフォローを追加 ( 関係者 )"
 
 #: src/ITILFollowup.php:895
 msgid "Add a followup to tickets (requester)"
-msgstr "チケットにフォローを追加 ( 要求者 )"
+msgstr "チケットにフォローを追加 ( 依頼者 )"
 
 #: src/ITILFollowup.php:891
 msgid "Add a followup to tickets of associated groups"
@@ -3007,7 +3007,7 @@ msgstr "新しいプラグを追加"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "新たにポートを追加"
 
 #: src/Change_Ticket.php:292 src/Problem_Ticket.php:276 src/Problem.php:418
 #: src/Ticket.php:2224
@@ -3081,7 +3081,7 @@ msgstr "ユーザーの追加"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Add a user without accreditation from a LDAP directory"
-msgstr "LDAPディレクトリに登録がないユーザーの追加"
+msgstr "LDAP ディレクトリーに登録されていないユーザーの追加"
 
 #: src/SoftwareVersion.php:322
 msgctxt "button"
@@ -3144,7 +3144,7 @@ msgstr "アイテムの型を追加"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "別の並び順を追加"
 
 #: src/Impact.php:1122
 msgid "Add asset"
@@ -3189,7 +3189,7 @@ msgstr "date_mod を %s に追加"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Add documents"
-msgstr ""
+msgstr "ドキュメントを追加"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into ticket notifications"
@@ -3214,11 +3214,11 @@ msgstr "フォローの追加 ( 関連グループ )"
 
 #: src/ITILFollowup.php:897
 msgid "Add followup (observer)"
-msgstr "フォローの追加 ( オブザーバー )"
+msgstr "フォローの追加 ( 関係者 )"
 
 #: src/ITILFollowup.php:894
 msgid "Add followup (requester)"
-msgstr "フォローの追加 ( 要求者 )"
+msgstr "フォローの追加 ( 依頼者 )"
 
 #: src/Inventory/Inventory.php:525
 msgid "Add global lock"
@@ -3234,11 +3234,11 @@ msgstr "リンクを追加"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
-msgstr "チケットの回答を追加する際、自分を担当技術者に追加"
+msgstr "チケットのフォローを追加する際、自分を担当技術者に追加"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket solution"
-msgstr "チケットの回答を追加する際、自分を担当技術者に追加"
+msgstr "チケットの解決を追加する際、自分を担当技術者に追加"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:83
 msgid "Add new devices"
@@ -3330,7 +3330,7 @@ msgstr "外部ソースからユーザーを追加"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "ゾーンを追加"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/Remove items from software versions"
@@ -3365,7 +3365,7 @@ msgstr "ユニシティ索引の追加 - %s"
 
 #: src/DefaultFilter.php:57
 msgid "Additional default filter"
-msgstr ""
+msgstr "追加の標準フィルター"
 
 #: src/QueuedNotification.php:286 src/QueuedNotification.php:790
 msgid "Additional headers"
@@ -3458,7 +3458,7 @@ msgstr "後"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr ""
+msgstr "12時間を経過すると、自分の応答を変更できなくなります。"
 
 #: src/PendingReason.php:296
 msgid "After one follow-up"
@@ -3640,7 +3640,7 @@ msgstr "すべてのダッシュボート"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:69
 msgid "All documents"
-msgstr ""
+msgstr "すべてのドキュメント"
 
 #: src/Profile.php:3919 src/Profile.php:3925
 msgid "All items"
@@ -3656,7 +3656,7 @@ msgstr "すべての自分の記事"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "全ページ"
 
 #: src/Dropdown.php:2576
 msgid "All pages in CSV"
@@ -3742,7 +3742,7 @@ msgstr "匿名のチケット作成を許可する ( ヘルプデスク・受信
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:84
 msgid "Allow downloading the GLPI release if needed"
-msgstr ""
+msgstr "必要に応じた GLPI リリースのダウンロードを許可"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/Notification.php:445
@@ -3758,6 +3758,7 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"API へログインし、ユーザーの外部トークンによるセッショントークンの取得を許可する。リモートアクセスキーは、ユーザー設定タブで確認できます。"
 
 #: src/Console/Database/UpdateCommand.php:101
 msgid "Allow update to an unstable version"
@@ -3919,7 +3920,7 @@ msgstr "コレクターへの接続でエラーが発生しました。"
 
 #: src/Api/HL/APIException.php:52
 msgid "An error occurred while processing your request."
-msgstr ""
+msgstr "リクエストの処理中にエラーが発生しました。"
 
 #: src/Inventory/Conf.php:240
 #, php-format
@@ -3933,11 +3934,11 @@ msgstr "タスク \"%s\" のロックを解除しようとしたときにエラ�
 
 #: src/Webhook.php:1254
 msgid "An event is required"
-msgstr ""
+msgstr "イベントが必要です"
 
 #: src/Api/HL/Search.php:112
 msgid "An internal error occured while trying to fetch the data."
-msgstr ""
+msgstr "データ取得を試行中に内部エラーが発生しました。"
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4092,7 +4093,7 @@ msgstr "%s への承認要求を送信しました"
 
 #: src/RuleCommonITILObject.php:911
 msgid "Approval request to requester group manager"
-msgstr "要求グループ管理者への承認要求"
+msgstr "依頼グループ管理者への承認要求"
 
 #: src/RuleCommonITILObject.php:915
 msgid "Approval request to technician group manager"
@@ -4101,7 +4102,7 @@ msgstr "技術者グループ管理者への承認要求"
 #: src/NotificationTargetCommonITILObject.php:924
 #: src/CommonITILValidation.php:1093 src/CommonITILValidation.php:1328
 msgid "Approval requester"
-msgstr "承認要求者"
+msgstr "承認依頼者"
 
 #: src/CommonITILValidation.php:1094 src/CommonITILValidation.php:1418
 msgid "Approval status"
@@ -4127,11 +4128,11 @@ msgstr "承認する"
 
 #: src/Ticket.php:5578
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr "自分で作成したチケットの解決の承認と調査への回答"
+msgstr "自分が作成したチケットの調査への解決・回答を承認する"
 
 #: src/Ticket.php:5577
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr "解決の承認・調査への回答 ( 自分のチケット )"
+msgstr "調査の解決・回答を承認 ( 自分のチケット )"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
@@ -4245,7 +4246,7 @@ msgstr "このアイテムのロック解除を依頼しますか？"
 #: src/CommonITILObject.php:7173
 msgctxt "button"
 msgid "Ask for validation"
-msgstr "検証を依頼する"
+msgstr "検証要求する"
 
 #: templates/pages/admin/transfer.html.twig
 #: templates/pages/assets/cable.html.twig src/Html.php:1328 src/Event.php:164
@@ -4267,7 +4268,7 @@ msgstr[0] "情報資産"
 #: src/Asset/AssetDefinition.php:54
 msgid "Asset definition"
 msgid_plural "Asset definitions"
-msgstr[0] ""
+msgstr[0] "アセット定義"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -4606,7 +4607,7 @@ msgstr "GLPI データベースで認証"
 
 #: src/Auth.php:1240
 msgid "Authentication on a LDAP directory"
-msgstr "LDAP ディレクトリで認証"
+msgstr "LDAP ディレクトリーで認証"
 
 #: src/Auth.php:1252
 msgid "Authentication on mail server"
@@ -4852,7 +4853,7 @@ msgstr "メールからユーザーを自動作成"
 #: src/NotificationTemplate.php:248
 #, php-format
 msgid "Automatically generated by %s"
-msgstr ""
+msgstr "%s が自動生成"
 
 #: src/Migration.php:883
 #, php-format
@@ -5092,19 +5093,19 @@ msgstr "見やすい数値"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log GTID:"
-msgstr ""
+msgstr "バイナリーログ GTID : "
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "バイナリーログ ファイル : "
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "バイナリーログの場所 : "
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
-msgstr "LDAPディレクトリへのバインド"
+msgstr "LDAP ディレクトリーへのバインド"
 
 #: src/Inventory/Asset/Cartridge.php:71 src/Printer_CartridgeInfo.php:202
 msgid "Black"
@@ -5124,7 +5125,7 @@ msgstr "モノクロ印刷"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "モノクロページ"
 
 #: src/Blacklist.php:109 src/RuleCollection.php:2072
 msgid "Blacklist"
@@ -5213,11 +5214,11 @@ msgstr "ビル番号"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
-msgstr "LDAPディレクトリから一括インポートしたグループ"
+msgstr "LDAP ディレクトリーからグループを一括インポート"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
-msgstr "LDAPディレクトリから一括インポートしたユーザー"
+msgstr "LDAP ディレクトリーからユーザーを一括インポート"
 
 #: front/massiveaction.php:60
 msgid "Bulk modification"
@@ -5243,11 +5244,11 @@ msgstr "情報資産のビジネスルール"
 
 #: src/RuleChangeCollection.php:44 src/RuleChange.php:43 src/Profile.php:2927
 msgid "Business rules for changes"
-msgstr "変更のビジネスルール"
+msgstr "変更要求のビジネスルール"
 
 #: src/Profile.php:1066
 msgid "Business rules for changes (entity)"
-msgstr "変更のビジネスルール (エンティティ)"
+msgstr "変更要求のビジネスルール (エンティティ)"
 
 #: src/RuleProblemCollection.php:44 src/RuleProblem.php:43
 #: src/Profile.php:2942
@@ -5364,11 +5365,11 @@ msgstr "CPU 使用率"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA Challenge"
-msgstr ""
+msgstr "CRA チャレンジ"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "CRA 結果"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -5531,7 +5532,7 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
-"このプロファイルのインターフェイスを変更することはできません。このプロファイルが、このインターフェイスをもつプロファイルに対して変更権限をもっている最後のプロファイルであるためです。"
+"このプロファイルのインターフェースを変更することはできません。このプロファイルが、このインターフェースをもつプロファイルに対して変更権限をもっている最後のプロファイルであるためです。"
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -5602,7 +5603,7 @@ msgstr "プラグインの指定のバージョンが見つかりません。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:137
 msgid "Cannot generate a diff on a development version."
-msgstr ""
+msgstr "開発バージョンでは diff を生成できません。"
 
 #: src/CommonDBConnexity.php:319
 #, php-format
@@ -5617,7 +5618,7 @@ msgstr "設定ファイル \"%s\" を書き込めません。"
 #: src/Console/Application.php:385
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr "\"%s\" ディレクトリに書き込めません。"
+msgstr "\"%s\" ディレクトリーに書き込めません。"
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
@@ -5626,7 +5627,7 @@ msgstr "この属性を変更することはできません。上位から引き
 #: src/Asset/AssetDefinition.php:105 src/Asset/AssetDefinition.php:312
 #: src/Asset/AssetDefinition.php:572
 msgid "Capacities"
-msgstr ""
+msgstr "容量"
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:83 src/DeviceBattery.php:123
@@ -5797,16 +5798,18 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"チャレンジレスポンス認証は、GLPI "
+"からデータを送る前に対象サーバーのアイデンティティーを検証するのに利用します。これは上のセクションで生成した共有秘密カギを使用します。"
 
 #: src/Webhook.php:1042
 msgid ""
 "Challenge–response authentication failed, the answer returned by target is "
 "different"
-msgstr ""
+msgstr "対象からの応答が異なっているため、チャレンジレスポンス認証に失敗しました"
 
 #: src/Webhook.php:1037
 msgid "Challenge–response authentication validated"
-msgstr ""
+msgstr "チャレンジレスポンス認証を承認"
 
 #: src/NotificationTargetProblem.php:225 src/NotificationTargetProblem.php:239
 #: src/Stat.php:1788 src/NotificationTargetTicket.php:736
@@ -5838,7 +5841,7 @@ msgstr "すべて変更"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
+msgstr[0] "変更要求の承認"
 
 #: src/SavedSearch.php:85
 msgid "Change count method"
@@ -5868,7 +5871,7 @@ msgstr "パスワードストレージキーを変更し、データベース内
 
 #: src/NotificationTargetChange.php:62
 msgid "Change solved"
-msgstr "解決済み変更"
+msgstr "変更要求の解決"
 
 #: src/ChangeTask.php:43
 msgid "Change task"
@@ -5955,7 +5958,7 @@ msgstr "特性"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:73
 msgid "Check GLPI source code file integrity."
-msgstr ""
+msgstr "GLPI ソースコードファイルの完全性を確認"
 
 #: templates/components/datatable.html.twig src/Html.php:2230 src/Lock.php:918
 msgid "Check all"
@@ -5995,7 +5998,7 @@ msgstr "新しいバージョンを確認"
 #: src/RSSFeed.php:703
 #, php-format
 msgid "Check permissions to the directory: %s"
-msgstr "ディレクトリ %s への書き込みパーミッションのチェック"
+msgstr "%s ディレクトリーへの書き込みパーミッションのチェック"
 
 #: src/Console/System/CheckRequirementsCommand.php:53
 msgid "Check system requirements"
@@ -6241,7 +6244,7 @@ msgstr "クリアする"
 
 #: templates/stencil/editor.html.twig
 msgid "Clear data"
-msgstr ""
+msgstr "データをクリアー"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
@@ -6253,7 +6256,7 @@ msgstr "状態をクリアする"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Clear the list of elements to be transferred"
-msgstr ""
+msgstr "翻訳する要素のリストを初期化"
 
 #: js/impact.js:2307
 msgid "Click on an element to remove it from the network"
@@ -6333,7 +6336,7 @@ msgstr "チケットの終了操作が無効です。"
 #: src/Holiday.php:48 src/Calendar_Holiday.php:170
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "営業時間外"
+msgstr[0] "休業時間"
 
 #: src/Stat.php:564 src/Stat/Data/Sglobal/StatDataTicketNumber.php:67
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:64
@@ -6365,7 +6368,7 @@ msgstr "終了したチケット"
 #: src/CommonITILObject.php:4322 src/CommonITILObject.php:5678
 #: src/NotificationTargetCommonITILObject.php:1924 src/Ticket.php:5776
 msgid "Closing date"
-msgstr "終了日"
+msgstr "終了日付"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Closing of the ticket"
@@ -6383,7 +6386,7 @@ msgstr "終了"
 
 #: src/NotificationTargetChange.php:65
 msgid "Closure of a change"
-msgstr "変更の終了"
+msgstr "変更要求の終了"
 
 #: src/NotificationTargetProblem.php:52
 msgid "Closure of a problem"
@@ -6613,7 +6616,7 @@ msgstr "会社"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Compare"
-msgstr ""
+msgstr "比較"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid ""
@@ -6629,7 +6632,7 @@ msgstr "選択したリビジョンを比較"
 #: src/Csv/PrinterLogCsvExportComparison.php:70
 #: src/Csv/PrinterLogCsvExportComparison.php:71
 msgid "Comparison"
-msgstr ""
+msgstr "比較"
 
 #: src/DbUtils.php:1453 src/NotificationTargetProjectTask.php:657
 #: src/CommonTreeDropdown.php:752
@@ -6642,7 +6645,7 @@ msgstr "完全名"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Complete output from the API"
-msgstr ""
+msgstr "API からの完全な出力"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: front/devices.php:44 src/Dropdown.php:1088 src/Item_Devices.php:274
@@ -6687,7 +6690,7 @@ msgstr "設定"
 
 #: src/Console/Application.php:190
 msgid "Configuration directory to use"
-msgstr "使用する構成ディレクトリ"
+msgstr "使用する構成ディレクトリー"
 
 #: front/inventory.conf.php:52
 msgid "Configuration has been updated"
@@ -6816,7 +6819,7 @@ msgstr "接続文字列"
 #: src/Auth.php:904
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "LDAP ディレクトリへの接続に失敗しました"
+msgstr[0] "LDAP ディレクトリーへの接続に失敗しました"
 
 #: install/update.php:260
 msgid ""
@@ -7224,7 +7227,7 @@ msgstr "要求を作成"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr ""
+msgstr "すぐに作成"
 
 #: src/CommonITILRecurrentCron.php:54
 msgid "Create recurrent tickets and changes"
@@ -7242,7 +7245,7 @@ msgstr "指定日後に調査を作成"
 #: src/Document.php:1530
 #, php-format
 msgid "Create the directory %s"
-msgstr "ディレクトリ %s を作成"
+msgstr "%s ディレクトリーを作成"
 
 #: src/Ticket.php:127
 msgid "Create ticket"
@@ -7411,7 +7414,7 @@ msgstr "現在のファイル"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "現在のページ"
 
 #: src/Dropdown.php:2572
 msgid "Current page in CSV"
@@ -7439,12 +7442,12 @@ msgstr "現在、ソフトウェア辞書でのみ使用できます。"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
-msgstr ""
+msgstr "カスタム CSS は無効"
 
 #: src/Webhook.php:754
 msgid "Custom header"
 msgid_plural "Custom headers"
-msgstr[0] ""
+msgstr[0] "カスタムヘッダ"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
@@ -7466,7 +7469,7 @@ msgstr "D=動的"
 
 #: src/Profile_User.php:217
 msgid "D=Dynamic, R=Recursive"
-msgstr "D=動的, R=反復利用"
+msgstr "D=動的, R=再帰的"
 
 #: src/System/Requirement/DbConfiguration.php:55
 msgid "DB configuration"
@@ -7490,7 +7493,7 @@ msgstr "DEBUG"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "降順"
 
 #: templates/pages/management/certificate.html.twig
 #: src/Certificate_Item.php:464 src/Certificate.php:227
@@ -7862,7 +7865,7 @@ msgstr "メール受信者がインポートするファイルサイズ制限の
 #: src/DefaultFilter.php:67
 msgid "Default filter"
 msgid_plural "Default filters"
-msgstr[0] ""
+msgstr[0] "標準フィルター"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
@@ -7950,7 +7953,7 @@ msgstr "デフォルト検索"
 #: src/DefaultFilter.php:62
 msgid ""
 "Default search filter, applied in addition to the user's search criteria."
-msgstr ""
+msgstr "標準検索フィルター。ユーザーの検索条件に追加的に適用します。"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default search results limit (page)"
@@ -8011,11 +8014,11 @@ msgstr "デフォルト値"
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "画像でポートデータを定義"
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "画像でゾーンを定義"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Delay before account deactivation (in days)"
@@ -8071,7 +8074,7 @@ msgstr "ルールを削除する"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "並び順を削除"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1909
 msgid "Delete all"
@@ -8193,7 +8196,7 @@ msgstr "選択した要素との関係を削除"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "個人ビューの削除"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete relation between items"
@@ -8233,7 +8236,7 @@ msgstr "LDAPから削除"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/User.php:4021
 msgid "Deleted user in LDAP directory"
-msgstr "LDAPディレクトリから削除したユーザー"
+msgstr "LDAP ディレクトリーから削除されたユーザー"
 
 #: src/NotificationTargetChange.php:66
 msgid "Deleting a change"
@@ -8242,7 +8245,7 @@ msgstr "変更要求の削除"
 #: src/NotificationTargetKnowbaseItem.php:42
 #: src/NotificationTargetKnowbaseItem.php:89
 msgid "Deleting a knowledge base item"
-msgstr ""
+msgstr "ナレッジベースのアイテムを削除しています"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
@@ -8298,7 +8301,7 @@ msgstr "拒否する"
 
 #: src/RuleRight.php:384
 msgid "Deny login"
-msgstr ""
+msgstr "ログイン拒否"
 
 #: src/Impact.php:1094
 msgid "Depends"
@@ -8465,7 +8468,7 @@ msgstr[0] "デバイス : ハードディスク モデル"
 #: src/DeviceHardDriveType.php:40
 msgid "Device hard drive type"
 msgid_plural "Device hard drive types"
-msgstr[0] ""
+msgstr[0] "デバイスハードディスク型"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:121
 #: src/Agent.php:315
@@ -8648,7 +8651,7 @@ msgstr "数字"
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
-msgstr "直接通知  ( ロック解除要求者が通知の送信者になります )"
+msgstr "直接通知  ( ロック解除依頼者が通知の送信者になります )"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Direct connections"
@@ -8664,7 +8667,7 @@ msgstr "直接リンク"
 
 #: src/Plugin.php:2315
 msgid "Directory"
-msgstr "ディレクトリ"
+msgstr "ディレクトリー"
 
 #: src/AuthLDAP.php:4275 src/AuthLDAP.php:4276 src/AuthLDAP.php:4277
 #: src/AuthLDAP.php:4290 src/User.php:2871 src/Plugin.php:2718
@@ -8711,7 +8714,7 @@ msgstr "メンテナンスモードを無効にする"
 msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
-msgstr ""
+msgstr "ITIL オブジェクトのアクター設定の通知をデフォルトで無効にする。派生して変更することも可。"
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -8822,7 +8825,7 @@ msgstr "DisplayPort"
 
 #: templates/components/form/networkname.html.twig
 msgid "Dissociate"
-msgstr "関連付けを解除"
+msgstr "関連を解除"
 
 #: src/CommonDBConnexity.php:523 src/CommonDBConnexity.php:651
 #: src/NetworkPort_Vlan.php:389 src/Domain.php:414 src/NetworkName.php:453
@@ -8947,7 +8950,7 @@ msgstr "ドキュメント"
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
 msgid "Document ID"
-msgstr ""
+msgstr "ドキュメント ID"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: src/CommonDBTM.php:5588
@@ -8958,7 +8961,7 @@ msgstr "ドキュメントチケット %d"
 #: src/NotificationTargetKnowbaseItem.php:68
 #: src/NotificationTargetKnowbaseItem.php:183
 msgid "Document URL"
-msgstr ""
+msgstr "ドキュメント URL"
 
 #: src/Document.php:1259 src/Document.php:1367
 msgid "Document copy succeeded."
@@ -8967,12 +8970,12 @@ msgstr "ドキュメントをコピーしました."
 #: src/NotificationTargetKnowbaseItem.php:67
 #: src/NotificationTargetKnowbaseItem.php:182
 msgid "Document download URL"
-msgstr ""
+msgstr "ドキュメント ダウンロード URL"
 
 #: src/NotificationTargetKnowbaseItem.php:69
 #: src/NotificationTargetKnowbaseItem.php:184
 msgid "Document filename"
-msgstr ""
+msgstr "ドキュメント ファイル名"
 
 #: templates/pages/setup/general/management_setup.html.twig
 msgid "Document files maximum size (Mio)"
@@ -8996,7 +8999,7 @@ msgstr "ドキュメントを移動しました"
 #: src/NotificationTargetKnowbaseItem.php:66
 #: src/NotificationTargetKnowbaseItem.php:181
 msgid "Document name"
-msgstr ""
+msgstr "ドキュメント名"
 
 #: src/DocumentType.php:70
 msgid "Document type"
@@ -9006,7 +9009,7 @@ msgstr[0] "ドキュメントの形式"
 #: src/NotificationTargetKnowbaseItem.php:70
 #: src/NotificationTargetKnowbaseItem.php:185
 msgid "Document weblink"
-msgstr ""
+msgstr "ドキュメント Web リンク"
 
 #: src/NotificationTargetKnowbaseItem.php:212
 msgid "Documents"
@@ -9191,7 +9194,7 @@ msgstr "ドラム"
 
 #: src/Printer_CartridgeInfo.php:168
 msgid "Drum percentage"
-msgstr ""
+msgstr "ドラム使用率"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Due date progression"
@@ -9490,7 +9493,7 @@ msgstr "送信者アドレス"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Email sender email address"
-msgstr ""
+msgstr "メール送信者アドレス"
 
 #: templates/pages/admin/entity/notifications.html.twig
 #: templates/pages/setup/notification/mailing_setting.html.twig
@@ -9500,7 +9503,7 @@ msgstr "送信者名"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Email sending test result"
-msgstr ""
+msgstr "メール送信テストの結果"
 
 #: src/AuthMail.php:96 src/Auth.php:1301 src/RuleRight.php:252
 msgid "Email server"
@@ -9568,7 +9571,7 @@ msgstr "CSSのカスタマイズを有効にする"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable REST API"
-msgstr ""
+msgstr "REST API を有効に"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
@@ -9623,7 +9626,7 @@ msgstr "メンテナンスモードを有効にする"
 msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
-msgstr "プラグインファイルなしでの移入を有効にする（プラグインデータをサポートしているバージョン %s と互換性があるかどうかは検証できません）"
+msgstr "プラグインファイルなしでの移行を有効にする（プラグインデータをサポートしているバージョン %s と互換性があるかどうかは検証できません）"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable notifications"
@@ -9839,7 +9842,7 @@ msgstr "セッション Cookie でセキュリティが施されていること�
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Enter"
-msgstr ""
+msgstr "Enter"
 
 #: ajax/dropdownTrackingDeviceType.php:73
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -9924,7 +9927,7 @@ msgstr[0] "ルールで拒否した機器のログ"
 
 #: src/NetworkPortInstantiation.php:644
 msgid "Equipment without network card"
-msgstr "ネットワークカード無しの機器"
+msgstr "ネットワークカードがない機器"
 
 #: front/report.year.php:52
 msgid "Equipment's report by year"
@@ -9938,7 +9941,7 @@ msgstr "年別の機器レポート"
 #: js/glpi_dialog.js:415
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
+msgstr[0] "エラー"
 
 #: src/Plugin.php:2210 src/Plugin.php:2610
 msgid "Error / to clean"
@@ -9990,7 +9993,7 @@ msgstr "操作の実行でエラー"
 #: src/Dropdown.php:928
 #, php-format
 msgid "Error reading directory %s"
-msgstr "ディレクトリ %s の読み込み中にエラーが発生しました"
+msgstr "%s ディレクトリーの読み込み中にエラーが発生しました"
 
 #: src/Dashboard/Grid.php:900
 msgid "Error rendering card!"
@@ -10018,7 +10021,7 @@ msgstr "LDAPサーバー\"%s\"への問合せでエラーが発生しました�
 #: src/Dropdown.php:932
 #, php-format
 msgid "Error: %s is not a directory"
-msgstr "エラー: %s はディレクトリではありません"
+msgstr "エラー: %s はディレクトリーではありません"
 
 #: src/User.php:816 src/User.php:1048
 msgid "Error: the two passwords do not match"
@@ -10026,7 +10029,7 @@ msgstr "エラー：パスワードが一致しません"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:147
 msgid "Errors occurred during diff generation:"
-msgstr ""
+msgstr "diff 生成中にエラー : "
 
 #: src/Console/Migration/UnsignedKeysCommand.php:246
 #: src/Console/Migration/DynamicRowFormatCommand.php:156
@@ -10034,12 +10037,12 @@ msgstr ""
 #: src/Console/Migration/Utf8mb4Command.php:196
 #: src/Console/Migration/MyIsamToInnoDbCommand.php:126
 msgid "Errors occurred during migration."
-msgstr "移入中にエラーが発生しました。"
+msgstr "移行中にエラーが発生しました。"
 
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/LevelAgreementLevel.php:93 src/Ticket.php:2890 src/Ticket.php:2941
@@ -10204,7 +10207,7 @@ msgstr "実行"
 
 #: src/Console/Migration/MigrateAllCommand.php:51
 msgid "Execute all recommended optional migrations."
-msgstr "推奨されている追加の移入処理をすべて実行します。"
+msgstr "推奨されている追加の移行処理をすべて実行します。"
 
 #: src/Console/Migration/MigrateAllCommand.php:74
 #, php-format
@@ -10251,7 +10254,7 @@ msgstr "上級者モード"
 #: src/SoftwareLicense.php:444 src/SoftwareLicense.php:706
 #: src/SoftwareLicense.php:974 src/Certificate.php:439 src/Contract.php:653
 msgid "Expiration"
-msgstr "失効日"
+msgstr "有効期限"
 
 #: templates/generic_show_form.html.twig src/ItemAntivirus.php:233
 #: src/ItemAntivirus.php:345 src/NotificationTargetCertificate.php:123
@@ -10268,7 +10271,7 @@ msgstr "失効日 + 通知"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr ""
+msgstr "有効期限遅延"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
@@ -10301,7 +10304,7 @@ msgstr "エクスポート"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Export data in CSV"
-msgstr ""
+msgstr "データを CSV 出力"
 
 #: src/Stat.php:1979 src/Stat.php:2101
 msgid "Export to CSV"
@@ -10326,7 +10329,7 @@ msgstr "外部"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "External ID"
-msgstr ""
+msgstr "外部 ID"
 
 #: front/auth.others.php:52 front/auth.settings.php:43 front/setup.auth.php:42
 msgid "External authentication sources"
@@ -10433,7 +10436,7 @@ msgstr "くり返しアイテム %s を作成できませんでした"
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
-msgstr "ディレクトリ %s の作成に失敗しました。ディレクトリを作成するためのパーミッションがあるか確認してください"
+msgstr "%s ディレクトリーの作成に失敗しました。ディレクトリーを作成する権限があるか確認してください"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
@@ -10457,7 +10460,7 @@ msgstr "チケット %d を削除できませんでした"
 #: src/Console/Build/GenerateCodeManifestCommand.php:72
 #, php-format
 msgid "Failed to generate manifest. Error was: %s"
-msgstr ""
+msgstr "マニフェストの生成に失敗。エラー : %s"
 
 #: src/Ticket.php:6100
 #, php-format
@@ -10476,7 +10479,7 @@ msgstr "画像のリサイズに失敗しました"
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:97
 #, php-format
 msgid "Failed to validate GLPI source code integrity. Error was: %s"
-msgstr ""
+msgstr "GLPI ソースコードの完全性チェックに失敗。エラー : %s"
 
 #: src/UploadHandler.php:387
 msgid "Failed to write file to disk"
@@ -10736,7 +10739,7 @@ msgstr "グループ検索のフィルター"
 #: src/Search/Output/HTMLSearchOutput.php:155
 #, php-format
 msgid "Filtered by %s"
-msgstr ""
+msgstr "%s でフィルター"
 
 #: src/Dashboard/Grid.php:763
 msgid "Filters"
@@ -10917,7 +10920,7 @@ msgstr "指定の日付以降に終了した %s "
 
 #: src/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "詳細情報は、GLPI ログを確認してください。"
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11155,7 +11158,7 @@ msgstr "GLPI データベースのバージョン"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "GLPI history delay:"
-msgstr ""
+msgstr "GLPI 履歴遅延 : "
 
 #: src/Auth.php:1355 src/Auth.php:1671
 msgid "GLPI internal database"
@@ -11171,15 +11174,15 @@ msgstr "GLPIが動作しているサーバーのタイムゾーン"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:116
 msgid "GLPI source code integrity is not validated."
-msgstr ""
+msgstr "GLPI ソースコードの完全性は有効ではありません。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:112
 msgid "GLPI source code integrity is validated."
-msgstr ""
+msgstr "GLPI ソースコードの完全性は有効です。"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
-msgstr ""
+msgstr "GLPI 更新"
 
 #: src/Console/Database/UpdateCommand.php:168
 msgid "GLPI version"
@@ -11234,13 +11237,13 @@ msgstr "一般設定"
 msgid ""
 "Generate GLPI source code manifest that could be used to validate source "
 "code integrity."
-msgstr ""
+msgstr "ソースコードの完全性チェックで利用するため、GLPI ソースコードマニフェストを生成します。"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:165
 msgid ""
 "Generating the source code diff could require downloading the GLPI release "
 "archive. Do you want to allow this operation?"
-msgstr ""
+msgstr "ソースコード diff の生成には、GLPI リリースパッケージのダウンロードが必要です。この操作を許可しますか？"
 
 #: src/CommonITILObject.php:10273
 msgid "Generation of satisfaction surveys"
@@ -11367,7 +11370,7 @@ msgstr "権限"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "グラフィカルなスロット定義"
 
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
@@ -11499,7 +11502,7 @@ msgstr "HTML エンコーディングを修復しました。"
 
 #: templates/pages/setup/webhook/webhook.html.twig src/QueuedWebhook.php:397
 msgid "HTTP method"
-msgstr ""
+msgstr "HTTP メソッド"
 
 #: src/NetworkPort.php:1107
 msgid "Half"
@@ -11541,7 +11544,7 @@ msgstr "バックアップあり"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:58
 msgid "Hash algorithm to use"
-msgstr ""
+msgstr "利用するハッシュアルゴリズム"
 
 #: src/RuleImportAsset.php:111
 msgid "Having the status"
@@ -11559,7 +11562,7 @@ msgstr ""
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:323
 msgid "Headers"
-msgstr ""
+msgstr "ヘッダー"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/NotificationTargetProjectTask.php:631 src/KnowbaseItem.php:1237
@@ -11658,7 +11661,7 @@ msgstr "ホームページ"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Horizontal (menu in header"
-msgstr ""
+msgstr "水平 ( ヘッダーにメニュー )"
 
 #: src/Dashboard/Widget.php:231
 msgid "Horizontal bars"
@@ -11796,7 +11799,7 @@ msgstr "INFO"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO running:"
-msgstr ""
+msgstr "実行中 IO : "
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:184
 #: src/RuleLocation.php:101 src/Blacklist.php:247 src/RuleImportAsset.php:128
@@ -11899,33 +11902,33 @@ msgstr "承認しない場合、理由を明記してください"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If certificates are no longer used"
-msgstr "証明書を使用しなくなった場合"
+msgstr "使われていない証明書"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If contacts are no longer used"
-msgstr "連絡先が使われなくなった場合"
+msgstr "使われていない連絡先"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If contracts are no longer used"
-msgstr "契約が使われなくなった場合"
+msgstr "使われていない契約"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If devices are no longer used"
-msgstr "デバイスが使われなくなった場合"
+msgstr "使われていないデバイス"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If documents are no longer used"
-msgstr "ドキュメントが使われなくなった場合"
+msgstr "使われていないドキュメント"
 
 #: templates/pages/admin/group.html.twig
 msgid ""
 "If enabled, members of this group will also become implicit members of its "
 "children groups"
-msgstr "有効にすると、このグループのメンバーは、子グループのメンバーにもなります。"
+msgstr "有効にすると、このグループのメンバーは、下位グループのメンバーにもなります。"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If monitors are no longer used"
-msgstr "モニターが使われなくなった場合"
+msgstr "使われていないモニター"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If not set, main administrator email will be used."
@@ -11950,23 +11953,23 @@ msgstr "このオプションを設定すると、指定のメーカー ID を�
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If phones are no longer used"
-msgstr "電話を使わなくなった場合"
+msgstr "使われていない電話"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If printers are no longer used"
-msgstr "プリンターが使われなくなった場合"
+msgstr "使われていないプリンター"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If set, it will be used for notifications that doesnʼt expect a reply."
-msgstr ""
+msgstr "設定すると、返信を期待しない通知に使用します。"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If software are no longer used"
-msgstr "ソフトウェアが使われなくなった場合"
+msgstr "使われていないソフトウェア"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If suppliers are no longer used"
-msgstr "サプライヤを使用しなくなった場合"
+msgstr "使われていないサプライヤ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced (all changes)"
@@ -11982,7 +11985,7 @@ msgstr "同期済みまたは参照アカウントの場合"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If the cartridge types are no longer used"
-msgstr "カートリッジの型が使われなくなった場合"
+msgstr "使われていないカートリッジの型"
 
 #: src/User.php:5797 src/Api/API.php:2182
 msgid ""
@@ -12007,7 +12010,7 @@ msgstr "このアイテムがマイルストーンの役目を果たす・果た
 msgid ""
 "If the name is a valid email address, it will be automatically added to "
 "blacklisted senders."
-msgstr ""
+msgstr "名前に有効なメールアドレスを入力すると、自動的に不許可送信者リストに入ります。"
 
 #: src/CommonDropdown.php:630
 msgid ""
@@ -12018,7 +12021,7 @@ msgstr "実際に削除すると、このドロップダウンを使用してい
 msgid ""
 "If you have \"session.save_handler\" set to something besides \"files\" in "
 "your php.ini, this is not required."
-msgstr ""
+msgstr "サーバーの php.ini で「 session.save_handler 」を「 files 」以外に設定している場合は不要です。"
 
 #: src/ITILFollowup.php:432
 msgid "If you reject the solution, you must specify a reason"
@@ -12038,12 +12041,14 @@ msgid ""
 "\"Automatically add users from an external authentication source\", in the "
 "Authentication settings in order to avoid the generation of duplicate users."
 msgstr ""
+"この設定を有効にすると、このコレクターは LDAP "
+"経由で認証するユーザーからもリクエストを受けがちです。ユーザーの重複作成を避けるため、認証設定の「外部認証元のユーザーを自動で追加」を有効にすることを、おすすめします。"
 
 #: src/Marketplace/View.php:385
 msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
-msgstr "プラグインのダウンロードを簡単にするには、このディレクトリの権限と所有権を確認してください。"
+msgstr "プラグインのダウンロードを簡単にするには、このディレクトリーの権限と所有権を確認してください。"
 
 #: src/ITILFollowup.php:425
 msgid "If you want to reopen this item, you must specify a reason"
@@ -12177,7 +12182,7 @@ msgstr "インポートを拒否 ( ログなし )"
 
 #: src/User.php:4982
 msgid "Import from directories"
-msgstr "ディレクトリからのインポート"
+msgstr "ディレクトリーからのインポート"
 
 #: src/Inventory/Conf.php:305 src/Inventory/Conf.php:1111
 msgid "Import from file"
@@ -12223,7 +12228,7 @@ msgstr "インポート処理が完了しました。"
 
 #: templates/pages/admin/rules/import.html.twig
 msgid "Import rules from an XML file"
-msgstr ""
+msgstr "XML ファイルからルールをインポート"
 
 #: src/Inventory/Conf.php:637
 msgid "Import virtual machines"
@@ -12550,7 +12555,7 @@ msgstr "データベースの初期化"
 
 #: install/install.php:322 install/install.php:350 install/install.php:380
 msgid "Initializing database tables and default data..."
-msgstr ""
+msgstr "データベースのテーブルとデフォルトデータを初期化しています..."
 
 #: src/Update.php:280
 msgid "Initializing rules..."
@@ -12562,7 +12567,7 @@ msgstr "インライン（ツールバーなし）"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr ""
+msgstr "入力"
 
 #: src/NetworkPortMetrics.php:213
 msgid "Input errors"
@@ -12699,7 +12704,7 @@ msgstr "内部 TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTR"
-msgstr "内部 TTR"
+msgstr "内部 TTR ( 解決までの時間 )"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal Time to own"
@@ -12797,11 +12802,11 @@ msgstr "項目の定義に使用するJSONが無効です。"
 #: src/Api/HL/RSQL/Parser.php:69
 #, php-format
 msgid "Invalid RSQL array: %s"
-msgstr ""
+msgstr "無効な RSQL 配列 : %s"
 
 #: src/Api/HL/RSQL/Lexer.php:97
 msgid "Invalid RSQL query"
-msgstr ""
+msgstr "無効な RSQL クエリ―"
 
 #: src/Auth.php:1063
 msgid "Invalid TOTP code"
@@ -12921,7 +12926,7 @@ msgstr "予定の日付が無効なため、日付を更新しませんでした
 #: src/Console/Plugin/InstallCommand.php:300
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr "プラグインディレクトリ \"%s\" が無効です。"
+msgstr "プラグインディレクトリー \"%s\" が無効です。"
 
 #: src/MassiveAction.php:399
 msgid "Invalid process"
@@ -13097,7 +13102,7 @@ msgstr "\"%s\" コマンドを実行し、データベース スキーマが現�
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "It is strongly advised to use the HTTPS protocol."
-msgstr ""
+msgstr "HTTPS プロトコルを利用することを強く推奨します。"
 
 #: src/FieldUnicity.php:503
 msgid "It's mandatory to select a type and at least one field"
@@ -13328,7 +13333,7 @@ msgstr "アイテム型"
 #: src/DefaultFilter.php:181
 #, php-format
 msgid "Itemtype %s is already in use"
-msgstr ""
+msgstr "%s アイテム型はすでに使われています"
 
 #: src/Console/Task/UnlockCommand.php:84
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -13476,33 +13481,33 @@ msgstr[0] "LDAP抽出条件"
 #: templates/pages/admin/ldap.choose_directory.html.twig src/AuthLDAP.php:171
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] "LDAPディレクトリ"
+msgstr[0] "LDAP ディレクトリー"
 
 #: src/AuthLDAP.php:3897 src/AuthLDAP.php:3927
 msgid "LDAP directory choice"
-msgstr "LDAPディレクトリ選択"
+msgstr "LDAP ディレクトリー選択"
 
 #: src/User.php:3912
 msgid "LDAP directory for authentication"
-msgstr "認証用のLDAPディレクトリ"
+msgstr "認証用の LDAP ディレクトリー"
 
 #: templates/pages/admin/entity/advanced.html.twig src/Entity.php:917
 msgid "LDAP directory information attribute representing the entity"
-msgstr "エンティティを表示するLDAPディレクトリ情報属性"
+msgstr "エンティティを表わす LDAP ディレクトリー情報属性"
 
 #: front/ldap.group.php:44 front/ldap.import.php:49 front/ldap.php:42
 #: front/ldap.group.import.php:45 src/User.php:2497 src/Group.php:154
 #: src/Group.php:263
 msgid "LDAP directory link"
-msgstr "LDAPディレクトリリンク"
+msgstr "LDAP ディレクトリーリンク"
 
 #: src/Entity.php:935
 msgid "LDAP directory of an entity"
-msgstr "エンティティの LDAP ディレクトリ"
+msgstr "エンティティの LDAP ディレクトリー"
 
 #: src/AuthLDAP.php:647
 msgid "LDAP directory time zone"
-msgstr "LDAPディレクトリのタイムゾーン"
+msgstr "LDAP ディレクトリーのタイムゾーン"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:284
 msgid "LDAP filter"
@@ -13699,7 +13704,7 @@ msgstr "最近の四半期"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Last response"
-msgstr ""
+msgstr "最終応答"
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1506
 msgid "Last run"
@@ -13716,7 +13721,7 @@ msgstr "最終作業状況"
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:378
 msgid "Last status code"
-msgstr ""
+msgstr "最終状態コード"
 
 #: src/User.php:4013
 msgid "Last synchronization"
@@ -13760,7 +13765,7 @@ msgstr "最新チケット"
 #: src/NotificationTargetProject.php:672 src/DomainRecord.php:155
 #: src/Database.php:190
 msgid "Last update"
-msgstr "最終更新日"
+msgstr "最終更新"
 
 #: src/AuthLDAP.php:1749 src/AuthLDAP.php:1808
 msgid "Last update in GLPI"
@@ -13768,14 +13773,14 @@ msgstr "GLPIの最終更新日"
 
 #: src/AuthLDAP.php:1747 src/AuthLDAP.php:1806
 msgid "Last update in the LDAP directory"
-msgstr "LDAPディレクトリの最終更新日"
+msgstr "LDAP ディレクトリーの最終更新日"
 
 #. TRANS: %s is the datetime of update
 #: templates/components/form/dates.html.twig src/KnowbaseItem.php:986
 #: src/KnowbaseItem.php:1300 src/Document.php:446 src/AuthMail.php:208
 #, php-format
 msgid "Last update on %s"
-msgstr "最終更新日 %s"
+msgstr "最終更新 : %s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
@@ -14104,7 +14109,7 @@ msgstr[0] "問題へのリンク"
 #: src/NotificationTargetCommonITILObject.php:2303 src/Ticket.php:2999
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "チケットへのリンク"
+msgstr[0] "関連チケット"
 
 #: src/CommonITILObject_CommonITILObject.php:390 src/Ticket.php:2316
 msgid "Linked to"
@@ -14141,7 +14146,7 @@ msgstr "%s のリスト"
 
 #: src/AuthLDAP.php:769
 msgid "List of LDAP directory replicates"
-msgstr "LDAP ディレクトリ レプリカのリスト"
+msgstr "LDAP ディレクトリー レプリカのリスト"
 
 #: src/Dashboard/Widget.php:282
 msgid "List of articles"
@@ -14289,7 +14294,7 @@ msgstr "転送で更新された項目をロック"
 
 #: src/ObjectLock.php:632
 msgid "Lock status"
-msgstr ""
+msgstr "状態のロック"
 
 #: src/Log.php:1096
 msgid "Lock the item"
@@ -14369,7 +14374,7 @@ msgstr "再ログイン"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Log in item history"
-msgstr ""
+msgstr "アイテム履歴のログ"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Log out fallback URL"
@@ -14398,7 +14403,7 @@ msgstr "ログイン項目"
 #: src/Auth.php:1150
 #, php-format
 msgid "Login for %1$s denied by authorization rules from IP %2$s"
-msgstr ""
+msgstr "IP %2$s の認証ルールに基づき、%1$s のログインを拒否しました"
 
 #: templates/pages/login.html.twig
 msgid "Login source"
@@ -14415,7 +14420,7 @@ msgstr "外部トークンでのログインは無効です"
 #: index.php:119
 msgid ""
 "Logins are not possible at this time. Please contact your administrator."
-msgstr ""
+msgstr "現在ログインできません。管理者にお問い合わせください。"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Logout"
@@ -14726,7 +14731,7 @@ msgstr "必須項目を入力していません: %s"
 
 #: src/Console/Build/GenerateCodeManifestCommand.php:70
 msgid "Manifest successfully generated."
-msgstr ""
+msgstr "マニフェストを生成しました。"
 
 #: src/ManualLink.php:52
 msgid "Manual link"
@@ -14769,7 +14774,7 @@ msgstr "マーケットプレース"
 
 #: src/Html.php:2709
 msgid "Massive actions"
-msgstr "一斉アクション"
+msgstr "選択アイテムに「一斉操作」"
 
 #: src/WifiNetwork.php:73
 msgid "Master"
@@ -14849,7 +14854,7 @@ msgstr "一度に送信する期限切れ通知の最大数 "
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Maximum number of automatic actions (run by CLI)"
-msgstr ""
+msgstr "自動操作の最大数 ( CLI実行 )"
 
 #: src/UploadHandler.php:407
 msgid "Maximum number of files exceeded"
@@ -15040,7 +15045,7 @@ msgstr "アプライアンス プラグインのデータを GLPI コアテー�
 
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:62
 msgid "Migrate Databases plugin data into GLPI core tables"
-msgstr "データベースのプラグインデータを GLPI のコアテーブルに移入する"
+msgstr "データベースのプラグインデータを GLPI のコアテーブルに移行する"
 
 #: src/Console/Migration/DomainsPluginToCoreCommand.php:53
 msgid "Migrate Domains plugin data into GLPI core tables"
@@ -15117,7 +15122,7 @@ msgstr "「%s.%s」列は、制約「%s」が「%s.%s」テーブルから参照
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as its default value is "
 "negative."
-msgstr "「%s.%s」列の移入は、デフォルト値が負の値のため、できません。"
+msgstr "デフォルト値が負の値のため、「%s.%s」列の移行はできません。"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:219
 #, php-format
@@ -15438,7 +15443,7 @@ msgstr "自分の未発行の記事"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
-msgstr ""
+msgstr "MySQL サーバーがエラーを返しました : "
 
 #: src/DbUtils.php:1769 src/Search/Input/QueryBuilder.php:307
 #: src/User.php:4800 src/Dashboard/Filters/UserTechFilter.php:148
@@ -15826,7 +15831,7 @@ msgstr "新着コメント"
 
 #: src/NotificationTargetCommonITILObject.php:146
 msgid "New document"
-msgstr ""
+msgstr "新しいドキュメント"
 
 #: src/NotificationTargetCommonITILObject.php:141
 msgid "New followup"
@@ -15838,11 +15843,11 @@ msgstr "担当の新しいグループ"
 
 #: src/NotificationTargetCommonITILObject.php:134
 msgid "New group in observers"
-msgstr "オブザーバーの新しいグループ"
+msgstr "関係者の新しいグループ"
 
 #: src/NotificationTargetCommonITILObject.php:132
 msgid "New group in requesters"
-msgstr "要求者の新しいグループ"
+msgstr "依頼者の新しいグループ"
 
 #: templates/components/form/header_content.html.twig src/KnowbaseItem.php:831
 #: src/KnowbaseItem.php:854 src/CommonDBTM.php:6470
@@ -15852,7 +15857,7 @@ msgstr "新規アイテム"
 #: src/NotificationTargetKnowbaseItem.php:41
 #: src/NotificationTargetKnowbaseItem.php:86
 msgid "New knowledge base item"
-msgstr ""
+msgstr "新しいナレッジベース項目"
 
 #: src/Reminder.php:602 src/RSSFeed.php:684
 msgid "New note"
@@ -15920,11 +15925,11 @@ msgstr "担当の新しいユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:133
 msgid "New user in observers"
-msgstr "オブザーバーの新しいユーザー"
+msgstr "関係者の新しいユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:131
 msgid "New user in requesters"
-msgstr "要求者の新しいユーザー"
+msgstr "依頼者の新しいユーザー"
 
 #: src/Marketplace/Controller.php:428
 #, php-format
@@ -15995,7 +16000,7 @@ msgstr "イベント無し"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig
 msgid "No LDAP directory defined in GLPI"
-msgstr "GLPIに定義したLDAPディレクトリはありません"
+msgstr "GLPI で定義済みの LDAP ディレクトリーはありません"
 
 #: src/Profile.php:3802
 msgid "No access"
@@ -16106,16 +16111,16 @@ msgstr "説明なし"
 
 #: src/AuthLDAP.php:4059
 msgid "No directory associated to entity: impossible search"
-msgstr "エンティティに関連するディレクトリなし：検索不可"
+msgstr "エンティティに関連するディレクトリーなし：検索不可"
 
 #: src/AuthLDAP.php:4055
 msgid "No directory selected"
-msgstr "ディレクトリを選択していません"
+msgstr "ディレクトリーを選択していません"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:68
 msgid "No documents"
-msgstr ""
+msgstr "ドキュメントなし"
 
 #: templates/pages/admin/rules/engine_preview_criteria.html.twig
 msgid "No element to be tested"
@@ -16182,7 +16187,7 @@ msgstr "インポートしない"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
-msgstr ""
+msgstr "入力なし"
 
 #: templates/pages/admin/events_list.html.twig
 #: templates/pages/setup/notification/group_notifications.html.twig
@@ -16351,7 +16356,7 @@ msgstr "予約無し"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "No response given"
-msgstr ""
+msgstr "応答なし"
 
 #: ajax/subvisibility.php:64
 msgid "No restriction"
@@ -16544,7 +16549,7 @@ msgstr "計画外のタスク"
 
 #: src/QueuedWebhook.php:410
 msgid "Not sent/no response"
-msgstr ""
+msgstr "未送信・応答なし"
 
 #: src/Dashboard/Provider.php:275 src/Change.php:621 src/Problem.php:679
 #: src/Ticket.php:3375
@@ -16593,7 +16598,7 @@ msgstr "通知"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notifcation location"
-msgstr ""
+msgstr "通知場所"
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -16610,7 +16615,7 @@ msgstr "通知が無効になっています"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Notification does not exist"
-msgstr ""
+msgstr "通知がありません"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 msgid "Notification frequency"
@@ -16937,7 +16942,7 @@ msgstr "検索件数"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Number of retries"
-msgstr ""
+msgstr "試行許可回数"
 
 #: src/DCRoom.php:155 src/DCRoom.php:324
 msgid "Number of rows"
@@ -17001,7 +17006,7 @@ msgstr "割当済みチケット数"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:4102
 msgid "Number of tickets as requester"
-msgstr "要求者としてのチケット数"
+msgstr "依頼者としてのチケット数"
 
 #: src/Dashboard/Grid.php:1301
 msgid "Number of tickets by SLA status and technician"
@@ -17052,7 +17057,7 @@ msgstr "文書チケット数"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
-msgstr ""
+msgstr "OAuth 認証"
 
 #: src/OAuthClient.php:49
 msgid "OAuth client"
@@ -17132,7 +17137,7 @@ msgstr[0] "オブジェクトロック"
 #: src/NotificationTargetCommonITILObject.php:1985
 msgid "Observer"
 msgid_plural "Observers"
-msgstr[0] "オブザーバー"
+msgstr[0] "関係者"
 
 #: src/RuleCommonITILObject.php:676 src/RuleCommonITILObject.php:823
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
@@ -17141,15 +17146,15 @@ msgstr[0] "オブザーバー"
 #: src/NotificationTargetCommonITILObject.php:1980
 msgid "Observer group"
 msgid_plural "Observer groups"
-msgstr[0] "オブザーバー グループ"
+msgstr[0] "関係者グループ"
 
 #: src/NotificationTargetCommonITILObject.php:919
 msgid "Observer group except manager users"
-msgstr "管理者ユーザーを除くオブザーバーグループ"
+msgstr "管理者ユーザーを除く関係者グループ"
 
 #: src/NotificationTargetCommonITILObject.php:916
 msgid "Observer group manager"
-msgstr "オブザーバー グループ管理者"
+msgstr "関係者グループ管理者"
 
 #: src/Toolbox.php:1997 src/Features/PlanningEvent.php:835
 msgid "October"
@@ -17225,7 +17230,7 @@ msgstr "データのうち、このルールの基準のみ"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:70
 msgid "Only documents related to the item that triggers the event"
-msgstr ""
+msgstr "イベントをトリガーしたアイテムに関連する文書のみ"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:89
 msgid "Only update existing users (will not handle deleted users)"
@@ -17330,7 +17335,7 @@ msgstr "--allオプションは--taskオプションと互換性がありませ�
 
 #: src/Console/Plugin/AbstractPluginCommand.php:81
 msgid "Option --all is not compatible with usage of directory argument."
-msgstr "--all オプションはディレクトリ引数の使用法と互換性がありません。"
+msgstr "--all オプションはディレクトリー引数の使用法と互換性がありません。"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:527
 msgid ""
@@ -17625,7 +17630,7 @@ msgstr "マーケットプレースの PHP 拡張機能"
 #: src/System/Status/StatusChecker.php:538
 msgctxt "glpi_status"
 msgid "PHP is not configured to use the \"files\" session save handler"
-msgstr ""
+msgstr "PHP で session save handler を \"files\" に設定していません。"
 
 #: src/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
@@ -17863,15 +17868,15 @@ msgstr "変更のロールバックを可能にする SQL クエリー保存先�
 #: src/QueuedWebhook.php:332
 msgid "Payload"
 msgid_plural "Payloads"
-msgstr[0] ""
+msgstr[0] "ペイロード"
 
 #: src/Webhook.php:753
 msgid "Payload editor"
-msgstr ""
+msgstr "ペイロード エディター"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Payload output"
-msgstr ""
+msgstr "ペイロード出力"
 
 #: src/Dashboard/Provider.php:1302 src/Dashboard/Provider.php:1656
 #: src/CommonITILObject.php:5721 src/CommonITILObject.php:7001
@@ -17963,7 +17968,7 @@ msgstr "キャッシュファイルの権限"
 #: src/System/Requirement/DirectoryWriteAccess.php:104
 #, php-format
 msgid "Permissions for directory %s"
-msgstr "%sディレクトリーの権限"
+msgstr "%s ディレクトリーの権限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:68
 msgid "Permissions for document files"
@@ -18257,11 +18262,11 @@ msgstr "バージョンを選んでください！"
 
 #: ajax/webhook.php:121
 msgid "Please select an event"
-msgstr ""
+msgstr "イベントを選択してください"
 
 #: ajax/webhook.php:117
 msgid "Please select an item"
-msgstr ""
+msgstr "アイテムを選択してください"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
@@ -18269,7 +18274,7 @@ msgstr "追加するアイテムを選択してください"
 
 #: ajax/webhook.php:113
 msgid "Please select an itemtype"
-msgstr ""
+msgstr "アイテムの型を選択してください"
 
 #: src/System/Requirement/InstallationNotOverriden.php:93
 msgid ""
@@ -18513,7 +18518,7 @@ msgstr "プラグインデータベースの \"%s\" フィールドがありま�
 #: src/Marketplace/NotificationTargetController.php:128
 #: src/Console/Plugin/AbstractPluginCommand.php:69
 msgid "Plugin directory"
-msgstr "プラグインディレクトリ"
+msgstr "プラグインディレクトリー"
 
 #: src/Marketplace/View.php:368
 #, php-format
@@ -18573,11 +18578,11 @@ msgstr "ポート番号(任意)"
 
 #: src/NetworkEquipmentModelStencil.php:56
 msgid "Port Label"
-msgstr ""
+msgstr "ポートラベル"
 
 #: src/NetworkEquipmentModelStencil.php:57 src/Report.php:508
 msgid "Port Number"
-msgstr "ポート番号"
+msgstr "インデックス番号"
 
 #: src/NetworkPortConnectionLog.php:58
 msgid "Port connection history"
@@ -18591,7 +18596,7 @@ msgstr "ポートの説明"
 #: src/NetworkPort.php:1396 src/NetworkPort.php:1596
 msgid "Port number"
 msgid_plural "Ports number"
-msgstr[0] "ポート番号"
+msgstr[0] "インデックス番号"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Item_Rack.php:149
@@ -18688,7 +18693,7 @@ msgstr "電源ユニット"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr "チケット作成時、要求者に自分を事前追加"
+msgstr " チケット作成時、依頼者に自分を事前追加"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a technician when creating a ticket"
@@ -18722,7 +18727,7 @@ msgstr "予備の作成"
 
 #: templates/pages/admin/transfer.html.twig src/AuthLDAP.php:4272
 msgid "Preserve"
-msgstr "そのままにする"
+msgstr "維持する"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Prevent users from reusing previous passwords"
@@ -18736,11 +18741,11 @@ msgstr "プレビュー"
 
 #: src/ITILTemplate.php:469
 msgid "Preview (Simplified interface)"
-msgstr "プレビュー ( シンプルインターフェイス )"
+msgstr "プレビュー ( シンプルインターフェース )"
 
 #: src/ITILTemplate.php:468
 msgid "Preview (Standard interface)"
-msgstr "プレビュー ( 標準インターフェイス )"
+msgstr "プレビュー ( 標準インターフェース )"
 
 #: src/Search/CriteriaFilter.php:104
 msgid "Preview results"
@@ -18761,19 +18766,19 @@ msgstr "GLPI の以前のバージョンのファイルの検出"
 msgid ""
 "Previously installed installed plugin %s version was %s. Minimal version "
 "supported by migration is %s."
-msgstr "以前にインストールした「 %s 」プラグインのバージョンは %s です。移入をサポートしている最低バージョンは %s です。"
+msgstr "以前にインストールした「 %s 」プラグインのバージョンは %s です。移行をサポートしている最低バージョンは %s です。"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary"
-msgstr ""
+msgstr "プライマリー"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log file:"
-msgstr ""
+msgstr "プライマリー バイナリーログ ファイル : "
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log position:"
-msgstr ""
+msgstr "プライマリー バイナリーログの場所 : "
 
 #: src/Cartridge.php:1141
 msgid "Printed pages"
@@ -18993,7 +18998,7 @@ msgstr "アイテムのロック中に使用するプロファイル"
 
 #: src/Profile.php:803 src/Profile.php:2101
 msgid "Profile's interface"
-msgstr "プロファイルのインターフェイス"
+msgstr "プロファイルのインターフェース"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Profiles"
@@ -19064,7 +19069,7 @@ msgstr "チケットにして推進"
 #: templates/components/itilobject/timeline/form_task.html.twig
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr "チケット %1$s を催促済み"
+msgstr "チケット %1$s にして促進済み"
 
 #: src/Printer_CartridgeInfo.php:76
 msgid "Property"
@@ -19077,7 +19082,7 @@ msgstr "%1$s プロパティーは存在しません！　"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Proxy configuration"
-msgstr ""
+msgstr "プロキシー設定"
 
 #: templates/pages/tools/savedsearch/form.html.twig ajax/private_public.php:69
 msgid "Public"
@@ -19155,7 +19160,7 @@ msgstr "ゴミ箱に入れる"
 
 #: src/AuthLDAP.php:4273
 msgid "Put in trashbin"
-msgstr "ゴミ箱へ入れる"
+msgstr "ゴミ箱へ"
 
 #: templates/pages/admin/transfer.html.twig
 #: templates/components/itilobject/footer.html.twig
@@ -19163,7 +19168,7 @@ msgstr "ゴミ箱へ入れる"
 #: src/CommonDBTM.php:5441 src/ProjectTask.php:1194 src/Profile.php:1020
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr "ゴミ箱へ入れる"
+msgstr "ゴミ箱へ"
 
 #: src/CommonITILObject.php:6700
 #, php-format
@@ -19185,7 +19190,7 @@ msgstr "適格性評価"
 #: src/Webhook.php:755
 msgid "Query log"
 msgid_plural "Queries log"
-msgstr[0] ""
+msgstr[0] "クエリーログ"
 
 #: src/Search/Provider/SQLProvider.php:5003
 #: src/Search/Provider/SQLProvider.php:5050 src/Rule.php:1952
@@ -19202,21 +19207,21 @@ msgstr "RAID"
 #: src/Api/HL/RSQL/Lexer.php:142
 #, php-format
 msgid "RSQL query has an incomplete operator in filter for property \"%1$s\""
-msgstr ""
+msgstr "「%1$s」プロパティーのフィルターの RSQL クエリーは不完全なオペレーターを含んでいます。"
 
 #: src/Api/HL/RSQL/Lexer.php:209
 msgid "RSQL query has one or more unclosed groups"
-msgstr ""
+msgstr "RSQL クエリーはクローズされていないグループを含んでいます。"
 
 #: src/Api/HL/RSQL/Lexer.php:151 src/Api/HL/RSQL/Lexer.php:193
 #, php-format
 msgid "RSQL query is missing a value in filter for property \"%1$s\""
-msgstr ""
+msgstr "「%1$s」プロパティーのフィルターの RSQL クエリーは値が欠けています。"
 
 #: src/Api/HL/RSQL/Lexer.php:134
 #, php-format
 msgid "RSQL query is missing an operator in filter for property \"%1$s\""
-msgstr ""
+msgstr "「%1$s」プロパティーのフィルターの RSQL クエリーはオペレーターが欠けています。"
 
 #: src/Central.php:73 src/RSSFeed.php:79
 msgid "RSS feed"
@@ -19332,7 +19337,7 @@ msgstr "ユーザー認証、同期方法、2 要素認証 をお読みくださ
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr ""
+msgstr "読み取りのみ"
 
 #: src/Marketplace/View.php:570
 msgid "Readme"
@@ -19491,7 +19496,7 @@ msgstr "くり返しイベントをリサイズ"
 #: templates/pages/admin/add_profile_authorization.html.twig src/User.php:2959
 #: src/RuleRightCollection.php:164 src/RuleRight.php:75 src/RuleRight.php:346
 msgid "Recursive"
-msgstr "反復利用"
+msgstr "再帰的"
 
 #: templates/pages/admin/group.html.twig src/Group.php:513
 msgid "Recursive membership"
@@ -19659,7 +19664,7 @@ msgstr "インストール残"
 
 #: templates/pages/login.html.twig
 msgid "Remember me"
-msgstr "ログインを記憶"
+msgstr "ログイン状態を維持"
 
 #: src/Reminder.php:68
 msgid "Reminder"
@@ -19709,7 +19714,7 @@ msgstr "リムーバブルドライブ"
 
 #: templates/pages/setup/webhook/webhook_headers.html.twig
 msgid "Remove"
-msgstr ""
+msgstr "削除"
 
 #: src/Contract.php:1716
 msgctxt "button"
@@ -19724,7 +19729,7 @@ msgstr "ドキュメントの削除"
 #: src/Computer.php:379
 msgctxt "button"
 msgid "Remove a domain"
-msgstr ""
+msgstr "ドメインを削除"
 
 #: src/Line.php:236
 msgctxt "button"
@@ -19771,7 +19776,7 @@ msgstr "グループからの削除"
 
 #: src/NetworkEquipmentModelStencil.php:60
 msgid "Remove last port"
-msgstr ""
+msgstr "最終ポートを削除"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -19905,11 +19910,11 @@ msgstr "辞書のルールを再適用"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica"
-msgstr ""
+msgstr "レプリカ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica configuration"
-msgstr ""
+msgstr "レプリカ設定"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
@@ -19934,7 +19939,7 @@ msgstr "レプリケートの遅延が過大"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
-msgstr ""
+msgstr "レプリカ状態"
 
 #: src/Change.php:707
 msgid "Reply to survey (my change)"
@@ -20067,19 +20072,19 @@ msgstr "要求されたアイテムがありません"
 #: src/Ticket.php:4634
 msgid "Requester"
 msgid_plural "Requesters"
-msgstr[0] "要求者"
+msgstr[0] "依頼者"
 
 #: src/NotificationTargetObjectLock.php:68
 msgid "Requester Firstname"
-msgstr "要求者の名"
+msgstr "依頼者の名"
 
 #: src/NotificationTargetCommonITILObject.php:1928
 msgid "Requester ID"
-msgstr "要求者 ID"
+msgstr "依頼者 ID"
 
 #: src/NotificationTargetObjectLock.php:67
 msgid "Requester Lastname"
-msgstr "要求者の姓"
+msgstr "依頼者の姓"
 
 #: src/RuleCommonITILObject.php:645 src/RuleCommonITILObject.php:765
 #: src/RuleCommonITILObject.php:773
@@ -20089,27 +20094,27 @@ msgstr "要求者の姓"
 #: src/NotificationTargetCommonITILObject.php:1976
 msgid "Requester group"
 msgid_plural "Requester groups"
-msgstr[0] "要求グループ"
+msgstr[0] "依頼グループ"
 
 #: src/NotificationTargetCommonITILObject.php:908
 msgid "Requester group except manager users"
-msgstr "管理者ユーザーを除く要求者グループ"
+msgstr "管理者ユーザーを除く依頼グループ"
 
 #: src/NotificationTargetCommonITILObject.php:905
 msgid "Requester group manager"
-msgstr "要求グループの管理者"
+msgstr "依頼グループの管理者"
 
 #: src/RuleCommonITILObject.php:627
 msgid "Requester in group"
-msgstr "グループの要求者"
+msgstr "グループの依頼者"
 
 #: src/RuleTicket.php:261 src/NotificationTargetCommonITILObject.php:1930
 msgid "Requester location"
-msgstr "要求者の場所"
+msgstr "依頼者の場所"
 
 #: src/DbUtils.php:1776 src/RuleAction.php:596
 msgid "Requester's manager"
-msgstr ""
+msgstr "依頼者の管理者"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -20163,11 +20168,11 @@ msgstr "要件"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 msgid "Resend"
-msgstr ""
+msgstr "再送信"
 
 #: src/ReservationItem.php:306
 msgid "Reservable"
-msgstr ""
+msgstr "予約可"
 
 #: src/ReservationItem.php:72
 msgid "Reservable item"
@@ -20237,12 +20242,12 @@ msgstr "ルールをリセット"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "並び順をリセット"
 
 #: src/DisplayPreference.php:568
 msgctxt "button"
 msgid "Reset to default"
-msgstr ""
+msgstr "デフォルトにリセット"
 
 #: src/Stat.php:613 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -20267,7 +20272,7 @@ msgstr[0] "解決"
 #: src/CommonITILObject.php:4362 src/CommonITILObject.php:5673
 #: src/Problem.php:622 src/Ticket.php:5771
 msgid "Resolution date"
-msgstr "解決日"
+msgstr "解決日付"
 
 #: src/CommonITILObject.php:4622
 msgid "Resolution time"
@@ -20291,7 +20296,7 @@ msgstr "満足度調査の回答日"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Response date to the satisfaction survey."
-msgstr ""
+msgstr "満足度調査の回答日"
 
 #: src/Api/APIRest.php:51
 msgid "Rest API"
@@ -20351,7 +20356,7 @@ msgstr "結果"
 
 #: ajax/webhook.php:125
 msgid "Result can't be loaded :"
-msgstr ""
+msgstr "結果が読み込めません : "
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2042
@@ -20431,7 +20436,7 @@ msgstr "ルート カテゴリー"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Root directory (optional)"
-msgstr "Root ディレクトリ(任意)"
+msgstr "Root ディレクトリー(任意)"
 
 #: install/empty_data.php:2362 install/empty_data.php:2364
 msgid "Root entity"
@@ -20593,7 +20598,7 @@ msgstr "「%1$s」コマンドを実行して有効にします。"
 #: src/Central.php:498 src/Central.php:503 src/Central.php:508
 #, php-format
 msgid "Run the \"%1$s\" command to migrate them."
-msgstr "「%1$s」コマンドを実行して移入します"
+msgstr "「%1$s」コマンドを実行して移行します"
 
 #: src/Console/Application.php:267
 #, php-format
@@ -20654,7 +20659,7 @@ msgstr "チケットの SLAレベル"
 
 #: templates/components/search/controls.html.twig
 msgid "SLK"
-msgstr ""
+msgstr "SLK"
 
 #: src/LevelAgreement.php:185 src/LevelAgreement.php:694 src/Profile.php:1134
 #: src/Profile.php:2851
@@ -20711,7 +20716,7 @@ msgstr "SQL レプリカ : read only"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL running:"
-msgstr ""
+msgstr "SQL 実行中 : "
 
 #: src/DBConnection.php:783
 msgid "SQL server"
@@ -20780,7 +20785,7 @@ msgstr "満足度調査設定 ( %s )"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Satisfaction survey expired."
-msgstr ""
+msgstr "満足度調査の期限が切れました。"
 
 #: src/Entity.php:1409 src/Entity.php:1446
 #, php-format
@@ -20862,15 +20867,15 @@ msgstr "新しいパスワードを保存"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
-msgstr ""
+msgstr "ポートデータを保存"
 
 #: templates/pages/setup/webhook/webhook.html.twig
 msgid "Save response body"
-msgstr ""
+msgstr "レスポンスボディーを保存"
 
 #: templates/stencil/editor.html.twig
 msgid "Save zone data"
-msgstr ""
+msgstr "ゾーンデータを保存"
 
 #: js/modules/Dashboard/Dashboard.js:459
 msgid "Saved"
@@ -21009,7 +21014,7 @@ msgstr "セカンダリ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
-msgstr ""
+msgstr "プライマリーとの遅れ ( 秒 ) : "
 
 #: templates/pages/2fa/macros.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -21085,7 +21090,7 @@ msgstr "自グループのハードウェアの表示"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr ""
+msgstr "入力を表示"
 
 #: src/Ticket.php:5553
 msgid "See my ticket"
@@ -21112,7 +21117,7 @@ msgstr "公開の参照"
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgctxt "button"
 msgid "See result"
-msgstr ""
+msgstr "結果を表示"
 
 #: src/Planning.php:2765
 msgid "See schedule of people in my groups"
@@ -21142,7 +21147,7 @@ msgstr "%s のピアを選択 : "
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select a statistic to compare"
-msgstr ""
+msgstr "比較する記録を選択してください"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -21168,7 +21173,7 @@ msgstr "ロック解除すべきアイテムの項目を選択してください
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr ""
+msgstr "比較するプリンターを選択してください"
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -21213,7 +21218,7 @@ msgstr "選択した問題が読み込めません"
 
 #: src/Html.php:2669
 msgid "Selection too large, massive action disabled."
-msgstr "選択が大きすぎるため、一斉アクションを無効にしました。"
+msgstr "選択が多すぎるため「一斉操作」を無効にしました。"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:150
 msgid "Self-signed"
@@ -21245,7 +21250,7 @@ msgstr "通知の送信"
 
 #: src/Log.php:1184
 msgid "Send a queued webhook"
-msgstr ""
+msgstr "キューの webhook を送信"
 
 #: src/NotificationAjaxSetting.php:134
 msgid "Send a test browser notification to you"
@@ -21338,7 +21343,7 @@ msgstr "予約警告の送信に失敗しました"
 
 #: src/Telemetry.php:282
 msgid "Send telemetry information"
-msgstr "テレメトリ情報を送信"
+msgstr "テレメトリー情報を送信"
 
 #: src/QueuedNotification.php:232 src/QueuedNotification.php:767
 msgid "Sender email"
@@ -21436,7 +21441,7 @@ msgstr "サーバー"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr ""
+msgstr "サーバー ID : "
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/DCRoom.php:53
@@ -21446,7 +21451,7 @@ msgstr[0] "サーバールーム"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
-msgstr ""
+msgstr "サーバー バージョン : "
 
 #: templates/pages/admin/events_list.html.twig src/Event.php:308
 #: src/Event.php:387 src/Event.php:486
@@ -21501,11 +21506,11 @@ msgstr "すべての関係者に通知を設定する"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
-msgstr ""
+msgstr "ポート数を設定"
 
 #: templates/stencil/editor.html.twig
 msgid "Set number of zones"
-msgstr ""
+msgstr "ゾーン数を設定"
 
 #: ajax/private_public.php:75
 msgid "Set personal"
@@ -21587,7 +21592,7 @@ msgstr "地図で見る "
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "テーブル表示"
 
 #: src/Impact.php:1088
 msgid "Show depends"
@@ -21595,7 +21600,7 @@ msgstr "依存を表示"
 
 #: src/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:78
 msgid "Show diff of altered files"
-msgstr ""
+msgstr "変更ファイルの diff 表示"
 
 #: templates/pages/assistance/stats/tracking_form.html.twig
 #: front/stat.location.php:126
@@ -21644,11 +21649,11 @@ msgstr "新規チケットのフォームに個人情報を表示する (簡易�
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "保存済み検索を表示"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search form above results"
-msgstr ""
+msgstr "上の結果から検索を表示"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -21708,11 +21713,11 @@ msgstr "シンプルモード"
 #: front/reservation.form.php:54 front/reservation.form.php:56
 #: src/Profile.php:3890 src/ITILTemplateField.php:140
 msgid "Simplified interface"
-msgstr "シンプルインターフェイス"
+msgstr "シンプルインターフェース"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Simplified interface help link"
-msgstr "シンプルインターフェイスのヘルプリンク"
+msgstr "シンプルインターフェースのヘルプリンク"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:101 src/Telemetry.php:456
 msgid ""
@@ -21720,7 +21725,7 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
-"GLPI 9.2以降、「テレメトリ」という新しい統計機能を導入しました。これは、利用者の許可にもとづき、テレメトリ Web "
+"GLPI 9.2以降、「テレメトリー」という新しい統計機能を導入しました。これは、利用者の許可にもとづき、テレメトリー Web "
 "サイトへ匿名でデータを送信します。"
 
 #: src/NetworkPortEthernet.php:262
@@ -21939,7 +21944,7 @@ msgstr ""
 #: templates/components/search/controls.html.twig
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "並び順"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -21956,7 +21961,7 @@ msgstr "サイズ順"
 #: src/Search/Output/HTMLSearchOutput.php:171
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "%s 並び"
 
 #: src/NotificationAjaxSetting.php:74 src/NotificationAjaxSetting.php:75
 #: src/NotificationAjaxSetting.php:76 src/NotificationAjaxSetting.php:77
@@ -22028,11 +22033,11 @@ msgstr "積み上げ"
 #: src/Profile.php:3889 src/Central.php:51 src/ITILTemplateField.php:140
 #: src/ITILTemplateField.php:170 src/ITILTemplateField.php:193
 msgid "Standard interface"
-msgstr "標準インターフェイス"
+msgstr "標準インターフェース"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Standard interface help link"
-msgstr "標準インターフェイスのヘルプリンク"
+msgstr "標準インターフェースのヘルプリンク"
 
 #: src/Inventory/Asset/Cartridge.php:192
 msgid "Staples"
@@ -22214,7 +22219,7 @@ msgstr "チケットの横取り"
 
 #: src/Stencil.php:48
 msgid "Stencil"
-msgstr ""
+msgstr "ステンシル"
 
 #. TRANS %s is step number
 #: install/install.php:593 install/install.php:603 install/install.php:609
@@ -22376,7 +22381,7 @@ msgstr "監督"
 
 #: src/RuleCommonITILObject.php:880
 msgid "Supervisor of the requester"
-msgstr "要求者の監督"
+msgstr "依頼者の監督"
 
 #: src/Supplier.php:62 src/NotificationTargetCommonITILObject.php:1937
 #: src/NotificationTargetCommonITILObject.php:2165 src/Profile.php:960
@@ -22511,7 +22516,7 @@ msgstr "システムログの保持期間（単位 : 日、0で無期限）"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #: src/Asset/AssetDefinition.php:299 src/Asset/AssetDefinition.php:521
 msgid "System name"
-msgstr ""
+msgstr "システム名"
 
 #: front/report.infocom.php:186
 msgid "TCO"
@@ -22555,7 +22560,7 @@ msgstr "TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "TTR"
-msgstr "TTR"
+msgstr "TTR ( 解決までの時間 )"
 
 #: src/Item_Process.php:159
 msgid "TTY"
@@ -22616,11 +22621,11 @@ msgstr[0] "対象"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Target authentication"
-msgstr ""
+msgstr "対象の認証"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr ""
+msgstr "対象のエンティティ"
 
 #: src/RuleImportAsset.php:93
 msgid "Target entity for the asset"
@@ -22782,15 +22787,15 @@ msgstr "タスクの技術者"
 
 #: src/Telemetry.php:43
 msgid "Telemetry"
-msgstr "テレメトリ"
+msgstr "テレメトリー"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry data"
-msgstr "テレメトリデータ"
+msgstr "テレメトリーデータ"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry enabled"
-msgstr ""
+msgstr "テレメトリーは有効"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/form/header_content.html.twig
@@ -22850,7 +22855,7 @@ msgstr "メンテナンスのため、一時的に停止しています"
 
 #: src/Document.php:1299
 msgid "Temporary directory doesn't exist"
-msgstr "テンポラリディレクトリは存在しません"
+msgstr "テンポラリディレクトリーが存在しません"
 
 #: src/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -22889,7 +22894,7 @@ msgstr "テスト失敗: %s"
 
 #: src/AuthLDAP.php:933
 msgid "Test of connection to LDAP directory"
-msgstr "LDAPディレクトリへの接続確認"
+msgstr "LDAP ディレクトリーへの接続確認"
 
 #: templates/install/step3.html.twig
 msgid "Test of the connection at the database"
@@ -22952,7 +22957,7 @@ msgstr "%s 項目は必須です"
 #: src/Api/HL/Router.php:586
 msgctxt "api"
 msgid "The Authorization header is missing or invalid"
-msgstr ""
+msgstr "認証ヘッダーが見つからないか無効"
 
 #: src/Console/Marketplace/SearchCommand.php:67
 #: src/Console/Marketplace/DownloadCommand.php:67
@@ -23014,7 +23019,7 @@ msgstr "アイテムのカテゴリ"
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
 msgid "The class of assets related to current definition is \"%s\"."
-msgstr ""
+msgstr "現在の定義に関連する情報資産クラスは「%s」です。"
 
 #: src/Console/Application.php:141
 msgid "The command to execute"
@@ -23057,12 +23062,12 @@ msgstr "データベーススキーマが、インストールしている GLPI 
 #: src/System/Requirement/DirectoryWriteAccess.php:135
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr "%s にディレクトリを作成できませんでした。"
+msgstr "%s にディレクトリーを作成できませんでした。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
 msgid "The directory was created in %s but could not be removed."
-msgstr "ディレクトリは %s に作成しましたが、削除できませんでした。"
+msgstr "ディレクトリーは %s に作成しましたが、削除できませんでした。"
 
 #: js/planning.js:527
 msgid ""
@@ -23072,15 +23077,15 @@ msgstr "ドラッグしたイベントはくり返しイベントです。一連
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
-msgstr ""
+msgstr "エンジンは、各ルールの結果を次にマッチするルールに渡します。"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will run all matching rules."
-msgstr ""
+msgstr "エンジンはマッチするすべてのルールを実行します。"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
-msgstr ""
+msgstr "エンジンは、最初にマッチしたルールの後で停止します。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:129
 #, php-format
@@ -23109,7 +23114,7 @@ msgstr "以下の自動操作はエラー状態です。対応が必要です。
 #: src/Asset/AssetDefinition.php:326
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "不正な値を保持してる項目 : \"%s\""
 
 #: src/User.php:5820
 msgid ""
@@ -23127,7 +23132,7 @@ msgstr "OLAの割り当て時に内部時間を再計算します"
 
 #: src/Inventory/Conf.php:378
 msgid "The inventory is disabled, remember to activate it if necessary"
-msgstr ""
+msgstr "インベントリーが無効です。必要になったら有効にすることをお忘れなく。"
 
 #: src/ITILSolution.php:234
 msgid "The item is already solved, did anyone pushed a solution before you?"
@@ -23170,6 +23175,9 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
+"最大アップロードサイズは、まず PHP "
+"設定の「upload_max_filesize」と「post_max_size」で決まります。以下の設定は、GLPI "
+"のアップロードについてだけ、さらに制限するものです。"
 
 #: front/updatepassword.php:80
 msgid "The new password must be different from current password"
@@ -23228,7 +23236,7 @@ msgstr "サイズ変更したイベントはくり返しイベントです。一
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The rules are conditional based on a type of action."
-msgstr ""
+msgstr "ルールはアクションの種類をもとにした条件です。"
 
 #: src/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
@@ -23249,7 +23257,7 @@ msgstr "サーバー応答 : %s"
 
 #: src/Asset/AssetDefinition.php:274
 msgid "The system name cannot be changed."
-msgstr ""
+msgstr "システム名は変更できません。"
 
 #: templates/pages/admin/assetdefinition/main.html.twig
 #, php-format
@@ -23258,10 +23266,11 @@ msgid ""
 "which will correspond to the current definition. For example, assets linked "
 "to the system name \"%s\" will have the class \"%s\"."
 msgstr ""
+"システム名は、現在の定義に対応する情報資産クラスのカスタマイズ可能な部分に対応します。例えば、システム名「%s」にリンクしている情報資産は「%s」クラスを持ちます。"
 
 #: src/Asset/AssetDefinition.php:251
 msgid "The system name is mandatory."
-msgstr ""
+msgstr "システム名は必須です。"
 
 #: src/Project.php:2554 src/CommonITILObject.php:9830
 msgctxt "filters"
@@ -23316,7 +23325,7 @@ msgstr "ユーザーは有効ではありません。"
 msgid ""
 "The value must contains only letters and must not end by \"Model\" or "
 "\"Type\"."
-msgstr ""
+msgstr "値は文字のみで、「Model」や「Type」で終わってはいけません。"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -23324,6 +23333,8 @@ msgid ""
 "validate requests are actually coming from the GLPI server and that the "
 "content was not modified between GLPI and the target."
 msgstr ""
+"Webhook シークレットは対象サーバーと共有され、対象サーバーにリクエストが実際に GLPI サーバーから来ていることを検証し、そして GLPI "
+"と対象サーバーの間でコンテンツが変更されていないことを検証することができます。"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
@@ -23332,7 +23343,7 @@ msgstr "承認待ちチケットあり"
 #: templates/pages/admin/assetdefinition/main.html.twig
 msgid ""
 "There is currently no profile with access to assets with current definition."
-msgstr ""
+msgstr "現在の定義では、情報資産にアクセスできるプロフィールがありません。"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
@@ -23367,17 +23378,17 @@ msgstr "これらのパラメータは、エンティティを割り当てる際
 msgid ""
 "These preferences are used by everyone that does not have a personal view "
 "configured."
-msgstr ""
+msgstr "ここでの設定は、表示の個人設定を行っていないユーザー全員が使用します。"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences cannot be edited at this time. The item type no longer "
 "exists or is provided by a plugin that is not enabled."
-msgstr ""
+msgstr "現在、この設定は変更できません。アイテムの型が、存在しないか、有効になっていないプラグイン由来のものかのいずれかです。"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
-msgstr ""
+msgstr "アイテムの転送の前にバックアップすることを検討してください。"
 
 #: src/SupplierType.php:41
 msgid "Third party type"
@@ -23412,13 +23423,13 @@ msgstr "このカテゴリーには文書があります"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
-msgstr ""
+msgstr "このエントリーは「内部的」（技術者のみに表示）"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid ""
 "This indicates the delay between the primary and the replica for GLPI "
 "history (table: glpi_logs, column: date_mod)."
-msgstr ""
+msgstr "このことは、GLPI 履歴（テーブル : glpi_logs 、列 : date_mod）のプライマリーとレプリカ間の遅延を示しています。"
 
 #: src/User.php:6826
 msgid "This is a special user used for automated actions. "
@@ -23463,7 +23474,7 @@ msgstr "このアイテムは承認待ちです。"
 msgid ""
 "This itemtype is not supported by the API. Maybe a plugin is "
 "missing/disabled?"
-msgstr ""
+msgstr "このアイテムの型は API がサポートしていません。プラグインが見つからないか無効ではありませか？"
 
 #: src/Marketplace/View.php:760
 msgid "This plugin is not available for your GLPI version."
@@ -23539,11 +23550,11 @@ msgstr "クリーニングの準備ができているプラグインにだけ影
 msgid ""
 "This will only work for types from GLPI itself or enabled plugins that "
 "support this action."
-msgstr ""
+msgstr "これは、GLPI 自体の型か、この操作に対応している有効なプラグインのいずれかでのみ動作します。"
 
 #: src/DisplayPreference.php:83
 msgid "This will reset the columns to the defaults for a new installation."
-msgstr ""
+msgstr "この操作で、カラムを新規インストール時の標準へとリセットします。"
 
 #: src/Item_DeviceProcessor.php:71
 msgid "Threads"
@@ -23591,7 +23602,7 @@ msgstr "チケット #%1$s %2$s"
 #: src/TicketValidation.php:61
 msgid "Ticket approval"
 msgid_plural "Ticket approvals"
-msgstr[0] ""
+msgstr[0] "チケット承認"
 
 #: src/CommonITILCost.php:600 src/Profile.php:3356
 msgid "Ticket cost"
@@ -23692,7 +23703,7 @@ msgstr "検証待ちチケット"
 
 #: src/Dashboard/Grid.php:1208 src/Ticket.php:4881
 msgid "Tickets waiting for your approval"
-msgstr "あなたの承認を待っているチケット"
+msgstr "あなたの承認待ちチケット"
 
 #: src/CommonITILObject.php:5688
 msgid "Time"
@@ -23723,11 +23734,11 @@ msgstr[0] "時間範囲"
 
 #: src/Ticket.php:2658
 msgid "Time since opening"
-msgstr ""
+msgstr "開始からの時間"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
-msgstr "「Remember Me」を許可する期間"
+msgstr "「ログイン状態を維持」を許可する期間"
 
 #: src/NotificationAjaxSetting.php:91
 msgid "Time to check for new notifications (in seconds)"
@@ -23929,7 +23940,7 @@ msgstr "To メールヘッダ"
 msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
-msgstr ""
+msgstr "テレメトリーを有効・無効にするには、「テレメトリー」の自動操作を変更してください。"
 
 #: src/Html.php:2671
 msgid ""
@@ -23961,7 +23972,7 @@ msgstr "今日"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "追加の標準フィルターの切り替え"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
@@ -24017,7 +24028,7 @@ msgstr "トナー"
 
 #: src/Printer_CartridgeInfo.php:150
 msgid "Toner percentage"
-msgstr ""
+msgstr "トナーの残存率"
 
 #: src/MailCollector.php:1481
 msgid "Too large attached file"
@@ -24068,11 +24079,11 @@ msgstr "チケットの上位場所"
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's observer groups"
-msgstr "上位チケットのオブザーバーグループ"
+msgstr "上位チケットの関係者グループ"
 
 #: src/Dashboard/Grid.php:1337
 msgid "Top ticket's observers"
-msgstr "上位チケットのオブザーバー"
+msgstr "上位チケットの関係者"
 
 #: src/Dashboard/Grid.php:1319
 msgid "Top ticket's request types"
@@ -24080,11 +24091,11 @@ msgstr "チケットの要求型の上位"
 
 #: src/Dashboard/Grid.php:1336
 msgid "Top ticket's requester groups"
-msgstr "チケットの要求グループ上位"
+msgstr "チケットの依頼グループ上位"
 
 #: src/Dashboard/Grid.php:1335
 msgid "Top ticket's requesters"
-msgstr "チケット要求者の上位"
+msgstr "チケット依頼者の上位"
 
 #: src/State.php:205 src/State.php:265 src/SoftwareVersion.php:389
 #: src/Budget.php:657 src/Budget.php:865 src/Budget.php:901
@@ -24485,7 +24496,7 @@ msgstr "IMAP サーバーに接続できません"
 #: front/ldap.group.import.php:76 src/AuthLDAP.php:4187 src/Auth.php:307
 #: src/Auth.php:337
 msgid "Unable to connect to the LDAP directory"
-msgstr "LDAPディレクトリに接続できません"
+msgstr "LDAP ディレクトリーに接続できません"
 
 #: src/System/Status/StatusChecker.php:286
 msgctxt "glpi_status"
@@ -24595,7 +24606,7 @@ msgstr "%s（ID : %s）を修復できません。"
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:666
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "アプライアンスのアイテムの関係 %d から、関係の型 %s が見つかりません。"
+msgstr "関係の型 %s がアプライアンスのアイテムの関係 %d で、見つかりません。"
 
 #: front/smtp_oauth2_callback.php:83
 msgctxt "oauth"
@@ -24808,7 +24819,7 @@ msgstr "すべて解除"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Undefined"
-msgstr ""
+msgstr "未定義"
 
 #: src/CronTask.php:939
 #, php-format
@@ -24847,7 +24858,7 @@ msgstr "ソフトウェアをアンインストールする"
 
 #: src/Cartridge.php:360
 msgid "Uninstalling a cartridge"
-msgstr "未使用のカートリッジ"
+msgstr "カートリッジの取り外し"
 
 #: src/FieldUnicity.php:83 src/FieldUnicity.php:350
 msgid "Unique fields"
@@ -24905,7 +24916,7 @@ msgstr "不明なユーザー"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Unkown"
-msgstr ""
+msgstr "不明"
 
 #: templates/pages/management/softwarelicense.html.twig
 #: templates/pages/management/contract.html.twig
@@ -25169,7 +25180,7 @@ msgstr "フォローの更新"
 #: src/NotificationTargetKnowbaseItem.php:43
 #: src/NotificationTargetKnowbaseItem.php:92
 msgid "Update of a knowledge base item"
-msgstr ""
+msgstr "ナレッジベース アイテムの更新"
 
 #: src/NotificationTargetProblem.php:50
 msgid "Update of a problem"
@@ -25318,7 +25329,7 @@ msgstr "アップロード"
 
 #: src/Document.php:1182 src/Document.php:1584
 msgid "Upload directory doesn't exist"
-msgstr "アップロード用のディレクトリは存在しません"
+msgstr "アップロード ディレクトリーは存在しません"
 
 #: js/fileupload.js:97
 msgid "Upload successful"
@@ -25356,7 +25367,7 @@ msgstr "アプリケーションを複数のテナントで共有する場合は
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge ?"
-msgstr ""
+msgstr "CRA チャレンジを利用？"
 
 #: src/AuthLDAP.php:905 src/AuthLDAP.php:1189
 msgid "Use DN in the search"
@@ -25372,11 +25383,11 @@ msgstr "GLPIモード"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use OAuth"
-msgstr ""
+msgstr "OAuth を利用"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Use Reply-To as requester (when available)"
-msgstr "（可能なら）Reply-To を要求者として使用する"
+msgstr "（可能なら）Reply-To を依頼者として使用する"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Saturday"
@@ -25417,11 +25428,11 @@ msgstr "使用開始日"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 msgid "Use default payload"
-msgstr ""
+msgstr "標準ペイロードを利用"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Use global config"
-msgstr ""
+msgstr "全体設定を利用"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
@@ -25586,7 +25597,7 @@ msgstr "ユーザーにメンション"
 
 #: src/User.php:2864
 msgid "User missing in LDAP directory"
-msgstr "ユーザーはLDAPディレクトリには見つかりません"
+msgstr "ユーザーが LDAP ディレクトリーに見つかりません"
 
 #: src/Console/Plugin/InstallCommand.php:257
 msgid "User name defined by --username option is invalid."
@@ -25599,7 +25610,7 @@ msgstr "認証していないユーザーは GLPI に接続できません"
 #: src/Auth.php:913
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "ユーザーは LDAP ディレクトリには見つかりません"
+msgstr[0] "ユーザーが LDAP ディレクトリーに見つかりません"
 
 #: src/AuthLDAP.php:3336
 msgid "User not found or several users found"
@@ -25804,7 +25815,7 @@ msgstr "エンティティを割り当てるための一般的なルールの値
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr "LDAPディレクトリからユーザーを検索するためのインターフェースで使用する値"
+msgstr "LDAP ディレクトリーからユーザーを検索するためのインターフェースで使用する値"
 
 #: src/ContentTemplates/TemplateDocumentation.php:124
 msgid "Variable"
@@ -26103,12 +26114,12 @@ msgstr "注意！　この操作はマージしたソフトウェアをゴミ箱
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr "警告 : リクエストはディレクトリの制限を越えています。表示した結果は一部です"
+msgstr "警告 : リクエストはディレクトリー側の制限を越えています。表示した結果は一部です"
 
 #: src/NotificationEventMailing.php:467
 #, php-format
 msgid "Warning: an email was undeliverable to %s with %d retries remaining"
-msgstr "警告 : メールを %d に配信できず、残り %s 回再試行します。"
+msgstr "警告 : メールを残り %s 回再試行する %d に配信できず。"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid ""
@@ -26162,7 +26173,7 @@ msgstr "送信方法"
 #: src/Marketplace/View.php:383
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr "マーケットプレース ディレクトリ (%s) へ書き込めません。"
+msgstr "マーケットプレース ディレクトリー (%s) へ書き込めません。"
 
 #: src/System/Requirement/InstallationNotOverriden.php:92
 msgid "We detected files of previous versions of GLPI."
@@ -26218,19 +26229,19 @@ msgstr "Webcal"
 #: src/Webhook.php:78 src/Webhook.php:1292
 msgid "Webhook"
 msgid_plural "Webhooks"
-msgstr[0] ""
+msgstr[0] "Webhook"
 
 #: src/QueuedWebhook.php:50
 msgid "Webhook queue"
-msgstr ""
+msgstr "Webhook キュー"
 
 #: src/Webhook.php:1327
 msgid "Webhook target filter"
-msgstr ""
+msgstr "Webhook 対象フィルター"
 
 #: src/Webhook.php:1332
 msgid "Webhooks will only be sent for items that match the defined filter."
-msgstr ""
+msgstr "Webhook は定義済みのフィルターと一致したアイテムに対してのみ送信します"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/address.html.twig src/Contact_Supplier.php:174
@@ -26419,7 +26430,7 @@ msgstr "使用済みカートリッジ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Writable"
-msgstr ""
+msgstr "書込み可"
 
 #: src/Profile.php:3808
 msgid "Write"
@@ -26540,7 +26551,7 @@ msgstr "このアイテムを削除します。よろしいですか？"
 msgid ""
 "You are about to launch migration of \"%s\" plugin data into GLPI core "
 "tables."
-msgstr "「%s」プラグインのデータを GLPI コアテーブルに移入しようとしています。"
+msgstr "「%s」プラグインのデータを GLPI コアテーブルに移行しようとしています。"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:158
 msgid ""
@@ -26586,11 +26597,13 @@ msgid ""
 "You are trying to use GLPI with outdated files compared to the version of "
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
-msgstr "古いGLPIを使用しようとしています。お使いのデータベースに適合したGLPIをインストールしてください"
+msgstr ""
+"データベースのバージョンに対して古い GLPI のファイルを使用しようとしています。データベースに対応した正しい GLPI "
+"ファイルをインストールしてください。"
 
 #: templates/install/agree_unstable.html.twig
 msgid "You are using a development version, be careful!"
-msgstr "開発者向けバージョンを使用中。要注意！"
+msgstr "開発バージョンを使用中。要注意！"
 
 #: templates/install/agree_unstable.html.twig
 msgid "You are using a pre-release version, be careful!"
@@ -26604,7 +26617,7 @@ msgstr "または、このドロップダウンを使用している項目すべ
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now."
-msgstr ""
+msgstr "引き続き転送する要素を追加することも、今すぐ転送を実行することもできます。"
 
 #: src/CommonDBTM.php:5694
 msgid "You can define an autofill template"
@@ -26632,7 +26645,7 @@ msgstr "いまはこのステップを飛ばすことができます。ただし
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "You can use \"%s\" command to configure cache system."
-msgstr ""
+msgstr "キャッシュシステムの設定に \"%s\" コマンドを利用できます。"
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -26667,7 +26680,7 @@ msgstr "名前の無いエンティティを追加できません"
 #: src/MassiveAction.php:1494
 msgid ""
 "You can't delete that item by massive actions, because it has sub-items"
-msgstr "そのアイテムにはサブアイテムがあるので、一斉アクションでは削除できません"
+msgstr "そのアイテムにはサブアイテムがあるため「一斉操作」では削除できません"
 
 #: src/CommonDropdown.php:618
 msgid "You can't delete that item, because it has sub-items"
@@ -26800,7 +26813,7 @@ msgstr "--allまたは--taskオプションを使用して、ロック解除す�
 msgid ""
 "You may use the same placeholder tags as in the payload content and header "
 "values."
-msgstr ""
+msgstr "ペイロードのコンテンツとヘッダーの値に、同じプレースホルダー タグを利用できます。"
 
 #: index.php:115
 msgid "You must accept cookies to reach this application"
@@ -26850,7 +26863,7 @@ msgstr "関連アイテムの選択は必須"
 #: src/Marketplace/View.php:824
 #, php-format
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
-msgstr "このプラグイン (%s) を利用するには、GLPI-Network への申し込みが必要です"
+msgstr "このプラグインを利用するには、GLPI-Network での上位の契約 ( %s ) が必要です。"
 
 #: src/Marketplace/View.php:955
 #, php-format
@@ -26977,7 +26990,7 @@ msgstr "セッションの期限切れです"
 
 #: index.php:123
 msgid "Your session has expired. Please log in again."
-msgstr ""
+msgstr "セッションの期限が切れました。再度ログインしてください。"
 
 #: front/tracking.injector.php:90
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -27005,11 +27018,11 @@ msgstr "検証待ちチケット"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone label"
-msgstr ""
+msgstr "ゾーン ラベル"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone number"
-msgstr ""
+msgstr "ゾーン番号"
 
 #: js/common.js:1177
 msgid "a minute ago"
@@ -27270,7 +27283,7 @@ msgstr "ちょうど今"
 
 #: templates/components/search/controls.html.twig
 msgid "landscape PDF"
-msgstr ""
+msgstr "横置き PDF"
 
 #: src/Html.php:3353
 msgid "last Friday"
@@ -27364,27 +27377,27 @@ msgstr[0] "カ月"
 
 #: src/Search/Input/QueryBuilder.php:939
 msgid "must be a boolean (0 or 1)"
-msgstr ""
+msgstr "ブール値 ( 0 または 1 ) にしてください"
 
 #: src/Search/Input/QueryBuilder.php:944
 msgid "must be a color (6 hexadecimal characters)"
-msgstr ""
+msgstr "色を指定してください ( 16 進数 6 文字)"
 
 #: src/Search/Input/QueryBuilder.php:965
 msgid ""
 "must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for"
 " dates higher than 6 months ago)"
-msgstr ""
+msgstr "日付 ( YYYY-MM-DD) 、または月の相対数 ( 例 : -6 で 6 ヵ月以上前の日) を指定してください"
 
 #: src/Search/Input/QueryBuilder.php:959
 msgid ""
 "must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months "
 "(e.g. > -6 for dates higher than 6 months ago)"
-msgstr ""
+msgstr "日時 ( YYYY-MM-DD HH:mm:SS ) 、または月の相対数 ( 例 : -6 で 6 ヵ月以上前の日) を指定してください"
 
 #: src/Search/Input/QueryBuilder.php:954
 msgid "must be a number"
-msgstr ""
+msgstr "数字で"
 
 #: src/Item_Rack.php:847 src/Rack.php:943 src/PDU_Rack.php:582
 msgid "name"
@@ -27479,7 +27492,7 @@ msgstr "ラック面に設置"
 
 #: templates/components/search/controls.html.twig
 msgid "portrait PDF"
-msgstr ""
+msgstr "縦置き PDF"
 
 #: templates/install/step8.html.twig
 msgid "post-only/postonly for the postonly account"
