@@ -33,43 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\QuestionType;
 
-final class FormContentSpecification
+use Glpi\DBAL\JsonFieldInterface;
+use Override;
+
+final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
 {
-    public string $name;
-    public string $header;
-    public string $entity_name;
-    public bool $is_recursive;
+    // Unique reference to hardcoded name used for serialization
+    public const IS_MULTIPLE_ACTORS = "is_multiple_actors";
 
-    /** @var SectionContentSpecification[] $sections */
-    public array $sections = [];
-
-    /** @var CommentContentSpecification[] $comments */
-    public array $comments = [];
-
-    /** @var QuestionContentSpecification[] $questions */
-    public array $questions = [];
-
-    /** @var AccesControlPolicyContentSpecification[] $policies */
-    public array $policies = [];
-
-    /** @var DataRequirementSpecification[] $data_requirements */
-    public array $data_requirements = [];
-
-    /** @return DataRequirementSpecification[] */
-    public function getDataRequirements(): array
-    {
-        return $this->data_requirements;
+    public function __construct(
+        private bool $is_multiple_actors = false,
+    ) {
     }
 
-    public function addDataRequirement(
-        string $class,
-        string $name,
-    ): void {
-        $requirement = new DataRequirementSpecification();
-        $requirement->itemtype = $class;
-        $requirement->name = $name;
-        $this->data_requirements[] = $requirement;
+    #[Override]
+    public static function jsonDeserialize(array $data): self
+    {
+        return new self(
+            is_multiple_actors: $data[self::IS_MULTIPLE_ACTORS] ?? false,
+        );
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            self::IS_MULTIPLE_ACTORS => $this->is_multiple_actors,
+        ];
+    }
+
+    public function isMultipleActors(): bool
+    {
+        return $this->is_multiple_actors;
     }
 }

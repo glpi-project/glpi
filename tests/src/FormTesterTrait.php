@@ -89,14 +89,17 @@ trait FormTesterTrait
             ]);
 
             // Create questions
+            $question_rank = 0;
             foreach ($section_data['questions'] as $question_data) {
                 $this->createItem(Question::class, [
                     'forms_sections_id' => $section->getID(),
                     'name'              => $question_data['name'],
                     'type'              => $question_data['type'],
                     'is_mandatory'      => $question_data['is_mandatory'],
+                    'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                    'rank'              => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
                 ]);

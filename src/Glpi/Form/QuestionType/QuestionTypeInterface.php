@@ -182,18 +182,34 @@ interface QuestionTypeInterface
     public function isAllowedForUnauthenticatedAccess(): bool;
 
     /**
-     * Get the configuration class for this question type.
+     * Get the extra-data configuration class for this question type.
      *
      * @return ?string
      */
-    public function getConfigClass(): ?string;
+    public function getExtraDataConfigClass(): ?string;
 
     /**
-     * Get the configuration for the given question.
+     * Get the extra-data configuration for the given question.
      *
-     * @param Question|null $question The question to get the configuration for.
+     * @param array $serialized_data The serialized data to get the configuration for.
      *
      * @return ?JsonFieldInterface
      */
-    public function getConfig(?Question $question): ?JsonFieldInterface;
+    public function getExtraDataConfig(array $serialized_data): ?JsonFieldInterface;
+
+    /**
+     * Get the default value configuration class for this question type.
+     *
+     * @return ?string
+     */
+    public function getDefaultValueConfigClass(): ?string;
+
+    /**
+     * Get the default value configuration for the given question.
+     *
+     * @param array $serialized_data The serialized data to get the configuration for.
+     *
+     * @return ?JsonFieldInterface
+     */
+    public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface;
 }

@@ -33,31 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\AccessControl\ControlType;
+namespace Glpi\Form\QuestionType;
 
-use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Group;
 use Override;
-use Profile;
-use User;
 
-final class AllowListConfig implements
-    JsonFieldInterface,
-    ConfigWithForeignKeysInterface
+final class QuestionTypeActorsDefaultValueConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
-    // Serialized keys names
-    private const KEY_USER_IDS = 'user_ids';
-    private const KEY_GROUP_IDS = 'group_ids';
-    private const KEY_PROFILE_IDS = 'profile_ids';
+    // Unique reference to hardcoded name used for serialization
+    public const KEY_USERS_IDS     = "users_ids";
+    public const KEY_GROUPS_IDS    = "groups_ids";
+    public const KEY_SUPPLIERS_IDS = "suppliers_ids";
 
     public function __construct(
-        private array $user_ids = [],
-        private array $group_ids = [],
-        private array $profile_ids = [],
+        private array $users_ids = [],
+        private array $groups_ids = [],
+        private array $suppliers_ids = [],
     ) {
     }
 
@@ -66,17 +60,16 @@ final class AllowListConfig implements
     {
         return [
             new ForeignKeyArrayHandler(
-                key: self::KEY_USER_IDS,
-                itemtype  : User::class,
-                ignored_values: [AbstractRightsDropdown::ALL_USERS],
+                key: self::KEY_USERS_IDS,
+                itemtype: 'User',
             ),
             new ForeignKeyArrayHandler(
-                key: self::KEY_GROUP_IDS,
-                itemtype  : Group::class,
+                key: self::KEY_GROUPS_IDS,
+                itemtype: 'Group',
             ),
             new ForeignKeyArrayHandler(
-                key: self::KEY_PROFILE_IDS,
-                itemtype  : Profile::class,
+                key: self::KEY_SUPPLIERS_IDS,
+                itemtype: 'Supplier',
             ),
         ];
     }
@@ -85,9 +78,9 @@ final class AllowListConfig implements
     public static function jsonDeserialize(array $data): self
     {
         return new self(
-            user_ids   : $data[self::KEY_USER_IDS] ?? [],
-            group_ids  : $data[self::KEY_GROUP_IDS] ?? [],
-            profile_ids: $data[self::KEY_PROFILE_IDS] ?? []
+            users_ids: $data[self::KEY_USERS_IDS] ?? [],
+            groups_ids: $data[self::KEY_GROUPS_IDS] ?? [],
+            suppliers_ids: $data[self::KEY_SUPPLIERS_IDS] ?? [],
         );
     }
 
@@ -95,24 +88,24 @@ final class AllowListConfig implements
     public function jsonSerialize(): array
     {
         return [
-            self::KEY_USER_IDS    => $this->user_ids,
-            self::KEY_GROUP_IDS   => $this->group_ids,
-            self::KEY_PROFILE_IDS => $this->profile_ids,
+            self::KEY_USERS_IDS     => $this->users_ids,
+            self::KEY_GROUPS_IDS    => $this->groups_ids,
+            self::KEY_SUPPLIERS_IDS => $this->suppliers_ids,
         ];
     }
 
-    public function getUserIds(): array
+    public function getUsersIds(): array
     {
-        return $this->user_ids;
+        return $this->users_ids;
     }
 
-    public function getGroupIds(): array
+    public function getGroupsIds(): array
     {
-        return $this->group_ids;
+        return $this->groups_ids;
     }
 
-    public function getProfileIds(): array
+    public function getSuppliersIds(): array
     {
-        return $this->profile_ids;
+        return $this->suppliers_ids;
     }
 }

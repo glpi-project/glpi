@@ -35,17 +35,18 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-class QuestionTypeSelectableConfig implements JsonFieldInterface
+final class QuestionTypeDropdownExtraDataConfig extends QuestionTypeSelectableExtraDataConfig
 {
     // Unique reference to hardcoded name used for serialization
-    public const OPTIONS = "options";
+    public const IS_MULTIPLE_DROPDOWN = "is_multiple_dropdown";
 
     public function __construct(
-        private array $options,
+        array $options,
+        private bool $is_multiple_dropdown = false,
     ) {
+        parent::__construct(options: $options);
     }
 
     #[Override]
@@ -53,19 +54,23 @@ class QuestionTypeSelectableConfig implements JsonFieldInterface
     {
         return new self(
             options: $data[self::OPTIONS] ?? [],
+            is_multiple_dropdown: $data[self::IS_MULTIPLE_DROPDOWN] ?? false,
         );
     }
 
     #[Override]
     public function jsonSerialize(): array
     {
-        return [
-            self::OPTIONS => $this->options,
-        ];
+        return array_merge(
+            parent::jsonSerialize(),
+            [
+                self::IS_MULTIPLE_DROPDOWN => $this->is_multiple_dropdown,
+            ]
+        );
     }
 
-    public function getOptions(): array
+    public function isMultipleDropdown(): bool
     {
-        return $this->options;
+        return $this->is_multiple_dropdown;
     }
 }

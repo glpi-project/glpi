@@ -143,6 +143,12 @@ final class Question extends CommonDBChild implements BlockInterface
 
     private function prepareInput(&$input)
     {
+        // If the question is being imported, we don't need to format the input
+        // because it is already formatted. So we skip this step.
+        if ($input['_from_import'] ?? false) {
+            return;
+        }
+
         $question_type = $this->getQuestionType();
 
         // The question type can be null when the question is created

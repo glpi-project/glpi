@@ -137,24 +137,36 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
         return null;
     }
 
     #[Override]
-    public function getConfig(?Question $question): ?JsonFieldInterface
+    public function getExtraDataConfig(array $serialized_data): ?JsonFieldInterface
     {
-        $config_class = $this->getConfigClass();
-        if ($config_class === null || $question === null) {
+        $config_class = $this->getExtraDataConfigClass();
+        if ($config_class === null || empty($serialized_data)) {
             return null;
         }
 
-        $extra_data = $question->fields['extra_data'];
-        if (empty($extra_data)) {
+        return $config_class::jsonDeserialize($serialized_data);
+    }
+
+    #[Override]
+    public function getDefaultValueConfigClass(): ?string
+    {
+        return null;
+    }
+
+    #[Override]
+    public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface
+    {
+        $config_class = $this->getDefaultValueConfigClass();
+        if ($config_class === null || empty($serialized_data)) {
             return null;
         }
 
-        return $config_class::jsonDeserialize(json_decode($extra_data, true));
+        return $config_class::jsonDeserialize($serialized_data);
     }
 }
