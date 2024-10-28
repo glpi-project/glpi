@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class Step3ExecuteController extends AbstractController
+final class Step4ExecuteController extends AbstractController
 {
     #[Route("/Form/Import/Execute", name: "glpi_form_import_execute", methods: "POST")]
     public function __invoke(Request $request): Response
@@ -53,16 +53,24 @@ final class Step3ExecuteController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // Get json from hidden input
+        // Get json and skipped forms from hidden inputs
         $json = $request->request->get('json');
+        $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
 
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
 
-        return $this->render("pages/admin/form/import/step3_execute.html.twig", [
+        $replacements = $request->request->all()["replacements"] ?? [];
+        foreach ($replacements as $itemtype => $replacements_for_itemtype) {
+            foreach ($replacements_for_itemtype as $original_name => $items_id) {
+                $mapper->addMappedItem($itemtype, $original_name, $items_id);
+            }
+        }
+
+        return $this->render("pages/admin/form/import/step4_execute.html.twig", [
             'title'   => __("Import results"),
             'menu'    => ['admin', Form::getType()],
-            'results' => $serializer->importFormsFromJson($json, $mapper),
+            'results' => $serializer->importFormsFromJson($json, $mapper, $skipped_forms),
         ]);
     }
 }

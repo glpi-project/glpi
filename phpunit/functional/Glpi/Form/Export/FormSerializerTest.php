@@ -236,7 +236,7 @@ final class FormSerializerTest extends \DbTestCase
         $mapper = new DatabaseMapper(Session::getActiveEntities());
         $mapper->addMappedItem(Entity::class, 'My entity', $another_entity_id);
 
-        $form_copy = $this->importForm($json, $mapper);
+        $form_copy = $this->importForm($json, $mapper, []);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
     }
 
@@ -372,6 +372,64 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
     }
 
+    public function testPreviewImportWithSkippedForm(): void
+    {
+        // Arrange: create a valid form
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+
+        // Act: export the form and preview the import
+        $results = self::$serializer->exportFormsToJson([$form]);
+        $preview = self::$serializer->previewImport(
+            $results->getJsonContent(),
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
+            [json_decode($results->getJsonContent(), true)['forms'][0]['id']],
+        );
+
+        // Assert: the form should be valid
+        $this->assertEquals([], $preview->getValidForms());
+        $this->assertEquals([], $preview->getInvalidForms());
+        $this->assertEquals([$form->fields['name']], $preview->getSkippedForms());
+    }
+
+    public function testPreviewImportWithFixedForm(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create an invalid form by setting it into a temporary entity
+        // that will be deleted later
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form->fields['entities_id'] = $entity->getID();
+
+        // Act: export the form; delete the temporary entity to make the form
+        // invalid; preview the import
+        $json = $this->exportForm($form);
+        $this->deleteItem(Entity::class, $entity->getID());
+        $preview = self::$serializer->previewImport(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Assert: the form should be invalid
+        $this->assertEquals([], $preview->getValidForms());
+        $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
+
+        // Add mapped item to fix the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+
+        // Act: preview the import again
+        $preview = self::$serializer->previewImport($json, $mapper, []);
+
+        // Assert: the form should be fixed
+        $this->assertEquals([$form->fields['name']], $preview->getValidForms());
+        $this->assertEquals([], $preview->getInvalidForms());
+    }
+
     public function testImportRequirementsAreCheckedInVisibleEntities(): void
     {
         $test_root_entity_id = $this->getTestRootEntity(only_id: true);
@@ -423,6 +481,70 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: import should have failed
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertCount(1, $import_result->getFailedFormImports());
+    }
+
+    public function testImportRequirementsAreNotCheckedAndFixed(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create a form with a temporary entity that will be deleted
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form->fields['entities_id'] = $entity->getID();
+
+        // Act: export the form; delete the entity to make the form invalid; import the form
+        $json = $this->exportForm($form);
+        $this->deleteItem(Entity::class, $entity->getID());
+        $import_result = self::$serializer->importFormsFromJson(
+            $json,
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+        );
+
+        // Assert: the import should fail
+        $this->assertCount(0, $import_result->getImportedForms());
+        $this->assertEquals([
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+        ], $import_result->getFailedFormImports());
+
+        // Add mapped item to fix the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+
+        // Act: import the form again
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper, []);
+
+        // Assert: the import should succeed
+        $this->assertCount(1, $import_result->getImportedForms());
+        $this->assertCount(0, $import_result->getFailedFormImports());
+    }
+
+    public function testImportWithSkippedForms(): void
+    {
+        // Arrange: create 3 forms
+        $forms = [];
+        foreach (range(1, 3) as $i) {
+            $builder = new FormBuilder("Form $i");
+            $forms[] = $this->createForm($builder);
+        }
+
+        // Act: export the forms; import only the first and the third form
+        $results = self::$serializer->exportFormsToJson($forms);
+        $import_result = self::$serializer->importFormsFromJson(
+            $results->getJsonContent(),
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
+            [json_decode($results->getJsonContent(), true)['forms'][1]['id']],
+        );
+
+        // Assert: only the first and the third form should have been imported
+        $this->assertCount(2, $import_result->getImportedForms());
+        $this->assertEquals([
+            $forms[0]->fields['name'],
+            $forms[2]->fields['name'],
+        ], array_map(fn (Form $form) => $form->fields['name'], $import_result->getImportedForms()));
     }
 
     // TODO: add a test later to make sure that requirements for each forms do

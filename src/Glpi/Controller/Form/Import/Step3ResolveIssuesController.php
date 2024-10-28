@@ -35,69 +35,47 @@
 namespace Glpi\Controller\Form\Import;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class Step2PreviewController extends AbstractController
+final class Step3ResolveIssuesController extends AbstractController
 {
-    #[Route("/Form/Import/Preview", name: "glpi_form_import_preview", methods: "POST")]
+    #[Route("/Form/Import/ResolveIssues", name: "glpi_form_import_resolve_issues", methods: "POST")]
     public function __invoke(Request $request): Response
     {
         if (!Form::canCreate()) {
             throw new AccessDeniedHttpException();
         }
 
-        $json = $this->getJsonFormFromRequest($request);
+        // Get json, form name and skipped_forms from the request.
+        $json          = $request->request->get('json');
+        $form_id       = $request->request->get('form_id');
         $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
-        $replacements = $request->request->all()["replacements"] ?? [];
 
-        return $this->previewResponse($request, $json, $skipped_forms, $replacements);
-    }
-
-    private function previewResponse(
-        Request $request,
-        string $json,
-        array $skipped_forms,
-        array $replacements
-    ): Response {
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
+
+        $replacements = $request->request->all()["replacements"] ?? [];
         foreach ($replacements as $itemtype => $replacements_for_itemtype) {
             foreach ($replacements_for_itemtype as $original_name => $items_id) {
                 $mapper->addMappedItem($itemtype, $original_name, $items_id);
             }
         }
 
-        $previewResult = $serializer->previewImport($json, $mapper, $skipped_forms);
-        if (empty($previewResult->getValidForms()) && empty($previewResult->getInvalidForms())) {
-            return new RedirectResponse($request->getBasePath() . '/Form/Import');
-        }
-
-        return $this->render("pages/admin/form/import/step2_preview.html.twig", [
-            'title'        => __("Preview import"),
+        $issues = $serializer->listIssues($mapper, $json)->getIssues()[$form_id];
+        return $this->render("pages/admin/form/import/step3_resolve_issues.html.twig", [
+            'title'        => __("Resolve issues"),
             'menu'         => ['admin', Form::getType()],
-            'preview'      => $previewResult,
+            'issues'       => $issues,
             'json'         => $json,
             'replacements' => $replacements,
+            'skipped_forms' => $skipped_forms,
         ]);
-    }
-
-    private function getJsonFormFromRequest(Request $request): string
-    {
-        if ($request->request->has('json')) {
-            return $request->request->get('json');
-        }
-
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
-        $file = $request->files->get('import_file');
-
-        return $file->getContent();
     }
 }

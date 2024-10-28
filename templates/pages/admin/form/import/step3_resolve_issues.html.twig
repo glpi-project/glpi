@@ -1,0 +1,109 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set container_size = "narrow" %}
+
+{% block content_title %}
+    {{ __('Import forms') }}
+{% endblock content_title %}
+
+{% block content_body %}
+    <form method="POST" action="{{ path('Form/Import/Preview') }}">
+        <div class="card">
+            <div class="card-header py-3 px-4">
+                <h3 class="card-title">{{ __("Resolve issues") }}</h3>
+            </div>
+            <table class="table table-card mb-0">
+                <thead>
+                    <tr>
+                        <th class="w-25 px-4">{{ __("Original value") }}</th>
+                        <th class="w-75 px-4">{{ __("Replacement value") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                        {% set original_name = issue.default_name ?? issue.name %}
+
+                        <tr>
+                            <td class="px-4 align-middle">
+                                <span>{{ original_name }}</span>
+                            </td>
+                            <td class="px-4">
+                                {{ fields.dropdownField(
+                                    issue.itemtype,
+                                    'replacements[' ~ issue.itemtype ~ '][' ~ original_name ~ ']',
+                                    issue.replacement_id|default(''),
+                                    '',
+                                    {
+                                        'field_class': 'col-12',
+                                        'aria_label' : __("Replacement value for '%s'")|format(original_name),
+                                        'no_label'   : true,
+                                        'right'      : 'all',
+                                        'mb'         : '',
+                                    }
+                                ) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <div class="justify-content-end d-flex">
+                    <button type="submit" href="#" class="btn btn-primary">
+                        {{ __("Preview import") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="json" value="{{ json }}"/>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+
+        {% for skipped_form in skipped_forms %}
+            <input type="hidden" name="skipped_forms[]" value="{{ skipped_form }}" />
+        {% endfor %}
+
+        {% for itemtype, replacements_for_itemtype in replacements %}
+            {% for original_name, items_id in replacements_for_itemtype %}
+                <input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
+            {% endfor %}
+        {% endfor %}
+    </form>
+{% endblock content_body %}

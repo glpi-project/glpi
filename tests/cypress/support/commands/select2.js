@@ -79,6 +79,6 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
         });
     } else {
         const select2_id = subject.get(0).children[0].id.replace('-container', '');
-        cy.get(`#${select2_id}-results`).findByRole('option', { name: new_value }).click();
+        cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: new_value }).click();
     }
 });

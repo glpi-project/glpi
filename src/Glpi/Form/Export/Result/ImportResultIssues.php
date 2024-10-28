@@ -33,41 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\Export\Result;
 
-final class FormContentSpecification
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+
+final class ImportResultIssues
 {
-    public int $id;
-    public string $name;
-    public string $header;
-    public string $entity_name;
-    public bool $is_recursive;
+    /** @var array<int, DataRequirementSpecification[]> $valid_forms */
+    private array $issues = [];
 
-    /** @var SectionContentSpecification[] $sections */
-    public array $sections = [];
-
-    /** @var CommentContentSpecification[] $comments */
-    public array $comments = [];
-
-    /** @var AccesControlPolicyContentSpecification[] $policies */
-    public array $policies = [];
-
-    /** @var DataRequirementSpecification[] $data_requirements */
-    public array $data_requirements = [];
-
-    /** @return DataRequirementSpecification[] */
-    public function getDataRequirements(): array
+    /**
+     * @param int $form_id
+     * @param DataRequirementSpecification[] $issues
+     */
+    public function addIssuesForForm(int $form_id, array $issues): void
     {
-        return $this->data_requirements;
+        $this->issues[$form_id] = $issues;
     }
 
-    public function addDataRequirement(
-        string $class,
-        string $name,
-    ): void {
-        $requirement = new DataRequirementSpecification();
-        $requirement->itemtype = $class;
-        $requirement->name = $name;
-        $this->data_requirements[] = $requirement;
+    /** @return array<int, DataRequirementSpecification[]> */
+    public function getIssues(): array
+    {
+        return $this->issues;
     }
 }
