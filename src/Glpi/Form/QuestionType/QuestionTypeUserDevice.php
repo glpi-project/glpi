@@ -46,12 +46,13 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
     #[Override]
     public function validateExtraDataInput(array $input): bool
     {
-        $allowed_keys = [
-            'is_multiple_devices'
-        ];
-
-        return empty(array_diff(array_keys($input), $allowed_keys))
-            && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
+        // Only one key is allowed and optional: 'is_multiple_devices'.
+        // This key must be a valid boolean.
+        return (
+            isset($input['is_multiple_devices'])
+            && count($input) === 1
+            && filter_var($input['is_multiple_devices'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
+        ) || empty($input);
     }
 
     /**
@@ -147,7 +148,7 @@ TWIG;
                     const selects = $(input).closest('section[data-glpi-form-editor-question]')
                         .find('div .devices-dropdown');
 
-                    {# Toglle all selects visibility #}
+                    {# Toggle all selects visibility #}
                     selects.toggleClass('d-none');
 
                     {# Handle hidden input for multiple devices #}
@@ -203,21 +204,19 @@ TWIG;
         $devices = [];
         if (is_array($answer)) {
             foreach ($answer as $device) {
-                $device_parts = preg_split('~_(?=[^_]*$)~', $device);
+                $device_parts = [];
                 if (
-                    count($device_parts) !== 2
-                    || !class_exists($device_parts[0])
-                    || !is_numeric($device_parts[1])
+                    preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
+                    || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
+                    || $device_parts['itemtype']::getById($device_parts['id']) === false
                 ) {
                     continue;
                 }
 
-                if ($device_parts[0]::getById($device_parts[1]) !== false) {
-                    $devices[] = [
-                        'itemtype' => $device_parts[0],
-                        'items_id' => $device_parts[1]
-                    ];
-                }
+                $devices[] = [
+                    'itemtype' => $device_parts['itemtype'],
+                    'items_id' => $device_parts['id']
+                ];
             }
         }
 

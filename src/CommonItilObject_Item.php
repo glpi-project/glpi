@@ -801,7 +801,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      * - 'Installed software': Software linked to all owned items.
      * - 'Connected devices': Items linked to computers.
      */
-    public static function getMyDevices(int $userID, mixed $entity_restrict = -1)
+    public static function getMyDevices(int $userID, mixed $entity_restrict = -1): array
     {
         $my_devices = [];
         $already_add = [];
@@ -810,11 +810,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $devices = self::getMyAssigneeDevices($userID, $entity_restrict, $already_add);
         foreach ($devices as $itemtype => $items) {
             foreach ($items as $data) {
-                $output = $data['name'];
+                $output = $data[$itemtype::getNameField()];
                 if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
-                $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
                 if ($itemtype != 'Software') {
                     if (!empty($data['serial'])) {
                         $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
@@ -832,11 +832,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $devices = self::getMyGroupsDevices($userID, $entity_restrict, $already_add);
             foreach ($devices as $itemtype => $items) {
                 foreach ($items as $data) {
-                    $output = $data['name'];
+                    $output = $data[$itemtype::getNameField()];
                     if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                         $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                     }
-                    $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                    $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
                     if (!empty($data['serial'])) {
                         $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
                     }
@@ -851,7 +851,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         // Get software linked to all owned items
         $software = self::getLinkedSoftware($already_add, $entity_restrict, $already_add);
         foreach ($software as $data) {
-            $output = sprintf(__('%1$s - %2$s'), 'Software', $data["name"]);
+            $output = sprintf(__('%1$s - %2$s'), Software::getTypeName(), $data["name"]);
             $output = sprintf(
                 __('%1$s (%2$s)'),
                 $output,
@@ -867,11 +867,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $linked_items = self::getLinkedItemsToComputers($already_add, $entity_restrict, $already_add);
         foreach ($linked_items as $itemtype => $items) {
             foreach ($items as $data) {
-                $output = $data['name'];
+                $output = $data[$itemtype::getNameField()];
                 if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                 }
-                $output = sprintf(__('%1$s - %2$s'), $itemtype, $output);
+                $output = sprintf(__('%1$s - %2$s'), $itemtype::getTypeName(), $output);
                 if ($itemtype != 'Software') {
                     $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                 }
@@ -889,9 +889,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
      * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
      *
-     * @return array An associative array of devices assigned to the user, categorized by item type.
+     * @return array<string, array>  An associative array of devices assigned to the user, categorized by item type.
      */
-    private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = [])
+    private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
         /**
          * @var array $CFG_GLPI
@@ -947,9 +947,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
      * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
      *
-     * @return array An associative array of devices grouped by item type.
+     * @return array<string, array> An associative array of devices grouped by item type.
      */
-    private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = [])
+    private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
         /**
          * @var array $CFG_GLPI
@@ -1051,7 +1051,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return array An array of linked software information, including software name, version, and ID.
      */
-    private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = [])
+    private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
         /**
          * @var array $CFG_GLPI
@@ -1120,9 +1120,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      * @param int $entity_restrict The entity restriction to apply. Default is -1 (no restriction).
      * @param array &$already_add Reference to an array that keeps track of already added items.
      *
-     * @return array An array of linked items categorized by their item types.
+     * @return array<string, array> An array of linked items categorized by their item types.
      */
-    private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = [])
+    private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
         /**
          * @var array $CFG_GLPI

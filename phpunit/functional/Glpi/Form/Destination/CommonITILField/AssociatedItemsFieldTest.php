@@ -310,6 +310,34 @@ final class AssociatedItemsFieldTest extends DbTestCase
                 ],
             ]
         );
+
+        // Test with answers with same computers
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: $all_valid_answers,
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
+                    'itemtype' => Computer::getType(),
+                    'items_id' => $computers[0]->getID(),
+                ]
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                ],
+                Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
+                    $monitors[1]->getID() => $monitors[1]->getID(),
+                ],
+            ]
+        );
     }
 
     private function sendFormAndAssertAssociatedItems(

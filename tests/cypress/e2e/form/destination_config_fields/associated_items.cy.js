@@ -164,10 +164,10 @@ describe('Associated items configuration', () => {
             cy.get("@question").getDropdownByLabelText("Select an item").selectDropdownValue(`My computer - ${form_id}`);
 
             cy.findByRole("region", { name : "My user device question" }).as("question");
-            cy.get("@question").getDropdownByLabelText("Select device...").selectDropdownValue(`Computer - My Assigned computer - ${  form_id}`);
+            cy.get("@question").getDropdownByLabelText("Select device...").selectDropdownValue(`Computers - My Assigned computer - ${form_id}`);
 
             cy.findByRole("region", { name : "My multiple user device question" }).as("question");
-            cy.get("@question").getDropdownByLabelText("Select devices...").selectDropdownValue(`Monitor - My Assigned monitor - ${  form_id}`);
+            cy.get("@question").getDropdownByLabelText("Select devices...").selectDropdownValue(`Monitors - My Assigned monitor - ${  form_id}`);
         });
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();

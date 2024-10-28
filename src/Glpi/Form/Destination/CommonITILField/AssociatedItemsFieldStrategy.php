@@ -146,7 +146,10 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $values = $answer->getRawAnswer();
-        if (count($values) == count($values, COUNT_RECURSIVE)) {
+
+        // $values must be a list of items
+        // We can have a single item, so we need to wrap it in a list
+        if (!array_is_list($values)) {
             $values = [$values];
         }
 
@@ -169,7 +172,10 @@ enum AssociatedItemsFieldStrategy: string
 
         $answer = end($valid_answers);
         $values = $answer->getRawAnswer();
-        if (count($values) == count($values, COUNT_RECURSIVE)) {
+
+        // $values must be a list of items
+        // We can have a single item, so we need to wrap it in a list
+        if (!array_is_list($values)) {
             $values = [$values];
         }
 
@@ -189,10 +195,13 @@ enum AssociatedItemsFieldStrategy: string
             return null;
         }
 
-        return array_merge(...array_map(
+        $all_items = array_merge(...array_map(
             function ($answer) {
                 $raw_answer = $answer->getRawAnswer();
-                if (count($raw_answer) == count($raw_answer, COUNT_RECURSIVE)) {
+
+                // $raw_answer must be a list of items
+                // We can have a single item, so we need to wrap it in a list
+                if (!array_is_list($raw_answer)) {
                     $raw_answer = [$raw_answer];
                 }
 
@@ -200,6 +209,11 @@ enum AssociatedItemsFieldStrategy: string
             },
             $valid_answers
         ));
+
+        // Remove duplicate items
+        $unique_items = array_unique($all_items, SORT_REGULAR);
+
+        return $unique_items;
     }
 
     private function getValidAnswers(AnswersSet $answers_set): array
@@ -211,7 +225,10 @@ enum AssociatedItemsFieldStrategy: string
             ]),
             function ($answer) {
                 $raw_answer = $answer->getRawAnswer();
-                if (count($raw_answer) == count($raw_answer, COUNT_RECURSIVE)) {
+
+                // $raw_answer must be a list of items
+                // We can have a single item, so we need to wrap it in a list
+                if (!array_is_list($raw_answer)) {
                     $raw_answer = [$raw_answer];
                 }
 
