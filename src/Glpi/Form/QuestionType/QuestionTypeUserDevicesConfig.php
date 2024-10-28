@@ -35,53 +35,37 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Dropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Override;
-use Session;
 
-final class QuestionTypeItemDropdown extends QuestionTypeItem
+final class QuestionTypeUserDevicesConfig implements JsonFieldInterface
 {
-    #[Override]
-    public function __construct()
-    {
-        parent::__construct();
+    // Unique reference to hardcoded name used for serialization
+    public const IS_MULTIPLE_DEVICES = "is_multiple_devices";
 
-        $this->itemtype_aria_label = __('Select a dropdown type');
-        $this->items_id_aria_label = __('Select a dropdown item');
-    }
-
-    public function getAllowedItemtypes(): array
-    {
-        $dropdown_itemtypes = Dropdown::getStandardDropdownItemTypes(check_rights: false);
-
-        /**
-         * It is necessary to replace the values with their corresponding keys
-         * because the values returned by getStandardDropdownItemTypes() are
-         * translations and not item type keys.
-         * The array_keys() function is not used because it does not work for nested arrays.
-         */
-        array_walk_recursive($dropdown_itemtypes, function (&$value, $key) {
-            $value = $key;
-        });
-
-        return $dropdown_itemtypes;
+    public function __construct(
+        private bool $is_multiple_devices = false,
+    ) {
     }
 
     #[Override]
-    public function getName(): string
+    public static function jsonDeserialize(array $data): self
     {
-        return _n('Dropdown', 'Dropdowns', Session::getPluralNumber());
+        return new self(
+            is_multiple_devices: $data[self::IS_MULTIPLE_DEVICES] ?? false,
+        );
     }
 
     #[Override]
-    public function getIcon(): string
+    public function jsonSerialize(): array
     {
-        return 'ti ti-edit';
+        return [
+            self::IS_MULTIPLE_DEVICES => $this->is_multiple_devices,
+        ];
     }
 
-    #[Override]
-    public function getWeight(): int
+    public function isMultipleDevices(): bool
     {
-        return 30;
+        return $this->is_multiple_devices;
     }
 }

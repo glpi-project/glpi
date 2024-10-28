@@ -61,6 +61,7 @@ use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
@@ -212,6 +213,7 @@ class AnswersSetTest extends DbTestCase
                     ]
                 ]))
                 ->addQuestion("GLPI Objects", QuestionTypeItem::class, 0, json_encode(['itemtype' => 'User']))
+                ->addQuestion("User Devices", QuestionTypeUserDevice::class)
                 ->addQuestion("Dropdowns", QuestionTypeItemDropdown::class, 0, json_encode(['itemtype' => 'Location']))
         );
 
@@ -253,6 +255,7 @@ class AnswersSetTest extends DbTestCase
                 'itemtype' => 'User',
                 'items_id' => 0
             ],
+            $this->getQuestionId($form, "User Devices") => 'Computer_0',
             $this->getQuestionId($form, "Dropdowns") => [
                 'itemtype' => 'Location',
                 'items_id' => 0

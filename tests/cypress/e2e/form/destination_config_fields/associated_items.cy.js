@@ -36,12 +36,51 @@ describe('Associated items configuration', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
 
-        // Create form with a single "item" question
+        // Create form
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
+
+        // Save form
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        cy.get('@form_id').then((form_id) => {
+            cy.createWithAPI('Computer', {
+                'name': `My computer - ${form_id}`,
+            }).as('computer_id');
+            cy.createWithAPI('Computer', {
+                'name': `My Assigned computer - ${form_id}`,
+                'users_id': 7,
+            });
+            cy.createWithAPI('Monitor', {
+                'name': `My Assigned monitor - ${form_id}`,
+                'users_id': 7,
+            });
+        });
+    });
+
+    function addQuestionsAndSaveForm() {
+        // Add a question of type Item
         cy.findByRole('button', {'name': "Add a new question"}).click();
         cy.focused().type("My item question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
+        cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
         cy.getDropdownByLabelText('Select an itemtype').selectDropdownValue('Computers');
+
+        // Add a question of type User Device with default configuration
+        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.focused().type("My user device question");
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
+        cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');
+        cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).should('not.be.checked');
+
+        // Add a question of type User Device with multiple devices allowed
+        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.focused().type("My multiple user device question");
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
+        cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');
+        cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).check();
+
+        // Save form
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
 
@@ -49,15 +88,13 @@ describe('Associated items configuration', () => {
         cy.findByRole('tab', {'name': "Items to create"}).click();
         cy.findByRole('button', {'name': "Add ticket"}).click();
         cy.checkAndCloseAlert('Item successfully added');
-
-        cy.get('@form_id').then((form_id) => {
-            cy.createWithAPI('Computer', {
-                'name': `My computer - ${form_id}`,
-            }).as('computer_id');
-        });
-    });
+    };
 
     it('can use all possibles configuration options', () => {
+        // Add questions and save form
+        addQuestionsAndSaveForm();
+
+        // Retrieve configuration section
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 
@@ -94,14 +131,26 @@ describe('Associated items configuration', () => {
         cy.get('@associated_items_dropdown').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My item question');
+        cy.get('@specific_answers_dropdown').selectDropdownValue('My user device question');
+        cy.get('@specific_answers_dropdown').selectDropdownValue('My multiple user device question');
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@associated_items_dropdown').should('have.text', 'Answer from specific questions');
-        cy.get('@specific_answers_dropdown').should('have.text', '×My item question');
+        cy.get('@specific_answers_dropdown').should('have.text', '×My item question×My user device question×My multiple user device question');
+
+        // Switch to "All valid "Item" answers"
+        cy.get('@associated_items_dropdown').selectDropdownValue('All valid "Item" answers');
+
+        cy.findByRole('button', {'name': 'Update item'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@associated_items_dropdown').should('have.text', 'All valid "Item" answers');
     });
 
     it('can create ticket using default configuration', () => {
+        // Add questions and save form
+        addQuestionsAndSaveForm();
+
         // Go to preview
         cy.findByRole('tab', {'name': "Form"}).click();
         cy.findByRole('link', {'name': "Preview"})
@@ -113,13 +162,19 @@ describe('Associated items configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.findByRole("region", { name : "My item question" }).as("question");
             cy.get("@question").getDropdownByLabelText("Select an item").selectDropdownValue(`My computer - ${form_id}`);
+
+            cy.findByRole("region", { name : "My user device question" }).as("question");
+            cy.get("@question").getDropdownByLabelText("Select device...").selectDropdownValue(`Computers - My Assigned computer - ${form_id}`);
+
+            cy.findByRole("region", { name : "My multiple user device question" }).as("question");
+            cy.get("@question").getDropdownByLabelText("Select devices...").selectDropdownValue(`Monitors - My Assigned monitor - ${  form_id}`);
         });
         cy.findByRole('button', {'name': 'Send form'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket linked items
         cy.get('@form_id').then((form_id) => {
-            cy.findByRole('region', {'name': 'Items'}).findByRole('link', {'name': `My computer - ${form_id} -`}).should('exist');
+            cy.findByRole('region', {'name': 'Items'}).findByRole('link', {'name': `My Assigned monitor - ${form_id} -`}).should('exist');
         });
 
         // Others possibles configurations are tested directly by the backend.
@@ -135,6 +190,11 @@ describe('Associated items configuration', () => {
                 'name': `My monitor - ${form_id}`,
             }).as('monitor_id');
         });
+
+        // Go to destination tab
+        cy.findByRole('tab', {'name': "Items to create"}).click();
+        cy.findByRole('button', {'name': "Add ticket"}).click();
+        cy.checkAndCloseAlert('Item successfully added');
 
         // Retrieve configuration section
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
