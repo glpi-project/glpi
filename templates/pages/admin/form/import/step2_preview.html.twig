@@ -146,10 +146,10 @@
         {% endfor %}
 
         {% for itemtype, replacements_for_itemtype in replacements %}
-			{% for original_name, items_id in replacements_for_itemtype %}
-				<input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
-			{% endfor %}
-		{% endfor %}
+            {% for original_name, items_id in replacements_for_itemtype %}
+                <input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
+            {% endfor %}
+        {% endfor %}
     </form>
 {% endblock content_body %}
 

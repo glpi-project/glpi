@@ -58,11 +58,15 @@ final class Step2PreviewController extends AbstractController
         $skipped_forms = $request->request->all()["skipped_forms"] ?? [];
         $replacements = $request->request->all()["replacements"] ?? [];
 
-        return $this->previewResponse($json, $skipped_forms, $replacements);
+        return $this->previewResponse($request, $json, $skipped_forms, $replacements);
     }
 
-    private function previewResponse(string $json, array $skipped_forms, array $replacements): Response
-    {
+    private function previewResponse(
+        Request $request,
+        string $json,
+        array $skipped_forms,
+        array $replacements
+    ): Response {
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
         foreach ($replacements as $itemtype => $replacements_for_itemtype) {
@@ -73,7 +77,7 @@ final class Step2PreviewController extends AbstractController
 
         $previewResult = $serializer->previewImport($json, $mapper, $skipped_forms);
         if (empty($previewResult->getValidForms()) && empty($previewResult->getInvalidForms())) {
-            return new RedirectResponse('/Form/Import');
+            return new RedirectResponse($request->getBasePath() . '/Form/Import');
         }
 
         return $this->render("pages/admin/form/import/step2_preview.html.twig", [
