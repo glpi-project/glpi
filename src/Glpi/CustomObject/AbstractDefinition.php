@@ -40,6 +40,7 @@ use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CustomFieldDefinition;
 use Profile;
 use ProfileRight;
 use Session;
@@ -51,6 +52,12 @@ use Session;
 abstract class AbstractDefinition extends CommonDBTM
 {
     public static $rightname = 'config';
+
+    /**
+     * @var CustomFieldDefinition[]|null
+     * @see self::getCustomFieldDefinitions()
+     */
+    protected ?array $custom_field_definitions = null;
 
     /**
      * Get the base class for custom objects of this type.
@@ -282,10 +289,35 @@ abstract class AbstractDefinition extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $translations = $this->getDecodedTranslationsField();
-        uksort(
+        $asset_name_translations = $this->getDecodedTranslationsField();
+
+        $translations = [];
+        foreach ($asset_name_translations as $lang => $plurals) {
+            $translations[] = [
+                'id' => 0,
+                'name' => __('Asset name'),
+                'language' => $lang,
+                'translation' => $plurals,
+            ];
+        }
+
+        $custom_fields = [];
+        $custom_field_definitions = $this->getCustomFieldDefinitions();
+        foreach ($custom_field_definitions as $custom_field) {
+            $custom_fields[$custom_field->getID()] = $custom_field->fields['name'];
+            foreach ($custom_field->getDecodedTranslationsField() as $language => $translation) {
+                $translations[] = [
+                    'id' => $custom_field->getID(),
+                    'name' => $custom_field->fields['name'],
+                    'language' => $language,
+                    'translation' => ['one' => $translation],
+                ];
+            }
+        }
+
+        usort(
             $translations,
-            static fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
+            static fn (array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
         );
 
         $rand = mt_rand();
@@ -296,11 +328,19 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item' => $this,
                 'classname' => $this->getCustomObjectClassName(),
                 'translations' => $translations,
+                'fields_dropdown' => Dropdown::showFromArray('field', $custom_fields, [
+                    'display'             => false,
+                    'display_emptychoice' => false,
+                    'width'               => '100%',
+                    'rand'                => $rand,
+                    'toadd'               => [
+                        0 => __('Asset name'),
+                    ]
+                ]),
                 'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display'             => false,
                     'display_emptychoice' => true,
                     'width'               => '100%',
-                    'on_change'           => 'setModalLanguagePlural(this.value);',
                     'rand'                => $rand,
                 ]),
                 'rand' => $rand,
@@ -336,16 +376,40 @@ abstract class AbstractDefinition extends CommonDBTM
         }
 
         if (isset($input['_save_translation'], $input['language'], $input['plurals'])) {
-            $translations = $this->getDecodedTranslationsField();
-            $translations[$input['language']] = $input['plurals'];
-            unset($input['_save_translation'], $input['language'], $input['plurals']);
-            $input['translations'] = $translations;
+            if (empty($input['field'] ?? null)) {
+                $translations = $this->getDecodedTranslationsField();
+                $translations[$input['language']] = $input['plurals'];
+                unset($input['_save_translation'], $input['language'], $input['plurals']);
+                $input['translations'] = $translations;
+            } else if (array_key_exists('one', $input['plurals'])) {
+                $custom_field = new CustomFieldDefinition();
+                if ($custom_field->getFromDB($input['field']) && $custom_field->fields[static::getForeignKeyField()] === $this->getID()) {
+                    $translations = $custom_field->getDecodedTranslationsField();
+                    $translations[$input['language']] = $input['plurals']['one'];
+                    $custom_field->update([
+                        'id' => $input['field'],
+                        'translations' => $translations,
+                    ]);
+                }
+            }
         }
 
         if (isset($input['_delete_translation'], $input['language'])) {
-            $translations = $this->getDecodedTranslationsField();
-            unset($translations[$input['language']], $input['_delete_translation'], $input['language']);
-            $input['translations'] = $translations;
+            if (empty($input['field'] ?? null)) {
+                $translations = $this->getDecodedTranslationsField();
+                unset($translations[$input['language']], $input['_delete_translation'], $input['language']);
+                $input['translations'] = $translations;
+            } else {
+                $custom_field = new CustomFieldDefinition();
+                if ($custom_field->getFromDB($input['field']) && $custom_field->fields[static::getForeignKeyField()] === $this->getID()) {
+                    $translations = $custom_field->getDecodedTranslationsField();
+                    unset($translations[$input['language']]);
+                    $custom_field->update([
+                        'id' => $input['field'],
+                        'translations' => $translations,
+                    ]);
+                }
+            }
         }
 
         return $this->prepareInput($input);
@@ -854,5 +918,13 @@ TWIG, ['name' => $name, 'value' => $value]);
         }
 
         return $is_valid;
+    }
+
+    /**
+     * @return CustomFieldDefinition[]
+     */
+    public function getCustomFieldDefinitions(): array
+    {
+        return [];
     }
 }
