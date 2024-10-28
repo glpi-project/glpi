@@ -63,11 +63,13 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
      */
     public function isMultipleDevices(?Question $question): bool
     {
-        if ($question === null) {
+        /** @var ?QuestionTypeUserDevicesConfig $config */
+        $config = $this->getConfig($question);
+        if ($config === null) {
             return false;
         }
 
-        return $question->getExtraDatas()['is_multiple_devices'] ?? false;
+        return $config->isMultipleDevices();
     }
 
     #[Override]
@@ -263,5 +265,11 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return false;
+    }
+
+    #[Override]
+    public function getConfigClass(): ?string
+    {
+        return QuestionTypeUserDevicesConfig::class;
     }
 }
