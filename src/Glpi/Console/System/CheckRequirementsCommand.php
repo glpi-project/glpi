@@ -60,7 +60,10 @@ class CheckRequirementsCommand extends AbstractCommand
         $requirements_manager = new RequirementsManager();
         $optional_db = $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null;
         $core_requirements = $requirements_manager->getCoreRequirementList($optional_db);
-        $core_requirements->add(new DatabaseTablesEngine($optional_db));
+
+        if ($optional_db) {
+            $core_requirements->add(new DatabaseTablesEngine($optional_db));
+        }
 
         $informations = new Table($output);
         $informations->setHeaders(
