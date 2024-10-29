@@ -81,19 +81,9 @@ final class ManagementController extends AbstractController
 
         if ($management_types === null) {
             $management_types = [
-                Appliance::class => [
-                    'schema_name' => 'Appliance',
-                    'label' => Appliance::getTypeName(1),
-                    'version_introduced' => '2.0'
-                ],
                 Budget::class => [
                     'schema_name' => 'Budget',
                     'label' => Budget::getTypeName(1),
-                    'version_introduced' => '2.0'
-                ],
-                Certificate::class => [
-                    'schema_name' => 'Certificate',
-                    'label' => Certificate::getTypeName(1),
                     'version_introduced' => '2.0'
                 ],
                 Cluster::class => [
