@@ -77,11 +77,6 @@ class Appliance extends CommonDBTM
         return 'inventory';
     }
 
-    public static function getLogLevel(): int
-    {
-        return 4;
-    }
-
     public static function getTypeName($nb = 0)
     {
         return _n('Appliance', 'Appliances', $nb);

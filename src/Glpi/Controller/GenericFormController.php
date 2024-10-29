@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class GenericFormController extends AbstractController
+class GenericFormController extends AbstractController
 {
     public const ACTIONS_AND_CHECKS = [
         'get' => ['permission' => READ, 'post_action' => null],
@@ -57,7 +57,7 @@ final class GenericFormController extends AbstractController
         'update' => ['permission' => UPDATE, 'post_action' => 'back'],
     ];
 
-    #[Route("/{class}/Form", name: "glpi_generic_form")]
+    #[Route("/{class}/Form", name: "glpi_generic_form", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');

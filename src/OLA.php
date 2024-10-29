@@ -56,6 +56,11 @@ class OLA extends LevelAgreement
         return ['config', SLM::class, self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'setup';
+    }
+
     public static function getIcon()
     {
         return SLM::getIcon();

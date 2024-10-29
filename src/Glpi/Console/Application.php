@@ -44,6 +44,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
@@ -51,6 +52,7 @@ use Plugin;
 use Session;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -613,5 +615,13 @@ class Application extends BaseApplication
         }
 
         return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
+    }
+
+    public function getKernel(): ?Kernel
+    {
+        /** @var null|Kernel $kernel */
+        global $kernel;
+
+        return $kernel;
     }
 }

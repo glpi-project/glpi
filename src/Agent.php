@@ -88,11 +88,6 @@ class Agent extends CommonDBTM
         return 'inventory';
     }
 
-    public static function getLogLevel(): int
-    {
-        return 4;
-    }
-
     public function rawSearchOptions()
     {
 

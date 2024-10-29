@@ -155,7 +155,7 @@ class CommonGLPI implements CommonGLPIInterface
 
     public static function getLogLevel(): int
     {
-        return 1;
+        return 4;
     }
 
     /**

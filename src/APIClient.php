@@ -80,11 +80,6 @@ class APIClient extends CommonDBTM
         return 'setup';
     }
 
-    public static function getLogLevel(): int
-    {
-        return 4;
-    }
-
     public function defineTabs($options = [])
     {
 
