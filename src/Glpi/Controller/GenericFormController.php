@@ -106,6 +106,7 @@ class GenericFormController extends AbstractController
         $id = $request->query->get('id', -1);
         $object = new $class();
         $post_data = $request->request->all();
+        $isTemplateForm = ($object->maybeTemplate() && $object->isTemplate()) || $request->query->get('withtemplate');
 
         if (!$object instanceof \CommonDBTM) {
             Event::log(
@@ -126,7 +127,7 @@ class GenericFormController extends AbstractController
         if ($form_action === 'get' && $request->getMethod() === 'GET') {
             return $this->render('pages/generic_form.html.twig', [
                 'id' => $request->query->get('id', -1),
-                'with_template' => $object->maybeTemplate(),
+                'with_template' => $isTemplateForm,
                 'object_class' => $class,
             ]);
         }
