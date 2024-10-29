@@ -1202,34 +1202,6 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * @return array<string, int>
-     */
-    public static function getFormActionsPermissions(): array
-    {
-        return [
-            'add' => CREATE,
-            'delete' => DELETE,
-            'restore' => DELETE,
-            'purge' => PURGE,
-            'update' => UPDATE,
-        ];
-    }
-
-    /**
-     * @return array<string, 'back'|'list'|string>
-     */
-    public static function getFormPostActions(): array
-    {
-        return [
-            'add' => 'back',
-            'delete' => 'list',
-            'restore' => 'list',
-            'purge' => 'list',
-            'update' => 'back',
-        ];
-    }
-
-    /**
      * Restore data saved in the session to $this->input
      *
      * @since 9.5.5
