@@ -1233,7 +1233,7 @@ class AuthLDAP extends DbTestCase
         )->isTrue();
 
         global $DB;
-        $DB->updateOrDie(
+        $DB->update(
             'glpi_authldaps',
             ['sync_field' => null],
             ['id' => $ldap->getID()]
@@ -1356,7 +1356,7 @@ class AuthLDAP extends DbTestCase
          ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org');
 
         global $DB;
-        $DB->updateOrDie(
+        $DB->update(
             'glpi_authldaps',
             ['sync_field' => null],
             ['id' => $ldap->getID()]

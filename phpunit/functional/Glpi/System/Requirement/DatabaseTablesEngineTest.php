@@ -37,21 +37,9 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use GLPITestCase;
-use Override;
 
 final class DatabaseTablesEngineTest extends GLPITestCase
 {
-    #[Override]
-    public function tearDown(): void
-    {
-        /** @var \DBmysql $db */
-        global $DB;
-
-        parent::tearDown();
-        $DB->doQuery("DROP TABLE glpi_tmp_testTablesWithIncorrectEngineAreFound1");
-        $DB->doQuery("DROP TABLE glpi_tmp_testTablesWithIncorrectEngineAreFound2");
-    }
-
     public function testTablesWithIncorrectEngineAreFound(): void
     {
         /** @var \DBmysql $db */
@@ -75,6 +63,10 @@ final class DatabaseTablesEngineTest extends GLPITestCase
         $table_engine_requirement = new DatabaseTablesEngine($DB);
         $is_validated = $table_engine_requirement->isValidated();
         $messages = $table_engine_requirement->getValidationMessages();
+
+        // Clean created tables
+        $DB->doQuery("DROP TABLE glpi_tmp_testTablesWithIncorrectEngineAreFound1");
+        $DB->doQuery("DROP TABLE glpi_tmp_testTablesWithIncorrectEngineAreFound2");
 
         // Assert: validation should fail with 2 invalid tables
         $this->assertFalse($is_validated);
