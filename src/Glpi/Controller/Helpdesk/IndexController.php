@@ -60,12 +60,6 @@ final class IndexController extends AbstractController
         name: "glpi_helpdesk_index",
         methods: "GET"
     )]
-    // Prevent old links from breaking
-    #[Route(
-        '/front/helpdesk.public.php',
-        name: "glpi_legacy_public_helpdesk",
-        methods: "GET"
-    )]
     public function __invoke(Request $request): Response
     {
         $user = User::getById(Session::getLoginUserID());
