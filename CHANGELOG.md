@@ -122,10 +122,10 @@ The present file will list all changes made to the project; according to the
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
 - GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
-- Usage of `DBmysql::query()`, `DBmysql::queryOrDie()` method are prohibited to ensure that legacy unsafe DB are no more executed.
+- Usage of `DBmysql::query()` and `DBmysql::queryOrDie()` method are prohibited to ensure that legacy unsafe DB are no more executed.
   Building and executing raw queries using `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods is also prohibited.
   To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
-  either `DBmysql::doQuery()`/`DBmysql::doQueryOrDie()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+  or `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
 - `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
 - `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
 - `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
@@ -245,8 +245,12 @@ The present file will list all changes made to the project; according to the
 - `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
 - `Config::validatePassword()`
 - `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
+- `DBmysql::deleteOrDie()`. Use `DBmysql::delete()` instead.
+- `DBmysql::doQueryOrDie()`. Use `DBmysql::doQuery()` instead.
+- `DBmysql::insertOrDie()`. Use `DBmysql::insert()` instead.
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `DBmysql::updateOrDie()`. Use `DBmysql::update()` instead.
 - `Document::getImage()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
@@ -374,6 +378,7 @@ The present file will list all changes made to the project; according to the
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
+- `Glpi\Application\ErrorHandler::handleSqlError()`
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
 - `Glpi\Dashboard\Filter::itilcategory()`

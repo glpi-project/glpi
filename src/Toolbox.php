@@ -2126,10 +2126,6 @@ class Toolbox
                 );
 
                 $stmt = $DB->prepare($DB->buildInsert($table, $reference));
-                if (false === $stmt) {
-                     $msg = "Error preparing statement in table $table";
-                     throw new \RuntimeException($msg);
-                }
 
                 $types = str_repeat('s', count($data[0]));
                 foreach ($data as $row) {
@@ -2178,7 +2174,7 @@ class Toolbox
 
             if (defined('GLPI_SYSTEM_CRON')) {
                // Downstream packages may provide a good system cron
-                $DB->updateOrDie(
+                $DB->update(
                     'glpi_crontasks',
                     [
                         'mode'   => 2
@@ -2186,8 +2182,7 @@ class Toolbox
                     [
                         'name'      => ['!=', 'watcher'],
                         'allowmode' => ['&', 2]
-                    ],
-                    '4203'
+                    ]
                 );
             }
         }

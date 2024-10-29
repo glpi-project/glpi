@@ -319,7 +319,7 @@ class Update
 
         if (defined('GLPI_SYSTEM_CRON')) {
            // Downstream packages may provide a good system cron
-            $DB->updateOrDie(
+            $DB->update(
                 'glpi_crontasks',
                 [
                     'mode'   => 2

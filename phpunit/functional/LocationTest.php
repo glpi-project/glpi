@@ -37,7 +37,6 @@ namespace tests\units;
 
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 
 /* Test for inc/location.class.php */
 
@@ -201,11 +200,12 @@ class LocationTest extends DbTestCase
         $this->assertTrue($location2->getFromDB($location2_id));
         $this->assertEquals('Non unique location', $location2->fields['completename']);
 
+
+        $this->expectExceptionMessageMatches('/Unique location\' for key \'/');
         $updated = $location2->update([
             'id'           => $location2_id,
             'name'         => 'Unique location',
         ]);
-        $this->hasSqlLogRecordThatContains('Unique location\' for key \'', LogLevel::ERROR);
 
         $this->assertFalse($updated);
         $this->assertTrue($location2->getFromDB($location2_id));

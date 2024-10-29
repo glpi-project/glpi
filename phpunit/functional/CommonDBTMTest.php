@@ -333,7 +333,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         //multiple update case
-        $res = $DB->updateOrInsert(
+        $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
+        $DB->updateOrInsert(
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
@@ -342,11 +343,6 @@ class CommonDBTMTest extends DbTestCase
             [
                 'name'   => 'serial-to-change'
             ]
-        );
-        $this->assertFalse($res);
-        $this->hasPhpLogRecordThatContains(
-            'Update would change too many rows!',
-            LogLevel::WARNING
         );
     }
 
@@ -412,7 +408,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         //multiple update case
-        $res = $DB->updateOrInsert(
+        $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
+        $DB->updateOrInsert(
             \Computer::getTable(),
             [
                 'serial' => 'serial-changed'
@@ -420,11 +417,6 @@ class CommonDBTMTest extends DbTestCase
             [
                 'name'   => 'serial-to-change'
             ]
-        );
-        $this->assertFalse($res);
-        $this->hasPhpLogRecordThatContains(
-            'Update would change too many rows!',
-            LogLevel::WARNING
         );
     }
 

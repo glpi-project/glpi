@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -105,8 +104,8 @@ class Item_OperatingSystemTest extends DbTestCase
         );
 
         $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
+        $this->expectExceptionMessageMatches($expected_error);
         $this->assertFalse($ios->add($input));
-        $this->hasSqlLogRecordThatMatches($expected_error, LogLevel::ERROR);
 
         $this->assertSame(
             1,
