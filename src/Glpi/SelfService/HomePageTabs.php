@@ -35,6 +35,7 @@
 namespace Glpi\SelfService;
 
 use CommonGLPI;
+use Glpi\Search\SearchEngine;
 use Override;
 use Reminder;
 use RSSFeed;
@@ -111,17 +112,17 @@ final class HomePageTabs extends CommonGLPI
 
         $tabs = new self();
 
-        if ($tabnum == self::ONGOING_TICKETS_TAB) {
+        if ($tabnum === self::ONGOING_TICKETS_TAB) {
             $tabs->displayOngoingTicketsTabs();
             return true;
         }
 
-        if ($tabnum == self::SOLVED_TICKETS_TAB) {
+        if ($tabnum === self::SOLVED_TICKETS_TAB) {
             $tabs->displaySolvedTicketsTabs();
             return true;
         }
 
-        if ($tabnum == self::PUBLIC_REMINDER_TAB) {
+        if ($tabnum === self::PUBLIC_REMINDER_TAB) {
             if (!Session::haveRight("reminder_public", READ)) {
                 return false;
             }
@@ -131,7 +132,7 @@ final class HomePageTabs extends CommonGLPI
             return true;
         }
 
-        if ($tabnum == self::RSS_FEED_PUBLIC) {
+        if ($tabnum === self::RSS_FEED_PUBLIC) {
             if (!Session::haveRight("rssfeed_public", READ)) {
                 return false;
             }
@@ -171,7 +172,7 @@ final class HomePageTabs extends CommonGLPI
     private function showTicketList(array $criteria): void
     {
         echo '<div class="home-ticket-list">';
-        Search::showList(Ticket::class, [
+        SearchEngine::showOutput(Ticket::class, [
             'criteria'           => $criteria,
             'showmassiveactions' => false,
             'hide_controls'      => true,
