@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\SelfService;
+namespace Glpi\Helpdesk\Tile;
 
 use Glpi\Form\Form;
 

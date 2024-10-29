@@ -32,10 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\SelfService;
+namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
-use Glpi\Form\SelfService\TileInterface;
-use Glpi\Form\SelfService\TilesManager;
+use Glpi\Helpdesk\Tile\TileInterface;
+use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\UI\IllustrationManager;
 use GLPITestCase;
 

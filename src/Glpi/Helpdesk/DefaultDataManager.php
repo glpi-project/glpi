@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Helpdesk;
 
 use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -47,17 +47,20 @@ use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
 use ITILCategory;
 use Location;
 use Ticket;
 
-final class DefaultFormsManager
+final class DefaultDataManager
 {
     private AnswerTagProvider $answer_tag_provider;
 
@@ -66,14 +69,24 @@ final class DefaultFormsManager
         $this->answer_tag_provider = new AnswerTagProvider();
     }
 
-    public function createDefaultForms(): void
+    public function initializeDataIfNeeded(): void
     {
-        if (countElementsInTable(Form::getTable()) > 0) {
+        if ($this->dataHasBeenInitialized()) {
             return;
         }
 
+        $this->initializeData();
+    }
+
+    public function initializeData(): void
+    {
         $this->createIncidentForm();
         $this->createRequestForm();
+    }
+
+    private function dataHasBeenInitialized(): bool
+    {
+        return countElementsInTable(Form::getTable()) > 0;
     }
 
     private function createIncidentForm(): void

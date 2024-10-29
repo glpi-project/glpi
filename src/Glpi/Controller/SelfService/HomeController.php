@@ -35,7 +35,7 @@
 namespace Glpi\Controller\SelfService;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Form\SelfService\TilesManager;
+use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\SelfService\HomePageTabs;
