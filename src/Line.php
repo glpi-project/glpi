@@ -63,6 +63,11 @@ class Line extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'financial';
+    }
+
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()
      *

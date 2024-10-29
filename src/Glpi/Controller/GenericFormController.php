@@ -49,12 +49,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class GenericFormController extends AbstractController
 {
     public const ACTIONS_AND_CHECKS = [
-        'get' => ['permission' => READ, 'post_action' => null],
-        'add' => ['permission' => CREATE, 'post_action' => 'back'],
-        'delete' => ['permission' => DELETE, 'post_action' => 'list'],
-        'restore' => ['permission' => DELETE, 'post_action' => 'list'],
-        'purge' => ['permission' => PURGE, 'post_action' => 'list'],
-        'update' => ['permission' => UPDATE, 'post_action' => 'back'],
+        'get' => ['permission' => READ],
+        'add' => ['permission' => CREATE],
+        'delete' => ['permission' => DELETE],
+        'restore' => ['permission' => DELETE],
+        'purge' => ['permission' => PURGE],
+        'update' => ['permission' => UPDATE],
     ];
 
     #[Route("/{class}/Form", name: "glpi_generic_form", priority: -1)]
@@ -149,7 +149,7 @@ class GenericFormController extends AbstractController
             return new RedirectResponse($object->getLinkURL());
         }
 
-        $post_action = self::ACTIONS_AND_CHECKS[$form_action]['post_action'] ?? 'list';
+        $post_action = $class::getPostFormAction($form_action) ?? 'list';
         if ($post_action !== 'back' && $post_action !== 'list') {
             $post_action = 'list';
         }

@@ -71,6 +71,11 @@ class Enclosure extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -319,5 +324,17 @@ class Enclosure extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-columns";
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        if (isset($_GET['position'])) {
+            $options['position'] = $_GET['position'];
+        }
+        if (isset($_GET['room'])) {
+            $options['room'] = $_GET['room'];
+        }
+
+        parent::displayFullPageForItem($id, $menus, $options);
     }
 }

@@ -882,6 +882,41 @@ class Infocom extends CommonDBChild
         }
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'financial';
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $ic = new self();
+
+        Html::popHeader(self::getTypeName(), $_SERVER['PHP_SELF']);
+
+        if (isset($_GET["id"])) {
+            $ic->getFromDB($_GET["id"]);
+            $_GET["itemtype"] = $ic->fields["itemtype"];
+            $_GET["items_id"] = $ic->fields["items_id"];
+        }
+        $item = false;
+        if (isset($_GET["itemtype"]) && ($item = getItemForItemtype($_GET["itemtype"]))) {
+            if (!isset($_GET["items_id"]) || !$item->getFromDB($_GET["items_id"])) {
+                $item = false;
+            }
+        }
+
+        self::showForItem($item, 0);
+
+        Html::popFooter();
+    }
+
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        return match ($form_action) {
+            'add', 'update', 'delete', 'restore', 'purge' => 'back',
+            default => null,
+        };
+    }
 
     /**
      * Calculate TCO and TCO by month for an item

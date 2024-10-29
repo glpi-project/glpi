@@ -6759,4 +6759,13 @@ TWIG, $twig_params);
     {
         self::$search_options_cache = [];
     }
+
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        return match ($form_action) {
+            'add', 'update' => 'back',
+            'delete', 'restore', 'purge' => 'list',
+            default => null,
+        };
+    }
 }
