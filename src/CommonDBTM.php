@@ -6600,6 +6600,14 @@ TWIG, $twig_params);
         if (!isset($options['id'])) {
             $options['id'] = $id;
         }
+
+        if (isset($_GET['position'])) {
+            $options['position'] = $_GET['position'];
+        }
+        if (isset($_GET['room'])) {
+            $options['room'] = $_GET['room'];
+        }
+
         // Show item
         $options['loaded'] = true;
         \Glpi\Debug\Profiler::getInstance()->start(static::class . '::display');

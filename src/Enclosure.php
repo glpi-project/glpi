@@ -325,16 +325,4 @@ class Enclosure extends CommonDBTM
     {
         return "ti ti-columns";
     }
-
-    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
-    {
-        if (isset($_GET['position'])) {
-            $options['position'] = $_GET['position'];
-        }
-        if (isset($_GET['room'])) {
-            $options['room'] = $_GET['room'];
-        }
-
-        parent::displayFullPageForItem($id, $menus, $options);
-    }
 }

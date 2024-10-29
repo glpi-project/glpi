@@ -65,6 +65,11 @@ class Cluster extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
