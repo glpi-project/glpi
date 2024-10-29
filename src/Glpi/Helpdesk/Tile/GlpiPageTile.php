@@ -34,33 +34,44 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-final class Tile implements TileInterface
-{
-    public function __construct(
-        private string $title,
-        private string $description,
-        private string $illustration,
-        private string $link,
-    ) {
-    }
+use CommonDBTM;
+use Override;
 
+final class GlpiPageTile extends CommonDBTM implements TileInterface
+{
+    public const PAGE_SERVICE_CATALOG = 'service_catalog';
+    public const PAGE_FAQ = 'faq';
+    public const PAGE_RESERVATION = 'reservation';
+    public const PAGE_APPROVAL = 'approval';
+
+    #[Override]
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->fields['title'];
     }
 
+    #[Override]
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->fields['description'];
     }
 
+    #[Override]
     public function getIllustration(): string
     {
-        return $this->illustration;
+        return $this->fields['illustration'];
     }
 
-    public function getLink(): string
+    #[Override]
+    public function getTileLink(): string
     {
-        return $this->link;
+        return match ($this->fields['page']) {
+            self::PAGE_SERVICE_CATALOG => '/ServiceCatalog',
+            self::PAGE_FAQ             => '/front/helpdesk.faq.php',
+            self::PAGE_RESERVATION     => '/front/reservationitem.php',
+            // TODO: apply correct search filter
+            self::PAGE_APPROVAL        => '/front/ticket.php',
+            default                    => '/Helpdesk',
+        };
     }
 }

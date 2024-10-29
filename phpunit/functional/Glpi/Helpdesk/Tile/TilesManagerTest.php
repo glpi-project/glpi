@@ -34,37 +34,80 @@
 
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
-use Glpi\Helpdesk\Tile\TileInterface;
+use DbTestCase;
+use Glpi\Helpdesk\Tile\ExternalPageTile;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\UI\IllustrationManager;
-use GLPITestCase;
+use InvalidArgumentException;
+use Profile;
 
-final class TilesManagerTest extends GLPITestCase
+final class TilesManagerTest extends DbTestCase
 {
     private function getManager(): TilesManager
     {
         return new TilesManager();
     }
 
-    public function testDefaultTiles(): void
+    public function testTilesCanBeAddedToHelpdeskProfiles(): void
     {
-        // Act: get the default configured tiles and load valid illustrations names
-        $tiles = $this->getManager()->getTiles();
-        $illustration_manager = new IllustrationManager();
-        $valid_illustrations = $illustration_manager->getAllIllustrationsNames();
+        // Arrange: create a self service profile
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
 
-        // Assert: there should be at least one tile and each tile should have a
-        // valid title, description, illustration and link
-        $this->assertNotEmpty($tiles);
-        foreach ($tiles as $tile) {
-            $this->assertInstanceOf(TileInterface::class, $tile);
-            $this->assertNotEmpty($tile->getTitle());
-            $this->assertNotEmpty($tile->getDescription());
-            $this->assertContains($tile->getIllustration(), $valid_illustrations);
+        // Act: add two tile
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service.svg",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "FAQ",
+            'description'  => "Link to the FAQ",
+            'illustration' => "browse-help.svg",
+            'page'         => GlpiPageTile::PAGE_FAQ,
+        ]);
 
-            // TODO: once all our links are real routes, we could call the router
-            // here to check that the link is valid.
-            $this->assertNotEmpty($tile->getLink());
-        }
+        // Assert: there should be two tiles defined for our profile
+        $tiles = $manager->getTiles($profile);
+        $this->assertCount(2, $tiles);
+
+        $first_tile = $tiles[0];
+        $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
+        $this->assertEquals("GLPI project", $first_tile->getTitle());
+        $this->assertEquals("Link to GLPI project website", $first_tile->getDescription());
+        $this->assertEquals("request-service.svg", $first_tile->getIllustration());
+        $this->assertEquals("https://glpi-project.org", $first_tile->getTileLink());
+
+        $second_tile = $tiles[1];
+        $this->assertInstanceOf(GlpiPageTile::class, $second_tile);
+        $this->assertEquals("FAQ", $second_tile->getTitle());
+        $this->assertEquals("Link to the FAQ", $second_tile->getDescription());
+        $this->assertEquals("browse-help.svg", $second_tile->getIllustration());
+        $this->assertEquals("/front/helpdesk.faq.php", $second_tile->getTileLink());
+    }
+
+    public function testTilesCantBeAddedToCentralProfiles(): void
+    {
+        // Arrange: create a central profile
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Central profile',
+            'interface' => 'central',
+        ]);
+
+        // Expect a failure
+        $this->expectException(InvalidArgumentException::class);
+
+        // Act: add a tile
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service.svg",
+            'url'          => "https://glpi-project.org",
+        ]);
     }
 }

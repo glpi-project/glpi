@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,15 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
- namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Helpdesk\Tile;
 
-interface TileInterface
+use CommonDBRelation;
+use Profile;
+
+final class Profile_Tile extends CommonDBRelation
 {
-    public function getTitle(): string;
+    public static $itemtype_1 = Profile::class;
+    public static $items_id_1 = 'profiles_id';
 
-    public function getDescription(): string;
-
-    public function getIllustration(): string;
-
-    public function getTileLink(): string;
+    public static $itemtype_2 = 'itemtype';
+    public static $items_id_2 = 'items_id';
 }

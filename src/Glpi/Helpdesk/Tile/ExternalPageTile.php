@@ -34,66 +34,32 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-use CommonDBChild;
-use Glpi\Form\Form;
+use CommonDBTM;
 use Override;
 
-final class FormTile extends CommonDBChild implements TileInterface
+final class ExternalPageTile extends CommonDBTM implements TileInterface
 {
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
-
-    private ?Form $form;
-
-    #[Override]
-    public function post_getFromDB(): void
-    {
-        $form = $this->getItem();
-        if (!($form instanceof Form)) {
-            // We don't throw an exception here because we don't want to crash
-            // the home page in case of one invalid tile.
-            // It is better to display an empty tile in this case rather
-            // than blocking access to the helpdesk.
-            trigger_error("Unable to load linked form", E_USER_WARNING);
-            $this->form = null;
-        } else {
-            $this->form = $form;
-        }
-    }
-
     #[Override]
     public function getTitle(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return $this->form->fields['name'];
+        return $this->fields['title'];
     }
 
     #[Override]
     public function getDescription(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return $this->form->fields['description'];
+        return $this->fields['description'];
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return $this->form->fields['illustration'];
+        return $this->fields['illustration'];
     }
 
     #[Override]
     public function getTileLink(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return '/Form/Render/' .  $this->form->getID();
+        return $this->fields['url'];
     }
 }

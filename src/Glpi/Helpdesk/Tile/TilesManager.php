@@ -34,76 +34,66 @@
 
 namespace Glpi\Helpdesk\Tile;
 
+use CommonDBTM;
 use Glpi\Form\Form;
+use InvalidArgumentException;
+use ReflectionClass;
+use RuntimeException;
+use Profile;
 
 final class TilesManager
 {
     /** @return TileInterface[] */
-    public function getTiles(): array
+    public function getTiles(Profile $profile): array
     {
+        $profile_tiles = (new Profile_Tile())->find([
+            'profiles_id' => $profile->getID(),
+        ]);
+
         $tiles = [];
+        foreach ($profile_tiles as $row) {
+            $itemtype = $row['itemtype'];
 
-        $tiles[] = new Tile(
-            title: __("Browse help articles"),
-            description: __("See all available help articles and our FAQ."),
-            illustration: "browse-help.svg",
-            link: "/front/helpdesk.faq.php"
-        );
+            if (
+                !is_a($itemtype, TileInterface::class, true)
+                || !is_a($itemtype, CommonDBTM::class, true)
+                || (new ReflectionClass($itemtype))->isAbstract()
+            ) {
+                continue;
+            }
 
-        $incident_form = $this->getIncidentForm();
-        if ($incident_form !== null) {
-            $tiles[] = new FormTile(
-                form: $incident_form,
-            );
+            $tile = new $itemtype();
+            if ($tile->getFromDb($row['items_id'])) {
+                $tiles[] = $tile;
+            }
         }
-
-        $tiles[] = new Tile(
-            title: __("Request a service"),
-            description: __("Ask for a service to be provided by our team."),
-            illustration: "request-service.svg",
-            link: "/ServiceCatalog"
-        );
-
-        $tiles[] = new Tile(
-            title: __("Make a reservation"),
-            description: __("Pick an available asset and reserve it for a given date."),
-            illustration: "make-reservation.svg",
-            link: "/front/reservationitem.php"
-        );
-
-        $tiles[] = new Tile(
-            title: __("View approval requests"),
-            description: __("View all tickets waiting for your validation."),
-            illustration: "approval-request.svg",
-            // TODO: apply correct search filter
-            link: "/front/ticket.php"
-        );
-
-        $tiles[] = new Tile(
-            title: __("View RSS feeds"),
-            description: __("Checkout new data from your saved RSS feeds."),
-            illustration: "view-feed.svg",
-            // TODO: replace this default tile by something more useful, rss
-            // feeds are already displayed on the home page using a tab
-            link: "/Helpdesk"
-        );
 
         return $tiles;
     }
 
-    private function getIncidentForm(): ?Form
-    {
-        // TODO: form will be loaded using its id later once default tiles are
-        // created during GLPI's installation
-        $rows = (new Form())->find(['name' => 'Report an issue']);
-
-        // TODO: once tile are saved to database, deleting a form should also
-        // delete the associated tile.
-        if (count($rows) === 0) {
-            return null;
+    public function addTile(
+        Profile $profile,
+        string $tile_class,
+        array $params
+    ): void {
+        if ($profile->fields['interface'] !== 'helpdesk') {
+            throw new InvalidArgumentException("Only helpdesk profiles can have tiles");
         }
 
-        $row = array_pop($rows);
-        return Form::getById($row['id']);
+        $tile = new $tile_class();
+        $id = $tile->add($params);
+        if (!$id) {
+            throw new RuntimeException("Failed to create tile");
+        }
+
+        $profile_tile = new Profile_Tile();
+        $id = $profile_tile->add([
+            'profiles_id' => $profile->getID(),
+            'items_id'    => $id,
+            'itemtype'    => $tile_class,
+        ]);
+        if (!$id) {
+            throw new RuntimeException("Failed to link tile to profile");
+        }
     }
 }
