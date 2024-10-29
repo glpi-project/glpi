@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace test\units\Glpi\Form;
+namespace test\units\Glpi\Helpdesk;
 
 use DbTestCase;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\DefaultFormsManager;
+use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormTesterTrait;
@@ -47,13 +47,13 @@ use Location;
 use Ticket;
 use User;
 
-final class DefaultFormsManagerTest extends DbTestCase
+final class DefaultDataManagerTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    private function getManager(): DefaultFormsManager
+    private function getManager(): DefaultDataManager
     {
-        return new DefaultFormsManager();
+        return new DefaultDataManager();
     }
 
     public function testsFormAreAddedAfterInstallation(): void
@@ -67,7 +67,7 @@ final class DefaultFormsManagerTest extends DbTestCase
         $number_of_forms_before = countElementsInTable(Form::getTable());
 
         // Act: create default forms
-        $this->getManager()->createDefaultForms();
+        $this->getManager()->initializeDataIfNeeded();
 
         // Assert: there must be not be any new forms
         $number_of_forms_after = countElementsInTable(Form::getTable());

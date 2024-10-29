@@ -32,39 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\SelfService;
+ namespace Glpi\Helpdesk\Tile;
 
-use Glpi\Form\Form;
-
-final class FormTile implements TileInterface
+interface TileInterface
 {
-    public function __construct(
-        private Form $form,
-        // The following properties might be specified to override the form's
-        // fields if needed.
-        private string $title = "",
-        private string $description = "",
-        private string $illustration = "",
-    ) {
-    }
+    public function getTitle(): string;
 
-    public function getTitle(): string
-    {
-        return $this->title ?: $this->form->fields['name'];
-    }
+    public function getDescription(): string;
 
-    public function getDescription(): string
-    {
-        return $this->description ?: $this->form->fields['description'];
-    }
+    public function getIllustration(): string;
 
-    public function getIllustration(): string
-    {
-        return $this->illustration ?: $this->form->fields['illustration'];
-    }
-
-    public function getLink(): string
-    {
-        return '/Form/Render/' .  $this->form->getID();
-    }
+    public function getLink(): string;
 }

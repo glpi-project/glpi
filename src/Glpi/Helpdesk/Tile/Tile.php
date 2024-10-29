@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\SelfService;
+namespace Glpi\Helpdesk\Tile;
 
 final class Tile implements TileInterface
 {
