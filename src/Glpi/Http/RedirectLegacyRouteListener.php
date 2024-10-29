@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,16 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+namespace Glpi\Http;
 
-if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+final readonly class RedirectLegacyRouteListener implements EventSubscriberInterface
+{
+    private const URLS_MAPPING = [
+        '/front/helpdesk.public.php' => '/Helpdesk',
+    ];
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+        $request = $event->getRequest();
+
+        if (\array_key_exists($request->getPathInfo(), self::URLS_MAPPING)) {
+            $event->setResponse(new RedirectResponse($request->getBasePath() . self::URLS_MAPPING[$request->getPathInfo()]));
+        }
+    }
 }
-
-Glpi\Application\View\TemplateRenderer::getInstance()->display('anonymous_helpdesk.html.twig', [
-    'card_md_width' => true,
-    'title'         => "Helpdesk",
-]);

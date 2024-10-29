@@ -211,13 +211,11 @@ final class Firewall
             '/front/cron.php' => self::STRATEGY_NO_CHECK, // in GLPI mode, cronjob can also be triggered from public pages
             '/front/css.php' => self::STRATEGY_NO_CHECK, // CSS must be accessible also on public pages
             '/front/document.send.php' => self::STRATEGY_NO_CHECK, // may allow unauthenticated access, for public FAQ images
-            '/front/helpdesk.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
             '/front/inventory.php' => self::STRATEGY_NO_CHECK, // allow anonymous requests from inventory agent
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
             '/front/login.php' => self::STRATEGY_NO_CHECK,
             '/front/logout.php' => self::STRATEGY_NO_CHECK,
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
-            '/front/tracking.injector.php' => self::STRATEGY_NO_CHECK, // Anonymous access may be allowed by configuration.
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
         ];

@@ -45,6 +45,10 @@ final class ListenersPriority
 
         LegacyRouterListener::class         => 400,
 
+        // Legacy URLs redirections does not require any complex logic. It can be done prior to
+        // GLPI config and plugins initialization.
+        RedirectLegacyRouteListener::class  => 375,
+
         // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
         LegacyConfigProviderListener::class => 350,
