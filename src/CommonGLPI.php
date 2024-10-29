@@ -153,6 +153,16 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
+    /**
+     * Cases:
+     * 1: Critical (login error only)'
+     * 2: Severe (not used)'
+     * 3: Important (successful logins)'
+     * 4: Notices (add, delete, tracking)'
+     * 5: Complete (all)'
+     *
+     * @return int
+     */
     public static function getLogLevel(): int
     {
         return 4;
