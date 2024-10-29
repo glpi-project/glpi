@@ -48,6 +48,7 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
@@ -1183,6 +1184,49 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $default;
+    }
+
+    public function callFormAction(string $form_action, SymfonyRequest $request): mixed
+    {
+        $post_data = $request->request->all();
+
+        // POST action execution
+        return match ($form_action) {
+            'add' => $this->add($post_data),
+            'delete' => $this->delete($post_data),
+            'restore' => $this->restore($post_data),
+            'purge' => $this->delete($post_data, 1),
+            'update' => $this->update($post_data),
+            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action->value)),
+        };
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public static function getFormActionsPermissions(): array
+    {
+        return [
+            'add' => CREATE,
+            'delete' => DELETE,
+            'restore' => DELETE,
+            'purge' => PURGE,
+            'update' => UPDATE,
+        ];
+    }
+
+    /**
+     * @return array<string, 'back'|'list'|string>
+     */
+    public static function getFormPostActions(): array
+    {
+        return [
+            'add' => 'back',
+            'delete' => 'list',
+            'restore' => 'list',
+            'purge' => 'list',
+            'update' => 'back',
+        ];
     }
 
     /**

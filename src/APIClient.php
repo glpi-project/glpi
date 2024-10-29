@@ -70,6 +70,21 @@ class APIClient extends CommonDBTM
         return _n("API client", "API clients", $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", "config", __CLASS__];
+    }
+
+    public static function getLogServiceName(): string
+    {
+        return 'setup';
+    }
+
+    public static function getLogLevel(): int
+    {
+        return 4;
+    }
+
     public function defineTabs($options = [])
     {
 

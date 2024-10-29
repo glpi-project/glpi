@@ -41,6 +41,7 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
+use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
@@ -81,7 +82,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             } else {
-                $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
+                $request->attributes->set('_controller', $is_form ? GenericFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             }
         }

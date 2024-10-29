@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  *  Class used to manage Auth mail config
  */
@@ -51,6 +53,33 @@ class AuthMail extends CommonDBTM
     public static function getSectorizedDetails(): array
     {
         return ['config', Auth::class, self::class];
+    }
+
+    public function callFormAction(string $form_action, Request $request): ?string
+    {
+        if ($form_action === 'add' && $request->request->get('name')) {
+            return parent::callFormAction($form_action, $request);
+        }
+
+        if ($form_action === 'purge') {
+            $result = parent::callFormAction($form_action, $request);
+
+            $_SESSION['glpi_authconfig'] = 2;
+
+            return $result;
+        }
+
+        if ($request->request->has('test')) {
+            if (self::testAuth($_POST["imap_string"], $_POST["imap_login"], $_POST["imap_password"])) {
+                Session::addMessageAfterRedirect(__s('Test successful'));
+            } else {
+                Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
+            }
+
+            return 'back';
+        }
+
+        return null;
     }
 
     public function prepareInputForUpdate($input)
