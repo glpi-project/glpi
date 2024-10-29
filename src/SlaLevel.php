@@ -55,6 +55,11 @@ class SlaLevel extends LevelAgreementLevel
         return ['config', SLA::class, self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'setup';
+    }
+
     public function cleanDBonPurge()
     {
         parent::cleanDBonPurge();

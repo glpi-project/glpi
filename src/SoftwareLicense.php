@@ -85,6 +85,11 @@ class SoftwareLicense extends CommonTreeDropdown
         return ['management', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function pre_updateInDB()
     {
         // Clean end alert if expire is after old one
