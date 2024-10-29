@@ -69,7 +69,6 @@ class FirewallTest extends \DbTestCase
                     'cron.php' => '',
                     'css.php' => '',
                     'document.send.php' => '',
-                    'helpdesk.php' => '',
                     'helpdesk.faq.php' => '',
                     'inventory.php' => '',
                     'locale.php' => '',
@@ -200,13 +199,11 @@ class FirewallTest extends \DbTestCase
                 '/front/cron.php',
                 '/front/css.php',
                 '/front/document.send.php',
-                '/front/helpdesk.php',
                 '/front/inventory.php',
                 '/front/locale.php',
                 '/front/login.php',
                 '/front/logout.php',
                 '/front/lostpassword.php',
-                '/front/tracking.injector.php',
                 '/front/updatepassword.php',
             ];
             foreach ($legacy_no_check_urls as $no_check_url) {
