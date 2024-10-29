@@ -9191,7 +9191,7 @@ CREATE TABLE `glpi_databaseinstances` (
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
   `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `states_id` int unsigned NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) NOT NULL DEFAULT '',
+  `itemtype` varchar(100) DEFAULT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `is_onbackup` tinyint NOT NULL DEFAULT '0',
   `is_active` tinyint NOT NULL DEFAULT '0',

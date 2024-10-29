@@ -314,12 +314,32 @@ class DatabaseInstance extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $input = $this->cleanInput($input);
+
         if (isset($input['date_lastbackup']) && empty($input['date_lastbackup'])) {
             unset($input['date_lastbackup']);
         }
 
         if (isset($input['size']) && empty($input['size'])) {
             unset($input['size']);
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->cleanInput($input);
+
+        return $input;
+    }
+
+    private function cleanInput(array $input): array
+    {
+        if (($input['itemtype'] ?? null) === '0') {
+            // `itemtype` value will be '0' if no itemtype is selected in the dropdown
+            // see `Dropdown::showItemTypes()` / `Dropdown::showFromArray()`
+            $input['itemtype'] = null;
         }
 
         return $input;
