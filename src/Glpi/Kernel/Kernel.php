@@ -150,9 +150,6 @@ final class Kernel extends BaseKernel
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        // Item types controllers, usually they override generic or legacy ones
-        $routes->import($this->getProjectDir() . '/src/Glpi/Controller/ItemType', 'attribute');
-
         // Global core controllers
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
 
