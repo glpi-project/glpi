@@ -55,6 +55,7 @@ class GenericFormController extends AbstractController
         'restore' => ['permission' => DELETE],
         'purge' => ['permission' => PURGE],
         'update' => ['permission' => UPDATE],
+        'unglobalize' => ['permission' => UPDATE],
     ];
 
     #[Route("/{class}/Form", name: "glpi_itemtype_form", priority: -1)]
@@ -145,14 +146,15 @@ class GenericFormController extends AbstractController
             return new RedirectResponse($object->getLinkURL());
         }
 
-        $post_action = $class::getPostFormAction($form_action) ?? 'list';
-        if ($post_action !== 'back' && $post_action !== 'list') {
+        $post_action = $object::getPostFormAction($form_action) ?? 'list';
+        if (!\in_array($post_action, ['back', 'list', 'form'])) {
             $post_action = 'list';
         }
 
         return match ($post_action) {
             'back' => new RedirectResponse(Html::getBackUrl()),
-            'list' => new StreamedResponse(fn() => $object->redirectToList(), 302),
+            'form' => new RedirectResponse($object::getFormURLWithID($id)),
+            'list' => new RedirectResponse($object->getRedirectToListUrl()),
         };
     }
 
