@@ -51,10 +51,12 @@
                 class="mb-4"
                 data-glpi-form-renderer-form-header
             >
-                <h1 class="form-title mb-2"> {{ form.fields.name }} </h1>
+                <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}">
+                    {{ form_localized_translation(form, constant(get_class(form) ~ '::TRANSLATION_KEY_NAME')) }}
+                </h1>
 
-                <div class="text-muted form-description">
-                    {{ form.fields.header|safe_html }}
+                <div class="text-muted form-description" aria-label="{{ __('Form description') }}" role="note">
+                    {{ form_localized_translation(form, constant(get_class(form) ~ '::TRANSLATION_KEY_HEADER'))|safe_html }}
                 </div>
             </div>
 
@@ -92,14 +94,13 @@
                         class="card mb-3" {{ not is_single_section_form ? "style='border-top-left-radius: 0;'" : "" }}
                     >
                         <div class="card-body">
-
                             {% if not is_single_section_form %}
                                 <h2 class="mb-1 {{ not section.fields.name ? "text-muted" : "" }}">
-                                    {{ section.fields.name|default(__('Untitled section')) }}
-                                </h2>
+                                {{ form_localized_translation(section, constant(get_class(section) ~ '::TRANSLATION_KEY_NAME'))|default(__('Untitled section')) }}
+                            </h2>
 
                                 <div class="text-muted section-description mb-3">
-                                    {{ section.fields.description|safe_html }}
+                                    {{ form_localized_translation(section, constant(get_class(section) ~ '::TRANSLATION_KEY_DESCRIPTION'))|safe_html }}
                                 </div>
                             {% endif %}
 
@@ -162,7 +163,7 @@
                                                 {% endif %}
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
-                                                    {{ form_block.fields.name|default(__('Untitled question')) }}
+                                                    {{ form_localized_translation(form_block, constant(get_class(form_block) ~ '::TRANSLATION_KEY_NAME'))|default(__('Untitled question')) }}
                                                     {% if form_block.fields.is_mandatory %}
                                                         <span class="text-danger">*</span>
                                                     {% endif %}
@@ -175,7 +176,7 @@
                                                 {% endif %}
 
                                                 <div class="text-muted block-description">
-                                                    {{ form_block.fields.description|safe_html }}
+                                                    {{ form_localized_translation(form_block, constant(get_class(form_block) ~ '::TRANSLATION_KEY_DESCRIPTION'))|safe_html }}
                                                 </div>
                                             </section>
                                         {% endif %}
