@@ -48,6 +48,9 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Form\Translation\Context\FormTranslationHandler;
+use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
+use Glpi\Form\Translation\FormTranslation;
 use Html;
 use Log;
 use MassiveAction;
@@ -59,8 +62,12 @@ use Session;
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
+final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, ProvideFormTranslationsInterface
 {
+    public const KEY_PREFIX_NAME = 'form_name';
+    public const KEY_PREFIX_HEADER = 'form_header';
+    public const KEY_PREFIX_DESCRIPTION = 'form_description';
+
     public static $rightname = 'form';
 
     public $dohistory = true;
@@ -102,6 +109,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
         $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
+        $this->addStandardTab(FormTranslation::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
         return $tabs;
     }
@@ -273,6 +281,43 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         echo Html::scriptBlock("window.location.href = '$export_url';");
 
         return true;
+    }
+
+    #[Override]
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array
+    {
+        $key = __('Form properties');
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_NAME, $this->getID()),
+                name: __('Form title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['header'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_HEADER, $this->getID()),
+                name: __('Form description'),
+                value: $this->fields['header'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_DESCRIPTION, $this->getID()),
+                name: __('Service catalog description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        $sections_handlers = array_map(
+            fn($section) => $section->listFormTranslationsHandlers(),
+            $this->getSections()
+        );
+
+        return array_merge($handlers, ...$sections_handlers);
     }
 
     public static function getAdditionalMenuLinks(): array

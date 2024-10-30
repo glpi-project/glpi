@@ -36,10 +36,13 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\Translation\Context\FormTranslationHandler;
+use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
 use Log;
 use Override;
 use ReflectionClass;
@@ -50,6 +53,9 @@ use Ramsey\Uuid\Uuid;
  */
 final class Question extends CommonDBChild implements BlockInterface
 {
+    public const KEY_PREFIX_NAME = 'question_name';
+    public const KEY_PREFIX_DESCRIPTION = 'question_description';
+
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
@@ -80,6 +86,38 @@ final class Question extends CommonDBChild implements BlockInterface
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
+    }
+
+    #[Override]
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_NAME, $this->getID()),
+                name: __('Question name'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_DESCRIPTION, $this->getID()),
+                name: __('Question description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        $questionType = $this->getQuestionType();
+        if ($questionType !== null && $questionType instanceof ProvideFormTranslationsInterface) {
+            $handlers[$key] = array_merge(
+                $handlers[$key] ?? [],
+                array_values($questionType->listFormTranslationsHandlers($this))
+            );
+        }
+
+        return $handlers;
     }
 
     public function displayBlockForEditor(): void

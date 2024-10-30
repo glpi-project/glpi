@@ -36,14 +36,20 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use CommonDBTM;
+use Glpi\Form\Translation\Context\FormTranslationHandler;
+use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild
+final class Section extends CommonDBChild implements ProvideFormTranslationsInterface
 {
+    public const KEY_PREFIX_NAME = 'section_name';
+    public const KEY_PREFIX_DESCRIPTION = 'section_description';
+
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
@@ -93,6 +99,42 @@ final class Section extends CommonDBChild
         }
 
         return parent::prepareInputForUpdate($input);
+    }
+
+    #[Override]
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array
+    {
+        $form = $this->getItem();
+        if (!$form instanceof Form) {
+            throw new \LogicException('Section must be attached to a form');
+        }
+
+        $handlers = [];
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        if (count($form->getSections()) > 1) {
+            if (!empty($this->fields['name'])) {
+                $handlers[$key][] = new FormTranslationHandler(
+                    key: sprintf('%s-%d', self::KEY_PREFIX_NAME, $this->getID()),
+                    name: __('Section title'),
+                    value: $this->fields['name'],
+                );
+            }
+
+            if (!empty($this->fields['description'])) {
+                $handlers[$key][] = new FormTranslationHandler(
+                    key: sprintf('%s-%d', self::KEY_PREFIX_DESCRIPTION, $this->getID()),
+                    name: __('Section description'),
+                    value: $this->fields['description'],
+                );
+            }
+        }
+
+        $blocks_handlers = array_map(
+            fn(ProvideFormTranslationsInterface $block) => $block->listFormTranslationsHandlers(),
+            $this->getBlocks()
+        );
+
+        return array_merge($handlers, ...$blocks_handlers);
     }
 
     /**

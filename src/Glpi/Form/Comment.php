@@ -36,7 +36,10 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Translation\Context\FormTranslationHandler;
+use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -44,8 +47,11 @@ use Ramsey\Uuid\Uuid;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface
+final class Comment extends CommonDBChild implements BlockInterface, ProvideFormTranslationsInterface
 {
+    public const KEY_PREFIX_NAME = 'comment_name';
+    public const KEY_PREFIX_DESCRIPTION = 'comment_description';
+
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
@@ -108,6 +114,31 @@ final class Comment extends CommonDBChild implements BlockInterface
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_NAME, $this->getID()),
+                name: __('Comment title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new FormTranslationHandler(
+                key: sprintf('%s-%d', self::KEY_PREFIX_DESCRIPTION, $this->getID()),
+                name: __('Comment description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        return $handlers;
     }
 
     public function displayBlockForEditor(): void
