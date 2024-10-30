@@ -177,6 +177,7 @@ class PendingReasonCron extends CommonDBTM
                     '_disable_auto_assign' => true,
                 ]);
                 $task->addVolume(1);
+                NotificationEvent::raiseEvent('pendingreason_close', $item);
             }
         }
 
