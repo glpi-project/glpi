@@ -184,9 +184,9 @@ class GenericFormController extends AbstractController
         $form_options['formoptions'] = 'data-track-changes=true';
 
         return $this->render('pages/generic_form.html.twig', [
-            'id' => $request->query->get('id', -1),
+            'id' => $request->query->get('id', 0),
             'object_class' => $class,
-            'options' => $form_options,
+            'form_options' => $form_options,
         ]);
     }
 }
