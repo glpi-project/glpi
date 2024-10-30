@@ -57,7 +57,7 @@ class GenericFormController extends AbstractController
         'update' => ['permission' => UPDATE],
     ];
 
-    #[Route("/{class}/Form", name: "glpi_generic_form", priority: -1)]
+    #[Route("/{class}/Form", name: "glpi_itemtype_form", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
