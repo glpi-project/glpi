@@ -43,7 +43,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 class GenericFormController extends AbstractController
@@ -113,8 +112,8 @@ class GenericFormController extends AbstractController
             Event::log(
                 '-',
                 \strtolower(\basename($class)),
-                $class::getLogLevel(),
-                $class::getLogServiceName(),
+                $object::getLogLevel(),
+                $object::getLogServiceName(),
                 sprintf(__('%1$s tried to execute the "%2$s" action on the item %3$s, but this type does not support POST actions.'), $_SESSION["glpiname"], $form_action, $post_data["name"])
             );
 
@@ -135,8 +134,8 @@ class GenericFormController extends AbstractController
             Event::log(
                 $result,
                 \strtolower(\basename($class)),
-                $class::getLogLevel(),
-                $class::getLogServiceName(),
+                $object::getLogLevel(),
+                $object::getLogServiceName(),
                 sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $form_action, $post_data["name"])
             );
         }
