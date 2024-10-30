@@ -91,6 +91,11 @@ class Phone extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'inventory';
+    }
+
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()
      *

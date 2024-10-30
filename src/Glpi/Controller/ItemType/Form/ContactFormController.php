@@ -32,45 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType;
+namespace Glpi\Controller\ItemType\Form;
 
-use AuthMail;
+use Contact;
 use Glpi\Controller\GenericFormController;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Html;
-use Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class AuthMailFormController extends GenericFormController
+class ContactFormController extends GenericFormController
 {
-    #[ItemtypeFormRoute(AuthMail::class)]
+    #[ItemtypeFormRoute(Contact::class)]
     public function __invoke(Request $request): Response
     {
-        $request->attributes->set('class', AuthMail::class);
+        $request->attributes->set('class', Contact::class);
 
-        if ($request->request->has('test')) {
-            return $this->handleTestAction($request);
+        if ($request->query->has('getvcard')) {
+            return $this->generateVCard($request);
         }
 
         return parent::__invoke($request);
     }
 
-    public function handleTestAction(Request $request): RedirectResponse
+    private function generateVCard(Request $request): Response
     {
-        $test_auth = AuthMail::testAuth(
-            $request->request->get("imap_string"),
-            $request->request->get("imap_login"),
-            $request->request->get("imap_password"),
-        );
+        $id = $request->query->getInt('id', 1);
 
-        if ($test_auth) {
-            Session::addMessageAfterRedirect(__s('Test successful'));
-        } else {
-            Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
+        if ($id < 0) {
+            return new RedirectResponse($request->getBasePath() . '/front/contact.php');
         }
 
-        return new RedirectResponse(Html::getBackUrl());
+        $contact = new Contact();
+        $contact->check($id, READ);
+
+        return new StreamedResponse(fn () => $contact->generateVcard());
     }
 }
