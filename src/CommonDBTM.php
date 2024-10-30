@@ -6769,6 +6769,10 @@ TWIG, $twig_params);
         self::$search_options_cache = [];
     }
 
+    /**
+     * @param string $form_action
+     * @return 'back'|'list'|'form'|'item'|null
+     */
     public static function getPostFormAction(string $form_action): ?string
     {
         return match ($form_action) {

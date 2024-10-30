@@ -63,6 +63,20 @@ class Link extends CommonDBTM
         return ['config', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'setup';
+    }
+
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        if ($form_action === 'add') {
+            return 'item';
+        }
+
+        return parent::getPostFormAction($form_action);
+    }
+
     /**
      * For plugins, add a tag to the links tags
      *
