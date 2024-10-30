@@ -103,6 +103,8 @@ class PendingReason_Item extends CommonDBRelation
         $success = $em->add($fields);
         if (!$success) {
             trigger_error("Failed to create PendingReason_Item", E_USER_WARNING);
+        } else {
+            NotificationEvent::raiseEvent('pendingreason_add', $item);
         }
 
         return $success;
@@ -164,6 +166,8 @@ class PendingReason_Item extends CommonDBRelation
 
         if (!$success) {
             trigger_error("Failed to delete PendingReason_Item", E_USER_WARNING);
+        } else {
+            NotificationEvent::raiseEvent('pendingreason_del', $item);
         }
 
         return $success;

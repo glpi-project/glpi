@@ -144,6 +144,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'user_mention'      => __('User mentioned'),
             'auto_reminder'     => ITILReminder::getTypeName(1),
             'add_document'      => __('New document'),
+            'pendingreason_add' => __('Pending reason added'),
+            'pendingreason_del' => __('Pending reason removed'),
+            'pendingreason_close' => __('Pending reason auto close'),
         ];
 
         asort($events);
