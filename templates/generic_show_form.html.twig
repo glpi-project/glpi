@@ -683,6 +683,23 @@
                         {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
                      {% endif %}
 
+                     {% if item_type in config("asset_types") %}
+                        {% set barcode %}
+                           {{ call('BarcodeManager::renderQRCode', [
+                              item
+                           ])|raw }}
+                        {% endset %}
+
+                        {{ fields.htmlField(
+                           'qrcode',
+                           barcode,
+                           __('Asset URL'),
+                           {
+                              'helper': __('Scan this QRCode to be redirected to the asset page from your mobile device')
+                           }
+                        ) }}
+                     {% endif %}
+
                      {% block more_fields %}
                      {% endblock %}
                   {% endblock %}
