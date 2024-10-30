@@ -292,7 +292,7 @@ final class RichText
     </p>
 </div>
 HTML;
-            $content .= HTML::scriptBlock('$(function() { read_more(); });');
+            $content .= Html::scriptBlock('$(function() { read_more(); });');
         }
 
         return $content;
