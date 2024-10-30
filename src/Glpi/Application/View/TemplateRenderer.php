@@ -40,6 +40,7 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
+use Glpi\Application\View\Extension\FormExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\IllustrationExtension;
@@ -118,6 +119,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
+        $this->environment->addExtension(new FormExtension());
 
        // add superglobals
         $this->environment->addGlobal('_post', $_POST);

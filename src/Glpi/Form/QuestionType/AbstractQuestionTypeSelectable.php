@@ -35,16 +35,21 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use Glpi\Form\Translation\Context\FormTranslationHandler;
+use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
 use Html;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements ProvideFormTranslationsInterface
 {
+    public const KEY_PREFIX_OPTION = 'option';
+
     #[Override]
     public function __construct()
     {
@@ -128,6 +133,30 @@ TWIG;
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array
+    {
+        if ($item === null || !($item instanceof Question)) {
+            throw new \LogicException('The given item must be a question');
+        }
+
+        $handlers = [];
+        $options = $this->getOptions($item);
+        if (!empty($options)) {
+            $handlers = array_map(
+                fn($uuid, $option) => new FormTranslationHandler(
+                    key: sprintf('%s-%d-%s', self::KEY_PREFIX_OPTION, $item->getID(), $uuid),
+                    name: sprintf('%s %s', self::getName(), __('Option')),
+                    value: $option,
+                ),
+                array_keys($options),
+                $options
+            );
+        }
+
+        return $handlers;
     }
 
     public function hideOptionsContainerWhenUnfocused(): bool
@@ -311,7 +340,9 @@ TWIG;
                         value="{{ value.value }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
-                    <span class="form-check-label">{{ value.value }}</span>
+                    <span class="form-check-label">
+                        {{ form_localized_translation(question.getForm().getId(), '%s-%s-%s'|format(constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::KEY_PREFIX_OPTION'), question.getID(), value.uuid)) }}
+                    </span>
                 </label>
             {% endfor %}
 TWIG;
