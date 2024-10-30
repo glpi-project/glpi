@@ -1,0 +1,97 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<section aria-label="{{ __('Form translations') }}">
+    <div class="card border-bottom-0">
+        {% include "components/datatable.html.twig" with {
+            'datatable_id': 'glpi-form-translations-languages',
+            'columns': {
+                'language': __('Language'),
+                'translated': __('Translated'),
+                'translations_to_do': __('Translations to do'),
+                'translations_to_review': __('Translations to review')
+            },
+            'formatters': {
+                'language': 'raw_html',
+                'translated': 'progress'
+            },
+            'entries': translations|map(translation => {
+                'language': '<a class="fw-medium" href="' ~ path(
+                    '/Form/Translation/' ~ item.getId() ~ '/' ~ translation.fields.language,
+                    {
+                        'forcetab': 'Glpi\\Form\\FormTranslation$main'
+                    }
+                ) ~ '">' ~ translation.getName() ~ '</a>',
+                'translated': translation.getTranslatedPercentage(),
+                'translations_to_do': translation.getTranslationsToDo(),
+                'translations_to_review': translation.getTranslationsToReview()
+            }),
+            'total_number': 1,
+            'nofilter': true,
+            'nopager': true
+        } only %}
+    </div>
+
+    <form
+        class="d-flex mt-2"
+        action="{{ path('/Form/Translation/{form_id}/Add'|replace({'{form_id}': item.getId()})) }}"
+        method="POST"
+        data-glpi-form-translations-add-language-container=""
+    >
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        {{ fields.dropdownArrayField(
+            'language',
+            '',
+            available_languages,
+            '',
+            {
+                'no_label': true,
+                'field_class': 'col-3',
+                'mb': '',
+                'display_emptychoice': true,
+                'emptylabel': __('Select language to translate'),
+                'aria_label': __('Select language to translate'),
+            }
+        ) }}
+        <button
+            type="submit"
+            class="btn btn-ligh-primary border-start-0 rounded-start-0"
+            data-glpi-form-translations-add-language-button=""
+            aria-label="{{ __('Add language') }}"
+        >
+            <i class="ti ti-plus"></i>
+        </button>
+    </form>
+</section>

@@ -35,16 +35,21 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, ProvideTranslationsInterface
 {
+    public const TRANSLATION_KEY_OPTION = 'option';
+
     #[Override]
     public function __construct()
     {
@@ -193,6 +198,31 @@ TWIG;
             options: json_decode($rawData['values']) ?? []
         );
         return $config->jsonSerialize();
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    {
+        if ($item === null || !($item instanceof Question)) {
+            throw new \LogicException('The given item must be a question');
+        }
+
+        $handlers = [];
+        $options = $this->getOptions($item);
+        if (!empty($options)) {
+            $handlers = array_map(
+                fn($uuid, $option) => new TranslationHandler(
+                    parent_item: $item,
+                    key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
+                    name: sprintf('%s %s', self::getName(), __('Option')),
+                    value: $option,
+                ),
+                array_keys($options),
+                $options
+            );
+        }
+
+        return $handlers;
     }
 
     public function hideOptionsContainerWhenUnfocused(): bool
@@ -376,7 +406,15 @@ TWIG;
                         value="{{ value.value }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
-                    <span class="form-check-label">{{ value.value }}</span>
+                    <span class="form-check-label">
+                        {{ form_localized_translation(
+                            question,
+                            '%s-%s'|format(
+                                constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION'),
+                                value.uuid
+                            )
+                        ) }}
+                    </span>
                 </label>
             {% endfor %}
 TWIG;

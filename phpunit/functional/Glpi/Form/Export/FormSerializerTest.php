@@ -380,8 +380,7 @@ final class FormSerializerTest extends \DbTestCase
         $dropdown_config = new QuestionTypeDropdownExtraDataConfig([
             '123456789' => 'Option 1',
             '987654321' => 'Option 2',
-            true,
-        ]);
+        ], true);
         $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
         $item_extra_data_config = new QuestionTypeItemExtraDataConfig(Location::class);
         $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(

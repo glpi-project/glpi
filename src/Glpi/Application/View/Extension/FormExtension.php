@@ -33,11 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Application\View\Extension;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use CommonDBTM;
+use Glpi\Form\FormTranslation;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-interface BlockInterface extends ProvideTranslationsInterface
+/**
+ * @since 10.0.0
+ */
+class FormExtension extends AbstractExtension
 {
-    public function displayBlockForEditor(): void;
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('form_localized_translation', [$this, 'form_localized_translation']),
+        ];
+    }
+
+    /**
+     * Return the localized translation for the key.
+     *
+     * @param CommonDBTM $item
+     * @param string $key
+     * @return string|null
+     */
+    public function form_localized_translation(CommonDBTM $item, string $key): ?string
+    {
+        return FormTranslation::getLocalizedTranslationForKey($item, $key);
+    }
 }
