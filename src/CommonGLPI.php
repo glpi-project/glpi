@@ -755,25 +755,28 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return void
      **/
-    public function redirectToList()
+    public function redirectToList(): void
+    {
+        Html::redirect($this->getRedirectToListUrl());
+    }
+
+    public function getRedirectToListUrl(): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (
-            isset($_GET['withtemplate'])
-            && !empty($_GET['withtemplate'])
-        ) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" .
-                        $this->getType());
-        } else if (
-            isset($_SESSION['glpilisturl'][$this->getType()])
-                 && !empty($_SESSION['glpilisturl'][$this->getType()])
-        ) {
-            Html::redirect($_SESSION['glpilisturl'][$this->getType()]);
-        } else {
-            Html::redirect($this->getSearchURL());
+        if (!empty($_GET['withtemplate'])) {
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . self::getType();
         }
+
+        if (
+            isset($_SESSION['glpilisturl'][self::getType()])
+            && !empty($_SESSION['glpilisturl'][self::getType()])
+        ) {
+            return $_SESSION['glpilisturl'][self::getType()];
+        }
+
+        return self::getSearchURL();
     }
 
     /**
