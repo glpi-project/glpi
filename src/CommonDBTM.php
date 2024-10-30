@@ -1186,18 +1186,16 @@ class CommonDBTM extends CommonGLPI
         return $default;
     }
 
-    public function callFormAction(string $form_action, SymfonyRequest $request): mixed
+    final public function callFormAction(string $form_action, array $input): mixed
     {
-        $post_data = $request->request->all();
-
         // POST action execution
         return match ($form_action) {
-            'add' => $this->add($post_data),
-            'delete' => $this->delete($post_data),
-            'restore' => $this->restore($post_data),
-            'purge' => $this->delete($post_data, 1),
-            'update' => $this->update($post_data),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action->value)),
+            'add' => $this->add($input),
+            'delete' => $this->delete($input),
+            'restore' => $this->restore($input),
+            'purge' => $this->delete($input, 1),
+            'update' => $this->update($input),
+            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
     }
 

@@ -132,7 +132,7 @@ class GenericFormController extends AbstractController
             ]);
         }
 
-        $result = $object->callFormAction($form_action, $request);
+        $result = $object->callFormAction($form_action, $post_data);
 
         if ($result) {
             Event::log(

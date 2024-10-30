@@ -34,39 +34,43 @@
 
 namespace Glpi\Controller\ItemType;
 
-use Contact;
+use AuthMail;
 use Glpi\Controller\GenericFormController;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use HTML;
+use Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ContactFormController extends GenericFormController
+class AuthMailFormController extends GenericFormController
 {
-    #[ItemtypeFormRoute(Contact::class)]
+    #[ItemtypeFormRoute(AuthMail::class)]
     public function __invoke(Request $request): Response
     {
-        $request->attributes->set('class', Contact::class);
+        $request->attributes->set('class', AuthMail::class);
 
-        if ($request->query->has('getvcard')) {
-            return $this->generateVCard($request);
+        if ($request->request->has('test')) {
+            return $this->handleTestAction($request);
         }
 
         return parent::__invoke($request);
     }
 
-    private function generateVCard(Request $request): Response
+    public function handleTestAction(Request $request): RedirectResponse
     {
-        $id = $request->query->getInt('id', 1);
+        $test_auth = AuthMail::testAuth(
+            $request->request->get("imap_string"),
+            $request->request->get("imap_login"),
+            $request->request->get("imap_password"),
+        );
 
-        if ($id < 0) {
-            return new RedirectResponse($request->getBasePath() . '/front/contact.php');
+        if ($test_auth) {
+            Session::addMessageAfterRedirect(__s('Test successful'));
+        } else {
+            Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
         }
 
-        $contact = new Contact();
-        $contact->check($id, READ);
-
-        return new StreamedResponse(fn () => $contact->generateVcard());
+        return new RedirectResponse(Html::getBackUrl());
     }
 }
