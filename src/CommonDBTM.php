@@ -1220,6 +1220,7 @@ class CommonDBTM extends CommonGLPI
             'restore' => $this->restore($input),
             'purge' => $this->delete($input, 1),
             'update' => $this->update($input),
+            'unglobalize' => $this->unglobalize(),
             default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
     }
@@ -2432,6 +2433,13 @@ class CommonDBTM extends CommonGLPI
         $this->fields = [];
     }
 
+    // Wrapper only to standardize the usage of form actions in generic forms
+    public function unglobalize()
+    {
+        Asset_PeripheralAsset::unglobalizeItem($this);
+
+        return null;
+    }
 
     /**
      * Have I the global right to add an item for the Object
@@ -6766,6 +6774,7 @@ TWIG, $twig_params);
         return match ($form_action) {
             'add', 'update' => 'back',
             'delete', 'restore', 'purge' => 'list',
+            'unglobalize' => 'form',
             default => null,
         };
     }
