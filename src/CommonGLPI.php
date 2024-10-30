@@ -138,36 +138,6 @@ class CommonGLPI implements CommonGLPIInterface
         return get_called_class();
     }
 
-    public static function isFormActionAllowed(string $action): bool
-    {
-        return \in_array($action, static::getAllowedFormActions(), true);
-    }
-
-    /**
-     * Used by generic forms for details and logging purposes
-     *
-     * @return string
-     */
-    public static function getLogServiceName(): string
-    {
-        return '';
-    }
-
-    /**
-     * Cases:
-     * 1: Critical (login error only)'
-     * 2: Severe (not used)'
-     * 3: Important (successful logins)'
-     * 4: Notices (add, delete, tracking)'
-     * 5: Complete (all)'
-     *
-     * @return int
-     */
-    public static function getLogLevel(): int
-    {
-        return 4;
-    }
-
     /**
      * Check rights on CommonGLPI Object (without corresponding table)
      * Same signature as CommonDBTM::can but in case of this class, we don't check instance rights

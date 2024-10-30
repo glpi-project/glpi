@@ -285,6 +285,31 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
+     * Used by generic forms for details and logging purposes
+     *
+     * @return string
+     */
+    public static function getLogServiceName(): string
+    {
+        return '';
+    }
+
+    /**
+     * Cases:
+     * 1: Critical (login error only)'
+     * 2: Severe (not used)'
+     * 3: Important (successful logins)'
+     * 4: Notices (add, delete, tracking)'
+     * 5: Complete (all)'
+     *
+     * @return int
+     */
+    public static function getLogLevel(): int
+    {
+        return 4;
+    }
+
+    /**
      * Retrieve an item from the database
      *
      * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
