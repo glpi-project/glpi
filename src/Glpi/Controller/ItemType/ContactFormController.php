@@ -32,10 +32,7 @@ class ContactFormController extends GenericFormController
         $id = $request->query->getInt('id', 1);
 
         if ($id < 0) {
-            /** @var array $CFG_GLPI */
-            global $CFG_GLPI;
-
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/contact.php');
+            return new RedirectResponse($request->getBasePath() . '/front/contact.php');
         }
 
         $contact = new Contact();
