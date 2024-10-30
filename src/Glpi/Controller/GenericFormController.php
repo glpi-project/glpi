@@ -125,11 +125,7 @@ class GenericFormController extends AbstractController
 
         // Special case for GET
         if ($form_action === 'get' && $request->getMethod() === 'GET') {
-            return $this->render('pages/generic_form.html.twig', [
-                'id' => $request->query->get('id', -1),
-                'with_template' => $isTemplateForm,
-                'object_class' => $class,
-            ]);
+            return $this->displayForm($object, $request, $isTemplateForm, $class);
         }
 
         $result = $object->callFormAction($form_action, $post_data);
@@ -177,5 +173,18 @@ class GenericFormController extends AbstractController
         }
 
         return $request->getMethod() === 'GET' ? 'get' : null;
+    }
+
+    public function displayForm(CommonDBTM $object, Request $request, bool $isTemplateForm, string $class): Response
+    {
+        $form_options = $object->getFormOptionsFromUrl($request->query->all());
+        $form_options['withtemplate'] = $isTemplateForm;
+        $form_options['formoptions'] = 'data-track-changes=true';
+
+        return $this->render('pages/generic_form.html.twig', [
+            'id' => $request->query->get('id', -1),
+            'object_class' => $class,
+            'options' => $form_options,
+        ]);
     }
 }

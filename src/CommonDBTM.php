@@ -1199,6 +1199,11 @@ class CommonDBTM extends CommonGLPI
         };
     }
 
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        return [];
+    }
+
     /**
      * Restore data saved in the session to $this->input
      *
@@ -6569,13 +6574,6 @@ TWIG, $twig_params);
 
         if (!isset($options['id'])) {
             $options['id'] = $id;
-        }
-
-        if (isset($_GET['position'])) {
-            $options['position'] = $_GET['position'];
-        }
-        if (isset($_GET['room'])) {
-            $options['room'] = $_GET['room'];
         }
 
         // Show item

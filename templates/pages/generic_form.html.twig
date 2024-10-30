@@ -33,8 +33,5 @@
 {{ call([object_class, 'displayFullPageForItem'], [
     id,
     call([object_class, 'getSectorizedDetails']),
-    {
-        'withtemplate': with_template,
-        'formoptions': 'data-track-changes=true',
-    }
+    form_options,
 ]) }}

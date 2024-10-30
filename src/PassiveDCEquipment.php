@@ -262,6 +262,20 @@ class PassiveDCEquipment extends CommonDBTM
         return $tab;
     }
 
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+
+        if (isset($query_params['position'])) {
+            $options['position'] = $query_params['position'];
+        }
+        if (isset($query_params['room'])) {
+            $options['room'] = $query_params['room'];
+        }
+
+        return $options;
+    }
+
     public static function getIcon()
     {
         return "ti ti-layout-navbar";
