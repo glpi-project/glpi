@@ -72,7 +72,7 @@ class APIClient extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ["config", "config", __CLASS__];
+        return ["config", Config::class, self::class];
     }
 
     public static function getLogServiceName(): string
