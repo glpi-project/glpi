@@ -6762,7 +6762,8 @@ TWIG, $twig_params);
     public static function getPostFormAction(string $form_action): ?string
     {
         return match ($form_action) {
-            'add', 'update' => 'back',
+            'add' => 'backcreated',
+            'update' => 'back',
             'delete', 'restore', 'purge' => 'list',
             'unglobalize' => 'form',
             default => null,

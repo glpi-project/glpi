@@ -144,20 +144,16 @@ class GenericFormController extends AbstractController
             );
         }
 
-        // Specific case for "add"
-        if ($action_result && $form_action === 'add' && $_SESSION['glpibackcreated']) {
-            return new RedirectResponse($object->getLinkURL());
-        }
-
-        $post_action = $object::getPostFormAction($form_action) ?? 'list';
-        if (!\in_array($post_action, ['back', 'list', 'form'])) {
-            $post_action = 'list';
-        }
+        $post_action = $object::getPostFormAction($form_action);
 
         return match ($post_action) {
+            'backcreated' => $_SESSION['glpibackcreated']
+                ? new RedirectResponse($object->getLinkURL())
+                : new RedirectResponse(Html::getBackUrl()),
             'back' => new RedirectResponse(Html::getBackUrl()),
-            'form' => new RedirectResponse($object::getFormURLWithID($id)),
+            'form' => new RedirectResponse($object->getLinkURL()),
             'list' => new RedirectResponse($object->getRedirectToListUrl()),
+            default => new RedirectResponse($object->getLinkURL()),
         };
     }
 

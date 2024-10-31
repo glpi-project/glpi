@@ -920,10 +920,8 @@ class Infocom extends CommonDBChild
 
     public static function getPostFormAction(string $form_action): ?string
     {
-        return match ($form_action) {
-            'add', 'update', 'delete', 'restore', 'purge' => 'back',
-            default => null,
-        };
+        // Always return to the previous page
+        return 'back';
     }
 
     /**
