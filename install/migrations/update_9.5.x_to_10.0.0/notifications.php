@@ -43,7 +43,7 @@ use Glpi\DBAL\QueryExpression;
 /** User mention notification */
 $notification_exists = countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'user_mention']) > 0;
 if (!$notification_exists) {
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notifications',
         [
             'id'              => null,
@@ -56,32 +56,29 @@ if (!$notification_exists) {
             'is_active'       => 1,
             'date_creation'   => new QueryExpression('NOW()'),
             'date_mod'        => new QueryExpression('NOW()')
-        ],
-        '10.0 Add user mention notification'
+        ]
     );
     $notification_id = $DB->insertId();
 
     $notificationtemplate = new NotificationTemplate();
     if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                 'notificationtemplates_id' => $notificationtemplate->fields['id'],
-            ],
-            '10.0 Add user mention notification template'
+            ]
         );
     }
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtargets',
         [
             'items_id'         => '39',
             'type'             => '1',
             'notifications_id' => $notification_id,
-        ],
-        '10.0 Add user mention notification target'
+        ]
     );
 }
 /** /User mention notification */

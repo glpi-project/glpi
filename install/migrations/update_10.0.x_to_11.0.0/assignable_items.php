@@ -174,7 +174,7 @@ if (!$DB->tableExists('glpi_groups_items')) {
           KEY `type` (`type`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 }
 
 foreach ($assignable_itemtypes as $itemtype => $specs) {

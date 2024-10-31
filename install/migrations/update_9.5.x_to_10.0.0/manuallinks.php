@@ -59,5 +59,5 @@ if (!$DB->tableExists('glpi_manuallinks')) {
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_manuallinks");
+    $DB->doQuery($query);
 }

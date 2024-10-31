@@ -51,7 +51,7 @@ if (!$DB->tableExists('glpi_validatorsubstitutes')) {
         UNIQUE KEY `users_id_users_id_substitute` (`users_id`, `users_id_substitute`),
         KEY `users_id_substitute` (`users_id_substitute`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "add table glpi_validatorsubstitutes");
+    $DB->doQuery($query);
 }
 
 $table = 'glpi_users';

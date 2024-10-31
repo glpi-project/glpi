@@ -130,7 +130,7 @@ function update93xto940()
     $migration->createRule($rule, $criteria, $action);
 
     if (!countElementsInTable('glpi_profilerights', ['profiles_id' => 4, 'name' => 'rule_asset'])) {
-        $DB->insertOrDie("glpi_profilerights", [
+        $DB->insert("glpi_profilerights", [
             'id'           => null,
             'profiles_id'  => "4",
             'name'         => "rule_asset",
@@ -209,7 +209,7 @@ function update93xto940()
     $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
     /** Drop old embed ocs search options */
-    $DB->deleteOrDie(
+    $DB->delete(
         'glpi_displaypreferences',
         [
             'itemtype'  => 'Computer',
@@ -240,7 +240,7 @@ function update93xto940()
         '95'  => '117'
     ];
     foreach ($so_maping as $old => $new) {
-        $DB->updateOrDie(
+        $DB->update(
             'glpi_displaypreferences',
             [
                 'num' => $new

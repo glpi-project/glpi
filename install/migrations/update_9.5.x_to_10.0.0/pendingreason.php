@@ -61,7 +61,7 @@ if (!$DB->tableExists('glpi_pendingreasons')) {
          KEY `is_recursive` (`is_recursive`),
          KEY `solutiontemplates_id` (`solutiontemplates_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = $default_charset COLLATE = $default_collation;";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_pendingreasons");
+    $DB->doQuery($query);
 }
 
 // Add pending reason items table
@@ -80,7 +80,7 @@ if (!$DB->tableExists('glpi_pendingreasons_items')) {
          KEY `pendingreasons_id` (`pendingreasons_id`),
          KEY `item` (`itemtype`,`items_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = $default_charset COLLATE = $default_collation;";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_pendingreasons_items");
+    $DB->doQuery($query);
 }
 
 // Add pendingreason right
@@ -101,7 +101,7 @@ if (empty($config['system_user'])) {
         'password'      => '',
         'authtype'      => 1,
     ];
-    $DB->insertOrDie('glpi_users', $system_user_params, "Can't add 'glpi-system' user");
+    $DB->insert('glpi_users', $system_user_params);
 
     $migration->addConfig(['system_user' => $DB->insertId()], 'core');
 }

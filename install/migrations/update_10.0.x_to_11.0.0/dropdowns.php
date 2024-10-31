@@ -61,7 +61,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
             KEY `date_mod` (`date_mod`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
@@ -91,7 +91,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
             KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 } else {
     // TODO Remove it before the GLPI 11.0 final release.
     $migration->dropField('glpi_dropdowns_dropdowns', 'is_deleted');
