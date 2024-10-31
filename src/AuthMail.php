@@ -79,6 +79,12 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(__s('"name" is mandatory!'), false, ERROR);
+
+            return false;
+        }
+
         if (!empty($input['mail_server'])) {
             $input["connect_string"] = Toolbox::constructMailServerConfig($input);
         }
