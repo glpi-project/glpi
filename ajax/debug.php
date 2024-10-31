@@ -64,7 +64,7 @@ if (isset($_GET['ajax_id'])) {
             return;
         }
     }
-    throw new NotFoundHttpException();
+    return;
 }
 
 if (isset($_GET['action'])) {
