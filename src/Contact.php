@@ -63,6 +63,11 @@ class Contact extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
     public function prepareInputForAdd($input)
     {
         $input = parent::prepareInputForAdd($input);
