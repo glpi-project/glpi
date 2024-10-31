@@ -64,7 +64,7 @@ final class ListenersPriority
         //
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        PluginsRouterListener::class => 30,
+        PluginsRouterListener::class => 31,
     ];
 
     private function __construct()
