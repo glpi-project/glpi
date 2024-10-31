@@ -109,18 +109,6 @@ class GenericFormController extends AbstractController
         $post_data = $request->request->all();
         $isTemplateForm = ($object->maybeTemplate() && $object->isTemplate()) || $request->query->get('withtemplate');
 
-        if (!$object instanceof \CommonDBTM) {
-            Event::log(
-                '-',
-                \strtolower(\basename($class)),
-                $object::getLogLevel(),
-                $object::getLogServiceName(),
-                sprintf(__('%1$s tried to execute the "%2$s" action on the item %3$s, but this type does not support POST actions.'), $_SESSION["glpiname"], $form_action, $post_data["name"])
-            );
-
-            return null;
-        }
-
         // Permissions
         $object->check($id, self::ACTIONS_AND_CHECKS[$form_action]['permission'] ?? READ, $post_data);
 
