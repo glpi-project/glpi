@@ -2023,8 +2023,17 @@ HTML;
         $platform = "";
         if (!defined('TU_USER')) {
             $parser = new UserAgentParser();
-            $ua = $parser->parse();
-            $platform = $ua->platform();
+            try {
+                $ua = $parser->parse();
+                $platform = $ua->platform();
+            } catch (InvalidArgumentException $e) {
+                // To avoid log overload, we suppress the InvalidArgumentException error.
+                // Some non-standard clients, such as bots or simplified HTTP services,
+                // don’t always send the User-Agent header,
+                // and privacy-focused browsers or extensions may also block it.
+                // Additionally, server configurations like proxies or firewalls
+                // may remove this header for security reasons.
+            }
         }
 
         $help_url_key = Session::getCurrentInterface() === 'central'
