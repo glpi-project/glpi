@@ -891,7 +891,7 @@ class Infocom extends CommonDBChild
     {
         $ic = new self();
 
-        Html::popHeader(self::getTypeName(), $_SERVER['PHP_SELF']);
+        Html::popHeader(self::getTypeName());
 
         if (isset($_GET["id"])) {
             $ic->getFromDB($_GET["id"]);
@@ -905,7 +905,7 @@ class Infocom extends CommonDBChild
             }
         }
 
-        self::showForItem($item, 0);
+        self::showForItem($item);
 
         Html::popFooter();
     }
