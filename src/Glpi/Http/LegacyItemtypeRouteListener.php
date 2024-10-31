@@ -50,9 +50,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 final readonly class LegacyItemtypeRouteListener implements EventSubscriberInterface
 {
+    public function __construct(private UrlMatcherInterface $url_matcher)
+    {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -73,6 +78,14 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         ) {
             // A controller or a response has already been defined for this request, do not override them.
             return;
+        }
+
+        try {
+            $this->url_matcher->match($request->getPathInfo());
+            // The URL matches an existing route, let the symfony routing forward to the expected controller.
+            return;
+        } catch (\Exception $e) {
+            // The URL does not match any route, try to forward it to a generic controller.
         }
 
         if ($class = $this->findClass($request)) {
