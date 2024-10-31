@@ -59,6 +59,11 @@ class PassiveDCEquipment extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
