@@ -45,7 +45,7 @@ $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 
 // Create tables
 if (!$DB->tableExists('glpi_forms_forms')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_forms` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -72,7 +72,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_sections')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_sections` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -86,7 +86,7 @@ if (!$DB->tableExists('glpi_forms_sections')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_questions')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_questions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -104,7 +104,7 @@ if (!$DB->tableExists('glpi_forms_questions')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_comments')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_comments` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -118,7 +118,7 @@ if (!$DB->tableExists('glpi_forms_comments')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_answerssets')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_answerssets` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -140,7 +140,7 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_destinations_answerssets_formdestinationitems` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_answerssets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -153,7 +153,7 @@ if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems'
     );
 }
 if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_destinations_formdestinations` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -168,7 +168,7 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
     );
 }
 if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_forms_accesscontrols_formaccesscontrols` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',

@@ -58,11 +58,11 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 /** Replace -1 value for entities_id field */
 // Replace -1 value for root entity to be able to change type to unsigned.
 // Use max int signed value of mysql to be fairly certain not to be blocked because of the uniqueness key.
-$DB->updateOrDie('glpi_entities', ['entities_id' => pow(2, 31) - 1], ['id' => '0']);
+$DB->update('glpi_entities', ['entities_id' => pow(2, 31) - 1], ['id' => '0']);
 
 $migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT '0'");
 $migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
-$DB->updateOrDie('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
+$DB->update('glpi_entities', ['entities_id' => 'NULL'], ['id' => '0']);
 /** /Replace -1 value for entities_id field */
 
 /** Replace negative values for config foreign keys */
@@ -93,7 +93,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
 
         if ($DB->fieldExists('glpi_entities', $fkey_config_field)) {
             // 'contracts_id_default' and 'transfers_id' fields will only exist if a previous dev install exists
-            $DB->updateOrDie(
+            $DB->update(
                 'glpi_entities',
                 [
                     // Put negative values (-10[never]/ -2[inherit]/ -1[auto]) in strategy field

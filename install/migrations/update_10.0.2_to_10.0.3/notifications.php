@@ -68,7 +68,7 @@ foreach ($iterator as $notification) {
             || $items_id === Notification::ITEM_TECH_IN_CHARGE
             || $items_id === Notification::ITEM_USER
         ) {
-            $DB->deleteOrDie('glpi_notificationtargets', [
+            $DB->delete('glpi_notificationtargets', [
                 'id' => $target_id,
             ]);
             if ($items_id === Notification::ITEM_TECH_GROUP_IN_CHARGE) {
@@ -80,7 +80,7 @@ foreach ($iterator as $notification) {
         }
     }
     if ($notification['event'] === 'assign_group' && $removed_item_group && !$found_assigned_group) {
-        $DB->insertOrDie('glpi_notificationtargets', [
+        $DB->insert('glpi_notificationtargets', [
             'notifications_id'  => $notification['id'],
             'type'              => Notification::USER_TYPE,
             'items_id'          => Notification::ASSIGN_GROUP,

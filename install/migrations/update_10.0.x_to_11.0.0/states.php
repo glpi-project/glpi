@@ -76,7 +76,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         KEY `visible_itemtype` (`visible_itemtype`),
         KEY `item` (`itemtype`,`items_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->doQueryOrDie($query, "10.1.0 add table glpi_dropdownvisibilities");
+    $DB->doQuery($query);
 
     $states = $DB->request(['FROM' => 'glpi_states']);
     foreach ($states as $state) {
@@ -89,7 +89,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
             if (isset($state['is_visible_' . $known_visibility])) {
                 $insert_data['visible_itemtype'] = $known_visibility;
                 $insert_data['is_visible'] = $state['is_visible_' . $known_visibility];
-                $DB->doQueryOrDie($DB->buildInsert('glpi_dropdownvisibilities', $insert_data));
+                $DB->doQuery($DB->buildInsert('glpi_dropdownvisibilities', $insert_data));
             }
         }
     }
