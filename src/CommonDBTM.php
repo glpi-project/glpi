@@ -6771,7 +6771,7 @@ TWIG, $twig_params);
 
     /**
      * @param string $form_action
-     * @return 'back'|'list'|'form'|'item'|null
+     * @return 'back'|'list'|'form'|null
      */
     public static function getPostFormAction(string $form_action): ?string
     {

@@ -153,7 +153,6 @@ class GenericFormController extends AbstractController
 
         return match ($post_action) {
             'back' => new RedirectResponse(Html::getBackUrl()),
-            'item' => new RedirectResponse(Toolbox::getItemTypeFormURL($class) . "?id=" . ($result ?: $id)),
             'form' => new RedirectResponse($object::getFormURLWithID($id)),
             'list' => new RedirectResponse($object->getRedirectToListUrl()),
         };

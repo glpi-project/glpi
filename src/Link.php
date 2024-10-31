@@ -68,15 +68,6 @@ class Link extends CommonDBTM
         return 'setup';
     }
 
-    public static function getPostFormAction(string $form_action): ?string
-    {
-        if ($form_action === 'add') {
-            return 'item';
-        }
-
-        return parent::getPostFormAction($form_action);
-    }
-
     /**
      * For plugins, add a tag to the links tags
      *
