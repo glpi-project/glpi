@@ -830,8 +830,8 @@ class Log extends CommonDBTM
                             break;
 
                         default:
-                            $data["old_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["old_value"] ?? ''), false, true);
-                            $data["new_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["new_value"] ?? ''), false, true);
+                            $data["old_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["old_value"]) ?? '', false, true);
+                            $data["new_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["new_value"]) ?? '', false, true);
                             break;
                     }
                 }
