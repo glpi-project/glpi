@@ -179,7 +179,7 @@ class GenericFormController extends AbstractController
         }
 
         return $this->render('pages/generic_form.html.twig', [
-            'id' => $request->query->get('id', 0),
+            'id' => $request->query->get('id', -1),
             'object_class' => $object::class,
             'form_options' => $form_options,
         ]);
