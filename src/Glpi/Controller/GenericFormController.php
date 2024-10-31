@@ -35,7 +35,6 @@
 namespace Glpi\Controller;
 
 use CommonDBTM;
-use Glpi\Exception\Http\NotFoundHttpException;
 use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -44,18 +43,16 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Toolbox;
 
 class GenericFormController extends AbstractController
 {
-    public const ACTIONS_AND_CHECKS = [
-        'get' => ['permission' => READ],
-        'add' => ['permission' => CREATE],
-        'delete' => ['permission' => DELETE],
-        'restore' => ['permission' => DELETE],
-        'purge' => ['permission' => PURGE],
-        'update' => ['permission' => UPDATE],
-        'unglobalize' => ['permission' => UPDATE],
+    private const SUPPORTED_ACTIONS = [
+        'add',
+        'delete',
+        'restore',
+        'purge',
+        'update',
+        'unglobalize',
     ];
 
     #[Route("/{class}/Form", name: "glpi_itemtype_form", priority: -1)]
@@ -71,10 +68,10 @@ class GenericFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $form_action = $this->getCurrentAllowedAction($request, $class);
+        $form_action = $this->getFormAction($request, $class);
 
         if (!$form_action) {
-            throw new AccessDeniedHttpException();
+            throw new BadRequestHttpException();
         }
 
         return $this->handleFormAction($request, $form_action, $class);
@@ -101,16 +98,29 @@ class GenericFormController extends AbstractController
     private function handleFormAction(Request $request, string $form_action, string $class): Response
     {
         $id = $request->query->get('id', -1);
-        $object = new $class();
         $post_data = $request->request->all();
-        $isTemplateForm = ($object->maybeTemplate() && $object->isTemplate()) || $request->query->get('withtemplate');
 
-        // Permissions
-        $object->check($id, self::ACTIONS_AND_CHECKS[$form_action]['permission'] ?? READ, $post_data);
+        /* @var CommonDBTM $object */
+        $object = new $class();
 
         // Special case for GET
-        if ($form_action === 'get' && $request->getMethod() === 'GET') {
-            return $this->displayForm($object, $request, $isTemplateForm);
+        if ($form_action === 'get') {
+            if (!$object->can($id, READ)) {
+                throw new AccessDeniedHttpException();
+            }
+            return $this->displayForm($object, $request);
+        }
+
+        // Permissions
+        $can_do_action = match ($form_action) {
+            'add' => $object->can($id, CREATE, $post_data),
+            'delete', 'restore' => $object->can($id, DELETE, $post_data),
+            'purge' => $object->can($id, PURGE, $post_data),
+            default => $object->can($id, UPDATE, $post_data),
+        };
+
+        if (!$can_do_action) {
+            throw new AccessDeniedHttpException();
         }
 
         // POST action execution
@@ -154,14 +164,11 @@ class GenericFormController extends AbstractController
     /**
      * @param class-string<CommonDBTM> $class
      */
-    private function getCurrentAllowedAction(Request $request, string $class): ?string
+    private function getFormAction(Request $request, string $class): ?string
     {
         if ($request->getMethod() === 'POST') {
-            foreach (\array_keys(self::ACTIONS_AND_CHECKS) as $action) {
-                if (
-                    $request->request->has($action)
-                    && \method_exists($class, $action)
-                ) {
+            foreach (self::SUPPORTED_ACTIONS as $action) {
+                if ($request->request->has($action)) {
                     return $action;
                 }
             }
@@ -170,11 +177,11 @@ class GenericFormController extends AbstractController
         return $request->getMethod() === 'GET' ? 'get' : null;
     }
 
-    public function displayForm(CommonDBTM $object, Request $request, bool $isTemplateForm): Response
+    public function displayForm(CommonDBTM $object, Request $request): Response
     {
         $form_options = $object->getFormOptionsFromUrl($request->query->all());
         $form_options['formoptions'] = 'data-track-changes=true';
-        if ($isTemplateForm) {
+        if ($object->maybeTemplate()) {
             $form_options['withtemplate'] = $request->query->get('withtemplate', '');
         }
 
