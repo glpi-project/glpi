@@ -97,6 +97,7 @@ final class Transfer extends CommonDBTM
     public function getFormOptionsFromUrl(array $query_params): array
     {
         return [
+            // Required for pagination
             'target' => self::getFormURL(),
         ];
     }
