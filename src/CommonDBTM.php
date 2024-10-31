@@ -48,7 +48,6 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
