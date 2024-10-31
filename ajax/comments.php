@@ -121,10 +121,8 @@ if (
                 } else {
                     $table = getTableForItemType($_POST['itemtype']);
                 }
-                $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
-                if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo htmlescape($tmpname["comment"]);
-                }
+
+                echo Dropdown::getDropdownComments($table, (int) $_POST["value"]);
 
                 if (isset($_POST['withlink'])) {
                     echo "<script type='text/javascript' >";
