@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /**
  * Infocom class
@@ -891,19 +892,26 @@ class Infocom extends CommonDBChild
     {
         $ic = new self();
 
-        Html::popHeader(self::getTypeName());
+        $item = false;
 
         if (isset($_GET["id"])) {
             $ic->getFromDB($_GET["id"]);
             $_GET["itemtype"] = $ic->fields["itemtype"];
             $_GET["items_id"] = $ic->fields["items_id"];
         }
-        $item = false;
-        if (isset($_GET["itemtype"]) && ($item = getItemForItemtype($_GET["itemtype"]))) {
-            if (!isset($_GET["items_id"]) || !$item->getFromDB($_GET["items_id"])) {
-                $item = false;
-            }
+
+        if (
+            isset($_GET["itemtype"])
+            && ($item = getItemForItemtype($_GET["itemtype"]))
+            && (
+                !isset($_GET["items_id"])
+                || !$item->getFromDB($_GET["items_id"])
+            )
+        ) {
+            throw new NotFoundHttpException();
         }
+
+        Html::popHeader(self::getTypeName());
 
         self::showForItem($item);
 
