@@ -766,17 +766,17 @@ class CommonGLPI implements CommonGLPIInterface
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
-            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . self::getType();
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::getType();
         }
 
         if (
-            isset($_SESSION['glpilisturl'][self::getType()])
-            && !empty($_SESSION['glpilisturl'][self::getType()])
+            isset($_SESSION['glpilisturl'][static::getType()])
+            && !empty($_SESSION['glpilisturl'][static::getType()])
         ) {
-            return $_SESSION['glpilisturl'][self::getType()];
+            return $_SESSION['glpilisturl'][static::getType()];
         }
 
-        return self::getSearchURL();
+        return static::getSearchURL();
     }
 
     /**
