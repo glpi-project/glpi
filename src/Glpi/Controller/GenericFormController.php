@@ -77,11 +77,7 @@ class GenericFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        if ($response = $this->handleFormAction($request, $form_action, $class)) {
-            return $response;
-        }
-
-        throw new NotFoundHttpException();
+        return $this->handleFormAction($request, $form_action, $class);
     }
 
     private function checkIsValidClass(string $class): void
@@ -102,7 +98,7 @@ class GenericFormController extends AbstractController
     /**
      * @param class-string<CommonDBTM> $class
      */
-    private function handleFormAction(Request $request, string $form_action, string $class): ?Response
+    private function handleFormAction(Request $request, string $form_action, string $class): Response
     {
         $id = $request->query->get('id', -1);
         $object = new $class();
