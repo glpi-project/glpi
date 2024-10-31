@@ -4764,7 +4764,7 @@ class CommonDBTM extends CommonGLPI
      *    - comments : boolean / is the comments displayed near the value (default false)
      *    - any others options passed to specific display method
      *
-     * @return string the string to display
+     * @return mixed the value to display
      **/
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
