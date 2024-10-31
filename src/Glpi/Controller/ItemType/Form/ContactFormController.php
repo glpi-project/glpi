@@ -36,8 +36,8 @@ namespace Glpi\Controller\ItemType\Form;
 
 use Contact;
 use Glpi\Controller\GenericFormController;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -58,10 +58,10 @@ class ContactFormController extends GenericFormController
 
     private function generateVCard(Request $request): Response
     {
-        $id = $request->query->getInt('id', 1);
+        $id = $request->query->getInt('id');
 
-        if ($id < 0) {
-            return new RedirectResponse($request->getBasePath() . '/front/contact.php');
+        if ($id === 0) {
+            throw new BadRequestHttpException();
         }
 
         $contact = new Contact();
