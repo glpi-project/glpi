@@ -79,7 +79,8 @@ describe('Error page', () => {
         cy.changeProfile('Self-Service');
 
         const urls = [
-            '/front/computer.php', // streamed response
+            '/front/central.php',  // streamed response
+            '/front/computer.php', // generic controller
             '/Form/Import',        // modern controller
         ];
 
@@ -105,8 +106,9 @@ describe('Error page', () => {
         cy.changeProfile('Super-Admin');
 
         const urls = [
-            '/front/computer.form.php?id=999999', // streamed response
-            '/Form/Render/999999',                // modern controller
+            '/front/logviewer.php?filepath=invalid', // streamed response
+            '/front/computer.form.php?id=999999',    // generic response
+            '/Form/Render/999999',                   // modern controller
         ];
 
         const expected_code    = 404;
