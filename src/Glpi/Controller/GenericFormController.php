@@ -129,6 +129,11 @@ class GenericFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        // Special case for modals
+        if ($form_action === '_in_modal' && $request->getMethod() === 'GET') {
+            return $this->displayModal($object, $request);
+        }
+
         // POST action execution
         $action_result = match ($form_action) {
             'add' => $object->add($post_data),
@@ -176,6 +181,10 @@ class GenericFormController extends AbstractController
             }
         }
 
+        if ($request->getMethod() === 'GET' && $request->query->get('_in_modal')) {
+            return '_in_modal';
+        }
+
         return $request->getMethod() === 'GET' ? 'get' : null;
     }
 
@@ -190,6 +199,21 @@ class GenericFormController extends AbstractController
         return $this->render('pages/generic_form.html.twig', [
             'id' => $request->query->get('id', -1),
             'object_class' => $object::class,
+            'form_options' => $form_options,
+        ]);
+    }
+
+    private function displayModal(mixed $object, Request $request): Response
+    {
+        $form_options = [];
+        if ($request->query->has('withtemplate')) {
+            $form_options['withtemplate'] = $request->query->get('withtemplate', '');
+        }
+
+        return $this->render('pages/generic_in_modal.html.twig', [
+            'id' => $request->query->get('id', 0),
+            'path_info' => $request->getPathInfo(),
+            'object' => $object,
             'form_options' => $form_options,
         ]);
     }
