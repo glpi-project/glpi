@@ -70,7 +70,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getSectorizedDetails(): array
     {
-        return ['tools', \strtolower(__CLASS__)];
+        return ['tools', self::class];
     }
 
     public function getForbiddenStandardMassiveAction()
