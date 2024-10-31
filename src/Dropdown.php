@@ -635,10 +635,14 @@ class Dropdown
      *
      * @return string
      **/
-    public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true)
+    public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!$DB->fieldExists($table, 'comment')) {
+            return '';
+        }
 
         $itemtype = getItemTypeForTable($table);
 
