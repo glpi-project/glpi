@@ -39,6 +39,7 @@ use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -102,6 +103,10 @@ class GenericFormController extends AbstractController
 
         /* @var CommonDBTM $object */
         $object = new $class();
+
+        if (!$object::isNewID($id) && !$object->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
 
         // Special case for GET
         if ($form_action === 'get') {
