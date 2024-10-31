@@ -44,7 +44,6 @@ use Glpi\Http\Request;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
-use GuzzleHttp\Client as Guzzle_Client;
 
 class Webhook extends CommonDBTM implements FilterableInterface
 {
