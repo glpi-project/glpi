@@ -56,15 +56,14 @@ if (isset($_GET['ajax_id'])) {
     // as we have to delete profile from `$_SESSION` during the pull operation.
     session_write_close();
 
+    header('Content-Type: application/json');
     if ($profile) {
         $data = $profile->getDebugInfo();
         if ($data) {
-            header('Content-Type: application/json');
             echo json_encode($data);
-            return;
         }
     }
-    throw new NotFoundHttpException();
+    return;
 }
 
 if (isset($_GET['action'])) {
