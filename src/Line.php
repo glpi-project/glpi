@@ -63,7 +63,7 @@ class Line extends CommonDBTM
         return ['management', self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'financial';
     }

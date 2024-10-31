@@ -83,7 +83,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return ['config', self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }

@@ -82,7 +82,7 @@ class Software extends CommonDBTM
         return 's';
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'inventory';
     }

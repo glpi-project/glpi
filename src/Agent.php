@@ -83,7 +83,7 @@ class Agent extends CommonDBTM
         return ['admin', Inventory::class, self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'inventory';
     }

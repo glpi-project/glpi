@@ -63,7 +63,7 @@ class SLM extends CommonDBTM
         return ['config', self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }

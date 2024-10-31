@@ -138,8 +138,8 @@ class GenericFormController extends AbstractController
             Event::log(
                 $action_result,
                 \strtolower(\basename($class)),
-                $object::getLogLevel(),
-                $object::getLogServiceName(),
+                $object::getLogDefaultLevel(),
+                $object::getLogDefaultServiceName(),
                 sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $form_action, $post_data["name"])
             );
         }

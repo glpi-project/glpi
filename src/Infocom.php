@@ -883,7 +883,7 @@ class Infocom extends CommonDBChild
         }
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'financial';
     }

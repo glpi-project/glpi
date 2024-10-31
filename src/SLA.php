@@ -60,7 +60,7 @@ class SLA extends LevelAgreement
         return ['config', SLM::class, self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }

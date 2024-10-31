@@ -75,7 +75,7 @@ class APIClient extends CommonDBTM
         return ["config", Config::class, self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }

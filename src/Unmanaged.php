@@ -60,7 +60,7 @@ class Unmanaged extends CommonDBTM
         return ['assets', self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'inventory';
     }

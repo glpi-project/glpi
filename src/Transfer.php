@@ -89,7 +89,7 @@ final class Transfer extends CommonDBTM
         return ['admin', Rule::class, self::class];
     }
 
-    public static function getLogServiceName(): string
+    public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }
