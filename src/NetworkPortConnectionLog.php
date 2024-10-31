@@ -161,7 +161,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                 echo sprintf(
                     '%1$s on %2$s',
                     $cport_link,
-                    $citem->getLink(1)
+                    $citem->getLink()
                 );
             } else if ($row['connected'] == 1) {
                 echo __('No longer exists in database');
