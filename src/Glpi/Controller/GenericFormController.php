@@ -180,8 +180,10 @@ class GenericFormController extends AbstractController
     public function displayForm(CommonDBTM $object, Request $request, bool $isTemplateForm, string $class): Response
     {
         $form_options = $object->getFormOptionsFromUrl($request->query->all());
-        $form_options['withtemplate'] = $isTemplateForm;
         $form_options['formoptions'] = 'data-track-changes=true';
+        if ($isTemplateForm) {
+            $form_options['withtemplate'] = $request->query->get('withtemplate', '');
+        }
 
         return $this->render('pages/generic_form.html.twig', [
             'id' => $request->query->get('id', 0),
