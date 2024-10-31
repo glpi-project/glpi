@@ -1211,20 +1211,6 @@ class CommonDBTM extends CommonGLPI
         return $default;
     }
 
-    final public function callFormAction(string $form_action, array $input): mixed
-    {
-        // POST action execution
-        return match ($form_action) {
-            'add' => $this->add($input),
-            'delete' => $this->delete($input),
-            'restore' => $this->restore($input),
-            'purge' => $this->delete($input, 1),
-            'update' => $this->update($input),
-            'unglobalize' => $this->unglobalize(),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
-        };
-    }
-
     public function getFormOptionsFromUrl(array $query_params): array
     {
         return [];

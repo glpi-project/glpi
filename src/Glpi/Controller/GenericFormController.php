@@ -129,11 +129,20 @@ class GenericFormController extends AbstractController
             return $this->displayForm($object, $request, $isTemplateForm);
         }
 
-        $result = $object->callFormAction($form_action, $post_data);
+        // POST action execution
+        $action_result = match ($form_action) {
+            'add' => $object->add($post_data),
+            'delete' => $object->delete($post_data),
+            'restore' => $object->restore($post_data),
+            'purge' => $object->delete($post_data, 1),
+            'update' => $object->update($post_data),
+            'unglobalize' => $object->unglobalize(),
+            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+        };
 
-        if ($result) {
+        if ($action_result) {
             Event::log(
-                $result,
+                $action_result,
                 \strtolower(\basename($class)),
                 $object::getLogLevel(),
                 $object::getLogServiceName(),
@@ -142,7 +151,7 @@ class GenericFormController extends AbstractController
         }
 
         // Specific case for "add"
-        if ($result && $form_action === 'add' && $_SESSION['glpibackcreated']) {
+        if ($action_result && $form_action === 'add' && $_SESSION['glpibackcreated']) {
             return new RedirectResponse($object->getLinkURL());
         }
 
