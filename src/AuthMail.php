@@ -56,7 +56,7 @@ class AuthMail extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         if (empty($input['name'])) {
-            Session::addMessageAfterRedirect(__s('"name" is mandatory!'), false, ERROR);
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
         }
@@ -80,7 +80,7 @@ class AuthMail extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         if (empty($input['name'])) {
-            Session::addMessageAfterRedirect(__s('"name" is mandatory!'), false, ERROR);
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
         }
