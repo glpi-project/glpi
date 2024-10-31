@@ -705,17 +705,11 @@ class Dropdown
 
         $data = $iterator->current();
 
-        $comment = '';
+        $extra_rows = [];
 
         if ($tooltip) {
-            $comment_rows = [];
-
             if (is_a($itemtype, CommonTreeDropdown::class, true)) {
-                $comment_rows[] = sprintf(
-                    __s('%1$s: %2$s'),
-                    '<span class="b">' . __s('Complete name'),
-                    '</span>' . htmlescape($data['translated_completename'] ?: $data['completename'])
-                );
+                $extra_rows[__('Complete name')] = $data['translated_completename'] ?: $data['completename'];
             }
 
             $fields = [];
@@ -730,11 +724,7 @@ class Dropdown
                     ];
                     foreach ($fields as $key => $label) {
                         if (!empty($data[$key])) {
-                            $comment_rows[] = sprintf(
-                                __s('%1$s: %2$s'),
-                                '<span class="b">' . htmlescape($label),
-                                '</span>' . htmlescape($data[$key])
-                            );
+                            $extra_rows[$label] = $data[$key];
                         }
                     }
                     break;
@@ -747,104 +737,74 @@ class Dropdown
                     ];
                     foreach ($fields as $key => $label) {
                         if (!empty($data[$key])) {
-                            $comment_rows[] = sprintf(
-                                __s('%1$s: %2$s'),
-                                '<span class="b">' . htmlescape($label),
-                                '</span>' . htmlescape($data[$key])
-                            );
+                            $extra_rows[$label] = $data[$key];
                         }
                     }
                     break;
 
                 case Budget::class:
                     if (!empty($data['locations_id'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . htmlescape(Location::getTypeName(1)),
-                            '</span>' . htmlescape(self::getDropdownName('glpi_locations', $data['locations_id'], translate: $translate))
+                        $extra_rows[Location::getTypeName(1)] = self::getDropdownName(
+                            'glpi_locations',
+                            $data['locations_id'],
+                            translate: $translate
                         );
                     }
                     if (!empty($data['budgettypes_id'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . _sn('Type', 'Types', 1),
-                            '</span>' . htmlescape(self::getDropdownName('glpi_budgettypes', $data['budgettypes_id'], translate: $translate))
+                        $extra_rows[_n('Type', 'Types', 1)] = self::getDropdownName(
+                            'glpi_budgettypes',
+                            $data['budgettypes_id'],
+                            translate: $translate
                         );
                     }
                     if (!empty($data['begin_date'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . __s('Start date'),
-                            '</span>' . Html::convDateTime($data['begin_date'])
-                        );
+                        $extra_rows[__('Start date')] = Html::convDateTime($data['begin_date']);
                     }
                     if (!empty($data['end_date'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . __s('End date'),
-                            '</span>' . Html::convDateTime($data['end_date'])
-                        );
+                        $extra_rows[__('End date')] = Html::convDateTime($data['end_date']);
                     }
                     break;
 
                 case Location::class:
                     if (!empty($data['alias'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . __s('Alias'),
-                            '</span>' . htmlescape($data['alias'])
-                        );
+                        $extra_rows[__('Alias')] = $data['alias'];
                     }
                     if (!empty($data['code'])) {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . __s('Code'),
-                            '</span>' . htmlescape($data['code'])
-                        );
+                        $extra_rows[__('Code')] = $data['code'];
                     }
                     $address_comment = '';
                     $address = $data['address'];
                     $town    = $data['town'];
                     $country = $data['country'];
                     if (!empty($address)) {
-                        $address_comment .= htmlescape($address);
+                        $address_comment .= $address;
                     }
                     if (!empty($address) && (!empty($town) || !empty($country))) {
-                        $address_comment .= '<br/>';
+                        $address_comment .= "\n";
                     }
                     if (!empty($town)) {
-                        $address_comment .= htmlescape($town);
+                        $address_comment .= $town;
                     }
                     if (!empty($country)) {
                         if (!empty($town)) {
                             $address_comment .= ' - ';
                         }
-                        $address_comment .= htmlescape($country);
+                        $address_comment .= $country;
                     }
                     if (trim($address_comment) !== '') {
-                        $comment_rows[] = sprintf(
-                            __s('%1$s: %2$s'),
-                            '<span class="b">' . __s('Address'),
-                            '</span>' . $address_comment
-                        );
+                        $extra_rows[__('Address')] = $address_comment;
                     }
                     break;
             }
-
-            if (count($comment_rows) > 0) {
-                $comment = implode('<br />', $comment_rows);
-                $comment .= '<br />';
-                $comment .= sprintf(
-                    __s('%1$s: %2$s'),
-                    '<span class="b">' . __s('Comments'),
-                    '</span>'
-                );
-            }
         }
 
-        $comment .= nl2br(htmlescape($data['translated_comment'] ?: $data['comment']));
-
-        return $comment;
+        return TemplateRenderer::getInstance()->render(
+            'components/dropdown/comments.html.twig',
+            [
+                'comment'    => $data['translated_comment'] ?: $data['comment'],
+                'extra_rows' => $extra_rows,
+            ]
+        );
     }
 
 
