@@ -271,9 +271,10 @@ class DisplayPreference extends CommonDBTM
                     'interface' => $interface,
                 ],
                 [
-                    'itemtype' => $itemtype,
-                    'users_id' => $users_id,
-                    'num'      => $num,
+                    'itemtype'  => $itemtype,
+                    'users_id'  => $users_id,
+                    'num'       => $num,
+                    'interface' => $interface,
                 ]
             );
         }
