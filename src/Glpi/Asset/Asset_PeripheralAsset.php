@@ -618,7 +618,7 @@ TWIG, $twig_params);
 
         if (
             !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
-            && !$item->isField('is_global')
+            || !$item->isField('is_global')
         ) {
             throw new \LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
         }
