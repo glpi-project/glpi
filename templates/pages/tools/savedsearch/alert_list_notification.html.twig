@@ -48,7 +48,7 @@
             {{ __('Notification does not exist') }}
             {% if params.canedit %}
                <br>
-               <a href="{{ search|itemtype_form_path(search.fields['id']) }}&amp;create_notif=true">{{ __('Create it now') }}</a>
+               <a href="{{ search.getLinkURL() }}&amp;create_notif=true">{{ __('Create it now') }}</a>
                {% set params = params|merge({
                   'canedit': false
                }) %}
