@@ -8235,16 +8235,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "e1d394525ce0e0db5a7b01d01a4d7c238a7b8bb4"
+                "reference": "e6ba1a00575c949faf8d56cdd7d71c39b3397b92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/e1d394525ce0e0db5a7b01d01a4d7c238a7b8bb4",
-                "reference": "e1d394525ce0e0db5a7b01d01a4d7c238a7b8bb4",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/e6ba1a00575c949faf8d56cdd7d71c39b3397b92",
+                "reference": "e6ba1a00575c949faf8d56cdd7d71c39b3397b92",
                 "shasum": ""
             },
             "require": {
@@ -8323,7 +8323,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.3.1"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.3.2"
             },
             "funding": [
                 {
@@ -8331,20 +8331,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-09-06T12:59:17+00:00"
+            "time": "2024-10-26T12:35:31+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.2.3",
+            "version": "2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "ae2fd400d11b3665e6fe90158d2f0aa2bd7d85e3"
+                "reference": "37e63eaf78e288569f43640d858808015deacc0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/ae2fd400d11b3665e6fe90158d2f0aa2bd7d85e3",
-                "reference": "ae2fd400d11b3665e6fe90158d2f0aa2bd7d85e3",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/37e63eaf78e288569f43640d858808015deacc0a",
+                "reference": "37e63eaf78e288569f43640d858808015deacc0a",
                 "shasum": ""
             },
             "require": {
@@ -8392,7 +8392,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.3"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.4"
             },
             "funding": [
                 {
@@ -8400,7 +8400,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-09-06T12:57:44+00:00"
+            "time": "2024-10-26T12:33:55+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
