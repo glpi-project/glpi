@@ -2126,12 +2126,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 continue;
             }
 
-            $linked_item = getItemForItemtype($data['itemtype']);
-            $params = static::getTypeItemsQueryParams(
-                $item->fields['id'],
-                $data['itemtype'],
-                $linked_item->isEntityAssign(),
-            );
+            $params = static::getTypeItemsQueryParams($item->fields['id'], $data['itemtype']);
             unset($params['SELECT']);
             $params['COUNT'] = 'cpt';
             $iterator = $DB->request($params);

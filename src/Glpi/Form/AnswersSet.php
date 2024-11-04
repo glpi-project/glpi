@@ -129,6 +129,12 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
+    #[Override]
+    public function maybeRecursive(): bool
+    {
+        return false;
+    }
+
     public function getAnswers(): array
     {
         $answers = [];
