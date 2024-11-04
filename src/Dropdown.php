@@ -802,13 +802,16 @@ class Dropdown
             }
         }
 
-        return TemplateRenderer::getInstance()->render(
+        $output = TemplateRenderer::getInstance()->render(
             'components/dropdown/comments.html.twig',
             [
                 'comment'    => $data['translated_comment'] ?: $data['comment'],
                 'extra_rows' => $extra_rows,
             ]
         );
+
+        // trim output to ease emptyness checks
+        return mb_trim($output);
     }
 
 
