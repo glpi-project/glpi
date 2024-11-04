@@ -63,12 +63,26 @@
 {% endif %}
 
 {% if number > 0 %}
-    {{ call(itemtype_1 ~ '::commonListHeader', [html_output])|raw }}
+    {% set values = [] %}
+
     {% for data in iterator %}
-        {{ call('Session::addToNavigateListItems', [itemtype_1, data["id"]])|raw }}
-        {{ call(itemtype_1 ~ '::showShort', [data["id"]])|raw }}
+        {% set values = values | merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
     {% endfor %}
-    {{ call(itemtype_1 ~ '::commonListHeader', [html_output])|raw }}
+
+    {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+    {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+    {% set datatable_params = {
+        'is_tab': true,
+        'nopager': true,
+        'nofilter': true,
+        'nosort': true,
+        'entries': entries,
+        'total_number': entries|length,
+        'showmassiveactions': canedit,
+    } %}
+    {% set merged_params = datatable_params | merge(common_columns) %}
+
+    {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
 {% endif %}
     </table>
 </div>
@@ -82,12 +96,26 @@
                 </th>
             </tr>
             {% if number2 > 0 %}
-                {{ call(itemtype_1 ~ '::commonListHeader', [html_output]) }}
+                {% set values = [] %}
+
                 {% for data in iterator2 %}
-                    {{ call('Session::addToNavigateListItems', [itemtype_1, data["id"]]) }}
-                    {{ call(itemtype_1 ~ '::showShort', [data["id"]]) }}
+                    {% set values = values | merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
                 {% endfor %}
-                {{ call(itemtype_1 ~ '::commonListHeader', [html_output]) }}
+
+                {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+                {% set entries2 = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+                {% set datatable_params = {
+                    'is_tab': true,
+                    'nopager': true,
+                    'nofilter': true,
+                    'nosort': true,
+                    'entries': entries2,
+                    'total_number': entries2|length,
+                    'showmassiveactions': canedit,
+                } %}
+                {% set merged_params = datatable_params | merge(common_columns) %}
+
+                {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
             {% else %}
                 <tr>
                     <td>
