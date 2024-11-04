@@ -8940,4 +8940,298 @@ JSON;
         $this->assertSame(4, $ip->fields['version']);
         $this->assertSame('172.27.45.19', $ip->fields['name']);
     }
+
+    public function testRuleRefuseImportComputerVirtualMachines()
+    {
+        //change config to import vms as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
+        $this->logout();
+
+        $nb_vm = countElementsInTable(\VirtualMachineType::getTable());
+        $docker_vm = $this->createItems(
+            \VirtualMachineType::class,
+            [
+                ['name' => 'docker'],
+            ]
+        );
+
+        $this->assertGreaterThan($nb_vm, countElementsInTable(\VirtualMachineType::getTable()));
+
+        // Import rule to refuse "docker" virtual machine
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'Computer',
+            ], [
+                'condition' => \Rule::PATTERN_IS,
+                'criteria'  => 'virtualmachinetypes_id',
+                'pattern'   => $docker_vm[0]->fields['id']
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_ignore_import',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Import virtualisation',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $rules_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rules_id);
+        $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+
+        $json_str = <<<JSON
+        {
+            "action": "inventory",
+            "content": {
+                "bios": {
+                    "bdate": "2023-07-07",
+                    "bmanufacturer": "Dell Inc.",
+                    "bversion": "1.12.0",
+                    "mmanufacturer": "Dell Inc.",
+                    "mmodel": "0RWPXY",
+                    "msn": ".CF301Z3.CNCMC003AT0582.",
+                    "skunumber": "0B9F",
+                    "smanufacturer": "Dell Inc.",
+                    "smodel": "Inspiron 15 3525",
+                    "ssn": "CF301Z3"
+                },
+                "hardware": {
+                    "chassis_type": "Notebook",
+                    "datelastloggeduser": "Tue Jul 30 09:55",
+                    "defaultgateway": "192.168.1.1",
+                    "dns": "127.0.0.53",
+                    "lastloggeduser": "samuel",
+                    "memory": 15326,
+                    "name": "samuel-Inspiron-15-3525",
+                    "swap": 1951,
+                    "uuid": "4c4c4544-0046-3310-8030-c3c04f315a33",
+                    "vmsystem": "Physical",
+                    "workgroup": "home"
+                },
+                "virtualmachines": [
+                    {
+                        "image": "axllent\/mailpit",
+                        "name": "mailpit",
+                        "status": "running",
+                        "uuid": "0b66f80dde33",
+                        "vmtype": "docker"
+                    },
+                    {
+                        "image": "hello-world",
+                        "name": "elastic_tu",
+                        "status": "off",
+                        "uuid": "cdc8df147abb",
+                        "vmtype": "docker"
+                    }
+                ],
+                "versionclient": "GLPI-Agent_v1.10-dev"
+            },
+            "deviceid": "test-2024-09-04-13-57-38",
+            "itemtype": "Computer"
+        }
+        JSON;
+        $json = json_decode($json_str);
+
+        $this->doInventory($json);
+
+        $count_vms = count($json->content->virtualmachines);
+        //check created vms
+        $this->assertSame($count_vms, countElementsInTable(\ItemVirtualMachine::getTable()));
+        $this->assertSame($nb_computers + 1, countElementsInTable(\Computer::getTable()));
+    }
+
+    public function testRuleRefuseUpdateComputerVirtualMachines()
+    {
+        // Helper function to create JSON string
+        $json_str =
+        <<<JSON
+            {
+                "action": "inventory",
+                "content": {
+                    "bios": {
+                        "bdate": "2023-07-07",
+                        "bmanufacturer": "Dell Inc.",
+                        "bversion": "1.12.0",
+                        "mmanufacturer": "Dell Inc.",
+                        "mmodel": "0RWPXY",
+                        "msn": ".CF301Z3.CNCMC003AT0582.",
+                        "skunumber": "0B9F",
+                        "smanufacturer": "Dell Inc.",
+                        "smodel": "Inspiron 15 3525",
+                        "ssn": "CF301Z3"
+                    },
+                    "hardware": {
+                        "chassis_type": "Notebook",
+                        "datelastloggeduser": "Tue Jul 30 09:55",
+                        "defaultgateway": "192.168.1.1",
+                        "dns": "127.0.0.53",
+                        "lastloggeduser": "samuel",
+                        "memory": 15326,
+                        "name": "samuel-Inspiron-15-3525",
+                        "swap": 1951,
+                        "uuid": "qsrdgfd",
+                        "vmsystem": "Physical",
+                        "workgroup": "home"
+                    },
+                    "virtualmachines": [
+                        {
+                            "image": "axllent\/mailpit",
+                            "name": "mailpit_update",
+                            "status": "running",
+                            "uuid": "zrerythegfzed",
+                            "vmtype": "docker"
+                        }
+                    ],
+                    "versionclient": "GLPI-Test_v1.10-dev"
+                },
+                "deviceid": "test-2024-09-04-16-49-35",
+                "itemtype": "Computer"
+            }
+        JSON;
+
+        // Change config to import VMs as computers
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($conf->saveConf(['vm_as_computer' => 1]));
+        $this->logout();
+
+        // Initial inventory
+        $json = json_decode($json_str);
+        $count_vms = count($json->content->virtualmachines);
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        $this->doInventory($json);
+
+        // Check created VMs
+        $this->assertSame($count_vms, countElementsInTable(\ItemVirtualMachine::getTable()));
+        $this->assertSame($nb_computers + 2, countElementsInTable(\Computer::getTable()));
+        $computer = new \Computer();
+        $computer->getFromDBByCrit(['uuid' => 'zrerythegfzed']);
+
+        // First update inventory
+        $json = json_decode($json_str);
+        $count_vms = count($json->content->virtualmachines);
+        $nb_computers = countElementsInTable(\Computer::getTable());
+
+        $this->doInventory($json);
+
+        // Check created VMs
+        $computeru = new \Computer();
+        $computeru->getFromDBByCrit(['uuid' => 'zrerythegfzed']);
+        $this->assertSame($computeru->fields['name'], 'mailpit_update');
+
+        // Create Docker VM type
+        $nb_vm = countElementsInTable(\VirtualMachineType::getTable());
+        $vm_types = new \VirtualMachineType();
+        if (!$vm_types->getFromDBByCrit(['name' => 'docker'])) {
+            $docker_vm = $this->createItems(
+                \VirtualMachineType::class,
+                [
+                    ['name' => 'docker'],
+                ]
+            );
+            $this->assertGreaterThan($nb_vm, countElementsInTable(\VirtualMachineType::getTable()));
+            $docker_type_id = $docker_vm[0]->fields['id'];
+        } else {
+            $docker_type_id = $vm_types->fields['id'];
+        }
+
+        // Import rule to refuse "docker" virtual machine
+        $criteria = [
+            [
+                'condition' => 0,
+                'criteria'  => 'itemtype',
+                'pattern'   => 'Computer',
+            ], [
+                'condition' => \Rule::PATTERN_IS,
+                'criteria'  => 'virtualmachinetypes_id',
+                'pattern'   => $docker_type_id
+            ]
+        ];
+        $action = [
+            'action_type' => 'assign',
+            'field'       => '_ignore_import',
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT
+        ];
+        $rule = new \RuleImportAsset();
+        $collection = new \RuleImportAssetCollection();
+        $rulecriteria = new \RuleCriteria();
+
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Update virtualisation',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportAsset',
+        ];
+
+        $rules_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rules_id);
+        $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $input = [
+                'rules_id'  => $rules_id,
+                'criteria'  => $crit['criteria'],
+                'pattern'   => $crit['pattern'],
+                'condition' => $crit['condition'],
+            ];
+            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+        }
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => $action['action_type'],
+            'field'       => $action['field'],
+            'value'       => $action['value'],
+        ];
+        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+
+        // Second update inventory (Must be refused because of the rule)
+        $json_str = str_replace('"mailpit_update"', '"mailpit_update2"', $json_str);
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        // Check that VM computers are not updated
+        $c_update = new \Computer();
+        $c_update->getFromDBByCrit(['uuid' => 'zrerythegfzed']);
+        $this->assertSame("mailpit_update", $c_update->fields['name']);
+    }
 }

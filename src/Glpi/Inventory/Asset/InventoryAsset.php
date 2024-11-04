@@ -447,7 +447,9 @@ abstract class InventoryAsset
             }
             $known_key = md5($key . $val);
             if (in_array($key, $locks)) {
-                $input[$key] = $this->raw_links[$known_key];
+                if (isset($this->raw_links[$known_key])) {
+                    $input[$key] = $this->raw_links[$known_key];
+                }
             } elseif (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
             } else {
