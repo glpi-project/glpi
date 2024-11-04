@@ -79,7 +79,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
             {{ fields.dropdownArrayField(
-                '',
+                'default_value',
                 '',
                 [],
                 '',
@@ -98,7 +98,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
             ) }}
 
             {{ fields.dropdownArrayField(
-                '',
+                'default_value',
                 '',
                 [],
                 '',
