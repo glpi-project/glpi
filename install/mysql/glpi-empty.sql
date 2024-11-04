@@ -7590,7 +7590,7 @@ CREATE TABLE `glpi_users` (
   `date_sync` timestamp NULL DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `profiles_id` int unsigned NOT NULL DEFAULT '0',
-  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `entities_id` int unsigned DEFAULT '0',
   `usertitles_id` int unsigned NOT NULL DEFAULT '0',
   `usercategories_id` int unsigned NOT NULL DEFAULT '0',
   `date_format` int DEFAULT NULL,
