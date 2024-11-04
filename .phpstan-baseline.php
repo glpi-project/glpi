@@ -80,12 +80,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [
-	// identifier: if.alwaysFalse
-	'message' => '#^If condition is always false\\.$#',
-	'count' => 2,
-	'path' => __DIR__ . '/install/install.php',
-];
-$ignoreErrors[] = [
 	// identifier: foreach.emptyArray
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'count' => 2,
