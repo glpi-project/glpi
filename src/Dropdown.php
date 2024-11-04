@@ -640,10 +640,6 @@ class Dropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!$DB->fieldExists($table, 'comment')) {
-            return '';
-        }
-
         $itemtype = getItemTypeForTable($table);
 
         $criteria = [
@@ -654,6 +650,10 @@ class Dropdown
             'LEFT JOIN' => [],
             'WHERE'     => ["$table.id" => $id]
         ];
+
+        if (!$DB->fieldExists($table, 'comment')) {
+            $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('comment'));
+        }
 
         if (
             $translate
