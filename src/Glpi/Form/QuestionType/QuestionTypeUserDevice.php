@@ -63,8 +63,12 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
      */
     public function isMultipleDevices(?Question $question): bool
     {
+        if ($question === null) {
+            return false;
+        }
+
         /** @var ?QuestionTypeUserDevicesConfig $config */
-        $config = $this->getConfig($question);
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -268,7 +272,7 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
         return QuestionTypeUserDevicesConfig::class;
     }
