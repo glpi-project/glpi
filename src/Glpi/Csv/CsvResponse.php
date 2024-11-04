@@ -56,6 +56,6 @@ class CsvResponse
         $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
         $csv->insertOne($export->getFileHeader());
         $csv->insertAll($export->getFileContent());
-        $csv->output($export->getFileName());
+        $csv->download($export->getFileName());
     }
 }
