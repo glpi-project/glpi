@@ -588,7 +588,10 @@ class Session
                 }
                 if (!$active_entity_done) {
                    // Try to load default entity
-                    if (!self::changeActiveEntities($_SESSION["glpidefault_entity"], true)) {
+                    if (
+                        !isset($_SESSION["glpidefault_entity"])
+                        || !self::changeActiveEntities($_SESSION["glpidefault_entity"], true)
+                    ) {
                         // Load all entities
                         self::changeActiveEntities("all");
                     }
