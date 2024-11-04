@@ -277,9 +277,6 @@ function step4($databasename, $newdatabasename)
         $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
     }
 
-    $databasename    = $link->real_escape_string($databasename);
-    $newdatabasename = $link->real_escape_string($newdatabasename);
-
     $db = new class ($link) extends DBmysql {
         public function __construct($dbh)
         {
@@ -288,102 +285,70 @@ function step4($databasename, $newdatabasename)
     };
     $timezones_requirement = new DbTimezones($db);
 
-    if (!empty($databasename)) { // use db already created
-        $DB_selected = $link->select_db($databasename);
-
-        if (!$DB_selected) {
-            echo __('Impossible to use the database:');
-            echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-            $prev_form($host, $user, $password);
-        } else {
-            $success = DBConnection::createMainConfig(
-                $host,
-                $user,
-                $password,
-                $databasename,
-                use_timezones: $timezones_requirement->isValidated(),
-                log_deprecation_warnings: false,
-                use_utf8mb4: true,
-                allow_datetime: false,
-                allow_signed_keys: false
-            );
-            if ($success) {
-                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
-                Toolbox::createSchema($_SESSION["glpilanguage"]);
-                echo "<p>" . __('OK - database was initialized') . "</p>";
-
-                $next_form();
-            } else { // can't create config_db file
-                echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                $prev_form($host, $user, $password);
-            }
-        }
-    } else if (!empty($newdatabasename)) { // create new db
-       // Try to connect
-        if ($link->select_db($newdatabasename)) {
-            echo "<p>" . __('Database created') . "</p>";
-
-            $success = DBConnection::createMainConfig(
-                $host,
-                $user,
-                $password,
-                $newdatabasename,
-                use_timezones: $timezones_requirement->isValidated(),
-                log_deprecation_warnings: false,
-                use_utf8mb4: true,
-                allow_datetime: false,
-                allow_signed_keys: false
-            );
-            if ($success) {
-                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
-                Toolbox::createSchema($_SESSION["glpilanguage"]);
-                echo "<p>" . __('OK - database was initialized') . "</p>";
-                $next_form();
-            } else { // can't create config_db file
-                echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                $prev_form($host, $user, $password);
-            }
-        } else { // try to create the DB
-            if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
-                echo "<p>" . __('Database created') . "</p>";
-
-                $select_db = $link->select_db($newdatabasename);
-                $success = false;
-                if ($select_db) {
-                    $success = DBConnection::createMainConfig(
-                        $host,
-                        $user,
-                        $password,
-                        $newdatabasename,
-                        use_timezones: $timezones_requirement->isValidated(),
-                        log_deprecation_warnings: false,
-                        use_utf8mb4: true,
-                        allow_datetime: false,
-                        allow_signed_keys: false
-                    );
-                }
-
-                if ($success) {
-                    echo "<p>" . __('Initializing database tables and default data...') . "</p>";
-                    Toolbox::createSchema($_SESSION["glpilanguage"]);
-                    echo "<p>" . __('OK - database was initialized') . "</p>";
-                    $next_form();
-                } else { // can't create config_db file
-                    echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                    $prev_form($host, $user, $password);
-                }
-            } else { // can't create database
-                echo __('Error in creating database!');
-                echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-                $prev_form($host, $user, $password);
-            }
-        }
-    } else { // no db selected
+    if ($databasename === '' && $newdatabasename === '') {
         echo "<p>" . __("You didn't select a database!") . "</p>";
         $prev_form($host, $user, $password);
+        return;
     }
 
-    $link->close();
+    if ($databasename !== '' && $newdatabasename !== '') {
+        // create new db
+        $databasename = $link->real_escape_string($newdatabasename);
+
+        if (
+            !$link->select_db($databasename)
+            && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`")
+        ) {
+            echo __('Error in creating database!');
+            echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
+            $prev_form($host, $user, $password);
+            return;
+        }
+    } else {
+        $databasename = $link->real_escape_string($databasename);
+    }
+
+    if (!$link->select_db($databasename)) {
+        echo __('Impossible to use the database:');
+        echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
+        $prev_form($host, $user, $password);
+        return;
+    }
+
+    $success = DBConnection::createMainConfig(
+        $host,
+        $user,
+        $password,
+        $databasename,
+        use_timezones: $timezones_requirement->isValidated(),
+        log_deprecation_warnings: false,
+        use_utf8mb4: true,
+        allow_datetime: false,
+        allow_signed_keys: false
+    );
+
+    if ($success) {
+        echo "<p>" . __('Initializing database tables and default data...') . "</p>";
+        try {
+            Toolbox::createSchema($_SESSION["glpilanguage"]);
+        } catch (\Throwable $e) {
+            echo "<p>"
+                . sprintf(
+                    __('An error occurred during the database initialization. The error was: %s'),
+                    '<br />' . $e->getMessage()
+                )
+                . "</p>";
+            @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
+            $prev_form($host, $user, $password);
+            return;
+        }
+        echo "<p>" . __('OK - database was initialized') . "</p>";
+
+        $next_form();
+    } else { // can't create config_db file
+        echo "<p>" . __('Impossible to write the database setup file') . "</p>";
+        $prev_form($host, $user, $password);
+    }
 }
 
 //send telemetry information

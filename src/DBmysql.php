@@ -1030,9 +1030,7 @@ class DBmysql
             $query = trim($query);
             if ($query != '') {
                 $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                if (!$this->doQuery($query)) {
-                    return false;
-                }
+                $this->doQuery($query);
                 if (!isCommandLine()) {
                   // Flush will prevent proxy to timeout as it will receive data.
                   // Flush requires a content to be sent, so we sent spaces as multiple spaces
