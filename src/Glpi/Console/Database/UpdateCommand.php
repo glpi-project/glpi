@@ -95,7 +95,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         /** @var DBmysql|null $DB */
         global $DB;
 
-        return $DB instanceof DBmysql ? [new DatabaseTablesEngine($DB)] : [];
+        return $this->db instanceof DBmysql && $this->db->connected ? [new DatabaseTablesEngine($this->db)] : [];
     }
 
     protected function configure()
