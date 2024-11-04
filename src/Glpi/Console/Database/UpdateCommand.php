@@ -92,10 +92,8 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     #[Override]
     public function getSpecificMandatoryRequirements(): array
     {
-        /** @var DBmysql|null $DB */
-        global $DB;
-
-        return $this->db instanceof DBmysql && $this->db->connected ? [new DatabaseTablesEngine($this->db)] : [];
+        $valid_db = $this->db instanceof DBmysql && $this->db->connected;
+        return $valid_db ? [new DatabaseTablesEngine($this->db)] : [];
     }
 
     protected function configure()
