@@ -301,12 +301,11 @@ function step4($databasename, $newdatabasename)
                 $user,
                 $password,
                 $databasename,
-                $timezones_requirement->isValidated(),
-                false,
-                true,
-                false,
-                false,
-                false
+                use_timezones: $timezones_requirement->isValidated(),
+                log_deprecation_warnings: false,
+                use_utf8mb4: true,
+                allow_datetime: false,
+                allow_signed_keys: false
             );
             if ($success) {
                 echo "<p>" . __('Initializing database tables and default data...') . "</p>";
@@ -329,12 +328,11 @@ function step4($databasename, $newdatabasename)
                 $user,
                 $password,
                 $newdatabasename,
-                $timezones_requirement->isValidated(),
-                false,
-                true,
-                false,
-                false,
-                false
+                use_timezones: $timezones_requirement->isValidated(),
+                log_deprecation_warnings: false,
+                use_utf8mb4: true,
+                allow_datetime: false,
+                allow_signed_keys: false
             );
             if ($success) {
                 echo "<p>" . __('Initializing database tables and default data...') . "</p>";
@@ -357,12 +355,11 @@ function step4($databasename, $newdatabasename)
                         $user,
                         $password,
                         $newdatabasename,
-                        $timezones_requirement->isValidated(),
-                        false,
-                        true,
-                        false,
-                        false,
-                        false
+                        use_timezones: $timezones_requirement->isValidated(),
+                        log_deprecation_warnings: false,
+                        use_utf8mb4: true,
+                        allow_datetime: false,
+                        allow_signed_keys: false
                     );
                 }
 
