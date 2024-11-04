@@ -2252,30 +2252,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'max\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: empty.offset
-	'message' => '#^Offset \'max\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'min\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: empty.offset
-	'message' => '#^Offset \'min\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	// identifier: deadCode.unreachable
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'count' => 3,

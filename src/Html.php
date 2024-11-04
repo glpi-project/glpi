@@ -2021,10 +2021,17 @@ HTML;
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
         $platform = "";
-        if (!defined('TU_USER')) {
-            $parser = new UserAgentParser();
+        $parser = new UserAgentParser();
+        try {
             $ua = $parser->parse();
             $platform = $ua->platform();
+        } catch (InvalidArgumentException $e) {
+            // To avoid log overload, we suppress the InvalidArgumentException error.
+            // Some non-standard clients, such as bots or simplified HTTP services,
+            // don’t always send the User-Agent header,
+            // and privacy-focused browsers or extensions may also block it.
+            // Additionally, server configurations like proxies or firewalls
+            // may remove this header for security reasons.
         }
 
         $help_url_key = Session::getCurrentInterface() === 'central'
@@ -3051,11 +3058,11 @@ HTML;
 
         $date_format = Toolbox::getDateFormat('js') . " H:i:S";
 
-        $min_attr = !empty($p['min'])
-         ? "minDate: '{$p['min']}',"
+        $min_attr = !empty($p['mindate'])
+         ? "minDate: '{$p['mindate']}',"
          : "";
-        $max_attr = !empty($p['max'])
-         ? "maxDate: '{$p['max']}',"
+        $max_attr = !empty($p['maxdate'])
+         ? "maxDate: '{$p['maxdate']}',"
          : "";
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
