@@ -589,7 +589,7 @@ class Session
                 if (!$active_entity_done) {
                    // Try to load default entity
                     if (
-                        !isset($_SESSION["glpidefault_entity"])
+                        $_SESSION["glpidefault_entity"] === null
                         || !self::changeActiveEntities($_SESSION["glpidefault_entity"], true)
                     ) {
                         // Load all entities
