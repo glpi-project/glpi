@@ -146,12 +146,10 @@ class DropdownTest extends DbTestCase
 
         // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Complete name: </span>_cat_1 &gt; _subcat_1<br />
+<span class="b">Complete name: </span>_cat_1 &gt; _subcat_1<br />
                 <span class="b">Comments: </span>
     
 Comment for sub-category _subcat_1
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -160,12 +158,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for sub-category _subcat_1
-
-HTML;
+        $expected_comments = 'Comment for sub-category _subcat_1';
         $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -176,12 +169,7 @@ HTML;
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
         $expected_name = 'FR - _cat_1 > FR - _subcat_1';
-        $expected_comments = <<<HTML
-
-
-FR - Commentaire pour sous-catégorie _subcat_1
-
-HTML;
+        $expected_comments = 'FR - Commentaire pour sous-catégorie _subcat_1';
 
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
         $this->assertSame($expected_name, $ret);
@@ -207,12 +195,7 @@ HTML;
         $ret = \Dropdown::getDropdownName('glpi_computers', $computer_id);
         $this->assertSame($expected_name, $ret);
 
-        $expected_comments = <<<HTML
-
-
-Comment for computer _test_pc01
-
-HTML;
+        $expected_comments = 'Comment for computer _test_pc01';
         $ret = @\Dropdown::getDropdownName('glpi_computers', $computer_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -229,8 +212,7 @@ HTML;
 
         // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Phone: </span>0123456789<br />
+<span class="b">Phone: </span>0123456789<br />
             <span class="b">Phone 2: </span>0123456788<br />
             <span class="b">Mobile phone: </span>0623456789<br />
             <span class="b">Fax: </span>0123456787<br />
@@ -238,7 +220,6 @@ HTML;
                 <span class="b">Comments: </span>
     
 Comment for contact _contact01_name
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -247,12 +228,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for contact _contact01_name
-
-HTML;
+        $expected_comments = 'Comment for contact _contact01_name';
         $ret = @\Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -269,14 +245,12 @@ HTML;
 
         // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Phone: </span>0123456789<br />
+<span class="b">Phone: </span>0123456789<br />
             <span class="b">Fax: </span>0123456787<br />
             <span class="b">Email: </span>info@_supplier01_name.com<br />
                 <span class="b">Comments: </span>
     
 Comment for supplier _suplier01_name
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -285,12 +259,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for supplier _suplier01_name
-
-HTML;
+        $expected_comments = 'Comment for supplier _suplier01_name';
         $ret = @\Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -307,15 +276,13 @@ HTML;
 
         // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Location: </span>_location01<br />
+<span class="b">Location: </span>_location01<br />
             <span class="b">Type: </span>_budgettype01<br />
             <span class="b">Start date: </span>2016-10-18 <br />
             <span class="b">End date: </span>2016-12-31 <br />
                 <span class="b">Comments: </span>
     
 Comment for budget _budget01
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -324,12 +291,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for budget _budget01
-
-HTML;
+        $expected_comments = 'Comment for budget _budget01';
         $ret = @\Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -346,12 +308,10 @@ HTML;
 
          // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Complete name: </span>_location01<br />
+<span class="b">Complete name: </span>_location01<br />
                 <span class="b">Comments: </span>
     
 Comment for location _location01
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -360,12 +320,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for location _location01
-
-HTML;
+        $expected_comments = 'Comment for location _location01';
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -381,13 +336,11 @@ HTML;
 
          // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Complete name: </span>_location02 &gt; _sublocation02<br />
+<span class="b">Complete name: </span>_location02 &gt; _sublocation02<br />
             <span class="b">Code: </span>code_sublocation02<br />
                 <span class="b">Comments: </span>
     
 Comment for location _sublocation02
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -396,12 +349,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for location _sublocation02
-
-HTML;
+        $expected_comments = 'Comment for location _sublocation02';
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -417,13 +365,11 @@ HTML;
 
          // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Complete name: </span>_location02 &gt; _sublocation03<br />
+<span class="b">Complete name: </span>_location02 &gt; _sublocation03<br />
             <span class="b">Alias: </span>alias_sublocation03<br />
                 <span class="b">Comments: </span>
     
 Comment for location _sublocation03
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -432,12 +378,7 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for location _sublocation03
-
-HTML;
+        $expected_comments = 'Comment for location _sublocation03';
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
@@ -453,14 +394,12 @@ HTML;
 
          // test of return with comments
         $expected_comments = <<<HTML
-
-            <span class="b">Complete name: </span>_location02 &gt; _sublocation04<br />
+<span class="b">Complete name: </span>_location02 &gt; _sublocation04<br />
             <span class="b">Alias: </span>alias_sublocation04<br />
             <span class="b">Code: </span>code_sublocation04<br />
                 <span class="b">Comments: </span>
     
 Comment for location _sublocation04
-
 HTML;
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
@@ -469,17 +408,25 @@ HTML;
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
-        $expected_comments = <<<HTML
-
-
-Comment for location _sublocation04
-
-HTML;
+        $expected_comments = 'Comment for location _sublocation04';
         $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
         $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
+    }
+
+    public function testEmptyDropdownComments(): void
+    {
+        $item = $this->createItem(
+            Computer::class,
+            [
+                'name'        => __METHOD__,
+                'comment'     => '',
+                'entities_id' => $this->getTestRootEntity(true)
+            ],
+        );
+        $this->assertSame('', \Dropdown::getDropdownComments('glpi_computers', $item->getID()));
     }
 
     public static function dataGetValueWithUnit()

@@ -635,7 +635,7 @@ class Dropdown
      *
      * @return string
      **/
-    public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true)
+    public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -650,6 +650,10 @@ class Dropdown
             'LEFT JOIN' => [],
             'WHERE'     => ["$table.id" => $id]
         ];
+
+        if (!$DB->fieldExists($table, 'comment')) {
+            $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('comment'));
+        }
 
         if (
             $translate
@@ -798,13 +802,16 @@ class Dropdown
             }
         }
 
-        return TemplateRenderer::getInstance()->render(
+        $output = TemplateRenderer::getInstance()->render(
             'components/dropdown/comments.html.twig',
             [
                 'comment'    => $data['translated_comment'] ?: $data['comment'],
                 'extra_rows' => $extra_rows,
             ]
         );
+
+        // trim output to ease emptyness checks
+        return mb_trim($output);
     }
 
 

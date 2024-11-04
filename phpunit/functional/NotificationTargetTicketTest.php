@@ -111,12 +111,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 '##task.author##'          => '_test_user',
                 '##task.categoryid##'      => $taskcat->getID(),
                 '##task.category##'        => '_cat_1 > _subcat_1',
-                '##task.categorycomment##' => <<<HTML
-
-
-Comment for sub-category _subcat_1
-
-HTML,
+                '##task.categorycomment##' => 'Comment for sub-category _subcat_1',
                 '##task.date##'            => '2016-10-19 11:50',
                 '##task.description##'     => 'Task to be done',
                 '##task.time##'            => '0 seconds',
@@ -191,12 +186,7 @@ HTML,
                 '##task.author##'          => '_test_user',
                 '##task.categoryid##'      => $taskcat->getID(),
                 '##task.category##'        => 'FR - _cat_1 > FR - _subcat_1',
-                '##task.categorycomment##' => <<<HTML
-
-
-FR - Commentaire pour sous-catégorie _subcat_1
-
-HTML,
+                '##task.categorycomment##' => 'FR - Commentaire pour sous-catégorie _subcat_1',
                 '##task.date##'            => '2016-10-19 11:50',
                 '##task.description##'     => 'Task to be done',
                 '##task.time##'            => '0 seconde',
