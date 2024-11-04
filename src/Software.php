@@ -82,6 +82,11 @@ class Software extends CommonDBTM
         return 's';
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (

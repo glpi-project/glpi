@@ -65,6 +65,11 @@ class Cluster extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -174,6 +179,20 @@ class Cluster extends CommonDBTM
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+
+        if (isset($query_params['position'])) {
+            $options['position'] = $query_params['position'];
+        }
+        if (isset($query_params['room'])) {
+            $options['room'] = $query_params['room'];
+        }
+
+        return $options;
     }
 
     public function cleanDBonPurge()

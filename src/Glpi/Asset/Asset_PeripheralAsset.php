@@ -613,6 +613,15 @@ TWIG, $twig_params);
     {
         /** @var \DBmysql $DB */
         global $DB;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (
+            !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
+            || !$item->isField('is_global')
+        ) {
+            throw new \LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
+        }
 
         // Update item to unit management :
         if ($item->getField('is_global')) {

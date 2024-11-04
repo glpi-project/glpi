@@ -76,6 +76,11 @@ class Contract extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
     public function post_getEmpty()
     {
         if (isset($_SESSION['glpiactive_entity'])) {

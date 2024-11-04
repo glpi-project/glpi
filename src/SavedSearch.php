@@ -68,6 +68,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Saved search', 'Saved searches', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', self::class];
+    }
+
     public function getForbiddenStandardMassiveAction()
     {
 

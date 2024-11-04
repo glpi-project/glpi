@@ -41,6 +41,7 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
+use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
@@ -49,9 +50,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 final readonly class LegacyItemtypeRouteListener implements EventSubscriberInterface
 {
+    public function __construct(private UrlMatcherInterface $url_matcher)
+    {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -74,6 +80,14 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             return;
         }
 
+        try {
+            $this->url_matcher->match($request->getPathInfo());
+            // The URL matches an existing route, let the symfony routing forward to the expected controller.
+            return;
+        } catch (\Exception $e) {
+            // The URL does not match any route, try to forward it to a generic controller.
+        }
+
         if ($class = $this->findClass($request)) {
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
@@ -81,7 +95,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             } else {
-                $request->attributes->set('_controller', $is_form ? null : GenericListController::class);
+                $request->attributes->set('_controller', $is_form ? GenericFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             }
         }

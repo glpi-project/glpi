@@ -32,45 +32,47 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Controller\ItemType\Form;
 
-use CommonGLPI;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+use AuthMail;
+use Glpi\Controller\GenericFormController;
+use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Html;
+use Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 
-final class GenericListController extends AbstractController
+class AuthMailFormController extends GenericFormController
 {
-    #[Route("/{class}/Search", name: "glpi_itemtype_list", priority: -1)]
+    #[ItemtypeFormRoute(AuthMail::class)]
+    #[ItemtypeFormLegacyRoute(AuthMail::class)]
     public function __invoke(Request $request): Response
     {
-        $class = $request->attributes->getString('class');
+        $request->attributes->set('class', AuthMail::class);
 
-        $this->checkIsValidClass($class);
+        if ($request->request->has('test')) {
+            return $this->handleTestAction($request);
+        }
 
-        return $this->render('pages/generic_list.html.twig', [
-            'class' => $class,
-        ]);
+        return parent::__invoke($request);
     }
 
-    private function checkIsValidClass(string $class): void
+    public function handleTestAction(Request $request): RedirectResponse
     {
-        if ($class === '') {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
+        $test_auth = AuthMail::testAuth(
+            $request->request->get("imap_string"),
+            $request->request->get("imap_login"),
+            $request->request->get("imap_password"),
+        );
+
+        if ($test_auth) {
+            Session::addMessageAfterRedirect(__s('Test successful'));
+        } else {
+            Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
         }
 
-        if (!\class_exists($class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
-        }
-
-        if (!\is_subclass_of($class, CommonGLPI::class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
-        }
-
-        if (!$class::canView()) {
-            throw new AccessDeniedHttpException();
-        }
+        return new RedirectResponse(Html::getBackUrl());
     }
 }

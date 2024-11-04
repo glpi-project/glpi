@@ -34,13 +34,17 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
+use Glpi\Config\ConfigProviderHasRequestTrait;
+use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profile;
 use Glpi\Toolbox\URL;
 use Session;
 
-final readonly class SessionConfig implements LegacyConfigProviderInterface
+final class SessionConfig implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
 {
+    use ConfigProviderHasRequestTrait;
+
     public function execute(): void
     {
         // Load Language file
@@ -58,9 +62,11 @@ final readonly class SessionConfig implements LegacyConfigProviderInterface
             $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
         }
 
+        $request = $this->getRequest();
+
         // Manage force tab
-        if (isset($_REQUEST['forcetab'])) {
-            $itemtype = URL::extractItemtypeFromUrlPath($_SERVER['PHP_SELF']);
+        if ($request->query->has('forcetab')) {
+            $itemtype = URL::extractItemtypeFromUrlPath($request->getPathInfo());
             if ($itemtype !== null) {
                 Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
             }

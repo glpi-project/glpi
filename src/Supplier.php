@@ -65,6 +65,11 @@ class Supplier extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
     public function post_getEmpty()
     {
         $this->fields['is_active'] = 1;

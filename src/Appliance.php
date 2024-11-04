@@ -72,6 +72,11 @@ class Appliance extends CommonDBTM
         return ['management', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Appliance', 'Appliances', $nb);

@@ -63,6 +63,11 @@ class Link extends CommonDBTM
         return ['config', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
     /**
      * For plugins, add a tag to the links tags
      *

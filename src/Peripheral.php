@@ -88,6 +88,11 @@ class Peripheral extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()
      *

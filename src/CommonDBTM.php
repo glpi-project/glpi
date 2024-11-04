@@ -284,6 +284,33 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
+     * Returns the default service name to use when logging events.
+     *
+     * @return string
+     */
+    public static function getLogDefaultServiceName(): string
+    {
+        return '';
+    }
+
+    /**
+     * Returns the default level to use when logging events.
+     *
+     * Cases:
+     * 1: Critical (login error only)
+     * 2: Severe (not used)
+     * 3: Important (successful logins)
+     * 4: Notices (add, delete, tracking)
+     * 5: Complete (all)
+     *
+     * @return int
+     */
+    public static function getLogDefaultLevel(): int
+    {
+        return 4;
+    }
+
+    /**
      * Retrieve an item from the database
      *
      * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
@@ -1183,6 +1210,17 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $default;
+    }
+
+    /**
+     * Extract the main item form options from the URL query parameters.
+     *
+     * @param array $query_params
+     * @return array
+     */
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        return [];
     }
 
     /**
@@ -2388,6 +2426,18 @@ class CommonDBTM extends CommonGLPI
         $this->fields = [];
     }
 
+    /**
+     * Unglobalize the item : duplicate item and connections.
+     *
+     * @see Asset_PeripheralAsset::unglobalizeItem()
+     */
+    public function unglobalize()
+    {
+        // Wrapper only to standardize the usage of form actions in generic forms
+        Asset_PeripheralAsset::unglobalizeItem($this);
+
+        return null;
+    }
 
     /**
      * Have I the global right to add an item for the Object
@@ -6714,5 +6764,22 @@ TWIG, $twig_params);
     public static function clearSearchOptionCache(): void
     {
         self::$search_options_cache = [];
+    }
+
+    /**
+     * Return the action to execute after a generic form action has been done.
+     *
+     * @param string $form_action
+     * @return string|null
+     */
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        return match ($form_action) {
+            'add' => 'backcreated',
+            'update' => 'back',
+            'delete', 'restore', 'purge' => 'list',
+            'unglobalize' => 'form',
+            default => null,
+        };
     }
 }

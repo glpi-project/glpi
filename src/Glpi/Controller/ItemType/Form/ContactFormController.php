@@ -32,45 +32,46 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Controller\ItemType\Form;
 
-use CommonGLPI;
+use Contact;
+use Glpi\Controller\GenericFormController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class GenericListController extends AbstractController
+class ContactFormController extends GenericFormController
 {
-    #[Route("/{class}/Search", name: "glpi_itemtype_list", priority: -1)]
+    #[ItemtypeFormRoute(Contact::class)]
+    #[ItemtypeFormLegacyRoute(Contact::class)]
     public function __invoke(Request $request): Response
     {
-        $class = $request->attributes->getString('class');
+        $request->attributes->set('class', Contact::class);
 
-        $this->checkIsValidClass($class);
+        if ($request->query->has('getvcard')) {
+            return $this->generateVCard($request);
+        }
 
-        return $this->render('pages/generic_list.html.twig', [
-            'class' => $class,
-        ]);
+        return parent::__invoke($request);
     }
 
-    private function checkIsValidClass(string $class): void
+    private function generateVCard(Request $request): Response
     {
-        if ($class === '') {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
+        $id = $request->query->getInt('id');
+
+        if (Contact::isNewID($id)) {
+            throw new BadRequestHttpException();
         }
 
-        if (!\class_exists($class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
-        }
-
-        if (!\is_subclass_of($class, CommonGLPI::class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
-        }
-
-        if (!$class::canView()) {
+        $contact = new Contact();
+        if (!$contact->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
+
+        return new StreamedResponse(fn () => $contact->generateVcard());
     }
 }

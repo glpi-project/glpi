@@ -227,8 +227,10 @@ class Event extends CommonDBTM
                     break;
 
                 default:
-                    $type = getSingular($type);
                     $url  = '';
+                    if (!is_a($type, \CommonDBTM::class, true)) {
+                        $type = getSingular($type);
+                    }
                     if ($item = getItemForItemtype($type)) {
                         $url  =  $item->getFormURLWithID($items_id);
                     }
@@ -334,7 +336,9 @@ class Event extends CommonDBTM
             if (isset($logItemtype[$type])) {
                 $itemtype = $logItemtype[$type];
             } else {
-                $type = getSingular($type);
+                if (!is_a($type, \CommonDBTM::class, true)) {
+                    $type = getSingular($type);
+                }
                 if ($item = getItemForItemtype($type)) {
                     $itemtype = $item->getTypeName(1);
                 }
@@ -418,8 +422,11 @@ class Event extends CommonDBTM
             if (isset($logItemtype[$data['type']])) {
                 $itemtype_name = $logItemtype[$data['type']];
             } else {
-                // Converts lowercase plural string into corresponding classname
-                $item = getItemForItemtype(getSingular($data['type']));
+                $type = $data['type'];
+                if (!is_a($type, \CommonDBTM::class, true)) {
+                    $type = getSingular($type);
+                }
+                $item = getItemForItemtype($type);
                 if ($item !== false) {
                     $itemtype_name = $item->getTypeName();
                     $itemtype_icon = $item->getIcon();

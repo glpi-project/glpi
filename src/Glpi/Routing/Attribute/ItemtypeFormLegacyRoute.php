@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,52 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.2
- */
+namespace Glpi\Routing\Attribute;
 
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * SLA Class
- **/
-class SLA extends LevelAgreement
+#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
+class ItemtypeFormLegacyRoute extends Route
 {
-    protected static $prefix            = 'sla';
-    protected static $prefixticket      = '';
-    protected static $levelclass        = 'SlaLevel';
-    protected static $levelticketclass  = 'SlaLevel_Ticket';
-    protected static $forward_entity_to = ['SlaLevel'];
-
-    public static function getTypeName($nb = 0)
+    /**
+     * @phpstan-param class-string<\CommonDBTM> $itemtype
+     */
+    public function __construct(string $itemtype)
     {
-        // Acronym, no plural
-        return __('SLA');
-    }
-
-    public static function getSectorizedDetails(): array
-    {
-        return ['config', SLM::class, self::class];
-    }
-
-    public static function getLogDefaultServiceName(): string
-    {
-        return 'setup';
-    }
-
-    public static function getIcon()
-    {
-        return SLM::getIcon();
-    }
-
-    public function showFormWarning()
-    {
-    }
-
-    public function getAddConfirmation(): array
-    {
-        return [
-            __("The assignment of a SLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the SLA will be triggered under this new date.")
-        ];
+        parent::__construct(
+            path: $itemtype::getFormURL(false),
+            name: 'glpi_itemtype_' . \strtolower($itemtype) . '_form_legacy',
+        );
     }
 }

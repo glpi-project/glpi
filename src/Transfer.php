@@ -89,6 +89,19 @@ final class Transfer extends CommonDBTM
         return ['admin', Rule::class, self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        return [
+            // Required for pagination
+            'target' => self::getFormURL(),
+        ];
+    }
+
     public function maxActionsCount()
     {
         return 0;

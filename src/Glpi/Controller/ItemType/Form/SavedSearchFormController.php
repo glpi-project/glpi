@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,52 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.2
- */
+namespace Glpi\Controller\ItemType\Form;
 
+use Glpi\Controller\GenericFormController;
+use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Html;
+use SavedSearch;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-/**
- * SLA Class
- **/
-class SLA extends LevelAgreement
+class SavedSearchFormController extends GenericFormController
 {
-    protected static $prefix            = 'sla';
-    protected static $prefixticket      = '';
-    protected static $levelclass        = 'SlaLevel';
-    protected static $levelticketclass  = 'SlaLevel_Ticket';
-    protected static $forward_entity_to = ['SlaLevel'];
-
-    public static function getTypeName($nb = 0)
+    #[ItemtypeFormRoute(SavedSearch::class)]
+    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
+    public function __invoke(Request $request): Response
     {
-        // Acronym, no plural
-        return __('SLA');
+        $request->attributes->set('class', SavedSearch::class);
+
+        if ($request->query->has('create_notif')) {
+            return $this->createNotif();
+        }
+
+        return parent::__invoke($request);
     }
 
-    public static function getSectorizedDetails(): array
+    public function createNotif(): RedirectResponse
     {
-        return ['config', SLM::class, self::class];
-    }
+        $savedsearch = new SavedSearch();
+        $savedsearch->check($_GET['id'], UPDATE);
+        $savedsearch->createNotif();
 
-    public static function getLogDefaultServiceName(): string
-    {
-        return 'setup';
-    }
-
-    public static function getIcon()
-    {
-        return SLM::getIcon();
-    }
-
-    public function showFormWarning()
-    {
-    }
-
-    public function getAddConfirmation(): array
-    {
-        return [
-            __("The assignment of a SLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the SLA will be triggered under this new date.")
-        ];
+        return new RedirectResponse(Html::getBackUrl());
     }
 }
