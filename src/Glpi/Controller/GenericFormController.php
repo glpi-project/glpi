@@ -121,7 +121,8 @@ class GenericFormController extends AbstractController
             'add' => $object->can($id, CREATE, $post_data),
             'delete', 'restore' => $object->can($id, DELETE, $post_data),
             'purge' => $object->can($id, PURGE, $post_data),
-            default => $object->can($id, UPDATE, $post_data),
+            'update', 'unglobalize' => $object->can($id, UPDATE, $post_data),
+            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if (!$can_do_action) {
