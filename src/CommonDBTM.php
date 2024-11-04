@@ -4535,10 +4535,12 @@ class CommonDBTM extends CommonGLPI
 
        //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
-           // Get input entities if set / else get object one
-            if (isset($this->input['entities_id'])) {
+            // Get input entities if set / else get object one
+            if ($this instanceof User) {
+                $entities_id = 0; // Exception: user does not belong to an entity
+            } elseif (isset($this->input['entities_id'])) {
                 $entities_id = $this->input['entities_id'];
-            } else if (isset($this->fields['entities_id'])) {
+            } elseif (isset($this->fields['entities_id'])) {
                 $entities_id = $this->fields['entities_id'];
             } else {
                 $entities_id = 0;
