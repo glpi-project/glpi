@@ -126,7 +126,7 @@ TWIG;
 
         <div data-glpi-form-editor-preview-dropdown>
             {{ fields.dropdownArrayField(
-                '',
+                'default_value',
                 checked_values|first,
                 values,
                 '',
@@ -141,7 +141,7 @@ TWIG;
                 }
             ) }}
             {{ fields.dropdownArrayField(
-                '',
+                'default_value',
                 '',
                 values,
                 '',
