@@ -66,7 +66,7 @@
     {% set values = [] %}
 
     {% for data in iterator %}
-        {% set values = values | merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+        {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
     {% endfor %}
 
     {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
@@ -80,7 +80,7 @@
         'total_number': entries|length,
         'showmassiveactions': canedit,
     } %}
-    {% set merged_params = datatable_params | merge(common_columns) %}
+    {% set merged_params = datatable_params|merge(common_columns) %}
 
     {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
 {% endif %}
@@ -99,7 +99,7 @@
                 {% set values = [] %}
 
                 {% for data in iterator2 %}
-                    {% set values = values | merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+                    {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
                 {% endfor %}
 
                 {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
@@ -113,7 +113,7 @@
                     'total_number': entries2|length,
                     'showmassiveactions': canedit,
                 } %}
-                {% set merged_params = datatable_params | merge(common_columns) %}
+                {% set merged_params = datatable_params|merge(common_columns) %}
 
                 {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
             {% else %}
