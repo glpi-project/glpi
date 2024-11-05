@@ -399,6 +399,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
+- `Group_User` `is_userdelegate` field.
 - `Html::autocompletionTextField()`
 - `Html::clean()`
 - `Html::closeArrowMassives()`
@@ -523,6 +524,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Transfer::manageConnectionComputer()`
+- `User::getDelegateGroupsForUser()`
 - `User::showDebug()`
 - `User::title()`
 - `XML` class.
@@ -542,6 +544,7 @@ The present file will list all changes made to the project; according to the
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
 - Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
+- Handling of the `delegate` right in `User::getSqlSearchResult()`.
 
 
 ## [10.0.17] unreleased
