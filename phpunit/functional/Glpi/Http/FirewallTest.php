@@ -54,7 +54,6 @@ class FirewallTest extends \DbTestCase
                     'common.tabs.php' => '',
                     'dashboard.php' => '',
                     'getDropdown.php' => '',
-                    'knowbase.php' => '',
                     'telemetry.php' => '',
                 ],
                 'front' => [
@@ -183,7 +182,7 @@ class FirewallTest extends \DbTestCase
             );
             unset($_GET['token']);
 
-            $legacy_faq_urls = ['/ajax/knowbase.php', '/front/helpdesk.faq.php'];
+            $legacy_faq_urls = ['/front/helpdesk.faq.php'];
             foreach ($legacy_faq_urls as $faq_url) {
                 $this->dotestComputeFallbackStrategy(
                     root_doc:          $root_doc,

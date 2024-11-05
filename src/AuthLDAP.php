@@ -4224,30 +4224,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get LDAP deleted user action options.
-     *
-     * @deprecated
-     * @return array
-     */
-    public static function getLdapDeletedUserActionOptions()
-    {
-        Toolbox::deprecated(
-            'The "user_deleted_ldap" configuration value was removed. '
-            . 'Use getLdapDeletedUserActionOptions_User(), '
-            . 'getLdapDeletedUserActionOptions_Groups(), '
-            . 'and getLdapDeletedUserActionOptions_Authorizations() instead.'
-        );
-        return [
-            self::DELETED_USER_PRESERVE                  => __('Preserve'),
-            self::DELETED_USER_DELETE                    => __('Put in trashbin'),
-            self::DELETED_USER_WITHDRAWDYNINFO           => __('Withdraw dynamic authorizations and groups'),
-            self::DELETED_USER_DISABLE                   => __('Disable'),
-            self::DELETED_USER_DISABLEANDWITHDRAWDYNINFO => __('Disable') . ' + ' . __('Withdraw dynamic authorizations and groups'),
-            self::DELETED_USER_DISABLEANDDELETEGROUPS    => __('Disable') . ' + ' . __('Withdraw groups'),
-        ];
-    }
-
-    /**
      * Get LDAP deleted user action options regarding the deleted user
      *
      * @return array
@@ -4302,38 +4278,6 @@ TWIG, $twig_params);
             self::RESTORED_USER_RESTORE   => __('Restore (move out of trashbin)'),
             self::RESTORED_USER_ENABLE    => __('Enable'),
         ];
-    }
-
-    /**
-     * Builds deleted actions dropdown
-     *
-     * @deprecated
-     *
-     * @param integer $value (default 0)
-     *
-     * @return string
-     */
-    public static function dropdownUserDeletedActions($value = 0)
-    {
-        Toolbox::deprecated('The "user_deleted_ldap" configuration value was removed.');
-        $options = self::getLdapDeletedUserActionOptions();
-        asort($options);
-        return Dropdown::showFromArray('user_deleted_ldap', $options, ['value' => $value]);
-    }
-
-    /**
-     * Builds restored actions dropdown
-     *
-     * @param integer $value (default 0)
-     *
-     * @since 10.0.0
-     * @return string
-     */
-    public static function dropdownUserRestoredActions($value = 0)
-    {
-        $options = self::getLdapRestoredUserActionOptions();
-        asort($options);
-        return Dropdown::showFromArray('user_restored_ldap', $options, ['value' => $value]);
     }
 
     /**

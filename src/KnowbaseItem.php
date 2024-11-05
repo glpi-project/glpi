@@ -38,7 +38,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\RichText\RichText;
-use Glpi\Search\SearchEngine;
 
 /**
  * KnowbaseItem Class
@@ -1019,56 +1018,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 {{ inputs.hidden('glpi_csrf_token', csrf_token()) }}
             </form>
 TWIG, $twig_params);
-    }
-
-    /**
-     * Print out an HTML form for Search knowbase item
-     *
-     * @since 0.84
-     *
-     * @param $options   $_GET
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     **/
-    public function showManageForm($options)
-    {
-        Toolbox::deprecated();
-
-        if (
-            !Session::haveRightsOr(
-                self::$rightname,
-                [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN]
-            )
-        ) {
-            return false;
-        }
-        $params['unpublished'] = 'my';
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
-
-        //Nothing should be showing this form, so not a priority to move to Twig.
-        echo "<div>";
-        echo "<form method='get' action='" . static::getSearchURL() . "'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-        $values = ['myunpublished' => __s('My unpublished articles'),
-            'allmy'         => __s('All my articles')
-        ];
-        if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            $values['allunpublished'] = __s('All unpublished articles');
-            $values['allpublished'] = __s('All published articles');
-        }
-        Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
-        echo "</td><td class='left'>";
-        echo "<input type='submit' value=\"" . _sx('button', 'Post') . "\" class='btn btn-primary'></td>";
-        echo "</tr></table>";
-        Html::closeForm();
-        echo "</div>";
     }
 
     /**
