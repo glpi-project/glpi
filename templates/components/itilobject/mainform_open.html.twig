@@ -59,11 +59,6 @@
       <input type="hidden" name="_predefined_fields" value="{{ predefined_fields }}" />
    {% endif %}
 
-   {% if selfservice %}
-      <input type="hidden" name="_from_helpdesk" value="1" />
-      {# TODO default requesttype #}
-   {% endif %}
-
    {% if params['tickets_id'] is defined or params['_tickets_id'] is defined %}
       <input type="hidden" name="_tickets_id" value="{{ params['tickets_id'] ?? params['_tickets_id'] }}" />
    {% endif %}

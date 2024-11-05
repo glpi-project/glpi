@@ -92,7 +92,6 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.id AS linkid',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -134,7 +133,6 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.id AS linkid',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -206,7 +204,6 @@ class Group_User extends CommonDBRelation
                 'group'    => $group->getLink(),
                 'dynamic'  => $data['is_dynamic'] ? $yes_icon : $no_icon,
                 'manager'  => $data['is_manager'] ? $yes_icon : $no_icon,
-                'delegatee' => $data['is_userdelegate'] ? $yes_icon : $no_icon
             ];
         }
 
@@ -218,13 +215,11 @@ class Group_User extends CommonDBRelation
                 'group' => Group::getTypeName(1),
                 'dynamic' => __('Dynamic'),
                 'manager' => _n('Manager', 'Managers', 1),
-                'delegatee' => __('Delegatee')
             ],
             'formatters' => [
                 'group' => 'raw_html',
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
-                'delegatee' => 'raw_html'
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -272,7 +267,7 @@ class Group_User extends CommonDBRelation
      * @param Group    $group            Group object
      * @param array    $members          Array filled on output of member (filtered)
      * @param array    $ids              Array of ids (not filtered)
-     * @param string|array $crit         Filter key (is_manager, is_userdelegate) or array of filters (default '')
+     * @param string|array $crit         Filter key (is_manager) or array of filters (default '')
      * @param bool|int $tree             True to include member of sub-group (default 0)
      * @param bool     $check_entities   Apply entities restrictions ?
      *
@@ -322,7 +317,6 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.groups_id',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
             ],
             'DISTINCT'  => true,
             'FROM'      => $group_users_table,
@@ -367,7 +361,6 @@ class Group_User extends CommonDBRelation
                     $add = $value === '' || match ($key) {
                         'dynamic' => $data['is_dynamic'] === (int) $value,
                         'manager' => $data['is_manager'] === (int) $value,
-                        'delegatee' => $data['is_userdelegate'] === (int) $value,
                         'is_active' => $data[$key] === (int) $value,
                         default => true
                     };
@@ -477,7 +470,6 @@ class Group_User extends CommonDBRelation
                 'group'     => $group_link,
                 'dynamic'   => $data['is_dynamic'] ? $yes_icon : $no_icon,
                 'manager'   => $data['is_manager'] ? $yes_icon : $no_icon,
-                'delegatee' => $data['is_userdelegate'] ? $yes_icon : $no_icon,
                 'active'    => $user->fields['is_active'] ? $yes_icon : $no_icon
             ];
         }
@@ -506,10 +498,6 @@ class Group_User extends CommonDBRelation
                     'label' => _n('Manager', 'Managers', 1),
                     'filter_formatter' => 'yesno'
                 ],
-                'delegatee' => [
-                    'label' => __('Delegatee'),
-                    'filter_formatter' => 'yesno'
-                ],
                 'is_active' => [
                     'label' => __('Active'),
                     'filter_formatter' => 'yesno'
@@ -520,7 +508,6 @@ class Group_User extends CommonDBRelation
                 'group' => 'raw_html',
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
-                'delegatee' => 'raw_html',
                 'is_active' => 'raw_html'
             ],
             'entries' => $entries,
@@ -547,10 +534,8 @@ class Group_User extends CommonDBRelation
 
        // Define normalized action for add_item and remove_item
         $specificities['normalized']['add'][]    = 'add_supervisor';
-        $specificities['normalized']['add'][]    = 'add_delegatee';
 
         $specificities['button_labels']['add_supervisor'] = $specificities['button_labels']['add'];
-        $specificities['button_labels']['add_delegatee']  = $specificities['button_labels']['add'];
 
         $specificities['update_if_different'] = true;
 
@@ -565,7 +550,6 @@ class Group_User extends CommonDBRelation
     ) {
         return match ($action) {
             'add_supervisor' => ['is_manager' => 1],
-            'add_delegatee' => ['is_userdelegate' => 1],
             default => [],
         };
     }
@@ -626,14 +610,6 @@ class Group_User extends CommonDBRelation
             'table'              => static::getTable(),
             'field'              => 'is_manager',
             'name'               => _n('Manager', 'Managers', 1),
-            'datatype'           => 'bool'
-        ];
-
-        $tab[] = [
-            'id'                 => '7',
-            'table'              => static::getTable(),
-            'field'              => 'is_userdelegate',
-            'name'               => __('Delegatee'),
             'datatype'           => 'bool'
         ];
 
@@ -762,7 +738,6 @@ class Group_User extends CommonDBRelation
     {
         $params = parent::getListForItemParams($item, $noent);
         $params['SELECT'][] = self::getTable() . '.is_manager';
-        $params['SELECT'][] = self::getTable() . '.is_userdelegate';
         return $params;
     }
 
@@ -907,7 +882,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array Array of array, which will contain the keys set in
      *               self::getDataForGroup ('id', 'linkid', 'groups_id',
-     *               'is_dynamic', 'is_manager' and 'is_userdelegate')
+     *               'is_dynamic', 'is_manager')
      */
     protected static function getParentsMembers(Group $group, $crit): array
     {

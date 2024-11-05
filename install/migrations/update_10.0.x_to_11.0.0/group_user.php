@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+/**
+ * @var \Migration $migration
+ * @var array $DELFROMDISPLAYPREF
+ */
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+$migration->dropField('glpi_groups_users', 'is_userdelegate');
 
-Ticket::showFormHelpdeskObserver($_REQUEST);
+$DELFROMDISPLAYPREF['Group']      = [71];
+$DELFROMDISPLAYPREF['Group_User'] = [7];

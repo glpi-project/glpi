@@ -186,7 +186,6 @@ class Group_UserTest extends \DbTestCase
 
         $this->assertArrayHasKey('linkid', $list_items[$user->getID()]);
         $this->assertArrayHasKey('is_manager', $list_items[$user->getID()]);
-        $this->assertArrayHasKey('is_userdelegate', $list_items[$user->getID()]);
         $this->assertSame(TU_USER, $list_items[$user->getID()]['name']);
 
         $this->assertSame(2, $group_user->countForItem($user));

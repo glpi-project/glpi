@@ -399,32 +399,6 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    /**
-     *  ??since version 0.84
-     **/
-    public function getSimplifiedInterfaceFields()
-    {
-
-        $ticket = new Ticket();
-        $fields = [$ticket->getSearchOptionIDByField('field', 'name', 'glpi_tickets'),
-            $ticket->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
-            $ticket->getSearchOptionIDByField('field', 'urgency', 'glpi_tickets'),
-            $ticket->getSearchOptionIDByField('field', 'completename', 'glpi_locations'),
-            $ticket->getSearchOptionIDByField('field', 'itemtype', 'glpi_tickets'),
-            $ticket->getSearchOptionIDByField(
-                'field',
-                'completename',
-                'glpi_itilcategories'
-            ),
-            $ticket->getSearchOptionIDByField('field', 'type', 'glpi_tickets'),
-            $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'),
-            $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
-            66 // users_id_observer
-        ];
-        return $fields;
-    }
-
-
     public function defineTabs($options = [])
     {
         $ong          = [];
@@ -461,10 +435,6 @@ abstract class ITILTemplate extends CommonDropdown
         if (Session::haveRight(static::$rightname, READ)) {
             switch ($item->getType()) {
                 case 'TicketTemplate':
-                    return [
-                        1 => __('Preview (Standard interface)'),
-                        2 => __('Preview (Simplified interface)')
-                    ];
                 case 'ChangeTemplate':
                 case 'ProblemTemplate':
                     return [1 => __('Preview')];

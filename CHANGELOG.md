@@ -330,8 +330,10 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::showDislayOptions()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
+- `CommonITILObject::$userentity_oncreate` property.
 - `CommonITILObject::getAssignName()`
 - `CommonITILObject::isValidator()`
+- `CommonITILObject::showActorAddFormOnCreate()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
@@ -397,6 +399,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
+- `Group_User` `is_userdelegate` field.
 - `Html::autocompletionTextField()`
 - `Html::clean()`
 - `Html::closeArrowMassives()`
@@ -414,6 +417,7 @@ The present file will list all changes made to the project; according to the
 - `IPNetwork::title()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`
+- `ITILTemplate::getSimplifiedInterfaceFields()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
@@ -497,10 +501,14 @@ The present file will list all changes made to the project; according to the
 - `SoftwareLicense::getSonsOf()`
 - `SoftwareLicense::showDebug()`
 - `Transfer::$inittype` property.
+- `Ticket::canDelegateeCreateTicket()`
 - `Ticket::showDebug()`
+- `Ticket::showFormHelpdesk()`
+- `Ticket::showFormHelpdeskObserver()`
 - `Ticket_Ticket::checkParentSon()`
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`. Replaced by `CommonITILObject_CommonITILObject::manageLinksOnChange()`.
+- `TicketTemplate::showHelpdeskPreview()`
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -516,6 +524,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Transfer::manageConnectionComputer()`
+- `User::getDelegateGroupsForUser()`
 - `User::showDebug()`
 - `User::title()`
 - `XML` class.
@@ -535,6 +544,7 @@ The present file will list all changes made to the project; according to the
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
 - Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
+- Handling of the `delegate` right in `User::getSqlSearchResult()`.
 
 
 ## [10.0.17] unreleased

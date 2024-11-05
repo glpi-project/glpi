@@ -261,8 +261,6 @@ class Group extends CommonTreeDropdown
                                               _sx('button', 'Add a user');
             $actions[$prefix . 'add_supervisor'] = "<i class='fas fa-user-tie'></i>" .
                                               _sx('button', 'Add a manager');
-            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>" .
-                                              _sx('button', 'Add a delegatee');
             $actions[$prefix . 'remove']         = _sx('button', 'Remove a user');
         }
 
@@ -441,26 +439,6 @@ class Group extends CommonTreeDropdown
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'condition'          => ['NEWTABLE.is_manager' => 1]
-                    ]
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '71',
-            'table'              => 'glpi_users',
-            'field'              => 'name',
-            'name'               => __('Delegatee'),
-            'datatype'           => 'dropdown',
-            'right'              => 'all',
-            'forcegroupby'       => true,
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => 'glpi_groups_users',
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.is_userdelegate' => 1]
                     ]
                 ]
             ]
