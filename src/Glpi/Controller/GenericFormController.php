@@ -108,12 +108,16 @@ class GenericFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        // Special case for GET
+        // Special case for get
         if ($form_action === 'get') {
             if (!$object->can($id, READ)) {
                 throw new AccessDeniedHttpException();
             }
             return $this->displayForm($object, $request);
+        }
+        // Special case for modals
+        if ($form_action === '_in_modal') {
+            return $this->displayModal($object, $request);
         }
 
         // Permissions
@@ -127,11 +131,6 @@ class GenericFormController extends AbstractController
 
         if (!$can_do_action) {
             throw new AccessDeniedHttpException();
-        }
-
-        // Special case for modals
-        if ($form_action === '_in_modal' && $request->getMethod() === 'GET') {
-            return $this->displayModal($object, $request);
         }
 
         // POST action execution
@@ -206,13 +205,12 @@ class GenericFormController extends AbstractController
     private function displayModal(mixed $object, Request $request): Response
     {
         $form_options = [];
-        if ($request->query->has('withtemplate')) {
+        if ($object->maybeTemplate()) {
             $form_options['withtemplate'] = $request->query->get('withtemplate', '');
         }
 
         return $this->render('pages/generic_in_modal.html.twig', [
-            'id' => $request->query->get('id', 0),
-            'path_info' => $request->getPathInfo(),
+            'id' => $request->query->get('id', -1),
             'object' => $object,
             'form_options' => $form_options,
         ]);
