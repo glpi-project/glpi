@@ -314,19 +314,9 @@ class ITILTemplateTest extends DbTestCase
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
 
-        switch ($itiltype) {
-            case 'Ticket':
-                $expected = [
-                    1 => 'Preview (Standard interface)',
-                    2 => 'Preview (Simplified interface)'
-                ];
-                break;
-            default:
-                $expected = [
-                    1 => 'Preview'
-                ];
-                break;
-        }
+        $expected = [
+            1 => 'Preview'
+        ];
         $this->assertSame($expected, $tpl->getTabNameForItem($tpl));
     }
 

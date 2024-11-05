@@ -330,8 +330,10 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::showDislayOptions()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
+- `CommonITILObject::$userentity_oncreate` property.
 - `CommonITILObject::getAssignName()`
 - `CommonITILObject::isValidator()`
+- `CommonITILObject::showActorAddFormOnCreate()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
@@ -414,6 +416,7 @@ The present file will list all changes made to the project; according to the
 - `IPNetwork::title()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`
+- `ITILTemplate::getSimplifiedInterfaceFields()`
 - `Knowbase::getTreeCategoryList()`
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
@@ -497,10 +500,14 @@ The present file will list all changes made to the project; according to the
 - `SoftwareLicense::getSonsOf()`
 - `SoftwareLicense::showDebug()`
 - `Transfer::$inittype` property.
+- `Ticket::canDelegateeCreateTicket()`
 - `Ticket::showDebug()`
+- `Ticket::showFormHelpdesk()`
+- `Ticket::showFormHelpdeskObserver()`
 - `Ticket_Ticket::checkParentSon()`
 - `Ticket_Ticket::countOpenChildren()`
 - `Ticket_Ticket::manageLinkedTicketsOnSolved()`. Replaced by `CommonITILObject_CommonITILObject::manageLinksOnChange()`.
+- `TicketTemplate::showHelpdeskPreview()`
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`

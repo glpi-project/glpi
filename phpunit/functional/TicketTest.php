@@ -4149,53 +4149,6 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
-
-    public function testCanDelegateeCreateTicket()
-    {
-        $normal_id   = getItemByTypeName('User', 'normal', true);
-        $tech_id     = getItemByTypeName('User', 'tech', true);
-        $postonly_id = getItemByTypeName('User', 'post-only', true);
-        $tuser_id    = getItemByTypeName('User', TU_USER, true);
-
-       // check base behavior (only standard interface can create for other users)
-        $this->login();
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('tech', 'tech');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('post-only', 'postonly');
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($normal_id));
-
-       // create a test group
-        $group = new \Group();
-        $groups_id = $group->add(['name' => 'test delegatee']);
-        $this->assertGreaterThan(0, $groups_id);
-
-       // make postonly delegate of the group
-        $gu = new \Group_User();
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'         => $postonly_id,
-                'groups_id'        => $groups_id,
-                'is_userdelegate' => 1,
-            ])
-        );
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'  => $normal_id,
-                'groups_id' => $groups_id,
-            ])
-        );
-
-        // check postonly can now create (yes for normal and himself) or not (no for others) for other users
-        $this->login('post-only', 'postonly');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($postonly_id));
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tech_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tuser_id));
-    }
-
     public function testCanAddFollowupsDefaults()
     {
         $tech_id = getItemByTypeName('User', 'tech', true);
