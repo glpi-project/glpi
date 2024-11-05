@@ -47,7 +47,7 @@ jobs:
           docker compose exec -T app .github/actions/init_build.sh
       - name: "Psalm security scan"
         run: |
-          docker compose exec -T app ./vendor/bin/cpx vimeo/psalm --output-format=github --taint-analysis --report=psalm-results.sarif
+          docker compose exec -T app ./vendor/bin/cpx vimeo/psalm --long-progress --output-format=github --report=psalm-results.sarif
       - name: "Upload results"
         if: "github.repository == 'glpi-project/glpi' && github.ref_name == 'main'"
         uses: "github/codeql-action/upload-sarif@v3"

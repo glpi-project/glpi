@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<psalm
+    runTaintAnalysis="true"
+>
+    <projectFiles>
+        <directory name="ajax" />
+        <directory name="front" />
+        <directory name="inc" />
+        <directory name="install" />
+        <directory name="src" />
+
+        <ignoreFiles>
+            <!-- Psalm gets stuck on TCPDF analysis, must be ignored for now -->
+            <file name="src/Glpi/Search/Output/Tcpdf.php" />
+          </ignoreFiles>
+    </projectFiles>
+</psalm>
