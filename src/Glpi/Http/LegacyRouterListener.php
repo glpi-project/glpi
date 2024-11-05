@@ -37,9 +37,6 @@ namespace Glpi\Http;
 use Glpi\Controller\LegacyFileLoadController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -79,20 +76,6 @@ final class LegacyRouterListener implements EventSubscriberInterface
             return;
         }
 
-        $response = $this->runLegacyRouter($request);
-
-        if ($response) {
-            $event->setResponse($response);
-        }
-    }
-
-    private function runLegacyRouter(Request $request): ?Response
-    {
-        /**
-         * GLPI web router.
-         *
-         * This router is used to be able to expose only the `/public` directory on the webserver.
-         */
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
 
         $target_file = $this->getTargetFile($path);
@@ -104,7 +87,7 @@ final class LegacyRouterListener implements EventSubscriberInterface
             || !$this->isTargetAPhpScript($path)
         ) {
             // Let the previous router do the trick, it's fine.
-            return null;
+            return;
         }
 
         // Ensure `getcwd()` and inclusion path is based on requested file FS location.
@@ -125,7 +108,5 @@ final class LegacyRouterListener implements EventSubscriberInterface
          */
         $request->attributes->set('_controller', LegacyFileLoadController::class);
         $request->attributes->set(LegacyFileLoadController::REQUEST_FILE_KEY, $target_file);
-
-        return null;
     }
 }

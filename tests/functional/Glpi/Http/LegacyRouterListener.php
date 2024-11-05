@@ -37,6 +37,9 @@ namespace tests\units\Glpi\Http;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\HttpFoundation\Request;
 use Glpi\Controller\LegacyFileLoadController;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class LegacyRouterListener extends \GLPITestCase
 {
@@ -211,19 +214,15 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $request = new Request();
-        $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', $path);
+        $event = $this->getRequestEvent($path);
+        $this->testedInstance->onKernelRequest($event);
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
-
-        $this->variable($response)->isNull();
         if ($included === false) {
-            $this->variable($request->attributes->get('_controller'))->isNull();
-            $this->variable($request->attributes->get('_glpi_file_to_load'))->isNull();
+            $this->variable($event->getRequest()->attributes->get('_controller'))->isNull();
+            $this->variable($event->getRequest()->attributes->get('_glpi_file_to_load'))->isNull();
         } else {
-            $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-            $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . $target_path);
+            $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+            $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . $target_path);
         }
     }
 
@@ -560,19 +559,15 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $request = new Request();
-        $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', $url_path);
+        $event = $this->getRequestEvent($url_path);
+        $this->testedInstance->onKernelRequest($event);
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
-
-        $this->variable($response)->isNull();
         if ($is_served === false) {
-            $this->variable($request->attributes->get('_controller'))->isNull();
-            $this->variable($request->attributes->get('_glpi_file_to_load'))->isNull();
+            $this->variable($event->getRequest()->attributes->get('_controller'))->isNull();
+            $this->variable($event->getRequest()->attributes->get('_glpi_file_to_load'))->isNull();
         } else {
-            $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-            $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . $file_path);
+            $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+            $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi') . $file_path);
         }
     }
 
@@ -595,21 +590,19 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $request = new Request();
-        $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', '/marketplace/myplugin/front/test.php');
+        $event = $this->getRequestEvent('/marketplace/myplugin/front/test.php');
 
         $this->when(
-            function () use ($request) {
-                $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
+            function () use ($event) {
+                $this->testedInstance->onKernelRequest($event);
             }
         )->error
             ->withMessage('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.')
             ->withType(E_USER_DEPRECATED)
             ->exists();
 
-        $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
+        $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
     }
 
     public function testRunLegacyRouterFromPluginInMultipleDirectories(): void
@@ -631,10 +624,6 @@ class LegacyRouterListener extends \GLPITestCase
             ],
         ];
 
-        $request = new Request();
-        $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', '/plugins/myplugin/front/test.php');
-
         vfsStream::setup('glpi', null, $structure);
 
         // Plugin inside `/marketplace` should be served when `/marketplace` is dir is declared first
@@ -643,10 +632,11 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
+        $event = $this->getRequestEvent('/plugins/myplugin/front/test.php');
+        $this->testedInstance->onKernelRequest($event);
 
-        $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
+        $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
 
         // Plugin inside `/plugins` should be served when `/plugins` is dir is declared first
         $this->newTestedInstance(
@@ -654,9 +644,23 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/plugins'), vfsStream::url('glpi/marketplace')]
         );
 
-        $this->callPrivateMethod($this->testedInstance, 'runLegacyRouter', $request);
+        $event = $this->getRequestEvent('/plugins/myplugin/front/test.php');
+        $this->testedInstance->onKernelRequest($event);
 
-        $this->string($request->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($request->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/myplugin/front/test.php'));
+        $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/myplugin/front/test.php'));
+    }
+
+    private function getRequestEvent(string $requested_uri): RequestEvent
+    {
+        $request = new Request();
+        $request->server->set('SCRIPT_NAME', '/index.php');
+        $request->server->set('REQUEST_URI', $requested_uri);
+
+        return new RequestEvent(
+            $this->newMockInstance(KernelInterface::class),
+            $request,
+            HttpKernelInterface::MAIN_REQUEST
+        );
     }
 }
