@@ -700,7 +700,7 @@ class Inventory
                     $asset->setMainAsset($this->mainasset);
                     $asset->setAgent($this->getAgent());
                     $asset->setExtraData($this->data);
-                    $asset->setEntity($this->mainasset->getEntityID());
+                    $asset->setEntityID($this->mainasset->getEntityID());
                     $asset->prepare();
                     $value = $asset->handleLinks();
                     $this->assets[$assettype][] = $asset;

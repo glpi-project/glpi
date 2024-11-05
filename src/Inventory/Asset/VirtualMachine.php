@@ -351,7 +351,7 @@ class VirtualMachine extends InventoryAsset
                     if ($os->checkConf($this->conf)) {
                         $os->setAgent($this->getAgent());
                         $os->setExtraData($this->data);
-                        $os->setEntity($computervm->getEntityID());
+                        $os->setEntityID($computervm->getEntityID());
                         $os->prepare();
                         $os->handleLinks();
                         $os->handle();
@@ -367,7 +367,7 @@ class VirtualMachine extends InventoryAsset
                             if ($asset->checkConf($this->conf)) {
                                 $asset->setAgent($this->getAgent());
                                 $asset->setExtraData($this->data);
-                                $asset->setEntity($computervm->getEntityID());
+                                $asset->setEntityID($computervm->getEntityID());
                                 $asset->prepare();
                                 $asset->handleLinks();
                                 $asset->handle();
