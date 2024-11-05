@@ -23,6 +23,8 @@ jobs:
 
       - name: "Psalm security scan"
         uses: "psalm/psalm-github-security-scan@f3e6fd9432bc3e44aec078572677ce9d2ef9c287"
+        with:
+          composer_ignore_platform_reqs: true
 
       - name: "Upload results"
         uses: "github/codeql-action/upload-sarif@v3"
