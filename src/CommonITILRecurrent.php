@@ -474,7 +474,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                             // We will add the periodicity once again to try to get a valid date
                             $tmp_search_time = date(
                                 'Y-m-d H:i:s',
-                                strtotime("+ $periodicity_as_interval", strtotime($occurence_date))
+                                strtotime("+ $periodicity_as_interval", strtotime($occurence_time))
                             );
                         }
 
