@@ -146,19 +146,19 @@ function showSecurityKeyCheckForm()
     echo '<input type="hidden" name="continuer" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
     echo '<div class="text-center">';
-    echo '<h3>' . __('Missing security key file') . '</h3>';
+    echo '<h3>' . __s('Missing security key file') . '</h3>';
     echo '<div class="d-flex alert alert-warning">';
     echo '<i class="fa fa-3x fa-exclamation-triangle text-warning"></i>';
     echo '<p class="text-start">';
     echo sprintf(
-        __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
-        $update->getExpectedSecurityKeyFilePath()
+        __s('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
+        htmlescape($update->getExpectedSecurityKeyFilePath())
     );
     echo '</p>';
     echo '</div>';
-    echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
+    echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __s('Ignore warning') . '" />';
     echo '&nbsp;&nbsp;';
-    echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
+    echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __s('Try again') . '" />';
     echo '</form>';
 }
 
@@ -176,7 +176,7 @@ echo "<!DOCTYPE html>";
 echo "<html lang='fr'>";
 echo "<head>";
 echo "<meta charset='utf-8'>";
-echo "<title>Setup GLPI</title>";
+echo "<title>" . __s('GLPI setup') . "</title>";
 //JS
 echo Html::script("lib/base.js");
 echo Html::script("js/glpi_dialog.js");
@@ -189,30 +189,30 @@ echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div id='logo_bloc'></div>";
-echo "<h2>GLPI SETUP</h2>";
-echo "<br><h3>" . __('Upgrade') . "</h3>";
+echo "<h2>" . __s('GLPI setup') . "</h2>";
+echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
 // step 1    avec bouton de confirmation
 
 if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
     if (empty($from_install) && !isset($_POST["from_update"])) {
         echo "<div class='center'>";
-        echo "<h3><span class='migred'>" . __('Impossible to accomplish an update by this way!') . "</span>";
+        echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span>";
         echo "<p>";
         echo "<a class='btn btn-primary' href='../index.php'>
-            " . __('Go back to GLPI') . "
+            " . __s('Go back to GLPI') . "
          </a></p>";
         echo "</div>";
     } else {
         echo "<div class='center'>";
-        echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) . "</h3>";
+        echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</h3>";
 
         echo "<form action='update.php' method='post'>";
         if (!VersionParser::isStableRelease(GLPI_VERSION)) {
             echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
         }
         echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
-         " . __('Continue') . "
+         " . __s('Continue') . "
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
         Html::closeForm();
@@ -221,7 +221,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 } else {
    // Step 2
     if (test_connect()) {
-        echo "<h3>" . __('Database connection successful') . "</h3>";
+        echo "<h3>" . __s('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
         $result = Config::displayCheckDbEngine(true);
         echo "</p>";
@@ -252,7 +252,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
         }
     } else {
         echo "<h3>";
-        echo __("Connection to database failed, verify the connection parameters included in config_db.php file") . "</h3>";
+        echo __s("Connection to database failed, verify the connection parameters included in config_db.php file") . "</h3>";
     }
 }
 
