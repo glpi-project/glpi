@@ -23735,11 +23735,11 @@ msgstr "Atribuição"
 
 #: src/RuleCommonITILObject.php:924
 msgid "Take into account delay"
-msgstr "Leve em conta o atraso"
+msgstr "Atraso de atribuição"
 
 #: src/Ticket.php:2985
 msgid "Take into account time"
-msgstr "Leve em conta o tempo"
+msgstr "Tempo de atribuição"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
