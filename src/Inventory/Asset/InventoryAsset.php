@@ -311,13 +311,24 @@ abstract class InventoryAsset
      * Set entity id from main asset
      *
      * @param integer $id Entity ID
+     *
+     * @return $this
+     */
+    public function setEntityID($id): InventoryAsset
+    {
+        $this->entities_id = $id;
+        return $this;
+    }
+
+    /**
+     * Set entity recursive from main asset
+     *
      * @param integer $is_recursive
      *
      * @return $this
      */
-    public function setEntityID($id, $is_recursive = 0): InventoryAsset
+    public function setEntityRecursive($is_recursive): InventoryAsset
     {
-        $this->entities_id = $id;
         $this->is_recursive = $is_recursive;
         return $this;
     }

@@ -968,6 +968,16 @@ abstract class MainAsset extends InventoryAsset
         return $this->entities_id;
     }
 
+    /**
+     * Retrieve computer entities is_recursive
+     *
+     * @return integer
+     */
+    public function getEntityRecursive()
+    {
+        return $this->is_recursive;
+    }
+
     public function handleAssets()
     {
         $key = $this->current_key;
@@ -990,7 +1000,8 @@ abstract class MainAsset extends InventoryAsset
 
         foreach ($assets_list as $assets) {
             foreach ($assets as $asset) {
-                $asset->setEntityID($this->getEntityID(), $this->is_recursive);
+                $asset->setEntityID($this->getEntityID());
+                $asset->setEntityRecursive($this->getEntityRecursive());
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
                     if ($asset_type != '\\' . get_class($asset)) {
