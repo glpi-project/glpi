@@ -38,7 +38,6 @@
  */
 
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\Response;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
