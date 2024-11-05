@@ -37,9 +37,6 @@ namespace Glpi\Http;
 use Glpi\Controller\LegacyFileLoadController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -79,26 +76,7 @@ final class LegacyRouterListener implements EventSubscriberInterface
             return;
         }
 
-        $response = $this->runLegacyRouter($request);
-
-        if ($response) {
-            $event->setResponse($response);
-        }
-    }
-
-    private function runLegacyRouter(Request $request): ?Response
-    {
-        /**
-         * GLPI web router.
-         *
-         * This router is used to be able to expose only the `/public` directory on the webserver.
-         */
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
-
-        $response = $this->handleRedirects($path, $uri_prefix);
-        if ($response) {
-            return $response;
-        }
 
         $target_file = $this->getTargetFile($path);
 
@@ -109,7 +87,7 @@ final class LegacyRouterListener implements EventSubscriberInterface
             || !$this->isTargetAPhpScript($path)
         ) {
             // Let the previous router do the trick, it's fine.
-            return null;
+            return;
         }
 
         // Ensure `getcwd()` and inclusion path is based on requested file FS location.
@@ -130,31 +108,5 @@ final class LegacyRouterListener implements EventSubscriberInterface
          */
         $request->attributes->set('_controller', LegacyFileLoadController::class);
         $request->attributes->set(LegacyFileLoadController::REQUEST_FILE_KEY, $target_file);
-
-        return null;
-    }
-
-    /**
-     *  Handle well-known URIs as defined in RFC 5785.
-     *  https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
-     */
-    private function handleRedirects(string $path, string $uri_prefix): ?Response
-    {
-        // Handle well-known URIs
-        if (preg_match('/^\/\.well-known\//', $path) !== 1) {
-            return null;
-        }
-
-        // Get the requested URI (the part after .well-known/)
-        $requested_uri = explode('/', $path);
-        $requested_uri = strtolower(end($requested_uri));
-
-        // Some password managers can use this URI to help with changing passwords
-        // Redirect to the change password page
-        if ($requested_uri === 'change-password') {
-            return new RedirectResponse($uri_prefix . '/front/updatepassword.php', 307);
-        }
-
-        return null;
     }
 }
