@@ -34,9 +34,9 @@
 
 namespace Glpi\Controller\Form\Translation;
 
-use DASPRiD\Enum\Exception\IllegalArgumentException;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Translation\FormTranslation;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +55,7 @@ final class UpdateFormTranslationController extends AbstractController
 
         $formTranslation = new FormTranslation();
         if (!$formTranslation->getFromDB($form_translation_id)) {
-            throw new IllegalArgumentException("Form translation not found");
+            throw new BadRequestHttpException("Form translation not found");
         }
 
         // Update form translation
