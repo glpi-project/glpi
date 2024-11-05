@@ -48,6 +48,11 @@ jobs:
       - name: "Psalm security scan"
         run: |
           docker compose exec -T app ./vendor/bin/cpx vimeo/psalm --long-progress --output-format=github --report=psalm-results.sarif
+      - name: "Save artifact"
+        uses: "actions/upload-artifact@v4"
+        with:
+            name: "psalm-results.sarif"
+            path: "${{ github.workspace }}/psalm-results.sarif"
       - name: "Upload results"
         if: "github.repository == 'glpi-project/glpi' && github.ref_name == 'main'"
         uses: "github/codeql-action/upload-sarif@v3"
