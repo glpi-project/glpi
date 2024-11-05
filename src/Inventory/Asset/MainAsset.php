@@ -990,7 +990,7 @@ abstract class MainAsset extends InventoryAsset
 
         foreach ($assets_list as $assets) {
             foreach ($assets as $asset) {
-                $asset->setEntityID($this->getEntityID(), $this->is_recursive);
+                $asset->setEntity($this->getEntityID(), $this->is_recursive);
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
                     if ($asset_type != '\\' . get_class($asset)) {
@@ -1006,7 +1006,7 @@ abstract class MainAsset extends InventoryAsset
 
         //do controllers
         foreach ($controllers as $asset) {
-            $asset->setEntityID($this->getEntityID());
+            $asset->setEntity($this->getEntityID());
             $asset->setExtraData($this->assets);
             $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
             //do not handle ignored controllers
