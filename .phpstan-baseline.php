@@ -524,18 +524,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Cluster.php',
 ];
 $ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CommonDBChild\\:\\:showChildsForItemForm\\(\\) should return bool\\|void but returns string\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBChild.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CommonDBConnexity\\:\\:getItemsAssociationRequest\\(\\) should return array but returns DBmysqlIterator\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
 	// identifier: return.void
 	'message' => '#^Method CommonDBRelation\\:\\:processMassiveActionsForOneItemtype\\(\\) with return type void returns false but should not return anything\\.$#',
 	'count' => 1,
@@ -725,18 +713,6 @@ $ignoreErrors[] = [
 	// identifier: return.type
 	'message' => '#^Method CommonITILObject\\:\\:computePriority\\(\\) should return int but returns float\\.$#',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CommonITILObject\\:\\:getDefaultActor\\(\\) should return bool but returns int\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method CommonITILObject\\:\\:getDefaultActorRightSearch\\(\\) should return bool but returns string\\.$#',
-	'count' => 2,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -4480,12 +4456,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: greater.alwaysTrue
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	// identifier: return.type
-	'message' => '#^Method Ticket\\:\\:getDefaultActorRightSearch\\(\\) should return bool but returns string\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
