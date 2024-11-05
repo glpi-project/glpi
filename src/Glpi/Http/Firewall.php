@@ -202,7 +202,6 @@ final class Firewall
         }
 
         $paths = [
-            '/ajax/knowbase.php' => self::STRATEGY_FAQ_ACCESS,
             '/front/helpdesk.faq.php' => self::STRATEGY_FAQ_ACCESS,
 
             '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to public FAQ tabs

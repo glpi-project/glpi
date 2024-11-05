@@ -1584,43 +1584,6 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Get image path for a specified context.
-     * Will call image resize if needed.
-     *
-     * @since 9.2.1
-     *
-     * @param string  $path    Original path
-     * @param string  $context Context
-     * @param integer $mwidth  Maximal width
-     * @param integer $mheight Maximal height
-     *
-     * @return string Image path on disk
-     *
-     * @deprecated 11.0.0
-     */
-    public static function getImage($path, $context, $mwidth = null, $mheight = null)
-    {
-        Toolbox::deprecated();
-
-        if ($mwidth === null || $mheight === null) {
-            switch ($context) {
-                case 'mail':
-                    $mwidth  = $mwidth ?? 400;
-                    $mheight = $mheight ?? 300;
-                    break;
-                case 'timeline':
-                    $mwidth  = $mwidth ?? 100;
-                    $mheight = $mheight ?? 100;
-                    break;
-                default:
-                    throw new \RuntimeException("Unknown context $context!");
-            }
-        }
-
-        return self::getResizedImagePath($path, $mwidth, $mheight);
-    }
-
-    /**
      * Get resized image path.
      *
      * @since 10.0.1

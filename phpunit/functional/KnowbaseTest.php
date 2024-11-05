@@ -114,7 +114,7 @@ class KnowbaseTest extends DbTestCase
             ]
         ];
 
-        $tree = $itemtype::getTreeCategoryList($itemtype, []);
+        $tree = \KnowbaseItem::getTreeCategoryList($itemtype, []);
         $this->assertEquals($expected, $tree);
 
         // Add a private item (not FAQ)
@@ -145,7 +145,7 @@ class KnowbaseTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $kbitem_target_id);
 
-        $tree = $itemtype::getTreeCategoryList($itemtype, []);
+        $tree = \KnowbaseItem::getTreeCategoryList($itemtype, []);
         $expected = [
             [
                 'key' => $cat_1_id,
@@ -197,7 +197,7 @@ class KnowbaseTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $kbitem_target_id);
 
-        $tree = $itemtype::getTreeCategoryList($itemtype, []);
+        $tree = \KnowbaseItem::getTreeCategoryList($itemtype, []);
         $expected = [
             [
                 'key' => $cat_1_id,
@@ -268,13 +268,13 @@ class KnowbaseTest extends DbTestCase
         // Force session reset
         $session_bck = $_SESSION;
         $this->resetSession();
-        $tree_with_no_public_faq = $itemtype::getTreeCategoryList($itemtype, []);
+        $tree_with_no_public_faq = \KnowbaseItem::getTreeCategoryList($itemtype, []);
 
         // Check that tree contains root + category branch containing FAQ item (FAQ is public) for anonymous user
         global $CFG_GLPI;
         $use_public_faq_bck = $CFG_GLPI['use_public_faq'];
         $CFG_GLPI['use_public_faq'] = 1;
-        $tree_with_public_faq = $itemtype::getTreeCategoryList($itemtype, []);
+        $tree_with_public_faq = \KnowbaseItem::getTreeCategoryList($itemtype, []);
 
         // Put back globals
         $_SESSION = $session_bck;

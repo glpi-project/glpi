@@ -137,8 +137,8 @@ if (
 
                     //if item have a DC position (reload url to it's rack)
                     if (
-                        method_exists($item, 'isRackPart')
-                        && ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true))
+                        method_exists($item, 'getParentRack')
+                        && ($rack = $item->getParentRack())
                     ) {
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
                   html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";

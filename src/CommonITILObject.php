@@ -247,13 +247,6 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
 
             default:
-                if (version_compare(PHP_VERSION, '8.2.0', '<')) {
-                    // Trigger same deprecation notice as the one triggered by PHP 8.2+
-                    trigger_error(
-                        sprintf('Creation of dynamic property %s::$%s is deprecated', get_called_class(), $property_name),
-                        E_USER_DEPRECATED
-                    );
-                }
                 $this->$property_name = $value;
                 break;
         }
@@ -1141,25 +1134,6 @@ abstract class CommonITILObject extends CommonDBTM
         );
 
         return count($validation_requests) > 0;
-    }
-
-    /**
-     * Check if the given users is a validator
-     * @param int $users_id
-     * @return bool
-     *
-     * @deprecated 11.0.0
-     */
-    public function isValidator($users_id): bool
-    {
-        Toolbox::deprecated('"CommonITILObject::isValidator()" is deprecated. Use "CommonITILObject::isUserValidationRequested()" instead.');
-
-        if (!$users_id) {
-           // Invalid parameter
-            return false;
-        }
-
-        return $this->isUserValidationRequested($users_id, true);
     }
 
 
