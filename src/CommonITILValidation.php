@@ -38,15 +38,16 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
+use Glpi\Search\AdvancedSearchInterface;
 
 /**
  * CommonITILValidation Class
  *
  * @since 0.85
  **/
-abstract class CommonITILValidation extends CommonDBChild
+abstract class CommonITILValidation extends CommonDBChild implements AdvancedSearchInterface
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action    = false;
 
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -1958,5 +1959,31 @@ HTML;
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
+    }
+
+    public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        $table = $opt->getTableReference($itemtype, $meta);
+        if ($opt['field'] === 'status') {
+            if ($val !== 'can' && !is_numeric($val)) {
+                return [];
+            }
+            $to_check = $val === 'can' ? self::getCanValidationStatusArray() : [$val];
+            return match ($nott) {
+                true => ["$table.status" => ['NOT IN' => $to_check]],
+                default => ["$table.status" => $to_check],
+            };
+        }
+        return null;
     }
 }

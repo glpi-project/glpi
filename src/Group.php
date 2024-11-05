@@ -37,11 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Search\Provider\SQLProvider;
+use Glpi\Search\AdvancedSearchInterface;
+use Glpi\Search\SearchOption;
 
 /**
  * Group class
  **/
-class Group extends CommonTreeDropdown
+class Group extends CommonTreeDropdown implements AdvancedSearchInterface
 {
     use Glpi\Features\Clonable;
 
@@ -992,5 +994,75 @@ class Group extends CommonTreeDropdown
         if (Session::getLoginUserID()) {
             Session::loadGroups();
         }
+    }
+
+    public static function getSQLDefaultSelectCriteria(string $itemtype): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+        if ($field === 'completename') {
+            if ($val === 'mygroups') {
+                switch ($searchtype) {
+                    case 'equals':
+                        if (count($_SESSION['glpigroups']) === 0) {
+                            return [];
+                        }
+                        return [
+                            "$table.id" => $_SESSION['glpigroups']
+                        ];
+
+                    case 'notequals':
+                        if (count($_SESSION['glpigroups']) === 0) {
+                            return [];
+                        }
+                        return [
+                            "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
+                        ];
+
+                    case 'under':
+                        if (count($_SESSION['glpigroups']) === 0) {
+                            return [];
+                        }
+                        $groups = $_SESSION['glpigroups'];
+                        foreach ($_SESSION['glpigroups'] as $g) {
+                            $groups += getSonsOf($opt['table'], $g);
+                        }
+                        $groups = array_unique($groups);
+                        return [
+                            "$table.id" => $groups
+                        ];
+
+                    case 'notunder':
+                        if (count($_SESSION['glpigroups']) === 0) {
+                            return [];
+                        }
+                        $groups = $_SESSION['glpigroups'];
+                        foreach ($_SESSION['glpigroups'] as $g) {
+                            $groups += getSonsOf($opt['table'], $g);
+                        }
+                        $groups = array_unique($groups);
+                        return [
+                            "$table.id" => ['NOT IN', $groups]
+                        ];
+
+                    case 'empty':
+                        $criteria = [];
+                        $fn_append_with_search($criteria, "$table.id");
+                        return $criteria;
+                }
+            }
+        }
+
+        return null;
     }
 }
