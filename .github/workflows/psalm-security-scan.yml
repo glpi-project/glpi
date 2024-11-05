@@ -1,0 +1,30 @@
+name: "Psalm security scan"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  psalm-security-scan:
+    name: "Psalm security scan"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Psalm security scan"
+        uses: "psalm/psalm-github-security-scan@f3e6fd9432bc3e44aec078572677ce9d2ef9c287"
+
+      - name: "Upload results"
+        uses: "github/codeql-action/upload-sarif@v3"
+        with:
+          sarif_file: "results.sarif"
