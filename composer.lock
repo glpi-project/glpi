@@ -279,16 +279,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.34",
+            "version": "1.1.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "3241f9ea5182183af369993fce3e1e34b3916771"
+                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/3241f9ea5182183af369993fce3e1e34b3916771",
-                "reference": "3241f9ea5182183af369993fce3e1e34b3916771",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/b0bd6b08805c8fa6690ee3576edbba8803f724be",
+                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be",
                 "shasum": ""
             },
             "require": {
@@ -298,16 +298,16 @@
                 "ext-libxml": "*",
                 "ext-simplexml": "*",
                 "php": ">=7.4",
-                "seld/jsonlint": "^1.10",
+                "seld/jsonlint": "^1.11",
                 "swaggest/json-schema": "^0.12.42",
-                "symfony/polyfill-php81": "^1.28"
+                "symfony/polyfill-php81": "^1.31"
             },
             "require-dev": {
-                "phpstan/extension-installer": "^1.3",
-                "phpstan/phpstan": "^1.10",
-                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^1.12",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^3.8"
+                "squizlabs/php_codesniffer": "^3.10"
             },
             "bin": [
                 "bin/convert",
@@ -347,7 +347,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2024-02-08T13:22:54+00:00"
+            "time": "2024-11-05T13:37:20+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3153,23 +3153,23 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.10.2",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "9bb7db07b5d66d90f6ebf542f09fc67d800e5259"
+                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9bb7db07b5d66d90f6ebf542f09fc67d800e5259",
-                "reference": "9bb7db07b5d66d90f6ebf542f09fc67d800e5259",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/1748aaf847fc731cfad7725aec413ee46f0cc3a2",
+                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.3 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.5",
+                "phpstan/phpstan": "^1.11",
                 "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0 || ^8.5.13"
             },
             "bin": [
@@ -3201,7 +3201,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.10.2"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.11.0"
             },
             "funding": [
                 {
@@ -3213,7 +3213,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-07T12:57:50+00:00"
+            "time": "2024-07-11T14:55:45+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -3288,16 +3288,16 @@
         },
         {
             "name": "swaggest/json-diff",
-            "version": "v3.10.5",
+            "version": "v3.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/json-diff.git",
-                "reference": "17bfc66b330f46e12a7e574133497a290cd79ba5"
+                "reference": "c55d38a3cb372753b5d5ee4c9b7d8470e486e6a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/17bfc66b330f46e12a7e574133497a290cd79ba5",
-                "reference": "17bfc66b330f46e12a7e574133497a290cd79ba5",
+                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/c55d38a3cb372753b5d5ee4c9b7d8470e486e6a5",
+                "reference": "c55d38a3cb372753b5d5ee4c9b7d8470e486e6a5",
                 "shasum": ""
             },
             "require": {
@@ -3325,9 +3325,9 @@
             "description": "JSON diff/rearrange/patch/pointer library for PHP",
             "support": {
                 "issues": "https://github.com/swaggest/json-diff/issues",
-                "source": "https://github.com/swaggest/json-diff/tree/v3.10.5"
+                "source": "https://github.com/swaggest/json-diff/tree/v3.11.0"
             },
-            "time": "2023-11-17T11:12:46+00:00"
+            "time": "2024-07-02T11:32:10+00:00"
         },
         {
             "name": "swaggest/json-schema",
@@ -8005,7 +8005,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
