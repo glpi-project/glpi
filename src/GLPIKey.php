@@ -181,8 +181,8 @@ class GLPIKey
 
        // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
-        if ($update_db) {
-            $previous_key = $this->keyExists() ? $this->get() : null;
+        if ($update_db && $this->keyExists()) {
+            $previous_key = $this->get();
             if ($previous_key === null) {
                 // Do not continue if unable to get previous key when DB update is requested.
                 // Detailed warning has already been triggered by `get()` method.
