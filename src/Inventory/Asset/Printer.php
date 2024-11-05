@@ -245,6 +245,7 @@ class Printer extends NetworkEquipment
                 if ($data['found_inventories'][0] == 0) {
                    // add printer
                     $val->entities_id = $entities_id;
+                    $val->is_recursive = $this->is_recursive;
                     $val->is_dynamic = 1;
                     $items_id = $printer->add(Sanitizer::sanitize($this->handleInput($val, $printer)));
                 } else {

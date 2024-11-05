@@ -547,6 +547,9 @@ abstract class MainAsset extends InventoryAsset
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
                 $this->entities_id = $input['entities_id'];
+                if (isset($dataEntity['is_recursive'])) {
+                    $this->is_recursive = $input['is_recursive'] = $dataEntity['is_recursive'];
+                }
 
                 // get data from rules (like locations_id, states_id, groups_id_tech, etc)
                 // we don't want virtual action (prefixed by _)
@@ -986,7 +989,7 @@ abstract class MainAsset extends InventoryAsset
 
         foreach ($assets_list as $assets) {
             foreach ($assets as $asset) {
-                $asset->setEntityID($this->getEntityID());
+                $asset->setEntityID($this->getEntityID(), $this->is_recursive);
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
                     if ($asset_type != '\\' . get_class($asset)) {
