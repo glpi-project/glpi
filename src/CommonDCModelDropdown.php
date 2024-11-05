@@ -248,7 +248,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     }
 
     /**
-     * Check if a cell is filled for a specific orientations, hpos and depth
+     * Check if a cell is filled for a specific orientation, horizontal position and depth
      *
      * @param array $cell
      * @param int $orientation front or rear

@@ -894,11 +894,11 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @todo study if we cannot use these methods for the user emails
      * @see showAddChildButtonForItemForm()
      *
-     * @param CommonDBTM   $item        the item on which to add the current CommenDBChild
+     * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
      * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|boolean|string (display) Returns false if there is a right error.
      **/
     public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
@@ -1022,11 +1022,11 @@ abstract class CommonDBChild extends CommonDBConnexity
             Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
             $info = ob_get_clean();
             if (empty($info)) {
-                $info = __('Yes');
+                $info = __s('Yes');
             }
             echo $info;
         } else {
-            echo __('No');
+            echo __s('No');
         }
         echo "</td>";
     }

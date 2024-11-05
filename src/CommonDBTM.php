@@ -571,7 +571,7 @@ class CommonDBTM extends CommonGLPI
      * @param array|string $order     order field if needed (default '')
      * @param integer      $limit     limit retrieved data if needed (default '')
      *
-     * @return array all retrieved data in a associative array by id
+     * @return array all retrieved data in an associative array by id
      **/
     public function find($condition = [], $order = [], $limit = null)
     {
@@ -1065,7 +1065,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (in_array(static::class, $CFG_GLPI['agent_types'], true)) {
-           // Agent does not extends CommonDBConnexity
+           // Agent does not extend CommonDBConnexity
             $agent = new Agent();
             $agent->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()]);
         }
@@ -1774,14 +1774,14 @@ class CommonDBTM extends CommonGLPI
                                  $this->forwardEntityInformations();
                             }
 
-                           // If itemtype is in infocomtype and if states_id field is filled
-                           // and item not a template
+                            // If itemtype is in infocomtype and if states_id field is filled
+                            // and item not a template
                             if (
                                 Infocom::canApplyOn($this)
                                 && in_array('states_id', $this->updates)
                                 && ($this->getField('is_template') != NOT_AVAILABLE)
                             ) {
-                               //Check if we have to automatical fill dates
+                                //Check if we have to automatically fill dates
                                 Infocom::manageDateOnStatusChange($this, false);
                             }
                         }
@@ -1793,7 +1793,7 @@ class CommonDBTM extends CommonGLPI
                     }
                 }
 
-                // As update have suceed, clean the old input value
+                // As update have succeed, clean the old input value
                 if (isset($this->input['_update'])) {
                     $this->clearSavedInput();
                 }
@@ -2344,7 +2344,7 @@ class CommonDBTM extends CommonGLPI
         $this->input = $input;
         Plugin::doHook(Hooks::PRE_ITEM_RESTORE, $this);
         if (!is_array($this->input)) {
-           // $input clear by a hook to cancel retore
+           // $input clear by a hook to cancel restore
             return false;
         }
 
@@ -2559,7 +2559,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Have i right to see action button
+     * Have I right to see action button
      *
      * @param integer $ID ID to check
      *
@@ -2976,7 +2976,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param integer $ID    ID of the item (-1 if new item)
      * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
-     * @param array   $input array of input data (used for adding item) (default NULL)
+     * @param ?array   $input array of input data (used for adding item) (default NULL)
      *
      * @return boolean
      **/
@@ -3035,7 +3035,7 @@ class CommonDBTM extends CommonGLPI
 
         switch ($right) {
             case READ:
-               // Personnal item
+               // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3045,7 +3045,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
-               // Personnal item
+               // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3055,7 +3055,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canUpdate() && $this->canUpdateItem());
 
             case DELETE:
-               // Personnal item
+               // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3065,7 +3065,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canDelete() && $this->canDeleteItem());
 
             case PURGE:
-               // Personnal item
+               // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3075,7 +3075,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canPurge() && $this->canPurgeItem());
 
             case CREATE:
-               // Personnal item
+               // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3775,7 +3775,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Get additionals information to add before name
+     * Get additional information to add before name
      *
      * @since 0.84
      *
@@ -3787,7 +3787,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get additionals information to add after name
+     * Get additional information to add after name
      *
      * @since 0.84
      *
@@ -3807,7 +3807,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $options array of options
      *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display aditionals information
+     *    - additional   : boolean / display additional information
      *    - forceid      : boolean  override config and display item's ID (false by default)
      *
      * @return string name of the object in the current language
@@ -4540,7 +4540,7 @@ class CommonDBTM extends CommonGLPI
                     if (empty($double_text)) {
                         $double_text = $new_text;
                     } else {
-                        $double_text = sprintf(__('%1$s - %2$s'), $double_text, $new_text);
+                        $double_text = sprintf(__s('%1$s - %2$s'), $double_text, $new_text);
                     }
                 }
             }
@@ -5308,7 +5308,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * @param string  $itemtype Item type
      * @param string  $target   Target
-     * @param boolean $add      If true, diplays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
+     * @param boolean $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
      *
      * @return false|void
      */
@@ -5373,7 +5373,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($add) {
             $entries[] = [
-                'template' => '<a href="' . htmlescape($target_blank) . '">' . __('Blank Template') . '</a>'
+                'template' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>'
             ];
         }
 
@@ -5480,11 +5480,11 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get rights for an item _ may be overload by object
+     * Get rights for an item _ may be overloaded by object
      *
      * @since 0.85
      *
-     * @param string $interface (defalt 'central')
+     * @param string $interface (default 'central')
      *
      * @return array array of rights to display
      **/
@@ -6383,7 +6383,7 @@ TWIG, $twig_params);
         $input_value = $this->input[$field] ?? null;
 
         // See dropdownField twig macro, needed for empty values as an empty
-        // array wont be sent in the HTML form
+        // array won't be sent in the HTML form
         $input_defined = (bool) ($this->input["_{$field}_defined"] ?? false);
 
         // Load existing value
@@ -6459,7 +6459,7 @@ TWIG, $twig_params);
      * @param string $commondb_relation Valid class extending CommonDBRelation
      * @param string $field             Target field in the item input
      * @param array  $extra_input       Fixed value to be used when searching
-     *                                  for existing valuess
+     *                                  for existing values
      *
      * @return void
      */
@@ -6539,7 +6539,7 @@ TWIG, $twig_params);
      *                             string due to some weird default values.
      *                             Will be cast to int straight away.
      * @param null|array  $menus   Menu path used to load specific JS file and
-     *                             show breadcumbs, see $CFG_GLPI['javascript']
+     *                             show breadcrumbs, see $CFG_GLPI['javascript']
      *                             and Html::includeHeader()
      *                             Three possible formats:
      *                             - [menu 1, menu 2, menu 3]
@@ -6548,7 +6548,7 @@ TWIG, $twig_params);
      *                                'helpdesk' => [menu 1, menu 2, menu 3],
      *                               ]
      *                             - null (use auto computed values, mainly
-     *                             used for children of commondropdown that can
+     *                             used for children of CommonDropdown that can
      *                             define their menus as object properties)
      * @param array      $options  Display options
      *
@@ -6614,7 +6614,7 @@ TWIG, $twig_params);
 
         // Display extra html if needed
         if (!empty($options['after_display'] ?? "")) {
-            echo $options['after_display'];
+            echo htmlescape($options['after_display']);
         }
 
         // Show footer
@@ -6735,7 +6735,7 @@ TWIG, $twig_params);
             case 'update':
             case 'delete':
             case 'user_mention':
-                // Add the CRUD actions and the `user_mention` notifications to thread instanciated by `new` event
+                // Add the CRUD actions and the `user_mention` notifications to thread instantiated by `new` event
                 $reference_event = 'new';
                 break;
             default:

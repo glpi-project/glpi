@@ -1031,8 +1031,8 @@ abstract class CommonITILValidation extends CommonDBChild
             $script = "";
             if ($canedit) {
                 $edit_title = __s('Edit');
-                $item_id = htmlescape($item->fields['id']);
-                $row_id = htmlescape($row["id"]);
+                $item_id = (int)$item->fields['id'];
+                $row_id = (int)$row["id"];
                 $rand = htmlescape($rand);
                 $view_validation_id = htmlescape($this->fields[static::$items_id]);
                 $root_doc = htmlescape($CFG_GLPI["root_doc"]);

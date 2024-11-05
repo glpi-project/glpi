@@ -739,7 +739,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
-        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', $nb) : '';
+        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', (int)$nb) : '';
 
         return sprintf(
             '<span class="d-flex align-items-center">%s%s%s</span>',
@@ -1227,7 +1227,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
        // try to lock object
-       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+       // $options must contain the id of the object, and if locked by manageObjectLock will contain 'locked' => 1
         ObjectLock::manageObjectLock(get_class($this), $options);
 
        // manage custom options passed to tabs
