@@ -1936,7 +1936,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             }
 
             $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];
-            $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>

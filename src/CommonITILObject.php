@@ -172,7 +172,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         // TODO 11.0 (breaking change): method should be protected instead of public
 
-        // Might not be 100% needed to clear cache here but lets be safe
+        // Might not be 100% needed to clear cache here but let's be safe
         // This way, any direct call to loadActors is assured to return accurate data
         $this->clearLazyLoadedActors();
 
@@ -1477,7 +1477,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param integer $type type to search (see constants)
      *
-     * @return boolean
+     * @return int
      **/
     public function getDefaultActor($type)
     {
@@ -1508,7 +1508,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param integer $type type to search (see constants)
      *
-     * @return boolean
+     * @return string
      **/
     public function getDefaultActorRightSearch($type)
     {
@@ -3028,7 +3028,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Handle input deprecations by transfering old supported input keys to new input keys.
+     * Handle input deprecations by transferring old supported input keys to new input keys.
      *
      * @param array $input
      *
@@ -6723,7 +6723,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Display a line for an object
      *
-     * @since 0.85 (befor in each object with differents parameters)
+     * @since 0.85 (before in each object with different parameters)
      *
      * @param $id                 Integer  ID of the object
      * @param $options            array of options
@@ -9783,7 +9783,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Parameter class to be use for this item (user templates)
+     * Parameter class to be used for this item (user templates)
      * @return string class name
      */
     abstract public static function getContentTemplatesParametersClass(): string;

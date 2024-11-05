@@ -616,7 +616,8 @@ abstract class CommonDropdown extends CommonDBTM
             return false;
         }
 
-        $ID = htmlescape($this->fields['id']);
+        $ID = (int)$this->fields['id'];
+        $target = htmlescape($target);
 
         echo "<div class='center'><p class='red'>";
         echo __s("Caution: you're about to remove a heading used for one or more items.");
@@ -626,7 +627,7 @@ abstract class CommonDropdown extends CommonDBTM
            // Delete form (set to 0)
             echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
-            echo "<form action='" . htmlescape($target) . "' method='post'>";
+            echo "<form action='" . $target . "' method='post'>";
             echo "<table class='tab_cadre'><tr>";
             echo "<td><input type='hidden' name='id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";

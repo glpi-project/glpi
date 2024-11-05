@@ -214,7 +214,7 @@ abstract class CommonDBVisible extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $ID      = htmlescape($this->fields['id']);
+        $ID      = (int)$this->fields['id'];
         $canedit = $this->canEdit($ID);
         $rand    = mt_rand();
         $nb      = $this->countVisibilities();

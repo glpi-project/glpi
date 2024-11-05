@@ -487,7 +487,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
             $occurence_date = $calendar->computeEndDate(
                 $begin_date,
-                0 // 0 second delay to get the first working "second"
+                0 // 0-second delay to get the first working "second"
             );
             $occurence_time = strtotime($occurence_date);
             $creation_time  = $occurence_time - $create_before;

@@ -195,7 +195,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param string  $itemtype          the type of the item we want the resulting items to be associated to
      * @param string  $items_id          the name of the item we want the resulting items to be associated to
      *
-     * @return array the items associated to the given one (empty if none was found)
+     * @return DBmysqlIterator the items associated to the given one (empty if none was found)
      */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
@@ -448,7 +448,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @since 0.84
      *
      * Get the change values for history when only the fields of the CommonDBChild are updated
-     * @warning can be call as many time as fields are updated
+     * @warning can be call as many times as fields are updated
      *
      * @param string $field the name of the field that has changed
      *

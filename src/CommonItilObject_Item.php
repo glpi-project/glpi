@@ -351,7 +351,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             return false;
         }
 
-        $instID = $obj->fields['id'];
+        $instID = (int)$obj->fields['id'];
 
         if (!$obj->can($instID, READ)) {
             return false;
