@@ -710,6 +710,7 @@ $RELATION = [
         "_glpi_forms_answerssets"                       => "forms_forms_id",
         "_glpi_forms_destinations_formdestinations"     => "forms_forms_id",
         "_glpi_forms_sections"                          => "forms_forms_id",
+        "_glpi_forms_translations_formtranslations"     => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [
