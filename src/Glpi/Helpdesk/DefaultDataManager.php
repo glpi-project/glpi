@@ -39,7 +39,13 @@ use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
@@ -54,6 +60,7 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
 use ITILCategory;
@@ -105,7 +112,7 @@ final class DefaultDataManager
         // Add questions
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
-        // TODO: associated items (not possible yet)
+        $this->addQuestion($section, $this->getUserDevicesQuestionData());
         $this->addQuestion($section, $this->getWatchersQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
@@ -136,7 +143,12 @@ final class DefaultDataManager
             RequestTypeField::getKey() => (new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: Ticket::INCIDENT_TYPE,
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
+
+            // Set last valid answer as observer
+            ObserverField::getKey() => (new ITILActorFieldConfig(
+                strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
+            ))->jsonSerialize(),
         ];
 
         // Add ticket destination
@@ -161,7 +173,7 @@ final class DefaultDataManager
         // Add questions
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
-        // TODO: associated items (not possible yet)
+        $this->addQuestion($section, $this->getUserDevicesQuestionData());
         $this->addQuestion($section, $this->getWatchersQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
@@ -192,7 +204,12 @@ final class DefaultDataManager
             RequestTypeField::getKey() => (new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: Ticket::DEMAND_TYPE,
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
+
+            // Set last valid answer as observer
+            ObserverField::getKey() => (new ITILActorFieldConfig(
+                strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
+            ))->jsonSerialize(),
         ];
 
         // Add ticket destination
@@ -273,6 +290,16 @@ final class DefaultDataManager
             'name' => _n('Category', 'Categories', 1),
             'default_value' => 0,
             'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
+        ];
+    }
+
+    private function getUserDevicesQuestionData(): array
+    {
+        return [
+            'type' => QuestionTypeUserDevice::class,
+            'name' => __("User devices"),
+            'default_value' => 0,
+            'extra_data' => json_encode(['is_multiple_devices' => false]),
         ];
     }
 
