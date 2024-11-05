@@ -40,7 +40,7 @@
     {% set entries = entries|merge([{
         'type': '<span data-glpi-form-translations-subtitle-row>' ~ category ~ '</span>',
         'type_colspan': 3,
-        'type_aria_label': __('Category')
+        'type_aria_label': _n('Category', 'Categories', 1)
     }]) %}
     {% for handler in handlers %}
         {% set entries = entries|merge([{
