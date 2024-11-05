@@ -222,8 +222,7 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
             `translations` JSON,
             PRIMARY KEY (`id`),
             UNIQUE KEY `unicity` (`forms_forms_id`, `language`),
-            KEY `language` (`language`),
-            KEY `forms_forms_id` (`forms_forms_id`)
+            KEY `language` (`language`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
