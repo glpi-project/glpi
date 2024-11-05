@@ -81,7 +81,7 @@ function header_html($etape)
     echo "<div id='bloc'>";
     echo "<div id='logo_bloc'></div>";
     echo "<h2>GLPI SETUP</h2>";
-    echo "<br><h3>" . $etape . "</h3>";
+    echo "<br><h3>" . htmlescape($etape) . "</h3>";
 }
 
 
@@ -233,13 +233,13 @@ function step4($databasename, $newdatabasename)
     $password = $_SESSION['db_access']['password'];
 
    //display the form to return to the previous step.
-    echo "<h3>" . __('Initialization of the database') . "</h3>";
+    echo "<h3>" . __s('Initialization of the database') . "</h3>";
 
     $prev_form = function ($host, $user, $password) {
         echo "<br><form action='install.php' method='post'>";
-        echo "<input type='hidden' name='db_host' value='" . $host . "'>";
-        echo "<input type='hidden' name='db_user' value='" . $user . "'>";
-        echo " <input type='hidden' name='db_pass' value='" . rawurlencode($password) . "'>";
+        echo "<input type='hidden' name='db_host' value='" . htmlescape($host) . "'>";
+        echo "<input type='hidden' name='db_user' value='" . htmlescape($user) . "'>";
+        echo " <input type='hidden' name='db_pass' value='" . htmlescape(rawurlencode($password)) . "'>";
         echo "<input type='hidden' name='update' value='no'>";
         echo "<input type='hidden' name='install' value='Etape_2'>";
         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='" .
@@ -254,7 +254,7 @@ function step4($databasename, $newdatabasename)
         echo "<br><form action='install.php' method='post'>";
         echo "<input type='hidden' name='install' value='Etape_4'>";
         echo "<button type='submit' name='submit' class='btn btn-primary'>
-         " . __('Continue') . "
+         " . __s('Continue') . "
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
         Html::closeForm();
@@ -263,7 +263,7 @@ function step4($databasename, $newdatabasename)
    //create security key
     $glpikey = new GLPIKey();
     if (!$glpikey->generate(update_db: false)) {
-        echo "<p><strong>" . __('Security key cannot be generated!') . "</strong></p>";
+        echo "<p><strong>" . __s('Security key cannot be generated!') . "</strong></p>";
         $prev_form($host, $user, $password);
         return;
     }
@@ -286,7 +286,7 @@ function step4($databasename, $newdatabasename)
     $timezones_requirement = new DbTimezones($db);
 
     if ($databasename === '' && $newdatabasename === '') {
-        echo "<p>" . __("You didn't select a database!") . "</p>";
+        echo "<p>" . __s("You didn't select a database!") . "</p>";
         $prev_form($host, $user, $password);
         return;
     }
@@ -299,8 +299,8 @@ function step4($databasename, $newdatabasename)
             !$link->select_db($databasename)
             && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`")
         ) {
-            echo __('Error in creating database!');
-            echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
+            echo __s('Error in creating database!');
+            echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
             $prev_form($host, $user, $password);
             return;
         }
@@ -309,8 +309,8 @@ function step4($databasename, $newdatabasename)
     }
 
     if (!$link->select_db($databasename)) {
-        echo __('Impossible to use the database:');
-        echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
+        echo __s('Impossible to use the database:');
+        echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
         $prev_form($host, $user, $password);
         return;
     }
@@ -328,25 +328,25 @@ function step4($databasename, $newdatabasename)
     );
 
     if ($success) {
-        echo "<p>" . __('Initializing database tables and default data...') . "</p>";
+        echo "<p>" . __s('Initializing database tables and default data...') . "</p>";
         try {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
         } catch (\Throwable $e) {
             echo "<p>"
                 . sprintf(
-                    __('An error occurred during the database initialization. The error was: %s'),
-                    '<br />' . $e->getMessage()
+                    __s('An error occurred during the database initialization. The error was: %s'),
+                    '<br />' . htmlescape($e->getMessage())
                 )
                 . "</p>";
             @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
             $prev_form($host, $user, $password);
             return;
         }
-        echo "<p>" . __('OK - database was initialized') . "</p>";
+        echo "<p>" . __s('OK - database was initialized') . "</p>";
 
         $next_form();
     } else { // can't create config_db file
-        echo "<p>" . __('Impossible to write the database setup file') . "</p>";
+        echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);
     }
 }
