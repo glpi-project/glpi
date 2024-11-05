@@ -6614,7 +6614,7 @@ TWIG, $twig_params);
 
         // Display extra html if needed
         if (!empty($options['after_display'] ?? "")) {
-            echo htmlescape($options['after_display']);
+            echo $options['after_display'];
         }
 
         // Show footer
