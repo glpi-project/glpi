@@ -548,7 +548,8 @@ abstract class MainAsset extends InventoryAsset
                 }
                 $this->entities_id = $input['entities_id'];
                 if (isset($dataEntity['is_recursive'])) {
-                    $this->is_recursive = $input['is_recursive'] = $dataEntity['is_recursive'];
+                    $input['is_recursive'] = $dataEntity['is_recursive'];
+                    $this->is_recursive    = $dataEntity['is_recursive'];
                 }
 
                 // get data from rules (like locations_id, states_id, groups_id_tech, etc)
