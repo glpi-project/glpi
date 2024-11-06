@@ -217,8 +217,9 @@ TWIG;
                 '',
                 {
                     'no_label': true,
-                    'values': checked_values,
+                    'values'  : checked_values,
                     'multiple': is_multiple,
+                    'mb'      : '',
                 }
             ) }}
 TWIG;

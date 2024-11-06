@@ -177,6 +177,7 @@ class QuestionTypeItem extends AbstractQuestionType
                     'add_data_attributes_itemtype_dropdown' : {
                         'glpi-form-editor-specific-question-extra-data': '',
                     },
+                    'mb'                            : '',
                 }
             ) }}
 
@@ -208,7 +209,15 @@ TWIG;
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.hiddenField(question.getEndUserInputName() ~ '[itemtype]', itemtype) }}
+            {{ fields.hiddenField(
+                question.getEndUserInputName() ~ '[itemtype]',
+                itemtype,
+                '',
+                {
+                    'no_label': true,
+                    'mb': ''
+                }
+            ) }}
             {{ fields.dropdownField(
                 itemtype,
                 question.getEndUserInputName() ~ '[items_id]',
@@ -219,6 +228,9 @@ TWIG;
                     'display_emptychoice': true,
                     'right'              : 'all',
                     'aria_label'         : aria_label,
+                    'mb'                 : '',
+                    'addicon'            : false,
+                    'comments'           : false,
                 }
             ) }}
 TWIG;

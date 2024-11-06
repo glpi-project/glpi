@@ -187,15 +187,16 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             actors_dropdown,
             '',
             {
-                'disabled': is_multiple_actors,
-                'no_label': true,
+                'disabled'     : is_multiple_actors,
+                'no_label'     : true,
+                'mb'           : '',
+                'wrapper_class': '',
                 'field_class': [
                     'actors-dropdown',
                     'col-12',
                     'col-sm-6',
                     not is_multiple_actors ? '' : 'd-none'
                 ]|join(' '),
-                wrapper_class: ''
             }
         ) }}
         {{ fields.htmlField(
@@ -203,14 +204,15 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             actors_dropdown_multiple,
             '',
             {
-                'no_label': true,
-                'field_class': [
+                'no_label'     : true,
+                'wrapper_class': '',
+                'mb'           : '',
+                'field_class'  : [
                     'actors-dropdown',
                     'col-12',
                     'col-sm-6',
                     is_multiple_actors ? '' : 'd-none'
                 ]|join(' '),
-                wrapper_class: ''
             }
         ) }}
 TWIG;
@@ -312,9 +314,10 @@ TWIG;
             question.getEndUserInputName(),
             value,
             {
-                'multiple': is_multiple_actors,
+                'multiple'     : is_multiple_actors,
                 'allowed_types': allowed_types,
-                'aria_label': aria_label
+                'aria_label'   : aria_label,
+                'mb'           : ''
             }
         ]) %}
 
@@ -323,11 +326,13 @@ TWIG;
             actors_dropdown,
             '',
             {
-                'no_label': true,
-                'field_class': [
+                'no_label'     : true,
+                'wrapper_class': '',
+                'mb'           : '',
+                'field_class'  : [
                     'col-12',
                     'col-sm-6',
-                ]|join(' ')
+                ]|join(' '),
             }
         ) }}
 TWIG;
