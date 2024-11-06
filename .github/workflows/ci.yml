@@ -75,31 +75,31 @@ jobs:
           .github/actions/init_show-versions.sh
       - name: "Force used PHP version"
         run: |
-          docker compose exec -T app composer config --unset platform.php
-          docker compose exec -T app composer require "php:>=${{ matrix.php-version }}" --ignore-platform-req=php+ --no-install --no-scripts
+          docker compose exec app composer config --unset platform.php
+          docker compose exec app composer require "php:>=${{ matrix.php-version }}" --ignore-platform-req=php+ --no-install --no-scripts
       - name: "Build dependencies / translations"
         run: |
-          docker compose exec -T app .github/actions/init_build.sh
+          docker compose exec app .github/actions/init_build.sh
       - name: "PHP lint"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/lint_php-lint.sh
+          docker compose exec app .github/actions/lint_php-lint.sh
       - name: "Twig lint"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/lint_twig-lint.sh
+          docker compose exec app .github/actions/lint_twig-lint.sh
       - name: "JS lint"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/lint_js-lint.sh
+          docker compose exec app .github/actions/lint_js-lint.sh
       - name: "SCSS lint"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/lint_scss-lint.sh
+          docker compose exec app .github/actions/lint_scss-lint.sh
       - name: "Misc lint"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/lint_misc-lint.sh
+          docker compose exec app .github/actions/lint_misc-lint.sh
 
   generate-tests-matrix:
     # Do not run scheduled tests on tier repositories
@@ -174,47 +174,47 @@ jobs:
           .github/actions/init_show-versions.sh
       - name: "Build dependencies / translations"
         run: |
-          docker compose exec -T app .github/actions/init_build.sh
+          docker compose exec app .github/actions/init_build.sh
       - name: "Install DB tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_install.sh
+          docker compose exec app .github/actions/test_install.sh
       - name: "Update DB tests (from 0.85.5, not using utf8mb4)"
         if: "${{ success() || failure() }}"
         run: |
           .github/actions/init_initialize-0.85.5-db.sh
-          docker compose exec -T app .github/actions/test_update-from-older-version.sh
+          docker compose exec app .github/actions/test_update-from-older-version.sh
       - name: "Update DB tests (from 9.5, using utf8mb4)"
         if: "${{ success() || failure() }}"
         run: |
           .github/actions/init_initialize-9.5-db.sh
-          docker compose exec -T app .github/actions/test_update-from-9.5.sh
+          docker compose exec app .github/actions/test_update-from-9.5.sh
       - name: "PHPUnit tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_tests-phpunit.sh
+          docker compose exec app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_tests-functional.sh
+          docker compose exec app .github/actions/test_tests-functional.sh
       - name: "Cache tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_tests-cache.sh
+          docker compose exec app .github/actions/test_tests-cache.sh
       - name: "LDAP tests"
         if: "${{ success() || failure() }}"
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
-          docker compose exec -T app .github/actions/test_tests-ldap.sh
+          docker compose exec app .github/actions/test_tests-ldap.sh
       - name: "IMAP tests"
         if: "${{ success() || failure() }}"
         run: |
           .github/actions/init_initialize-imap-fixtures.sh
-          docker compose exec -T app .github/actions/test_tests-imap.sh
+          docker compose exec app .github/actions/test_tests-imap.sh
       - name: "Javascript tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_javascript.sh
+          docker compose exec app .github/actions/test_javascript.sh
 
   e2e:
     # Do not run scheduled tests on tier repositories
@@ -251,20 +251,20 @@ jobs:
           .github/actions/init_show-versions.sh
       - name: "Build dependencies / translations"
         run: |
-          docker compose exec -T app .github/actions/init_build.sh
+          docker compose exec app .github/actions/init_build.sh
       - name: "Install DB tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_install.sh
+          docker compose exec app .github/actions/test_install.sh
       - name: "WEB tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_tests-web.sh
+          docker compose exec app .github/actions/test_tests-web.sh
       - name: "E2E tests"
         if: "${{ success() || failure() }}"
         id: "e2e"
         run: |
-          docker compose exec -T app .github/actions/test_tests-e2e.sh
+          docker compose exec app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
         uses: actions/upload-artifact@v4
