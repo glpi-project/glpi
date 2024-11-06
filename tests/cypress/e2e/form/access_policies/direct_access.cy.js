@@ -71,7 +71,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -138,7 +138,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -199,7 +199,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
 
             // Check if the actor question is hidden
             cy.findByRole('heading', { 'name': 'Actor question title' }).should('not.exist');
