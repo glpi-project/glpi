@@ -108,7 +108,7 @@ final class ApiController extends AbstractController
         }
 
         return new SymfonyResponse(
-            $response->getBody()->getContents(),
+            (string) $response->getBody(),
             $response->getStatusCode(),
             $response->getHeaders()
         );
