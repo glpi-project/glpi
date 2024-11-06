@@ -8676,4 +8676,142 @@ JSON;
         $this->assertSame(4, $ip->fields['version']);
         $this->assertSame('172.27.45.19', $ip->fields['name']);
     }
+
+    public function testRuleRecursivityYes(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => __METHOD__,
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rule1_id);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "name",
+            'pattern'   => "/.*/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $entity_id,
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'is_recursive',
+            'value'       => 1
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $files = [
+            'computer_1.json',
+            'networkequipment_1.json',
+            'phone_1.json',
+            'printer_1.json',
+        ];
+
+        foreach ($files as $file) {
+            //run inventory
+            $json = json_decode(file_get_contents(self::INV_FIXTURES . $file));
+            $inventory = $this->doInventory($json);
+            $assets = $inventory->getAssets();
+
+            foreach ($assets as $assettype) {
+                foreach ($assettype as $asset) {
+                    $this->assertSame($entity_id, $asset->getEntity());
+                    if (
+                        $asset->maybeRecursive()
+                        // && !($asset instanceof \Glpi\Inventory\Asset\Software)
+                    ) {
+                        $this->assertTrue($asset->isRecursive());
+                    }
+                }
+            }
+        }
+    }
+
+    public function testRuleRecursivityNo(): void
+    {
+        $this->login();
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => __METHOD__,
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rule1_id);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "name",
+            'pattern'   => "/.*/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => getItemByTypeName('Entity', '_test_child_2', true),
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'is_recursive',
+            'value'       => 0
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $files = [
+            'computer_1.json',
+            'networkequipment_1.json',
+            'phone_1.json',
+            'printer_1.json',
+        ];
+
+        foreach ($files as $file) {
+            //run inventory
+            $json = json_decode(file_get_contents(self::INV_FIXTURES . $file));
+            $inventory = $this->doInventory($json);
+            $assets = $inventory->getAssets();
+
+            foreach($assets as $assettype) {
+                foreach ($assettype as $asset) {
+                    if ($asset->maybeRecursive()) {
+                        $this->assertFalse($asset->isRecursive());
+                    }
+                }
+            }
+        }
+    }
 }

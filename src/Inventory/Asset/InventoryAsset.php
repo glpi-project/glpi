@@ -111,6 +111,21 @@ abstract class InventoryAsset
         return $this;
     }
 
+    public function getEntity(): int
+    {
+        return $this->entities_id;
+    }
+
+    public function maybeRecursive()
+    {
+        return true;
+    }
+
+    public function isRecursive(): bool
+    {
+        return $this->is_recursive;
+    }
+
     /**
      * Get current data
      *
