@@ -134,11 +134,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
        // leading/ending space will break findID/import
         $input['name'] = trim($input['name']);
 
-        if (
-            isset($input[$this->getForeignKeyField()])
-            && !$this->isNewID($input[$this->getForeignKeyField()])
-            && $parent->getFromDB($input[$this->getForeignKeyField()])
-        ) {
+        $fk = static::getForeignKeyField();
+        $input[$fk] ??= $this->fields[$fk] ?? '';
+        $valid_parent = $parent->getFromDB($input[$fk]);
+        if ($valid_parent) {
             $input['level']        = $parent->fields['level'] + 1;
            // Sometimes (internet address), the complete name may be different ...
            /* if ($input[$this->getForeignKeyField()]==0) { // Root entity case
@@ -150,7 +149,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             );
            // }
         } else {
-            $input[$this->getForeignKeyField()] = 0;
+            $input[$fk] = 0;
             $input['level']                     = 1;
             $input['completename']              = $input['name'];
         }
