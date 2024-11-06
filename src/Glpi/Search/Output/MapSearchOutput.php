@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use Glpi\Toolbox\URL;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
@@ -81,7 +83,7 @@ final class MapSearchOutput extends HTMLSearchOutput
 
         $itemtype = $data['itemtype'];
         if (isset($data['data']['totalcount']) && $data['data']['totalcount'] > 0) {
-            $target = $data['search']['target'];
+            $target = URL::sanitizeURL($data['search']['target']);
             $criteria = $data['search']['criteria'];
             array_pop($criteria);
             array_pop($criteria);

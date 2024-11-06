@@ -153,6 +153,9 @@ class Dropdown
                 $params[$key] = $val;
             }
         }
+
+        $params['name'] = Html::sanitizeInputName($params['name']);
+
         $output       = '';
         $name         = $params['emptylabel'];
         $comment      = "";

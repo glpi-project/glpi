@@ -790,10 +790,13 @@ class User extends CommonDBTM
     {
         parent::unsetUndisclosedFields($fields);
 
-        if (
-            !array_key_exists('id', $fields)
-            || !(new self())->currentUserHaveMoreRightThan($fields['id'])
-        ) {
+        $user = new self();
+        $can_see_token = Session::getLoginUserID() === $fields['id']
+            || (
+                $user->can($fields['id'], UPDATE)
+                && $user->currentUserHaveMoreRightThan($fields['id'])
+            );
+        if (!$can_see_token) {
             unset($fields['password_forget_token'], $fields['password_forget_token_date']);
         }
     }
@@ -1114,29 +1117,35 @@ class User extends CommonDBTM
             unset($input["password"]);
         }
 
-        // prevent changing tokens and emails from users with lower rights
-        $protected_input_keys = [
-            'api_token',
-            '_reset_api_token',
-            'cookie_token',
-            'password_forget_token',
-            'personal_token',
-            '_reset_personal_token',
-
-            '_useremails',
-        ];
-        if (!isCommandLine()) {
-            // Disallow `_emails` input unless on CLI context (e.g. LDAP sync command).
-            $protected_input_keys[] = '_emails';
-        }
         if (
-            count(array_intersect($protected_input_keys, array_keys($input))) > 0
-            && !Session::isCron() // cron context is considered safe
-            && (int) $input['id'] !== Session::getLoginUserID()
-            && !$this->currentUserHaveMoreRightThan($input['id'])
+            Session::getLoginUserID() !== false
+            && ((int) $input['id']) !== Session::getLoginUserID()
         ) {
-            foreach ($protected_input_keys as $input_key) {
-                unset($input[$input_key]);
+            // Security checks to prevent an unathorized user to update sensitive fields of another user.
+            // These checks are done only if a "user" session is active.
+            $protected_input_keys = [
+                // Security tokens
+                'api_token',
+                '_reset_api_token',
+                'cookie_token',
+                'password_forget_token',
+                'personal_token',
+                '_reset_personal_token',
+
+                // Prevent changing emails that could then be used to get the password reset token
+                '_useremails',
+                '_emails',
+
+                // Prevent disabling another user account
+                'is_active',
+            ];
+            if (
+                count(array_intersect($protected_input_keys, array_keys($input))) > 0
+                && !$this->currentUserHaveMoreRightThan($input['id'])
+            ) {
+                foreach ($protected_input_keys as $input_key) {
+                    unset($input[$input_key]);
+                }
             }
         }
 
@@ -1174,12 +1183,15 @@ class User extends CommonDBTM
         }
 
        // Security on default entity  update
-        if (
-            isset($input['entities_id'])
-            && ($input['entities_id'] > 0)
-            && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
-        ) {
-            unset($input['entities_id']);
+        if (isset($input['entities_id'])) {
+            if (
+                ($input['entities_id'] > 0)
+                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+            ) {
+                unset($input['entities_id']);
+            } elseif ($input['entities_id'] == -1) {
+                $input['entities_id'] = 'NULL';
+            }
         }
 
        // Security on default group  update
@@ -3048,14 +3060,12 @@ JAVASCRIPT;
                 $entrand = mt_rand();
                 echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __s('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields["entities_id"],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
                 echo "</td></tr>";
 
@@ -3434,14 +3444,12 @@ JAVASCRIPT;
             if (count($_SESSION['glpiactiveentities']) > 1) {
                 $entrand = mt_rand();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __s('Default entity') . "</td><td>";
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields['entities_id'],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
             } else {
                 echo "<td colspan='2'>&nbsp;";
@@ -5801,6 +5809,10 @@ JAVASCRIPT;
                 ]
             ]
         ];
+
+        // Randomly increase the response time to prevent an attacker to be able to detect whether
+        // a notification was sent (a longer response time could correspond to a SMTP operation).
+        sleep(rand(1, 3));
 
         // Try to find a single user matching the given email
         if (!$this->getFromDBbyEmail($email, $condition)) {

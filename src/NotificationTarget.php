@@ -970,6 +970,16 @@ class NotificationTarget extends CommonDBChild
         return [];
     }
 
+    /**
+     * Return whether the notification content corresponding to the given event can be disclosed.
+     *
+     * @return bool
+     */
+    public function canNotificationContentBeDisclosed(string $event): bool
+    {
+        return true;
+    }
+
 
     /**
      * Return all (GLPI + plugins) notification events for the object type

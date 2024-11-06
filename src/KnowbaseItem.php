@@ -1000,6 +1000,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
+        if (
+            isset($options['item_itemtype'], $options['item_items_id'])
+            && !is_a($options['item_itemtype'], CommonDBTM::class, true)
+        ) {
+            unset($options['item_itemtype'], $options['item_items_id']);
+        }
+
         $twig_params = [
             'contains' => $params["contains"],
             'options' => $options,

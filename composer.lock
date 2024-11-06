@@ -830,16 +830,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.35",
+            "version": "1.1.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "0a58e67640cc396aed64924a533c08ee2da30924"
+                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/0a58e67640cc396aed64924a533c08ee2da30924",
-                "reference": "0a58e67640cc396aed64924a533c08ee2da30924",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/b0bd6b08805c8fa6690ee3576edbba8803f724be",
+                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be",
                 "shasum": ""
             },
             "require": {
@@ -851,7 +851,7 @@
                 "php": ">=7.4",
                 "seld/jsonlint": "^1.11",
                 "swaggest/json-schema": "^0.12.42",
-                "symfony/polyfill-php81": "^1.30"
+                "symfony/polyfill-php81": "^1.31"
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.4",
@@ -898,7 +898,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2024-09-11T10:16:40+00:00"
+            "time": "2024-11-05T13:37:20+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -9636,16 +9636,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.6",
+            "version": "1.12.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "dc4d2f145a88ea7141ae698effd64d9df46527ae"
+                "reference": "dc2b9976bd8b0f84ec9b0e50cc35378551de7af0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dc4d2f145a88ea7141ae698effd64d9df46527ae",
-                "reference": "dc4d2f145a88ea7141ae698effd64d9df46527ae",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dc2b9976bd8b0f84ec9b0e50cc35378551de7af0",
+                "reference": "dc2b9976bd8b0f84ec9b0e50cc35378551de7af0",
                 "shasum": ""
             },
             "require": {
@@ -9690,7 +9690,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-06T15:03:59+00:00"
+            "time": "2024-10-18T11:12:07+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -11727,7 +11727,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

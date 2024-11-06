@@ -547,7 +547,28 @@ The present file will list all changes made to the project; according to the
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
 
 
-## [10.0.17] unreleased
+## [10.0.18] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.17] 2024-11-06
 
 ### Added
 
@@ -561,6 +582,8 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+
+- `NotificationTarget::canNotificationContentBeDisclosed()` method that can be overriden to indicates whether a notification contents should be undisclosed.
 
 #### Changes
 

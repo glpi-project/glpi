@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,20 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+namespace Glpi\Toolbox;
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+class ArrayNormalizer
+{
+    public static function normalizeValues(array $array, callable $values_normalizer, bool $preserve_keys = false): array
+    {
+        $cleaned_array = [];
 
-if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
-    $withtime = filter_var($_POST['withtime'], FILTER_VALIDATE_BOOLEAN);
-    if ($withtime) {
-        Html::showDateTimeField($_POST['name'], ['value' => $_POST['specificvalue']]);
-    } else {
-        Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
+        foreach ($array as $key => $value) {
+            $value = call_user_func($values_normalizer, $value);
+
+            if ($preserve_keys) {
+                $cleaned_array[$key] = $value;
+            } else {
+                $cleaned_array[] = $value;
+            }
+        }
+
+        return $cleaned_array;
     }
-} else {
-    echo "<input type='hidden' name='" . htmlescape($_POST['name']) . "' value='" . htmlescape($_POST['value']) . "'>";
 }

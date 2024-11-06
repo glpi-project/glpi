@@ -1787,7 +1787,7 @@ class DBmysql
        //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
-            $this->dbh->query("SET SESSION time_zone = '$timezone'");
+            $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
             $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;

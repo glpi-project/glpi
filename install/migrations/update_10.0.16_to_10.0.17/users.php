@@ -33,20 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
-
-if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
-    $withtime = filter_var($_POST['withtime'], FILTER_VALIDATE_BOOLEAN);
-    if ($withtime) {
-        Html::showDateTimeField($_POST['name'], ['value' => $_POST['specificvalue']]);
-    } else {
-        Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
-    }
-} else {
-    echo "<input type='hidden' name='" . htmlescape($_POST['name']) . "' value='" . htmlescape($_POST['value']) . "'>";
-}
+$migration->changeField('glpi_users', 'entities_id', 'entities_id', "int unsigned DEFAULT '0'");

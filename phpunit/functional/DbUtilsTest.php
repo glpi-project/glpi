@@ -1080,13 +1080,30 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent1 => $ent1, $new_id2 => $new_id2];
         $this->assertTrue($entity->delete(['id' => $new_id], true));
         if ($cache === true) {
+            $this->assertSame(null, $GLPI_CACHE->get($ckey_ent1)); // cache has been cleared
+        }
+        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $this->assertSame($expected, $sons);
+        if ($cache === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
         $expected = [$ent1 => $ent1];
         $this->assertTrue($entity->delete(['id' => $new_id2], true));
         if ($cache === true) {
+            $this->assertSame(null, $GLPI_CACHE->get($ckey_ent1)); // cache has been cleared
+        }
+        $sons = $instance->getSonsOf('glpi_entities', $ent1);
+        $this->assertSame($expected, $sons);
+        if ($cache === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
+        }
+
+        $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
+        $sons = $instance->getSonsOf('glpi_entities', $ent0);
+        $this->assertSame($expected, $sons);
+        if ($cache === true) {
+            $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
     }
 

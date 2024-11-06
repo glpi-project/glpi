@@ -868,7 +868,7 @@ class HtmlTest extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('providerGetRefererUrl')]
+    #[DataProvider('providerGetRefererUrl')]
     public function testGetRefererUrl(string $referer, ?string $expected): void
     {
         $_SERVER['HTTP_REFERER'] = $referer;
@@ -926,7 +926,7 @@ class HtmlTest extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('providerGetBackUrl')]
+    #[DataProvider('providerGetBackUrl')]
     public function testGetBackUrl(string $referer, string $base_url, string $expected): void
     {
         /** @var array $CFG_GLPI */
@@ -1077,7 +1077,7 @@ SCSS
         ];
     }
 
-    #[dataProvider('testGetGenericDateTimeSearchItemsProvider')]
+    #[DataProvider('testGetGenericDateTimeSearchItemsProvider')]
     public function testGetGenericDateTimeSearchItems(
         array $options,
         array $check_values,
@@ -1093,5 +1093,29 @@ SCSS
         foreach ($unwanted as $key) {
             $this->assertArrayNotHasKey($key, $values);
         }
+    }
+
+    public static function inputNameProvider(): iterable
+    {
+        yield [
+            'name'      => 'itemtype',
+            'expected'  => 'itemtype',
+        ];
+
+        yield [
+            'name'      => 'link_abc1[itemtype]',
+            'expected'  => 'link_abc1[itemtype]',
+        ];
+
+        yield [
+            'name'      => 'foo\'"$**-_23',
+            'expected'  => 'foo_23',
+        ];
+    }
+
+    #[DataProvider('inputNameProvider')]
+    public function testSanitizeInputName(string $name, string $expected): void
+    {
+        $this->assertEquals($expected, \Html::sanitizeInputName($name));
     }
 }

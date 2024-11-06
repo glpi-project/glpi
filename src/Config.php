@@ -33,13 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
-use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
 
@@ -249,21 +248,28 @@ class Config extends CommonDBTM
         }
 
         if (isset($input['devices_in_menu'])) {
-            $input['devices_in_menu'] = exportArrayToDB(empty($input['devices_in_menu']) ? [] : $input['devices_in_menu']);
+            $input['devices_in_menu'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['devices_in_menu'] ?: [], 'strval')
+            );
         }
 
        // lock mechanism update
-        if (isset($input['lock_use_lock_item'])) {
-            $input['lock_item_list'] = exportArrayToDB((isset($input['lock_item_list'])
-                                                      ? $input['lock_item_list'] : []));
+        if (isset($input['lock_use_lock_item']) && isset($input['lock_item_list'])) {
+            $input['lock_item_list'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['lock_item_list'] ?: [], 'strval')
+            );
         }
 
         if (isset($input[Impact::CONF_ENABLED])) {
-            $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
+            $input[Impact::CONF_ENABLED] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input[Impact::CONF_ENABLED] ?: [], 'strval')
+            );
         }
 
         if (isset($input['planning_work_days'])) {
-            $input['planning_work_days'] = exportArrayToDB($input['planning_work_days']);
+            $input['planning_work_days'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['planning_work_days'] ?: [], 'intval')
+            );
         }
 
        // Beware : with new management system, we must update each value
@@ -650,7 +656,7 @@ class Config extends CommonDBTM
             3 => __('Global View'),
             4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
         ];
-        $grid = new Glpi\Dashboard\Grid('central');
+        $grid = new Grid('central');
         if ($grid::canViewOneDashboard()) {
             array_unshift($central_tabs, __('Dashboard'));
         }

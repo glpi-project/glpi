@@ -479,6 +479,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
+        $current_user_id = Session::getLoginUserID();
+        if ($current_user_id === false) {
+            // RSSFeeds are not supposed to be created in a sessionless context.
+            return false;
+        }
+        $input['users_id'] = $current_user_id;
+
         if ($feed = self::getRSSFeed($input['url'])) {
             $input['have_error'] = 0;
             $input['name']       = $feed->get_title();
@@ -513,6 +520,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $input['comment'] = $feed->get_description();
             }
         }
+
+        // Owner cannot be changed
+        unset($input['users_id']);
+
         return $input;
     }
 
@@ -538,18 +549,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         return true;
-    }
-
-    public function pre_updateInDB()
-    {
-        // Set new user if initial user have been deleted
-        if (
-            ((int) $this->fields['users_id'] === 0)
-            && ($uid = Session::getLoginUserID())
-        ) {
-            $this->fields['users_id'] = $uid;
-            $this->updates[]          = "users_id";
-        }
     }
 
     public function post_getEmpty()

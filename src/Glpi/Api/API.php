@@ -1751,6 +1751,25 @@ abstract class API
                     $current_values = $current_values[0];
                 }
 
+                // Undisclose sensitive fields
+                // Pass any additional field listed by the corresponding search option
+                $col_ref_table    = $col['searchopt']['table'] ?? '';
+                $col_ref_field    = $col['searchopt']['field'] ?? '';
+                $col_ref_itemtype = $col_ref_table !== '' && $col_ref_field !== ''
+                    ? \getItemTypeForTable($col['searchopt']['table'] ?? '')
+                    : null;
+                if ($col_ref_itemtype !== null && \is_a($col_ref_itemtype, CommonDBTM::class, true)) {
+                    $tmp_fields = [$col_ref_field => $current_values];
+                    if (array_key_exists('additionalfields', $col['searchopt'])) {
+                        foreach ($col['searchopt']['additionalfields'] as $field_name) {
+                            $field_value_key = 'ITEM_' . $col['itemtype'] . '_' . $col['id'] . '_' . $field_name;
+                            $tmp_fields[$field_name] = $raw[$field_value_key];
+                        }
+                    }
+                    $col_ref_itemtype::unsetUndisclosedFields($tmp_fields);
+                    $current_values = $tmp_fields[$col_ref_field] ?? null;
+                }
+
                 $clean_values[] = $current_values;
             }
 

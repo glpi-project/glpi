@@ -33,20 +33,40 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use Glpi\DBAL\QueryExpression;
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
-    $withtime = filter_var($_POST['withtime'], FILTER_VALIDATE_BOOLEAN);
-    if ($withtime) {
-        Html::showDateTimeField($_POST['name'], ['value' => $_POST['specificvalue']]);
-    } else {
-        Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
-    }
-} else {
-    echo "<input type='hidden' name='" . htmlescape($_POST['name']) . "' value='" . htmlescape($_POST['value']) . "'>";
+// Drop the ancestors/sons cache that may have been corrupted by bugs that have now been resolved.
+$tree_dropdown_tables = [
+    'glpi_businesscriticities',
+    'glpi_documentcategories',
+    'glpi_entities',
+    'glpi_groups',
+    'glpi_ipnetworks',
+    'glpi_itilcategories',
+    'glpi_knowbaseitemcategories',
+    'glpi_locations',
+    'glpi_softwarecategories',
+    'glpi_softwarelicenses',
+    'glpi_softwarelicensetypes',
+    'glpi_states',
+    'glpi_taskcategories',
+];
+foreach ($tree_dropdown_tables as $table) {
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            $table,
+            [
+                'ancestors_cache' => null,
+                'sons_cache' => null,
+            ],
+            [
+                new QueryExpression(true),
+            ]
+        )
+    );
 }

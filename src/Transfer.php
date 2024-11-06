@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
+use Glpi\Toolbox\URL;
 
 /**
  * Transfer engine.
@@ -3826,6 +3827,9 @@ final class Transfer extends CommonDBTM
         if ($referer_url === null || !str_contains($referer_url, "transfer.form.php")) {
             $edit_form = false;
         }
+
+        $options['target'] = URL::sanitizeURL($options['target']);
+
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
             'item' => $this,
             'edit_mode' => $edit_form,

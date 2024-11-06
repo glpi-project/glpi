@@ -588,7 +588,7 @@ HTML;
         $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
 
-        $chart_id = "chart-{$p['cache_key']}";
+        $chart_id = Toolbox::slugify("chart-{$p['cache_key']}");
 
         $class = "pie";
         $class .= $p['half'] ? " half" : "";
@@ -1011,7 +1011,7 @@ JAVASCRIPT;
         $p = array_merge($defaults, $params);
 
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
-        $chart_id = 'chart_' . $p['cache_key'];
+        $chart_id = Toolbox::slugify('chart_' . $p['cache_key']);
 
         $nb_labels = min($p['limit'], count($labels));
 
@@ -1400,7 +1400,7 @@ JAVASCRIPT;
         $p = array_merge($defaults, $params);
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
 
-        $chart_id = 'chart_' . $p['cache_key'];
+        $chart_id = Toolbox::slugify('chart_' . $p['cache_key']);
 
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));

@@ -481,6 +481,26 @@ class ItemVirtualMachine extends CommonDBChild
             'massiveaction'      => false,
         ];
 
+        $tab[] = [
+            'id'                 => '5',
+            'table'              => Computer::getTable(),
+            'field'              => 'uuid',
+            'name'               => __('Computer UUID'),
+            'datatype'           => 'string',
+            'linkfield'          => 'items_id',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => ItemVirtualMachine::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'item_itemtype',
+                        'specific_itemtype'  => 'Computer'
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 

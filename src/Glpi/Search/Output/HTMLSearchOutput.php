@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\URL;
 use Override;
 use SavedSearch;
 use Ticket;
@@ -118,6 +119,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             }
         }
 
+        $search['target'] = URL::sanitizeURL($search['target']);
         $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
         $href    = $prehref . $parameters;
 
