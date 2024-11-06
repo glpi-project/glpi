@@ -235,10 +235,10 @@ if (isset($_POST["add"])) {
     $doc = new Document();
     $doc->getFromDB((int)$_POST['documents_id']);
     if ($doc->can($doc->getID(), UPDATE)) {
-       $doc->update([
+        $doc->update([
             'id' => $doc->fields['id'],
             'is_blacklisted' => true
-       ]);
+        ]);
     }
     Html::back();
 } else if (isset($_POST['whitelist_document'])) {
@@ -246,10 +246,10 @@ if (isset($_POST["add"])) {
     $doc = new Document();
     $doc->getFromDB((int)$_POST['documents_id']);
     if ($doc->can($doc->getID(), UPDATE)) {
-       $doc->update([
+        $doc->update([
             'id' => $doc->fields['id'],
             'is_blacklisted' => false
-       ]);
+        ]);
     }
     Html::back();
 }
