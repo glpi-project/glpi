@@ -4379,7 +4379,13 @@ JAVASCRIPT;
                         break;
                 }
                 // Check category / entity validity
-                if (!in_array($cat->fields['entities_id'], getSonsAndAncestorsOf('glpi_entities', $options['entities_id']))) {
+                if (
+                    in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))
+                    || (
+                        $cat->isRecursive()
+                        && !in_array($cat->fields['entities_id'], getAncestorsOf('glpi_entities', $options['entities_id']))
+                    )
+                ) {
                     $options['itilcategories_id'] = 0;
                     $this->fields['itilcategories_id'] = 0;
                 }
