@@ -486,21 +486,30 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
         $input['users_id'] = $current_user_id;
 
-        if ($feed = self::getRSSFeed($input['url'])) {
-            $input['have_error'] = 0;
-            $input['name']       = $feed->get_title();
-            if (empty($input['comment'])) {
-                $input['comment'] = $feed->get_description();
+        // We may want to disable the name computation when working with fake
+        // feeds in our unit tests
+        $compute_name = $input['_do_not_compute_name'] ?? false;
+        if (!$compute_name) {
+            if ($feed = self::getRSSFeed($input['url'])) {
+                $input['have_error'] = 0;
+                $input['name']       = $feed->get_title();
+                if (empty($input['comment'])) {
+                    $input['comment'] = $feed->get_description();
+                }
+            } else {
+                $input['have_error'] = 1;
+                $input['name']       = '';
             }
-        } else {
-            $input['have_error'] = 1;
-            $input['name']       = '';
         }
         $input["name"] = trim($input["name"]);
 
         if (empty($input["name"])) {
             $input["name"] = __('Without title');
         }
+
+        // Owner cannot be changed
+        unset($input['users_id']);
+
         return $input;
     }
 
@@ -705,6 +714,46 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         return $feed;
     }
 
+    final public static function getListCriteria(bool $personal): array
+    {
+        $users_id = Session::getLoginUserID();
+
+        $table = self::getTable();
+        $criteria = [
+            'SELECT'   => "$table.*",
+            'DISTINCT' => true,
+            'FROM'     => $table,
+            'ORDER'    => "$table.name"
+        ];
+
+        if ($personal) {
+            $criteria['WHERE']["$table.users_id"] = $users_id;
+            $criteria['WHERE']["$table.is_active"] = 1;
+        } else {
+            $criteria += self::getVisibilityCriteria();
+        }
+
+        return $criteria;
+    }
+
+    final public static function countPublicRssFedds(): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $criteria = self::getListCriteria(false);
+
+        // Replace select * by count
+        $criteria['COUNT'] = 'total_rows';
+        unset($criteria['ORDER BY']);
+        unset($criteria['DISTINCT']);
+        unset($criteria['SELECT']);
+
+        $data = $DB->request($criteria);
+        $row = $data->current();
+        return $row['total_rows'];
+    }
+
     /**
      * Show list for central view
      *
@@ -721,38 +770,18 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
          */
         global $CFG_GLPI, $DB;
 
-        $users_id             = Session::getLoginUserID();
-
-        $table = self::getTable();
-        $criteria = [
-            'SELECT'   => "$table.*",
-            'DISTINCT' => true,
-            'FROM'     => $table,
-            'ORDER'    => "$table.name"
-        ];
-
         if ($personal) {
             // Personal notes only for central view
             if (Session::getCurrentInterface() === 'helpdesk') {
                 return false;
             }
 
-            $criteria['WHERE']["$table.users_id"] = $users_id;
-            $criteria['WHERE']["$table.is_active"] = 1;
-
             $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
                     _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
-           // Show public rssfeeds / not mines : need to have access to public rssfeeds
+            // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
                 return false;
-            }
-
-            $criteria += self::getVisibilityCriteria();
-
-           // Only personal on central so do not keep it
-            if (Session::getCurrentInterface() === 'central') {
-                $criteria['WHERE']["$table.users_id"] = ['<>', $users_id];
             }
 
             if (Session::getCurrentInterface() === 'central') {
@@ -762,6 +791,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
             }
         }
+
+        $criteria = self::getListCriteria($personal);
 
         $iterator = $DB->request($criteria);
         $nb = count($iterator);

@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\SelfService;
+namespace Glpi\Helpdesk;
 
 use CommonGLPI;
 use Override;
@@ -80,7 +80,10 @@ final class HomePageTabs extends CommonGLPI
             ),
         ];
 
-        if (Session::haveRight("reminder_public", READ)) {
+        if (
+            Session::haveRight("reminder_public", READ)
+            && Reminder::countPublicReminders() > 0
+        ) {
             // TODO: only show if at least one reminder is visible
             $tabs[self::PUBLIC_REMINDER_TAB] = self::createTabEntry(
                 text: Reminder::getTypeName(),
@@ -88,7 +91,10 @@ final class HomePageTabs extends CommonGLPI
             );
         }
 
-        if (Session::haveRight("rssfeed_public", READ)) {
+        if (
+            Session::haveRight("rssfeed_public", READ)
+            && RSSFeed::countPublicRssFedds() > 0
+        ) {
             // TODO: only show if at least one RSS feed is visible
             $tabs[self::RSS_FEED_PUBLIC] = self::createTabEntry(
                 text: RSSFeed::getTypeName(),
