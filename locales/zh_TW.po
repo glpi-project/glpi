@@ -14,6 +14,7 @@
 # Cédric Anne, 2023
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# freedom lee <a74218@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: freedom lee <a74218@gmail.com>, 2024\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/glpi/teams/1637/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15704,7 +15705,7 @@ msgstr ""
 
 #: src/CronTask.php:657 src/CronTask.php:1729
 msgid "Number of days this action logs are stored"
-msgstr "用於下一個/上一個項目"
+msgstr "此動作日誌儲存的天數"
 
 #: src/CronTask.php:2100
 msgid "Number of days to keep archived logs"
@@ -20663,7 +20664,7 @@ msgstr "統計"
 #: src/Contract_Item.php:628 src/Item_SoftwareLicense.php:842
 #: src/Features/PlanningEvent.php:969 src/Problem.php:601
 msgid "Status"
-msgstr ""
+msgstr "狀態"
 
 #: src/State.php:49
 msgid "Status of items"

@@ -11,9 +11,9 @@
 # delpiero22 <gooooogels@gmail.com>, 2023
 # Cédric Anne, 2023
 # Pattawee Jumpeehom <jumpeehompattawee@gmail.com>, 2023
-# Apirak Jaisue, 2023
 # นัจ-ณวัสน์ เอกสิรินิธิพล <nawhath.aek@hotmail.com>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Apirak Jaisue, 2024
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: Apirak Jaisue, 2024\n"
 "Language-Team: Thai (Thailand) (https://app.transifex.com/glpi/teams/1637/th_TH/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16617,7 +16617,7 @@ msgstr "ยืนยันรหัสผ่าน"
 
 #: src/NotificationTargetUser.php:191
 msgid "Password expiration date"
-msgstr ""
+msgstr "วันหมดอายุรหัสผ่าน"
 
 #: src/Config.php:3557
 msgid "Password expiration delay (in days)"
@@ -16637,7 +16637,7 @@ msgstr ""
 
 #: src/NotificationTargetUser.php:192
 msgid "Password has expired"
-msgstr ""
+msgstr "รหัสผ่านหมดอายุ"
 
 #: src/Config.php:1593 src/Config.php:3468
 msgid "Password minimum length"

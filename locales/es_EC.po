@@ -3751,7 +3751,7 @@ msgstr "Ocurrió un error durante la actualización de la contraseña"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Ocurrió un error durante la búsqueda de elementos."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -4736,7 +4736,7 @@ msgstr "Tiempo aproximado en que se tomó en cuenta"
 #: src/Toolbox.php:978 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:363
 msgid "BNC"
@@ -5431,9 +5431,9 @@ msgstr[2] "Cartuchos"
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Información de inventario de cartucho"
+msgstr[1] "Información de inventarios de cartuchos"
+msgstr[2] "Información de inventarios de cartuchos"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
@@ -6889,17 +6889,17 @@ msgstr "Copiar la información del sistema"
 #: src/Entity.php:1792 src/Entity.php:1840 src/Entity.php:1864
 #: src/Entity.php:3703 src/Entity.php:3861 src/Entity.php:3874
 msgid "Copy the date of purchase"
-msgstr "Copiar fecha de compra"
+msgstr "Copiar la fecha de compra"
 
 #: src/Entity.php:1823 src/Entity.php:1842 src/Entity.php:1866
 #: src/Entity.php:3709 src/Entity.php:3865 src/Entity.php:3876
 msgid "Copy the delivery date"
-msgstr "Copiar fecha de entrega"
+msgstr "Copiar la fecha de entrega"
 
 #: src/Entity.php:1808 src/Entity.php:1841 src/Entity.php:1865
 #: src/Entity.php:3706 src/Entity.php:3863 src/Entity.php:3875
 msgid "Copy the order date"
-msgstr "Copia fecha de orden"
+msgstr "Copiar la fecha del pedido"
 
 #: src/Entity.php:1773 src/Entity.php:3700 src/Entity.php:3859
 msgid "Copy the start date of warranty"
@@ -6989,7 +6989,7 @@ msgstr "Crear"
 #: templates/components/form/link_existing_or_new.html.twig
 #, php-format
 msgid "Create a %1$s from this %2$s"
-msgstr "Crea un %1$s de este %2$s"
+msgstr "Crear un %1$s de este %2$s"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database or use an existing one:"
@@ -8576,7 +8576,7 @@ msgstr "Opciones de visualización"
 
 #: src/Config.php:1094
 msgid "Display order of surnames firstnames"
-msgstr "Visualiza apellido y nombre"
+msgstr "Mostrar por apellidos y nombres"
 
 #: front/report.year.php:83 front/stat.item.php:76 front/report.infocom.php:76
 #: front/stat.tracking.php:161 front/report.reservation.php:58
@@ -9170,7 +9170,7 @@ msgstr "Duración efectiva"
 #: src/Toolbox.php:984 js/common.js:640
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EiB"
 
 #: src/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -10334,7 +10334,7 @@ msgstr[2] "Campos"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "El campo %s no es válido para el elemento %s."
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -10704,7 +10704,7 @@ msgstr[2] "Plantillas de seguimiento"
 
 #: src/Api/API.php:1289
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Para obtener más información, consulte los registros GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11069,7 +11069,7 @@ msgstr "Obtener información sobre un plugin"
 #: src/Toolbox.php:981 js/common.js:637
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GiB"
 
 #: src/Consumable.php:214 src/Consumable.php:606
 msgctxt "button"
@@ -12665,7 +12665,7 @@ msgstr "Fechas planeadas inválidas. Fechas no actualizadas."
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Directorio de complementos no válido"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -13160,7 +13160,7 @@ msgstr "Clave"
 #: src/Toolbox.php:979 js/common.js:635
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KiB"
 
 #: front/knowbaseitem.form.php:175 src/KnowbaseItem.php:60
 #: src/CommonDropdown.php:975 src/ITILCategory.php:72 src/ITILCategory.php:292
@@ -14738,7 +14738,7 @@ msgstr "Método no permitido"
 #: src/Toolbox.php:980 js/common.js:636
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MiB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:339
 msgid "Microphone"
@@ -16903,7 +16903,7 @@ msgstr "Una última cosa antes de comenzar"
 
 #: src/Profile_User.php:108
 msgid "One or more required fields are missing"
-msgstr ""
+msgstr "Faltan uno o más campos obligatorios"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
@@ -17824,7 +17824,7 @@ msgstr "Fotoconductor"
 #: src/Toolbox.php:983 js/common.js:639
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:166
@@ -23115,7 +23115,7 @@ msgstr "Jueves"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TiB"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -26080,7 +26080,7 @@ msgstr "Ayer"
 #: src/Toolbox.php:986 js/common.js:642
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/ManualLink.php:285
 msgid "You are about to delete this item. Do you confirm?"
@@ -26438,7 +26438,7 @@ msgstr ""
 
 #: js/impact.js:2481
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Debe seleccionar al menos 1 activo para crear un grupo"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -26567,7 +26567,7 @@ msgstr "Sus casos por validar"
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZiB"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:502
 msgid "Zoom in/out"

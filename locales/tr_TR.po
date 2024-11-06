@@ -3695,7 +3695,7 @@ msgstr "Parola güncellenirken bir sorun çıktı"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Ögeler aranırken bir sorun çıktı."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -4654,7 +4654,7 @@ msgstr "Hesaba katılacak ortalama zaman"
 #: src/Toolbox.php:978 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:363
 msgid "BNC"
@@ -5333,8 +5333,8 @@ msgstr[1] "Kartuşlar"
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kartuş envantere alındı bilgisi"
+msgstr[1] "Kartuş envantere alındı bilgisi"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
@@ -8974,7 +8974,7 @@ msgstr "Etkin süre"
 #: src/Toolbox.php:984 js/common.js:640
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EiB"
 
 #: src/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -10122,7 +10122,7 @@ msgstr[1] "Alanlar"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "%s alanı %s ögesi için geçerli değil."
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -10832,7 +10832,7 @@ msgstr "Bir uygulama eki hakkında bilgi alın"
 #: src/Toolbox.php:981 js/common.js:637
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GiB"
 
 #: src/Consumable.php:214 src/Consumable.php:606
 msgctxt "button"
@@ -12403,7 +12403,7 @@ msgstr "Planlanan tarihler geçersiz. Tarihler güncellenmedi."
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Uygulama eki klasörü geçersiz"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -12885,7 +12885,7 @@ msgstr "Anahtar"
 #: src/Toolbox.php:979 js/common.js:635
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KiB"
 
 #: front/knowbaseitem.form.php:175 src/KnowbaseItem.php:60
 #: src/CommonDropdown.php:975 src/ITILCategory.php:72 src/ITILCategory.php:292
@@ -14414,7 +14414,7 @@ msgstr "Yönteme izin verilmiyor"
 #: src/Toolbox.php:980 js/common.js:636
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MiB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:339
 msgid "Microphone"
@@ -16543,7 +16543,7 @@ msgstr "Başlamadan önce son bir şey"
 
 #: src/Profile_User.php:108
 msgid "One or more required fields are missing"
-msgstr ""
+msgstr "Bir ya da birkaç zorunlu alan eksik"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
@@ -17435,7 +17435,7 @@ msgstr "Foto iletken"
 #: src/Toolbox.php:983 js/common.js:639
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:166
@@ -22612,7 +22612,7 @@ msgstr "Perşembe"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TiB"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -25532,7 +25532,7 @@ msgstr "Dün"
 #: src/Toolbox.php:986 js/common.js:642
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/ManualLink.php:285
 msgid "You are about to delete this item. Do you confirm?"
@@ -25881,7 +25881,7 @@ msgstr ""
 
 #: js/impact.js:2481
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Bir grup oluşturmak için en az 1 varlık seçmelisiniz"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -26011,7 +26011,7 @@ msgstr "Onaylanacak destek kayıtlarınız"
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZiB"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:502
 msgid "Zoom in/out"

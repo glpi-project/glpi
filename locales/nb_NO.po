@@ -5,13 +5,14 @@
 # 
 # Translators:
 # esplor <esplor@gmail.com>, 2021
-# Kheder Habachi <habachi89@gmail.com>, 2021
+# Kjell Edvard Medhaug <keme6206@gmail.com>, 2021
 # seppola <bjornar@seppola.net>, 2021
-# jostein berge <jbe01@karmoy.kommune.no>, 2021
+# Kheder Habachi <habachi89@gmail.com>, 2021
 # Bjørnar Seppola <bjs@blindeforbundet.no>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
-# Kjell Edvard Medhaug <keme6206@gmail.com>, 2024
+# jostein berge <jbe01@karmoy.kommune.no>, 2024
+# Evert Meulie <evert@arkivo.no>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Kjell Edvard Medhaug <keme6206@gmail.com>, 2024\n"
+"Last-Translator: Evert Meulie <evert@arkivo.no>, 2024\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://app.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,31 +32,31 @@ msgstr ""
 #: src/Config.php:1863 src/Config.php:1885
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr ""
+msgstr "\"%s\" hurtigbuffersystem i bruk"
 
 #: src/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\" vil sette \"foo\" param verdi til sann"
 
 #: src/Console/Plugin/InstallCommand.php:72
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\" vil sette \"foo\" param verdi til \"bar\""
 
 #: front/migrationcleaner.php:63
 msgid "\"Migration cleaner\" tool"
-msgstr "\"Migrerings\" verktøy"
+msgstr "\"Migrasjonsrensing\" verktøy"
 
 #: src/Agent.php:503
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "\"enhets-ID\" er obligatorisk!"
 
 #: src/System/Requirement/DbConfiguration.php:84
 msgid "\"innodb_large_prefix\" must be enabled."
-msgstr ""
+msgstr "\"innodb_large_prefix\" må være aktivert"
 
 #: src/System/Requirement/SessionsConfiguration.php:66
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" og \"session.use_trans_sid\" må være satt til av."
 
 #: src/System/Requirement/SessionsConfiguration.php:68
 msgid "\"session.auto_start\" must be set to off."
@@ -75,14 +76,15 @@ msgstr "%.1f Gbit/s"
 #, php-format
 msgid "%1$d database"
 msgid_plural "%1$d databases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1$d database"
+msgstr[1] "%1$d databaser"
 
 #: src/Dropdown.php:2000
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] "%1$d dager %2$dh%3$s"
+msgstr[0] "%1$d dag %2$dh%3$s"
+msgstr[1] "%1$d dager %2$dh%3$s"
 
 #: src/Html.php:4475
 #, php-format
@@ -98,7 +100,7 @@ msgstr "%1$dh%2$s"
 #: src/CommonITILTask.php:1809
 #, php-format
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
 #: src/Link.php:688 src/Link.php:713 src/CronTask.php:1005
@@ -153,12 +155,12 @@ msgstr "%1$s %2$s"
 #: src/Search.php:2073
 #, php-format
 msgid "%1$s %2$s (%3$s)"
-msgstr ""
+msgstr "%1$s %2$s (%3$s)"
 
 #: src/CommonITILObject.php:9775
 #, php-format
 msgid "%1$s (#%2$s) - %3$s"
-msgstr ""
+msgstr "%1$s (#%2$s) - %3$s"
 
 #: src/Item_Devices.php:1062 src/CommonITILValidation.php:1601
 #, php-format
@@ -397,7 +399,7 @@ msgstr "%1$s > %2$s"
 #: src/Inventory/Asset/Bios.php:62
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #: front/report.infocom.php:291 front/report.infocom.conso.php:267
 #, php-format
@@ -490,7 +492,7 @@ msgstr "%1$s av %2$s"
 #: src/Central.php:497
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
-msgstr ""
+msgstr "%1$s kolonner bruker den utdaterte datetime lagringsfeltstypen."
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:91
@@ -501,7 +503,7 @@ msgstr "%1$s slette lisens %2$s"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$s redigerte nettleserens varslingsinnstillinger"
 
 #: front/notificationmailingsetting.form.php:56
 #, php-format
@@ -512,7 +514,7 @@ msgstr ""
 #: front/rule.common.php:62
 #, php-format
 msgid "%1$s has been reset."
-msgstr ""
+msgstr "%1$s har blitt tilbakestilt."
 
 #: src/Config.php:1821
 #, php-format
@@ -544,12 +546,12 @@ msgstr "%1$s innlogget fra IP %2$s"
 #: src/Config.php:1802
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr ""
+msgstr "%1$s minnebruk er korrekt"
 
 #: src/Config.php:1799
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "%1$s minnebruk er for lav eller for høy"
 
 #: src/State.php:525
 #, php-format
@@ -733,7 +735,8 @@ msgstr "%1$s%2$d timer %3$d minutter %4$d sekunder"
 #, php-format
 msgid "%1$s%2$d minute"
 msgid_plural "%1$s%2$d minutes"
-msgstr[0] "%1$s%2$d minutter"
+msgstr[0] "%1$s%2$d minutt"
+msgstr[1] "%1$s%2$d minutter"
 
 #: src/Html.php:451
 #, php-format
@@ -756,7 +759,8 @@ msgstr "%1$s%2$s"
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
-msgstr[0] "%1$s%2$s sekunder"
+msgstr[0] "%1$s%2$s sekund"
+msgstr[1] "%1$s%2$s sekunder"
 
 #: src/Profile_User.php:1021 src/Profile_User.php:1029
 #: src/Profile_User.php:1034 src/Profile_User.php:1271
@@ -978,21 +982,24 @@ msgstr "%d Mbit/s"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] "%d dager"
+msgstr[0] "%d dag"
+msgstr[1] "%d dager"
 
 #: src/Dropdown.php:2359 src/LevelAgreement.php:726 src/Entity.php:3617
 #: src/PlanningRecall.php:301 src/CommonITILRecurrent.php:262
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d timer"
+msgstr[0] "%d time"
+msgstr[1] "%d timer"
 
 #: src/Dropdown.php:2350 src/Dropdown.php:2354 src/LevelAgreement.php:723
 #: src/PlanningRecall.php:294
 #, php-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minutter"
+msgstr[0] "%d minutt"
+msgstr[1] "%d minutter"
 
 #: templates/pages/management/contract.html.twig
 #: templates/components/infocom.html.twig src/Contract.php:285
@@ -1014,7 +1021,8 @@ msgstr[1] ""
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d nye saker"
+msgstr[0] "%d ny sak"
+msgstr[1] "%d nye saker"
 
 #: js/modules/Kanban/Kanban.js:1716
 #, javascript-format
@@ -1030,7 +1038,8 @@ msgstr ""
 #, php-format
 msgid "%d printed page"
 msgid_plural "%d printed pages"
-msgstr[0] "%d sider skrevet ut"
+msgstr[0] "%d side skrevet ut"
+msgstr[1] "%d sider skrevet ut"
 
 #: src/Console/Migration/Utf8mb4Command.php:125
 #, php-format
@@ -1054,19 +1063,22 @@ msgstr[1] ""
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
-msgstr[0] "%d visninger"
+msgstr[0] "%d visning"
+msgstr[1] "%d visninger"
 
 #: src/PlanningRecall.php:309
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
-msgstr[0] "%d uker"
+msgstr[0] "%d uke"
+msgstr[1] "%d uker"
 
 #: src/CommonITILRecurrent.php:239 src/CommonITILRecurrent.php:277
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] "%d år"
+msgstr[1] "%d år"
 
 #. TRANS: %d is the percentage. %% to display %
 #: src/Entity.php:3181
@@ -1077,7 +1089,7 @@ msgstr "%d%%"
 #: src/CommonITILRecurrent.php:615
 #, php-format
 msgid "%s %d successfully created"
-msgstr ""
+msgstr "%s %d vellykket opprettet"
 
 #: src/NetworkPort.php:862 src/NetworkPort.php:936
 #, php-format
@@ -1125,7 +1137,7 @@ msgstr ""
 #: front/ticket.form.php:291
 #, php-format
 msgid "%s Kanban"
-msgstr ""
+msgstr "%s Kanban"
 
 #: src/MailCollector.php:2354
 #, php-format
@@ -1165,7 +1177,7 @@ msgstr "%s legger til oppfølging"
 #: front/knowbaseitem_knowbaseitemcategory.form.php:57
 #, php-format
 msgid "%s adds a link with a category"
-msgstr ""
+msgstr "%slegger til en lenke med en kategori"
 
 #. TRANS: %s is the user login
 #: front/contact_supplier.form.php:60 front/contract_supplier.form.php:68
@@ -1185,7 +1197,7 @@ msgstr "%s linker til en leverandør"
 #: front/item_project.form.php:58 src/Document.php:377
 #, php-format
 msgid "%s adds a link with an item"
-msgstr "%s opprettet en lenke til elementet"
+msgstr "%s legger til en lenke med et element"
 
 #: front/knowbaseitem_item.form.php:59
 #, php-format
@@ -1348,7 +1360,7 @@ msgstr "%s kobler til et element"
 #: src/CommonITILRecurrent.php:622
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr ""
+msgstr "%s opprettelse mislyktes (sjekk påkrevde felt)"
 
 #: src/CommonITILRecurrent.php:628
 #, php-format
@@ -1496,7 +1508,8 @@ msgstr "%s gir en forbruksartikkel"
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
-msgstr[0] "%s timer"
+msgstr[0] "%s time"
+msgstr[1] "%s timer"
 
 #: src/Html.php:7086 js/common.js:1184
 #, javascript-format, php-format
@@ -1534,7 +1547,8 @@ msgstr "%s er ikke skrivbar"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] "%s elementer"
+msgstr[0] "%s element"
+msgstr[1] "%s elementer"
 
 #: src/CronTask.php:1316
 #, php-format
@@ -1555,7 +1569,7 @@ msgstr "%s gjør en dårlig bruk."
 #: src/Ticket.php:6821
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr ""
+msgstr "%s slår sammen sak %s inn i %s"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1861
@@ -1570,13 +1584,13 @@ msgstr[1] ""
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s minutt"
+msgstr[1] "%s minutter"
 
 #: src/Html.php:7083 js/common.js:1182
 #, javascript-format, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s minutter siden"
 
 #. TRANS: %s is a number of months
 #: src/Dropdown.php:1841
@@ -1589,12 +1603,12 @@ msgstr[1] ""
 #: js/common.js:1190
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%s måneder siden"
 
 #: src/Project.php:2291
 #, php-format
 msgid "%s of %s"
-msgstr ""
+msgstr "%s av %s"
 
 #: src/Marketplace/View.php:1018
 #, php-format
@@ -1606,12 +1620,12 @@ msgstr[1] ""
 #: src/Ticket.php:2181
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr ""
+msgstr "%s forfremmer en oppfølging fra sak %s"
 
 #: src/Ticket.php:2197
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr ""
+msgstr "%s forfremmer en oppgave fra sak %s"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:71
@@ -1727,7 +1741,7 @@ msgstr "%s sletter en godkjenning permanent"
 #: front/passivedcequipment.form.php:103
 #, php-format
 msgid "%s purges an item"
-msgstr "%s slettet et element permanent"
+msgstr "%s sletter et element permanent"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:89
@@ -1739,7 +1753,7 @@ msgstr ""
 #: front/ticket_ticket.form.php:59
 #, php-format
 msgid "%s purges link between tickets"
-msgstr "%s sletter permanent en lenke mellom saker"
+msgstr "%s sletter lenken mellom saker"
 
 #. TRANS: %s is the user login
 #: front/dropdown.common.form.php:131 front/group.form.php:117
@@ -1793,12 +1807,13 @@ msgstr ""
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%s sekunder"
+msgstr[0] "%s sekunde"
+msgstr[1] "%s sekunder"
 
 #: js/common.js:1180
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "%s sekunder siden"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -1813,6 +1828,7 @@ msgstr "%s setter enhetlig ledelse"
 msgid "%s start"
 msgid_plural "%s starts"
 msgstr[0] "%s starter"
+msgstr[1] "%s starter"
 
 #. TRANS: %s is the number of stops
 #: src/CronTask.php:1222
@@ -1820,18 +1836,19 @@ msgstr[0] "%s starter"
 msgid "%s stop"
 msgid_plural "%s stops"
 msgstr[0] "%s stopper"
+msgstr[1] "%s stopper"
 
 #: ajax/ticketiteminformation.php:74
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s sak pågående eller nylig løst for dette elementet."
+msgstr[1] "%s saker pågående eller nylig løst for dette elementet."
 
 #: front/pluginimage.send.php:81
 #, php-format
 msgid "%s tries to use a non standard path."
-msgstr "%s forsøker på bruk av ikke standardiserte bane."
+msgstr "%s forsøker å bruke en ikke-standard filbane."
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2055,37 +2072,43 @@ msgstr "(la feltet stå tomt for å generere fra HTML)"
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
-msgstr[0] "+ %d dager"
+msgstr[0] "+ %d dag"
+msgstr[1] "+ %d dager"
 
 #: src/Html.php:3405 src/LevelAgreementLevel.php:279
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
-msgstr[0] "+ %d timer"
+msgstr[0] "+ %d time"
+msgstr[1] "+ %d timer"
 
 #: src/LevelAgreementLevel.php:268
 #, php-format
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
-msgstr[0] "+ %d minutter"
+msgstr[0] "+ %d minutt"
+msgstr[1] "+ %d minutter"
 
 #: src/Html.php:3422
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
-msgstr[0] "+ %d måneder"
+msgstr[0] "+ %d måned"
+msgstr[1] "+ %d måneder"
 
 #: src/Html.php:3414
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
-msgstr[0] "+ %d uker"
+msgstr[0] "+ %d uke"
+msgstr[1] "+ %d uker"
 
 #: src/Html.php:3430
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+ %d år"
+msgstr[1] "+ %d år"
 
 #: templates/layout/parts/profile_selector.html.twig src/Entity.php:4211
 msgid "+ sub-entities"
@@ -2095,37 +2118,43 @@ msgstr ""
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
-msgstr[0] "- %d dager"
+msgstr[0] "- %d dag"
+msgstr[1] "- %d dager"
 
 #: src/Html.php:3360 src/LevelAgreementLevel.php:284
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
-msgstr[0] "- %d timer"
+msgstr[0] "- %d time"
+msgstr[1] "- %d timer"
 
 #: src/Html.php:3364 src/LevelAgreementLevel.php:272
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
-msgstr[0] "- %d minutter"
+msgstr[0] "- %d minutt"
+msgstr[1] "- %d minutter"
 
 #: src/Html.php:3391
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
-msgstr[0] "- %d måneder"
+msgstr[0] "- %d måned"
+msgstr[1] "- %d måneder"
 
 #: src/Html.php:3383
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
-msgstr[0] "- %d uker"
+msgstr[0] "- %d uke"
+msgstr[1] "- %d uker"
 
 #: src/Html.php:3399
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] "- %d år"
+msgstr[1] "- %d år"
 
 #: src/Console/Database/AbstractConfigureCommand.php:407
 msgid "--db-password option value cannot be null."
@@ -2216,7 +2245,7 @@ msgstr ""
 
 #: src/Item_Devices.php:1535
 msgid "A device ID is mandatory"
-msgstr ""
+msgstr "En enhets-ID er påkrevd"
 
 #: src/SavedSearch.php:878
 msgid ""
@@ -2235,7 +2264,7 @@ msgstr ""
 
 #: src/ProjectTask.php:478
 msgid "A linked project is mandatory"
-msgstr ""
+msgstr "Et tilknyttet prosjekt er påkrevd"
 
 #: src/Lock.php:83
 msgid "A locked field is a manually modified field."
@@ -2280,7 +2309,7 @@ msgstr ""
 
 #: src/ProjectTaskTeam.php:193
 msgid "A project task is mandatory"
-msgstr ""
+msgstr "En prosjektoppgave er påkrevd"
 
 #: src/Item_Rack.php:974 src/PDU_Rack.php:99
 msgid "A rack is required"
@@ -2334,7 +2363,7 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:338 src/NotificationTargetTicket.php:778
 msgid "A validation request has been submitted"
-msgstr ""
+msgstr "En valideringsforespørsel har blitt sendt inn"
 
 #: src/Item_SoftwareLicense.php:246
 msgid "A version is required!"
@@ -2363,7 +2392,8 @@ msgstr "API dokumentasjon"
 #: src/APIClient.php:70
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] "API klienter"
+msgstr[0] "API klient"
+msgstr[1] "API klienter"
 
 #: src/Api/API.php:167
 msgid "API disabled"
@@ -2387,7 +2417,7 @@ msgstr ""
 
 #: templates/layout/parts/user_header.html.twig
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #: src/ITILSolution.php:419
@@ -2631,7 +2661,7 @@ msgstr ""
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:181
 msgid "Add a category"
-msgstr ""
+msgstr "Legg til en kategori"
 
 #: src/Itil_Project.php:186
 msgid "Add a change"
@@ -2704,11 +2734,11 @@ msgstr ""
 
 #: src/ITILFollowup.php:835
 msgid "Add a followup to tickets (requester)"
-msgstr "Legg til en oppfølging til saken (requester)"
+msgstr "Legg til en oppfølging til saker (innmelder)"
 
 #: src/ITILFollowup.php:838
 msgid "Add a followup to tickets (watcher)"
-msgstr ""
+msgstr "Legg til en oppfølging til saker (observatør)"
 
 #: src/ITILFollowup.php:831
 msgid "Add a followup to tickets of associated groups"
@@ -2782,7 +2812,7 @@ msgstr "Legg til ny fil"
 
 #: src/ITILFollowup.php:852 src/Ticket.php:2624
 msgid "Add a new followup"
-msgstr "Legg til ny oppfølging"
+msgstr "Legg til en ny oppfølging"
 
 #: src/LevelAgreement.php:367
 msgid "Add a new item"
@@ -2795,7 +2825,7 @@ msgstr ""
 #: src/CommonITILTask.php:1488 src/Change_Ticket.php:299
 #: src/Problem_Ticket.php:331 src/Problem.php:418 src/Ticket.php:2631
 msgid "Add a new task"
-msgstr "Legg til ny oppgave"
+msgstr "Legg til en ny oppgave"
 
 #: src/DropdownTranslation.php:410 src/KnowbaseItemTranslation.php:213
 #: src/NotificationTemplateTranslation.php:205 src/ReminderTranslation.php:148
@@ -2859,7 +2889,7 @@ msgstr "Legg til en mal"
 
 #: src/Ticket_Contract.php:84 src/Itil_Project.php:192
 msgid "Add a ticket"
-msgstr "Legg til sak"
+msgstr "Legg til en sak"
 
 #: src/Group_User.php:344
 msgid "Add a user"
@@ -2921,13 +2951,13 @@ msgstr ""
 #: src/Appliance_Item.php:150 src/Item_Ticket.php:400 src/Domain_Item.php:206
 #: src/Contract_Item.php:579
 msgid "Add an item"
-msgstr "Legg til element"
+msgstr "Legg til et element"
 
 #: src/Appliance.php:450 src/Document.php:1767 src/SoftwareLicense.php:947
 #: src/Contract.php:424 src/Ticket.php:2617
 msgctxt "button"
 msgid "Add an item"
-msgstr "Legg til element"
+msgstr "Legg til et element"
 
 #: src/Link_Itemtype.php:101
 msgid "Add an item type"
@@ -2980,7 +3010,7 @@ msgstr ""
 
 #: src/NotificationMailingSetting.php:212
 msgid "Add documents into ticket notifications"
-msgstr ""
+msgstr "Legg til dokumenter i varslene for saker"
 
 #. TRANS: short for : Add users from an external source
 #: src/User.php:6085
@@ -3054,7 +3084,7 @@ msgstr ""
 
 #: js/reservations.js:239
 msgid "Add reservation"
-msgstr ""
+msgstr "Legg til reservasjon"
 
 #: src/NetworkPort.php:788
 msgid "Add several ports"
@@ -3071,11 +3101,11 @@ msgstr "Legg til resultatet av regulæruttrykk"
 
 #: src/TicketTask.php:267
 msgid "Add to all items"
-msgstr ""
+msgstr "Legg til for alle elementer"
 
 #: src/ITILFollowup.php:825
 msgid "Add to all tickets"
-msgstr "Legg til alle saker"
+msgstr "Legg til i alle saker"
 
 #: src/Appliance_Item.php:280
 msgid "Add to an appliance"
@@ -3093,7 +3123,7 @@ msgstr "Legg til i tidsplan"
 #: src/MassiveAction.php:704
 msgctxt "button"
 msgid "Add to transfer list"
-msgstr ""
+msgstr "Legg til på overføringslisten"
 
 #: src/User.php:2442
 msgid "Add user..."
@@ -3336,11 +3366,11 @@ msgstr "Varsler ved reservasjoner"
 
 #: src/Entity.php:1240
 msgid "Alerts on tickets which are not solved"
-msgstr "Alarm for saker som ikke er løst"
+msgstr "Varsler om saker som ikke er løst"
 
 #: src/Entity.php:2429
 msgid "Alerts on tickets which are not solved since"
-msgstr "Alarm på saker som ikke er løst siden"
+msgstr "Varsler om saker som ikke er løst siden"
 
 #: src/NetworkPort.php:1445 src/NetworkPort.php:1795
 msgid "Alias"
@@ -3392,7 +3422,7 @@ msgstr "Alle gjenstander"
 
 #: src/Ticket.php:3462
 msgid "All linked tickets"
-msgstr "Alle linkede saker"
+msgstr "Alle koblede saker"
 
 #: src/KnowbaseItem.php:1463
 msgid "All my articles"
@@ -3408,11 +3438,11 @@ msgstr "Alle sidene som SLK"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2537
 msgid "All pages in landscape PDF"
-msgstr "PDF: Alle sidene i landskap"
+msgstr "Alle sider i liggende PDF"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2538
 msgid "All pages in portrait PDF"
-msgstr "PDF: Alle sidene som portrett"
+msgstr "Alle sider i stående PDF"
 
 #: src/Console/Plugin/AbstractPluginCommand.php:94
 msgid "All plugins"
@@ -3558,7 +3588,7 @@ msgstr "Alltid dereferenced"
 
 #: src/MassiveAction.php:816
 msgid "Amend comment"
-msgstr ""
+msgstr "Endre kommentar"
 
 #: src/MassiveAction.php:1294
 msgid "Amendment to insert"
@@ -3585,12 +3615,12 @@ msgstr "Et addresserbart nettverk er et nettverk som er definert av et utstyr"
 
 #: src/NotificationTargetChange.php:340 src/NotificationTargetTicket.php:780
 msgid "An answer to a validation request was produced"
-msgstr ""
+msgstr "Et svar på en valideringsforespørsel ble produsert"
 
 #: src/NotificationTargetChange.php:231 src/NotificationTargetTicket.php:553
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "Et svar på en godkjenningsforespørsel ble produsert av %s"
 
 #: src/Appliance_Item.php:415
 msgid "An appliance is required"
@@ -3603,7 +3633,7 @@ msgstr ""
 #: src/NotificationTargetChange.php:224 src/NotificationTargetTicket.php:547
 #, php-format
 msgid "An approval request has been submitted by %s"
-msgstr "En forespørsel om godkjenning av registrert av %s"
+msgstr "En godkjenningsforespørsel har blitt sendt inn av %s"
 
 #: src/NotificationMailing.php:192
 #, php-format
@@ -3634,7 +3664,7 @@ msgstr ""
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Det oppstod en feil under søket etter elementer."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -3656,7 +3686,7 @@ msgstr ""
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
-msgstr ""
+msgstr "En element-ID er påkrevd"
 
 #: src/Item_Rack.php:968 src/Item_Enclosure.php:330 src/Item_Cluster.php:308
 #: src/Appliance_Item_Relation.php:123 src/Appliance_Item.php:409
@@ -3665,7 +3695,7 @@ msgstr ""
 
 #: src/ProjectTaskTeam.php:175
 msgid "An item type is mandatory"
-msgstr ""
+msgstr "En elementtype er påkrevd"
 
 #: src/Item_Rack.php:962 src/Item_Enclosure.php:324 src/Item_Cluster.php:302
 #: src/Appliance_Item_Relation.php:117 src/Appliance_Item.php:403
@@ -3699,6 +3729,7 @@ msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
 msgstr[0] "Besvart"
+msgstr[1] "Besvart"
 
 #: src/ComputerAntivirus.php:54 src/ComputerAntivirus.php:142
 msgid "Antivirus"
@@ -3768,7 +3799,8 @@ msgstr "Tatt i bruk"
 #: src/CommonITILValidation.php:103 src/Change.php:588
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] "Godkjenninger"
+msgstr[0] "Godkjenning"
+msgstr[1] "Godkjenninger"
 
 #: src/CommonITILValidation.php:933 src/CommonITILValidation.php:1106
 #: src/CommonITILValidation.php:1213
@@ -3810,7 +3842,7 @@ msgstr "Godkjenningsforespørsel til teknikers gruppeleder"
 #: src/NotificationTargetCommonITILObject.php:875
 #: src/CommonITILValidation.php:931 src/CommonITILValidation.php:1140
 msgid "Approval requester"
-msgstr "Anmoder om godkjenning"
+msgstr "Innmelder om godkjenning"
 
 #: src/CommonITILValidation.php:932 src/CommonITILValidation.php:1228
 msgid "Approval status"
@@ -3827,11 +3859,11 @@ msgstr "Godkjenn"
 
 #: src/Ticket.php:6155
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr ""
+msgstr "Godkjenn løsning og svar på undersøkelsen for sak opprettet av meg"
 
 #: src/Ticket.php:6154
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Godkjenn løsning/Svar på undersøkelse (min sak)"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
@@ -3855,7 +3887,8 @@ msgstr "April"
 #: src/Item_OperatingSystem.php:473 src/Item_OperatingSystem.php:587
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] "Arkitekturer"
+msgstr[0] "Arkitektur"
+msgstr[1] "Arkitekturer"
 
 #: src/CronTask.php:2099
 msgid "Archives log files and deletes aging ones"
@@ -3870,7 +3903,9 @@ msgstr ""
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
 msgstr[0] ""
+"Er du sikker på at du vil legge dette elementet til overføringslisten?"
 msgstr[1] ""
+"Er du sikker på at du vil legge disse elementene til overføringslisten?"
 
 #: js/dashboard.js:945
 #, javascript-format
@@ -3905,7 +3940,7 @@ msgstr "Så snart som mulig"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:199
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "Spør agenten om dens nåværende status"
 
 #: src/ObjectLock.php:297
 msgid "Ask for unlock"
@@ -3962,7 +3997,7 @@ msgstr "Tildel SLA"
 
 #: src/Ticket.php:6143
 msgid "Assign a ticket"
-msgstr "Tildel sak"
+msgstr "Tildel en sak"
 
 #: src/Ticket.php:5729
 msgid "Assign equipment"
@@ -4002,7 +4037,7 @@ msgstr[1] ""
 
 #: src/Dashboard/Provider.php:379 src/Dashboard/Grid.php:1212
 msgid "Assigned tickets"
-msgstr ""
+msgstr "Tildelte saker"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: front/stat.tracking.php:128 src/Log.php:563 src/Group.php:274
@@ -4015,7 +4050,7 @@ msgstr "Tildelt"
 #: src/CommonITILObject.php:4558 src/RuleTicket.php:652 src/RuleTicket.php:848
 #: src/NotificationTargetCommonITILObject.php:1813
 msgid "Assigned to a supplier"
-msgstr "Tildelt leverandør"
+msgstr "Tildelt til en leverandør"
 
 #: src/NotificationTargetCommonITILObject.php:1820
 msgid "Assigned to groups"
@@ -4049,11 +4084,11 @@ msgstr "Brukerstøtte"
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:162
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:303
 msgid "Associable items to a ticket"
-msgstr "Tilknyttbare elementer til en sak"
+msgstr "Elementer som kan knyttes til en sak"
 
 #: src/Profile.php:1213 src/Profile.php:1594 src/Profile.php:3265
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Elementer som kan knyttes til saker, endringer og problemer"
 
 #: templates/generic_show_form.html.twig src/Appliance.php:288
 #: src/RuleDictionnarySoftware.php:124 src/Software.php:484
@@ -4067,7 +4102,7 @@ msgstr "Kan knyttes til en sak"
 #: src/Domain.php:411 src/NetworkName.php:774
 msgctxt "button"
 msgid "Associate"
-msgstr "Tilknytte"
+msgstr "Knytt til"
 
 #: src/IPNetwork_Vlan.php:138 src/NetworkPort_Vlan.php:139
 #: src/NetworkPort.php:1557
@@ -4108,12 +4143,14 @@ msgstr ""
 #: src/Supplier.php:285
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "Tilknyttede kontakter"
+msgstr[0] "Tilknyttet kontakt"
+msgstr[1] "Tilknyttede kontakter"
 
 #: src/Supplier.php:330
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "Tilknyttede kontrakter"
+msgstr[0] "Tilknyttet kontrakt"
+msgstr[1] "Tilknyttede kontrakter"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/KnowbaseItem.php:1944
@@ -4131,8 +4168,8 @@ msgstr[0] "Tilknyttede kontrakter"
 #: src/Ticket.php:3205 src/Ticket.php:5060
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] "Tilghørende element"
-msgstr[1] "Tilhørende elementer"
+msgstr[0] "Tilknyttet element"
+msgstr[1] "Tilknyttede elementer"
 
 #: src/NotificationTargetProblem.php:204 src/NotificationTargetInfocom.php:90
 #: src/CableStrand.php:153 src/CableStrand.php:155 src/Document_Item.php:284
@@ -4147,7 +4184,8 @@ msgstr[1] "Tilhørende elementer"
 #: src/NotificationTargetProject.php:710
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "Tilknyttede elementer"
+msgstr[0] "Tilknyttet element"
+msgstr[1] "Tilknyttede elementer"
 
 #: src/Socket.php:445 src/QueuedNotification.php:370 src/Contract_Item.php:160
 msgid "Associated item ID"
@@ -4158,16 +4196,18 @@ msgstr "Tilknyttet element ID"
 #: src/Change.php:490 src/Problem.php:471 src/Ticket.php:3222
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "Tilknyttede elementtyper"
+msgstr[0] "Tilknyttet elementtype"
+msgstr[1] "Tilknyttede elementtyper"
 
 #: src/Contact.php:353 src/Contract.php:749
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
 msgstr[0] "Tilknyttede leverandører"
+msgstr[1] "Tilknyttet leverandør"
 
 #: src/Profile.php:1187 src/Profile.php:1571
 msgid "Association"
-msgstr "Foreningen"
+msgstr "Tilknytning"
 
 #: src/NetworkPortMigration.php:282
 msgid "At all events"
@@ -4297,7 +4337,8 @@ msgstr ""
 #: src/User.php:2879 src/Profile_User.php:1086
 msgid "Authorization"
 msgid_plural "Authorizations"
-msgstr[0] "Autorisasjoner"
+msgstr[0] "Autorisasjon"
+msgstr[1] "Autorisasjoner"
 
 #: src/CommonGLPI.php:1503
 msgid "Authorization error"
@@ -4345,7 +4386,7 @@ msgstr ""
 
 #: src/Ticket.php:2107
 msgid "Auto-created task"
-msgstr ""
+msgstr "Automatisk opprettet oppgave"
 
 #: src/Config.php:1511
 msgid "Auto-lock Mode"
@@ -4371,7 +4412,8 @@ msgstr ""
 #: src/CronTask.php:84
 msgid "Automatic action"
 msgid_plural "Automatic actions"
-msgstr[0] "Automatiske handlinger"
+msgstr[0] "Automatisk handling"
+msgstr[1] "Automatiske handlinger"
 
 #: src/NotificationTargetCronTask.php:97
 msgid "Automatic actions list"
@@ -4391,11 +4433,11 @@ msgstr "Automatisk delegering av saker"
 
 #: src/Entity.php:2890
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "Automatisk tildeling av saker, endringer og problemer"
 
 #: src/Ticket.php:5765
 msgid "Automatic closed tickets purge"
-msgstr ""
+msgstr "Automatisk sletting av lukkede saker"
 
 #: src/Entity.php:3031
 msgid "Automatic closing configuration"
@@ -4440,15 +4482,15 @@ msgstr ""
 
 #: src/Entity.php:1221 src/Entity.php:3082
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "Automatisk sletting av lukkede saker etter"
 
 #: src/OlaLevel.php:220
 msgid "Automatic reminders of OLA"
-msgstr ""
+msgstr "Automatiske påminnelser om ONA"
 
 #: src/NotificationTargetTicket.php:147
 msgid "Automatic reminders of OLAs"
-msgstr ""
+msgstr "Automatiske påminnelser om ONAer"
 
 #: src/SlaLevel.php:216
 msgid "Automatic reminders of SLA"
@@ -4473,7 +4515,7 @@ msgstr ""
 
 #: src/Ticket.php:5756
 msgid "Automatic tickets closing"
-msgstr "Automatisk saks lukking"
+msgstr "Automatisk lukking av saker"
 
 #: src/RuleRight.php:227
 msgid "Automatic user assignment"
@@ -4503,6 +4545,7 @@ msgstr "Automatisk generert av GLPI %s"
 #: src/Config.php:1384
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
+"Automatisk oppdatering av data (saksliste, prosjekt-kanban) i minutter."
 
 #: src/Config.php:555
 msgid "Automatically update of the elements related to the computers"
@@ -4540,7 +4583,7 @@ msgstr "Gjennomsnittlig antall utskrevne sider"
 
 #: src/Stat.php:616
 msgid "Average real duration of treatment of the ticket"
-msgstr "Gjennomsnittlig virkelig saksbehandlingstid"
+msgstr "Gjennomsnittlig reell varighet av behandling av saken"
 
 #: src/Stat.php:577
 msgid "Average satisfaction"
@@ -4604,13 +4647,13 @@ msgstr "Tilbake til start"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Back to top of the page"
-msgstr ""
+msgstr "Tilbake til toppen av siden"
 
 #: templates/pages/assets/rack.html.twig
 #: templates/components/dashboard/widget_form.html.twig src/Item_Rack.php:688
 #: src/PDU_Rack.php:286
 msgid "Background color"
-msgstr ""
+msgstr "Bakgrunnsfarge"
 
 #: src/PlanningExternalEventTemplate.php:73 src/PlanningExternalEvent.php:310
 #: src/Features/PlanningEvent.php:992
@@ -4640,22 +4683,23 @@ msgstr "BaseDN"
 
 #: src/Entity.php:3489
 msgid "Based on the category then the item"
-msgstr ""
+msgstr "Basert på kategorien, deretter elementet"
 
 #: src/Entity.php:3488
 msgid "Based on the item then the category"
-msgstr ""
+msgstr "Basert på elementet, deretter kategorien"
 
 #: src/DeviceBattery.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] "Batterier"
+msgstr[0] "Batteri"
+msgstr[1] "Batterier"
 
 #: src/DeviceBatteryType.php:40
 msgid "Battery type"
 msgid_plural "Battery types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Batteritype"
+msgstr[1] "Batterityper"
 
 #: src/RequestType.php:196 src/RequestType.php:204 src/RequestType.php:212
 #: src/RequestType.php:220
@@ -4750,7 +4794,8 @@ msgstr ""
 #: src/Blacklist.php:105 src/RuleCollection.php:2297
 msgid "Blacklist"
 msgid_plural "Blacklists"
-msgstr[0] "Svartelister"
+msgstr[0] "Svartelist"
+msgstr[1] "Svartelister"
 
 #: src/Document.php:513
 msgid "Blacklisted for import"
@@ -4814,22 +4859,25 @@ msgstr ""
 #: src/NotificationAjaxSetting.php:69
 msgid "Browser notification"
 msgid_plural "Browser notifications"
-msgstr[0] "Nettleservarsler"
+msgstr[0] "Nettleservarsel"
+msgstr[1] "Nettleservarsler"
 
 #: src/Budget.php:60
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] "Budsjetter"
+msgstr[0] "Budsjett"
+msgstr[1] "Budsjetter"
 
 #: src/BudgetType.php:44
 msgid "Budget type"
 msgid_plural "Budget types"
 msgstr[0] "budsjett type"
+msgstr[1] "budsjett typer"
 
 #: src/NotificationTargetTicket.php:665 src/NotificationTargetTicket.php:721
 #: src/Location.php:87 src/Location.php:187 src/Location.php:239
 msgid "Building number"
-msgstr "Husnummer"
+msgstr "bygningsnummer"
 
 #: js/modules/Kanban/Kanban.js:474
 msgid "Bulk add"
@@ -4837,19 +4885,19 @@ msgstr ""
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
-msgstr "Bulk import av grupper fra LDAP katalog"
+msgstr "Masseimport av grupper fra en LDAP-katalog"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
-msgstr "Importer brukere i bulk fra LDAP katalog"
+msgstr "Masseimport av brukere fra en LDAP-katalog"
 
 #: front/massiveaction.php:60
 msgid "Bulk modification"
-msgstr "Bulk endringer"
+msgstr "Masseendring"
 
 #: front/massiveaction.php:49
 msgid "Bulk modification error"
-msgstr "Bulk modifikasjon feil"
+msgstr "Masseendring feil"
 
 #: templates/components/infocom.html.twig src/BusinessCriticity.php:45
 #: src/Infocom.php:1458 src/Infocom.php:1727
@@ -5069,7 +5117,8 @@ msgstr ""
 #: src/CommonITILRecurrent.php:341 src/SLM.php:196 src/SLM.php:243
 msgid "Calendar"
 msgid_plural "Calendars"
-msgstr[0] "Kalendere"
+msgstr[0] "Kalender"
+msgstr[1] "Kalendere"
 
 #: src/Planning.php:1514
 msgid "Calendar URL"
@@ -5086,7 +5135,7 @@ msgstr ""
 
 #: src/LevelAgreement.php:443 src/SLM.php:202
 msgid "Calendar of the ticket"
-msgstr "Sakens kalender"
+msgstr "Kalender for saken"
 
 #: src/NotificationMailingSetting.php:325
 msgctxt "oauth"
@@ -5230,7 +5279,8 @@ msgstr "Bildetekst"
 #: src/Cartridge.php:101
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Kassetter"
+msgstr[0] "Kassette"
+msgstr[1] "Kassetter"
 
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
@@ -5241,12 +5291,14 @@ msgstr[1] ""
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "Kassettmodeller"
+msgstr[0] "Kassettmodell"
+msgstr[1] "Kassettmodeller"
 
 #: src/CartridgeItemType.php:41 src/Cartridge.php:1119
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Kassettyper"
+msgstr[0] "Kassettype"
+msgstr[1] "Kassettyper"
 
 #: src/NotificationTargetCartridgeItem.php:45
 msgid "Cartridges alarm"
@@ -5288,8 +5340,8 @@ msgstr[1] ""
 #: src/NotificationTargetCommonITILObject.php:1914
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kategori"
+msgstr[1] "Kategorier"
 
 #: src/NotificationTargetCommonITILObject.php:1915
 msgid "Category comment"
@@ -5340,7 +5392,8 @@ msgstr ""
 #: src/Transfer.php:4125 src/Certificate.php:67 src/Entity.php:2362
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] "Sertifikater"
+msgstr[0] "Sertifikat"
+msgstr[1] "Sertifikater"
 
 #: src/Certificate.php:783
 #, php-format
@@ -5373,7 +5426,8 @@ msgstr ""
 #: src/NotificationTargetProject.php:791 src/NotificationTargetProject.php:809
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Endringer"
+msgstr[0] "Endring"
+msgstr[1] "Endringer"
 
 #: src/AuthLDAP.php:3933 src/AuthLDAP.php:3965
 msgctxt "button"
@@ -5443,7 +5497,7 @@ msgstr "Endring av godkjenningsmetoden"
 #: install/migrations/update_0.83.1_to_0.83.3.php:73 src/Migration.php:800
 #, php-format
 msgid "Change of the database layout - %s"
-msgstr ""
+msgstr "Endring av databaseoppsettet - %s"
 
 #: src/Console/Security/ChangekeyCommand.php:58
 msgid "Change password storage key and update values in database."
@@ -5457,6 +5511,7 @@ msgstr "Endring løst"
 msgid "Change task"
 msgid_plural "Change tasks"
 msgstr[0] "Endre oppgave"
+msgstr[1] "Endre oppgaver"
 
 #: src/CommonITILTask.php:1666
 msgid "Change tasks to do"
@@ -5465,8 +5520,8 @@ msgstr ""
 #: src/ChangeTemplate.php:50 src/Entity.php:2793
 msgid "Change template"
 msgid_plural "Change templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Endre mal"
+msgstr[1] "Endre maler"
 
 #: src/User.php:3543
 msgctxt "button"
@@ -5715,7 +5770,7 @@ msgstr "Undergrupper"
 
 #: src/Ticket.php:3542
 msgid "Child tickets"
-msgstr "Barne saker"
+msgstr "Underordnede saker"
 
 #: src/DeviceMotherboard.php:53 src/DeviceMotherboard.php:73
 #: src/DeviceGraphicCard.php:55 src/DeviceGraphicCard.php:94
@@ -5844,7 +5899,7 @@ msgstr "Tøm"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
-msgstr ""
+msgstr "Tøm søk"
 
 #: src/Config.php:606
 msgid "Clear status"
@@ -5873,12 +5928,12 @@ msgstr ""
 
 #: js/planning.js:281
 msgid "Clone"
-msgstr ""
+msgstr "Klone"
 
 #: src/MassiveAction.php:774 ajax/dropdownMassiveActionOs.php:49
 msgctxt "button"
 msgid "Clone"
-msgstr ""
+msgstr "Klone"
 
 #: src/Dashboard/Grid.php:290
 msgid "Clone this dashboard"
@@ -5914,16 +5969,17 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
-msgstr ""
+msgstr "Lukk panelet"
 
 #: src/Entity.php:3044
 msgid "Close ticket action is disabled."
-msgstr ""
+msgstr "Handling for å lukke sak er deaktivert."
 
 #: src/Holiday.php:48 src/Calendar_Holiday.php:203
 msgid "Close time"
 msgid_plural "Close times"
 msgstr[0] "Tid avsluttet"
+msgstr[1] "Tider avsluttet"
 
 #: install/migrations/update_0.84.x_to_0.85.0.php:2263 src/Stat.php:560
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:67
@@ -5950,7 +6006,7 @@ msgstr "Lukket %s"
 
 #: src/Dashboard/Provider.php:403 src/Dashboard/Grid.php:1215
 msgid "Closed tickets"
-msgstr ""
+msgstr "Lukkede saker"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:69
 #: src/CommonITILObject.php:4073 src/CommonITILObject.php:5391
@@ -5960,7 +6016,7 @@ msgstr "Lukket dato"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Closing of the ticket"
-msgstr "Lukking av Sak"
+msgstr "Lukking av saken"
 
 #: src/CommonITILObject.php:4372
 msgid "Closing time"
@@ -6005,15 +6061,15 @@ msgstr "Prosjektkode"
 
 #: src/ITILCategory.php:78 src/ITILCategory.php:300 src/RuleTicket.php:574
 msgid "Code representing the ticket category"
-msgstr ""
+msgstr "Kode som representerer sakskategorien"
 
 #: src/ITILCategory.php:375 src/ITILCategory.php:397
 msgid "Code representing the ticket category is already used"
-msgstr ""
+msgstr "Koden som representerer billettskategorien er allerede i bruk"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
-msgstr ""
+msgstr "Skjul meny"
 
 #: templates/install/step6.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:223
@@ -6151,11 +6207,11 @@ msgstr "Kommentarer"
 
 #: src/Infocom.php:1448
 msgid "Comments on financial and administrative information"
-msgstr ""
+msgstr "Kommentarer til økonomisk og administrativ informasjon"
 
 #: src/NotificationTargetTicket.php:796
 msgid "Comments to the satisfaction survey"
-msgstr ""
+msgstr "Kommentarer til tilfredshetsundersøkelsen"
 
 #: src/Dropdown.php:1094
 msgid "Common"
@@ -6172,7 +6228,7 @@ msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "Bedrift"
 
 #: src/SavedSearch_Alert.php:159
 msgid ""
@@ -6192,7 +6248,7 @@ msgstr "Sammenling valgte revisjoner"
 #: src/NotificationTargetCommonITILObject.php:2033
 #: src/NotificationTargetProject.php:763
 msgid "Complete name"
-msgstr "Komplett navn"
+msgstr "Fullt navn"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: front/devices.php:44 src/Dropdown.php:1077 src/Item_Devices.php:274
@@ -6202,27 +6258,30 @@ msgstr "Komplett navn"
 #: src/Profile.php:1090 src/Profile.php:2567
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Komponent"
+msgstr[1] "Komponenter"
 
 #: src/Computer.php:84 src/Profile.php:2102
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "Datamaskiner"
+msgstr[0] "Datamaskin"
+msgstr[1] "Datamaskiner"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:183
 msgid "Computer inventory"
-msgstr ""
+msgstr "Datamaskininventar"
 
 #: src/Rule.php:305 src/ComputerModel.php:41
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] "Datamaskin modeller"
+msgstr[0] "Datamaskinmodell"
+msgstr[1] "Datamaskinmodeller"
 
 #: src/Rule.php:377 src/ComputerType.php:41
 msgid "Computer type"
 msgid_plural "Computer types"
 msgstr[0] "Datamaskintyper"
+msgstr[1] "Datamaskintype"
 
 #: src/NetworkAlias.php:430 src/RuleImportComputer.php:99
 msgid "Computer's name"
@@ -6282,7 +6341,7 @@ msgstr "Bekreft endelig sletting?"
 
 #: src/Ticket.php:2740
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr ""
+msgstr "Bekreft sammenslåingen? Denne saken vil bli slettet!"
 
 #: src/Computer_Item.php:259 src/Computer_Item.php:281
 #: src/Computer_Item.php:379 src/Computer_Item.php:561
@@ -6328,6 +6387,7 @@ msgstr "Koblet til"
 msgid "Connection"
 msgid_plural "Connections"
 msgstr[0] "Tilkoblinger"
+msgstr[1] "Tilkobling"
 
 #: src/NetworkPortDialup.php:43
 msgid "Connection by dial line - Dialup Port"
@@ -6387,8 +6447,8 @@ msgstr "Registrer gjerne lengde- og breddegrad for dette stedet."
 #: src/Profile.php:2200
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forbruksvare"
+msgstr[1] "Forbruksvarer"
 
 #: src/ConsumableItem.php:65
 msgid "Consumable model"
@@ -6400,6 +6460,7 @@ msgstr[1] ""
 msgid "Consumable type"
 msgid_plural "Consumable types"
 msgstr[0] "Typer forbruksartikler"
+msgstr[1] "Type forbruksartikel"
 
 #: src/NotificationTargetConsumableItem.php:45
 msgid "Consumables alarm"
@@ -6408,7 +6469,8 @@ msgstr "Rekvisita Alarm"
 #: src/Contact.php:58 src/Profile.php:942 src/Profile.php:2345
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] "Kontakter"
+msgstr[0] "Kontakt"
+msgstr[1] "Kontakter"
 
 #: src/NotificationTargetProjectTask.php:70
 #: src/NotificationTargetProject.php:75
@@ -6418,7 +6480,8 @@ msgstr "Kontakt for prosjektteam"
 #: src/ContactType.php:41
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "Kontakt typer"
+msgstr[0] "Kontakt type"
+msgstr[1] "Kontakt typer"
 
 #: src/ObjectLock.php:165 src/KnowbaseItem_Comment.php:181
 #: src/KnowbaseItem_Comment.php:215
@@ -6475,7 +6538,7 @@ msgstr ""
 #: src/Entity.php:1287 src/Entity.php:2991 src/Entity.php:3020
 #: src/Entity.php:3781
 msgid "Contract in ticket entity"
-msgstr ""
+msgstr "Kontrakt i sakens enhet"
 
 #: src/Contract.php:1331
 msgid "Contract period ended"
@@ -6492,7 +6555,8 @@ msgstr "Kontraktsperiode"
 #: src/ContractType.php:41
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "Kontrakt typer"
+msgstr[0] "Kontrakt type"
+msgstr[1] "Kontrakt typer"
 
 #: src/NotificationTargetContract.php:157
 msgid "Contract with notice for the current period since the"
@@ -6535,7 +6599,8 @@ msgstr "Kontroll liste"
 #: src/DeviceControl.php:45
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] "Kontrollere"
+msgstr[0] "Kontroller"
+msgstr[1] "Kontrollere"
 
 #: src/Unmanaged.php:208 src/Unmanaged.php:220
 msgid "Convert"
@@ -6647,7 +6712,8 @@ msgstr "Kjerner"
 #: src/NotificationTargetProject.php:790 src/NotificationTargetProject.php:808
 msgid "Cost"
 msgid_plural "Costs"
-msgstr[0] "Kostnader"
+msgstr[0] "Kostnad"
+msgstr[1] "Kostnader"
 
 #: src/MailCollector.php:1004
 msgid "Could not connect to mailgate server"
@@ -6729,7 +6795,7 @@ msgstr "Registrer en sak"
 
 #: src/TicketValidation.php:105
 msgid "Create a validation request for a request"
-msgstr ""
+msgstr "Opprett en godkjenningsforespørsel for en sak"
 
 #: src/TicketValidation.php:109
 msgid "Create a validation request for an incident"
@@ -6758,7 +6824,7 @@ msgstr ""
 
 #: src/CommonITILRecurrentCron.php:51
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "Opprett gjentatte saker og endringer"
 
 #: js/modules/Kanban/Kanban.js:1955 js/modules/Kanban/Kanban.js:1974
 #: js/modules/Kanban/Kanban.js:1994
@@ -6799,12 +6865,12 @@ msgstr "Saker opprettet"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "Opprettet: %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "Opprettet: %1$s av %2$s"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:429
 msgid "Creating Appliance Environment..."
@@ -6864,7 +6930,7 @@ msgstr "Dato opprettet"
 
 #: src/RuleTicket.php:787
 msgid "Creation date is a working hour in calendar"
-msgstr ""
+msgstr "Opprettelsesdato er innenfor arbeidstid i kalenderen"
 
 #: src/NotificationTargetTicket.php:793
 msgid "Creation date of the satisfaction survey"
@@ -6884,7 +6950,8 @@ msgstr "Kriteria avvist"
 #: src/Group_User.php:517 src/RuleCriteria.php:91 src/RuleCriteria.php:676
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] "Kriteria"
+msgstr[0] "Kriterium"
+msgstr[1] "Kriteria"
 
 #: src/Config.php:1488
 msgid "Critical state color"
@@ -6896,11 +6963,11 @@ msgstr "Terskel for kritisk"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Current"
@@ -6915,7 +6982,7 @@ msgstr ""
 
 #: src/Reservation.php:1229
 msgid "Current and future reservations"
-msgstr "Fremtiden og pågår Reservasjonene"
+msgstr "Nåværende og fremtidige reservasjoner"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:536
 msgid "Current counter of pages"
@@ -7020,7 +7087,7 @@ msgstr ""
 
 #: templates/layout/parts/menu.html.twig src/Html.php:6729 src/Central.php:79
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashbord"
 
 #: src/Config.php:1520
 msgid "Dashboards"
@@ -7317,7 +7384,8 @@ msgstr "Dato for løsning"
 #: src/Config.php:1477 src/Config.php:1498
 msgid "Day"
 msgid_plural "Days"
-msgstr[0] "Dager"
+msgstr[0] "Dag"
+msgstr[1] "Dager"
 
 #: src/QueuedNotification.php:502
 msgid "Days to keep sent emails"
@@ -7515,7 +7583,7 @@ msgstr ""
 
 #: src/Profile.php:1221 src/Profile.php:3186
 msgid "Default ticket template"
-msgstr "Standard Saks mal"
+msgstr "Standard Saksmal"
 
 #: src/NotificationTemplateTranslation.php:81
 #: src/NotificationTemplateTranslation.php:148
@@ -7579,7 +7647,7 @@ msgstr "Slett en komponent"
 
 #: src/Search.php:3034
 msgid "Delete a global rule"
-msgstr ""
+msgstr "Slett en global regel"
 
 #: phpunit/functional/LogTest.php:474 src/Log.php:1142
 msgid "Delete a link with an item"
@@ -7587,7 +7655,7 @@ msgstr ""
 
 #: src/Search.php:2875 src/Search.php:3131
 msgid "Delete a rule"
-msgstr ""
+msgstr "Slett en regel"
 
 #: src/Config.php:3397
 msgid "Delete all"
@@ -7599,7 +7667,7 @@ msgstr ""
 
 #: src/RuleCollection.php:690
 msgid "Delete all rules and recreate them by default"
-msgstr ""
+msgstr "Slett alle regler og gjenopprett dem som standard"
 
 #: phpunit/functional/LogTest.php:477 src/Log.php:1162
 msgid "Delete an item"
@@ -7621,7 +7689,8 @@ msgstr "Slett eposter"
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] "Slett hvis eldre enn %s måneder"
+msgstr[0] "Slett hvis eldre enn %s måned"
+msgstr[1] "Slett hvis eldre enn %s måneder"
 
 #: src/PlanningExternalEvent.php:370
 msgid "Delete instance"
@@ -7693,7 +7762,7 @@ msgstr "Slett element"
 
 #: js/planning.js:363
 msgid "Delete the whole serie of the recurrent event"
-msgstr ""
+msgstr "Slett hele serien av den gjentatte hendelsen"
 
 #: src/Dashboard/Grid.php:613 js/dashboard.js:602
 msgid "Delete this card"
@@ -7782,7 +7851,7 @@ msgstr "Plan for utrulling"
 #: templates/pages/assets/rack.html.twig src/CommonDCModelDropdown.php:85
 #: src/CommonDCModelDropdown.php:161
 msgid "Depth"
-msgstr ""
+msgstr "dybde"
 
 #: src/AuthLDAP.php:652
 msgid "Dereferenced during the search (but not when locating)"
@@ -7859,7 +7928,8 @@ msgstr ""
 #: src/Dashboard/Grid.php:1151 src/Dashboard/Grid.php:1163
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Enheter"
+msgstr[0] "Enhet"
+msgstr[1] "Enheter"
 
 #: src/Report.php:487
 msgid "Device 1"
@@ -7951,7 +8021,8 @@ msgstr[1] ""
 #: src/CommonDeviceModel.php:41
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] "Enhetsmodeller"
+msgstr[0] "Enhetsmodell"
+msgstr[1] "Enhetsmodeller"
 
 #: src/Report.php:496 src/Report.php:505
 msgid "Device name"
@@ -7960,7 +8031,8 @@ msgstr "Enhetsnavn"
 #: src/DevicePowerSupplyModel.php:44
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Strømforsyningsmodeller"
+msgstr[0] "Strømforsyningsmodell"
+msgstr[1] "Strømforsyningsmodeller"
 
 #: src/DeviceProcessorModel.php:44
 msgid "Device processor model"
@@ -7991,7 +8063,8 @@ msgstr "Enhet midlertidig utilgjengelig"
 #: src/CommonDeviceType.php:40 src/Report.php:495 src/Report.php:504
 msgid "Device type"
 msgid_plural "Device types"
-msgstr[0] "Enhetstyper"
+msgstr[0] "Enhetstype"
+msgstr[1] "Enhetstyper"
 
 #: src/RuleImportAsset.php:146
 msgid "Device_id"
@@ -8008,7 +8081,8 @@ msgstr ""
 #: src/PeripheralType.php:41
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "Enhetstyper"
+msgstr[0] "Enhetstype"
+msgstr[1] "Enhetstyper"
 
 #: front/dictionnary.php:44 src/Rule.php:275
 msgid "Dictionary"
@@ -8019,11 +8093,11 @@ msgstr[1] "Ordlister"
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
 msgid "Dictionary of computer models"
-msgstr ""
+msgstr "Ordbok for datamaskinmodeller"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:46
 msgid "Dictionary of computer types"
-msgstr ""
+msgstr "Ordbok for datamaskintyper"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
@@ -8219,12 +8293,12 @@ msgstr ""
 
 #: src/Dropdown.php:363 js/common.js:759
 msgid "Display on map"
-msgstr ""
+msgstr "Vis på kart"
 
 #: front/display.options.php:44 src/CommonGLPI.php:1402
 #: src/CommonGLPI.php:1463 src/CommonGLPI.php:1465
 msgid "Display options"
-msgstr "Visningsinnstillinger"
+msgstr "Vis alternativer"
 
 #: src/Config.php:1094
 msgid "Display order of surnames firstnames"
@@ -8308,7 +8382,7 @@ msgstr ""
 
 #: src/RuleAction.php:443
 msgid "Do not calculate"
-msgstr ""
+msgstr "Ikke beregn"
 
 #: src/Inventory/Conf.php:520
 msgid "Do not change"
@@ -8322,7 +8396,7 @@ msgstr ""
 
 #: src/Config.php:570
 msgid "Do not copy"
-msgstr "Ikke kopier"
+msgstr "Kopier ikke"
 
 #: src/Config.php:3607
 msgid "Do not deactivate"
@@ -8384,7 +8458,8 @@ msgstr ""
 #: src/Document.php:59
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] "Dokumenter"
+msgstr[0] "Dokument"
+msgstr[1] "Dokumenter"
 
 #: src/CommonITILObject.php:6876
 msgctxt "button"
@@ -8395,7 +8470,7 @@ msgstr "Dokument"
 #: src/CommonDBTM.php:5585
 #, php-format
 msgid "Document Ticket %d"
-msgstr "Saks dokument %d"
+msgstr "Saksdokument %d"
 
 #: src/Document.php:1271 src/Document.php:1379
 msgid "Document copy succeeded."
@@ -8408,7 +8483,8 @@ msgstr ""
 #: src/DocumentCategory.php:44
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] "Dokument overskrifter"
+msgstr[0] "Dokument overskrift"
+msgstr[1] "Dokument overskrifter"
 
 #: src/Document_Item.php:54
 msgid "Document item"
@@ -8423,7 +8499,8 @@ msgstr "Flytting av dokument utført."
 #: src/DocumentType.php:70
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] "Dokument typer"
+msgstr[0] "Dokument type"
+msgstr[1] "Dokument typer"
 
 #: src/CommonITILValidation.php:933
 msgid "Documents"
@@ -8448,7 +8525,8 @@ msgstr ""
 #: src/Domain.php:70
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] "Domener"
+msgstr[0] "Domene"
+msgstr[1] "Domener"
 
 #: src/Domain.php:665
 #, php-format
@@ -8582,7 +8660,8 @@ msgstr ""
 #: src/DeviceDrive.php:43
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] "Disker"
+msgstr[0] "Disk"
+msgstr[1] "Disker"
 
 #: front/stat.location.php:106 src/Event.php:158 src/CommonDropdown.php:71
 #: src/Profile.php:2553
@@ -8775,8 +8854,8 @@ msgstr ""
 #: src/Item_OperatingSystem.php:535 src/Item_OperatingSystem.php:590
 msgid "Edition"
 msgid_plural "Editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utgave"
+msgstr[1] "Utgaver"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProjectTask.php:545 src/ProjectTaskTemplate.php:99
@@ -8887,6 +8966,7 @@ msgstr "Epost ikke funnet. Kan ikke importere"
 msgid "Email notification"
 msgid_plural "Email notifications"
 msgstr[0] "Epostvarsling"
+msgstr[1] "Epostvarslinger"
 
 #: src/Api/API.php:2180
 msgid "Email notifications are disabled"
@@ -9106,7 +9186,7 @@ msgstr ""
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Krypteringsprotokoll for autentisering"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
@@ -9494,13 +9574,14 @@ msgstr ""
 #: src/NotificationTargetProject.php:644
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] "Hendelser"
+msgstr[0] "Hendelse"
+msgstr[1] "Hendelser"
 
 #: src/PlanningEventCategory.php:40
 msgid "Event category"
 msgid_plural "Event categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hendelseskategori"
+msgstr[1] "Hendelseskategorier"
 
 #: src/Planning.php:1575
 msgid "Event type"
@@ -9711,7 +9792,8 @@ msgstr[1] ""
 #: src/Link.php:55 src/Link.php:733 src/Profile.php:2610
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] "Eksterne lenker"
+msgstr[0] "Ekstern lenke"
+msgstr[1] "Eksterne lenker"
 
 #: src/TicketSatisfaction.php:120 src/TicketSatisfaction.php:266
 #: src/TicketSatisfaction.php:316 src/Entity.php:3141 src/Entity.php:3885
@@ -9910,7 +9992,7 @@ msgstr ""
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
-msgstr ""
+msgstr "Feltet elementtype er påkrevd"
 
 #: src/Lockedfield.php:79
 msgid "Field name"
@@ -9919,7 +10001,8 @@ msgstr ""
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] "Felter for lagring av påloggings informasjon i HTTP-forespørsel"
+msgstr[0] "Felt for lagring av påloggings informasjon i HTTP-forespørsel"
+msgstr[1] "Felter for lagring av påloggings informasjon i HTTP-forespørsel"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Field will not be updated from inventory"
@@ -10010,7 +10093,8 @@ msgstr "Filen ble ikke funnet"
 #: src/Filesystem.php:44
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] "Filsystemer"
+msgstr[0] "Filsystem"
+msgstr[1] "Filsystemer"
 
 #: src/Document.php:1415
 msgid "File too large to be added."
@@ -10066,7 +10150,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Filter list"
-msgstr ""
+msgstr "Filtrer liste"
 
 #: src/Marketplace/View.php:417
 msgid "Filter plugin list"
@@ -10115,6 +10199,7 @@ msgstr ""
 msgid "Firmware"
 msgid_plural "Firmware"
 msgstr[0] "Fastvare"
+msgstr[1] "Fastvare"
 
 #: src/DeviceFirmwareType.php:40
 msgid "Firmware type"
@@ -10245,7 +10330,8 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1992 src/Profile.php:1561
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "Oppfølgninger"
+msgstr[0] "Oppfølgning"
+msgstr[1] "Oppfølgninger"
 
 #: src/NotificationTargetCommonITILObject.php:890
 msgid "Followup author"
@@ -10683,7 +10769,7 @@ msgstr ""
 
 #: src/Config.php:1123
 msgid "Go to created item after creation"
-msgstr ""
+msgstr "Gå til opprettet element etter opprettelse"
 
 #: src/Html.php:6677
 msgid "Go to menu"
@@ -10701,6 +10787,7 @@ msgstr "Akseptert + Ikke nødvendig med godkjenning"
 msgid "Graphics card"
 msgid_plural "Graphics cards"
 msgstr[0] "Grafikkkort"
+msgstr[1] "Grafikkkort"
 
 #: src/Inventory/Asset/Cartridge.php:78 src/Inventory/Asset/Cartridge.php:80
 msgid "Grey"
@@ -10713,7 +10800,8 @@ msgstr ""
 #: src/Group.php:57
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Grupper"
+msgstr[0] "Gruppe"
+msgstr[1] "Grupper"
 
 #: src/AuthLDAP.php:2344 src/Group.php:470 src/Group.php:620
 msgid "Group DN"
@@ -10798,7 +10886,7 @@ msgstr "Gruppetre"
 #: src/NotificationTargetPlanningRecall.php:57
 #: src/PlanningExternalEvent.php:264 src/Features/PlanningEvent.php:1047
 msgid "Guests"
-msgstr ""
+msgstr "Gjester"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:387
 msgid "HDMI"
@@ -10827,7 +10915,8 @@ msgstr ""
 #: src/DeviceHardDrive.php:43
 msgid "Hard drive"
 msgid_plural "Hard drives"
-msgstr[0] "Harddisker"
+msgstr[0] "Harddisk"
+msgstr[1] "Harddisker"
 
 #: src/DeviceHardDrive.php:266
 msgid "Hard drive size"
@@ -10904,7 +10993,8 @@ msgstr ""
 #: src/ITILTemplateHiddenField.php:47
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] "Skjulte felter"
+msgstr[0] "Skjult felt"
+msgstr[1] "Skjulte felter"
 
 #: src/CommonITILObject.php:3356
 msgctxt "impact"
@@ -10985,7 +11075,8 @@ msgstr ""
 #: src/Config.php:1497
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] "Timer"
+msgstr[0] "Time"
+msgstr[1] "Timer"
 
 #: src/AuthLDAP.php:648
 msgid "How LDAP aliases should be handled"
@@ -11095,12 +11186,14 @@ msgstr "IP"
 #: src/IPAddress.php:110 src/RuleImportComputer.php:97
 msgid "IP address"
 msgid_plural "IP addresses"
-msgstr[0] "IP-adresser"
+msgstr[0] "IP-adresse"
+msgstr[1] "IP-adresser"
 
 #: src/IPNetwork.php:132
 msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] "IP-nettverk"
+msgstr[1] "IP-nettverk"
 
 #: templates/components/form/networkname.html.twig
 msgid ""
@@ -11112,7 +11205,7 @@ msgstr ""
 #: ajax/dropdownShowIPNetwork.php:57
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr "IP nett: %1$s/%2$s"
+msgstr "IP nettverk: %1$s/%2$s"
 
 #: src/IPNetwork.php:144
 msgid "IP version"
@@ -11141,8 +11234,8 @@ msgstr ""
 #: src/ITILCategory.php:311
 msgid "ITIL category"
 msgid_plural "ITIL categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ITIL kategori"
+msgstr[1] "ITIL kategorier"
 
 #: src/Profile.php:1555
 msgid "ITIL object"
@@ -11229,7 +11322,7 @@ msgstr "Hvis skrivere ikke lenger er i bruk"
 
 #: src/NotificationMailingSetting.php:193
 msgid "If set, it will be used for notifications that doesn't expect a reply."
-msgstr ""
+msgstr "Hvis satt, vil den bli brukt for varslinger som ikke forventer svar."
 
 #: src/Transfer.php:3986
 msgid "If software are no longer used"
@@ -11261,6 +11354,9 @@ msgid ""
 " email containing the informations required to reset your password. Please "
 "contact your administrator if you do not receive any email."
 msgstr ""
+"Hvis e-postadressen samsvarer med en eksisterende GLPI-bruker, vil du motta "
+"en e-post med informasjonen som kreves for å tilbakestille passordet ditt. "
+"Vennligst kontakt administratoren din hvis du ikke mottar en e-post."
 
 #: src/Project.php:2536
 msgctxt "filters"
@@ -11305,7 +11401,7 @@ msgstr ""
 
 #: install/update.php:196
 msgid "Ignore warning"
-msgstr ""
+msgstr "Ignorer advarsel"
 
 #: src/Fieldblacklist.php:48
 msgid "Ignored value for the unicity"
@@ -11324,8 +11420,8 @@ msgstr "Bildet er bredere enn maksimal bredde"
 #: src/ImageFormat.php:43
 msgid "Image format"
 msgid_plural "Image formats"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bildeformat"
+msgstr[1] "Bildeformater"
 
 #: src/UploadHandler.php:423
 msgid "Image requires a minimum height"
@@ -11356,7 +11452,7 @@ msgstr "Alvorlighetsgrad"
 
 #: src/Impact.php:68 src/Impact.php:125 src/Impact.php:757
 msgid "Impact analysis"
-msgstr ""
+msgstr "Konsekvensanalyse"
 
 #: src/Impact.php:1801
 msgid "Impact analysis configuration"
@@ -11377,7 +11473,7 @@ msgstr "Alvorlighetsgrad"
 
 #: src/User.php:2505
 msgid "Impersonate"
-msgstr ""
+msgstr "Opptre som"
 
 #: src/MassiveAction.php:264 src/MassiveAction.php:273
 #: src/MassiveAction.php:392 src/MassiveAction.php:1127
@@ -11684,7 +11780,7 @@ msgstr "Feilmelding"
 
 #: js/impact.js:2444
 msgid "Incidents"
-msgstr ""
+msgstr "Avvik"
 
 #: src/Toolbox.php:2060
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -11783,7 +11879,7 @@ msgstr ""
 #: templates/pages/management/contract.html.twig src/Contract_Item.php:347
 #: src/Contract_Supplier.php:185
 msgid "Initial contract period"
-msgstr ""
+msgstr "Innledende kontraktsperiode"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:527
 msgid "Initial page counter"
@@ -11844,7 +11940,8 @@ msgstr ""
 #: src/Item_SoftwareVersion.php:54
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] "Installasjoner"
+msgstr[0] "Installasjon"
+msgstr[1] "Installasjoner"
 
 #: templates/pages/assets/operatingsystem.html.twig src/Software.php:540
 #: src/Lock.php:508 src/Item_SoftwareVersion.php:484
@@ -11992,7 +12089,8 @@ msgstr "Internett"
 #: src/FQDN.php:49 src/NetworkAlias.php:328
 msgid "Internet domain"
 msgid_plural "Internet domains"
-msgstr[0] "Internett domener"
+msgstr[0] "Internett domene"
+msgstr[1] "Internett domener"
 
 #: src/NetworkPort.php:624 src/NetworkPort.php:633
 msgid "Internet information"
@@ -12194,7 +12292,7 @@ msgstr "Utstyrsliste"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:148
 msgid "Inventory file missing"
-msgstr ""
+msgstr "Inventarfil mangler"
 
 #: src/Inventory/Conf.php:526
 msgid "Inventory frequency (in hours)"
@@ -12329,7 +12427,7 @@ msgstr ""
 
 #: src/FieldUnicity.php:503
 msgid "It's mandatory to select a type and at least one field"
-msgstr ""
+msgstr "Det er påkrevd å velge en type og minst ett felt"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 #: templates/components/itilobject/fields_panel.html.twig
@@ -12355,8 +12453,8 @@ msgstr ""
 #: src/NotificationTargetProject.php:813
 msgid "Item"
 msgid_plural "Items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Element"
+msgstr[1] "Elementer"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1291
 #, php-format
@@ -12518,7 +12616,7 @@ msgstr "Element låst opp!"
 #: templates/pages/setup/general/general_setup.html.twig src/Search.php:2092
 #: src/Search.php:2898 src/Search.php:2920
 msgid "Items seen"
-msgstr "Objekter sett"
+msgstr "Elementer sett"
 
 #: src/Transfer.php:4161
 msgid "Items to transfer"
@@ -12562,7 +12660,7 @@ msgstr "Følg denne linken (du har en dag):"
 
 #: src/Html.php:7080
 msgid "Just now"
-msgstr ""
+msgstr "Akkurat nå"
 
 #: src/Project.php:167 src/Features/Kanban.php:172
 msgid "Kanban"
@@ -12623,20 +12721,21 @@ msgstr ""
 #: src/CommonGLPI.php:1536 src/KnowbaseItem_Item.php:73 src/Profile.php:2477
 #: src/Knowbase.php:47
 msgid "Knowledge base"
-msgstr "Kunnskapsdatabase"
+msgstr "Kunnskapsbase"
 
 #: src/KnowbaseItem.php:2360
 msgid "Knowledge base administration"
-msgstr "KB administrasjon"
+msgstr "Kunnskapsbase – administrasjon"
 
 #: src/KnowbaseItemCategory.php:49
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Kunnskapsbasekategorier"
+msgstr[0] "Kunnskapsbasekategori"
+msgstr[1] "Kunnskapsbasekategorier"
 
 #: src/Item_Ticket.php:453
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "Kunnskapsbaseoppføringer"
 
 #: src/KnowbaseItem_Item.php:57
 msgid "Knowledge base item"
@@ -12647,22 +12746,24 @@ msgstr[1] ""
 #: front/knowbaseitem.form.php:154
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr ""
+msgstr "Kunnskapsbaseelementet er tilbakestilt til revisjon %s"
 
 #: front/knowbaseitem.form.php:161
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
-msgstr ""
+msgstr "Kunnskapsbaseelementet er ikke tilbakestilt til revisjon %s"
 
 #: front/knowbaseitemtranslation.form.php:60
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
 msgstr ""
+"Oversettelsen av kunnskapsbaseelementet er tilbakestilt til revisjon %s"
 
 #: front/knowbaseitemtranslation.form.php:67
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
 msgstr ""
+"Oversettelsen av kunnskapsbaseelementet er ikke tilbakestilt til revisjon %s"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Knowledge base translation"
@@ -12679,12 +12780,14 @@ msgstr "LDAP-kriteria"
 #: src/RuleRightParameter.php:87
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
-msgstr[0] "LDAP-kriteria"
+msgstr[0] "LDAP-kriterium"
+msgstr[1] "LDAP-kriteria"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig src/AuthLDAP.php:139
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] "LDAP-kataloger"
+msgstr[0] "LDAP-katalog"
+msgstr[1] "LDAP-kataloger"
 
 #: src/AuthLDAP.php:3924 src/AuthLDAP.php:3954
 msgid "LDAP directory choice"
@@ -12770,7 +12873,8 @@ msgstr "Vare"
 #, php-format
 msgid "Last %d change"
 msgid_plural "Last %d changes"
-msgstr[0] "Siste%d endring"
+msgstr[0] "Siste %d endring"
+msgstr[1] "Siste %d endringer"
 
 #: src/Event.php:296
 #, php-format
@@ -12782,13 +12886,15 @@ msgstr "Siste %d hendelser"
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] "Siste %d problemer"
+msgstr[0] "Siste %d problem"
+msgstr[1] "Siste %d problemer"
 
 #: src/Ticket.php:5508
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] "Siste %d saker"
+msgstr[0] "Siste %d sak"
+msgstr[1] "Siste %d saker"
 
 #: src/DatabaseInstance.php:281 src/Database.php:128 src/Database.php:235
 #: src/Database.php:350
@@ -12951,19 +13057,19 @@ msgstr "Sist oppdatert %s"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "Sist oppdatert: %1$s av %2$s"
 
 #: src/Marketplace/View.php:399
 msgid "Last updated"
-msgstr ""
+msgstr "Sist oppdatert"
 
 #: src/KnowbaseItem.php:2151
 msgid "Last updated entries"
-msgstr "Siste oppdaterte spørsmål"
+msgstr "Sist oppdaterte oppføringer"
 
 #: src/Notepad.php:259 src/NotificationTargetCommonITILObject.php:1791
 msgid "Last updater"
-msgstr "Siste oppdaterer"
+msgstr "Sist oppdatert av"
 
 #: src/NotificationTargetObjectLock.php:65
 msgid "Lastname of locking user"
@@ -13039,7 +13145,8 @@ msgstr "Nivå"
 #: src/SoftwareLicense.php:70 src/Item_SoftwareLicense.php:89
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Lisenser"
+msgstr[0] "Lisens"
+msgstr[1] "Lisenser"
 
 #: src/SoftwareLicense.php:822
 #, php-format
@@ -13049,7 +13156,8 @@ msgstr "Lisens %1$s utgår %2$s"
 #: src/SoftwareLicenseType.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Lisens typer"
+msgstr[0] "Lisens type"
+msgstr[1] "Lisens typer"
 
 #: src/Profile.php:1719 src/Profile.php:3329
 msgid "Life cycle of changes"
@@ -13091,7 +13199,8 @@ msgstr "Grensen av tilleggene for planlegging"
 #: src/Line.php:54
 msgid "Line"
 msgid_plural "Lines"
-msgstr[0] "Linjer"
+msgstr[0] "Linje"
+msgstr[1] "Linjer"
 
 #: src/LineOperator.php:49
 msgid "Line operator"
@@ -13115,7 +13224,8 @@ msgstr "Linær"
 #: src/ManualLink.php:82
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] "Koblinger"
+msgstr[0] "Kobling"
+msgstr[1] "Koblinger"
 
 #: src/Ticket.php:2751
 msgctxt "button"
@@ -13137,7 +13247,8 @@ msgstr[1] ""
 #: src/Change_Problem.php:67
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Koble Problemer/Endringer"
+msgstr[0] "Koble Problem/Endring"
+msgstr[1] "Koble Problemer/Endringer"
 
 #: src/Itil_Project.php:51
 msgid "Link Project/Itil"
@@ -13148,7 +13259,8 @@ msgstr[1] ""
 #: src/Change_Ticket.php:65
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Koble Saker/Endringer"
+msgstr[0] "Koble Sak/Endring"
+msgstr[1] "Koble Saker/Endringer"
 
 #: src/Problem_Ticket.php:62
 msgid "Link Ticket/Problem"
@@ -13159,7 +13271,8 @@ msgstr[1] ""
 #: src/ProjectTask_Ticket.php:68
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Lenker til sakr/prosjektoppgaver"
+msgstr[0] "Lenker til sakr/prosjektoppgave"
+msgstr[1] "Lenker til sakr/prosjektoppgaver"
 
 #: src/KnowbaseItem_Item.php:130
 msgid "Link a knowledge base entry"
@@ -13233,7 +13346,8 @@ msgstr[1] ""
 #: src/Ticket.php:3455
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "Relaterte saker"
+msgstr[0] "Relatert sak"
+msgstr[1] "Relaterte saker"
 
 #: src/Ticket_Ticket.php:206 src/Ticket_Ticket.php:228
 #: src/Ticket_Ticket.php:233 src/Ticket.php:2732
@@ -13320,7 +13434,7 @@ msgstr ""
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Lists"
-msgstr ""
+msgstr "Lister"
 
 #: src/NotificationTargetSavedSearch_Alert.php:109
 msgid "Load saved search"
@@ -13355,7 +13469,8 @@ msgstr "Lokale regler: %s"
 #: src/RuleLocation.php:127 src/Transfer.php:3947 src/Location.php:122
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] "Lokasjoner"
+msgstr[0] "Lokasjon"
+msgstr[1] "Lokasjoner"
 
 #: src/NotificationTargetTicket.php:655 src/NotificationTargetTicket.php:719
 #: src/Location.php:205
@@ -13390,7 +13505,8 @@ msgstr ""
 #: src/Lock.php:54
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] "Låser"
+msgstr[0] "Lås"
+msgstr[1] "Låser"
 
 #: phpunit/functional/LogTest.php:468 src/Log.php:1110
 msgid "Lock a component"
@@ -13419,7 +13535,7 @@ msgstr "Lås elementet"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:114
 msgid "Locked"
-msgstr ""
+msgstr "Låst"
 
 #: src/ObjectLock.php:602
 msgid "Locked by"
@@ -13460,7 +13576,8 @@ msgstr ""
 #: src/Profile.php:3039
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] "Logger"
+msgstr[0] "Logg"
+msgstr[1] "Logger"
 
 #: src/Config.php:2071
 msgid "Log Level"
@@ -13632,7 +13749,8 @@ msgstr "Epost domene tilhører enhet"
 #: src/AuthMail.php:48
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] "E-posttjenere"
+msgstr[0] "E-posttjener"
+msgstr[1] "E-posttjenere"
 
 #: src/NotificationMailing.php:118
 msgid "Mail test"
@@ -13719,7 +13837,7 @@ msgstr "Behandle"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Administrer alle lagrede søk"
 
 #: src/Document.php:1512
 msgid "Manage document types"
@@ -13731,7 +13849,7 @@ msgstr ""
 
 #: templates/layout/parts/context_links.html.twig front/setup.templates.php:58
 msgid "Manage templates..."
-msgstr "Administrer maler"
+msgstr "Administrer maler..."
 
 #: src/Profile.php:1413
 msgid "Manageable domain records"
@@ -13805,14 +13923,15 @@ msgstr "Leder av gruppen med ansvar for saken"
 #: src/ITILTemplateMandatoryField.php:47
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] "Påkrevde felter"
+msgstr[0] "Påkrevd felt"
+msgstr[1] "Påkrevde felter"
 
 #: front/knowbaseitem_knowbaseitemcategory.form.php:46
 #: front/knowbaseitem_item.form.php:46 front/knowbaseitem_comment.form.php:44
 #: front/knowbaseitem_comment.form.php:56
 #: front/knowbaseitem_comment.form.php:80
 msgid "Mandatory fields are not filled!"
-msgstr "Obligatoriske felter er ikke utfyllt"
+msgstr "Påkrevde felter er ikke utfyllt!"
 
 #: front/contract_item.form.php:51 front/contract_supplier.form.php:49
 #: front/problem_ticket.form.php:47 front/problem_ticket.form.php:55
@@ -13834,7 +13953,8 @@ msgstr[1] ""
 #: src/Manufacturer.php:45 src/Rule.php:281 src/Blacklist.php:251
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] "Produsenter"
+msgstr[0] "Produsent"
+msgstr[1] "Produsenter"
 
 #: src/RuleDictionnarySoftwareCollection.php:92
 msgid "Manufacturer choice"
@@ -13998,7 +14118,8 @@ msgstr "Medium"
 #: src/Project.php:1860 src/Project.php:2585 src/ProjectTask.php:1312
 msgid "Member"
 msgid_plural "Members"
-msgstr[0] "Medlemmer"
+msgstr[0] "Medlem"
+msgstr[1] "Medlemmer"
 
 #: src/Cache/CacheManager.php:559
 msgid "Memcached"
@@ -14024,7 +14145,8 @@ msgstr "Standard minne"
 #: src/DeviceMemoryType.php:41
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "Minnetyper"
+msgstr[0] "Minnetype"
+msgstr[1] "Minnetyper"
 
 #: src/Console/Application.php:301
 #, php-format
@@ -14247,7 +14369,8 @@ msgstr ""
 #: src/LevelAgreement.php:259
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] "Minutter"
+msgstr[0] "Minutt"
+msgstr[1] "Minutter"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
@@ -14270,7 +14393,7 @@ msgstr ""
 
 #: src/Ticket.php:2964
 msgid "Missing mandatory field in input"
-msgstr ""
+msgstr "Manglende påkrevd felt i inndata"
 
 #: src/IPNetwork.php:332
 msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
@@ -14380,12 +14503,14 @@ msgstr "Mandag"
 #: src/Profile.php:2116
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] "Skjermer"
+msgstr[0] "Skjerm"
+msgstr[1] "Skjermer"
 
 #: src/Rule.php:317 src/MonitorModel.php:41
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Skjerm modeller"
+msgstr[0] "Skjerm modell"
+msgstr[1] "Skjerm modeller"
 
 #: src/Rule.php:389 src/MonitorType.php:41
 msgid "Monitor type"
@@ -14667,7 +14792,7 @@ msgstr "Avsendernavn ved sending av meldinger"
 
 #: src/Config.php:1343
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "Naturlig rekkefølge (gamle elementer øverst, nylige nederst)"
 
 #: templates/generic_show_form.html.twig src/Printer.php:588
 #: src/Network.php:41 src/Computer.php:531 src/NetworkEquipment.php:435
@@ -14685,6 +14810,7 @@ msgstr "Nettverksadresse"
 msgid "Network alias"
 msgid_plural "Network aliases"
 msgstr[0] "Nettverksalias"
+msgstr[1] "Nettverksaliaser"
 
 #: src/IPNetwork.php:383
 msgid "Network already defined in visible entities"
@@ -14694,16 +14820,19 @@ msgstr "Nettverket er allerede definert i en enhet"
 msgid "Network card"
 msgid_plural "Network cards"
 msgstr[0] "Nettverkskort"
+msgstr[1] "Nettverkskort"
 
 #: src/DeviceNetworkCardModel.php:44
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] "Nettverkskortmodeller"
+msgstr[0] "Nettverkskortmodell"
+msgstr[1] "Nettverkskortmodeller"
 
 #: src/NetworkEquipment.php:79
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Nettverksenheter"
+msgstr[0] "Nettverksenhet"
+msgstr[1] "Nettverksenheter"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Agent/Communication/AbstractRequest.php:182 src/Agent.php:207
@@ -14734,6 +14863,7 @@ msgstr ""
 msgid "Network interface"
 msgid_plural "Network interfaces"
 msgstr[0] "Nettverksgrensesnitt"
+msgstr[1] "Nettverksgrensesnitter"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Agent/Communication/AbstractRequest.php:179 src/Agent.php:199
@@ -14752,6 +14882,7 @@ msgstr ""
 msgid "Network name"
 msgid_plural "Network names"
 msgstr[0] "Nettverksnavn"
+msgstr[1] "Nettverksnavn"
 
 #: templates/pages/assets/socket.html.twig src/Socket.php:805
 #: src/Transfer.php:3964 src/NetworkPort.php:179
@@ -14871,12 +15002,14 @@ msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Ny"
+msgstr[1] "Nye"
 
 #: src/Consumable.php:499
 msgctxt "consumable"
 msgid "New"
 msgid_plural "New"
 msgstr[0] "Ny"
+msgstr[1] "Nye"
 
 #: src/Plugin.php:2425 src/Plugin.php:2846 src/Dashboard/Provider.php:1251
 #: src/Change.php:586 src/Problem.php:667 src/Ticket.php:3807
@@ -15000,7 +15133,7 @@ msgstr "Ny sak for dette objektet..."
 
 #: src/Dashboard/Grid.php:1210
 msgid "New tickets"
-msgstr ""
+msgstr "Nye saker"
 
 #: src/NotificationTargetCommonITILObject.php:129
 msgid "New user in assignees"
@@ -15027,7 +15160,7 @@ msgstr "Neste"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:515
 msgid "Next (arrow right)"
-msgstr ""
+msgstr "Neste (høyre pil)"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -15295,7 +15428,7 @@ msgstr ""
 #: src/SavedSearch_Alert.php:294 src/NotificationTarget.php:1646
 #: src/Item_DeviceCamera_ImageResolution.php:127
 msgid "No item found"
-msgstr "Ingen objekt funnet"
+msgstr "Ingen item funnet"
 
 #: src/Project.php:1387 src/CommonITILObject.php:6668
 msgid "No item in progress."
@@ -15324,7 +15457,7 @@ msgstr ""
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:680
 msgid "No items found."
-msgstr ""
+msgstr "Ingen elementer funnet."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:776
 msgid "No items specifications found."
@@ -15336,7 +15469,7 @@ msgstr ""
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:198 src/KnowbaseItem_Item.php:164
 msgid "No knowledge base entries linked"
-msgstr ""
+msgstr "Ingen kunnskapsbaseoppføringer er koblet til"
 
 #: src/Impact.php:394
 msgid "No limit"
@@ -15360,7 +15493,7 @@ msgstr "Ingen låste element"
 
 #: src/NetworkPortConnectionLog.php:167
 msgid "No longer exists in database"
-msgstr ""
+msgstr "Finnes ikke lenger i databasen"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:84
 #: src/Console/Migration/DynamicRowFormatCommand.php:110
@@ -15660,7 +15793,8 @@ msgstr "Ikke godkjent enda"
 #: src/Notepad.php:54 src/Notepad.php:189
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] "Notater"
+msgstr[0] "Notat"
+msgstr[1] "Notater"
 
 #: src/NotificationTargetReservation.php:181
 msgid "Notes"
@@ -15702,7 +15836,7 @@ msgstr ""
 
 #: src/SavedSearch.php:1370
 msgid "Notification has been created!"
-msgstr ""
+msgstr "Varsling har blitt opprettet!"
 
 #: src/Notification.php:399 src/NotificationTarget.php:1603
 msgid "Notification method"
@@ -16200,6 +16334,8 @@ msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
 msgstr ""
+"Når skjemaet er validert, vil du om nødvendig bli omdirigert til "
+"leverandørens autentiseringsside."
 
 #: js/modules/Kanban/Kanban.js:1862
 msgid "One item per line"
@@ -16211,7 +16347,7 @@ msgstr ""
 
 #: src/Profile_User.php:108
 msgid "One or more required fields are missing"
-msgstr ""
+msgstr "Ett eller flere påkrevde felt mangler"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
@@ -16262,7 +16398,8 @@ msgstr ""
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] "Åpne"
+msgstr[0] "Åpnet"
+msgstr[1] "Åpnet"
 
 #: src/Stat.php:553 src/Stat/Data/Sglobal/StatDataTicketNumber.php:58
 #: src/Stat/Data/Graph/StatDataTicketAverageTime.php:55
@@ -16270,7 +16407,8 @@ msgstr[0] "Åpne"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] "Åpne"
+msgstr[0] "Åpnet"
+msgstr[1] "Åpnet"
 
 #: src/Stat/Data/Location/StatDataOpened.php:51
 #, php-format
@@ -16301,7 +16439,8 @@ msgstr ""
 #: src/OperatingSystem.php:44
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] "Operativsystemer"
+msgstr[0] "Operativsystem"
+msgstr[1] "Operativsystemer"
 
 #: src/OperatingSystemArchitecture.php:44
 msgid "Operating system architecture"
@@ -16367,7 +16506,7 @@ msgstr ""
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Option+Command+G"
-msgstr ""
+msgstr "Option+Command+G"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Optional when approved"
@@ -16458,7 +16597,8 @@ msgstr ""
 #: src/DevicePciModel.php:44
 msgid "Other component model"
 msgid_plural "Other component models"
-msgstr[0] "Andre komponentmodeller"
+msgstr[0] "Andre komponentmodell"
+msgstr[1] "Andre komponentmodeller"
 
 #: src/Budget.php:873
 msgid "Other entities"
@@ -16541,7 +16681,7 @@ msgstr ""
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Eier"
 
 #: src/RegisteredID.php:54
 msgid "PCI"
@@ -16550,8 +16690,8 @@ msgstr "PCI"
 #: src/DevicePci.php:45
 msgid "PCI device"
 msgid_plural "PCI devices"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "PCI enhet"
+msgstr[1] "PCI enheter"
 
 #: src/PCIVendor.php:46
 msgid "PCI vendor"
@@ -16566,22 +16706,26 @@ msgstr "Skrifttype for PDF-eksport"
 #: src/PDU.php:59
 msgid "PDU"
 msgid_plural "PDUs"
-msgstr[0] "PDUer"
+msgstr[0] "PDU"
+msgstr[1] "PDUer"
 
 #: src/PDUModel.php:41
 msgid "PDU model"
 msgid_plural "PDU models"
-msgstr[0] "PDU-modeller"
+msgstr[0] "PDU-modell"
+msgstr[1] "PDU-modeller"
 
 #: src/Pdu_Plug.php:48
 msgid "PDU plug"
 msgid_plural "PDU plugs"
-msgstr[0] "PDU-plugger"
+msgstr[0] "PDU-plugg"
+msgstr[1] "PDU-plugger"
 
 #: src/PDUType.php:41
 msgid "PDU type"
 msgid_plural "PDU types"
-msgstr[0] "PDU-typer"
+msgstr[0] "PDU-type"
+msgstr[1] "PDU-typer"
 
 #: src/NotificationMailingSetting.php:230 src/Plugin.php:2098
 msgid "PHP"
@@ -16594,7 +16738,7 @@ msgstr ""
 
 #: front/config.form.php:74
 msgid "PHP OPcache reset successful"
-msgstr ""
+msgstr "PHP OPcache tilbakestilling vellykket"
 
 #: src/System/Requirement/PhpVersion.php:66
 msgid "PHP Parser"
@@ -16870,7 +17014,7 @@ msgstr[1] ""
 
 #: src/Dashboard/Provider.php:371 src/Dashboard/Grid.php:1211
 msgid "Pending tickets"
-msgstr ""
+msgstr "Ventende saker"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -17002,7 +17146,8 @@ msgstr "Personlig"
 #: src/RSSFeed.php:82 src/RSSFeed.php:1012
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] "Personlige RSS-strømmer"
+msgstr[0] "Personlig RSS-feed"
+msgstr[1] "Personlige RSS-feeds"
 
 #: src/DisplayPreference.php:761 src/DisplayPreference.php:769
 #: src/Central.php:71
@@ -17012,7 +17157,8 @@ msgstr "Personlig oversikt"
 #: src/Reminder.php:70 src/Reminder.php:947
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] "Personlige påminnelser"
+msgstr[0] "Personlige påminnelse"
+msgstr[1] "Personlige påminnelser"
 
 #: src/Config.php:1074 src/Config.php:2586 src/Profile.php:1079
 #: src/Profile.php:1139 src/Profile.php:2639
@@ -17026,12 +17172,13 @@ msgstr "Personalisering"
 #: src/ContentTemplates/Parameters/UserParameters.php:78
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Telefoner"
+msgstr[0] "Telefon"
+msgstr[1] "Telefoner"
 
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1158 src/AuthLDAP.php:4028
 msgctxt "ldap"
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 #: templates/generic_show_form.html.twig src/Dropdown.php:597
 #: src/AuthLDAP.php:970 src/AuthLDAP.php:1167 src/AuthLDAP.php:4029
@@ -17047,7 +17194,8 @@ msgstr "Telefon 2"
 #: src/Rule.php:365 src/PhoneModel.php:44
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Telefonmodeller"
+msgstr[0] "Telefonmodell"
+msgstr[1] "Telefonmodeller"
 
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
@@ -17058,7 +17206,8 @@ msgstr[1] ""
 #: src/PhoneType.php:41 src/Rule.php:437
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "Telefontyper"
+msgstr[0] "Telefontype"
+msgstr[1] "Telefontyper"
 
 #: src/Inventory/Asset/Cartridge.php:149
 msgid "Photo"
@@ -17080,8 +17229,8 @@ msgstr ""
 #: src/User.php:6626
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bilde"
+msgstr[1] "Bilder"
 
 #: src/Dashboard/Widget.php:71
 msgid "Pie"
@@ -17089,7 +17238,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Fest dette panelet for gjeldende side"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:379
 msgid "Pivot"
@@ -17137,7 +17286,7 @@ msgstr "Planlagt startdato"
 
 #: src/Dashboard/Provider.php:387 src/Dashboard/Grid.php:1213
 msgid "Planned tickets"
-msgstr ""
+msgstr "Planlagte saker"
 
 #: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1692 src/Event.php:156 src/Event.php:165
@@ -17257,6 +17406,7 @@ msgstr[1] ""
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "Plug-in"
+msgstr[1] "Plug-ins"
 
 #: src/Console/Plugin/ActivateCommand.php:103
 #, php-format
@@ -17647,7 +17797,8 @@ msgstr ""
 #: src/DevicePowerSupply.php:43
 msgid "Power supply"
 msgid_plural "Power supplies"
-msgstr[0] "Strømforsyninger"
+msgstr[0] "Strømforsyning"
+msgstr[1] "Strømforsyninger"
 
 #: src/PDU_Rack.php:423
 msgid "Power units"
@@ -17672,7 +17823,8 @@ msgstr "Prekonfigurasjon"
 #: src/ITILTemplatePredefinedField.php:47
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] "Forhåndsdefinerte felter"
+msgstr[0] "Forhåndsdefinert felt"
+msgstr[1] "Forhåndsdefinerte felter"
 
 #: src/Entity.php:986 src/Entity.php:2088
 msgid "Prefix for notifications"
@@ -17720,7 +17872,8 @@ msgstr "Utskrevne sider"
 #: src/Profile.php:2158 src/Cartridge.php:1270
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Printere"
+msgstr[0] "Printer"
+msgstr[1] "Printere"
 
 #: src/Cartridge.php:836 src/Cartridge.php:1124 src/Cartridge.php:1304
 msgid "Printer counter"
@@ -17729,12 +17882,14 @@ msgstr "Utskriftsteller"
 #: src/Rule.php:329 src/PrinterModel.php:44 src/CartridgeItem.php:354
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Printer modeller"
+msgstr[0] "Printer modell"
+msgstr[1] "Printer modeller"
 
 #: src/Rule.php:401 src/PrinterType.php:41
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Printer typer"
+msgstr[0] "Printer type"
+msgstr[1] "Printer typer"
 
 #: src/Profile.php:1066
 msgid "Printers dictionary"
@@ -17794,7 +17949,8 @@ msgstr "Private oppgaver som standard"
 #: src/Problem.php:74
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Problemer"
+msgstr[0] "Problem"
+msgstr[1] "Problemer"
 
 #: src/Item_Problem.php:53
 msgid "Problem item"
@@ -17809,7 +17965,8 @@ msgstr "Problem løst"
 #: src/ProblemTask.php:43
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Problemoppgaver"
+msgstr[0] "Problemoppgave"
+msgstr[1] "Problemoppgaver"
 
 #: src/CommonITILTask.php:1662
 msgid "Problem tasks to do"
@@ -17890,7 +18047,8 @@ msgstr ""
 #: src/DeviceProcessor.php:43
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] "Prosessorer"
+msgstr[0] "Prosessor"
+msgstr[1] "Prosessorer"
 
 #: src/DeviceProcessor.php:283
 msgid "Processor frequency"
@@ -17920,7 +18078,8 @@ msgstr "Produkt nummer"
 #: src/Profile.php:131
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Profiler"
+msgstr[0] "Profil"
+msgstr[1] "Profiler"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Profile to be used when locking items"
@@ -17958,12 +18117,14 @@ msgstr[1] ""
 #: src/ProjectState.php:45
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Prosjekttilstander"
+msgstr[0] "Prosjekttilstand"
+msgstr[1] "Prosjekttilstander"
 
 #: src/ProjectTask.php:76
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] "Prosjektoppgaver"
+msgstr[0] "Prosjektoppgave"
+msgstr[1] "Prosjektoppgaver"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
@@ -17982,17 +18143,20 @@ msgstr[1] ""
 #: src/ProjectTaskType.php:45
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Prosjektoppgavetyper"
+msgstr[0] "Prosjektoppgavetype"
+msgstr[1] "Prosjektoppgavetyper"
 
 #: src/ProjectTeam.php:73
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] "Prosjektteam"
+msgstr[0] "Prosjekt team "
+msgstr[1] "Prosjekt teams"
 
 #: src/ProjectType.php:45
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Prosjekt typer"
+msgstr[0] "Prosjekt type"
+msgstr[1] "Prosjekt typer"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
@@ -18006,7 +18170,7 @@ msgstr ""
 
 #: src/Printer_CartridgeInfo.php:74
 msgid "Property"
-msgstr ""
+msgstr "Eiendom"
 
 #: src/Inventory/Conf.php:1072
 #, php-format
@@ -18029,7 +18193,8 @@ msgstr "Offentlig"
 #: src/RSSFeed.php:1030
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Offentlige RSS-feeder"
+msgstr[0] "Offentlig RSS-feed"
+msgstr[1] "Offentlige RSS-feeder"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: templates/components/form/inventory_info.html.twig src/Agent.php:167
@@ -18045,7 +18210,8 @@ msgstr "Offentlig oppfølging"
 #: src/Reminder.php:969
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "Offentlige påminnelser"
+msgstr[0] "Offentlig påminnelse"
+msgstr[1] "Offentlige påminnelser"
 
 #: src/Profile.php:907 src/Profile.php:3510
 msgid "Public saved search"
@@ -18136,8 +18302,8 @@ msgstr "RAID"
 #: src/Central.php:74 src/RSSFeed.php:80
 msgid "RSS feed"
 msgid_plural "RSS feeds"
-msgstr[0] "RSS-strøm"
-msgstr[1] "RSS-strømmer"
+msgstr[0] "RSS-feed"
+msgstr[1] "RSS-feeds"
 
 #: src/System/Status/StatusChecker.php:512
 #, php-format
@@ -18155,7 +18321,8 @@ msgstr[1] ""
 #: src/RackModel.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Rack-modeller"
+msgstr[0] "Rack-modell"
+msgstr[1] "Rack-modeller"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
@@ -18168,7 +18335,8 @@ msgstr ""
 #: src/RackType.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Rack-typer"
+msgstr[0] "Rack-type"
+msgstr[1] "Rack-typer"
 
 #: src/PDU_Rack.php:438
 msgid "Racked"
@@ -18322,7 +18490,8 @@ msgstr ""
 #: src/NotificationTargetMailCollector.php:106
 msgid "Receiver"
 msgid_plural "Receivers"
-msgstr[0] "Motakkere"
+msgstr[0] "Mottaker"
+msgstr[1] "Mottakere"
 
 #: src/NotificationTargetMailCollector.php:45
 msgid "Receiver errors"
@@ -18342,7 +18511,8 @@ msgstr "Nylige oppføringer"
 #: src/NotificationTarget.php:429
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] "Motakkere"
+msgstr[0] "Mottaker"
+msgstr[1] "Mottakere"
 
 #: src/QueuedNotification.php:279 src/QueuedNotification.php:764
 msgid "Recipient email"
@@ -18379,15 +18549,15 @@ msgstr ""
 
 #: src/Holiday.php:64 src/Holiday.php:95 src/Calendar_Holiday.php:150
 msgid "Recurrent"
-msgstr "Regelmessighet"
+msgstr "Gjentatt"
 
 #: src/RecurrentChange.php:50
 msgid "Recurrent changes"
-msgstr ""
+msgstr "Gjentatte endringer"
 
 #: src/TicketRecurrent.php:55
 msgid "Recurrent tickets"
-msgstr "Regelmessige saker"
+msgstr "Gjentatte saker"
 
 #: js/planning.js:529
 msgid "Recurring event dragged"
@@ -18473,7 +18643,8 @@ msgstr "Avslått"
 #: src/NotImportedEmail.php:63
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] "Avviste eposter"
+msgstr[0] "Nektet epost"
+msgstr[1] "Nektet epost"
 
 #: src/MailCollector.php:286 src/MailCollector.php:539
 msgid "Refused mail archive folder (optional)"
@@ -18534,14 +18705,14 @@ msgstr ""
 
 #: src/Csv/ImpactCsvExport.php:61 src/Impact.php:290
 msgid "Relation"
-msgstr ""
+msgstr "Relasjon"
 
 #: src/Appliance_Item_Relation.php:48
 msgctxt "appliance"
 msgid "Relation"
 msgid_plural "Relations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Relasjon"
+msgstr[1] "Relasjoner"
 
 #: src/Config.php:1423
 msgid "Relative"
@@ -18573,7 +18744,8 @@ msgstr "Husk meg"
 #: src/Reminder.php:68
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "Påminnelser"
+msgstr[0] "Påminnelse"
+msgstr[1] "Påminnelser"
 
 #: src/Planning.php:1765 src/Reminder.php:781
 msgctxt "Planning"
@@ -18797,7 +18969,8 @@ msgstr ""
 #: src/AuthLDAP.php:746 src/AuthLDAP.php:4445
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] "Replikaer"
+msgstr[0] "Replika"
+msgstr[1] "Replikaer"
 
 #. TRANS: %s is the name of the LDAP replica server
 #: front/authldap.form.php:110 front/authldap.form.php:117
@@ -18833,7 +19006,8 @@ msgstr ""
 #: src/Report.php:49 src/Profile.php:2505
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Rapporter"
+msgstr[0] "Rapport"
+msgstr[1] "Rapporter"
 
 #: src/ITILCategory.php:482 src/NotificationTargetChange.php:307
 #: src/NotificationTargetChange.php:312 src/NotificationTargetTicket.php:748
@@ -18869,12 +19043,13 @@ msgstr ""
 #: src/RequestType.php:41
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] "Kilder for henvendelser"
+msgstr[0] "Kilde for henvendelser"
+msgstr[1] "Kilder for henvendelser"
 
 #: src/Item_SoftwareVersion.php:99 src/Item_SoftwareLicense.php:110
 msgctxt "software"
 msgid "Request source"
-msgstr ""
+msgstr "Kilde for henvendelser"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
@@ -18926,7 +19101,7 @@ msgstr[1] "Innmeldere"
 
 #: src/NotificationTargetObjectLock.php:68
 msgid "Requester Firstname"
-msgstr "Melders fornavn"
+msgstr "Innmelders fornavn"
 
 #: src/NotificationTargetCommonITILObject.php:1767
 msgid "Requester ID"
@@ -18934,7 +19109,7 @@ msgstr "Bestiller-ID"
 
 #: src/NotificationTargetObjectLock.php:67
 msgid "Requester Lastname"
-msgstr "Melders etternavn"
+msgstr "Innmelders etternavn"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 #: src/CommonITILObject.php:4435 src/RuleTicket.php:633 src/RuleTicket.php:823
@@ -18942,8 +19117,8 @@ msgstr "Melders etternavn"
 #: src/NotificationTargetCommonITILObject.php:1815
 msgid "Requester group"
 msgid_plural "Requester groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Innmeldergruppe"
+msgstr[1] "Innmeldergrupper"
 
 #: src/NotificationTargetCommonITILObject.php:859
 msgid "Requester group except manager users"
@@ -18959,7 +19134,7 @@ msgstr ""
 
 #: src/RuleTicket.php:603 src/NotificationTargetCommonITILObject.php:1769
 msgid "Requester location"
-msgstr "Bestillers plassering"
+msgstr "Innmelders lokasjon"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -19005,13 +19180,15 @@ msgstr ""
 #: src/ReservationItem.php:68
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Elementer som kan reserveres"
+msgstr[0] "Element som kan reserveres"
+msgstr[1] "Elementer som kan reserveres"
 
 #: src/Html.php:1610 src/Event.php:157 src/Event.php:171 src/Transfer.php:3992
 #: src/Entity.php:2408 src/Reservation.php:56 src/Profile.php:2491
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Reservasjoner"
+msgstr[0] "Reservasjon"
+msgstr[1] "Reservasjoner"
 
 #: src/Reservation.php:259
 #, php-format
@@ -19024,7 +19201,7 @@ msgstr "Reservasjon utdatert"
 
 #: src/Reservation.php:1142
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Reservasjoner for dette elementet"
 
 #: src/ReservationItem.php:321 src/Reservation.php:811
 msgid "Reserve an item"
@@ -19073,15 +19250,15 @@ msgstr "Løsning"
 msgctxt "camera"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Løsning"
+msgstr[1] "Løsninger"
 
 #: src/ImageResolution.php:42
 msgctxt "image"
 msgid "Resolution"
 msgid_plural "Resolutions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Oppløsning"
+msgstr[1] "Oppløsninger"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
@@ -19100,7 +19277,7 @@ msgstr ""
 
 #: src/Ticket.php:2678
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "Løs valgte saker"
 
 #: src/Ticket.php:3399
 msgid "Response date"
@@ -19117,7 +19294,7 @@ msgstr "Ansvarlig"
 
 #: src/RuleTicket.php:961
 msgid "Responsible of the requester"
-msgstr ""
+msgstr "Ansvarlig for innmelderen"
 
 #: src/Api/APIRest.php:51
 msgid "Rest API"
@@ -19222,7 +19399,8 @@ msgstr "Revidert"
 #: src/KnowbaseItem_Revision.php:44 src/KnowbaseItem_Revision.php:139
 msgid "Revision"
 msgid_plural "Revisions"
-msgstr[0] "Revisjoner"
+msgstr[0] "Revisjon"
+msgstr[1] "Revisjoner"
 
 #: src/Config.php:1296
 msgid "Rich text field layout"
@@ -19277,7 +19455,8 @@ msgstr "RPM"
 #: src/Profile.php:1891
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "Regler"
+msgstr[0] "Regel"
+msgstr[1] "Regler"
 
 #: src/RuleMatchedLog.php:228 src/RuleMatchedLog.php:305
 msgid "Rule import logs"
@@ -19336,11 +19515,11 @@ msgstr ""
 #: src/RuleMailCollectorCollection.php:47 src/Profile.php:1038
 #: src/Profile.php:2843 src/RuleMailCollector.php:59
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "Regler for tildeling av saker laget gjennom epost mottaker"
+msgstr "Regler for tildeling av sak opprettet via e-postmottaker"
 
 #: src/RuleImportEntityCollection.php:53 src/RuleImportEntity.php:47
 msgid "Rules for assigning an item to an entity"
-msgstr "E-postinnhold"
+msgstr "Regler for tildeling av et element til en enhet"
 
 #: src/RuleImportComputer.php:53 src/RuleImportComputerCollection.php:62
 msgid "Rules for import and link computers"
@@ -19372,7 +19551,7 @@ msgstr ""
 
 #: src/RuleCollection.php:688
 msgid "Rules will be erased and recreated from default. Are you sure?"
-msgstr ""
+msgstr "Regler vil bli slettet og gjenopprettet fra standard. Er du sikker?"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:189
 #, php-format
@@ -19477,7 +19656,7 @@ msgstr "SLA"
 
 #: src/SlaLevel_Ticket.php:41
 msgid "SLA level for Ticket"
-msgstr ""
+msgstr "SLA-nivå for sak"
 
 #: src/LevelAgreement.php:183 src/LevelAgreement.php:692 src/Profile.php:1110
 #: src/Profile.php:2795
@@ -19530,7 +19709,8 @@ msgstr "SQL passord"
 #: src/Config.php:2618
 msgid "SQL replica"
 msgid_plural "SQL replicas"
-msgstr[0] "SQL-replikaer"
+msgstr[0] "SQL-replika"
+msgstr[1] "SQL-replikaer"
 
 #: src/Html.php:1750 src/Central.php:535
 msgid "SQL replica: read only"
@@ -19611,7 +19791,7 @@ msgstr ""
 
 #: src/TicketSatisfaction.php:129
 msgid "Satisfaction with the resolution of the ticket"
-msgstr ""
+msgstr "Tilfredshet med løsningen av saken"
 
 #: src/Toolbox.php:2270 src/Config.php:938 src/Features/PlanningEvent.php:806
 msgid "Saturday"
@@ -19659,7 +19839,7 @@ msgstr "Lagre"
 #: front/change.form.php:214 front/problem.form.php:215
 #: front/ticket.form.php:253
 msgid "Save and add to the knowledge base"
-msgstr "Lagre og legg til i KB"
+msgstr "Lagre og legg til i kunnskapsbasen"
 
 #: src/SavedSearch.php:499
 msgid "Save as a new search"
@@ -19675,7 +19855,7 @@ msgstr ""
 
 #: js/dashboard.js:435
 msgid "Saved"
-msgstr ""
+msgstr "Lagret"
 
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:69
 msgid "Saved search"
@@ -19798,7 +19978,7 @@ msgstr "Søketype"
 #: templates/layout/parts/global_search_form.html.twig
 #: src/Features/TreeBrowse.php:152
 msgid "Search…"
-msgstr ""
+msgstr "Søk…"
 
 #: src/CommonDBConnexity.php:638
 msgid "Second Item"
@@ -19870,7 +20050,7 @@ msgstr "Se konfigurasjon"
 #. TRANS: short for : See tickets created by my groups
 #: src/Ticket.php:6132
 msgid "See group ticket"
-msgstr "Se gruppe saker"
+msgstr "Se gruppesak"
 
 #: src/Profile.php:1191 src/Profile.php:1575 src/Profile.php:3283
 msgid "See hardware of my groups"
@@ -20062,6 +20242,7 @@ msgstr "Send forespørsel om godkjenning"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
+"Send automatiserte oppfølginger på ventende saker og løs dem om nødvendig"
 
 #: src/Entity.php:2375
 msgid "Send certificates alarms before"
@@ -20118,7 +20299,8 @@ msgstr "Avsendernavn"
 #: src/DeviceSensor.php:45
 msgid "Sensor"
 msgid_plural "Sensors"
-msgstr[0] "Sensorer"
+msgstr[0] "Sensor"
+msgstr[1] "Sensorer"
 
 #: src/DeviceCamera.php:91 src/DeviceCamera.php:151
 msgid "Sensor size"
@@ -20127,7 +20309,8 @@ msgstr ""
 #: src/DeviceSensorType.php:43
 msgid "Sensor type"
 msgid_plural "Sensor types"
-msgstr[0] "Sensortyper"
+msgstr[0] "Sensortype"
+msgstr[1] "Sensortyper"
 
 #: src/Toolbox.php:2291 src/Features/PlanningEvent.php:829
 msgid "September"
@@ -20136,11 +20319,11 @@ msgstr "September"
 #: templates/components/form/flags.html.twig src/Printer.php:479
 #: src/Appliance_Item.php:198 src/RefusedEquipment.php:191
 msgid "Serial"
-msgstr "Serial"
+msgstr "Seriell"
 
 #: src/Unmanaged.php:114 src/DeviceFirmware.php:219
 msgid "Serial Number"
-msgstr "Serie Nummer"
+msgstr "Serienummer"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/assets/operatingsystem.html.twig
@@ -20206,13 +20389,14 @@ msgstr "Tjenesten er nede for vedlikehold. Vil være tilbake så fort som mulig"
 #: templates/components/itilobject/fields_panel.html.twig src/SLM.php:58
 msgid "Service level"
 msgid_plural "Service levels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tjenestenivå"
+msgstr[1] "Tjenestenivåer"
 
 #: src/OperatingSystemServicePack.php:44
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] "Oppdateringspakker (SPs)"
+msgstr[0] "Oppdateringspakke (SP)"
+msgstr[1] "Oppdateringspakker (SPs)"
 
 #: src/System/Requirement/SessionsConfiguration.php:46
 msgid "Sessions configuration"
@@ -20308,13 +20492,13 @@ msgstr "Vis"
 #: src/Dropdown.php:317 src/User.php:4743
 #, php-format
 msgid "Show %1$s"
-msgstr "Vis%1$s"
+msgstr "Vis %1$s"
 
 #: templates/pages/admin/events_list.html.twig
 #: templates/components/logs.html.twig
 #, php-format
 msgid "Show %s entries"
-msgstr ""
+msgstr "Vis %s oppføringer"
 
 #: src/Config.php:1169
 msgid "Show GLPI ID"
@@ -20364,6 +20548,8 @@ msgstr ""
 #: src/Config.php:913
 msgid "Show personnal information in new ticket form (simplified interface)"
 msgstr ""
+"Vis personlig informasjon i nytt saksregistreringsskjema (forenklet "
+"grensesnitt)"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -20400,6 +20586,7 @@ msgstr ""
 msgid "Simcard"
 msgid_plural "Simcards"
 msgstr[0] "Simkort"
+msgstr[1] "Simkort"
 
 #: src/Profile.php:933 src/Profile.php:2242
 msgid "Simcard PIN/PUK"
@@ -20408,7 +20595,8 @@ msgstr ""
 #: src/DeviceSimcardType.php:45
 msgid "Simcard type"
 msgid_plural "Simcard types"
-msgstr[0] "SIM-korttyper"
+msgstr[0] "SIM-korttype"
+msgstr[1] "SIM-korttyper"
 
 #: src/AuthLDAP.php:3904
 msgid "Simple mode"
@@ -20432,6 +20620,9 @@ msgid ""
 "“Telemetry”, that anonymously with your permission, sends data to our "
 "telemetry website."
 msgstr ""
+"Siden GLPI 9.2 har vi introdusert en ny statistikkfunksjon kalt "
+"\"Telemetri\", som anonymt og med din tillatelse sender data til vår "
+"telemetri-nettside."
 
 #: src/NetworkPortEthernet.php:262
 msgid "Single mode fiber"
@@ -20509,7 +20700,8 @@ msgstr[1] "Programvare"
 #: src/SoftwareCategory.php:44
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] "Programvarekategorier"
+msgstr[0] "Programvarekategori"
+msgstr[1] "Programvarekategorier"
 
 #: src/Config.php:474
 msgid "Software category deleted by the dictionary rules"
@@ -20536,7 +20728,8 @@ msgstr ""
 #: src/ITILSolution.php:59
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] "Løsninger"
+msgstr[0] "Løsning"
+msgstr[1] "Løsninger"
 
 #: src/CommonITILObject.php:6866
 msgctxt "button"
@@ -20557,7 +20750,7 @@ msgstr ""
 
 #: src/NotificationTargetTicket.php:732
 msgid "Solution rejection date"
-msgstr ""
+msgstr "Dato for avvisning av løsning"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #: src/SolutionTemplate.php:51 src/RuleTicket.php:1008
@@ -20569,7 +20762,8 @@ msgstr[1] "Løsningsmaler"
 #: src/SolutionType.php:41
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Former for løsninger"
+msgstr[0] "Løsningstype"
+msgstr[1] "Løsningstyper"
 
 #: src/Change_Ticket.php:297 src/Problem_Ticket.php:329
 msgid "Solve tickets"
@@ -20591,6 +20785,7 @@ msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] "Løst"
+msgstr[1] "Løst"
 
 #: src/Stat/Data/Location/StatDataSolved.php:51
 #, php-format
@@ -20609,7 +20804,7 @@ msgstr "Løst %s"
 
 #: src/Dashboard/Provider.php:395 src/Dashboard/Grid.php:1214
 msgid "Solved tickets"
-msgstr ""
+msgstr "Løste saker"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
@@ -20658,6 +20853,7 @@ msgstr "Lyd"
 msgid "Soundcard"
 msgid_plural "Soundcards"
 msgstr[0] "Lydkort"
+msgstr[1] "Lydkort"
 
 #: templates/pages/admin/events_list.html.twig src/Event.php:300
 #: src/Event.php:378 src/RuleImportEntity.php:137
@@ -20814,7 +21010,8 @@ msgstr "Status"
 #: src/VirtualMachineState.php:41
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] "Den virtuelle maskinens tilstander"
+msgstr[0] "Tilstanden til den virtuelle maskinen"
+msgstr[1] "Tilstanden til de virtuelle maskinene"
 
 #: front/stat.item.php:38 front/stat.global.php:43 front/stat.tracking.php:47
 #: front/stat.location.php:47 front/stat.php:38 front/stat.graph.php:49
@@ -20867,6 +21064,7 @@ msgstr "Status"
 msgid "Status of items"
 msgid_plural "Statuses of items"
 msgstr[0] "Element status"
+msgstr[1] "Element status"
 
 #: src/NotificationTargetChange.php:304 src/NotificationTargetTicket.php:745
 msgid "Status of the approval request"
@@ -20885,7 +21083,7 @@ msgstr "Statusverdi i database"
 #. TRANS: short for : Steal a ticket
 #: src/Ticket.php:6146
 msgid "Steal"
-msgstr "Stjel"
+msgstr "Ta over"
 
 #: src/Ticket.php:6147
 msgid "Steal a ticket"
@@ -20941,7 +21139,7 @@ msgstr "Emne"
 #: src/RuleTicket.php:718 src/NotImportedEmail.php:164
 #: src/RuleMailCollector.php:85
 msgid "Subject email header"
-msgstr ""
+msgstr "E-postens emnefelt"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Submit message"
@@ -20955,7 +21153,8 @@ msgstr "Subnet"
 #: src/IPNetmask.php:73
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
-msgstr[0] "Nettverksmasker"
+msgstr[0] "Nettverksmaske"
+msgstr[1] "Nettverksmasker"
 
 #: src/Project.php:2287
 msgid "Subproject"
@@ -20994,7 +21193,7 @@ msgstr "Vellykket gjenopprettelse av nettverks tre"
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Console/System/CheckRequirementsCommand.php:93
 msgid "Suggested"
-msgstr ""
+msgstr "Foreslått"
 
 #: src/Project.php:1716
 msgid "Sum of planned durations of tasks"
@@ -21032,7 +21231,8 @@ msgstr "Søndager og ferier"
 #: src/Profile.php:2346
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Leverandører"
+msgstr[0] "Leverandør"
+msgstr[1] "Leverandører"
 
 #: src/NotificationTargetCommonITILObject.php:1777
 msgid "Supplier ID"
@@ -21141,6 +21341,7 @@ msgstr "Systemet"
 msgid "System board"
 msgid_plural "System boards"
 msgstr[0] "Hovedkort"
+msgstr[1] "Hovedkort"
 
 #: src/DeviceMotherboardModel.php:44
 msgid "System board model"
@@ -21252,6 +21453,7 @@ msgstr ""
 msgid "Target"
 msgid_plural "Targets"
 msgstr[0] "Mål"
+msgstr[1] "Mål"
 
 #: src/RuleImportAsset.php:96
 msgid "Target entity for the asset"
@@ -21303,27 +21505,29 @@ msgstr "Oppgaveforfatter"
 msgid "Task category"
 msgid_plural "Task categories"
 msgstr[0] "Oppgavekategori"
+msgstr[1] "Oppgavekategorier"
 
 #: front/rule.common.php:138
 #, php-format
 msgid "Task completed in %s"
-msgstr "Oppgave fullført i løpet av %s"
+msgstr "Oppgave fullført på %s"
 
 #: install/update.php:101 src/Migration.php:858 src/Software.php:1144
 msgid "Task completed."
-msgstr "Arbeid utført"
+msgstr "Oppgave fullført."
 
 #: src/ProjectTaskTeam.php:73
 msgid "Task team"
 msgid_plural "Task teams"
-msgstr[0] "Oppgave lag"
+msgstr[0] "Oppgavelag"
+msgstr[1] "Oppgavelag"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: src/TaskTemplate.php:52 src/RuleTicket.php:1013
 msgid "Task template"
 msgid_plural "Task templates"
 msgstr[0] "Oppgavemal"
-msgstr[1] "Oppgavemal"
+msgstr[1] "Oppgavemaler"
 
 #: src/Config.php:1382
 msgid "Tasks state by default"
@@ -21344,7 +21548,8 @@ msgstr ""
 #: src/NotificationTargetProject.php:812
 msgid "Team member"
 msgid_plural "Team members"
-msgstr[0] "Team-medlemmer"
+msgstr[0] "Team-medlem"
+msgstr[1] "Team-medlemmer"
 
 #: front/stat.graph.php:110 front/stat.graph.php:121
 #: src/CommonITILTask.php:784 src/Dashboard/Filters/UserTechFilter.php:48
@@ -21400,7 +21605,7 @@ msgstr "Tekniker ansvarlig for oppgaven"
 
 #: src/NotificationTargetCommonITILObject.php:861
 msgid "Technician in charge of the ticket"
-msgstr "Ansvarlig tekniker for denne oppgaven"
+msgstr "Tekniker ansvarlig for saken"
 
 #: front/stat.tracking.php:131
 msgid "Technician in tasks"
@@ -21414,7 +21619,8 @@ msgstr "Telemetri"
 #: src/Profile.php:3395 src/Notification_NotificationTemplate.php:62
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Maler"
+msgstr[0] "Mal"
+msgstr[1] "Maler"
 
 #: src/ITILCategory.php:136 src/ITILCategory.php:196
 msgid "Template for a change"
@@ -21446,7 +21652,8 @@ msgstr "Mal navn"
 #: src/NotificationTemplateTranslation.php:53
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Maloversettelser"
+msgstr[0] "Maloversettelse"
+msgstr[1] "Maloversettelser"
 
 #: front/contenttemplates/documentation.php:48
 msgid "Template variables documentation"
@@ -21550,7 +21757,7 @@ msgstr "Takk for at du bruker vårt automatiske support system."
 
 #: src/ReservationItem.php:358
 msgid "That will remove all the reservations in progress."
-msgstr "Dette vil fjerne alle bestillinger pågår"
+msgstr "Dette vil fjerne alle pågående reservasjoner."
 
 #: src/Config.php:1861
 #, php-format
@@ -21917,7 +22124,7 @@ msgstr ""
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "Det er noen saker som venter på godkjenning"
 
 #: src/Api/API.php:198
 msgid ""
@@ -21942,7 +22149,8 @@ msgstr "Tenk på å lage en sikkerhetskopi før du overfører elementer."
 #: src/SupplierType.php:41
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "Tredjepartstyper"
+msgstr[0] "Tredjepartstype"
+msgstr[1] "Tredjepartstyper"
 
 #: src/Console/Plugin/UninstallCommand.php:56
 msgid "This action will permanently delete data"
@@ -22051,7 +22259,7 @@ msgstr ""
 #: src/Plugin.php:2158
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr ""
+msgstr "Denne utvidelsen krever PHP-parameteren %1$s"
 
 #: src/Profile.php:443
 msgid ""
@@ -22069,11 +22277,11 @@ msgstr "Denne saken angår meg"
 
 #: src/Plugin.php:3000
 msgid "This will only affect plugins already enabled"
-msgstr ""
+msgstr "Dette vil kun påvirke utvidelser som allerede er aktivert"
 
 #: src/Plugin.php:2984 src/Plugin.php:2992
 msgid "This will only affect plugins already installed"
-msgstr ""
+msgstr "Dette vil kun påvirke utvidelser som allerede er installert"
 
 #: src/Plugin.php:3008
 msgid "This will only affect plugins ready to be cleaned"
@@ -22118,7 +22326,8 @@ msgstr ""
 #: src/Ticket.php:110
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Saker"
+msgstr[0] "Sak"
+msgstr[1] "Saker"
 
 #: src/Planning.php:2732
 #, php-format
@@ -22132,7 +22341,8 @@ msgstr ""
 #: src/CommonITILCost.php:591 src/Profile.php:3242
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "Saks kostnad"
+msgstr[0] "Sakskostnad"
+msgstr[1] "Sakskostnader"
 
 #: src/Profile.php:804 src/Profile.php:2078
 msgid "Ticket creation form on login"
@@ -22141,18 +22351,18 @@ msgstr "Skjema for saksregistrering ved innlogging"
 #: src/Item_Ticket.php:55
 msgid "Ticket item"
 msgid_plural "Ticket items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sakelement"
+msgstr[1] "Sakelementer"
 
 #: src/RuleTicket.php:627
 msgid "Ticket location"
-msgstr "Sakslokalitet"
+msgstr "Sakslokasjon"
 
 #: src/Ticket.php:5557
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sak på tilknyttede elementer"
+msgstr[1] "Saker på tilknyttede elementer"
 
 #: src/NotificationTargetTicket.php:139
 msgid "Ticket solved"
@@ -22161,7 +22371,8 @@ msgstr "Sak løst"
 #: src/TicketTask.php:43
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "Saksoppgaver"
+msgstr[0] "Saksoppgave"
+msgstr[1] "Saksoppgaver"
 
 #: src/CommonITILTask.php:1658
 msgid "Ticket tasks to do"
@@ -22171,13 +22382,14 @@ msgstr "Saksoppgaver som kan gjøres"
 #: src/TicketTemplate.php:50
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "Saks maler"
+msgstr[0] "Saksmal"
+msgstr[1] "Saksmaler"
 
 #: src/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
 msgid_plural "Ticket types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sakstype"
+msgstr[1] "Sakstyper"
 
 #: src/Stat.php:1751 src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64
@@ -22186,7 +22398,7 @@ msgstr "Saker"
 
 #: src/Ticket_Contract.php:48
 msgid "Tickets / Contracts"
-msgstr ""
+msgstr "Saker / Kontrakter"
 
 #: src/Dashboard/Provider.php:601
 msgid "Tickets by SLA status and by technician"
@@ -22202,7 +22414,7 @@ msgstr ""
 
 #: src/Entity.php:1271 src/Entity.php:2869
 msgid "Tickets default type"
-msgstr "Standard saks type"
+msgstr "Standard sakstype"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProjectTask.php:546
@@ -22215,15 +22427,15 @@ msgstr "Saker som er satt på vent"
 
 #: src/Dashboard/Grid.php:1273
 msgid "Tickets status by month"
-msgstr ""
+msgstr "Saksstatus per måned"
 
 #: src/Dashboard/Grid.php:1291
 msgid "Tickets summary"
-msgstr ""
+msgstr "Saksoversikt"
 
 #: src/Dashboard/Grid.php:1282
 msgid "Tickets times (in hours)"
-msgstr ""
+msgstr "Sakstider (i timer)"
 
 #: src/Ticket.php:4780 src/Ticket.php:4862
 msgid "Tickets to be processed"
@@ -22231,22 +22443,23 @@ msgstr "Saker som kan behandles"
 
 #: src/Dashboard/Provider.php:321
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Saker som venter på validering"
 
 #: src/Dashboard/Grid.php:1208 src/Ticket.php:173 src/Ticket.php:175
 #: src/Ticket.php:5291
 msgid "Tickets waiting for your approval"
-msgstr ""
+msgstr "Saker som venter på din godkjenning"
 
 #: src/CommonITILObject.php:5401
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] "Tid"
+msgstr[0] "Gang"
+msgstr[1] "Ganger"
 
 #: src/LevelAgreement.php:664
 msgctxt "hour"
 msgid "Time"
-msgstr ""
+msgstr "Gang"
 
 #: src/CommonITILCost.php:159 src/CommonITILCost.php:238
 #: src/CommonITILCost.php:463 src/CommonITILCost.php:610
@@ -22264,6 +22477,7 @@ msgstr ""
 msgid "Time range"
 msgid_plural "Time ranges"
 msgstr[0] "Tidsrom"
+msgstr[1] "Tidsrom"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
@@ -22285,15 +22499,15 @@ msgstr ""
 #: src/RuleTicket.php:944 src/LevelAgreementLevel.php:307 src/Ticket.php:3071
 #: src/Ticket.php:3254 src/Ticket.php:6323
 msgid "Time to own"
-msgstr ""
+msgstr "Tid til eierskap"
 
 #: src/Ticket.php:3082
 msgid "Time to own + Progress"
-msgstr ""
+msgstr "Tid til eierskap + Fremdrift"
 
 #: src/Ticket.php:3092
 msgid "Time to own exceeded"
-msgstr ""
+msgstr "Tid til eierskap overskredet"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: templates/components/itilobject/service_levels.html.twig
@@ -22306,7 +22520,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1765
 #: src/LevelAgreementLevel.php:309 src/Ticket.php:3268 src/Ticket.php:6339
 msgid "Time to resolve"
-msgstr "Tid for løsning"
+msgstr "Tid til løsning"
 
 #: src/CommonITILObject.php:4093
 msgid "Time to resolve + Progress"
@@ -22339,7 +22553,7 @@ msgstr ""
 #: src/AuthLDAP.php:677 src/AuthLDAP.php:747 src/AuthLDAP.php:1354
 #: src/AuthLdapReplicate.php:95
 msgid "Timeout"
-msgstr ""
+msgstr "Tidsavbrudd"
 
 #: src/ObjectLock.php:669
 msgid "Timeout to force unlock (hours)"
@@ -22347,7 +22561,7 @@ msgstr ""
 
 #: src/RuleRight.php:385 src/Config.php:1315
 msgid "Timezone"
-msgstr ""
+msgstr "Tidssone"
 
 #: src/Console/Database/EnableTimezonesCommand.php:109
 msgid "Timezone usage has been enabled."
@@ -22419,11 +22633,11 @@ msgstr "Til %s"
 
 #: src/NotificationTargetTicket.php:86
 msgid "To answer by email, write above this line"
-msgstr "Skriv over denne linja ved svar pr. e-post"
+msgstr "For å svare via e-post, skriv over denne linjen"
 
 #: src/NotificationTargetTicket.php:105
 msgid "To answer by email, write under this line"
-msgstr "Skriv under denne linja ved svar pr. e-post"
+msgstr "For å svare via e-post, skriv under denne linjen"
 
 #: src/Marketplace/View.php:752 src/Console/Marketplace/DownloadCommand.php:75
 msgid ""
@@ -22433,7 +22647,7 @@ msgstr ""
 
 #: src/Ticket.php:6151
 msgid "To be in charge of a ticket"
-msgstr "Ansvarlig for sak"
+msgstr "Å ha ansvar for en sak"
 
 #: src/RuleDictionnarySoftware.php:112 src/RuleSoftwareCategory.php:106
 #: src/RuleRight.php:358 src/RuleImportComputer.php:124
@@ -22476,7 +22690,7 @@ msgstr "Å oppdatere"
 
 #: src/NotificationTargetUser.php:198
 msgid "To update your password, please follow this link:"
-msgstr ""
+msgstr "For å oppdatere passordet ditt, vennligst følg denne lenken:"
 
 #: src/Dashboard/Provider.php:1614
 msgid "To validate"
@@ -22496,28 +22710,28 @@ msgstr ""
 
 #: js/modules/Kanban/Kanban.js:2112
 msgid "Toggle collapse"
-msgstr ""
+msgstr "Vis/skjul"
 
 #: src/Dashboard/Grid.php:291
 msgid "Toggle edit mode"
-msgstr ""
+msgstr "Veksle redigeringsmodus"
 
 #: src/Dashboard/Grid.php:1369
 msgid "Toggle edit mode to edit content"
-msgstr ""
+msgstr "Veksle redigeringsmodus for å redigere innhold"
 
 #: src/Planning.php:981
 msgid "Toggle filters"
-msgstr ""
+msgstr "Veksle filtre"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:498
 #: src/Dashboard/Grid.php:289
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Veksle fullskjerm"
 
 #: src/Dashboard/Grid.php:288
 msgid "Toggle night mode"
-msgstr ""
+msgstr "Veksle nattmodus"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
@@ -22556,47 +22770,47 @@ msgstr "Topp"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Top of the page"
-msgstr ""
+msgstr "Toppen av siden"
 
 #: src/Dashboard/Grid.php:1340
 msgid "Top ticket's assignee groups"
-msgstr ""
+msgstr "Topp sakstilordningsgrupper"
 
 #: src/Dashboard/Grid.php:1339
 msgid "Top ticket's assignees"
-msgstr ""
+msgstr "Topp sakstilordnede"
 
 #: src/Dashboard/Grid.php:1317
 msgid "Top ticket's categories"
-msgstr ""
+msgstr "Topp sakskategorier"
 
 #: src/Dashboard/Grid.php:1318
 msgid "Top ticket's entities"
-msgstr ""
+msgstr "Topp saksenheter"
 
 #: src/Dashboard/Grid.php:1320
 msgid "Top ticket's locations"
-msgstr ""
+msgstr "Topp sakslokasjoner"
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's observer groups"
-msgstr ""
+msgstr "Topp saksobservatørgrupper"
 
 #: src/Dashboard/Grid.php:1337
 msgid "Top ticket's observers"
-msgstr ""
+msgstr "Topp saksobservatører"
 
 #: src/Dashboard/Grid.php:1319
 msgid "Top ticket's request types"
-msgstr ""
+msgstr "Topp saksforespørselstyper"
 
 #: src/Dashboard/Grid.php:1336
 msgid "Top ticket's requester groups"
-msgstr ""
+msgstr "Topp saksanmeldergrupper"
 
 #: src/Dashboard/Grid.php:1335
 msgid "Top ticket's requesters"
-msgstr ""
+msgstr "Topp saksanmeldere"
 
 #: src/State.php:175 src/State.php:235 src/SoftwareVersion.php:384
 #: src/Budget.php:654 src/Budget.php:860 src/Budget.php:896
@@ -22716,7 +22930,8 @@ msgstr ""
 #: src/ReminderTranslation.php:56
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] "Oversettninger"
+msgstr[0] "Oversettning"
+msgstr[1] "Oversettninger"
 
 #: src/Config.php:1882
 msgid "Translation cache"
@@ -22837,8 +23052,8 @@ msgstr "TP (RJ-45)"
 #: src/DomainRecord.php:600 src/Ticket.php:3196 src/Ticket.php:3373
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Type"
+msgstr[1] "Typer"
 
 #: src/Dashboard/Widget.php:1732
 msgid "Type markdown text here"
@@ -23352,7 +23567,7 @@ msgstr "Enhets behandling"
 #: src/NetworkPort.php:1254 src/GLPINetwork.php:117 src/GLPINetwork.php:122
 #: src/Features/Inventoriable.php:201
 msgid "Unknown"
-msgstr ""
+msgstr "Ukjent"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:171
 #: src/Reservation.php:415
@@ -23541,7 +23756,8 @@ msgstr "Oppdater (aktør)"
 #: src/AutoUpdateSystem.php:42
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] "Oppdaterings Kilder"
+msgstr[0] "Oppdateringskilde"
+msgstr[1] "Oppdateringskilder"
 
 #: phpunit/functional/LogTest.php:511 src/Log.php:1038
 msgid "Update a field"
@@ -23653,11 +23869,11 @@ msgstr "Oppdatering av reservasjon"
 
 #: src/NotificationTargetCommonITILObject.php:133
 msgid "Update of a task"
-msgstr "Oppdater oppgave"
+msgstr "Oppdatering av en oppgave"
 
 #: src/NotificationTargetTicket.php:138
 msgid "Update of a ticket"
-msgstr "Oppdatering av sak"
+msgstr "Oppdatering av en sak"
 
 #: src/Log.php:717
 msgid "Update of the field"
@@ -23931,12 +24147,14 @@ msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Brukt"
+msgstr[1] "Brukt"
 
 #: src/Consumable.php:501
 msgctxt "consumable"
 msgid "Used"
 msgid_plural "Used"
 msgstr[0] "Brukt"
+msgstr[1] "Brukt"
 
 #: src/Cartridge.php:1103
 msgid "Used cartridges"
@@ -23983,7 +24201,8 @@ msgstr ""
 #: src/UserCategory.php:41
 msgid "User category"
 msgid_plural "User categories"
-msgstr[0] "Brukerkategorier"
+msgstr[0] "Brukerkategori"
+msgstr[1] "Brukerkategorier"
 
 #: src/Config.php:1855
 msgid "User data cache"
@@ -24034,7 +24253,8 @@ msgstr "Brukeren er ikke autorisert til å koble til GLPI"
 #: src/Auth.php:921
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "Bruker ikke funnet i LDAP-katalogene"
+msgstr[0] "Bruker ikke funnet i LDAP-katalog"
+msgstr[1] "Bruker ikke funnet i LDAP-katalogene"
 
 #: src/AuthLDAP.php:3363
 msgid "User not found or several users found"
@@ -24053,7 +24273,8 @@ msgstr ""
 #: src/UserTitle.php:41
 msgid "User title"
 msgid_plural "Users titles"
-msgstr[0] "Brukertitler"
+msgstr[0] "Brukertitel"
+msgstr[1] "Brukertitler"
 
 #: src/RuleMailCollector.php:166
 msgid "User with a single profile"
@@ -24075,6 +24296,7 @@ msgstr "VALIDATE-CERT"
 msgid "VLAN"
 msgid_plural "VLANs"
 msgstr[0] "VLANs"
+msgstr[1] "VLAN"
 
 #: src/SoftwareLicense.php:450 src/SoftwareLicense.php:725
 msgid "Valid"
@@ -24143,7 +24365,7 @@ msgstr "Valider en hendelse"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:56
 msgid "Validate files integrity for GLPI's documents."
-msgstr ""
+msgstr "Valider filintegriteten for GLPI's dokumenter."
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/timeline.html.twig
@@ -24156,7 +24378,7 @@ msgstr ""
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Validering"
-msgstr[1] "Valederinger"
+msgstr[1] "Valideringer"
 
 #: src/CommonITILObject.php:6887
 msgctxt "button"
@@ -24168,12 +24390,12 @@ msgstr "Validitet"
 #: src/NotificationTargetTicket.php:141 src/NotificationTargetTicket.php:880
 #: src/CommonITILObject.php:7181
 msgid "Validation request"
-msgstr ""
+msgstr "Valideringsforespørsel"
 
 #: src/NotificationTargetChange.php:55 src/NotificationTargetTicket.php:142
 #: src/CommonITILObject.php:7204
 msgid "Validation request answer"
-msgstr ""
+msgstr "Svar på valideringsforespørsel"
 
 #: front/report.infocom.php:66 front/report.infocom.conso.php:65
 #: src/DropdownTranslation.php:439 src/DropdownTranslation.php:587
@@ -24299,7 +24521,8 @@ msgstr "Veldig lav"
 #: src/KnowbaseItem.php:2300 src/Item_Devices.php:1020
 msgid "View"
 msgid_plural "Views"
-msgstr[0] "Visninger"
+msgstr[0] "Visning"
+msgstr[1] "Visninger"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "View TODO list"
@@ -24307,7 +24530,7 @@ msgstr ""
 
 #: templates/components/search/display_data.html.twig
 msgid "View all"
-msgstr ""
+msgstr "Vis alle"
 
 #: src/Reservation.php:547
 msgid "View all items"
@@ -24319,7 +24542,7 @@ msgstr ""
 
 #: src/ReservationItem.php:457
 msgid "View calendar for all items"
-msgstr ""
+msgstr "Vis kalender for alle elementer"
 
 #: src/Item_Rack.php:169 src/Rack.php:392 src/Impact.php:760
 msgid "View graphical representation"
@@ -24340,7 +24563,8 @@ msgstr "Vis oppdaterte brukere"
 #: src/Dropdown.php:1180 src/ComputerVirtualMachine.php:503
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] "Virtuelle maskiner"
+msgstr[0] "Virtuell maskin"
+msgstr[1] "Virtuelle maskiner"
 
 #: src/ComputerVirtualMachine.php:619
 msgid "Virtual machine Comment"
@@ -24361,12 +24585,14 @@ msgstr "Virtualisering"
 #: src/VirtualMachineSystem.php:44
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
-msgstr[0] "Virtualiseringsmodeller"
+msgstr[0] "Virtualiseringsmodell"
+msgstr[1] "Virtualiseringsmodeller"
 
 #: src/VirtualMachineType.php:44
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] "Virtualiseringsystemer"
+msgstr[0] "Virtualiseringsystem"
+msgstr[1] "Virtualiseringsystemer"
 
 #: src/State.php:68 src/State.php:314 src/State.php:324 src/State.php:334
 #: src/State.php:342 src/State.php:350 src/State.php:358 src/State.php:368
@@ -24430,7 +24656,8 @@ msgstr "Volt"
 #: src/Item_Disk.php:55 src/Item_Disk.php:393
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Volumer"
+msgstr[0] "Volum"
+msgstr[1] "Volumer"
 
 #: src/ITILSolution.php:417 src/CommonITILValidation.php:535
 msgid "Waiting for approval"
@@ -24492,8 +24719,8 @@ msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
 msgstr ""
-"Advarsel: non closed children tickets depends on current ticket. Are you "
-"sure you want to close it?"
+"Advarsel: ikke-lukkede undersaker avhenger av gjeldende sak. Er du sikker at"
+" du vil lukke den?"
 
 #: src/ObjectLock.php:319
 msgid "Warning: read-only!"
@@ -24752,7 +24979,8 @@ msgstr "Wifi modus"
 #: src/WifiNetwork.php:49
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "Trådløse nettverk"
+msgstr[0] "Trådløs nettverk"
+msgstr[1] "Trådløse nettverk"
 
 #: src/WifiNetwork.php:114
 msgid "Wifi network type"
@@ -24796,8 +25024,8 @@ msgstr ""
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] ""
-"Uten tilbakemelding, vil sakene bli automatisk lukket etter %s dager"
+msgstr[0] "Uten svar vil saken automatisk bli lukket etter %s dag"
+msgstr[1] "Uten svar vil saken automatisk bli lukket etter %s dager"
 
 #: src/NetworkPortConnectionLog.php:158 src/NetworkPortInstantiation.php:950
 #: src/Profile.php:732
@@ -24824,6 +25052,7 @@ msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
 msgstr[0] "Slitt"
+msgstr[1] "Slitt"
 
 #: src/Cartridge.php:814 src/Cartridge.php:1105
 msgid "Worn cartridges"
@@ -24861,7 +25090,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1909
 #: src/NotificationTargetCommonITILObject.php:1973 src/Reminder.php:412
 msgid "Writer"
-msgstr "Skrevet av"
+msgstr "Forfatter"
 
 #: src/DeviceDrive.php:53 src/DeviceDrive.php:81 src/DeviceDrive.php:130
 msgid "Writing ability"
@@ -24885,7 +25114,7 @@ msgstr "XMLRPC API"
 
 #: src/NetworkPortMetrics.php:148
 msgid "Y-m-d"
-msgstr ""
+msgstr "Å-m-d"
 
 #: src/Agent.php:804
 msgid "Y-m-d H:i:s"
@@ -24965,7 +25194,7 @@ msgstr ""
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
 msgid "You are bypassing a needed update"
-msgstr ""
+msgstr "Du omgår en nødvendig oppdatering"
 
 #: templates/layout/parts/impersonate_banner.html.twig
 #, php-format
@@ -25096,7 +25325,7 @@ msgstr ""
 
 #: src/Ticket.php:1835
 msgid "You cannot create a ticket for this user"
-msgstr ""
+msgstr "Du kan ikke opprette en sak for denne brukeren"
 
 #: src/Entity.php:201
 msgid "You cannot delete an entity which contains sub-entities."
@@ -25108,7 +25337,7 @@ msgstr ""
 
 #: src/CommonITILObject.php:2699
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Du kan ikke bruke forhåndsdefinert beskrivelse ordrett"
 
 #: install/install.php:391
 msgid "You didn't select a database!"
@@ -25159,7 +25388,7 @@ msgstr "Du har bedt om tilbakestilling av ditt kontopassord."
 msgid ""
 "You have been redirected because you no longer have access to this item"
 msgstr ""
-"Du ble omdirigert fordi du ikke lenger har tilgang til dette elementet"
+"Du har blitt omdirigert fordi du ikke lenger har tilgang til dette elementet"
 
 #: front/itilfollowup.form.php:142 front/itilsolution.form.php:113
 #: front/ticket.form.php:127 front/commonitiltask.form.php:152
@@ -25263,6 +25492,12 @@ msgid ""
 "\n"
 "In this same space, you will be able to contact an official partner to help you with your GLPI integration."
 msgstr ""
+"Trenger du hjelp til å integrere GLPI i din IT-avdeling, få fikset en feil eller dra nytte av forhåndskonfigurerte regler eller ordbøker?\n"
+"\n"
+"Vi tilbyr %s-området for deg.\n"
+"GLPI-Network er en kommersiell tjeneste som inkluderer et abonnement for tier 3-støtte, som sikrer korrigering av feil som oppstår med en forpliktende tidsfrist.\n"
+"\n"
+"I dette samme området vil du kunne kontakte en offisiell partner for å hjelpe deg med din GLPI-integrasjon."
 
 #: js/impact.js:2481
 msgid "You need to select at least 1 asset to make a group"
@@ -25321,7 +25556,7 @@ msgstr ""
 
 #: src/Ticket.php:4796 src/Ticket.php:4969
 msgid "Your observed tickets"
-msgstr "Saker du kan observere"
+msgstr "Dine observerte saker"
 
 #: front/updatepassword.php:103
 msgid "Your password has been successfully updated."
@@ -25365,27 +25600,27 @@ msgstr ""
 
 #: front/tracking.injector.php:94
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Din sak er registrert, behandling pågår."
+msgstr "Din sak har blitt registrert, behandlingen er i gang."
 
 #: src/Ticket.php:4907
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "Dine saker med avvist godkjenningsstatus"
 
 #: src/Ticket.php:4924
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "Dine saker med avvist løsning"
 
 #: src/Ticket.php:4813 src/Ticket.php:5031
 msgid "Your tickets in progress"
-msgstr "Dine saker som blir behandlet"
+msgstr "Dine pågående saker"
 
 #: src/Ticket.php:4732 src/Ticket.php:4953
 msgid "Your tickets to close"
-msgstr "Dine saker som kan avsluttes"
+msgstr "Dine saker som skal lukkes"
 
 #: src/Ticket.php:4889
 msgid "Your tickets to validate"
-msgstr "Dine saker, som trenger validering"
+msgstr "Dine saker som skal valideres"
 
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
@@ -25402,7 +25637,7 @@ msgstr ""
 
 #: js/common.js:1189
 msgid "a month ago"
-msgstr ""
+msgstr "en måned siden"
 
 #: js/common.js:1187
 msgid "a week ago"
@@ -25706,7 +25941,7 @@ msgstr "påkrevd"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
-msgstr ""
+msgstr "merk som standard"
 
 #: src/Api/APIXmlrpc.php:167
 msgid "missing id"
@@ -25731,7 +25966,8 @@ msgstr ""
 #: src/Contract_Item.php:397 src/Cartridge.php:921 src/Cartridge.php:924
 msgid "month"
 msgid_plural "months"
-msgstr[0] "måneder"
+msgstr[0] "måned"
+msgstr[1] "måneder"
 
 #: src/Item_Rack.php:850 src/Rack.php:927 src/PDU_Rack.php:584
 msgid "name"
@@ -25817,11 +26053,11 @@ msgstr "post-only/postonly for kun registrering"
 
 #: front/itiltemplatefield.form.php:78
 msgid "predefined"
-msgstr ""
+msgstr "forhåndsdefinert"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
-msgstr ""
+msgstr "privat"
 
 #: src/ComputerVirtualMachine.php:491 src/ComputerVirtualMachine.php:580
 msgid "processor number"
@@ -25955,7 +26191,7 @@ msgstr "bruk av initSession ressurs med legitimasjon er deaktivert"
 
 #: src/Item_Ticket.php:810
 msgid "version"
-msgstr "Versjon"
+msgstr "versjon"
 
 #: src/Api/API.php:2820
 #, php-format
@@ -25993,7 +26229,7 @@ msgstr "autentisering via x509 sertifikat"
 
 #: js/common.js:1185
 msgid "yesterday"
-msgstr ""
+msgstr "i går"
 
 #: src/NetworkPortMigration.php:233
 msgid "you may have to add a network"

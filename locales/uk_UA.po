@@ -13,6 +13,8 @@
 # Ігор Козаченко, 2023
 # khvalera <khvalera@ukr.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Vladimir Prodan, 2024
+# Yevhenii Mikhov, 2024
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
+"Last-Translator: Yevhenii Mikhov, 2024\n"
 "Language-Team: Ukrainian (Ukraine) (https://app.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -421,7 +423,7 @@ msgstr "1 %1$s додає елемент"
 #: front/lockedfield.form.php:57
 #, php-format
 msgid "%1$s adds global lock on %2$s"
-msgstr ""
+msgstr "%1$sдодано глобальне блокування о %2$s"
 
 #: front/socket.form.php:111
 #, php-format
@@ -504,12 +506,12 @@ msgstr "%1$s видалив ліцензію %2$s"
 #: front/notificationajaxsetting.form.php:50
 #, php-format
 msgid "%1$s edited the browsers notifications configuration"
-msgstr ""
+msgstr "%1$sзмінена конфігурація попереджень переглядача WEB"
 
 #: front/notificationmailingsetting.form.php:56
 #, php-format
 msgid "%1$s edited the emails notifications configuration"
-msgstr ""
+msgstr "%1$sзмінена конфігурація попереджень програми електронних листів "
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:62
@@ -1032,6 +1034,8 @@ msgstr "%d інші учасники команди"
 #, php-format
 msgid "%d primary or foreign keys columns are using signed integers."
 msgstr ""
+"%dу стовпцях первинного або зовнішнього ключів використовуються цілі числа "
+"зі знаком."
 
 #: src/Cartridge.php:900
 #, php-format
@@ -1103,7 +1107,7 @@ msgstr "%s (%s)"
 #: src/Features/Clonable.php:310
 #, php-format
 msgid "%s (copy %d)"
-msgstr ""
+msgstr "%s (копіювання %d)"
 
 #: src/Features/Clonable.php:306
 #, php-format
@@ -1272,7 +1276,7 @@ msgstr "%s додав попередження"
 #: front/computerantivirus.form.php:60
 #, php-format
 msgid "%s adds an antivirus"
-msgstr "%s додав антивірус"
+msgstr "%s додав Антивірус"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:80
@@ -1302,7 +1306,7 @@ msgstr "%s додав витратні матеріали"
 #: front/networkport.form.php:104
 #, php-format
 msgid "%s adds several network ports"
-msgstr "%s додав декілька мережевих портів"
+msgstr "%s додати декілька мережевих портів"
 
 #. TRANS: %s is the user login
 #: src/Entity.php:1461
@@ -1320,13 +1324,13 @@ msgstr "%s схвалив або відхилив рішення"
 #: front/ipnetwork_vlan.form.php:57 front/networkport_vlan.form.php:57
 #, php-format
 msgid "%s associates a VLAN to a network port"
-msgstr "%s прив’язав VLAN до мережевого порту"
+msgstr "%s прив’язати VLAN до мережевого порту"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:135
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr "%s пов’язав назву мережі з елементом"
+msgstr "%s пов’язати назву мережі з елементом"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:54
@@ -1416,7 +1420,7 @@ msgstr "%s видалив елемент"
 #: front/networkportmigration.form.php:85
 #, php-format
 msgid "%s deletes several network ports"
-msgstr "%s видалив декілька мережевих портів"
+msgstr "%s видалити декілька мережевих портів"
 
 #. TRANS: %s is the user login
 #: front/user.form.php:181
@@ -1540,7 +1544,10 @@ msgstr "%s не доступний для запису"
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] "%s елементів"
+msgstr[0] "%s елемент"
+msgstr[1] "%s елементів"
+msgstr[2] "%s елементів"
+msgstr[3] "%s елементів"
 
 #: src/CronTask.php:1316
 #, php-format
@@ -1561,7 +1568,7 @@ msgstr "%s зробив невірне використання"
 #: src/Ticket.php:6821
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr "%s об'єднує заявку %s до %s"
+msgstr "%s об'єднує Заявку %s до %s"
 
 #. TRANS: %s is a number of milliseconds
 #: src/Dropdown.php:1861
@@ -1592,7 +1599,7 @@ msgstr[0] "%s місяці"
 #: js/common.js:1190
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "%sмісяців тому"
 
 #: src/Project.php:2291
 #, php-format
@@ -1656,7 +1663,7 @@ msgstr "%s знищив рівень SLA"
 #: front/socket.form.php:81
 #, php-format
 msgid "%s purges a socket"
-msgstr "%s знищив роз'єм"
+msgstr "%s видалив роз'єм"
 
 #. TRANS: %s is the user login
 #: front/projecttask.form.php:84 front/commonitiltask.form.php:92
@@ -1686,7 +1693,7 @@ msgstr "%s знищив попередження"
 #: front/computerantivirus.form.php:77
 #, php-format
 msgid "%s purges an antivirus"
-msgstr "%s знищив антивірус"
+msgstr "%s знищив Антивірус"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:107
@@ -1759,7 +1766,7 @@ msgstr "%s відновив екземпляр бази даних"
 #: front/computervirtualmachine.form.php:124
 #, php-format
 msgid "%s restores a virtual machine"
-msgstr ""
+msgstr "%sвідновив віртуальну машину "
 
 #. TRANS: %s is the user login
 #: front/rack.form.php:90 front/budget.form.php:91 front/contract.form.php:92
@@ -1800,7 +1807,7 @@ msgstr[0] "%s секунд"
 #: js/common.js:1180
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "%sсекунд тому"
 
 #. TRANS: %s is the user login
 #: front/monitor.form.php:129 front/peripheral.form.php:129
@@ -1914,7 +1921,7 @@ msgstr "%s змінив попередження"
 #: front/computerantivirus.form.php:94
 #, php-format
 msgid "%s updates an antivirus"
-msgstr "%s змінив антивірус"
+msgstr "%s змінив Антивірус"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:94
@@ -1972,7 +1979,7 @@ msgstr "%s змінив рівень OLA"
 #, php-format
 msgctxt "glpi_status"
 msgid "%s variable is not a directory"
-msgstr ""
+msgstr "%sзмінна не є каталогом"
 
 #: src/System/Status/StatusChecker.php:544
 #, php-format
@@ -2000,7 +2007,7 @@ msgstr[0] "%s роки"
 #: js/common.js:1192
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "%sроків тому"
 
 #: src/Dropdown.php:1870
 #, php-format
@@ -2048,7 +2055,7 @@ msgstr "(%1$d проблем аутентифікації, %2$d помилок)"
 #: front/massiveaction.php:81
 #, php-format
 msgid "(%1$d items required no action)"
-msgstr ""
+msgstr "(1 %1$dелементів не потребують дій)"
 
 #: src/Features/DCBreadcrumb.php:210 src/Features/DCBreadcrumb.php:236
 #, php-format
@@ -2239,7 +2246,7 @@ msgstr "Група в команді елементу"
 
 #: src/Planning.php:1366 src/Planning.php:1473
 msgid "A group selection is required"
-msgstr ""
+msgstr "потрібен груповий вибір"
 
 #: src/ProjectTask.php:478
 msgid "A linked project is mandatory"
@@ -2333,7 +2340,7 @@ msgstr ""
 
 #: src/Planning.php:1536
 msgid "A url is required"
-msgstr ""
+msgstr "потрібне посилання"
 
 #: src/Project.php:2544 src/CommonITILObject.php:9487
 msgctxt "filters"
@@ -2342,7 +2349,7 @@ msgstr "Користувач в команді елементу"
 
 #: src/Planning.php:1316
 msgid "A user selection is required"
-msgstr ""
+msgstr "Потрібно вибрати користувача"
 
 #: src/NotificationTargetChange.php:338 src/NotificationTargetTicket.php:778
 msgid "A validation request has been submitted"
@@ -2995,7 +3002,7 @@ msgstr "Додати date_mod до %s"
 
 #: src/NotificationMailingSetting.php:212
 msgid "Add documents into ticket notifications"
-msgstr "Додати документи до повідомлень Заявки"
+msgstr "Додати документи до Заявки"
 
 #. TRANS: short for : Add users from an external source
 #: src/User.php:6085
@@ -3124,7 +3131,7 @@ msgstr "Додати або видалити пристрої з версій П
 
 #: src/Config.php:3325
 msgid "Add/remove groups to users"
-msgstr "Додати/видалити групи користувача"
+msgstr "Додати/видалити групи користувачів"
 
 #: src/Config.php:3322
 msgid "Add/remove profiles to users"
@@ -3349,11 +3356,11 @@ msgstr "Попередження про резервування"
 
 #: src/Entity.php:1240
 msgid "Alerts on tickets which are not solved"
-msgstr "Попередження щодо заявок, що не вирішені"
+msgstr "Попередження щодо Заявок, що не вирішені"
 
 #: src/Entity.php:2429
 msgid "Alerts on tickets which are not solved since"
-msgstr "Попередження щодо заявок, що не виконані з "
+msgstr "Попередження щодо Заявок, що не виконані з "
 
 #: src/NetworkPort.php:1445 src/NetworkPort.php:1795
 msgid "Alias"
@@ -3441,7 +3448,7 @@ msgstr "Всі опубліковані статті"
 
 #: src/Reservation.php:552
 msgid "All reservable devices"
-msgstr "Всі предмети тимчасового користування "
+msgstr "Всі пристрої тимчасового користування "
 
 #: src/Config.php:3365
 msgid "All sections"
@@ -3487,7 +3494,7 @@ msgstr "Дозволити анонімні відповіді (receiver)"
 
 #: src/Config.php:919
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "Дозволити створення анонімних заявок (helpdesk.receiver)"
+msgstr "Дозволити створення анонімних Заявок (helpdesk.receiver)"
 
 #: src/Notification.php:228 src/Notification.php:477
 msgid "Allow response"
@@ -3654,7 +3661,7 @@ msgstr "Під час оновлення пароля сталася помил�
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Помилка при пошуку елементів."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -3723,12 +3730,15 @@ msgstr[0] "Заповнено"
 #: src/ComputerAntivirus.php:54 src/ComputerAntivirus.php:142
 msgid "Antivirus"
 msgid_plural "Antiviruses"
-msgstr[0] "Антивірусів"
+msgstr[0] "Антивірус"
+msgstr[1] "Антивіруси"
+msgstr[2] "Антивіруси"
+msgstr[3] "Антивіруси"
 
 #: templates/components/form/computerantivirus.html.twig
 #: src/ComputerAntivirus.php:332
 msgid "Antivirus version"
-msgstr "Версія антивірусу"
+msgstr "Версія Антивірусу"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:161
 msgid "Any previous appliance created in core will be lost."
@@ -3785,6 +3795,9 @@ msgstr "Застосовано"
 msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] "Схвалення"
+msgstr[1] "Схвалення"
+msgstr[2] "Схвалення"
+msgstr[3] "Схвалення"
 
 #: src/CommonITILValidation.php:933 src/CommonITILValidation.php:1106
 #: src/CommonITILValidation.php:1213
@@ -3813,15 +3826,15 @@ msgstr "Запит схвалення"
 #: src/CommonITILValidation.php:354 src/CommonITILValidation.php:513
 #, php-format
 msgid "Approval request sent to %s"
-msgstr ""
+msgstr "Запит схвалення надіслано %s"
 
 #: src/RuleTicket.php:982
 msgid "Approval request to requester group manager"
-msgstr "Запит схвалення до керівника групи заявника"
+msgstr "Запит схвалення до керівника групи "
 
 #: src/RuleTicket.php:989
 msgid "Approval request to technician group manager"
-msgstr "Запит схвалення до керівника групи інженера"
+msgstr "Запит схвалення до технічного керівника групи "
 
 #: src/NotificationTargetCommonITILObject.php:875
 #: src/CommonITILValidation.php:931 src/CommonITILValidation.php:1140
@@ -3834,7 +3847,7 @@ msgstr "Статус схвалення"
 
 #: src/CommonITILValidation.php:938
 msgid "Approvals for the ticket"
-msgstr "Схвалення заявки"
+msgstr "Схвалення Заявки"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 #: templates/components/itilobject/timeline/form_validation.html.twig
@@ -3843,11 +3856,11 @@ msgstr "Схвалити"
 
 #: src/Ticket.php:6155
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr "Прийняти рішення та заповнити опитування для заявки, створеної мною"
+msgstr "Затвердити рішення та створити опитування для Заявки, створеної мною"
 
 #: src/Ticket.php:6154
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr "Прийняти рішення/Заповнити опитування (моя заявка)"
+msgstr "Затвердити рішення/Заповнити опитування (моя заявка)"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
@@ -3979,7 +3992,7 @@ msgstr "Призначити SLA"
 
 #: src/Ticket.php:6143
 msgid "Assign a ticket"
-msgstr "Призначити заявку"
+msgstr "Призначити Заявку"
 
 #: src/Ticket.php:5729
 msgid "Assign equipment"
@@ -4008,7 +4021,10 @@ msgstr "Призначено"
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:81
 msgid "Assigned group"
 msgid_plural "Assigned groups"
-msgstr[0] "Призначені групи"
+msgstr[0] "Призначена група"
+msgstr[1] "Призначені групи"
+msgstr[2] "Призначені групи"
+msgstr[3] "Призначені групи"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:82
 msgid "Assigned supplier"
@@ -4017,7 +4033,7 @@ msgstr[0] "Призначені постачальники"
 
 #: src/Dashboard/Provider.php:379 src/Dashboard/Grid.php:1212
 msgid "Assigned tickets"
-msgstr "Призначені заявки"
+msgstr "Призначені Заявки"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: front/stat.tracking.php:128 src/Log.php:563 src/Group.php:274
@@ -4063,11 +4079,11 @@ msgstr "Підтримка"
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:162
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:303
 msgid "Associable items to a ticket"
-msgstr "Елементи, що можуть пов’язуватись з заявкою"
+msgstr "Елементи, що можуть пов’язуватись з Заявкою"
 
 #: src/Profile.php:1213 src/Profile.php:1594 src/Profile.php:3265
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Елементи, що можуть пов’язуватись з Заявкою, Змінами або Проблемами."
 
 #: templates/generic_show_form.html.twig src/Appliance.php:288
 #: src/RuleDictionnarySoftware.php:124 src/Software.php:484
@@ -4163,7 +4179,10 @@ msgstr[3] "Пов’язані елементи"
 #: src/NotificationTargetProject.php:710
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "Пов’язані елементи"
+msgstr[0] "Пов’язаний елемент"
+msgstr[1] "Пов’язані елементи"
+msgstr[2] "Пов’язані елементи"
+msgstr[3] "Пов’язані елементи"
 
 #: src/Socket.php:445 src/QueuedNotification.php:370 src/Contract_Item.php:160
 msgid "Associated item ID"
@@ -4403,15 +4422,15 @@ msgstr "Автоматичні дії SLA"
 
 #: src/Entity.php:1250
 msgid "Automatic assignment of tickets"
-msgstr "Автоматичне призначення заявки"
+msgstr "Автоматичне призначення Заявки"
 
 #: src/Entity.php:2890
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr "Автоматичне призначення заявок, змін та проблем"
+msgstr "Автоматичне призначення Заявок, Змін та Проблем"
 
 #: src/Ticket.php:5765
 msgid "Automatic closed tickets purge"
-msgstr "Автоматична чистка вирішених заявок"
+msgstr "Автоматична чистка вирішених Заявок"
 
 #: src/Entity.php:3031
 msgid "Automatic closing configuration"
@@ -4420,7 +4439,7 @@ msgstr "Налаштування автоматичного закривання
 #: src/NotificationTargetTicket.php:717 src/Entity.php:1202
 #: src/Entity.php:3034
 msgid "Automatic closing of solved tickets after"
-msgstr "Автоматичне закриття вирішених заявок після"
+msgstr "Автоматичне закриття вирішених Заявок після"
 
 #: src/Config.php:507
 msgid "Automatic fields (marked by *)"
@@ -4456,7 +4475,7 @@ msgstr "Автоматична інвентаризація"
 
 #: src/Entity.php:1221 src/Entity.php:3082
 msgid "Automatic purge of closed tickets after"
-msgstr "Автоматична очистка вирішених заявок після"
+msgstr "Автоматична очистка вирішених Заявок після"
 
 #: src/OlaLevel.php:220
 msgid "Automatic reminders of OLA"
@@ -4489,7 +4508,7 @@ msgstr "Автоматичне рішення заплановано %s"
 
 #: src/Ticket.php:5756
 msgid "Automatic tickets closing"
-msgstr "Автоматичне закриття заявок"
+msgstr "Автоматичне закриття Заявок"
 
 #: src/RuleRight.php:227
 msgid "Automatic user assignment"
@@ -4509,7 +4528,7 @@ msgstr "Рахувати автоматично"
 
 #: src/NotificationTemplate.php:281
 msgid "Automatically generated by GLPI"
-msgstr "Автоматично згенеровано GLPI %s"
+msgstr "Автоматично згенеровано GLPI "
 
 #: src/Migration.php:882
 #, php-format
@@ -4519,7 +4538,7 @@ msgstr "Автоматично згенеровано %s"
 #: src/Config.php:1384
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
-"Автоматичне оновлення даних (список заявок, проектні kanban) в хвилинах."
+"Автоматичне оновлення даних (список Заявок, проектні kanban) в хвилинах."
 
 #: src/Config.php:555
 msgid "Automatically update of the elements related to the computers"
@@ -4666,7 +4685,10 @@ msgstr "Базуючись на елементі, потім на категор
 #: src/DeviceBattery.php:42
 msgid "Battery"
 msgid_plural "Batteries"
-msgstr[0] "Батарей"
+msgstr[0] "Батарея"
+msgstr[1] "Батареї"
+msgstr[2] "Батареї"
+msgstr[3] "Батареї"
 
 #: src/DeviceBatteryType.php:40
 msgid "Battery type"
@@ -4882,7 +4904,7 @@ msgstr[3] "Критичності бізнесу"
 
 #: src/RuleTicket.php:1049 src/RuleAsset.php:212
 msgid "Business rules (entity parent)"
-msgstr ""
+msgstr "Бізнес правила (батьківська сутність)"
 
 #: src/RuleAssetCollection.php:45 src/Profile.php:1049 src/RuleAsset.php:49
 msgid "Business rules for assets"
@@ -4890,11 +4912,11 @@ msgstr "Робочі правила для активів"
 
 #: src/RuleTicketCollection.php:70 src/RuleTicket.php:52 src/Profile.php:2828
 msgid "Business rules for tickets"
-msgstr "Робочі правила для заявок"
+msgstr "Робочі правила для Заявок"
 
 #: src/Profile.php:1046
 msgid "Business rules for tickets (entity)"
-msgstr "Робочі правила для заявок (підрозділ)"
+msgstr "Робочі правила для Заявок (підрозділ)"
 
 #: templates/components/itilobject/timeline/simple_form.html.twig
 #: src/TaskTemplate.php:85 src/TaskTemplate.php:130 src/ProjectTask.php:1611
@@ -4923,7 +4945,7 @@ msgstr "По дню"
 
 #: src/Config.php:902
 msgid "By default, a software may be linked to a ticket"
-msgstr "Типово, програмне забезпечення може бути пов'язане із заявкою"
+msgstr "Типово, програмне забезпечення може бути пов'язане із Заявкою"
 
 #: src/Config.php:509
 msgid "By entity"
@@ -4951,11 +4973,11 @@ msgstr "За мережевими роз'ємами"
 
 #: src/Stat.php:1769
 msgid "By problem"
-msgstr "По проблемам"
+msgstr "По Проблемам"
 
 #: src/Stat.php:1757
 msgid "By ticket"
-msgstr "По заявкам"
+msgstr "По Заявкам"
 
 #: templates/components/plugin_uninstall_modal.html.twig
 #, php-format
@@ -5004,7 +5026,10 @@ msgstr "CSV розділювач"
 #: src/Cable.php:49
 msgid "Cable"
 msgid_plural "Cables"
-msgstr[0] "Кабелі"
+msgstr[0] "Кабель"
+msgstr[1] "Кабелі"
+msgstr[2] "Кабелі"
+msgstr[3] "Кабелі"
 
 #: src/Dropdown.php:1226
 msgid "Cable management"
@@ -5018,7 +5043,10 @@ msgstr[0] "Кабельні жили"
 #: src/Cable.php:140 src/CableType.php:41
 msgid "Cable type"
 msgid_plural "Cable types"
-msgstr[0] "Типи кабелю"
+msgstr[0] "Тип кабелю"
+msgstr[1] "Типи кабелів"
+msgstr[2] "Типи кабелів"
+msgstr[3] "Типи кабелів"
 
 #: src/DeviceHardDrive.php:67 src/DeviceHardDrive.php:110
 #: src/DeviceHardDrive.php:182
@@ -5154,6 +5182,8 @@ msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"Неможливо змінити інтерфейс цього профілю, оскільки це єдиний профіль з "
+"правами на зміну профілів з цим інтерфейсом"
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -5232,7 +5262,7 @@ msgstr "Не можу писати в каталог \"%s\"."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr "Неможливо змінити цей атрибут. Він успадковується від свого батька."
+msgstr "Неможливо змінити цей атрибут. Він успадкований від батьківського."
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:58 src/DeviceBattery.php:83 src/DeviceBattery.php:123
@@ -5252,7 +5282,10 @@ msgstr "Примітка"
 #: src/Cartridge.php:101
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Картриджі"
+msgstr[0] "Картридж"
+msgstr[1] "Картриджі"
+msgstr[2] "Картриджі"
+msgstr[3] "Картриджі"
 
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
@@ -5366,7 +5399,10 @@ msgstr "Централь"
 #: src/Transfer.php:4125 src/Certificate.php:67 src/Entity.php:2362
 msgid "Certificate"
 msgid_plural "Certificates"
-msgstr[0] "Сертифікатів"
+msgstr[0] "Сертифікат"
+msgstr[1] "Сертифікати"
+msgstr[2] "Сертифікати"
+msgstr[3] "Сертифікати"
 
 #: src/Certificate.php:783
 #, php-format
@@ -5385,7 +5421,10 @@ msgstr "Запит сертифікату (CSR)"
 #: src/CertificateType.php:45
 msgid "Certificate type"
 msgid_plural "Certificate types"
-msgstr[0] "Типи сертифікатів"
+msgstr[0] "Тип сертифікатe"
+msgstr[1] "Типи сертифікатів"
+msgstr[2] "Типи сертифікатів"
+msgstr[3] "Типи сертифікатів"
 
 #: src/NotificationTargetCertificate.php:143
 msgid "Certificates list (deprecated; contains only one element)"
@@ -5398,7 +5437,10 @@ msgstr "Список сертифікатів (застарілий; місти�
 #: src/NotificationTargetProject.php:791 src/NotificationTargetProject.php:809
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Зміни"
+msgstr[0] "Зміна"
+msgstr[1] "Зміни"
+msgstr[2] "Зміни"
+msgstr[3] "Зміни"
 
 #: src/AuthLDAP.php:3933 src/AuthLDAP.php:3965
 msgctxt "button"
@@ -5412,7 +5454,7 @@ msgstr "Замінити %1$s на %2$s"
 
 #: phpunit/functional/LogTest.php:462 src/Log.php:1102
 msgid "Change a component"
-msgstr "Змінити компоненту"
+msgstr "Змінити компонент"
 
 #: src/Config.php:3227
 msgid "Change all"
@@ -5425,10 +5467,10 @@ msgstr "Змінити спосіб обрахунку"
 #: src/Change_Item.php:53
 msgid "Change item"
 msgid_plural "Change items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зміна елемента"
+msgstr[1] "Зміна елементів"
+msgstr[2] "Зміна елементів"
+msgstr[3] "Зміна елементів"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
@@ -5483,11 +5525,14 @@ msgstr "Зміна вирішена"
 #: src/ChangeTask.php:43
 msgid "Change task"
 msgid_plural "Change tasks"
-msgstr[0] "Завдання Зміни"
+msgstr[0] "Змінити Завдання"
+msgstr[1] "Змінити Завдання"
+msgstr[2] "Змінити Завдання"
+msgstr[3] "Змінити Завдання"
 
 #: src/CommonITILTask.php:1666
 msgid "Change tasks to do"
-msgstr ""
+msgstr "Змінити Задачі для виконання"
 
 #: src/ChangeTemplate.php:50 src/Entity.php:2793
 msgid "Change template"
@@ -5508,7 +5553,7 @@ msgstr "Зміна пріоритету"
 
 #: src/Inventory/Conf.php:306 src/Inventory/Conf.php:935
 msgid "Change the status"
-msgstr ""
+msgstr "Змінити статус"
 
 #: src/SavedSearch.php:91
 msgid "Change visibility"
@@ -5516,11 +5561,11 @@ msgstr "Змінити видимість"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "Змінити видимість у дочерних Елементах"
 
 #: src/Marketplace/View.php:537
 msgid "Changelog"
-msgstr ""
+msgstr "Журнал змін"
 
 #: js/impact.js:2445
 msgid "Changes"
@@ -5536,7 +5581,7 @@ msgstr "Зміни у стані очікування"
 
 #: src/Change.php:1155 src/Change.php:1204
 msgid "Changes to be processed"
-msgstr "Зміни до обробки"
+msgstr "Зміни в обробці"
 
 #: front/stat.tracking.php:127 src/MailCollector.php:464
 #: src/KnowbaseItem.php:2259 src/SoftwareVersion.php:168
@@ -5676,7 +5721,7 @@ msgstr "Перевірка цілісності схеми бази даних..
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:70
 #, php-format
 msgid "Checking document #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "Перевірка документа # %s\"%s\" (%s)..."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -5748,7 +5793,7 @@ msgstr "Підпорядковані групи"
 
 #: src/Ticket.php:3542
 msgid "Child tickets"
-msgstr "Підлеглі заявки"
+msgstr "Підлеглі Заявки"
 
 #: src/DeviceMotherboard.php:53 src/DeviceMotherboard.php:73
 #: src/DeviceGraphicCard.php:55 src/DeviceGraphicCard.php:94
@@ -5850,6 +5895,7 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Видалити загублені документи: видалити всі, які не пов'язані з елементами."
 
 #: src/CronTask.php:2093
 msgid "Clean temporary files"
@@ -5951,7 +5997,7 @@ msgstr "Закрити цю панель"
 
 #: src/Entity.php:3044
 msgid "Close ticket action is disabled."
-msgstr "Дія закриття заявки вимкнена."
+msgstr "Закриття Заявки вимкнено."
 
 #: src/Holiday.php:48 src/Calendar_Holiday.php:203
 msgid "Close time"
@@ -5983,7 +6029,7 @@ msgstr "Закрито %s"
 
 #: src/Dashboard/Provider.php:403 src/Dashboard/Grid.php:1215
 msgid "Closed tickets"
-msgstr "Закриті заявки"
+msgstr "Закриті Заявки"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:69
 #: src/CommonITILObject.php:4073 src/CommonITILObject.php:5391
@@ -5993,7 +6039,7 @@ msgstr "Дата закриття"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Closing of the ticket"
-msgstr "Закриття заявки"
+msgstr "Закриття Заявки"
 
 #: src/CommonITILObject.php:4372
 msgid "Closing time"
@@ -6011,7 +6057,7 @@ msgstr "Закриття Зміни"
 
 #: src/NotificationTargetProblem.php:52
 msgid "Closure of a problem"
-msgstr "Закрити проблему"
+msgstr "Закрити Проблему"
 
 #: src/Cluster.php:56
 msgid "Cluster"
@@ -6038,11 +6084,11 @@ msgstr "Код"
 
 #: src/ITILCategory.php:78 src/ITILCategory.php:300 src/RuleTicket.php:574
 msgid "Code representing the ticket category"
-msgstr "Код категорії заявки"
+msgstr "Код категорії Заявки"
 
 #: src/ITILCategory.php:375 src/ITILCategory.php:397
 msgid "Code representing the ticket category is already used"
-msgstr "Код категорії заявок вже використовується"
+msgstr "Код категорії Заявок вже використовується"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -6248,11 +6294,14 @@ msgstr[3] "Компоненти"
 #: src/Computer.php:84 src/Profile.php:2102
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "Комп’ютери"
+msgstr[0] "Комп’ютер"
+msgstr[1] "Комп’ютери"
+msgstr[2] "Комп’ютери"
+msgstr[3] "Комп’ютер: %s"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:183
 msgid "Computer inventory"
-msgstr ""
+msgstr "Інвентаризація комп'ютера"
 
 #: src/Rule.php:305 src/ComputerModel.php:41
 msgid "Computer model"
@@ -6322,7 +6371,7 @@ msgstr "Підтвердити остаточне знищення?"
 
 #: src/Ticket.php:2740
 msgid "Confirm the merge? This ticket will be deleted!"
-msgstr "Підтверджуєте об'єднання? Ця заявка буде видалена!"
+msgstr "Підтверджуєте об'єднання? Ця Заявка буде видалена!"
 
 #: src/Computer_Item.php:259 src/Computer_Item.php:281
 #: src/Computer_Item.php:379 src/Computer_Item.php:561
@@ -6368,6 +6417,9 @@ msgstr "Підключено до"
 msgid "Connection"
 msgid_plural "Connections"
 msgstr[0] "З’єднання"
+msgstr[1] "З’єднання"
+msgstr[2] "З’єднання"
+msgstr[3] "З’єднання"
 
 #: src/NetworkPortDialup.php:43
 msgid "Connection by dial line - Dialup Port"
@@ -6516,7 +6568,7 @@ msgstr "Договір закінчився починаючи з"
 #: src/Entity.php:1287 src/Entity.php:2991 src/Entity.php:3020
 #: src/Entity.php:3781
 msgid "Contract in ticket entity"
-msgstr "Договір в організації заявки"
+msgstr "Договір в організації Заявки"
 
 #: src/Contract.php:1331
 msgid "Contract period ended"
@@ -6692,7 +6744,10 @@ msgstr "Ядер"
 #: src/NotificationTargetProject.php:790 src/NotificationTargetProject.php:808
 msgid "Cost"
 msgid_plural "Costs"
-msgstr[0] "Вартості"
+msgstr[0] "Вартість"
+msgstr[1] "Вартості"
+msgstr[2] "Вартості"
+msgstr[3] "Вартості"
 
 #: src/MailCollector.php:1004
 msgid "Could not connect to mailgate server"
@@ -6805,7 +6860,7 @@ msgstr "Створити Запит"
 
 #: src/CommonITILRecurrentCron.php:51
 msgid "Create recurrent tickets and changes"
-msgstr "Створити повторювані заявки та зміни"
+msgstr "Створити повторювані Заявки та Зміни"
 
 #: js/modules/Kanban/Kanban.js:1955 js/modules/Kanban/Kanban.js:1974
 #: js/modules/Kanban/Kanban.js:1994
@@ -7188,11 +7243,11 @@ msgstr "Конфігурація бази даних не підтримуєть
 #: src/Console/Database/InstallCommand.php:243
 #, php-format
 msgid "Database connection failed with message \"(%s) %s\"."
-msgstr "З'єднання з базою даних припинено з повідомленням \"(%s) %s\"."
+msgstr "Помилка з'єднання з базою даних. Відповідь \"(%s) %s\"."
 
 #: templates/install/step2.html.twig
 msgid "Database connection setup"
-msgstr "Встановлення з’єднання з базою даних"
+msgstr "Налаштування з’єднання з базою даних"
 
 #: templates/install/step3.html.twig install/update.php:260
 msgid "Database connection successful"
@@ -7495,7 +7550,7 @@ msgstr "Типово для Заявки"
 
 #: src/Config.php:1542
 msgid "Default for tickets (mini dashboard)"
-msgstr "Типово для заявок (міні дошки)"
+msgstr "Типово для Заявок (міні дошки)"
 
 #: templates/components/user/info_card.html.twig src/User.php:2932
 #: src/RuleRight.php:374
@@ -7504,7 +7559,7 @@ msgstr "Типова група"
 
 #: src/Config.php:896
 msgid "Default heading when adding a document to a ticket"
-msgstr "Типовий Заголовок при додаванні документа до заявки"
+msgstr "Типовий Заголовок при додаванні документа до Заявки"
 
 #: src/Config.php:1077
 msgid "Default language"
@@ -7650,7 +7705,7 @@ msgstr "Видалити всі повторення"
 
 #: src/RuleCollection.php:690
 msgid "Delete all rules and recreate them by default"
-msgstr ""
+msgstr "Видалити всі правила і створити типові"
 
 #: phpunit/functional/LogTest.php:477 src/Log.php:1162
 msgid "Delete an item"
@@ -7776,7 +7831,7 @@ msgstr "Видалення Зміни"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
-msgstr "Видалити проблему"
+msgstr "Видалити Проблему"
 
 #: src/NotificationTargetCommonITILObject.php:137
 msgid "Deletion of a followup"
@@ -7800,7 +7855,7 @@ msgstr "Видалення завдання"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Deletion of a ticket"
-msgstr "Видалення заявки"
+msgstr "Видалення Заявки"
 
 #: src/CronTask.php:1835
 #, php-format
@@ -7914,7 +7969,10 @@ msgstr "Developer"
 #: src/Dashboard/Grid.php:1151 src/Dashboard/Grid.php:1163
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Пристрої"
+msgstr[0] "Пристрій"
+msgstr[1] "Пристрої"
+msgstr[2] "Пристрої"
+msgstr[3] "Пристрої"
 
 #: src/Report.php:487
 msgid "Device 1"
@@ -7927,12 +7985,15 @@ msgstr "Пристрій 2"
 #: src/USBVendor.php:58 src/USBVendor.php:80 src/PCIVendor.php:58
 #: src/PCIVendor.php:80
 msgid "Device ID"
-msgstr "Device ID"
+msgstr "ID пристрою"
 
 #: src/DeviceBatteryModel.php:44
 msgid "Device battery model"
 msgid_plural "Device batteries models"
-msgstr[0] "Моделі батарей пристроїв"
+msgstr[0] "Модель батареї пристрою"
+msgstr[1] "Моделі батарей пристроїв"
+msgstr[2] "Моделі батарей пристроїв"
+msgstr[3] "Моделі батарей пристроїв"
 
 #: src/DeviceCameraModel.php:42
 msgid "Device camera model"
@@ -8063,11 +8124,11 @@ msgstr[3] "Каталоги"
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
 msgid "Dictionary of computer models"
-msgstr ""
+msgstr "Каталог моделей комп’ютерів"
 
 #: src/RuleDictionnaryComputerTypeCollection.php:46
 msgid "Dictionary of computer types"
-msgstr ""
+msgstr "Каталог типів комп’ютерів"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
@@ -8083,52 +8144,52 @@ msgstr "Каталог виробників"
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:46
 msgid "Dictionary of monitor types"
-msgstr ""
+msgstr "Каталог типів моніторів"
 
 #: src/RuleDictionnaryNetworkEquipmentTypeCollection.php:46
 msgid "Dictionary of network equipment types"
-msgstr ""
+msgstr "Каталог типів мережевих пристроїв"
 
 #: src/RuleDictionnaryNetworkEquipmentModelCollection.php:46
 msgid "Dictionary of networking equipment models"
-msgstr ""
+msgstr "Каталог моделей мережевих пристроїв"
 
 #: src/RuleDictionnaryOperatingSystemArchitectureCollection.php:46
 msgid "Dictionary of operating system architectures"
-msgstr ""
+msgstr "Каталог архітектур операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemEditionCollection.php:46
 msgid "Dictionary of operating system editions"
-msgstr ""
+msgstr "Каталог редакцій операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:46
 msgid "Dictionary of operating system versions"
-msgstr ""
+msgstr "Каталог версій операційних систем"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:46
 msgid "Dictionary of operating systems"
-msgstr ""
+msgstr "Каталог операційних систем"
 
 #: src/RuleDictionnaryPhoneModelCollection.php:46
 msgid "Dictionary of phone models"
-msgstr ""
+msgstr "Каталог моделей телефонів"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:46
 msgid "Dictionary of phone types"
-msgstr ""
+msgstr "Каталог типів телефонів"
 
 #: src/RuleDictionnaryPrinterModelCollection.php:46
 msgid "Dictionary of printer models"
-msgstr ""
+msgstr "Каталог моделей принтерів"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:46
 msgid "Dictionary of printer types"
-msgstr ""
+msgstr "Каталог типів принтерів"
 
 #: src/RuleDictionnaryPrinter.php:52
 #: src/RuleDictionnaryPrinterCollection.php:52
 msgid "Dictionary of printers"
-msgstr ""
+msgstr "Каталог принтерів"
 
 #: src/RuleDictionnaryOperatingSystemServicePackCollection.php:46
 msgid "Dictionary of service packs"
@@ -8360,7 +8421,7 @@ msgstr "Не рахувати"
 
 #: src/Inventory/Conf.php:520
 msgid "Do not change"
-msgstr ""
+msgstr "Не змінювати"
 
 #: src/Console/Database/UpdateCommand.php:108
 msgid ""
@@ -8404,7 +8465,7 @@ msgstr "Дійсно використовувати індивідуальне �
 
 #: src/Plugin.php:974
 msgid "Do you want to %activate_link it?"
-msgstr "Ви хочете %activate_link це?"
+msgstr "Ви хочете активувати цей лінк %a?"
 
 #: templates/install/step1.html.twig src/Console/AbstractCommand.php:246
 msgid "Do you want to continue?"
@@ -8435,7 +8496,10 @@ msgstr "Ви хочете надсилати \"статистику викори
 #: src/Document.php:59
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] "Документи"
+msgstr[0] "Документ"
+msgstr[1] "Документи"
+msgstr[2] "Документи"
+msgstr[3] "Документи"
 
 #: src/CommonITILObject.php:6876
 msgctxt "button"
@@ -8738,7 +8802,7 @@ msgstr "ESSID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:191
 msgid "ESX remote inventory"
-msgstr ""
+msgstr "Віддалена інвентаризація VMWare ESX"
 
 #: src/Dropdown.php:2363 src/Entity.php:3656 src/Alert.php:114
 #: src/Features/PlanningEvent.php:752
@@ -9137,12 +9201,18 @@ msgstr "Увімкнені типи елементів"
 #: src/Enclosure.php:61
 msgid "Enclosure"
 msgid_plural "Enclosures"
-msgstr[0] "Полиці"
+msgstr[0] "Полиця/Шасі"
+msgstr[1] "Полиці/Шасі"
+msgstr[2] "Полиці/Шасі"
+msgstr[3] "Полиці/Шасі"
 
 #: src/EnclosureModel.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Моделі полиць"
+msgstr[0] "Модель полиці/Шасі"
+msgstr[1] "Моделі полиць/Шасі"
+msgstr[2] "Моделі полиць/Шасі"
+msgstr[3] "Моделі полиць/Шасі"
 
 #: src/Item_Disk.php:572
 msgid "Encrypted"
@@ -9621,7 +9691,7 @@ msgstr "Кожного тижня"
 
 #: src/Dashboard/Grid.php:1264
 msgid "Evolution of ticket in the past year"
-msgstr "Розвиток заявок за останній рік"
+msgstr "Розвиток Заявок за останній рік"
 
 #: src/AuthLDAP.php:1001
 msgid "Example for location: %{city} > %{roomnumber}"
@@ -9827,17 +9897,17 @@ msgstr "Невдала операція"
 #: src/Ticket.php:6685
 #, php-format
 msgid "Failed to add document to ticket %d"
-msgstr "Не вдалося додати документ до заявки %d"
+msgstr "Не вдалося додати документ до Заявки %d"
 
 #: src/Ticket.php:6621 src/Ticket.php:6636
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr "Не вдалося додати відповідь до заявки %d"
+msgstr "Не вдалося додати відповідь до Заявки %d"
 
 #: src/Ticket.php:6657
 #, php-format
 msgid "Failed to add task to ticket %d"
-msgstr "Не вдалося додати завдання до заявки %d"
+msgstr "Не вдалося додати завдання до Заявки %d"
 
 #: js/modules/Kanban/Kanban.js:2677
 msgid "Failed to add team member"
@@ -9878,17 +9948,17 @@ msgstr "Не вдалося видалити файл %s"
 #: src/Ticket.php:6809
 #, php-format
 msgid "Failed to delete ticket %d"
-msgstr "Не вдалося видалити заявку %d"
+msgstr "Не вдалося видалити Заявку %d"
 
 #: src/Ticket.php:6715
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr "Не вдалося об'єднати заявку %d та %d"
+msgstr "Не вдалося об'єднати Заявку %d та %d"
 
 #: src/Ticket.php:6606
 #, php-format
 msgid "Failed to load ticket %d"
-msgstr "Не вдалося завантажити заявку %d"
+msgstr "Не вдалося завантажити Заявку %d"
 
 #: js/modules/Kanban/Kanban.js:2698
 msgid "Failed to remove team member"
@@ -10204,7 +10274,7 @@ msgstr "Перший елемент"
 
 #: src/Entity.php:3974
 msgid "First found valid contract in ticket entity"
-msgstr "Спочатку знайти діючий договір організації заявки"
+msgstr "Спочатку знайти діючий договір організації Заявки"
 
 #: templates/generic_show_form.html.twig src/AuthLDAP.php:938
 #: src/AuthLDAP.php:1149 src/AuthLDAP.php:4027
@@ -10286,7 +10356,7 @@ msgstr "Відповідей перед автоматичним вирішен�
 
 #: src/Item_Rack.php:337
 msgid "Following elements are out of rack bounds"
-msgstr "Наступні елементи виходять за межі монтажу (rack bounds)"
+msgstr "Наступні елементи виходять за межі шафи(rack bounds)"
 
 #: src/Rack.php:488
 msgid "Following elements are out of room bounds"
@@ -10334,7 +10404,7 @@ msgstr[3] "Шаблони відповідей"
 
 #: src/Api/API.php:1289
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Для додаткової інформації дивіться системні журнали"
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -10362,7 +10432,7 @@ msgstr ""
 
 #: ajax/ticketsatisfaction.php:101
 msgid "For tickets closed after"
-msgstr "Для заявок, закритих після"
+msgstr "Для Заявок, закритих після"
 
 #: src/Api/API.php:1635
 msgid "Forbidden field ID in search criteria"
@@ -10442,7 +10512,7 @@ msgstr[0] "Формати"
 
 #: src/NotificationTargetCommonITILObject.php:838
 msgid "Former technician in charge of the ticket"
-msgstr "Інженер, що був відповідальним за заявку"
+msgstr "Інженер, що був відповідальним за Заявку"
 
 #: src/Console/Security/ChangekeyCommand.php:74
 #, php-format
@@ -10456,10 +10526,10 @@ msgstr ""
 #, php-format
 msgid "Found %d item to fix."
 msgid_plural "Found %d items to fix."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Знайдено %d елемент для виправлення"
+msgstr[1] "Знайдено %d елементів для виправлення"
+msgstr[2] "Знайдено %d елементів для виправлення"
+msgstr[3] "Знайдено %dелементів для виправлення"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:75
 #, php-format
@@ -10575,7 +10645,7 @@ msgstr "GLPI"
 
 #: src/AutoUpdateSystem.php:49
 msgid "GLPI Native Inventory"
-msgstr ""
+msgstr "Вбудована інвентаризація"
 
 #: front/config.form.php:82
 msgid "GLPI cache reset successful"
@@ -10670,7 +10740,7 @@ msgstr[0] "Загальні типи"
 #: src/MailCollector.php:448
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr "Отримати заявки з пошти зараз"
+msgstr "Отримати Заявки з пошти зараз"
 
 #: src/Marketplace/View.php:523
 msgid "Get help"
@@ -10795,7 +10865,10 @@ msgstr "Сітка"
 #: src/Group.php:57
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Групи"
+msgstr[0] "Група"
+msgstr[1] "Групи"
+msgstr[2] "Групи"
+msgstr[3] "Групи"
 
 #: src/AuthLDAP.php:2344 src/Group.php:470 src/Group.php:620
 msgid "Group DN"
@@ -10803,7 +10876,7 @@ msgstr "DN групи"
 
 #: src/Central.php:72
 msgid "Group View"
-msgstr "Групове"
+msgstr "Груповий перегляд"
 
 #: src/NotificationTargetCommonITILObject.php:1918
 msgid "Group assigned to task"
@@ -10850,11 +10923,11 @@ msgstr "Група, відповідальна за програмне забе�
 #: src/NotificationTargetPlanningRecall.php:56
 #: src/NotificationTargetCommonITILObject.php:881
 msgid "Group in charge of the task"
-msgstr "Група, відповідальна за завдання"
+msgstr "Група, відповідальна за Завдання"
 
 #: src/NotificationTargetCommonITILObject.php:864
 msgid "Group in charge of the ticket"
-msgstr "Група, відповідальна за заявку"
+msgstr "Група, відповідальна за Заявку"
 
 #: src/NotificationTargetCommonITILObject.php:854
 msgid "Group in charge of the ticket except manager users"
@@ -11056,7 +11129,7 @@ msgstr "Горизонтальні лінії"
 
 #: src/Item_Rack.php:701
 msgid "Horizontal position (from rack point of view)"
-msgstr "Горизонтальна позиція (з точки зору шафи)"
+msgstr "Орієнтація (з передньої сторони шафи)"
 
 #: src/Dashboard/Widget.php:185
 msgid "Horizontal stacked bars"
@@ -11339,11 +11412,11 @@ msgstr "Якщо постачальники більше не використо
 
 #: src/Config.php:724
 msgid "If synced (all changes)"
-msgstr "Якщо синхронізовані всі зміни"
+msgstr "Якщо синхронізовані (всі зміни)"
 
 #: src/Config.php:725
 msgid "If synced (current user changes)"
-msgstr "Якщо синхронізовані поточні зміни користувача"
+msgstr "Якщо синхронізовані поточні (зміни користувача)"
 
 #: src/Config.php:726
 msgid "If synced or read-only account"
@@ -11643,7 +11716,7 @@ msgstr "Імпорт елементу Шафи %s (%s)..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1257
 msgid "Importing rack items..."
-msgstr "Імпорт елементів Шаф..."
+msgstr "Імпорт елементів Шафи"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:813
 #, php-format
@@ -11657,7 +11730,7 @@ msgstr "Імпорт моделей Шаф."
 #: src/Console/Migration/RacksPluginToCoreCommand.php:977
 #, php-format
 msgid "Importing rack state \"%s\"..."
-msgstr "Імпорт стану Шаф \"%s\"..."
+msgstr "Імпорт стану Шафи \"%s\"..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:959
 msgid "Importing rack states..."
@@ -11795,7 +11868,7 @@ msgstr "Папка вхідних (необов’язково, звичайно
 
 #: src/Dashboard/Provider.php:364
 msgid "Incoming tickets"
-msgstr "Вхідні заявки"
+msgstr "Вхідні Заявки"
 
 #: src/CommonGLPI.php:1506
 msgid "Incompatible items"
@@ -11903,7 +11976,7 @@ msgstr "Ініціалізація бази даних"
 
 #: src/Update.php:265
 msgid "Initializing rules..."
-msgstr ""
+msgstr "Ініціалізація правил..."
 
 #: src/Config.php:1301
 msgid "Inline (no toolbars)"
@@ -12563,7 +12636,10 @@ msgstr "Елемент не пов’язаний з об’єктом"
 #: src/Item_OperatingSystem.php:51
 msgid "Item operating system"
 msgid_plural "Item operating systems"
-msgstr[0] "Операційні системи елементу"
+msgstr[0] "Операційна система елементу"
+msgstr[1] "Операційні системи елементу"
+msgstr[2] "Операційні системи елементу"
+msgstr[3] "Операційні системи елементу"
 
 #: src/Infocom.php:551
 #, php-format
@@ -12653,7 +12729,10 @@ msgstr ""
 #: src/Itil_Project.php:90
 msgid "Itil item"
 msgid_plural "Itil items"
-msgstr[0] "ITIL елементи"
+msgstr[0] "ITIL елемент"
+msgstr[1] "ITIL елементи"
+msgstr[2] "ITIL елементи"
+msgstr[3] "ITIL елементи"
 
 #: src/Toolbox.php:2283 src/Features/PlanningEvent.php:821
 msgid "January"
@@ -12669,7 +12748,7 @@ msgstr "Червень"
 
 #: src/NotificationTargetUser.php:209
 msgid "Just follow this link (you have one day):"
-msgstr "Просто перейдіть за посиланням, дійсним один день:"
+msgstr "Перейдіть за посиланням  link, дійсним один день:"
 
 #: src/Html.php:7080
 msgid "Just now"
@@ -12705,7 +12784,7 @@ msgstr "Зберігати пристрої при видаленні цього
 
 #: src/Config.php:911
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "Зберігати заявки при видалені обладнання з обліку"
+msgstr "Зберігати Заявки при видалені обладнання з обліку"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:492 src/OperatingSystemKernel.php:42
@@ -12750,7 +12829,10 @@ msgstr "Записи бази знань"
 #: src/KnowbaseItem_Item.php:57
 msgid "Knowledge base item"
 msgid_plural "Knowledge base items"
-msgstr[0] "Записи Бази знань"
+msgstr[0] "Запис Бази знань"
+msgstr[1] "Записи Бази знань"
+msgstr[2] "Записи Бази знань"
+msgstr[3] "Записи Бази знань"
 
 #: front/knowbaseitem.form.php:154
 #, php-format
@@ -12890,7 +12972,10 @@ msgstr "Останні %d подій"
 #, php-format
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
-msgstr[0] "%d останніх проблем"
+msgstr[0] "%d остання Проблема"
+msgstr[1] "%d останніх Проблем"
+msgstr[2] "%d останніх Проблем"
+msgstr[3] "%d останніх Проблем"
 
 #: src/Ticket.php:5508
 #, php-format
@@ -12950,7 +13035,7 @@ msgstr "Остання інвентаризація"
 #: src/Phone.php:269 src/Printer.php:653 src/Computer.php:455
 #: src/NetworkEquipment.php:491
 msgid "Last inventory date"
-msgstr ""
+msgstr "Дата останньої інвентаризації"
 
 #: templates/components/form/inventory_info.html.twig
 msgid "Last inventory update"
@@ -12979,7 +13064,7 @@ msgstr "Прізвище"
 
 #: src/Problem.php:1364
 msgid "Last problems"
-msgstr "Останні проблеми"
+msgstr "Останні Проблеми"
 
 #: src/CronTask.php:664 src/CronTask.php:1682
 msgid "Last run"
@@ -13004,7 +13089,7 @@ msgstr "Остання синхронізація %s"
 
 #: src/Ticket.php:5428
 msgid "Last tickets"
-msgstr "Останні заявки"
+msgstr "Останні Заявки"
 
 #: src/Phone.php:327 src/MailCollector.php:522
 #: src/NotificationTargetProjectTask.php:534
@@ -13102,7 +13187,7 @@ msgstr "Вирішено з запізненням %1$s (%2$s)"
 
 #: src/Dashboard/Provider.php:279 src/Dashboard/Grid.php:1207
 msgid "Late tickets"
-msgstr "Останні заявки"
+msgstr "Останні Заявки"
 
 #: src/Marketplace/View.php:1084
 msgid "Later"
@@ -13149,7 +13234,10 @@ msgstr "Рівень"
 #: src/SoftwareLicense.php:70 src/Item_SoftwareLicense.php:89
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] "Ліцензії"
+msgstr[0] "Ліцензія"
+msgstr[1] "Ліцензії"
+msgstr[2] "Ліцензії"
+msgstr[3] "Ліцензії"
 
 #: src/SoftwareLicense.php:822
 #, php-format
@@ -13167,11 +13255,11 @@ msgstr "Життєвий цикл змін"
 
 #: src/Profile.php:1711 src/Profile.php:3305
 msgid "Life cycle of problems"
-msgstr "Життєвий цикл проблем"
+msgstr "Життєвий цикл Проблем"
 
 #: src/Profile.php:1703 src/Profile.php:1837 src/Profile.php:3295
 msgid "Life cycle of tickets"
-msgstr "Життєвий цикл заявок"
+msgstr "Життєвий цикл Заявок"
 
 #: src/Profile.php:156 src/Profile.php:162
 msgid "Life cycles"
@@ -13223,7 +13311,10 @@ msgstr "Лінійно"
 #: src/ManualLink.php:82
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] "Зв'язки"
+msgstr[0] "Зв'язок"
+msgstr[1] "Зв'язки"
+msgstr[2] "Зв'язки"
+msgstr[3] "Зв'язки"
 
 #: src/Ticket.php:2751
 msgctxt "button"
@@ -13233,37 +13324,58 @@ msgstr "Зв’язок"
 #: src/Contact_Supplier.php:49
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "Зв’язки Контакт/Постачальник"
+msgstr[0] "Зв’язок Контакт/Постачальник"
+msgstr[1] "Зв’язки Контакт/Постачальник"
+msgstr[2] "Зв’язки Контакт/Постачальник"
+msgstr[3] "Зв’язки Контакт/Постачальник"
 
 #: src/Contract_Item.php:88
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "Зв’язки Договір/Елемент"
+msgstr[0] "Зв’язок Договір/Елемент"
+msgstr[1] "Зв’язки Договір/Елемент"
+msgstr[2] "Зв’язки Договір/Елемент"
+msgstr[3] "Зв’язки Договір/Елемент"
 
 #: src/Change_Problem.php:67
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Зв’язки Проблеми/Зміни"
+msgstr[0] "Зв’язок Проблеми/Зміни"
+msgstr[1] "Зв’язки Проблеми/Зміни"
+msgstr[2] "Зв’язки Проблеми/Зміни"
+msgstr[3] "Зв’язки Проблеми/Зміни"
 
 #: src/Itil_Project.php:51
 msgid "Link Project/Itil"
 msgid_plural "Links Project/Itil"
-msgstr[0] "Зв’язки Проект/Itil"
+msgstr[0] "Зв’язок Проект/ITIL"
+msgstr[1] "Зв’язки Проект/ITIL"
+msgstr[2] "Зв’язки Проект/ITIL"
+msgstr[3] "Зв’язки Проект/ITIL"
 
 #: src/Change_Ticket.php:65
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "Зв’язки Заявки/Зміни"
+msgstr[0] "Зв’язок Заявки/Зміни"
+msgstr[1] "Зв’язки Заявки/Зміни"
+msgstr[2] "Зв’язки Заявки/Зміни"
+msgstr[3] "Зв’язки Заявки/Зміни"
 
 #: src/Problem_Ticket.php:62
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "Зв’язки Заявки/Проблеми"
+msgstr[0] "Зв’язок Заявки/Проблеми"
+msgstr[1] "Зв’язки Заявки/Проблеми"
+msgstr[2] "Зв’язки Заявки/Проблеми"
+msgstr[3] "Зв’язки Заявки/Проблеми"
 
 #: src/ProjectTask_Ticket.php:68
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Зв’язки Заявки/Завдання проекту"
+msgstr[0] "Зв’язок Заявки/Завдання проекту"
+msgstr[1] "Зв’язки Заявки/Завдання проекту"
+msgstr[2] "Зв’язки Заявки/Завдання проекту"
+msgstr[3] "Зв’язки Заявки/Завдання проекту"
 
 #: src/KnowbaseItem_Item.php:130
 msgid "Link a knowledge base entry"
@@ -13293,7 +13405,7 @@ msgstr "Посилання або ім’я файлу"
 #: src/Ticket.php:2658
 msgctxt "button"
 msgid "Link project task"
-msgstr "Зв'язати завдання проекту"
+msgstr "Зв'язати завдання Проекту"
 
 #: src/Ticket.php:2654
 msgctxt "button"
@@ -13302,7 +13414,7 @@ msgstr "Зв’язати Заявки"
 
 #: src/Ticket.php:2672
 msgid "Link to a problem"
-msgstr "Зв'язати з проблемою"
+msgstr "Зв'язати з Проблемою"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
@@ -13316,20 +13428,23 @@ msgstr "Тип зв'язку"
 
 #: src/Profile.php:1201 src/Profile.php:1583 src/Profile.php:3256
 msgid "Link with items for the creation of tickets"
-msgstr "Зв’язувати з елементами при створенні заявки"
+msgstr "Зв’язувати з елементами при створенні Заявки"
 
 #: src/RuleImportAsset.php:184
 msgid "Linked asset"
 msgid_plural "Linked assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Зв'язаний актив"
+msgstr[1] "Зв'язані активи"
+msgstr[2] "Зв'язані активи"
+msgstr[3] "Зв'язані активи"
 
 #: src/KnowbaseItem_Item.php:176
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] "Пов'язані елементи"
+msgstr[0] "Пов'язаний елемент"
+msgstr[1] "Пов'язані елементи"
+msgstr[2] "Пов'язані елементи"
+msgstr[3] "Пов'язані елементи"
 
 #: src/Ticket_Ticket.php:56 src/NotificationTargetTicket.php:831
 #: src/NotificationTargetTicket.php:847 src/NotificationTargetTicket.php:890
@@ -13338,7 +13453,10 @@ msgstr[0] "Пов'язані елементи"
 #: src/Ticket.php:3455
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "Пов’язані Заявки"
+msgstr[0] "Пов’язана Заявка"
+msgstr[1] "Пов’язані Заявки"
+msgstr[2] "Пов’язані Заявки"
+msgstr[3] "Пов’язані Заявки"
 
 #: src/Ticket_Ticket.php:206 src/Ticket_Ticket.php:228
 #: src/Ticket_Ticket.php:233 src/Ticket.php:2732
@@ -13564,7 +13682,10 @@ msgstr "Блокуючий користувач"
 #: src/Profile.php:3039
 msgid "Log"
 msgid_plural "Logs"
-msgstr[0] "Журнали"
+msgstr[0] "Журнал"
+msgstr[1] "Журнали"
+msgstr[2] "Журнали"
+msgstr[3] "Журнали"
 
 #: src/Config.php:2071
 msgid "Log Level"
@@ -13907,7 +14028,7 @@ msgstr "Керівник групи керівників"
 
 #: src/NotificationTargetCommonITILObject.php:850
 msgid "Manager of the group in charge of the ticket"
-msgstr "Керівник групи, відповідальної за заявку"
+msgstr "Керівник групи, відповідальної за Заявку"
 
 #: src/ITILTemplateMandatoryField.php:47
 msgid "Mandatory field"
@@ -14008,7 +14129,7 @@ msgstr "Максимальна глибина"
 
 #: src/CleanSoftwareCron.php:64
 msgid "Max items to handle in one execution"
-msgstr "Максимальна кількість елементів для обробки в одному виконанні"
+msgstr "Максимальна кількість елементів для обробки в одному завданні"
 
 #: templates/pages/management/contract.html.twig
 msgid "Max number of items"
@@ -14339,7 +14460,7 @@ msgstr "Віха"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:345
 msgid "Mini tickets dashboard"
-msgstr "Міні дошка заявок"
+msgstr "Міні дошка Заявок"
 
 #: src/CronTask.php:1289
 msgid "Minimal count"
@@ -14384,7 +14505,7 @@ msgstr "Не заповнені обов'язкові поля"
 
 #: src/IPNetwork.php:332
 msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr ""
+msgstr "Відсутні налаштування мережі (In CIDR notation. Ex: 192.168.1.1/24)"
 
 #: install/update.php:186
 msgid "Missing security key file"
@@ -14493,12 +14614,18 @@ msgstr "Понеділок"
 #: src/Profile.php:2116
 msgid "Monitor"
 msgid_plural "Monitors"
-msgstr[0] "Монітори"
+msgstr[0] "Монітор"
+msgstr[1] "Монітори"
+msgstr[2] "Монітори"
+msgstr[3] "Монітори"
 
 #: src/Rule.php:317 src/MonitorModel.php:41
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Моделі моніторів"
+msgstr[0] "Модель монітора"
+msgstr[1] "Моделі моніторів"
+msgstr[2] "Моделі моніторів"
+msgstr[3] "Моделі моніторів"
 
 #: src/Rule.php:389 src/MonitorType.php:41
 msgid "Monitor type"
@@ -14534,7 +14661,7 @@ msgstr "Більше"
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:532
 #, php-format
 msgid "More than one Computer linked to %s #%s."
-msgstr ""
+msgstr "Більше ніж один комп'ютер зв'язаний з %s #%s."
 
 #: src/Impact.php:1047
 msgid "More..."
@@ -14783,7 +14910,7 @@ msgstr "Ім'я для використання у полі From електро�
 
 #: src/Config.php:1343
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr "Природний порядок (старі елементи зверху, нещодавні внизу)"
+msgstr "Природний порядок (старі елементи зверху, нові знизу)"
 
 #: templates/generic_show_form.html.twig src/Printer.php:588
 #: src/Network.php:41 src/Computer.php:531 src/NetworkEquipment.php:435
@@ -14802,7 +14929,10 @@ msgstr "Мережева адреса"
 #: src/NetworkAlias.php:54
 msgid "Network alias"
 msgid_plural "Network aliases"
-msgstr[0] "Синоніми мережі"
+msgstr[0] "Синонім мережі"
+msgstr[1] "Синоніми мережі"
+msgstr[2] "Синоніми мережі"
+msgstr[3] "Синоніми мережі"
 
 #: src/IPNetwork.php:383
 msgid "Network already defined in visible entities"
@@ -14811,17 +14941,26 @@ msgstr "Мережа вже визначена у видимих об’єкта
 #: src/DeviceNetworkCard.php:45
 msgid "Network card"
 msgid_plural "Network cards"
-msgstr[0] "Мережеві карти"
+msgstr[0] "Мережева карта"
+msgstr[1] "Мережеві карти"
+msgstr[2] "Мережеві карти"
+msgstr[3] "Мережеві карти"
 
 #: src/DeviceNetworkCardModel.php:44
 msgid "Network card model"
 msgid_plural "Network card models"
-msgstr[0] "Моделі мережевих карт"
+msgstr[0] "Модель мережевої карти"
+msgstr[1] "Моделі мережевих карт"
+msgstr[2] "Моделі мережевих карт"
+msgstr[3] "Моделі мережевих карт"
 
 #: src/NetworkEquipment.php:79
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] "Мережеві пристрої"
+msgstr[0] "Мережевий пристрій"
+msgstr[1] "Мережеві пристрої"
+msgstr[2] "Мережеві пристрої"
+msgstr[3] "Мережеві пристрої"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Agent/Communication/AbstractRequest.php:182 src/Agent.php:207
@@ -14846,12 +14985,15 @@ msgstr "Мережевий оптичний роз'єм"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:135
 msgid "Network hub"
-msgstr "Мережевий hub"
+msgstr "Мережевий хаб"
 
 #: src/NetworkInterface.php:44
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] "Мережеві інтерфейси"
+msgstr[0] "Мережевий інтерфейс"
+msgstr[1] "Мережеві інтерфейси"
+msgstr[2] "Мережеві інтерфейси"
+msgstr[3] "Мережеві інтерфейси"
 
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Agent/Communication/AbstractRequest.php:179 src/Agent.php:199
@@ -14869,7 +15011,10 @@ msgstr "Таймаут мережевої інвентаризації"
 #: src/NetworkName.php:69
 msgid "Network name"
 msgid_plural "Network names"
-msgstr[0] "Назви мережі"
+msgstr[0] "Назва мережі"
+msgstr[1] "Назви мережі"
+msgstr[2] "Назви мережі"
+msgstr[3] "Назви мережі"
 
 #: templates/pages/assets/socket.html.twig src/Socket.php:805
 #: src/Transfer.php:3964 src/NetworkPort.php:179
@@ -14900,7 +15045,10 @@ msgstr "Міграція мережевих портів"
 #: src/NetworkPortType.php:45
 msgid "Network port type"
 msgid_plural "Network port types"
-msgstr[0] "Типи мережевого порту"
+msgstr[0] "Тип мережевого порту"
+msgstr[1] "Типи мережевого порту"
+msgstr[2] "Типи мережевого порту"
+msgstr[3] "Типи мережевого порту"
 
 #: src/NetworkPort.php:771
 msgid "Network port type to be added"
@@ -14929,7 +15077,10 @@ msgstr "Мережевий звіт по розеткам: %s"
 #: src/NetworkPortInstantiation.php:681 src/NetworkPortFiberchannel.php:157
 msgid "Network socket"
 msgid_plural "Network sockets"
-msgstr[0] "Мережеві роз'єми"
+msgstr[0] "Мережевий роз'єм"
+msgstr[1] "Мережеві роз'єми"
+msgstr[2] "Мережеві роз'єми"
+msgstr[3] "Мережеві роз'єми"
 
 #: src/Socket.php:1005 src/Socket.php:1098
 #, php-format
@@ -14947,12 +15098,18 @@ msgstr "Мережеве"
 #: src/Rule.php:353 src/NetworkEquipmentModel.php:41
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] "Моделі мережевого обладнання"
+msgstr[0] "Модель мережевого обладнання"
+msgstr[1] "Моделі мережевого обладнання"
+msgstr[2] "Моделі мережевого обладнання"
+msgstr[3] "Моделі мережевого обладнання"
 
 #: src/Rule.php:425 src/NetworkEquipmentType.php:41
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] "Типи мережевого обладнання"
+msgstr[0] "Тип мережевого обладнання"
+msgstr[1] "Типи мережевого обладнання"
+msgstr[2] "Типи мережевого обладнання"
+msgstr[3] "Типи мережевого обладнання"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/management/contract.html.twig
@@ -15060,19 +15217,19 @@ msgstr "Підтвердження нового паролю"
 
 #: src/NotificationTargetProblem.php:49
 msgid "New problem"
-msgstr "Нова проблема"
+msgstr "Нова Проблема"
 
 #: src/Problem.php:1404
 msgid "New problem for this item..."
-msgstr "Нова проблема для цього елементу"
+msgstr "Нова Проблема для цього елементу"
 
 #: src/NotificationTargetProject.php:49
 msgid "New project"
-msgstr "Новий проект"
+msgstr "Новий Проект"
 
 #: src/NotificationTargetProjectTask.php:51
 msgid "New project task"
-msgstr "Нове завдання проекту"
+msgstr "Нове Завдання Проекту"
 
 #: src/Appliance_Item_Relation.php:229 src/Appliance_Item_Relation.php:230
 msgid "New relation"
@@ -15108,7 +15265,7 @@ msgstr "Нове завдання"
 
 #: front/helpdesk.public.php:99 src/NotificationTargetTicket.php:137
 msgid "New ticket"
-msgstr "Нова заявка"
+msgstr "Нова Заявка"
 
 #: src/Ticket.php:5467 src/Ticket.php:5485
 msgid "New ticket for this item..."
@@ -15116,7 +15273,7 @@ msgstr "Нова Заявка щодо цього елементу"
 
 #: src/Dashboard/Grid.php:1210
 msgid "New tickets"
-msgstr "Нові заявки"
+msgstr "Нові Заявки"
 
 #: src/NotificationTargetCommonITILObject.php:129
 msgid "New user in assignees"
@@ -15515,11 +15672,11 @@ msgstr "Штепсель не знайдено"
 
 #: src/Problem.php:1448 src/Problem.php:1495
 msgid "No problem found."
-msgstr "Немає наявних проблем"
+msgstr "Немає наявних Проблем"
 
 #: src/Problem.php:1054 src/Problem.php:1296
 msgid "No problem in progress."
-msgstr "Немає проблем у роботі"
+msgstr "Немає Проблем у роботі"
 
 #: src/Rack.php:400
 msgid "No rack found"
@@ -15621,7 +15778,7 @@ msgstr "Заявок не знайдено."
 
 #: src/Change.php:1317 src/Ticket.php:5157 src/Ticket.php:5687
 msgid "No ticket in progress."
-msgstr "Немає заявки в роботі."
+msgstr "Немає Заявки в роботі."
 
 #: src/AuthLDAP.php:684 src/AuthLDAP.php:1359 src/AuthLdapReplicate.php:105
 msgid "No timeout"
@@ -15745,7 +15902,7 @@ msgstr "Недостатньо прав"
 #: src/Ticket.php:6828
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr "Недостатньо прав для об'єднання заявки %d та %d"
+msgstr "Недостатньо прав для об'єднання Заявки %d та %d"
 
 #: src/Item_Rack.php:1059 src/Item_Rack.php:1072 src/PDU_Rack.php:147
 msgid "Not enough space available to place item"
@@ -15769,7 +15926,7 @@ msgstr "Не вирішено"
 #: src/NotificationTargetTicket.php:145 src/NotificationTargetTicket.php:871
 #: src/Dashboard/Grid.php:1209 src/Ticket.php:5759
 msgid "Not solved tickets"
-msgstr "Не вирішені заявки"
+msgstr "Не вирішені Заявки"
 
 #: src/CommonITILValidation.php:540
 msgid "Not subject to approval"
@@ -15783,11 +15940,14 @@ msgstr "Ще не зареєстровано"
 #: src/Notepad.php:54 src/Notepad.php:189
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] "Нотатки"
+msgstr[0] "Нотатка"
+msgstr[1] "Нотатки"
+msgstr[2] "Нотатки"
+msgstr[3] "Нотатки"
 
 #: src/NotificationTargetReservation.php:181
 msgid "Notes"
-msgstr "Примітки"
+msgstr "Нотатки"
 
 #: src/CronTask.php:1073
 msgid "Nothing to launch"
@@ -15941,7 +16101,7 @@ msgstr "Кількість заповнених опитувань задово�
 
 #: src/User.php:4015
 msgid "Number of assigned tickets"
-msgstr "Кількість призначених заявок"
+msgstr "Кількість призначених Заявок"
 
 #: src/Document.php:1127 src/Certificate.php:307
 msgctxt "quantity"
@@ -16040,7 +16200,7 @@ msgstr "Число ліній"
 #: src/NotificationTargetTicket.php:713
 msgctxt "quantity"
 msgid "Number of linked tickets"
-msgstr "Кількість пов’язаних заявок"
+msgstr "Кількість пов’язаних Заявок"
 
 #: src/MailCollector.php:990
 #, php-format
@@ -16074,7 +16234,7 @@ msgstr "Кількість відкритих Заявок"
 
 #: src/Ticket.php:3580
 msgid "Number of parent tickets"
-msgstr "Кількість батьківських заявок"
+msgstr "Кількість батьківських Заявок"
 
 #: src/Peripheral.php:398
 msgctxt "quantity"
@@ -16096,7 +16256,7 @@ msgstr "Кількість принтерів"
 #: src/Problem.php:569 src/NotificationTargetProject.php:707
 msgctxt "quantity"
 msgid "Number of problems"
-msgstr "Кількість проблем"
+msgstr "Кількість Проблем"
 
 #: src/NotificationTargetSavedSearch_Alert.php:107
 msgid "Number of results"
@@ -16113,11 +16273,11 @@ msgstr "Кількість обробленого ПЗ: %d. "
 
 #: src/Stat.php:549
 msgid "Number of solved tickets"
-msgstr "Кількість вирішених заявок"
+msgstr "Кількість вирішених Заявок"
 
 #: src/Ticket.php:3564
 msgid "Number of sons tickets"
-msgstr "Кількість підлеглих заявок"
+msgstr "Кількість підлеглих Заявок"
 
 #: src/NotificationTargetProjectTask.php:548 src/CommonITILTask.php:855
 #: src/NotificationTargetCommonITILObject.php:1922
@@ -16144,7 +16304,7 @@ msgstr "Кількість гілок"
 
 #: src/Stat.php:1675
 msgid "Number of tickets"
-msgstr "Кількість заявок"
+msgstr "Кількість Заявок"
 
 #: src/NotificationTargetProjectTask.php:591 src/Project.php:795
 #: src/NotificationTargetProblem.php:199 src/Search.php:8324
@@ -16152,11 +16312,11 @@ msgstr "Кількість заявок"
 #: src/Problem.php:541 src/NotificationTargetProject.php:708
 msgctxt "quantity"
 msgid "Number of tickets"
-msgstr "Кількість заявок"
+msgstr "Кількість Заявок"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
-msgstr "Кількість заявок, що вже призначені"
+msgstr "Кількість Заявок, що вже призначені"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:3980
 msgid "Number of tickets as requester"
@@ -16172,7 +16332,7 @@ msgstr "Кількість Заявок по статусу SLA та групі 
 
 #: src/Dashboard/Grid.php:1255
 msgid "Number of tickets by month"
-msgstr "Кількість заявок в місяць"
+msgstr "Кількість Заявок в місяць"
 
 #: src/QueuedNotification.php:352 src/QueuedNotification.php:751
 msgid "Number of tries of sent"
@@ -16228,7 +16388,7 @@ msgstr "Колір гарного стану"
 #, php-format
 msgctxt "glpi_status"
 msgid "OK: %d, WARNING: %d, PROBLEM: %d, TOTAL: %d"
-msgstr ""
+msgstr "ОК: %d, ПОПЕРЕДЖЕНЬ: %d, ПРОБЛЕМ: %d, ЗАГАЛОМ: %d"
 
 #: src/OLA.php:51 src/NotificationTargetTicket.php:634
 #: src/NotificationTargetTicket.php:639 src/RuleTicket.php:760
@@ -16240,7 +16400,7 @@ msgstr "OLA"
 
 #: src/OlaLevel_Ticket.php:46
 msgid "OLA level for Ticket"
-msgstr "Рівень OLA для заявки"
+msgstr "Рівень OLA для Заявки"
 
 #: src/Search.php:2529
 msgid "OR"
@@ -16431,12 +16591,18 @@ msgstr "Операційна система"
 #: src/OperatingSystem.php:44
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] "Операційні системи"
+msgstr[0] "Операційна система"
+msgstr[1] "Операційні системи"
+msgstr[2] "Операційні системи"
+msgstr[3] "Операційні системи"
 
 #: src/OperatingSystemArchitecture.php:44
 msgid "Operating system architecture"
 msgid_plural "Operating system architectures"
-msgstr[0] "Архітектур Операційної системи"
+msgstr[0] "Архітектура Операційної системи"
+msgstr[1] "Архітектури Операційної системи"
+msgstr[2] "Архітектури Операційної системи"
+msgstr[3] "Архітектури Операційної системи"
 
 #: front/massiveaction.php:76
 msgid "Operation performed partially successful"
@@ -16457,7 +16623,7 @@ msgstr "Оператор"
 
 #: src/NetworkPortInstantiation.php:170
 msgid "Opposite link"
-msgstr "Опозитний зв’язок"
+msgstr "Зворотній зв’язок"
 
 #: src/Console/Task/UnlockCommand.php:203
 msgid "Option --all is not compatible with option --task."
@@ -16867,17 +17033,26 @@ msgstr "Розділ"
 #: src/PassiveDCEquipment.php:53
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "Пасивні пристрої"
+msgstr[0] "Пасивний пристрій"
+msgstr[1] "Пасивні пристрої"
+msgstr[2] "Пасивні пристрої"
+msgstr[3] "Пасивні пристрої"
 
 #: src/PassiveDCEquipmentModel.php:41
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] "Моделі пасивних пристроїв"
+msgstr[0] "Модель пасивного пристрою"
+msgstr[1] "Моделі пасивних пристроїв"
+msgstr[2] "Моделі пасивних пристроїв"
+msgstr[3] "Моделі пасивних пристроїв"
 
 #: src/PassiveDCEquipmentType.php:41
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "Типи пасивних пристроїв"
+msgstr[0] "Тип пасивного пристрою"
+msgstr[1] "Типи пасивних пристроїв"
+msgstr[2] "Типи пасивних пристроїв"
+msgstr[3] "Типи пасивних пристроїв"
 
 #: templates/password_form.html.twig templates/pages/login.html.twig
 #: templates/components/form/snmpcredential.html.twig
@@ -16987,7 +17162,7 @@ msgstr "Шлях"
 msgid ""
 "Path of file where will be stored SQL queries that can be used to rollback "
 "changes"
-msgstr ""
+msgstr "Шлях для збереження SQL запитів для відкату змін"
 
 #: src/Dashboard/Provider.php:1263 src/Dashboard/Provider.php:1609
 #: src/CommonITILObject.php:5434 src/CommonITILObject.php:6714
@@ -17156,7 +17331,10 @@ msgstr "Персоналізація"
 #: src/ContentTemplates/Parameters/UserParameters.php:78
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Телефони"
+msgstr[0] "Телефон"
+msgstr[1] "Телефони"
+msgstr[2] "Телефони"
+msgstr[3] "Телефони"
 
 #: src/AuthLDAP.php:967 src/AuthLDAP.php:1158 src/AuthLDAP.php:4028
 msgctxt "ldap"
@@ -17177,17 +17355,26 @@ msgstr "Телефон 2"
 #: src/Rule.php:365 src/PhoneModel.php:44
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Моделі телефонів"
+msgstr[0] "Модель телефона"
+msgstr[1] "Моделі телефонів"
+msgstr[2] "Моделі телефонів"
+msgstr[3] "Моделі телефонів"
 
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "Типи телефонної зарядки"
+msgstr[0] "Тип телефонної зарядки/блока живлення"
+msgstr[1] "Типи телефонної зарядки/блоків живлення"
+msgstr[2] "Типи телефонної зарядки/блоків живлення"
+msgstr[3] "Типи телефонної зарядки/блоків живлення"
 
 #: src/PhoneType.php:41 src/Rule.php:437
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "Типи телефонів"
+msgstr[0] "Тип телефона"
+msgstr[1] "Типи телефонів"
+msgstr[2] "Типи телефонів"
+msgstr[3] "Типи телефонів"
 
 #: src/Inventory/Asset/Cartridge.php:149
 msgid "Photo"
@@ -17268,7 +17455,7 @@ msgstr "Планова дата початку"
 
 #: src/Dashboard/Provider.php:387 src/Dashboard/Grid.php:1213
 msgid "Planned tickets"
-msgstr "Планові заявки"
+msgstr "Планові Заявки"
 
 #: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Project.php:1692 src/Event.php:156 src/Event.php:165
@@ -17374,7 +17561,7 @@ msgstr ""
 msgid ""
 "Please update GLPI by following the procedure described in the installation "
 "documentation."
-msgstr ""
+msgstr "Оновіть GLPIзгідно процедури, зазначеної у документації по інсталяції"
 
 #: src/Plug.php:41
 msgid "Plug"
@@ -17587,6 +17774,7 @@ msgid ""
 "Plugin %1$s version changed. It has been deactivated as its update process "
 "has to be launched."
 msgstr ""
+"Версія Плугін %1$s змінена. Він деактивований, процес оновлення запущений."
 
 #: src/Console/Marketplace/DownloadCommand.php:86
 #, php-format
@@ -17685,7 +17873,7 @@ msgstr "Номер порту"
 
 #: src/NetworkPortConnectionLog.php:58
 msgid "Port connection history"
-msgstr "Історія з'єднань порту"
+msgstr "Історія з'єднань по порту"
 
 #: src/RuleImportAsset.php:134
 msgid "Port description"
@@ -17794,7 +17982,7 @@ msgstr "Power units"
 
 #: src/Config.php:1401
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr "Попередній вибір мене у якості замовника при створенні заявки"
+msgstr "Попередній вибір мене у якості замовника при створенні Заявки"
 
 #: src/Config.php:1394
 msgid "Pre-select me as a technician when creating a ticket"
@@ -17862,25 +18050,34 @@ msgstr "Надруковані сторінки"
 #: src/Profile.php:2158 src/Cartridge.php:1270
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Принтери"
+msgstr[0] "Принтер"
+msgstr[1] "Принтери"
+msgstr[2] "Принтери"
+msgstr[3] "Принтери"
 
 #: src/Cartridge.php:836 src/Cartridge.php:1124 src/Cartridge.php:1304
 msgid "Printer counter"
-msgstr "Лічильник принтера"
+msgstr "Лічильник надрукованих сторінок принтера"
 
 #: src/Rule.php:329 src/PrinterModel.php:44 src/CartridgeItem.php:354
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Моделі принтерів"
+msgstr[0] "Модель принтера"
+msgstr[1] "Моделі принтерів"
+msgstr[2] "Моделі принтерів"
+msgstr[3] "Моделі принтерів"
 
 #: src/Rule.php:401 src/PrinterType.php:41
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Типи принтерів"
+msgstr[0] "Тип принтера"
+msgstr[1] "Типи принтерів"
+msgstr[2] "Типи принтерів"
+msgstr[3] "Типи принтерів"
 
 #: src/Profile.php:1066
 msgid "Printers dictionary"
-msgstr ""
+msgstr "Каталог принтерів"
 
 #: src/PrinterLog.php:238
 msgid "Prints"
@@ -17936,15 +18133,18 @@ msgstr "По замовчуванню завдання Особисті"
 #: src/Problem.php:74
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] "Проблеми"
+msgstr[0] "Проблема"
+msgstr[1] "Проблеми"
+msgstr[2] "Проблеми"
+msgstr[3] "Проблеми"
 
 #: src/Item_Problem.php:53
 msgid "Problem item"
 msgid_plural "Problem items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Проблемний елемент"
+msgstr[1] "Проблемні елементи"
+msgstr[2] "Проблемні елементи"
+msgstr[3] "Проблемні елементи"
 
 #: src/NotificationTargetProblem.php:51
 msgid "Problem solved"
@@ -17953,16 +18153,22 @@ msgstr "Проблема вирішена"
 #: src/ProblemTask.php:43
 msgid "Problem task"
 msgid_plural "Problem tasks"
-msgstr[0] "Завдання проблеми"
+msgstr[0] "Завдання по Проблемам"
+msgstr[1] "Завдання по Проблемам"
+msgstr[2] "Завдання по Проблемам"
+msgstr[3] "Завдання по Проблемам"
 
 #: src/CommonITILTask.php:1662
 msgid "Problem tasks to do"
-msgstr "Невиконані завдання проблеми"
+msgstr "Невиконані Завдання по Проблемам"
 
 #: src/Entity.php:2819 src/ProblemTemplate.php:50
 msgid "Problem template"
 msgid_plural "Problem templates"
-msgstr[0] "Шаблони проблем"
+msgstr[0] "Шаблон Проблеми"
+msgstr[1] "Шаблони Проблем"
+msgstr[2] "Шаблони Проблем"
+msgstr[3] "Шаблони Проблем"
 
 #: src/Problem.php:562 js/impact.js:2446
 msgid "Problems"
@@ -18064,7 +18270,10 @@ msgstr "Номер продукту"
 #: src/Profile.php:131
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Профілі"
+msgstr[0] "Профіль"
+msgstr[1] "Профілі"
+msgstr[2] "Профілі"
+msgstr[3] "Профілі"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Profile to be used when locking items"
@@ -18106,40 +18315,58 @@ msgstr[3] "Елементи проекту"
 #: src/ProjectState.php:45
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Статуси проекту"
+msgstr[0] "Статус проекту"
+msgstr[1] "Статуси проекту"
+msgstr[2] "Статуси проекту"
+msgstr[3] "Статуси проекту"
 
 #: src/ProjectTask.php:76
 msgid "Project task"
 msgid_plural "Project tasks"
 msgstr[0] "Завдання проекту"
+msgstr[1] "Завдання проекту"
+msgstr[2] "Завдання проекту"
+msgstr[3] "Завдання проекту"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "Команда проектного Завдання"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
-msgstr ""
+msgstr "Користувач проектного Завдання"
 
 #: src/ProjectTaskTemplate.php:50
 msgid "Project task template"
 msgid_plural "Project task templates"
-msgstr[0] "Шаблони завдань проекту"
+msgstr[0] "Шаблон Завдань Проекту"
+msgstr[1] "Шаблони Завдань Проекту"
+msgstr[2] "Шаблони Завдань Проекту"
+msgstr[3] "Шаблони Завдань Проекту"
 
 #: src/ProjectTaskType.php:45
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "Типи завдань проекту"
+msgstr[0] "Тип Завдань Проекту"
+msgstr[1] "Типи Завдань Проекту"
+msgstr[2] "Типи Завдань Проекту"
+msgstr[3] "Типи Завдань Проекту"
 
 #: src/ProjectTeam.php:73
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] "Проектні команди"
+msgstr[0] "Проектна команда"
+msgstr[1] "Проектні команди"
+msgstr[2] "Проектні команди"
+msgstr[3] "Проектні команди"
 
 #: src/ProjectType.php:45
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Типи проектів"
+msgstr[0] "Тип проектів"
+msgstr[1] "Типи проектів"
+msgstr[2] "Типи проектів"
+msgstr[3] "Типи проектів"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
@@ -18238,7 +18465,7 @@ msgstr "Очистити історію"
 
 #: src/Entity.php:3092
 msgid "Purge ticket action is disabled."
-msgstr "Дія очистки заявок вимкнена."
+msgstr "Дія очистки Заявок вимкнена."
 
 #: src/Inventory/Conf.php:307
 msgid "Put asset in trashbin"
@@ -18299,16 +18526,22 @@ msgstr ""
 #: src/Rack.php:65 src/Rack.php:90
 msgid "Rack"
 msgid_plural "Racks"
-msgstr[0] "Шафи"
+msgstr[0] "Шафа"
+msgstr[1] "Шафи"
+msgstr[2] "Шафи"
+msgstr[3] "Шафи"
 
 #: src/RackModel.php:43
 msgid "Rack model"
 msgid_plural "Rack models"
-msgstr[0] "Моделі шаф"
+msgstr[0] "Модель шафи"
+msgstr[1] "Моделі шаф"
+msgstr[2] "Моделі шаф"
+msgstr[3] "Моделі шаф"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
-msgstr "Зображення шаф"
+msgstr "Зображення шафи"
 
 #: src/Item_Rack.php:512
 msgid "Rack stats"
@@ -18317,7 +18550,10 @@ msgstr "Статистика шаф"
 #: src/RackType.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] "Типи шаф"
+msgstr[0] "Тип шафи"
+msgstr[1] "Типи шаф"
+msgstr[2] "Типи шаф"
+msgstr[3] "Типи шаф"
 
 #: src/PDU_Rack.php:438
 msgid "Racked"
@@ -18389,7 +18625,7 @@ msgstr "Читати FAQ"
 
 #: src/CommonDBTM.php:5443
 msgid "Read the item's notes"
-msgstr "Прочитати нотатки елементу"
+msgstr "Прочитати нотатки до елементу"
 
 #: src/User.php:6090
 msgid "Read user authentication and synchronization method"
@@ -18539,7 +18775,7 @@ msgstr "Повторювані зміни"
 
 #: src/TicketRecurrent.php:55
 msgid "Recurrent tickets"
-msgstr "Повторні заявки"
+msgstr "Повторні Заявки"
 
 #: js/planning.js:529
 msgid "Recurring event dragged"
@@ -18727,6 +18963,9 @@ msgstr "Запам'ятати мене"
 msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] "Нагадування"
+msgstr[1] "Нагадування"
+msgstr[2] "Нагадування"
+msgstr[3] "Нагадування"
 
 #: src/Planning.php:1765 src/Reminder.php:781
 msgctxt "Planning"
@@ -18802,7 +19041,7 @@ msgstr "Видалити існуючі дані з основних табли�
 #: src/CommonDBTM.php:4122
 msgctxt "button"
 msgid "Remove from a rack"
-msgstr ""
+msgstr "Видалити з Шафи"
 
 #: src/Appliance.php:470
 msgctxt "button"
@@ -18909,7 +19148,7 @@ msgstr "Виконати правила каталогу для виробник
 
 #: src/Console/Rules/ReplayDictionnaryRulesCommand.php:51
 msgid "Replay dictionary rules on existing items"
-msgstr ""
+msgstr "Повторно задіяти правила для існуючих елементів"
 
 #: src/RuleDictionnarySoftwareCollection.php:236
 #: src/RuleDictionnaryDropdownCollection.php:306
@@ -18945,12 +19184,15 @@ msgstr "Застосувати правила каталогу"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
-msgstr ""
+msgstr "Реплицирована База даних не синхронізована"
 
 #: src/AuthLDAP.php:746 src/AuthLDAP.php:4445
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] "Сервери"
+msgstr[0] "Реплицирована"
+msgstr[1] "Реплицировані"
+msgstr[2] "Реплицировані"
+msgstr[3] "Реплицировані"
 
 #. TRANS: %s is the name of the LDAP replica server
 #: front/authldap.form.php:110 front/authldap.form.php:117
@@ -18962,7 +19204,7 @@ msgstr "Реплікувати %s"
 #: src/System/Status/StatusChecker.php:206
 msgctxt "glpi_status"
 msgid "Replication delay is too high"
-msgstr ""
+msgstr "Дуже велика затримка реплицирування"
 
 #: src/NotificationMailingSetting.php:174 src/Entity.php:959
 #: src/Entity.php:2068
@@ -18986,7 +19228,10 @@ msgstr "Ім’я отримувача відповіді"
 #: src/Report.php:49 src/Profile.php:2505
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Звіти"
+msgstr[0] "Звіт"
+msgstr[1] "Звіти"
+msgstr[2] "Звіти"
+msgstr[3] "Звіти"
 
 #: src/ITILCategory.php:482 src/NotificationTargetChange.php:307
 #: src/NotificationTargetChange.php:312 src/NotificationTargetTicket.php:748
@@ -19035,7 +19280,7 @@ msgstr "Джерело запиту видиме для відповідей"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
-msgstr "Джерело запиту видиме для карток"
+msgstr "Джерело запиту видиме для Заявок"
 
 #: src/Config.php:1373
 msgid "Request sources by default"
@@ -19166,18 +19411,24 @@ msgstr "Вимога"
 #: src/ReservationItem.php:68
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] "Предмети резервування"
+msgstr[0] "Предмет резервування"
+msgstr[1] "Предмети резервування"
+msgstr[2] "Предмети резервування"
+msgstr[3] "Предмети резервування"
 
 #: src/Html.php:1610 src/Event.php:157 src/Event.php:171 src/Transfer.php:3992
 #: src/Entity.php:2408 src/Reservation.php:56 src/Profile.php:2491
 msgid "Reservation"
 msgid_plural "Reservations"
 msgstr[0] "Резервування"
+msgstr[1] "Резервування"
+msgstr[2] "Резервування"
+msgstr[3] "Резервування"
 
 #: src/Reservation.php:259
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr "резервування додано до елементу %sо %s"
 
 #: src/NotificationTargetReservation.php:46
 msgid "Reservation expired"
@@ -19259,7 +19510,7 @@ msgstr "Вирішити"
 
 #: src/Ticket.php:2678
 msgid "Resolve selected tickets"
-msgstr "Вирішити обрані заявки"
+msgstr "Вирішити обрані Заявки"
 
 #: src/Ticket.php:3399
 msgid "Response date"
@@ -19372,7 +19623,7 @@ msgstr ""
 
 #: src/Config.php:1344
 msgid "Reverse order (old items on bottom, recent on top)"
-msgstr "Зворотний порядок (старі елементи внизу, нещодавні зверху)"
+msgstr "Зворотний порядок (старі елементи знизу, нові зверху)"
 
 #: src/Change.php:594
 msgid "Review"
@@ -19436,7 +19687,10 @@ msgstr "об/хв"
 #: src/Profile.php:1891
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "Правила"
+msgstr[0] "Правило"
+msgstr[1] "Правила"
+msgstr[2] "Правила"
+msgstr[3] "Правила"
 
 #: src/RuleMatchedLog.php:228 src/RuleMatchedLog.php:305
 msgid "Rule import logs"
@@ -19486,7 +19740,7 @@ msgstr "Правила призначення категорії для ПЗ"
 
 #: src/Profile.php:1034
 msgid "Rules for assigning a computer to a location"
-msgstr ""
+msgstr "Правила призначення комп’ютера до розташуванню"
 
 #: src/Profile.php:1030 src/Profile.php:2857
 msgid "Rules for assigning a computer to an entity"
@@ -19495,7 +19749,7 @@ msgstr "Правила призначення комп’ютера до під�
 #: src/RuleMailCollectorCollection.php:47 src/Profile.php:1038
 #: src/Profile.php:2843 src/RuleMailCollector.php:59
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "Правила призначення заявок, створених через обробку пошти"
+msgstr "Правила призначення Заявок, створених через обробку пошти"
 
 #: src/RuleImportEntityCollection.php:53 src/RuleImportEntity.php:47
 msgid "Rules for assigning an item to an entity"
@@ -19531,7 +19785,7 @@ msgstr "Правила, використовуючи об’єкт, були в�
 
 #: src/RuleCollection.php:688
 msgid "Rules will be erased and recreated from default. Are you sure?"
-msgstr ""
+msgstr "Правила будуть видалені і перестворені типові. Ви впевнені?"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:189
 #, php-format
@@ -19637,7 +19891,7 @@ msgstr "SLA"
 
 #: src/SlaLevel_Ticket.php:41
 msgid "SLA level for Ticket"
-msgstr "Рівень SLA для заявки"
+msgstr "Рівень SLA для Заявки"
 
 #: src/LevelAgreement.php:183 src/LevelAgreement.php:692 src/Profile.php:1110
 #: src/Profile.php:2795
@@ -20012,7 +20266,7 @@ msgstr "Дивитись всі предмети резервування"
 
 #: src/Ticket.php:6136
 msgid "See all tickets"
-msgstr "Переглянути всі заявки"
+msgstr "Переглянути всі Заявки"
 
 #. TRANS: short for : See assigned tickets (group associated)
 #: src/Ticket.php:6138
@@ -20519,11 +20773,11 @@ msgstr "Показати на загальній діаграмі Гантта"
 
 #: js/impact.js:1332
 msgid "Show ongoing tickets"
-msgstr "Показати заявки в роботі"
+msgstr "Показати Заявки в роботі"
 
 #: js/impact.js:1333
 msgid "Show ongoing tickets for this item"
-msgstr "Показати заявки в роботі для цього елементу"
+msgstr "Показати Заявки в роботі для цього елементу"
 
 #: src/Config.php:913
 msgid "Show personnal information in new ticket form (simplified interface)"
@@ -20590,7 +20844,7 @@ msgstr "Спрощений інтерфейс"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Simplified interface help link"
-msgstr "Посилання допомоги спрощеного інтерфейсу"
+msgstr "Посилання на допомогу спрощеного інтерфейсу"
 
 #: src/Console/Traits/TelemetryActivationTrait.php:101 src/Telemetry.php:448
 msgid ""
@@ -20632,7 +20886,7 @@ msgstr ""
 
 #: src/Rule.php:3012
 msgid "Skip remaining rules"
-msgstr ""
+msgstr "Пропустити правила"
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:1308
 #, php-format
@@ -20646,7 +20900,10 @@ msgstr "Невелике покращення продуктивності."
 #: src/Socket.php:402
 msgid "Socket"
 msgid_plural "Sockets"
-msgstr[0] "Роз'єми"
+msgstr[0] "Роз'єм"
+msgstr[1] "Роз'єми"
+msgstr[2] "Роз'єми"
+msgstr[3] "Роз'єми"
 
 #: src/Socket.php:1034
 msgid "Socket Model"
@@ -20655,7 +20912,10 @@ msgstr "Модель Роз'єму"
 #: src/SocketModel.php:45
 msgid "Socket model"
 msgid_plural "Socket models"
-msgstr[0] "Моделі Роз'єму"
+msgstr[0] "Модель Роз'єму"
+msgstr[1] "Моделі Роз'єму"
+msgstr[2] "Моделі Роз'єму"
+msgstr[3] "Моделі Роз'єму"
 
 #: src/System/RequirementsManager.php:119
 msgid "Sodium ChaCha20-Poly1305 size constant"
@@ -20744,7 +21004,7 @@ msgstr[0] "Типи вирішення"
 
 #: src/Change_Ticket.php:297 src/Problem_Ticket.php:329
 msgid "Solve tickets"
-msgstr "Вирішити заявки"
+msgstr "Вирішити Заявки"
 
 #: src/Dashboard/Provider.php:1619
 msgid "Solved"
@@ -20780,7 +21040,7 @@ msgstr "Вирішена %s"
 
 #: src/Dashboard/Provider.php:395 src/Dashboard/Grid.php:1214
 msgid "Solved tickets"
-msgstr "Вирішені заявки"
+msgstr "Вирішені Заявки"
 
 #: src/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
@@ -20893,7 +21153,7 @@ msgstr "Стандартний інтерфейс"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Standard interface help link"
-msgstr "Посилання допомоги звичайного інтерфейсу"
+msgstr "Посилання на допомогу звичайного інтерфейсу"
 
 #: src/Inventory/Asset/Cartridge.php:193
 msgid "Staples"
@@ -21062,7 +21322,7 @@ msgstr "Призначити собі"
 
 #: src/Ticket.php:6147
 msgid "Steal a ticket"
-msgstr "Привласнити заявку"
+msgstr "Привласнити Заявку"
 
 #. TRANS %s is step number
 #: install/install.php:591 install/install.php:601 install/install.php:607
@@ -21162,7 +21422,7 @@ msgstr "Імпортовано успішно"
 
 #: front/ipnetwork.form.php:45
 msgid "Successfully recreated network tree"
-msgstr "Дерево мережі успішно відтворене"
+msgstr "Дерево мережі успішно перестворене"
 
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Console/System/CheckRequirementsCommand.php:93
@@ -21328,7 +21588,7 @@ msgstr "Системне блокування"
 
 #: src/Profile.php:969 src/Profile.php:3054
 msgid "System logs"
-msgstr ""
+msgstr "Системні журнали"
 
 #: src/CronTask.php:2083
 msgid "System logs retention period (in days, 0 for infinite)"
@@ -21578,7 +21838,7 @@ msgstr "Інженер, відповідальний за завдання"
 
 #: src/NotificationTargetCommonITILObject.php:861
 msgid "Technician in charge of the ticket"
-msgstr "Інженер, відповідальний за заявку"
+msgstr "Інженер, відповідальний за Заявку"
 
 #: front/stat.tracking.php:131
 msgid "Technician in tasks"
@@ -21600,7 +21860,7 @@ msgstr "Шаблон для зміни"
 
 #: src/ITILCategory.php:142 src/ITILCategory.php:205
 msgid "Template for a problem"
-msgstr "Шаблон для проблеми"
+msgstr "Шаблон для Проблеми"
 
 #: src/ITILCategory.php:124 src/ITILCategory.php:178
 msgid "Template for a request"
@@ -22137,7 +22397,7 @@ msgstr[0] "Типи третьої сторони"
 
 #: src/Console/Plugin/UninstallCommand.php:56
 msgid "This action will permanently delete data"
-msgstr ""
+msgstr "Ця дія повністю видалить дані!"
 
 #: js/impact.js:1374
 msgid "This asset already exists."
@@ -22170,7 +22430,7 @@ msgstr ""
 
 #: src/NotificationMailing.php:108
 msgid "This is a test email."
-msgstr "Це тестове повідомлення."
+msgstr "Це тестовий лист."
 
 #: src/NotificationMailingSetting.php:326
 msgctxt "oauth"
@@ -22252,6 +22512,8 @@ msgid ""
 "This profile can't be moved to the simplified interface as it is used for "
 "locking items."
 msgstr ""
+"Профіль не може бути переміщений через спрощений інтерфейс бо він "
+"використовується у елементах."
 
 #: src/Profile.php:494
 msgid "This profile is the last with write rights on profiles"
@@ -22302,7 +22564,7 @@ msgstr "Четвер"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "ТіБ"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -22314,7 +22576,10 @@ msgstr ""
 #: src/Ticket.php:110
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Заявки"
+msgstr[0] "Заявка"
+msgstr[1] "Заявки"
+msgstr[2] "Заявки"
+msgstr[3] "Заявки"
 
 #: src/Planning.php:2732
 #, php-format
@@ -22328,7 +22593,10 @@ msgstr "Категорія заявки з коду"
 #: src/CommonITILCost.php:591 src/Profile.php:3242
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "Вартості Заявки"
+msgstr[0] "Вартість Заявки"
+msgstr[1] "Вартість Заявки"
+msgstr[2] "Вартість Заявки"
+msgstr[3] "Вартість Заявки"
 
 #: src/Profile.php:804 src/Profile.php:2078
 msgid "Ticket creation form on login"
@@ -22337,10 +22605,10 @@ msgstr "Форма створення заявки після входу"
 #: src/Item_Ticket.php:55
 msgid "Ticket item"
 msgid_plural "Ticket items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Заявка по елементам"
+msgstr[1] "Заявки по елементам"
+msgstr[2] "Заявки по елементам"
+msgstr[3] "Заявки по елементам"
 
 #: src/RuleTicket.php:627
 msgid "Ticket location"
@@ -22349,7 +22617,10 @@ msgstr "Приміщення Заявки"
 #: src/Ticket.php:5557
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Заявки щодо пов’язаних елементів"
+msgstr[0] "Заявка щодо пов’язаних елементів"
+msgstr[1] "Заявки щодо пов’язаних елементів"
+msgstr[2] "Заявки щодо пов’язаних елементів"
+msgstr[3] "Заявки щодо пов’язаних елементів"
 
 #: src/NotificationTargetTicket.php:139
 msgid "Ticket solved"
@@ -22358,25 +22629,31 @@ msgstr "Заявка вирішена"
 #: src/TicketTask.php:43
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "Завдання Заявки"
+msgstr[0] "Завдання до Заявки"
+msgstr[1] "Завдання до Заявки"
+msgstr[2] "Завдання до Заявки"
+msgstr[3] "Завдання до Заявки"
 
 #: src/CommonITILTask.php:1658
 msgid "Ticket tasks to do"
-msgstr "Невиконані завдання заявки"
+msgstr "Невиконані Завдання до Заявки"
 
 #: src/Entity.php:1191 src/Entity.php:2767 src/Profile.php:3200
 #: src/TicketTemplate.php:50
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "Шаблони Заявок"
+msgstr[0] "Шаблон Заявки"
+msgstr[1] "Шаблони Заявок"
+msgstr[2] "Шаблони Заявок"
+msgstr[3] "Шаблони Заявок"
 
 #: src/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
 msgid_plural "Ticket types"
-msgstr[0] "Тип заявки"
-msgstr[1] "Типи заявки"
-msgstr[2] "Типи заявки"
-msgstr[3] "Типи заявки"
+msgstr[0] "Тип Заявки"
+msgstr[1] "Типи Заявки"
+msgstr[2] "Типи Заявки"
+msgstr[3] "Типи Заявки"
 
 #: src/Stat.php:1751 src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
 #: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64
@@ -22397,16 +22674,16 @@ msgstr "Заявки по статусу SLA та по групі виконав
 
 #: src/Entity.php:2845
 msgid "Tickets configuration"
-msgstr "Конфігурація заявок"
+msgstr "Конфігурація Заявок"
 
 #: src/Entity.php:1271 src/Entity.php:2869
 msgid "Tickets default type"
-msgstr "Тип заявки за замовчуванням"
+msgstr "Тип Заявки за замовчуванням"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProjectTask.php:546
 msgid "Tickets duration"
-msgstr "Тривалість заявок"
+msgstr "Тривалість Заявок"
 
 #: src/Ticket.php:4748 src/Ticket.php:4830
 msgid "Tickets on pending status"
@@ -22422,7 +22699,7 @@ msgstr "Заявки зведено"
 
 #: src/Dashboard/Grid.php:1282
 msgid "Tickets times (in hours)"
-msgstr "Час заявок (в годинах)"
+msgstr "Час Заявок (в годинах)"
 
 #: src/Ticket.php:4780 src/Ticket.php:4862
 msgid "Tickets to be processed"
@@ -22525,7 +22802,7 @@ msgstr "Хронологічний Тиждень"
 
 #: src/Config.php:1420
 msgid "Timeline date display"
-msgstr ""
+msgstr "Часова діаграма"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "Timeline filter"
@@ -22638,7 +22915,7 @@ msgstr ""
 
 #: src/Ticket.php:6151
 msgid "To be in charge of a ticket"
-msgstr "Стати відповідальним за заявку"
+msgstr "Стати відповідальним за Заявку"
 
 #: src/RuleDictionnarySoftware.php:112 src/RuleSoftwareCategory.php:106
 #: src/RuleRight.php:358 src/RuleImportComputer.php:124
@@ -22767,35 +23044,35 @@ msgstr "Початок сторінки"
 
 #: src/Dashboard/Grid.php:1340
 msgid "Top ticket's assignee groups"
-msgstr "Топ груп виконавців заявок"
+msgstr "Топ груп виконавців Заявок"
 
 #: src/Dashboard/Grid.php:1339
 msgid "Top ticket's assignees"
-msgstr "Топ виконавців заявок"
+msgstr "Топ виконавців Заявок"
 
 #: src/Dashboard/Grid.php:1317
 msgid "Top ticket's categories"
-msgstr "Топ категорій заявок"
+msgstr "Топ категорій Заявок"
 
 #: src/Dashboard/Grid.php:1318
 msgid "Top ticket's entities"
-msgstr "Топ підрозділів заявок"
+msgstr "Топ підрозділів Заявок"
 
 #: src/Dashboard/Grid.php:1320
 msgid "Top ticket's locations"
-msgstr "Топ розташувань заявок"
+msgstr "Топ розташувань Заявок"
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's observer groups"
-msgstr "Топ груп спостерігачів заявок"
+msgstr "Топ груп спостерігачів Заявок"
 
 #: src/Dashboard/Grid.php:1337
 msgid "Top ticket's observers"
-msgstr "Топ спостерігачів заявок"
+msgstr "Топ спостерігачів Заявок"
 
 #: src/Dashboard/Grid.php:1319
 msgid "Top ticket's request types"
-msgstr "Топ типів заявок"
+msgstr "Топ типів Заявок"
 
 #: src/Dashboard/Grid.php:1336
 msgid "Top ticket's requester groups"
@@ -23095,7 +23372,7 @@ msgstr "URL"
 #: src/RSSFeed.php:789 src/RSSFeed.php:856
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "посилання \" %s \" заборонено Адміністратором системи"
 
 #: src/Toolbox.php:1483 src/System/Status/StatusChecker.php:408
 #, php-format
@@ -23108,7 +23385,7 @@ msgstr "Необхідно вказати URL"
 
 #: src/Marketplace/NotificationTargetController.php:131
 msgid "URL of GLPI marketplace"
-msgstr ""
+msgstr "Посилання на магазин застосунків"
 
 #: src/NotificationTargetReservation.php:166
 msgid "URL of item reserved"
@@ -23245,6 +23522,8 @@ msgid ""
 "Unable to create security key file! You have to run the \"%s\" command to "
 "manually create this file."
 msgstr ""
+"неможливо створити файл з секретним ключем. Виконайте команду \" %s \" "
+"вручну."
 
 #: src/CronTask.php:1838
 #, php-format
@@ -23263,7 +23542,7 @@ msgstr "Не можу розкрити архів плугіну."
 #, php-format
 msgctxt "oauth"
 msgid "Unable to fetch authorization code. Error is: %s"
-msgstr ""
+msgstr "Неможливо прочитати код авторизації. Помилка: %s"
 
 #: src/Marketplace/View.php:346
 #, php-format
@@ -23469,6 +23748,8 @@ msgid ""
 "Unable to update model because it is used by an asset in the \"%s\" rack and"
 " the new required units do not fit into the rack"
 msgstr ""
+"Неможливо оновити модель, тому що вона використовується у Шафі \"%s\" або "
+"відсутні вільні юніти у Шафі."
 
 #: src/System/Requirement/DbConfiguration.php:77
 msgid "Unable to validate database configuration variables."
@@ -23665,7 +23946,10 @@ msgstr "Розблокувати елемент"
 #: src/Unmanaged.php:52
 msgid "Unmanaged device"
 msgid_plural "Unmanaged devices"
-msgstr[0] "Некеровані пристрої"
+msgstr[0] "Некерований пристрій"
+msgstr[1] "Некеровані пристрої"
+msgstr[2] "Некеровані пристрої"
+msgstr[3] "Некеровані пристрої"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -23851,15 +24135,15 @@ msgstr "Зміна відповіді"
 
 #: src/NotificationTargetProblem.php:50
 msgid "Update of a problem"
-msgstr "Змінити проблему"
+msgstr "Оновити Проблему"
 
 #: src/NotificationTargetProject.php:50
 msgid "Update of a project"
-msgstr "Змінити проект"
+msgstr "Змінити Проект"
 
 #: src/NotificationTargetProjectTask.php:52
 msgid "Update of a project task"
-msgstr "Оновити завдання проекту"
+msgstr "Оновити Завдання Проекту"
 
 #: src/NotificationTargetReservation.php:44
 msgid "Update of a reservation"
@@ -23871,7 +24155,7 @@ msgstr "Змінити завдання"
 
 #: src/NotificationTargetTicket.php:138
 msgid "Update of a ticket"
-msgstr "Змінити заявку"
+msgstr "Змінити Заявку"
 
 #: src/Log.php:717
 msgid "Update of the field"
@@ -23906,7 +24190,7 @@ msgstr "Змінити елемент"
 
 #: src/CommonDBTM.php:5446
 msgid "Update the item's notes"
-msgstr "Змінити нотатки елементу"
+msgstr "Змінити нотатки до елементу"
 
 #. TRANS: %s is the number of new version
 #: install/migrations/update_0.80.x_to_0.83.0.php:53
@@ -24366,7 +24650,7 @@ msgstr "Перевірити інциндент"
 
 #: src/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:56
 msgid "Validate files integrity for GLPI's documents."
-msgstr ""
+msgstr "Перевірте цілісність GLPI's документів."
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/timeline.html.twig
@@ -24488,7 +24772,10 @@ msgstr "Використовується версія"
 #: src/OperatingSystemVersion.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] "Версій операційної системи"
+msgstr[0] "Версія операційної системи"
+msgstr[1] "Версії операційної системи"
+msgstr[2] "Версії операційної системи"
+msgstr[3] "Версії операційної системи"
 
 #: src/Config.php:1266
 msgid "Vertical (menu in sidebar)"
@@ -24620,7 +24907,7 @@ msgstr "Видиме для зміни"
 
 #: src/ITILCategory.php:107 src/ITILCategory.php:229
 msgid "Visible for a problem"
-msgstr "Видиме для проблеми"
+msgstr "Видиме для Проблеми"
 
 #: src/ITILCategory.php:96 src/ITILCategory.php:221
 msgid "Visible for a request"
@@ -24632,7 +24919,7 @@ msgstr "Видиме для інциденту"
 
 #: src/Group.php:290
 msgid "Visible in a project"
-msgstr "Видимість у проекті"
+msgstr "Видимість у Проекті"
 
 #: src/Group.php:258
 msgid "Visible in a ticket"
@@ -24658,7 +24945,10 @@ msgstr "Напруга"
 #: src/Item_Disk.php:55 src/Item_Disk.php:393
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Томи"
+msgstr[0] "Том"
+msgstr[1] "Томи"
+msgstr[2] "Томи"
+msgstr[3] "Томи"
 
 #: src/ITILSolution.php:417 src/CommonITILValidation.php:535
 msgid "Waiting for approval"
@@ -24718,7 +25008,7 @@ msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
 msgstr ""
-"Увага: у поточної заявки є незакриті підлеглі заявки. Чи потрібно її "
+"Увага: у поточної Заявки є незакриті підлеглі Заявки. Чи потрібно її "
 "закрити?"
 
 #: src/ObjectLock.php:319
@@ -24873,6 +25163,9 @@ msgid ""
 "Web server root directory configuration is not safe as it permits access to "
 "non-public files. See installation documentation for more details."
 msgstr ""
+"Налаштування кореневого каталогу веб-сервера не є безпечним, оскільки "
+"дозволяє доступ до не публічних файлів. Докладніше див. в документації з "
+"інсталяції."
 
 #: src/System/Requirement/SafeDocumentRoot.php:86
 msgid "Web server root directory configuration seems safe."
@@ -24998,7 +25291,10 @@ msgstr "Режим Wifi"
 #: src/WifiNetwork.php:49
 msgid "Wifi network"
 msgid_plural "Wifi networks"
-msgstr[0] "мережі Wifi"
+msgstr[0] "мережа Wifi"
+msgstr[1] "мережі Wifi"
+msgstr[2] "мережі Wifi"
+msgstr[3] "мережі Wifi"
 
 #: src/WifiNetwork.php:114
 msgid "Wifi network type"
@@ -25075,7 +25371,7 @@ msgstr[0] "Порожні"
 
 #: src/Cartridge.php:814 src/Cartridge.php:1105
 msgid "Worn cartridges"
-msgstr "Порожні картриджі"
+msgstr "Використані картриджі"
 
 #: src/Profile.php:3694
 msgid "Write"
@@ -25355,7 +25651,7 @@ msgstr "Ви не можете видалити опис завдання."
 
 #: src/Ticket.php:1835
 msgid "You cannot create a ticket for this user"
-msgstr "Ви не можете створити заявку для цього користувача"
+msgstr "Ви не можете створити Заявку для цього користувача"
 
 #: src/Entity.php:201
 msgid "You cannot delete an entity which contains sub-entities."
@@ -25424,7 +25720,7 @@ msgstr "Ви перенаправлені, оскільки більше не м
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
 msgstr ""
-"Ви були перенаправлені тому, що у вас більше немає доступу до цієї заявки"
+"Ви були перенаправленні тому, що у вас більше немає доступу до цієї Заявки"
 
 #: front/crontask.php:81
 msgid ""
@@ -25588,7 +25884,7 @@ msgstr ""
 
 #: src/Ticket.php:4796 src/Ticket.php:4969
 msgid "Your observed tickets"
-msgstr "Ваші заявки під наглядом"
+msgstr "Ваші Заявки під наглядом"
 
 #: front/updatepassword.php:103
 msgid "Your password has been successfully updated."
@@ -25626,7 +25922,7 @@ msgstr "Ваш плугін є тут? Зв'яжіться з нами."
 
 #: src/Problem.php:907 src/Problem.php:956
 msgid "Your problems in progress"
-msgstr "Ваші проблеми у обробці"
+msgstr "Ваші Проблеми у обробці"
 
 #: src/Session.php:1619
 msgid "Your session has expired."
@@ -25634,15 +25930,15 @@ msgstr ""
 
 #: front/tracking.injector.php:94
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Ваш запит зареєстровано, виконується обробка..."
+msgstr "Ваш Запит зареєстровано, виконується обробка..."
 
 #: src/Ticket.php:4907
 msgid "Your tickets having rejected approval status"
-msgstr "Ваші заявки зі статусом відхиленого схвалення"
+msgstr "Ваші Заявки зі статусом відхиленого схвалення"
 
 #: src/Ticket.php:4924
 msgid "Your tickets having rejected solution"
-msgstr "Ваші заявки зі статусом відхиленого рішення"
+msgstr "Ваші Заявки зі статусом відхиленого рішення"
 
 #: src/Ticket.php:4813 src/Ticket.php:5031
 msgid "Your tickets in progress"
@@ -25650,11 +25946,11 @@ msgstr "Ваші заявки в роботі"
 
 #: src/Ticket.php:4732 src/Ticket.php:4953
 msgid "Your tickets to close"
-msgstr "Ваші заявки, які потрібно закривати"
+msgstr "Ваші Заявки, які потрібно закривати"
 
 #: src/Ticket.php:4889
 msgid "Your tickets to validate"
-msgstr "Ваші заявки в перевірці"
+msgstr "Ваші Заявки в перевірці"
 
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
@@ -26235,7 +26531,7 @@ msgstr "Ват"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "when reported by GLPI agent via native inventory"
-msgstr ""
+msgstr "Звіт GLPI агента по інвентаризації "
 
 #: src/RuleMailCollector.php:212
 msgid "with email response"

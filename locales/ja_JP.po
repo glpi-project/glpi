@@ -12,6 +12,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2022
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
 # Cédric Anne, 2023
+# Trans City, 2024
 # INOUE Daisuke, 2024
 # 
 #, fuzzy
@@ -2468,11 +2469,11 @@ msgstr "アクションの型"
 
 #: src/Config.php:652
 msgid "Action when a user is deleted from the LDAP directory"
-msgstr "LDAPディレクトリからユーザーを削除したときのアクション"
+msgstr "LDAP ディレクトリーからユーザーを削除したときの操作"
 
 #: src/Config.php:654
 msgid "Action when a user is restored in the LDAP directory"
-msgstr "LDAP ディレクトリーでユーザーが復元された際のアクション"
+msgstr "LDAP ディレクトリーでユーザーが復元された際の操作"
 
 #: templates/components/form/single-action.html.twig src/User.php:2443
 #: src/Plugin.php:2605
@@ -2595,7 +2596,7 @@ msgstr "API クライアントを追加"
 
 #: src/MailCollector.php:315
 msgid "Add CC users as observer"
-msgstr "CC のユーザーをオブザーバーに追加する"
+msgstr "CC のユーザーを関係者に追加する"
 
 #: js/rack.js:89
 msgid "Add PDU"
@@ -2608,7 +2609,7 @@ msgstr "%s を追加"
 
 #: src/AuthLdapReplicate.php:91
 msgid "Add a LDAP directory replica"
-msgstr "LDAP ディレクトリのレプリケーションを追加"
+msgstr "LDAP ディレクトリーのレプリカを追加"
 
 #: js/planning.js:715
 msgid "Add a calendar"
@@ -2628,7 +2629,7 @@ msgstr "変更を追加"
 
 #: src/Calendar_Holiday.php:117 src/Calendar.php:98
 msgid "Add a close time"
-msgstr "休業時間の追加"
+msgstr "休業日の追加"
 
 #: js/modules/Kanban/Kanban.js:1948
 msgid "Add a column from existing status"
@@ -2693,7 +2694,7 @@ msgstr "フィルターを追加"
 
 #: src/ITILFollowup.php:835
 msgid "Add a followup to tickets (requester)"
-msgstr "チケットにフォローを追加 ( 要求者 )"
+msgstr "チケットにフォローを追加 ( 依頼者 )"
 
 #: src/ITILFollowup.php:838
 msgid "Add a followup to tickets (watcher)"
@@ -2861,7 +2862,7 @@ msgstr "ユーザーの追加"
 
 #: src/Config.php:646
 msgid "Add a user without accreditation from a LDAP directory"
-msgstr "LDAPディレクトリに登録がないユーザーの追加"
+msgstr "LDAP ディレクトリーに登録されていないユーザーの追加"
 
 #: src/SoftwareVersion.php:317
 msgctxt "button"
@@ -2990,7 +2991,7 @@ msgstr "フォローを追加 ( 関連グループ )"
 
 #: src/ITILFollowup.php:834
 msgid "Add followup (requester)"
-msgstr "フォローを追加 ( 要求者 )"
+msgstr "フォローを追加 ( 依頼者 )"
 
 #: src/ITILFollowup.php:837
 msgid "Add followup (watcher)"
@@ -3277,11 +3278,11 @@ msgstr "契約のアラーム"
 
 #: src/Entity.php:2448
 msgid "Alarms on domains expiries"
-msgstr "ドメインの期限切れアラーム"
+msgstr "ドメイン期限についてのアラーム"
 
 #: src/Entity.php:1166 src/Entity.php:2364
 msgid "Alarms on expired certificates"
-msgstr "ライセンスの期限切れアラーム"
+msgstr "証明書の期限切れアラーム"
 
 #: src/Entity.php:1056 src/Entity.php:2329
 #: src/NotificationTargetSoftwareLicense.php:43
@@ -3622,7 +3623,7 @@ msgstr "パスワード更新でエラー"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "アイテムの検索でエラーが発生しました。"
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -3785,7 +3786,7 @@ msgstr "%s への承認要求の送信"
 
 #: src/RuleTicket.php:982
 msgid "Approval request to requester group manager"
-msgstr "要求グループの管理者への承認要求"
+msgstr "依頼グループの管理者への承認要求"
 
 #: src/RuleTicket.php:989
 msgid "Approval request to technician group manager"
@@ -3794,7 +3795,7 @@ msgstr "技術者グループの管理者への承認要求"
 #: src/NotificationTargetCommonITILObject.php:875
 #: src/CommonITILValidation.php:931 src/CommonITILValidation.php:1140
 msgid "Approval requester"
-msgstr "承認要求者"
+msgstr "承認依頼者"
 
 #: src/CommonITILValidation.php:932 src/CommonITILValidation.php:1228
 msgid "Approval status"
@@ -4258,7 +4259,7 @@ msgstr "GLPI データベースで認証"
 
 #: src/Auth.php:1161
 msgid "Authentication on a LDAP directory"
-msgstr "LDAP ディレクトリで認証"
+msgstr "LDAP ディレクトリーで認証"
 
 #: src/Auth.php:1173
 msgid "Authentication on mail server"
@@ -4556,7 +4557,7 @@ msgstr "担当者割り当てまでの平均時間"
 #: src/Toolbox.php:978 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:363
 msgid "BNC"
@@ -4706,7 +4707,7 @@ msgstr "見やすい数値"
 
 #: src/AuthLDAP.php:933
 msgid "Binding to the LDAP directory"
-msgstr "LDAPディレクトリへのバインド"
+msgstr "LDAP ディレクトリーへのバインド"
 
 #: src/Inventory/Asset/Cartridge.php:72
 msgid "Black"
@@ -4814,11 +4815,11 @@ msgstr "一括追加"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
-msgstr "LDAPディレクトリから一括インポートしたグループ"
+msgstr "LDAP ディレクトリーからグループを一括インポート"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
-msgstr "LDAPディレクトリから一括インポートしたユーザー"
+msgstr "LDAP ディレクトリーからユーザーを一括インポート"
 
 #: front/massiveaction.php:60
 msgid "Bulk modification"
@@ -5177,7 +5178,7 @@ msgstr "設定ファイル \"%s\" を書き込めません。"
 #: src/Console/Application.php:385
 #, php-format
 msgid "Cannot write in \"%s\" directory."
-msgstr "\"%s\" ディレクトリに書き込めません。"
+msgstr "\"%s\" ディレクトリーに書き込めません。"
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
@@ -5538,7 +5539,7 @@ msgstr "新しいバージョンを確認"
 #: src/RSSFeed.php:704
 #, php-format
 msgid "Check permissions to the directory: %s"
-msgstr "ディレクトリ %s への書き込みパーミッションのチェック"
+msgstr "%s ディレクトリーへの書き込み権限のチェック"
 
 #: src/Console/System/CheckRequirementsCommand.php:53
 msgid "Check system requirements"
@@ -5622,7 +5623,7 @@ msgstr "プラグインのバージョンを確認しています..."
 msgid ""
 "Checking that web access to files directory is protected cannot be done on "
 "CLI context."
-msgstr "ファイルディレクトリへの web アクセスが保護されているかどうかの確認は、CLI コンテキスト上ではできません。"
+msgstr "ファイルディレクトリーへの web アクセスが保護されているかどうかの確認は、CLI コンテキスト上ではできません。"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:65
 msgid ""
@@ -5882,7 +5883,7 @@ msgstr "チケットの終了操作が無効です。"
 #: src/Holiday.php:48 src/Calendar_Holiday.php:203
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "休業時間"
+msgstr[0] "休業日"
 
 #: install/migrations/update_0.84.x_to_0.85.0.php:2263 src/Stat.php:560
 #: src/Stat/Data/Sglobal/StatDataTicketNumber.php:67
@@ -6193,7 +6194,7 @@ msgstr "設定"
 
 #: src/Console/Application.php:190
 msgid "Configuration directory to use"
-msgstr "使用する構成ディレクトリ"
+msgstr "使用する構成ディレクトリー"
 
 #: front/inventory.conf.php:52
 msgid "Configuration has been updated"
@@ -6317,7 +6318,7 @@ msgstr "接続文字列"
 #: src/Auth.php:912
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "LDAP ディレクトリへの接続に失敗しました"
+msgstr[0] "LDAP ディレクトリーへの接続に失敗しました"
 
 #: install/update.php:291
 msgid ""
@@ -6719,7 +6720,7 @@ msgstr "指定日後に調査を作成"
 #: src/Document.php:1542
 #, php-format
 msgid "Create the directory %s"
-msgstr "ディレクトリ %s を作成"
+msgstr "ディレクトリー %s を作成"
 
 #: src/Ticket.php:126
 msgid "Create ticket"
@@ -6918,7 +6919,7 @@ msgstr "D=動的"
 
 #: src/Profile_User.php:196 src/Profile_User.php:372 src/Profile_User.php:528
 msgid "D=Dynamic, R=Recursive"
-msgstr "D=動的, R=反復利用"
+msgstr "D=動的, R=再帰的"
 
 #: src/System/Requirement/DbConfiguration.php:55
 msgid "DB configuration"
@@ -7658,7 +7659,7 @@ msgstr "LDAPから削除"
 
 #: src/User.php:3899 src/Config.php:3334
 msgid "Deleted user in LDAP directory"
-msgstr "LDAPディレクトリから削除したユーザー"
+msgstr "LDAP ディレクトリーから削除されたユーザー"
 
 #: src/NotificationTargetChange.php:57
 msgid "Deleting a change"
@@ -8041,7 +8042,7 @@ msgstr "数字"
 #: src/Config.php:1513
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
-msgstr "直接通知  ( ロック解除の要求者が通知の送信者になります )"
+msgstr "直接通知  ( ロック解除の依頼者が通知の送信者になります )"
 
 #: src/Transfer.php:4039
 msgid "Direct connections"
@@ -8057,7 +8058,7 @@ msgstr "直接リンク"
 
 #: src/Plugin.php:2551
 msgid "Directory"
-msgstr "ディレクトリ"
+msgstr "ディレクトリー"
 
 #: src/AuthLDAP.php:4295 src/AuthLDAP.php:4296 src/AuthLDAP.php:4297
 #: src/Plugin.php:2960 src/Marketplace/View.php:811
@@ -8708,7 +8709,7 @@ msgstr "実時間"
 #: src/Toolbox.php:984 js/common.js:640
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EB"
 
 #: src/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -9228,7 +9229,7 @@ msgstr[0] "ルールで拒否した機器のログ"
 
 #: src/NetworkPortInstantiation.php:644
 msgid "Equipment without network card"
-msgstr "ネットワークカード無しの機器"
+msgstr "ネットワークカードがない機器"
 
 #: front/report.year.php:52
 msgid "Equipment's report by year"
@@ -9295,7 +9296,7 @@ msgstr "操作の実行でエラー"
 #: src/Dropdown.php:926
 #, php-format
 msgid "Error reading directory %s"
-msgstr "ディレクトリ %s の読み込み中にエラーが発生しました"
+msgstr "%s ディレクトリーの読み込み中にエラーが発生しました"
 
 #: src/Dashboard/Grid.php:900
 msgid "Error rendering card!"
@@ -9329,7 +9330,7 @@ msgstr "LDAPサーバー\"%s\"への問合せでエラーが発生しました�
 #: src/Dropdown.php:930
 #, php-format
 msgid "Error: %s is not a directory"
-msgstr "エラー: %s はディレクトリではありません"
+msgstr "エラー: %s はディレクトリーではありません"
 
 #: src/User.php:808 src/User.php:1025
 msgid "Error: the two passwords do not match"
@@ -9550,19 +9551,19 @@ msgstr "失効日 + 通知"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
-msgstr "期限の切れたドメイン"
+msgstr "期限切れのドメイン"
 
 #: src/Domain.php:536
 msgid "Expired or expiring domains"
-msgstr "期限の切れたドメイン"
+msgstr "期限切れ・期限の迫ったドメイン"
 
 #: src/NotificationTargetDomain.php:111
 msgid "Expired or expiring domains (deprecated; contains only one element)"
-msgstr "期限切れ・期限切れ間近のドメイン（廃止予定。1 つの要素しか含まない）"
+msgstr "期限切れ・期限の迫ったドメイン（廃止予定。1 つの要素しか含まない）"
 
 #: src/NotificationTargetDomain.php:42 src/NotificationTargetDomain.php:78
 msgid "Expiring domains"
-msgstr "期限切れのドメイン"
+msgstr "期限の迫ったドメイン"
 
 #: templates/components/logs.html.twig
 msgid "Export"
@@ -9699,7 +9700,7 @@ msgstr "くり返しアイテム %s を作成できませんでした"
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
-msgstr "ディレクトリ %s の作成に失敗しました。ディレクトリを作成するためのパーミッションがあるか確認してください"
+msgstr "%s ディレクトリーの作成に失敗しました。ディレクトリーを作成する権限があるか確認してください"
 
 #: src/Document.php:1247 src/Document.php:1365 src/Document.php:1462
 #, php-format
@@ -9812,7 +9813,7 @@ msgstr[0] "項目"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "%s 項目は %s アイテムでは無効です。"
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -10397,7 +10398,7 @@ msgstr "GLPI キャッシュをリセットしました"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:122
 msgid "GLPI data directories are located in a secured path."
-msgstr "GLPI のデータ ディレクトリーは、安全なパスを指しています。"
+msgstr "GLPI のデータ ディレクトリーは、安全なパス上にあります。"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:76
 msgid ""
@@ -10498,7 +10499,7 @@ msgstr "プラグインの情報を取得"
 #: src/Toolbox.php:981 js/common.js:637
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GB"
 
 #: src/Consumable.php:214 src/Consumable.php:606
 msgctxt "button"
@@ -10572,7 +10573,7 @@ msgstr "全領域"
 
 #: install/update.php:239
 msgid "Go back to GLPI"
-msgstr "GLPIに戻る"
+msgstr "GLPI に戻る"
 
 #: js/modules/Kanban/Kanban.js:487 js/impact.js:1325
 msgid "Go to"
@@ -11065,27 +11066,27 @@ msgstr "承認しない場合、理由を明記してください"
 
 #: src/Transfer.php:4129
 msgid "If certificates are no longer used"
-msgstr "証明書を使用しなくなった場合"
+msgstr "使われていない証明書"
 
 #: src/Transfer.php:4099
 msgid "If contacts are no longer used"
-msgstr "連絡先が使われなくなった場合"
+msgstr "使われていない連絡先"
 
 #: src/Transfer.php:4119
 msgid "If contracts are no longer used"
-msgstr "契約が使われなくなった場合"
+msgstr "使われていない契約"
 
 #: src/Transfer.php:4066
 msgid "If devices are no longer used"
-msgstr "デバイスが使われなくなった場合"
+msgstr "使われていないデバイス"
 
 #: src/Transfer.php:4109
 msgid "If documents are no longer used"
-msgstr "ドキュメントが使われなくなった場合"
+msgstr "使われていないドキュメント"
 
 #: src/Transfer.php:4046
 msgid "If monitors are no longer used"
-msgstr "モニターが使われなくなった場合"
+msgstr "使われていないモニター"
 
 #: src/MailCollector.php:248
 msgid ""
@@ -11118,11 +11119,11 @@ msgstr "このオプションを設定すると、指定のメーカー ID を�
 
 #: src/Transfer.php:4076
 msgid "If phones are no longer used"
-msgstr "電話が使われなくなった場合"
+msgstr "使われていない電話"
 
 #: src/Transfer.php:4056
 msgid "If printers are no longer used"
-msgstr "プリンターが使われなくなった場合"
+msgstr "使われていないプリンター"
 
 #: src/NotificationMailingSetting.php:193
 msgid "If set, it will be used for notifications that doesn't expect a reply."
@@ -11130,11 +11131,11 @@ msgstr "設定すると、返信を期待しない通知に使用します。"
 
 #: src/Transfer.php:3986
 msgid "If software are no longer used"
-msgstr "ソフトウェアが使われなくなった場合"
+msgstr "使われていないソフトウェア"
 
 #: src/Transfer.php:4089
 msgid "If suppliers are no longer used"
-msgstr "サプライヤを使用しなくなった場合"
+msgstr "使われていないサプライヤ"
 
 #: src/Config.php:724
 msgid "If synced (all changes)"
@@ -11150,7 +11151,7 @@ msgstr "同期済みまたは参照アカウントの場合"
 
 #: src/Transfer.php:4007
 msgid "If the cartridge types are no longer used"
-msgstr "カートリッジの型が使われなくなった場合"
+msgstr "使われていないカートリッジの型"
 
 #: src/User.php:5682 src/Api/API.php:2200
 msgid ""
@@ -11184,7 +11185,7 @@ msgstr "解決を却下する場合、理由を明記しなくてはなりませ
 msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
-msgstr "プラグインのダウンロードを簡単にするには、このディレクトリの権限と所有権を確認してください。"
+msgstr "プラグインのダウンロードを簡単にするには、このディレクトリーの権限と所有権を確認してください。"
 
 #: src/ITILFollowup.php:414
 msgid "If you want to reopen this item, you must specify a reason"
@@ -11313,11 +11314,11 @@ msgstr "インポートを拒否 ( ログなし )"
 
 #: src/AuthLDAP.php:1026
 msgid "Import entities from LDAP directory"
-msgstr "LDAPディレクトリからエンティティをインポート"
+msgstr "LDAP ディレクトリーからエンティティをインポート"
 
 #: src/User.php:4836
 msgid "Import from directories"
-msgstr "ディレクトリからのインポート"
+msgstr "ディレクトリーからインポート"
 
 #: src/Inventory/Conf.php:328 src/Inventory/Conf.php:1088
 msgid "Import from file"
@@ -11830,7 +11831,7 @@ msgstr "内部 TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTR"
-msgstr "内部 TTR"
+msgstr "内部 TTR ( 解決までの時間 )"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal Time to own"
@@ -12030,7 +12031,7 @@ msgstr "予定の日付が無効なため、日付を更新しませんでした
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "無効なプラグインディレクトリー"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -12038,7 +12039,7 @@ msgstr ""
 #: src/Console/Plugin/InstallCommand.php:300
 #, php-format
 msgid "Invalid plugin directory \"%s\"."
-msgstr "プラグインディレクトリ \"%s\" が無効です。"
+msgstr "プラグインディレクトリー \"%s\" が無効です。"
 
 #: src/MassiveAction.php:399
 msgid "Invalid process"
@@ -12503,7 +12504,7 @@ msgstr "キー"
 #: src/Toolbox.php:979 js/common.js:635
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KB"
 
 #: front/knowbaseitem.form.php:175 src/KnowbaseItem.php:60
 #: src/CommonDropdown.php:975 src/ITILCategory.php:72 src/ITILCategory.php:292
@@ -12570,33 +12571,33 @@ msgstr[0] "LDAP抽出条件"
 #: templates/pages/admin/ldap.choose_directory.html.twig src/AuthLDAP.php:139
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] "LDAPディレクトリ"
+msgstr[0] "LDAP ディレクトリー"
 
 #: src/AuthLDAP.php:3924 src/AuthLDAP.php:3954
 msgid "LDAP directory choice"
-msgstr "LDAPディレクトリ選択"
+msgstr "LDAP ディレクトリー選択"
 
 #: src/User.php:3790
 msgid "LDAP directory for authentication"
-msgstr "認証用のLDAPディレクトリ"
+msgstr "認証用の LDAP ディレクトリー"
 
 #: src/Entity.php:875 src/Entity.php:1686
 msgid "LDAP directory information attribute representing the entity"
-msgstr "エンティティを表示するLDAPディレクトリ情報属性"
+msgstr "エンティティを表示する LDAP ディレクトリー情報属性"
 
 #: front/ldap.group.php:44 front/ldap.import.php:58 front/ldap.php:42
 #: front/ldap.group.import.php:45 src/User.php:2458 src/Group.php:151
 #: src/Group.php:333
 msgid "LDAP directory link"
-msgstr "LDAPディレクトリリンク"
+msgstr "LDAP ディレクトリーリンク"
 
 #: src/Entity.php:893 src/Entity.php:1704
 msgid "LDAP directory of an entity"
-msgstr "エンティティの LDAP ディレクトリ"
+msgstr "エンティティの LDAP ディレクトリー"
 
 #: src/AuthLDAP.php:615
 msgid "LDAP directory time zone"
-msgstr "LDAPディレクトリのタイムゾーン"
+msgstr "LDAP ディレクトリーのタイムゾーン"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:252
 msgid "LDAP filter"
@@ -12824,7 +12825,7 @@ msgstr "GLPIの最終更新日"
 
 #: src/AuthLDAP.php:1784 src/AuthLDAP.php:1843
 msgid "Last update in the LDAP directory"
-msgstr "LDAPディレクトリの最終更新日"
+msgstr "LDAP ディレクトリーの最終更新日"
 
 #. TRANS: %s is the datetime of update
 #: templates/components/form/dates.html.twig src/MailCollector.php:331
@@ -13149,7 +13150,7 @@ msgstr "%s のリスト"
 
 #: src/AuthLDAP.php:734
 msgid "List of LDAP directory replicates"
-msgstr "LDAP ディレクトリ レプリカのリスト"
+msgstr "LDAP ディレクトリー レプリカのリスト"
 
 #: src/Dashboard/Widget.php:243
 msgid "List of articles"
@@ -13814,7 +13815,7 @@ msgstr "一度に送信するメールの最大数"
 
 #: src/User.php:6206
 msgid "Maximum expiration notifications to send at once"
-msgstr "一度に送信する期限切れ通知の最大数 "
+msgstr "一度に送信する期限についての通知の最大数"
 
 #: src/UploadHandler.php:407
 msgid "Maximum number of files exceeded"
@@ -13991,7 +13992,7 @@ msgstr "許可していないメソッド"
 #: src/Toolbox.php:980 js/common.js:636
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:339
 msgid "Microphone"
@@ -14785,11 +14786,11 @@ msgstr "担当の新しいグループ"
 
 #: src/NotificationTargetCommonITILObject.php:128
 msgid "New group in observers"
-msgstr "オブザーバーの新しいグループ"
+msgstr "関係者の新しいグループ"
 
 #: src/NotificationTargetCommonITILObject.php:126
 msgid "New group in requesters"
-msgstr "要求者の新しいグループ"
+msgstr "依頼者の新しいグループ"
 
 #: templates/components/form/header_content.html.twig src/KnowbaseItem.php:834
 #: src/KnowbaseItem.php:857 src/CommonDBTM.php:6463
@@ -14874,11 +14875,11 @@ msgstr "担当の新しいユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:127
 msgid "New user in observers"
-msgstr "オブザーバーの新しいユーザー"
+msgstr "関係者の新しいユーザー"
 
 #: src/NotificationTargetCommonITILObject.php:125
 msgid "New user in requesters"
-msgstr "要求者の新しいユーザー"
+msgstr "依頼者の新しいユーザー"
 
 #: src/Marketplace/Controller.php:342
 #, php-format
@@ -14963,7 +14964,7 @@ msgstr "IPアドレスが見つかりません"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig
 msgid "No LDAP directory defined in GLPI"
-msgstr "GLPIに定義したLDAPディレクトリはありません"
+msgstr "GLPI で定義済みの LDAP ディレクトリーはありません"
 
 #: src/Profile.php:3688
 msgid "No access"
@@ -15068,11 +15069,11 @@ msgstr "説明なし"
 
 #: src/AuthLDAP.php:4086
 msgid "No directory associated to entity: impossible search"
-msgstr "エンティティに関連するディレクトリなし：検索不可"
+msgstr "エンティティに関連するディレクトリーなし：検索不可"
 
 #: src/AuthLDAP.php:4082
 msgid "No directory selected"
-msgstr "ディレクトリを選択していません"
+msgstr "ディレクトリーを選択していません"
 
 #: src/RuleCollection.php:1744
 msgid "No element to be tested"
@@ -15896,7 +15897,7 @@ msgstr "割当済みチケット数"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:3980
 msgid "Number of tickets as requester"
-msgstr "要求者としてのチケット数"
+msgstr "依頼者としてのチケット数"
 
 #: src/Dashboard/Grid.php:1301
 msgid "Number of tickets by SLA status and technician"
@@ -16007,7 +16008,7 @@ msgstr[0] "オブジェクトロック"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Observer"
-msgstr "オブザーバー"
+msgstr "関係者"
 
 #: src/Toolbox.php:2292 src/Features/PlanningEvent.php:830
 msgid "October"
@@ -16198,7 +16199,7 @@ msgstr "--allオプションは--taskオプションと互換性がありませ�
 
 #: src/Console/Plugin/AbstractPluginCommand.php:81
 msgid "Option --all is not compatible with usage of directory argument."
-msgstr "--all オプションはディレクトリ引数の使用法と互換性がありません。"
+msgstr "--all オプションはディレクトリー引数の使用法と互換性がありません。"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:496
 msgid ""
@@ -16932,7 +16933,7 @@ msgstr "フォトコンダクター"
 #: src/Toolbox.php:983 js/common.js:639
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PB"
 
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:166
@@ -17340,7 +17341,7 @@ msgstr "プラグインデータベースの \"%s\" フィールドがありま�
 #: src/Marketplace/NotificationTargetController.php:128
 #: src/Console/Plugin/AbstractPluginCommand.php:69
 msgid "Plugin directory"
-msgstr "プラグインディレクトリ"
+msgstr "プラグインディレクトリー"
 
 #: src/Marketplace/View.php:347
 #, php-format
@@ -17509,7 +17510,7 @@ msgstr "電源ユニット"
 
 #: src/Config.php:1401
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr "チケット作成時、要求者に自分を事前追加"
+msgstr "チケット作成時、依頼者に自分を事前追加"
 
 #: src/Config.php:1394
 msgid "Pre-select me as a technician when creating a ticket"
@@ -17539,7 +17540,7 @@ msgstr "予備の作成"
 #: src/AuthLDAP.php:4292 src/Transfer.php:3928 src/Transfer.php:3931
 #: src/Transfer.php:3950
 msgid "Preserve"
-msgstr "そのままにする"
+msgstr "維持する"
 
 #: src/NotificationTemplateTranslation.php:527 src/ITILTemplate.php:422
 msgid "Preview"
@@ -17946,14 +17947,14 @@ msgstr "ゴミ箱に入れる"
 
 #: src/AuthLDAP.php:4293
 msgid "Put in trashbin"
-msgstr "ゴミ箱へ入れる"
+msgstr "ゴミ箱へ"
 
 #: templates/components/itilobject/footer.html.twig
 #: templates/components/form/buttons.html.twig src/MassiveAction.php:793
 #: src/Transfer.php:3932 src/CommonDBTM.php:5438 src/Profile.php:1003
 msgctxt "button"
 msgid "Put in trashbin"
-msgstr "ゴミ箱へ入れる"
+msgstr "ゴミ箱へ"
 
 #: src/CommonITILObject.php:6413
 #, php-format
@@ -18245,7 +18246,7 @@ msgstr "くり返しイベントをリサイズ"
 #: src/RuleRight.php:350 src/Profile_User.php:156 src/Profile_User.php:305
 #: src/Profile_User.php:1146
 msgid "Recursive"
-msgstr "反復利用"
+msgstr "再帰的"
 
 #: src/Cache/CacheManager.php:560
 msgid "Redis (TCP)"
@@ -18410,7 +18411,7 @@ msgstr "インストール残"
 
 #: templates/pages/login.html.twig
 msgid "Remember me"
-msgstr "ログインを記憶"
+msgstr "ログイン状態を維持"
 
 #: src/Reminder.php:68
 msgid "Reminder"
@@ -18763,19 +18764,19 @@ msgstr "要求されたアイテムがありません"
 #: src/Ticket.php:5056
 msgid "Requester"
 msgid_plural "Requesters"
-msgstr[0] "要求者"
+msgstr[0] "依頼者"
 
 #: src/NotificationTargetObjectLock.php:68
 msgid "Requester Firstname"
-msgstr "要求者の名"
+msgstr "依頼者の名"
 
 #: src/NotificationTargetCommonITILObject.php:1767
 msgid "Requester ID"
-msgstr "要求者 ID"
+msgstr "依頼者 ID"
 
 #: src/NotificationTargetObjectLock.php:67
 msgid "Requester Lastname"
-msgstr "要求者の姓"
+msgstr "依頼者の姓"
 
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 #: src/CommonITILObject.php:4435 src/RuleTicket.php:633 src/RuleTicket.php:823
@@ -18783,23 +18784,23 @@ msgstr "要求者の姓"
 #: src/NotificationTargetCommonITILObject.php:1815
 msgid "Requester group"
 msgid_plural "Requester groups"
-msgstr[0] "要求グループ"
+msgstr[0] "依頼グループ"
 
 #: src/NotificationTargetCommonITILObject.php:859
 msgid "Requester group except manager users"
-msgstr "管理者ユーザーを除く要求者グループ"
+msgstr "管理者ユーザーを除く依頼グループ"
 
 #: src/NotificationTargetCommonITILObject.php:856
 msgid "Requester group manager"
-msgstr "要求グループの管理者"
+msgstr "依頼グループの管理者"
 
 #: src/RuleTicket.php:597
 msgid "Requester in group"
-msgstr "グループの要求者"
+msgstr "グループの依頼者"
 
 #: src/RuleTicket.php:603 src/NotificationTargetCommonITILObject.php:1769
 msgid "Requester location"
-msgstr "要求者の場所"
+msgstr "依頼者の場所"
 
 #: js/impact.js:2443
 msgid "Requests"
@@ -18957,7 +18958,7 @@ msgstr "責任者"
 
 #: src/RuleTicket.php:961
 msgid "Responsible of the requester"
-msgstr "要求者の責任者"
+msgstr "依頼者の責任者"
 
 #: src/Api/APIRest.php:51
 msgid "Rest API"
@@ -19092,7 +19093,7 @@ msgstr "ルート カテゴリー"
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1657
 msgid "Root directory (optional)"
-msgstr "Root ディレクトリ(任意)"
+msgstr "Root ディレクトリー(任意)"
 
 #: install/empty_data.php:2192 install/empty_data.php:2194
 #: install/migrations/update_0.83.x_to_0.84.0.php:298
@@ -21029,7 +21030,7 @@ msgstr "TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "TTR"
-msgstr "TTR"
+msgstr "TTR ( 解決までの時間 )"
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:203
 #, php-format
@@ -21293,7 +21294,7 @@ msgstr "メンテナンスのため、一時的に停止しています"
 
 #: src/Document.php:1311
 msgid "Temporary directory doesn't exist"
-msgstr "テンポラリディレクトリは存在しません"
+msgstr "テンポラリディレクトリーが存在しません"
 
 #: src/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -21334,7 +21335,7 @@ msgstr "テスト失敗: %s"
 
 #: src/AuthLDAP.php:898
 msgid "Test of connection to LDAP directory"
-msgstr "LDAPディレクトリへの接続確認"
+msgstr "LDAP ディレクトリーへの接続確認"
 
 #: templates/install/step3.html.twig
 msgid "Test of the connection at the database"
@@ -21508,12 +21509,12 @@ msgstr "データベーススキーマが、インストールしている GLPI 
 #: src/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
 msgid "The directory could not be created in %s."
-msgstr "%s にディレクトリを作成できませんでした。"
+msgstr "%s にディレクトリーを作成できませんでした。"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:129
 #, php-format
 msgid "The directory was created in %s but could not be removed."
-msgstr "ディレクトリは %s に作成しましたが、削除できませんでした。"
+msgstr "ディレクトリーは %s に作成しましたが、削除できませんでした。"
 
 #: js/planning.js:530
 msgid ""
@@ -21643,7 +21644,7 @@ msgstr "登録キーは有効です。"
 
 #: src/GLPINetwork.php:261
 msgid "The registration key refers to a terminated subscription."
-msgstr "登録キーは期限切れの購入のものです。"
+msgstr "登録キーは契約切れサブスクを参照しています。"
 
 #: js/modules/Kanban/Kanban.js:2289
 msgid ""
@@ -21927,7 +21928,7 @@ msgstr "木曜日"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TB"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -22085,7 +22086,7 @@ msgstr[0] "時間範囲"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Time to allow \"Remember Me\""
-msgstr "「Remember Me」を許可する期間"
+msgstr "「ログイン状態を維持」を許可する期間"
 
 #: src/NotificationAjaxSetting.php:91
 msgid "Time to check for new notifications (in seconds)"
@@ -22401,11 +22402,11 @@ msgstr "チケットの上位場所"
 
 #: src/Dashboard/Grid.php:1338
 msgid "Top ticket's observer groups"
-msgstr "上位チケットのオブザーバーグループ"
+msgstr "上位チケットの関係者グループ"
 
 #: src/Dashboard/Grid.php:1337
 msgid "Top ticket's observers"
-msgstr "上位チケットのオブザーバー"
+msgstr "上位チケットの関係者"
 
 #: src/Dashboard/Grid.php:1319
 msgid "Top ticket's request types"
@@ -22413,11 +22414,11 @@ msgstr "チケットの要求型の上位"
 
 #: src/Dashboard/Grid.php:1336
 msgid "Top ticket's requester groups"
-msgstr "チケットの要求グループ上位"
+msgstr "チケットの依頼グループ上位"
 
 #: src/Dashboard/Grid.php:1335
 msgid "Top ticket's requesters"
-msgstr "チケット要求者の上位"
+msgstr "チケット依頼者の上位"
 
 #: src/State.php:175 src/State.php:235 src/SoftwareVersion.php:384
 #: src/Budget.php:654 src/Budget.php:860 src/Budget.php:896
@@ -22799,7 +22800,7 @@ msgstr "IMAP サーバーに接続できません"
 #: front/ldap.group.import.php:76 src/AuthLDAP.php:4213 src/Auth.php:290
 #: src/Auth.php:320
 msgid "Unable to connect to the LDAP directory"
-msgstr "LDAPディレクトリに接続できません"
+msgstr "LDAP ディレクトリーに接続できません"
 
 #: src/System/Status/StatusChecker.php:287
 msgctxt "glpi_status"
@@ -22909,7 +22910,7 @@ msgstr "%s（ID : %s）を修復できません。"
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:668
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "アプライアンスのアイテムの関係 %d から、関係の型 %s が見つかりません。"
+msgstr "関係の型 %s がアプライアンスのアイテムの関係 %d で、見つかりません。"
 
 #: front/smtp_oauth2_callback.php:83
 msgctxt "oauth"
@@ -23153,7 +23154,7 @@ msgstr "ソフトウェアをアンインストールする"
 
 #: src/Cartridge.php:360
 msgid "Uninstalling a cartridge"
-msgstr "未使用のカートリッジ"
+msgstr "カートリッジの取り外し"
 
 #: src/FieldUnicity.php:83 src/FieldUnicity.php:350
 msgid "Unique fields"
@@ -23614,7 +23615,7 @@ msgstr "アップロード"
 
 #: src/Document.php:1194 src/Document.php:1596
 msgid "Upload directory doesn't exist"
-msgstr "アップロード用のディレクトリは存在しません"
+msgstr "アップロード ディレクトリーが存在しません"
 
 #: js/fileupload.js:102
 msgid "Upload successful"
@@ -23667,7 +23668,7 @@ msgstr "GLPIモード"
 
 #: src/MailCollector.php:307
 msgid "Use Reply-To as requester (when available)"
-msgstr "（可能なら）Reply-To を要求者として使用する"
+msgstr "（可能なら）Reply-To を依頼者として使用する"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Saturday"
@@ -23838,7 +23839,7 @@ msgstr "ユーザーにメンション"
 
 #: src/User.php:2800
 msgid "User missing in LDAP directory"
-msgstr "ユーザーはLDAPディレクトリには見つかりません"
+msgstr "ユーザーが LDAP ディレクトリーに見つかりません"
 
 #: src/Console/Plugin/InstallCommand.php:257
 msgid "User name defined by --username option is invalid."
@@ -23851,7 +23852,7 @@ msgstr "認証していないユーザーは GLPI に接続できません"
 #: src/Auth.php:921
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "ユーザーは LDAP ディレクトリには見つかりません"
+msgstr[0] "ユーザーが LDAP ディレクトリーに見つかりません"
 
 #: src/AuthLDAP.php:3363
 msgid "User not found or several users found"
@@ -24022,7 +24023,7 @@ msgstr "エンティティを割り当てるための一般的なルールの値
 
 #: src/Entity.php:1700
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr "LDAPディレクトリからユーザーを検索するためのインターフェースで使用する値"
+msgstr "LDAP ディレクトリーからユーザーを検索するためのインターフェースで使用する値"
 
 #: src/ContentTemplates/TemplateDocumentation.php:132
 msgid "Variable"
@@ -24294,12 +24295,12 @@ msgstr "注意！　この操作はマージしたソフトウェアをゴミ箱
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr "警告 : リクエストはディレクトリの制限を越えています。表示した結果は一部です"
+msgstr "警告 : リクエストはディレクトリー側の制限を越えています。表示した結果は一部です"
 
 #: src/NotificationEventMailing.php:445
 #, php-format
 msgid "Warning: an email was undeliverable to %s with %d retries remaining"
-msgstr "警告 : メールを %d に配信できず、残り %s 回再試行します。"
+msgstr "警告 : メールを残り %s 回再試行する %d に配信できず。"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid ""
@@ -24325,7 +24326,7 @@ msgstr "保証終了日"
 #: templates/components/infocom.html.twig src/Infocom.php:1394
 #: src/Infocom.php:1584
 msgid "Warranty extension value"
-msgstr "保証期限切れ価値"
+msgstr "保証延長価値"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1346
 #: src/Infocom.php:1576
@@ -24371,7 +24372,7 @@ msgstr "送信方法"
 #: src/Marketplace/View.php:361
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr "マーケットプレース ディレクトリ (%s) へ書き込めません。"
+msgstr "マーケットプレース ディレクトリー (%s) へ書き込めません。"
 
 #: src/System/Requirement/InstallationNotOverriden.php:92
 msgid "We detected files of previous versions of GLPI."
@@ -24417,17 +24418,17 @@ msgstr "GLPI の var ディレクトリーへの web アクセスは、無許可
 
 #: src/System/Requirement/ProtectedWebAccess.php:122
 msgid "Web access to files directory is protected"
-msgstr "ファイルディレクトリへの web アクセスは保護されています"
+msgstr "ファイルディレクトリーへの web アクセスは保護されています"
 
 #: src/System/Requirement/ProtectedWebAccess.php:118
 msgid "Web access to the files directory should not be allowed"
-msgstr "ファイル ディレクトリへの web アクセスは許可すべきではありません"
+msgstr "ファイル ディレクトリーへの web アクセスは許可すべきではありません"
 
 #: src/System/Requirement/ProtectedWebAccess.php:126
 msgid ""
 "Web access to the files directory should not be allowed but this cannot be "
 "checked automatically on this instance."
-msgstr "ファイル ディレクトリへの web アクセスは許可すべきではありません。しかしこのインスタンスでは自動チェックができません。"
+msgstr "ファイル ディレクトリーへの web アクセスは許可すべきではありません。しかしこのインスタンスでは自動チェックができません。"
 
 #: src/NotificationTargetProjectTask.php:641 src/Document_Item.php:761
 #: src/Document.php:497 src/Document.php:1042
@@ -24749,7 +24750,7 @@ msgstr "昨日"
 #: src/Toolbox.php:986 js/common.js:642
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YB"
 
 #: src/ManualLink.php:285
 msgid "You are about to delete this item. Do you confirm?"
@@ -24801,11 +24802,13 @@ msgid ""
 "You are trying to use GLPI with outdated files compared to the version of "
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
-msgstr "古いGLPIを使用しようとしています。お使いのデータベースに適合したGLPIをインストールしてください"
+msgstr ""
+"データベースのバージョンに対して古い GLPI のファイルを使用しようとしています。データベースに対応した正しい GLPI "
+"ファイルをインストールしてください。"
 
 #: src/Config.php:3164
 msgid "You are using a development version, be careful!"
-msgstr "開発者向けバージョンを使用中。要注意！"
+msgstr "開発バージョンを使用中。要注意！"
 
 #: src/Config.php:3165
 msgid "You are using a pre-release version, be careful!"
@@ -25192,7 +25195,7 @@ msgstr "検証待ちチケット"
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZB"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:502
 msgid "Zoom in/out"

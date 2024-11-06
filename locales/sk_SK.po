@@ -3223,12 +3223,12 @@ msgstr "Pridať do všetkých požiadaviek"
 
 #: src/Appliance_Item.php:280
 msgid "Add to an appliance"
-msgstr "Pridať k aplikácii"
+msgstr "Pridať k prístroju"
 
 #: src/Appliance.php:469
 msgctxt "button"
 msgid "Add to an appliance"
-msgstr "Pridať k aplikácii"
+msgstr "Pridať k prístroju"
 
 #: src/Reminder.php:754
 msgid "Add to schedule"
@@ -3750,11 +3750,11 @@ msgstr "Odpoveď na požiadavku na schválenie bola vytvorená používateľom %
 
 #: src/Appliance_Item.php:415
 msgid "An appliance is required"
-msgstr "Aplikácia je požadovaná"
+msgstr "Požaduje sa prístroj"
 
 #: src/Appliance_Item_Relation.php:129
 msgid "An appliance item is required"
-msgstr "Položka aplikácie je požadovaná"
+msgstr "Požaduje sa položka prístroja"
 
 #: src/NotificationTargetChange.php:224 src/NotificationTargetTicket.php:547
 #, php-format
@@ -3790,7 +3790,7 @@ msgstr "Počas zmeny hesla nastala chyba"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Počas vyhľadávania položiek nastala chyba"
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -3874,7 +3874,7 @@ msgstr "Verzia antivírusu"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:161
 msgid "Any previous appliance created in core will be lost."
-msgstr "Akékoľvek predchádzajúce aplikácie vytvorené v základe budú stratené."
+msgstr "Akékoľvek predchádzajúce prístroje vytvorené v jadre budú stratené."
 
 #: src/CommonITILObject.php:4305
 msgid "Any solution status"
@@ -3888,40 +3888,40 @@ msgstr "Pridajte správnu bránu k sieti %s"
 #: src/Appliance.php:66
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Aplikácia"
-msgstr[1] "Aplikácie"
-msgstr[2] "Aplikácie"
-msgstr[3] "Aplikácie"
+msgstr[0] "Prístroj"
+msgstr[1] "Prístroje"
+msgstr[2] "Prístrojov"
+msgstr[3] "Prístroje"
 
 #: src/ApplianceEnvironment.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Aplikačné prostredie"
-msgstr[1] "Aplikačné prostredia"
-msgstr[2] "Aplikačné prostredia"
-msgstr[3] "Aplikačné prostredia"
+msgstr[0] "Prístrojové prostredie"
+msgstr[1] "Prístrojové prostredia"
+msgstr[2] "Prístrojových prostredí"
+msgstr[3] "Prístrojové prostredia"
 
 #: src/ApplianceType.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Typ aplikácie"
-msgstr[1] "Typy aplikácií"
-msgstr[2] "Typy aplikácií"
-msgstr[3] "Typy aplikácií"
+msgstr[0] "Typ prístroja"
+msgstr[1] "Typy prístrojov"
+msgstr[2] "Typov prístrojov"
+msgstr[3] "Typy prístrojov"
 
 #: src/Dropdown.php:1262
 msgid "Appliances"
-msgstr "Aplikácie"
+msgstr "Prístroje"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:199
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr "Pole \"%s\" pluginu Appliances chýba."
+msgstr "Chýba pole \"%s\" pluginu Prístroje."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:191
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr "Tabuľka \"%s\" pluginu Appliances chýba."
+msgstr "Chýba tabuľka \"%s\" pluginu Prístroje."
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:158
 msgid "Application token"
@@ -4287,7 +4287,7 @@ msgstr "Priradiť k profilu"
 #: src/CommonDBTM.php:4117
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Priradiť k aplikácii"
+msgstr "Priradiť k prístroju"
 
 #: src/Supplier.php:285
 msgid "Associated contact"
@@ -4787,7 +4787,7 @@ msgstr "Priemerné trvanie zapísania požiadavky"
 #: src/Toolbox.php:978 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:363
 msgid "BNC"
@@ -5495,10 +5495,10 @@ msgstr[3] "Náplne"
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Informácia o evidencii náplní"
+msgstr[1] "Informácie o evidencii náplní"
+msgstr[2] "Informácie o evidencii náplní"
+msgstr[3] "Informácie o evidencii náplní"
 
 #: src/CartridgeItem.php:57 src/Cartridge.php:1118 src/Cartridge.php:1276
 msgid "Cartridge model"
@@ -7185,23 +7185,23 @@ msgstr "Vytvorené: %1$s, %2$s"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:429
 msgid "Creating Appliance Environment..."
-msgstr "Vytváranie prostredia aplikácie..."
+msgstr "Vytváranie prostredia prístroja..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:369
 msgid "Creating Appliance Items..."
-msgstr "Vytváranie položiek aplikácií."
+msgstr "Vytváranie položiek prístrojov."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:625
 msgid "Creating Appliance relations..."
-msgstr "Vytváranie vzťahov aplikácie..."
+msgstr "Vytváranie vzťahov prístroja..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:563
 msgid "Creating Appliance types..."
-msgstr "Vytváranie typov aplikácií..."
+msgstr "Vytváranie typov prístrojov..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:488
 msgid "Creating Appliances..."
-msgstr "Vytváranie aplikácií..."
+msgstr "Vytváranie prístrojov..."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:465
 msgid "Creating datacenter..."
@@ -9284,7 +9284,7 @@ msgstr "Skutočné trvanie"
 #: src/Toolbox.php:984 js/common.js:640
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EiB"
 
 #: src/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -10450,7 +10450,7 @@ msgstr[3] "Polia"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "Pole %s nie je platné pre položku %s."
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -11182,7 +11182,7 @@ msgstr "Získať informácie o plugine"
 #: src/Toolbox.php:981 js/common.js:637
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GiB"
 
 #: src/Consumable.php:214 src/Consumable.php:606
 msgctxt "button"
@@ -12134,12 +12134,12 @@ msgstr "Importovanie %s..."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:386
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr "Importovanie položky aplikácie \"%d\"..."
+msgstr "Importovanie položky prístrojov \"%d\"..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:504
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "Importovanie aplikácie \"%s\"..."
+msgstr "Importovanie prístroja \"%s\"..."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:446
 #, php-format
@@ -12784,7 +12784,7 @@ msgstr "Neplatné plánované dátumy. Dátumy neboli aktualizované."
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Neplatný adresár pluginu"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -13277,7 +13277,7 @@ msgstr "Kľúč"
 #: src/Toolbox.php:979 js/common.js:635
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KiB"
 
 #: front/knowbaseitem.form.php:175 src/KnowbaseItem.php:60
 #: src/CommonDropdown.php:975 src/ITILCategory.php:72 src/ITILCategory.php:292
@@ -14038,7 +14038,7 @@ msgstr "Zoznam hodnôt"
 
 #: src/ComputerVirtualMachine.php:285
 msgid "List of virtualized environments"
-msgstr "Zoznam virtuálnych prostredí"
+msgstr "Zoznam virtualizovaných prostredí"
 
 #: src/Console/System/ListServicesCommand.php:50
 msgid "List system services"
@@ -14880,7 +14880,7 @@ msgstr "Nepovolená metóda"
 #: src/Toolbox.php:980 js/common.js:636
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MiB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:339
 msgid "Microphone"
@@ -14888,7 +14888,7 @@ msgstr "Mikrofón"
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:144
 msgid "Migrate Appliances plugin data into GLPI core tables"
-msgstr "Migrácia dát pluginu Appliances do hlavných tabuliek GLPI"
+msgstr "Migrácia dát pluginu Prístroje do hlavných tabuliek GLPI"
 
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:62
 msgid "Migrate Databases plugin data into GLPI core tables"
@@ -16359,7 +16359,7 @@ msgstr "Nenašiel sa žiaden používateľ."
 
 #: src/ComputerVirtualMachine.php:283
 msgid "No virtualized environment associated with the computer"
-msgstr "Žiadne virtuálne prostredia nie sú priradené k počítaču"
+msgstr "Žiadne virtualizované prostredia nie sú priradené k počítaču"
 
 #: src/NotificationMailingSetting.php:192 src/Entity.php:977
 #: src/Entity.php:2048
@@ -17059,7 +17059,7 @@ msgstr "Posledná vec pred spustením"
 
 #: src/Profile_User.php:108
 msgid "One or more required fields are missing"
-msgstr ""
+msgstr "Jedno alebo viacero požadovaných polí chýba"
 
 #: templates/impact/ongoing_modal.html.twig
 msgid "Ongoing tickets"
@@ -18000,7 +18000,7 @@ msgstr "Tlačový valec"
 #: src/Toolbox.php:983 js/common.js:639
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:166
@@ -19712,7 +19712,7 @@ msgstr "Odstrániť z racku"
 #: src/Appliance.php:470
 msgctxt "button"
 msgid "Remove from an appliance"
-msgstr "Zmazať z aplikácie"
+msgstr "Odstrániť z prístroja"
 
 #: js/impact.js:1347
 msgid "Remove from group"
@@ -23340,7 +23340,7 @@ msgstr "Štvrtok"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TiB"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -24281,23 +24281,23 @@ msgstr "Nepodarilo sa vytvoriť %s \"%s\" (%d)."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:541
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "Nepodarilo sa vytvoriť aplikáciu %s (%d)."
+msgstr "Nepodarilo sa vytvoriť prístroj %s (%d)."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:695
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr "Nepodarilo sa vytvoriť vzťah položky aplikácie %d."
+msgstr "Nepodarilo sa vytvoriť vzťah položky prístroja %d."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:466
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:603
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "Nepodarilo sa vytvoriť prostredie aplikácie %s (%d)."
+msgstr "Nepodarilo sa vytvoriť prostredie prístroja %s (%d)."
 
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:407
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr "Nepodarilo sa vytvoriť položku aplikácie %d."
+msgstr "Nepodarilo sa vytvoriť položku prístroja %d."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:481
 msgid "Unable to create datacenter."
@@ -24375,7 +24375,7 @@ msgstr "Nepodarilo sa opraviť %s s ID %s."
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:668
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "Nepodarilo sa nájsť typ vzťahu %s zo vzťahu položky aplikácie %d."
+msgstr "Nepodarilo sa nájsť typ vzťahu %s zo vzťahu položky prístroja %d."
 
 #: front/smtp_oauth2_callback.php:83
 msgctxt "oauth"
@@ -26315,7 +26315,7 @@ msgstr "Včera"
 #: src/Toolbox.php:986 js/common.js:642
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/ManualLink.php:285
 msgid "You are about to delete this item. Do you confirm?"
@@ -26334,7 +26334,7 @@ msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
-"Chystáte sa spustiť migráciu dát pluginu Appliances do hlavných tabuliek "
+"Chystáte sa spustiť migráciu dát pluginu Prístroje do hlavných tabuliek "
 "GLPI."
 
 #: src/Console/Migration/RacksPluginToCoreCommand.php:216
@@ -26665,7 +26665,7 @@ msgstr ""
 
 #: js/impact.js:2481
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Pre vytvorenie skupiny je potrebná aspoň 1 položka"
 
 #: src/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -26797,7 +26797,7 @@ msgstr "Požiadavky na schválenie"
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZiB"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:502
 msgid "Zoom in/out"

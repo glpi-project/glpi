@@ -35,13 +35,14 @@
 # leruetkins, 2023
 # ak47d ak47d, 2023
 # Denis Zykin, 2023
-# DRTC AO, 2024
 # Arsalan, 2024
 # Alexander Sokolov <a.sokolov@outlook.com>, 2024
 # Mikhail Degterev <mikhail.degterev@gmail.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Konstantin Panin, 2024
 # Dmitrii S, 2024
+# DRTC AO, 2024
+# Ilia Kireev, 2024
 # 
 #, fuzzy
 msgid ""
@@ -50,7 +51,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Dmitrii S, 2024\n"
+"Last-Translator: Ilia Kireev, 2024\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -122,7 +123,7 @@ msgstr[3] "%1$d дней %2$d ч %3$s"
 #: src/Html.php:4475
 #, php-format
 msgid "%1$d on %2$d"
-msgstr "%1$d на %2$d"
+msgstr "%1$d из %2$d"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: src/Dropdown.php:2014
@@ -1594,7 +1595,7 @@ msgstr "%s установил картридж"
 #: front/item_softwareversion.form.php:62
 #, php-format
 msgid "%s installs software"
-msgstr "%s инсталлировал ПО"
+msgstr "%s установил ПО"
 
 #: src/Console/Database/UpdateCommand.php:185
 #, php-format
@@ -3809,7 +3810,7 @@ msgstr "Произошла ошибка при обновлении пароля
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Во время поиска произошла ошибка."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -10470,7 +10471,7 @@ msgstr[3] "Поля"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "Поле %s недопустимо для элемента %s."
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -10843,7 +10844,7 @@ msgstr[3] "Шаблоны комментариев"
 
 #: src/Api/API.php:1289
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Для получения дополнительной информации см. журналы GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -12816,7 +12817,7 @@ msgstr "Неверная запланированная дата. Дата не 
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Недопустимый каталог плагинов"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -16757,7 +16758,7 @@ msgstr "Количество комментариев"
 #: src/SoftwareLicense.php:584 src/Software.php:510
 msgctxt "quantity"
 msgid "Number of installations"
-msgstr "Число инсталляций"
+msgstr "Число установок"
 
 #: src/NotificationTargetProjectTask.php:568
 #: src/NotificationTargetContract.php:178 src/NotificationTargetTicket.php:716
@@ -16992,7 +16993,7 @@ msgstr "OLA уровень для заявки"
 
 #: src/Search.php:2529
 msgid "OR"
-msgstr "OR"
+msgstr "ИЛИ"
 
 #: src/Search.php:2531
 msgid "OR NOT"
@@ -17804,7 +17805,7 @@ msgstr ""
 #: src/CommonITILObject.php:5434 src/CommonITILObject.php:6714
 #: src/Change.php:590 src/Problem.php:671 src/Ticket.php:3810
 msgid "Pending"
-msgstr "Ожидающие"
+msgstr "Ожидание составило"
 
 #: src/PendingReason.php:52
 msgid "Pending reason"
@@ -22447,7 +22448,7 @@ msgstr "Тегированный"
 #: src/CommonITILObject.php:5404 src/CommonITILObject.php:6712
 #: src/Ticket.php:6310
 msgid "Take into account"
-msgstr "Учет занял"
+msgstr "Время реакции"
 
 #: src/RuleTicket.php:1004
 msgid "Take into account delay"
@@ -23574,7 +23575,7 @@ msgstr "Время на проверку новых уведомлений (в �
 
 #: src/Dashboard/Provider.php:1545
 msgid "Time to close"
-msgstr "Время закрыть"
+msgstr "Время до закрытия"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/LevelAgreement.php:946 src/SlaLevel.php:186 src/OlaLevel.php:190
@@ -26240,7 +26241,7 @@ msgstr "Без заголовка"
 #: install/update.php:94 front/rule.common.php:111 src/Migration.php:134
 #: src/Software.php:1035
 msgid "Work in progress..."
-msgstr "Работа в процессе..."
+msgstr "В работе..."
 
 #: src/NetworkPortFiberchannel.php:99 src/NetworkPortFiberchannel.php:156
 #: src/NetworkPortFiberchannel.php:227

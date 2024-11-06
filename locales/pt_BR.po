@@ -42,7 +42,9 @@
 # Eduardo Spinola <eduardo.spinola@gmail.com>, 2024
 # Lucas Barreto, 2024
 # Diego Nobre <diego@koruma.com.br>, 2024
+# Guilherme Montelo, 2024
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2024
+# Campo Largo, 2024
 # 
 #, fuzzy
 msgid ""
@@ -51,7 +53,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2024\n"
+"Last-Translator: Campo Largo, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,7 +104,7 @@ msgstr "\"session.use_trans_sid\" precisa estar desabilitado."
 #: src/NetworkPortEthernet.php:294 src/NetworkPortFiberchannel.php:272
 #, php-format
 msgid "%.1f Gbit/s"
-msgstr "%.1f Gb/s"
+msgstr "%.1f Gbit/s"
 
 #: src/DatabaseInstance.php:602
 #, php-format
@@ -1010,7 +1012,7 @@ msgstr "%1$s: de %2$s até %3$s:"
 #: src/NetworkPortFiberchannel.php:313 src/NetworkPortFiberchannel.php:314
 #, php-format
 msgid "%d Gbit/s"
-msgstr "%d Gb/s"
+msgstr "%d Gbit/s"
 
 #. TRANS: %d is the speed
 #: src/NetworkPortEthernet.php:298 src/NetworkPortEthernet.php:332
@@ -1018,7 +1020,7 @@ msgstr "%d Gb/s"
 #: src/NetworkPortFiberchannel.php:310 src/NetworkPortFiberchannel.php:311
 #, php-format
 msgid "%d Mbit/s"
-msgstr "%d Mb/s"
+msgstr "%d Mbit/s"
 
 #: src/Dropdown.php:2006 src/Dropdown.php:2365 src/LevelAgreement.php:729
 #: src/Entity.php:3077 src/Entity.php:3125 src/Entity.php:3178
@@ -3784,7 +3786,7 @@ msgstr "Ocorreu um erro durante a atualização da senha"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Ocorreu um erro durante a pesquisa de itens."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -4767,7 +4769,7 @@ msgstr "Tempo médio para se levar em conta"
 #: src/Toolbox.php:978 js/common.js:634
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:363
 msgid "BNC"
@@ -6139,7 +6141,7 @@ msgstr "ID do Cliente"
 #: src/NotificationMailingSetting.php:341
 msgctxt "oauth"
 msgid "Client secret"
-msgstr "Secret do cliente"
+msgstr "Segredo do cliente"
 
 #: js/planning.js:281
 msgid "Clone"
@@ -8773,7 +8775,7 @@ msgstr "Documento copiado com sucesso."
 
 #: src/Config.php:3654
 msgid "Document files maximum size (Mio)"
-msgstr "Tamanho máximo de arquivos de documento (Mio)"
+msgstr "Tamanho máximo de arquivos de documento (MB)"
 
 #: src/DocumentCategory.php:44
 msgid "Document heading"
@@ -9180,7 +9182,7 @@ msgstr "Duração efetiva"
 #: src/Toolbox.php:984 js/common.js:640
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EiB"
 
 #: src/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -9293,12 +9295,12 @@ msgstr "Remetente"
 #: src/NotificationMailingSetting.php:158 src/Entity.php:968
 #: src/Entity.php:2028
 msgid "Email sender address"
-msgstr "Endereço de remetente"
+msgstr "Endereço de e-mail do remetente"
 
 #: src/NotificationMailingSetting.php:166 src/Entity.php:1010
 #: src/Entity.php:2038
 msgid "Email sender name"
-msgstr "Nome de remetente"
+msgstr "Nome do remetente"
 
 #: src/AuthMail.php:96 src/Auth.php:1221 src/RuleRight.php:256
 msgid "Email server"
@@ -10335,7 +10337,7 @@ msgstr[2] "Campos"
 #: src/Api/API.php:1223
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "Campo %s não é válido para o item %s."
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -11066,7 +11068,7 @@ msgstr "Obter informações sobre o plug-in"
 #: src/Toolbox.php:981 js/common.js:637
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GB"
 
 #: src/Consumable.php:214 src/Consumable.php:606
 msgctxt "button"
@@ -11423,7 +11425,7 @@ msgstr "Histórico"
 
 #: src/Config.php:1811
 msgid "Hits rate"
-msgstr "Taxa de avaliação"
+msgstr "Taxa de hits"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -12484,7 +12486,7 @@ msgstr "Tempo interno para atendimento + Progresso"
 
 #: src/Ticket.php:3154
 msgid "Internal time to own exceeded"
-msgstr "Tempo interno para possuir excedido"
+msgstr "Tempo interno para atendimento excedido"
 
 #: src/NotificationTargetTicket.php:640 src/Ticket.php:3102
 #: src/Ticket.php:3319 src/Ticket.php:6331
@@ -12497,7 +12499,7 @@ msgstr "Tempo interno para solução + Progresso"
 
 #: src/Ticket.php:3123
 msgid "Internal time to resolve exceeded"
-msgstr "Tempo interno para resolver excedido"
+msgstr "Tempo interno para solução excedido"
 
 #: src/NotificationTargetCommonITILObject.php:1793
 #: src/NotificationTargetCommonITILObject.php:1829
@@ -12656,7 +12658,7 @@ msgstr "Datas planejadas inválidas. Datas não atualizadas."
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Diretório de plug-ins inválido"
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130
@@ -13146,7 +13148,7 @@ msgstr "Chave"
 #: src/Toolbox.php:979 js/common.js:635
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KiB"
 
 #: front/knowbaseitem.form.php:175 src/KnowbaseItem.php:60
 #: src/CommonDropdown.php:975 src/ITILCategory.php:72 src/ITILCategory.php:292
@@ -14716,7 +14718,7 @@ msgstr "Método não permitido"
 #: src/Toolbox.php:980 js/common.js:636
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MiB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:339
 msgid "Microphone"
@@ -16184,12 +16186,12 @@ msgstr "Nenhum ambiente virtualizado associado ao computador"
 #: src/NotificationMailingSetting.php:192 src/Entity.php:977
 #: src/Entity.php:2048
 msgid "No-Reply address"
-msgstr "Endereço Não responder"
+msgstr "Endereço No-Reply"
 
 #: src/NotificationMailingSetting.php:203 src/Entity.php:1019
 #: src/Entity.php:2058
 msgid "No-Reply name"
-msgstr "Nome do No-Reply"
+msgstr "Nome No-Reply"
 
 #: src/Plugin.php:2749 src/Plugin.php:2779
 msgid "Non-existent function"
@@ -17794,7 +17796,7 @@ msgstr "Fotocondutor"
 #: src/Toolbox.php:983 js/common.js:639
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: templates/generic_show_form.html.twig templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:166
@@ -20317,7 +20319,7 @@ msgstr "PULADO"
 #: src/RuleTicket.php:921 src/Ticket.php:3246 src/Ticket.php:3254
 #: src/Ticket.php:3268 src/Ticket.php:3281
 msgid "SLA"
-msgstr "SLAs"
+msgstr "SLA"
 
 #: src/SlaLevel_Ticket.php:41
 msgid "SLA level for Ticket"
@@ -22142,11 +22144,11 @@ msgstr "Atribuição"
 
 #: src/RuleTicket.php:1004
 msgid "Take into account delay"
-msgstr "Leve em conta o atraso"
+msgstr "Atraso de atribuição"
 
 #: src/Ticket.php:3441
 msgid "Take into account time"
-msgstr "Leve em conta o tempo"
+msgstr "Tempo de atribuição"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
@@ -23077,7 +23079,7 @@ msgstr "Quinta-feira"
 #: src/Toolbox.php:982 js/common.js:638
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TiB"
 
 #: src/NotificationTargetProjectTask.php:688
 #: src/NotificationTargetProjectTask.php:702
@@ -26037,7 +26039,7 @@ msgstr "Ontem"
 #: src/Toolbox.php:986 js/common.js:642
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/ManualLink.php:285
 msgid "You are about to delete this item. Do you confirm?"
@@ -26525,7 +26527,7 @@ msgstr "Seus chamados a serem validados"
 #: src/Toolbox.php:985 js/common.js:641
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZB"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:502
 msgid "Zoom in/out"

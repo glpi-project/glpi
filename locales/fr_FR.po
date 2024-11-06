@@ -25,7 +25,7 @@
 # Johan Cwiklinski, 2023
 # Jordan B, 2024
 # Alexis SAILLOUR, 2024
-# Anthony Montebrun <anthony.montebrun@it-gouvernance.fr>, 2024
+# Anthony Montebrun, 2024
 # Cédric Anne, 2024
 # 
 #, fuzzy

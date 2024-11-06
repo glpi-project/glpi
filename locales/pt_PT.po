@@ -28,6 +28,7 @@
 # Pedro B., 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2024
+# Rui Paiva, 2024
 # 
 #, fuzzy
 msgid ""
@@ -36,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2024\n"
+"Last-Translator: Rui Paiva, 2024\n"
 "Language-Team: Portuguese (Portugal) (https://app.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3765,7 +3766,7 @@ msgstr "Ocorreu um erro durante a atualização da senha"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Ocorreu um erro durante a procura."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -10689,7 +10690,7 @@ msgstr[2] "Modelos de acompanhamento"
 
 #: src/Api/API.php:1289
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Para mais informação, consulte os logs do GLPI."
 
 #: src/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -12642,7 +12643,7 @@ msgstr "Datas planeadas inválidas. Datas não atualizadas."
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Diretório do plugin inválido."
 
 #: src/Console/Plugin/UninstallCommand.php:156
 #: src/Console/Plugin/ActivateCommand.php:130

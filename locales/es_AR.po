@@ -8,7 +8,7 @@
 # Pablo Nazar <pablo.e.nazar@gmail.com>, 2021
 # Emanuel Wasinger <emaw_705@hotmail.com>, 2021
 # Michael Manganiello, 2021
-# Sebastián E. Magariños <smagarinos@outlook.com>, 2021
+# Sebastián Emanuel Magariños <smagarinos@outlook.com>, 2021
 # Juan Cruz Martinez Luquez <jcmluquez@unrn.edu.ar>, 2021
 # Luis Angel Uriarte <luisuriarte@gmail.com>, 2021
 # Dario, 2021
@@ -24,6 +24,7 @@
 # Juan Gabriel Queirolo, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Nicolás Gaviola, 2024
+# luciana cabrera, 2024
 # Fernando Toledo <ftoledo@docksud.com.ar>, 2024
 # 
 #, fuzzy
@@ -3765,7 +3766,7 @@ msgstr "Ocurrió un error durante la actualización de la contraseña"
 
 #: src/Api/API.php:1287
 msgid "An error occurred during the items search."
-msgstr ""
+msgstr "Ocurrió un error durante la búsqueda de elementos."
 
 #: src/Search.php:404
 msgid "An error occurred loading data :("
@@ -4962,7 +4963,7 @@ msgstr "Inferior"
 #: templates/generic_show_form.html.twig src/Phone.php:353
 #: src/Peripheral.php:307
 msgid "Brand"
-msgstr "Fabricante"
+msgstr "Marca"
 
 #: src/DisplayPreference.php:444 src/DisplayPreference.php:629
 msgid "Bring down"

@@ -29,11 +29,11 @@
 # Masin Al-Dujaili, 2023
 # Mir Mor, 2024
 # userjab, 2024
-# Simon Heim, 2024
 # Lars I, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # John Doe, 2024
 # Ta Bo, 2024
+# Simon Heim, 2024
 # 
 #, fuzzy
 msgid ""
@@ -42,7 +42,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-29 13:04+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Ta Bo, 2024\n"
+"Last-Translator: Simon Heim, 2024\n"
 "Language-Team: German (Germany) (https://app.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9426,7 +9426,7 @@ msgstr "Endet um %s:"
 #: src/Cartridge.php:1123 src/Cartridge.php:1297 ajax/resaperiod.php:53
 #: ajax/resaperiod.php:59 ajax/resaperiod.php:83
 msgid "End date"
-msgstr "Gültig bis"
+msgstr "Enddatum"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:120
 #, php-format
