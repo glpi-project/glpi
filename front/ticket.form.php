@@ -230,6 +230,28 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
+} else if (isset($_POST['blacklist_document'])) {
+    $track->getFromDB((int)$_POST['tickets_id']);
+    $doc = new Document();
+    $doc->getFromDB((int)$_POST['documents_id']);
+    if ($doc->can($doc->getID(), UPDATE)) {
+       $doc->update([
+            'id' => $doc->fields['id'],
+            'is_blacklisted' => true
+       ]);
+    }
+    Html::back();
+} else if (isset($_POST['whitelist_document'])) {
+    $track->getFromDB((int)$_POST['tickets_id']);
+    $doc = new Document();
+    $doc->getFromDB((int)$_POST['documents_id']);
+    if ($doc->can($doc->getID(), UPDATE)) {
+       $doc->update([
+            'id' => $doc->fields['id'],
+            'is_blacklisted' => false
+       ]);
+    }
+    Html::back();
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {

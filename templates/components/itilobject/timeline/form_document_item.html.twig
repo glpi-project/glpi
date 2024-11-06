@@ -88,6 +88,21 @@
                      </button>
                   </form>
                {% endif %}
+                {% if entry_i['_can_edit'] %}
+                    {% set blacklisted_class    = entry_i['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_title    = entry_i['is_blacklisted'] ? _x('button', 'Whitelist for import') : _x('button', 'Blacklisted for import') %}
+                    {% set blacklisted_action   = entry_i['is_blacklisted'] ? 'whitelist_document' : 'blacklist_document' %}
+                    <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
+                        <input type="hidden" name="{{ fk }}" value="{{ item.fields['id'] }}">
+                        <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="{{ blacklisted_action }}"
+                                title="{{ blacklisted_title }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="ti ti-ban {{ blacklisted_class }}"></i>
+                        </button>
+                     </form>
+                {% endif %}
             </div>
          </div>
       </div>
