@@ -74,6 +74,24 @@
             display: flex !important;
         }
     }
+
+    .fileupload {
+        margin: 0;
+    }
+
+    .only-uploaded-files {
+        .fileupload_info {
+            margin-bottom: 0;
+
+            p:first-child {
+                margin-top: 10px;
+            }
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
 }
 
 .editor-footer {
@@ -250,13 +268,24 @@
             border-bottom-right-radius: var(--tblr-border-radius);
             padding: 0.5rem;
             padding-bottom: 0;
-            margin-bottom: 0.5rem;
         }
 
         .single-preview-dropdown, .multiple-preview-dropdown {
             .select2-selection {
                 border-bottom-left-radius: unset;
                 border-bottom-right-radius: unset;
+            }
+        }
+
+        div:not([data-glpi-form-editor-selectable-question-options])>[data-glpi-form-selectable-question-option]:last-child {
+            margin-bottom: 0 !important;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-question]) {
+        [data-glpi-form-editor-selectable-question-options] {
+            [data-glpi-form-selectable-question-option]:last-child {
+                margin-bottom: 0 !important;
             }
         }
     }

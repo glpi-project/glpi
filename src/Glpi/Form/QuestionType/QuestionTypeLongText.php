@@ -107,15 +107,16 @@ final class QuestionTypeLongText extends AbstractQuestionType
                 question is not null ? question.fields.default_value : '',
                 "",
                 {
-                    'placeholder': placeholder,
+                    'placeholder'    : placeholder,
                     'enable_richtext': true,
-                    'editor_height': "0",
-                    'rows' : 1,
-                    'init': question is not null ? true : false,
-                    'is_horizontal': false,
-                    'full_width'   : true,
-                    'no_label'     : true,
-                    'aria_label': aria_label,
+                    'editor_height'  : "0",
+                    'rows'           : 1,
+                    'init'           : question is not null ? true: false,
+                    'is_horizontal'  : false,
+                    'full_width'     : true,
+                    'no_label'       : true,
+                    'aria_label'     : aria_label,
+                    'mb'             : '',
                 }
             ) }}
 TWIG;
@@ -147,6 +148,7 @@ TWIG;
                     'is_horizontal': false,
                     'full_width'   : true,
                     'no_label'     : true,
+                    'mb'           : '',
                 }
             ) }}
 TWIG;
