@@ -35,6 +35,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
 
 const DELTA_ACTION_ADD    = 1;
@@ -94,8 +95,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $view     = $_GET["view"]      ?? "graph";
 
                // Check required params
-                if (empty($itemtype) || empty($items_id)) {
-                    throw new BadRequestHttpException("Missing itemtype or items_id");
+                if (empty($itemtype) || !is_a($itemtype, CommonDBTM::class, true) || empty($items_id)) {
+                    throw new BadRequestHttpException("Invalid or missing itemtype or items_id");
                 }
 
                // Check that the target asset exist
@@ -153,8 +154,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $start_node_details = explode(Impact::NODE_ID_DELIMITER, $context_data['node_id']);
 
        // Get impact_item for this node
-        $item = new $start_node_details[0]();
-        $item->getFromDB($start_node_details[1]);
+        $item = getItemForItemtype($start_node_details[0]);
+        if (!$item || !$item->getFromDB($start_node_details[1])) {
+            throw new NotFoundHttpException();
+        }
         $impact_item = \ImpactItem::findForItem($item);
         $start_node_impact_item_id = $impact_item->fields['id'];
         $readonly = !$item->can($item->fields['id'], UPDATE);

@@ -1,5 +1,8 @@
 <?php
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -59,10 +62,12 @@ if (isset($_POST["table"], $_POST["value"])) {
                 '_idor_token' => $_POST['_idor_token'] ?? ""
             ])
         ) {
-            return;
+            throw new AccessDeniedHttpException();
         }
-        $item = new $itemtype();
-        $item->getFromDB((int)$_POST["value"]);
+        $item = getItemForItemtype($itemtype);
+        if (!$item || !$item->getFromDB((int)$_POST["value"])) {
+            throw new NotFoundHttpException();
+        }
         echo '&nbsp;' . $item->getLinks();
     }
 }

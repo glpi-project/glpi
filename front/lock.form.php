@@ -44,8 +44,8 @@ global $CFG_GLPI;
 
 if (isset($_POST['itemtype'])) {
     $itemtype    = $_POST['itemtype'];
-    $source_item = new $itemtype();
-    if ($source_item->can($_POST['id'], UPDATE)) {
+    $source_item = getItemForItemtype($itemtype);
+    if ($source_item && $source_item->can($_POST['id'], UPDATE)) {
         $devices = Item_Devices::getDeviceTypes();
         $actions = array_merge($CFG_GLPI['inventory_lockable_objects'], array_values($devices));
 

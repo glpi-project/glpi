@@ -43,38 +43,35 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
         'message'   => __s('Required argument missing!')
     ];
 } else {
-    $itemtype = $_POST['itemtype'];
-    $items_id = $_POST['items_id'];
-
-    if ($itemtype != Location::getType()) {
-        $item = new $itemtype();
-        $found = $item->getFromDB($items_id);
+    $location_id = null;
+    if ($_POST['itemtype'] !== Location::class) {
+        $item  = getItemForItemtype($_POST['itemtype']);
+        $found = $item && $item->getFromDB((int) $_POST['items_id']);
         if ($found && isset($item->fields['locations_id']) && (int)$item->fields['locations_id'] > 0) {
-            $itemtype = Location::getType();
-            $items_id = $item->fields['locations_id'];
+            $location_id = $item->fields['locations_id'];
         } else {
             $result = [
                 'success'   => false,
                 'message'   => __s('Element seems not geolocalized or cannot be found')
             ];
         }
+    } else {
+        $location_id = (int) $_POST['items_id'];
     }
 
-    if (!count($result)) {
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
-        $item->getFromDB($items_id);
-        if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
+    if ($location_id !== null) {
+        $location = new Location();
+        if ($location->getFromDB($location_id) && !empty($location->fields['latitude']) && !empty($location->fields['longitude'])) {
             $result = [
-                'name'   => $item->getName(),
-                'lat'    => $item->fields['latitude'],
-                'lng'    => $item->fields['longitude']
+                'name'   => $location->getName(),
+                'lat'    => $location->fields['latitude'],
+                'lng'    => $location->fields['longitude']
             ];
         } else {
             $result = [
                 'success'   => false,
                 'message'   => "<h3>" . __("Location seems not geolocalized!") . "</h3>" .
-                           "<a href='" . $item->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>"
+                           "<a href='" . $location->getLinkURL() . "'>" . __s("Consider filling latitude and longitude on this location.") . "</a>"
             ];
         }
     }

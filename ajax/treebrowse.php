@@ -34,6 +34,7 @@
  */
 
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Features\TreeBrowse;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -53,9 +54,13 @@ switch ($_REQUEST['action']) {
         ];
 
         $itemtype = $_REQUEST['itemtype'];
+        $item = getItemForItemtype($itemtype);
+        if (!$item || !Toolbox::hasTrait($item, TreeBrowse::class)) {
+            throw new BadRequestHttpException();
+        }
+
         $category_itemtype = $itemtype::getCategoryItemType($itemtype);
         $category_table = $category_itemtype::getTable();
-        $item = new $itemtype();
         $so = $item->rawSearchOptions();
 
         $field = 0;

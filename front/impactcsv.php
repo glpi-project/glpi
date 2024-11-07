@@ -41,7 +41,7 @@ $itemtype = $_GET['itemtype'] ?? '';
 $items_id = $_GET['items_id'] ?? '';
 
 // Check for mandatory params
-if (empty($itemtype) || empty($items_id)) {
+if (($item = getItemForItemtype($itemtype)) === false || empty($items_id)) {
     throw new BadRequestHttpException();
 }
 
@@ -49,7 +49,6 @@ if (empty($itemtype) || empty($items_id)) {
 Session::checkRight($itemtype::$rightname, READ);
 
 // Load item
-$item = new $itemtype();
 $item->getFromDB($items_id);
 
 CsvResponse::output(new ImpactCsvExport($item));

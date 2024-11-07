@@ -34,6 +34,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
     return;
@@ -43,7 +44,10 @@ $itemtype = $_GET['item_type'];
 if ($itemtype === 'AllAssets') {
     Session::checkCentralAccess();
 } else {
-    $item = new $itemtype();
+    $item = getItemForItemtype($itemtype);
+    if (!$item) {
+        throw new BadRequestHttpException();
+    }
     if (!$item::canView()) {
         throw new AccessDeniedHttpException();
     }

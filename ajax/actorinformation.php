@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
     /** @var \Glpi\Controller\LegacyFileLoadController $this */
@@ -57,10 +61,15 @@ $actor_id  = (int)$_REQUEST[$actor_key];
 // check if user is allowed to see the item (only if not current connected user)
 if ($actor_id != Session::getLoginUserID()) {
     $itemtype = getItemtypeForForeignKeyField($actor_key);
-    $item     = new $itemtype();
-    if (!$item->getFromDB($actor_id) || !$item->canView()) {
-        // Unable to get item or no rights to see the item
-        return;
+    $item     = getItemForItemtype($itemtype);
+    if ($item === false) {
+        throw new BadRequestHttpException();
+    }
+    if (!$item->getFromDB($actor_id)) {
+        throw new NotFoundHttpException();
+    }
+    if (!$item->canView()) {
+        throw new AccessDeniedHttpException();
     }
 }
 

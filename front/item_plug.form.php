@@ -39,12 +39,16 @@ Session::checkCentralAccess();
 
 $item_plug = new \Item_Plug();
 
+if (isset($_POST['itemtype']) && !is_a($_POST['itemtype'], CommonDBTM::class, true)) {
+    throw new BadRequestHttpException();
+}
+
 if (isset($_POST['update'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], UPDATE);
-    $item = new $_POST['itemtype']();
+    $itemtype = $_POST['itemtype'];
     // update existing relation
     if ($item_plug->update($_POST)) {
-        $url = $item::getFormURLWithID($_POST['items_id']);
+        $url = $itemtype::getFormURLWithID($_POST['items_id']);
     } else {
         $url = $item_plug::getFormURLWithID($_POST['id']);
     }
@@ -52,14 +56,14 @@ if (isset($_POST['update'], $_POST['itemtype'])) {
 } else if (isset($_POST['add'], $_POST['itemtype'])) {
     $item_plug->check(-1, CREATE, $_POST);
     $item_plug->add($_POST);
-    $item = new $_POST['itemtype']();
-    $url = $item::getFormURLWithID($_POST['items_id']);
+    $itemtype = $_POST['itemtype'];
+    $url = $itemtype::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 } else if (isset($_POST['purge'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], PURGE);
     $item_plug->delete($_POST, 1);
-    $item = new $_POST['itemtype']();
-    $url = $item::getFormURLWithID($_POST['items_id']);
+    $itemtype = $_POST['itemtype'];
+    $url = $itemtype::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 }
 

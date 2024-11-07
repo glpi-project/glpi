@@ -103,7 +103,7 @@ if (isset($_GET['action'])) {
         ErrorHandler::getInstance()->disableOutput();
         try {
             /** @var CommonGLPI $item */
-            $item = new $_GET['itemtype']();
+            $item = new $class();
             $options = Search::getOptions($item::getType());
         } catch (Throwable $e) {
             $options = [];

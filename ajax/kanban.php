@@ -65,7 +65,10 @@ if (isset($_REQUEST['itemtype'])) {
     }
     /** @var CommonDBTM $item */
     $itemtype = $_REQUEST['itemtype'];
-    $item = new $itemtype();
+    $item = getItemForItemtype($_REQUEST['itemtype']);
+    if (!$item) {
+        throw new BadRequestHttpException();
+    }
 }
 
 // Rights Checks
@@ -132,11 +135,6 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if (($_POST['action'] ?? null) === 'add_item') {
     $checkParams(['inputs']);
 
-    $item = getItemForItemtype($itemtype);
-    if (!$item) {
-        throw new BadRequestHttpException();
-    }
-
     $inputs = $_POST['inputs'];
 
     if (!$item->can(-1, CREATE, $inputs)) {
@@ -149,11 +147,6 @@ if (($_POST['action'] ?? null) === 'update') {
     }
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
-
-    $item = getItemForItemtype($itemtype);
-    if (!$item) {
-        throw new BadRequestHttpException();
-    }
 
     $inputs = $_POST['inputs'];
 

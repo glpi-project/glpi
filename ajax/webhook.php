@@ -63,8 +63,10 @@ switch ($action) {
         );
         return;
     case 'get_items_from_itemtype':
-        if (array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())) {
-            $object = new $_POST['itemtype']();
+        if (
+            array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())
+            && $object = getItemForItemtype($_POST['itemtype'])
+        ) {
             $data = $object->find();
             $values = [];
             foreach ($data as $items_id => $items_data) {
@@ -112,7 +114,7 @@ switch ($action) {
         }
 
         $error = [];
-        if (!$itemtype) {
+        if (($obj = getItemForItemtype($itemtype)) === false) {
             $error[] = __('Please select an itemtype');
         }
 
@@ -128,7 +130,6 @@ switch ($action) {
             array_unshift($error, __("Result can't be loaded :"));
             echo implode("<br>&nbsp; - ", $error);
         } else {
-            $obj = new $itemtype();
             $obj->getFromDB($items_id);
             $path = $webhook->getApiPath($obj);
             echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);
