@@ -4256,19 +4256,19 @@ JAVASCRIPT;
      *
      * @return bool
      */
-    public static function isCategoryValid($input): bool
+    public static function isCategoryValid(array $input): bool
     {
         $cat = new ITILCategory();
         if ($cat->getFromDB($input['itilcategories_id'])) {
             switch ($input['type']) {
                 case self::INCIDENT_TYPE:
-                    if (!$cat->getField('is_incident')) {
+                    if (!$cat->fields['is_incident']) {
                         return false;
                     }
                     break;
 
                 case self::DEMAND_TYPE:
-                    if (!$cat->getField('is_request')) {
+                    if (!$cat->fields['is_request']) {
                         return false;
                     }
                     break;

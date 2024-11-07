@@ -7297,7 +7297,7 @@ HTML
         $this->checkInput($ticket, $id, $expected);
     }
 
-    public function isCategoryValidProvider(): array
+    public static function isCategoryValidProvider(): array
     {
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -7431,7 +7431,7 @@ HTML
     /**
      * @dataProvider isCategoryValidProvider
      */
-    public function testIsCategoryValid($category_fields, $input, $expected): void
+    public function testIsCategoryValid(array $category_fields, array $input, bool $expected): void
     {
         $category = $this->createItem('ITILCategory', $category_fields);
         $input['itilcategories_id'] = $category->getID();
