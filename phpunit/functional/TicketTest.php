@@ -7296,4 +7296,133 @@ HTML
         $this->assertGreaterThan(0, $id);
         $this->checkInput($ticket, $id, $expected);
     }
+
+    public function isCategoryValidProvider(): array
+    {
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+
+        // Create Categories
+        $category1 = $this->createItem('ITILCategory', [
+            'name' => 'category_root_entity_recursive',
+            'entities_id' => $ent0,
+            'is_recursive' => 1,
+        ]);
+
+        $category2 = $this->createItem('ITILCategory', [
+            'name' => 'category_root_entity_no_recursive',
+            'entities_id' => $ent0,
+            'is_recursive' => 0,
+        ]);
+
+        $category3 = $this->createItem('ITILCategory', [
+            'name' => 'category_child_entity',
+            'entities_id' => $ent1,
+        ]);
+
+        $category4 = $this->createItem('ITILCategory', [
+            'name' => 'category_no_request',
+            'entities_id' => $ent0,
+            'is_recursive' => 1,
+            'is_request' => 0,
+        ]);
+
+        $category5 = $this->createItem('ITILCategory', [
+            'name' => 'category_no_incident',
+            'entities_id' => $ent0,
+            'is_recursive' => 1,
+            'is_incident' => 0,
+        ]);
+
+        return [
+            [
+                'input' => [
+                    'itilcategories_id' => $category1->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category1->getID(),
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category2->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category2->getID(),
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category3->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category3->getID(),
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category4->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category4->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category5->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'input' => [
+                    'itilcategories_id' => $category5->getID(),
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider isCategoryValidProvider
+     */
+    public function testIsCategoryValid($input, $expected): void
+    {
+        $this->assertSame($expected, \Ticket::isCategoryValid($input));
+    }
 }
