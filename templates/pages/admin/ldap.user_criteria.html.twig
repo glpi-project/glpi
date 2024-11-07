@@ -138,6 +138,7 @@
         <div class="card-footer d-flex flex-row-reverse">
             {{ inputs.hidden('action', _request['action']|default('show')) }}
             {{ inputs.hidden('mode', _request['mode']|default(constant('AuthLDAP::ACTION_IMPORT'))) }}
+            {{ inputs.hidden('_in_modal', _request['_in_modal']|default('')) }}
             {{ inputs.submit('search', _x('button', 'Search'), 1) }}
         </div>
         <script>
