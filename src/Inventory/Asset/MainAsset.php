@@ -971,7 +971,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Retrieve computer entities is_recursive
      *
-     * @return bool
+     * @return integer
      */
     public function getEntityRecursive()
     {

@@ -61,8 +61,8 @@ abstract class InventoryAsset
     protected $agent;
     /** @var integer */
     protected $entities_id = 0;
-    /** @var bool */
-    protected $is_recursive = false;
+    /** @var integer */
+    protected $is_recursive = 0;
     /** @var array */
     protected $ruleentity_data = [];
     /** @var array */
@@ -338,7 +338,7 @@ abstract class InventoryAsset
     /**
      * Set entity recursive from main asset
      *
-     * @param bool $is_recursive
+     * @param integer $is_recursive
      *
      * @return $this
      */
