@@ -34,11 +34,9 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-{# TODO Stop using the session to store temporary parameters! #}
 {% set is_sync_mode = _request['mode']|default(0) == constant('AuthLDAP::ACTION_SYNCHRONIZE') %}
 {% set is_expert_interface = _request['interface']|default('simple') == constant('AuthLDAP::EXPERT_INTERFACE') %}
 {% set selected_authldaps_id = _request['authldaps_id'] %}
-{% set is_authsldap_selected = selected_authldaps_id != constant('NOT_AVAILABLE') and selected_authldaps_id > 0 %}
 {% set selected_entity = _request['entities_id']|default(session('glpiactive_entity')) %}
 
 <form method="get" action="{{ path('front/ldap.import.php') }}" data-submit-once>
@@ -119,12 +117,12 @@
                 {% endfor %}
 
                 {% set updated_date_fields %}
-                    {{ inputs.datetime('begin_date', _request[field]|default(null), {
+                    {{ inputs.datetime('begin_date', _request['begin_date']|default(null), {
                         maybeempty: true,
                         clearable: true,
                     }) }}
                     <span class="mx-3">-></span>
-                    {{ inputs.datetime('end_date', _request[field]|default(null), {
+                    {{ inputs.datetime('end_date', _request['end_date']|default(null), {
                         maybeempty: true,
                         clearable: true,
                     }) }}
@@ -140,7 +138,6 @@
         <div class="card-footer d-flex flex-row-reverse">
             {{ inputs.hidden('action', _request['action']|default('show')) }}
             {{ inputs.hidden('mode', _request['mode']|default(constant('AuthLDAP::ACTION_IMPORT'))) }}
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
             {{ inputs.submit('search', _x('button', 'Search'), 1) }}
         </div>
         <script>
@@ -148,7 +145,7 @@
                 $('input[name="interface"]').on('change', (e) => {
                     const chkbox = $(e.target);
                     const is_expert_mode = chkbox.prop('checked');
-                    chkbox.closest('.form-field').find('> label').text(is_expert_mode ? '{{ __('Expert mode') }}' : '{{ __('Simple mode') }}');
+                    chkbox.closest('.form-field').find('> label').text(is_expert_mode ? '{{ __('Expert mode')|e('js') }}' : '{{ __('Simple mode')|e('js') }}');
                     chkbox.closest('form').find('.form-field[data-interface="expert"]').toggleClass('d-none', !is_expert_mode);
                     chkbox.closest('form').find('.form-field[data-interface="simple"]').toggleClass('d-none', is_expert_mode);
                     // Disable hidden fields

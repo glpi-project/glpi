@@ -442,7 +442,7 @@ class AuthLDAP extends CommonDBTM
                             ['method' => self::IDENTIFIER_LOGIN,
                                 'value'  => $id
                             ],
-                            $_REQUEST['mode'],
+                            (int) $_REQUEST['mode'],
                             $_REQUEST['authldaps_id'],
                             true
                         )
@@ -1704,7 +1704,7 @@ TWIG, $twig_params);
                 $entry['sync_field'] = $userinfos['uid'];
             }
             if (isset($userinfos['id']) && User::canView()) {
-                $entry['user'] = "<a href='" . htmlspecialchars($userinfos['link']) . "'>" . htmlspecialchars($userinfos['name']) . "</a>";
+                $entry['user'] = "<a href='" . htmlescape($userinfos['link']) . "'>" . htmlescape($userinfos['name']) . "</a>";
             } else {
                 $entry['user'] = $userinfos['link'];
             }
@@ -1717,6 +1717,9 @@ TWIG, $twig_params);
                 $date_mod = $userinfos['date_sync'];
             }
             $entry['date_mod'] = $date_mod;
+
+            $entry['itemtype'] = self::class; // required for massive actions
+
             $entries[] = $entry;
         }
 
@@ -1745,7 +1748,15 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-                'specific_actions' => [$form_action => $textbutton]
+                'specific_actions' => [$form_action => $textbutton],
+                'extraparams' => [
+                    'authldaps_id' => $config_ldap->getID(),
+                    'mode'         => $values['mode'],
+                    'massive_action_fields' => [
+                        'authldaps_id',
+                        'mode',
+                    ]
+                ],
             ]
         ]);
         echo "</div>";
@@ -4331,8 +4342,8 @@ TWIG, $twig_params);
                 $values['authldaps_id'],
                 $user_sync_field
             );
-            if ($values['mode'] !== self::ACTION_IMPORT && $user) {
-                // Not importing and the user already exists
+            if ($values['mode'] === self::ACTION_IMPORT && $user) {
+                // Do not display existing users on import mode
                 continue;
             }
             $user_to_add['link'] = $userinfos["user"];
