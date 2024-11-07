@@ -1108,8 +1108,14 @@ SCSS
         ];
 
         yield [
-            'name'      => 'foo\'"$**-_23',
+            'name'      => 'foo\'"$**_23',
             'expected'  => 'foo_23',
+        ];
+
+        // Make sure the format used in form destination config is not broken
+        yield [
+            'name'     => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
+            'expected' => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
         ];
     }
 
