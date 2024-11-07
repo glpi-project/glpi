@@ -8805,7 +8805,7 @@ JSON;
             $inventory = $this->doInventory($json);
             $assets = $inventory->getAssets();
 
-            foreach($assets as $assettype) {
+            foreach ($assets as $assettype) {
                 foreach ($assettype as $asset) {
                     if ($asset->maybeRecursive()) {
                         $this->assertFalse($asset->isRecursive());
