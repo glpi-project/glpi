@@ -1640,4 +1640,22 @@ class UserTest extends \DbTestCase
             }
         }
     }
+
+    public function testUnsetUndisclosedFieldsWithPartialFields()
+    {
+        $fields = [
+            //'id' is missing
+            'name'                       => 'test',
+            'password'                   => \bin2hex(\random_bytes(16)),
+            'api_token'                  => \bin2hex(\random_bytes(16)),
+            'cookie_token'               => \bin2hex(\random_bytes(16)),
+            'password_forget_token'      => \bin2hex(\random_bytes(16)),
+            'personal_token'             => \bin2hex(\random_bytes(16)),
+            'password_forget_token_date' => '2024-10-25 13:15:12',
+        ];
+
+        \User::unsetUndisclosedFields($fields);
+
+        $this->assertEquals(['name' => 'test'], $fields);
+    }
 }
