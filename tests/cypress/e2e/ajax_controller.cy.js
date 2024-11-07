@@ -49,9 +49,11 @@ describe('Ajax Controller', () => {
             cy.findAllByRole('row').should('have.length', 3); // 2 entries + header
             cy.findByRole('tab', {'name': "Form"}).click();
 
+            cy.intercept('POST', '/ajax/common_ajax_controller.php').as('updateForm');
             // Modify and save form
             cy.findByRole('checkbox', {'name': "Active"}).click();
             cy.findByRole('button', {'name': "Save"}).click();
+            cy.wait('@updateForm');
             cy.findByRole('alert').should('exist').and(
                 'contains.text',
                 'Item successfully updated'

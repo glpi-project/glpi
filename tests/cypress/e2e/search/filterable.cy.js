@@ -63,7 +63,7 @@ describe('Filterable', () => {
             // TODO: bad selector here, we must add accessiblity labels to
             // the search engine in order to be able to use findByRole instead.
             // -> cy.findByRole("textbox", {"name": "Items seen"})
-            cy.get('input[name="criteria[0][value]"').type(computer_name);
+            cy.get('input[name="criteria[0][value]"]').type(computer_name);
             cy.findByRole("button", {"name": "Save"}).click();
             cy.findByRole("alert").should("exist")
                 .and("contains.text", "Filter saved")
