@@ -1286,9 +1286,8 @@ class EntityTest extends DbTestCase
 
     /**
      * Regression test to ensure that renaming an entity doesn't force it to become a child of the root entity (ID 0)
-     * @return void
      */
-    public function testRenameDoesntChangeParent()
+    public function testRenameDoesntChangeParent(): void
     {
         $this->login();
         $entity = $this->createItem('Entity', [
