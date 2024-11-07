@@ -733,7 +733,8 @@ class User extends CommonDBTM
         $user = new self();
         $can_see_token = Session::getLoginUserID() === $fields['id']
             || (
-                $user->can($fields['id'], UPDATE)
+                !array_key_exists('id', $fields)
+                || $user->can($fields['id'], UPDATE)
                 && $user->currentUserHaveMoreRightThan($fields['id'])
             );
         if (!$can_see_token) {
