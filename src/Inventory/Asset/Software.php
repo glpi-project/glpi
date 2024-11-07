@@ -276,7 +276,7 @@ class Software extends InventoryAsset
         } else {
             // Software should be created in a different entity than main asset one
             $this->entities_id  = $entities_id_software;
-            $this->is_recursive = 1;
+            $this->is_recursive = true;
         }
 
         //Get operating system
