@@ -125,32 +125,32 @@ abstract class CommonTreeDropdown extends CommonDropdown
      **/
     public function adaptTreeFieldsFromUpdateOrAdd($input)
     {
-
         $parent = clone $this;
-       // Update case input['name'] not set :
-        if (!isset($input['name']) && isset($this->fields['name'])) {
-            $input['name'] = $this->fields['name'];
+
+        $fkey = static::getForeignKeyField();
+
+        // Fallback to current values if all required fields are set in input
+        foreach (['name', $fkey] as $fieldname) {
+            if (!isset($input[$fieldname]) && isset($this->fields[$fieldname])) {
+                $input[$fieldname] = $this->fields[$fieldname];
+            }
         }
-       // leading/ending space will break findID/import
+
+        // leading/ending space will break findID/import
         $input['name'] = trim($input['name']);
 
         if (
-            isset($input[$this->getForeignKeyField()])
-            && !$this->isNewID($input[$this->getForeignKeyField()])
-            && $parent->getFromDB($input[$this->getForeignKeyField()])
+            isset($input[$fkey])
+            && !$this->isNewID($input[$fkey])
+            && $parent->getFromDB($input[$fkey])
         ) {
             $input['level']        = $parent->fields['level'] + 1;
-           // Sometimes (internet address), the complete name may be different ...
-           /* if ($input[$this->getForeignKeyField()]==0) { // Root entity case
-            $input['completename'] =  $input['name'];
-           } else {*/
             $input['completename'] = self::getCompleteNameFromParents(
                 $parent->fields['completename'],
                 $input['name']
             );
-           // }
         } else {
-            $input[$this->getForeignKeyField()] = 0;
+            $input[$fkey] = 0;
             $input['level']                     = 1;
             $input['completename']              = $input['name'];
         }

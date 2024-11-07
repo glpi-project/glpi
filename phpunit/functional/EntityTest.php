@@ -1284,6 +1284,25 @@ class EntityTest extends DbTestCase
         $this->assertEquals('New entity', $new_entity->fields['name']);
     }
 
+    /**
+     * Regression test to ensure that renaming an entity doesn't force it to become a child of the root entity (ID 0)
+     */
+    public function testRenameDoesntChangeParent(): void
+    {
+        $this->login();
+        $entity = $this->createItem('Entity', [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue($entity->update([
+            'id'   => $entity->getID(),
+            'name' => __FUNCTION__ . ' renamed',
+        ]));
+        $this->assertTrue($entity->getFromDB($entity->getID()));
+        $this->assertEquals($this->getTestRootEntity(true), $entity->fields['entities_id']);
+        $this->assertEquals(__FUNCTION__ . ' renamed', $entity->fields['name']);
+    }
+
     public static function entityTreeProvider(): iterable
     {
         $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
