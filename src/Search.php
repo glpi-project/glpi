@@ -4747,6 +4747,8 @@ JAVASCRIPT;
 
         switch ($searchtype) {
             case "notcontains":
+                $nott = !$nott;
+               //negated, use contains case
             case "contains":
                 // FIXME
                 // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
@@ -4788,13 +4790,9 @@ JAVASCRIPT;
 
                     // Potential negation will be handled by the subquery operator
                     $SEARCH = self::makeTextSearch($val, false);
-                    if ($searchtype === 'contains') {
-                        $subquery_operator = $nott ? "NOT IN" : "IN";
-                    } else {
-                        $subquery_operator = $nott ? "IN" : "NOT IN";
-                    }
+                    $subquery_operator = $nott ? "NOT IN" : "IN";
                 } else {
-                    $SEARCH = self::makeTextSearch($val, $searchtype === 'contains' ? $nott : !$nott);
+                    $SEARCH = self::makeTextSearch($val, $nott);
                 }
                 break;
 
