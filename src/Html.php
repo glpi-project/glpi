@@ -6675,6 +6675,6 @@ CSS;
      */
     public static function sanitizeInputName(string $name): string
     {
-        return preg_replace('/[^a-z0-9_\[\]]/i', '', $name);
+        return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
     }
 }
