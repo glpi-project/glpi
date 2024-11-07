@@ -213,6 +213,12 @@
          {% do call('Planning::dropdownState', ['task_state', config['task_state'], true]) %}
       {% endset %}
       {{ fields.htmlField('', task_state_dropdown, __('Tasks state by default'), field_options) }}
+
+      {% set planned_task_state_dropdown %}
+         {% do call('Planning::dropdownState', ['planned_task_state', config['planned_task_state'], true]) %}
+      {% endset %}
+      {{ fields.htmlField('', planned_task_state_dropdown, __('Planned tasks state by default'), field_options) }}
+
       {{ fields.dropdownNumberField(
          'refresh_views',
          config['refresh_views'],
