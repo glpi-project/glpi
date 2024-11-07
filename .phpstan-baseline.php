@@ -340,7 +340,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: else.unreachable
 	'message' => '#^Else branch is unreachable because previous condition is always true\\.$#',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
