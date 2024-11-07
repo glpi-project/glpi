@@ -291,7 +291,7 @@ function step4($databasename, $newdatabasename)
         return;
     }
 
-    if ($databasename !== '' && $newdatabasename !== '') {
+    if ($databasename === '' && $newdatabasename !== '') {
         // create new db
         $databasename = $link->real_escape_string($newdatabasename);
 
