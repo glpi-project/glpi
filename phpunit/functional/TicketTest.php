@@ -7296,4 +7296,145 @@ HTML
         $this->assertGreaterThan(0, $id);
         $this->checkInput($ticket, $id, $expected);
     }
+
+    public static function isCategoryValidProvider(): array
+    {
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+
+        return [
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider isCategoryValidProvider
+     */
+    public function testIsCategoryValid(array $category_fields, array $input, bool $expected): void
+    {
+        $category = $this->createItem('ITILCategory', $category_fields);
+        $input['itilcategories_id'] = $category->getID();
+        $this->assertSame($expected, \Ticket::isCategoryValid($input));
+    }
 }
