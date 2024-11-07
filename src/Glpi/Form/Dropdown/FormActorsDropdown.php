@@ -122,7 +122,12 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     #[Override]
     protected static function getUsers(string $text): array
     {
-        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
+        $right = 'all';
+        if (isset($_POST['right_for_users'])) {
+            $right = $_POST['right_for_users'];
+        }
+
+        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, 0, self::LIMIT);
         $users_items = [];
         foreach ($users as $user) {
             $new_key = 'users_id-' . $user['id'];
@@ -134,6 +139,31 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         }
 
         return $users_items;
+    }
+
+    #[Override]
+    protected static function getGroups(string $text): array
+    {
+        $additional_conditions = [];
+        if (isset($_POST['group_conditions'])) {
+            $additional_conditions = $_POST['group_conditions'];
+        }
+
+        $group_item = new Group();
+        $groups = $group_item->find(
+            [
+                'name' => ["LIKE", "%$text%"]
+            ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
+            [],
+            self::LIMIT
+        );
+        $groups_items = [];
+        foreach ($groups as $group) {
+            $new_key = 'groups_id-' . $group['id'];
+            $groups_items[$new_key] = $group['name'];
+        }
+
+        return $groups_items;
     }
 
     #[Override]
