@@ -225,9 +225,15 @@ class VirtualMachineTest extends AbstractInventoryAsset
             <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
             <VIRTUALMACHINES>
               <COMMENT>Computer VM</COMMENT>
+              <IPADDRESS>10.100.240.11</IPADDRESS>
               <MAC>00:50:56:90:43:42</MAC>
               <MEMORY>1024</MEMORY>
               <NAME>SRV-DMZ-EZ</NAME>
+              <OPERATINGSYSTEM>
+                 <BOOT_TIME>2024-01-24T16:00:00Z</BOOT_TIME>
+                 <FQDN>test.test.test</FQDN>
+                 <FULL_NAME>OS Test</FULL_NAME>
+              </OPERATINGSYSTEM>
               <STATUS>running</STATUS>
               <UUID>420904FE-6a92-95e8-13f9-a37fc3607c14</UUID>
               <VCPU>1</VCPU>
@@ -268,6 +274,20 @@ class VirtualMachineTest extends AbstractInventoryAsset
           $computer_linked_first = new \Computer();
           $this->assertTrue($computer_linked_first->getFromDBByCrit([
               'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+          ]));
+
+          //get NetworkPort Computer
+          $netport_computer_linked_first = new \NetworkPort();
+          $this->assertTrue($netport_computer_linked_first->getFromDBByCrit([
+              'items_id' => $computer_linked_first->fields['id'],
+              'itemtype' => 'Computer',
+          ]));
+
+          //get Operating system Computer
+          $os_computer_linked_first = new \Item_OperatingSystem();
+          $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
+              'items_id' => $computer_linked_first->fields['id'],
+              'itemtype' => 'Computer',
           ]));
 
           $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
