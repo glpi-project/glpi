@@ -123,7 +123,7 @@ abstract class InventoryAsset
 
     public function isRecursive(): bool
     {
-        return $this->is_recursive;
+        return (bool) $this->is_recursive;
     }
 
     /**
