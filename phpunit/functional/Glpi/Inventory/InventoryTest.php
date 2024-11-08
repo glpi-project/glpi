@@ -5168,6 +5168,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertIsArray($database);
         $this->assertSame('glpi', $database['name']);
         $this->assertSame(55000, $database['size']);
+
+        $computer = new \Computer();
+        global $DB;
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+        $computers_id = $agent['items_id'];
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertTrue($computer->delete(['id' => $computers_id], true));
     }
 
 

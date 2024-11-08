@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,44 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Toolbox;
 
-use Override;
-
-final class QuestionTypeDropdownConfig extends QuestionTypeSelectableConfig
+class ArrayNormalizer
 {
-    // Unique reference to hardcoded name used for serialization
-    public const IS_MULTIPLE_DROPDOWN = "is_multiple_dropdown";
-
-    public function __construct(
-        array $options,
-        private bool $is_multiple_dropdown = false,
-    ) {
-        parent::__construct(options: $options);
-    }
-
-    #[Override]
-    public static function jsonDeserialize(array $data): self
+    public static function normalizeValues(array $array, callable $values_normalizer, bool $preserve_keys = false): array
     {
-        return new self(
-            options: $data[self::OPTIONS] ?? [],
-            is_multiple_dropdown: $data[self::IS_MULTIPLE_DROPDOWN] ?? false,
-        );
-    }
+        $cleaned_array = [];
 
-    #[Override]
-    public function jsonSerialize(): array
-    {
-        return array_merge(
-            parent::jsonSerialize(),
-            [
-                self::IS_MULTIPLE_DROPDOWN => $this->is_multiple_dropdown,
-            ]
-        );
-    }
+        foreach ($array as $key => $value) {
+            $value = call_user_func($values_normalizer, $value);
 
-    public function isMultipleDropdown(): bool
-    {
-        return $this->is_multiple_dropdown;
+            if ($preserve_keys) {
+                $cleaned_array[$key] = $value;
+            } else {
+                $cleaned_array[] = $value;
+            }
+        }
+
+        return $cleaned_array;
     }
 }

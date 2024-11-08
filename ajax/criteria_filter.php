@@ -37,7 +37,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\Http\UnprocessableEntityHttpException;
-use Glpi\Http\Response;
 use Glpi\Search\FilterableInterface;
 
 // Read endpoint
@@ -83,9 +82,8 @@ switch ($action) {
             throw new UnprocessableEntityHttpException('Unable to process data');
         }
 
-        // OK
-        (new Response(200))->send();
-        break;
+        // Send empty response when OK
+        return;
 
     case "delete_filter":
         // Default values for this endpoint
@@ -117,7 +115,6 @@ switch ($action) {
             throw new UnprocessableEntityHttpException('Unable to process data');
         }
 
-        // OK
-        (new Response(200))->send();
-        break;
+        // Send empty response when OK
+        return;
 }

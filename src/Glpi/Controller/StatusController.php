@@ -37,9 +37,8 @@ namespace Glpi\Controller;
 use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
-use Glpi\Http\HeaderlessStreamedResponse;
+use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
-use Glpi\Http\Response;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -54,23 +53,23 @@ final class StatusController extends AbstractController
     #[SecurityStrategy('no_check')]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
-        return new HeaderlessStreamedResponse($this->call(...));
-    }
-
-    private function call(): void
-    {
         // Force in normal mode
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
         // Redirect handling to the High-Level API (we may eventually remove this script)
         $request = new Request('GET', '/Status/All', getallheaders() ?? []);
 
         try {
             $response = Router::getInstance()->handleRequest($request);
-            $response->send();
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
-            $response = new Response(500);
-            $response->send();
+            $response = new JSONResponse(null, 500);
         }
+
+        return new SymfonyResponse(
+            (string) $response->getBody(),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        );
     }
 }

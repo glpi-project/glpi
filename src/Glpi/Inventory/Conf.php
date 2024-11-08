@@ -53,6 +53,7 @@ use Dropdown;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\ArrayNormalizer;
 use Html;
 use NetworkPortType;
 use Session;
@@ -1178,6 +1179,14 @@ class Conf extends CommonGLPI
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
             if (is_array($to_process[$prop])) {
+                if ($prop == 'stale_agents_action') {
+                    $to_process[$prop] = ArrayNormalizer::normalizeValues($to_process[$prop], 'intval');
+                } elseif ($prop == 'stale_agents_status_condition') {
+                    $to_process[$prop] = ArrayNormalizer::normalizeValues(
+                        $to_process[$prop],
+                        fn (mixed $val) => $val === 'all' ? 'all' : intval($val)
+                    );
+                }
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }

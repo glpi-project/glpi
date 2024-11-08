@@ -47,9 +47,6 @@ final class SessionConfig implements LegacyConfigProviderInterface, ConfigProvid
 
     public function execute(): void
     {
-        // Load Language file
-        Session::loadLanguage();
-
         if (
             isset($_SESSION['glpi_use_mode'])
             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)

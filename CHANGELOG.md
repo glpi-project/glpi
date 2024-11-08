@@ -310,6 +310,8 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::dropdownUserRestoredActions()`
 - `AuthLDAP::getLdapDeletedUserActionOptions()`
+- `AuthLDAP::manageValuesInSession()`
+- `AuthLDAP::showDateRestrictionForm()`
 - `Cartridge::getNotificationParameters()`
 - `CartridgeItem::showDebug()`
 - `Certificate::showDebug()`
@@ -361,6 +363,7 @@ The present file will list all changes made to the project; according to the
 - `Document::showUploadedFilesDropdown()`
 - `Document::uploadDocument()`
 - `Document_Item::showSimpleAddForItem()`
+- `Dropdown::showAdvanceDateRestrictionSwitch()`
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
@@ -539,6 +542,7 @@ The present file will list all changes made to the project; according to the
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
 - `DropdownTranslation::getTranslationByName()`
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
+- `ajax/ldapdaterestriction.php` script.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
 - `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
 - `test_ldap` and `test_ldap_replicate` actions in `front/authldap.form.php`. Use `ajax/ldap.php` instead.
@@ -547,7 +551,28 @@ The present file will list all changes made to the project; according to the
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
 
 
-## [10.0.17] unreleased
+## [10.0.18] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.17] 2024-11-06
 
 ### Added
 
@@ -561,6 +586,8 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+
+- `NotificationTarget::canNotificationContentBeDisclosed()` method that can be overriden to indicates whether a notification contents should be undisclosed.
 
 #### Changes
 

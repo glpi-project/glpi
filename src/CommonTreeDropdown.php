@@ -125,32 +125,32 @@ abstract class CommonTreeDropdown extends CommonDropdown
      **/
     public function adaptTreeFieldsFromUpdateOrAdd($input)
     {
-
         $parent = clone $this;
-       // Update case input['name'] not set :
-        if (!isset($input['name']) && isset($this->fields['name'])) {
-            $input['name'] = $this->fields['name'];
+
+        $fkey = static::getForeignKeyField();
+
+        // Fallback to current values if all required fields are set in input
+        foreach (['name', $fkey] as $fieldname) {
+            if (!isset($input[$fieldname]) && isset($this->fields[$fieldname])) {
+                $input[$fieldname] = $this->fields[$fieldname];
+            }
         }
-       // leading/ending space will break findID/import
+
+        // leading/ending space will break findID/import
         $input['name'] = trim($input['name']);
 
         if (
-            isset($input[$this->getForeignKeyField()])
-            && !$this->isNewID($input[$this->getForeignKeyField()])
-            && $parent->getFromDB($input[$this->getForeignKeyField()])
+            isset($input[$fkey])
+            && !$this->isNewID($input[$fkey])
+            && $parent->getFromDB($input[$fkey])
         ) {
             $input['level']        = $parent->fields['level'] + 1;
-           // Sometimes (internet address), the complete name may be different ...
-           /* if ($input[$this->getForeignKeyField()]==0) { // Root entity case
-            $input['completename'] =  $input['name'];
-           } else {*/
             $input['completename'] = self::getCompleteNameFromParents(
                 $parent->fields['completename'],
                 $input['name']
             );
-           // }
         } else {
-            $input[$this->getForeignKeyField()] = 0;
+            $input[$fkey] = 0;
             $input['level']                     = 1;
             $input['completename']              = $input['name'];
         }
@@ -303,9 +303,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
 
     /**
-     * Clean sons of all parents from caches
+     * Clean from database and caches the sons of the current entity and of all its parents.
      *
-     * @param null|integer $id    Parent id to clean. Default to current id
+     * @param null|integer $id    ID of the entity that have its sons cache to be cleaned.
      * @param boolean      $cache Whether to clean cache (defaults to true)
      *
      * @return void
@@ -323,12 +323,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
         $ancestors = getAncestorsOf($this->getTable(), $id);
-        if ($id != $this->getID()) {
-            $ancestors[$id] = "$id";
-        }
-        if (!count($ancestors)) {
-            return;
-        }
+        $ancestors[$id] = "$id";
 
         $DB->update(
             $this->getTable(),
@@ -340,15 +335,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ]
         );
 
-       //drop from sons cache when needed
+        // drop from sons cache when needed
         if ($cache) {
             foreach ($ancestors as $ancestor) {
-                $ckey = 'sons_cache_' . $this->getTable() . '_' . $ancestor;
-                $sons = $GLPI_CACHE->get($ckey);
-                if ($sons !== null && isset($sons[$this->getID()])) {
-                    unset($sons[$this->getID()]);
-                    $GLPI_CACHE->set($ckey, $sons);
-                }
+                $GLPI_CACHE->delete('sons_cache_' . $this->getTable() . '_' . $ancestor);
             }
         }
     }
@@ -435,8 +425,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             }
 
             if ($parent->getFromDB($newParentID)) {
-                $this->cleanParentsSons(null, false);
-                $this->addSonInParents();
+                $this->cleanParentsSons();
                 if ($history) {
                     $newParentNameID = $parent->getNameID(['forceid' => true]);
                     $changes = [
@@ -468,7 +457,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     Log::HISTORY_UPDATE_SUBITEM
                 );
             }
+
+            // Force DB cache refresh
             getAncestorsOf(getTableForItemType($this->getType()), $ID);
+            getSonsOf(getTableForItemType($this->getType()), $ID);
         }
     }
 

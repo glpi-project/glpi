@@ -1196,7 +1196,7 @@ class NetworkPort extends CommonDBChild
                             foreach ($names_iterator as $namerow) {
                                  $netname = new NetworkName();
                                  $netname->getFromDB($namerow['id']);
-                                 $output .= '<br/>' . $netname->getLink(1);
+                                 $output .= '<br/>' . $netname->getLink();
                             }
                             break;
                         default:

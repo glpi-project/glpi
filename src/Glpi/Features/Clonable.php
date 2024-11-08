@@ -238,14 +238,14 @@ trait Clonable
             return false;
         }
         $new_item = new static();
-        $input = $this->fields;
-        foreach ($override_input as $key => $value) {
-            $input[$key] = $value;
-        }
+
+        $input = array_merge($this->fields, $override_input);
+
         $template_input = $clone_as_template ? [
             'template_name' => $input['template_name'],
             'is_template' => true,
         ] : [];
+
         $input = $new_item->cleanCloneInput($input);
         $input = array_merge($input, $template_input);
 

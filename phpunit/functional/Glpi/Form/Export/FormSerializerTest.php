@@ -41,9 +41,20 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Location;
 use Session;
 
 final class FormSerializerTest extends \DbTestCase
@@ -325,6 +336,129 @@ final class FormSerializerTest extends \DbTestCase
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ],
         ], $comments_data);
+    }
+
+    public function testExportAndImportQuestions(): void
+    {
+        $this->login();
+
+        $user = $this->createItem('User', ['name' => 'John Doe']);
+        $location = $this->createItem(
+            Location::class,
+            [
+                'name' => 'My location',
+                'entities_id' => $this->getTestRootEntity(only_id: true)
+            ]
+        );
+
+        // Arrange: create a form with multiple sections and questions
+        $dropdown_config = new QuestionTypeDropdownExtraDataConfig([
+            '123456789' => 'Option 1',
+            '987654321' => 'Option 2',
+            true,
+        ]);
+        $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
+        $item_extra_data_config = new QuestionTypeItemExtraDataConfig(Location::class);
+        $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(
+            users_ids: [$user->getID()],
+        );
+        $actors_extra_data_config = new QuestionTypeActorsExtraDataConfig(
+            is_multiple_actors: true,
+        );
+
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addQuestion(
+                "My text question",
+                QuestionTypeShortText::class,
+                'Test default value',
+                '',
+                'My text question description'
+            )
+            ->addQuestion(
+                "My dropdown question",
+                QuestionTypeDropdown::class,
+                '123456789',
+                json_encode($dropdown_config->jsonSerialize()),
+                'My dropdown question description'
+            )
+            ->addSection("My second section")
+            ->addQuestion(
+                "My item dropdown question",
+                QuestionTypeItemDropdown::class,
+                $location->getID(),
+                json_encode($item_extra_data_config->jsonSerialize()),
+                'My item dropdown question description',
+                true
+            )
+            ->addQuestion(
+                "My requester question",
+                QuestionTypeRequester::class,
+                ['users_id-' . $user->getID()],
+                json_encode($actors_extra_data_config->jsonSerialize()),
+            );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate questions fields
+        $questions = array_values($form_copy->getQuestions());
+        $questions_data = array_map(function (Question $question) {
+            return [
+                'name'              => $question->fields['name'],
+                'type'              => $question->fields['type'],
+                'is_mandatory'      => $question->fields['is_mandatory'],
+                'rank'              => $question->fields['rank'],
+                'description'       => $question->fields['description'],
+                'default_value'     => $question->fields['default_value'],
+                'extra_data'        => $question->fields['extra_data'],
+                'forms_sections_id' => $question->fields['forms_sections_id'],
+            ];
+        }, $questions);
+
+        $this->assertEquals([
+            [
+                'name'              => 'My text question',
+                'type'              => QuestionTypeShortText::class,
+                'is_mandatory'      => (int) false,
+                'rank'              => 0,
+                'description'       => 'My text question description',
+                'default_value'     => 'Test default value',
+                'extra_data'        => "",
+                'forms_sections_id' => array_values($form_copy->getSections())[0]->fields['id'],
+            ],
+            [
+                'name'              => 'My dropdown question',
+                'type'              => QuestionTypeDropdown::class,
+                'is_mandatory'      => (int) false,
+                'rank'              => 1,
+                'description'       => 'My dropdown question description',
+                'default_value'     => '123456789',
+                'extra_data'        => json_encode($dropdown_config->jsonSerialize()),
+                'forms_sections_id' => array_values($form_copy->getSections())[0]->fields['id'],
+            ],
+            [
+                'name'              => 'My item dropdown question',
+                'type'              => QuestionTypeItemDropdown::class,
+                'is_mandatory'      => (int) true,
+                'rank'              => 0,
+                'description'       => 'My item dropdown question description',
+                'default_value'     => json_encode($item_default_value_config->jsonSerialize()),
+                'extra_data'        => json_encode($item_extra_data_config->jsonSerialize()),
+                'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
+            ],
+            [
+                'name'              => 'My requester question',
+                'type'              => QuestionTypeRequester::class,
+                'is_mandatory'      => (int) false,
+                'rank'              => 1,
+                'description'       => '',
+                'default_value'     => json_encode($actors_default_value_config->jsonSerialize()),
+                'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
+                'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
+            ]
+        ], $questions_data);
     }
 
     public function testPreviewImportWithValidForm(): void

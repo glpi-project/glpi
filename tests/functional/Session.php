@@ -770,6 +770,9 @@ class Session extends \DbTestCase
             $profile->getFromDB($profiles_id);
             $new_input = $profile->fields;
             unset($new_input['id']);
+            foreach (['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'] as $json_field) {
+                $new_input[$json_field] = \importArrayFromDB($new_input[$json_field]);
+            }
             $new_input['name'] .= '-Impersonate';
             $new_profiles_id = $profile->add($new_input);
 

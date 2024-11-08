@@ -2411,6 +2411,26 @@ class SearchTest extends DbTestCase
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
             ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 2, // Search ID 2 (ID field)
+                'searchtype' => 'notequals',
+                'val' => 42,
+                'meta' => false,
+                'expected' => "AND `glpi_computers`.`id` <> 42",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \Printer::class,
+                'ID' => 12, // Search ID 12 (last pages counter field)
+                'searchtype' => 'notcontains',
+                'val' => 42,
+                'meta' => false,
+                'expected' => "AND `glpi_printers`.`last_pages_counter` <> 42",
+            ],
         ];
     }
 

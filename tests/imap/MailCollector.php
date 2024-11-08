@@ -777,7 +777,8 @@ class MailCollector extends DbTestCase
                     '40.2 - Empty content (html)',
                     '40.3 - Empty content (plain text)',
                     '41 - Image src without quotes',
-                    '42 - Missing Content Type'
+                    '42 - Missing Content Type',
+                    '43 - Korean encoding issue',
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -888,6 +889,18 @@ UPS SC1500I is unavailable
 15:23:13 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:13 +0100
 
 Communications with UPS SC1500I established
+PLAINTEXT,
+            '43 - Korean encoding issue' => <<<PLAINTEXT
+<div class="elementToProof" style="text-align: left; text-indent: 0px; background-color: rgb(255, 255, 255); margin: 0px; font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+다리는 계절입니다. 따뜻한 날씨와 함께 바다에서 수영하거나 산으로 여행을 떠날 수 있습니다. 또한 친구들과 바비큐 파티를</div>
+<div style="text-align: left; text-indent: 0px; background-color: rgb(255, 255, 255); margin: 0px; font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+뜻한 날씨와&nbsp;</div>
+<div style="margin: 0px; font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
+<div class="elementToProof" style="font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
 PLAINTEXT,
         ];
 

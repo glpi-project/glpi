@@ -38,13 +38,13 @@ namespace Glpi\Form\QuestionType;
 use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-final class QuestionTypeItemConfig implements JsonFieldInterface
+final class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded name used for serialization
     public const ITEMTYPE = "itemtype";
 
     public function __construct(
-        private ?string $itemtype,
+        private ?string $itemtype = null,
     ) {
     }
 

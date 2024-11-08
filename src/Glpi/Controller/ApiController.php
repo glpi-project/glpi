@@ -40,7 +40,6 @@ use Glpi\Application\ErrorHandler;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
-use Glpi\Http\Response;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -60,15 +59,6 @@ final class ApiController extends AbstractController
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
-        return new HeaderlessStreamedResponse($this->call(...));
-    }
-
-    private function call(): void
-    {
-        /**
-         * High-level API entrypoint
-         */
-
         // Ensure errors will not break API output.
         ErrorHandler::getInstance()->disableOutput();
 
@@ -79,10 +69,10 @@ final class ApiController extends AbstractController
 
         // If the relative URI starts with /v1/ or is /v1 then we are dealing with a legacy API request
         if (preg_match('/^\/v1(\/|$)/', $relative_uri)) {
-            // Include the legacy API entrypoint and then die
-            $api = new \Glpi\Api\APIRest();
-            $api->call();
-            return;
+            return new HeaderlessStreamedResponse(function () {
+                $api = new \Glpi\Api\APIRest();
+                $api->call();
+            });
         }
 
         $supported_versions = Router::getAPIVersions();
@@ -104,7 +94,6 @@ final class ApiController extends AbstractController
 
         try {
             $response = $router->handleRequest($request);
-            $response->send();
         } catch (\InvalidArgumentException $e) {
             $response = new JSONResponse(
                 ApiAbstractController::getErrorResponseBody(
@@ -115,8 +104,13 @@ final class ApiController extends AbstractController
             );
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, true);
-            $response = new Response(500);
-            $response->send();
+            $response = new JSONResponse(null, 500);
         }
+
+        return new SymfonyResponse(
+            (string) $response->getBody(),
+            $response->getStatusCode(),
+            $response->getHeaders()
+        );
     }
 }

@@ -340,7 +340,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	// identifier: else.unreachable
 	'message' => '#^Else branch is unreachable because previous condition is always true\\.$#',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -2879,30 +2879,6 @@ $ignoreErrors[] = [
 	// identifier: booleanNot.alwaysTrue
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'max\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: empty.offset
-	'message' => '#^Offset \'max\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: offsetAccess.notFound
-	'message' => '#^Offset \'min\' does not exist on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\}\\.$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	// identifier: empty.offset
-	'message' => '#^Offset \'min\' on array\\{value\\: mixed, maybeempty\\: mixed, canedit\\: mixed, mindate\\: mixed, maxdate\\: mixed, mintime\\: mixed, maxtime\\: mixed, timestep\\: mixed, \\.\\.\\.\\} in empty\\(\\) does not exist\\.$#',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [

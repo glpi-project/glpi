@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Export\Context;
 
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+
 /**
  * Must be implemented by all JsonFieldInterface objects that contains references
  * foreign keys.
@@ -48,7 +50,8 @@ interface ConfigWithForeignKeysInterface
      * Must return one JsonConfigForeignKeyHandlerInterface per serialized key that
      * will contains foreign keys data.
      *
+     * @param \Glpi\Form\Export\Specification\ContentSpecificationInterface $content_spec
      * @return \Glpi\Form\Export\Context\ForeignKey\JsonConfigForeignKeyHandlerInterface[]
      */
-    public static function listForeignKeysHandlers(): array;
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array;
 }

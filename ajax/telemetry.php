@@ -40,12 +40,15 @@ Html::header_nocache();
 
 if (!($_SESSION['telemetry_from_install'] ?? false)) {
     Session::checkRight("config", READ);
+    $hide_sensitive_data = false;
+} else {
+    $hide_sensitive_data = true;
 }
 
 echo Html::css("lib/monaco.css");
 
 $twig_params = [
-    'info' => json_encode(Telemetry::getTelemetryInfos(), JSON_PRETTY_PRINT),
+    'info' => json_encode(Telemetry::getTelemetryInfos($hide_sensitive_data), JSON_PRETTY_PRINT),
     'description' => __("We only collect the following data: plugins usage, performance and responsiveness statistics about user interface features, memory, and hardware configuration.")
 ];
 // language=Twig

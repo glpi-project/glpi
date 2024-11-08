@@ -1,0 +1,159 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set is_sync_mode = _request['mode']|default(0) == constant('AuthLDAP::ACTION_SYNCHRONIZE') %}
+{% set is_expert_interface = _request['interface']|default('simple') == constant('AuthLDAP::EXPERT_INTERFACE') %}
+{% set selected_authldaps_id = _request['authldaps_id'] %}
+{% set selected_entity = _request['entities_id']|default(session('glpiactive_entity')) %}
+
+<form method="get" action="{{ path('front/ldap.import.php') }}" data-submit-once>
+    <div class="card">
+        <div class="card-header justify-content-between">
+            <h1 class="fs-2">{{ is_sync_mode ? __('Synchronizing already imported users') : __('Import new users') }}</h1>
+            {% if can_use_expert_interface %}
+                {{ fields.sliderField('interface', is_expert_interface, is_expert_interface ? __('Expert mode') : __('Simple mode'), {
+                    no_value: 'simple',
+                    yes_value: 'expert',
+                }) }}
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {# Expert interface only shows a BaseDN and Filter field while simple interface shows several individual filters #}
+            <div class="d-flex flex-wrap row">
+                {% if has_multiple_servers %}
+                    {{ fields.dropdownField('AuthLDAP', 'authldaps_id', selected_authldaps_id, 'AuthLDAP'|itemtype_name, {
+                        condition: {is_active: 1},
+                        display_emptychoice: false,
+                    }) }}
+                {% endif %}
+                {% if is_multi_entities_mode() %}
+                    {{ fields.dropdownField('Entity', 'entities_id', selected_entity, 'Entity'|itemtype_name, {
+                        entity: session('glpiactiveentities'),
+                        add_field_class: is_expert_interface ? 'd-none' : '',
+                        add_field_attribs: {
+                            'data-interface': 'simple'
+                        }
+                    }) }}
+                {% endif %}
+
+                {{ fields.smallTitle(__('Search criteria for users')) }}
+                {{ fields.textField('basedn', _request['basedn'], __('BaseDN'), {
+                    full_width: true,
+                    label_class: 'col-xxl-3',
+                    input_class: 'col-xxl-9',
+                    add_field_class: is_expert_interface ? '' : 'd-none',
+                    add_field_attribs: {
+                        'data-interface': 'expert'
+                    }
+                }) }}
+                {{ fields.textField('ldap_filter', _request['ldap_filter'], __('Search filter for users'), {
+                    full_width: true,
+                    label_class: 'col-xxl-3',
+                    input_class: 'col-xxl-9',
+                    add_field_class: is_expert_interface ? '' : 'd-none',
+                    add_field_attribs: {
+                        'data-interface': 'expert'
+                    }
+                }) }}
+
+                {% set simple_fields = {
+                    'login_field': __('Login'),
+                    'sync_field': __('Synchronization field') ~ ' (' ~ authldap.fields['sync_field'] ~ ')',
+                    'email1_field': _n('Email', 'Emails', 1),
+                    'email2_field': __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '2'),
+                    'email3_field': __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '3'),
+                    'email4_field': __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '4'),
+                    'realname_field': __('Surname'),
+                    'firstname_field': __('First name'),
+                    'phone_field': _x('ldap', 'Phone'),
+                    'phone2_field': __('Phone 2'),
+                    'mobile_field': __('Mobile phone'),
+                    'title_field': _x('person', 'Title'),
+                    'category_field': _n('Category', 'Categories', 1),
+                    'picture_field': _n('Picture', 'Pictures', 1),
+                } %}
+                {% for field, label in simple_fields %}
+                    {% if authldap.fields[field] is defined and authldap.fields[field] is not empty %}
+                        {{ fields.textField('criterias[' ~ field ~ ']', _request['criterias'][field]|default(''), label, {
+                            add_field_class: is_expert_interface ? 'd-none' : '',
+                            add_field_attribs: {
+                                'data-interface': 'simple'
+                            }
+                        }) }}
+                    {% endif %}
+                {% endfor %}
+
+                {% set updated_date_fields %}
+                    {{ inputs.datetime('begin_date', _request['begin_date']|default(null), {
+                        maybeempty: true,
+                        clearable: true,
+                    }) }}
+                    <span class="mx-3">-></span>
+                    {{ inputs.datetime('end_date', _request['end_date']|default(null), {
+                        maybeempty: true,
+                        clearable: true,
+                    }) }}
+                {% endset %}
+                {{ fields.htmlField('', updated_date_fields, __('View updated users'), {
+                    add_field_class: is_expert_interface ? 'd-none' : '',
+                    add_field_attribs: {
+                        'data-interface': 'simple'
+                    },
+                }) }}
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-row-reverse">
+            {{ inputs.hidden('action', _request['action']|default('show')) }}
+            {{ inputs.hidden('mode', _request['mode']|default(constant('AuthLDAP::ACTION_IMPORT'))) }}
+            {{ inputs.hidden('_in_modal', _request['_in_modal']|default('')) }}
+            {{ inputs.submit('search', _x('button', 'Search'), 1) }}
+        </div>
+        <script>
+            $(() => {
+                $('input[name="interface"]').on('change', (e) => {
+                    const chkbox = $(e.target);
+                    const is_expert_mode = chkbox.prop('checked');
+                    chkbox.closest('.form-field').find('> label').text(is_expert_mode ? '{{ __('Expert mode')|e('js') }}' : '{{ __('Simple mode')|e('js') }}');
+                    chkbox.closest('form').find('.form-field[data-interface="expert"]').toggleClass('d-none', !is_expert_mode);
+                    chkbox.closest('form').find('.form-field[data-interface="simple"]').toggleClass('d-none', is_expert_mode);
+                    // Disable hidden fields
+                    chkbox.closest('form').find('.form-field input').prop('disabled', false);
+                    chkbox.closest('form').find('.form-field.d-none input').prop('disabled', true);
+                }).trigger('change');
+            });
+        </script>
+    </div>
+</form>

@@ -49,6 +49,7 @@ use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GuzzleHttp;
 use Item_DeviceSimcard;
 use Notepad;
+use QueuedNotification;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
 use User;
@@ -1711,9 +1712,11 @@ class APIRest extends atoum
             'ERROR'
         );
 
-        $this->array($CFG_GLPI)
-            ->variable['use_notifications']->isEqualTo(0)
-            ->variable['notifications_mailing']->isEqualTo(0);
+        // Disable notifications
+        Config::setConfigurationValues('core', [
+            'use_notifications' => '0',
+            'notifications_mailing' => '0'
+        ]);
 
         // Check that disabled notifications prevent password changes
         $this->query(
@@ -3275,5 +3278,82 @@ class APIRest extends atoum
         );
 
         $this->variable($data)->isNotFalse();
+    }
+
+    public function testUndisclosedNotificationContent()
+    {
+        // Enable notifications
+        Config::setConfigurationValues('core', [
+            'use_notifications' => '1',
+            'notifications_mailing' => '1'
+        ]);
+        // Trigger a notification sending
+        $user = getItemByTypeName('User', TU_USER);
+        $this->query(
+            'lostPassword',
+            [
+                'verb'    => 'PATCH',
+                'json'    => [
+                    'email'  => $user->getDefaultEmail()
+                ]
+            ],
+            200
+        );
+        // need to be GLPI to access the root entity notifications
+        $data = $this->query(
+            'initSession',
+            [
+                'query' => [
+                    'login'    => 'glpi',
+                    'password' => 'glpi'
+                ]
+            ]
+        );
+        $this->array($data)->hasKey('session_token');
+        // Check notifications returned by `getItems`
+        $result = $this->query(
+            'getItems',
+            [
+                'itemtype' => QueuedNotification::class,
+                'headers'  => ['Session-Token' => $data['session_token']],
+            ],
+            200
+        );
+        $this->array($result);
+        unset($result['headers']);
+        $notifications = \array_filter(
+            $result,
+            fn ($notification) => $notification['name'] === '[GLPI] Forgotten password?'
+        );
+        $this->array($notifications)->isNotEmpty();
+        foreach ($notifications as $notification) {
+            $this->string($notification['body_html'])->isEqualTo('********');
+            $this->string($notification['body_text'])->isEqualTo('********');
+        }
+        // Check notifications returned by a search request
+        $result = $this->query(
+            'search',
+            [
+                'itemtype' => QueuedNotification::class,
+                'headers'  => ['Session-Token' => $data['session_token']],
+                'query'    => [
+                    'reset'         => 'reset',
+                    'forcedisplay'  => [12, 13]
+                ]
+            ],
+            200
+        );
+        $this->array($result);
+        unset($result['headers']);
+        $this->array($result)->hasKey('data');
+        $this->array($result['data'])->isNotEmpty();
+        $notifications = \array_filter(
+            $result['data'],
+            fn ($notification) => $notification['1'] === '[GLPI] Forgotten password?'
+        );
+        foreach ($notifications as $notification) {
+            $this->string($notification['12'])->isEqualTo('********'); // 12 = body_html
+            $this->string($notification['13'])->isEqualTo('********'); // 13 = body_text
+        }
     }
 }

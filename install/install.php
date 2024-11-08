@@ -291,7 +291,7 @@ function step4($databasename, $newdatabasename)
         return;
     }
 
-    if ($databasename !== '' && $newdatabasename !== '') {
+    if ($databasename === '' && $newdatabasename !== '') {
         // create new db
         $databasename = $link->real_escape_string($newdatabasename);
 
@@ -396,6 +396,7 @@ function step8()
     $url_base = $referer_url !== null
         ? str_replace("/install/install.php", "", $referer_url)
         : 'http://localhost';
+
     $DB->update(
         'glpi_configs',
         ['value' => $url_base],
@@ -477,7 +478,7 @@ if (is_writable(GLPI_SESSION_DIR)) {
 Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 
-if (isset($_POST["language"])) {
+if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
 }
 

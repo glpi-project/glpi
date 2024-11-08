@@ -48,15 +48,15 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function getTelemetryInfos()
+    public static function getTelemetryInfos(bool $hide_sensitive_data = false)
     {
         $data = [
-            'glpi'   => self::grabGlpiInfos(),
+            'glpi'   => self::grabGlpiInfos($hide_sensitive_data),
             'system' => [
-                'db'           => self::grabDbInfos(),
-                'web_server'   => self::grabWebserverInfos(),
-                'php'          => self::grabPhpInfos(),
-                'os'           => self::grabOsInfos()
+                'db'           => self::grabDbInfos($hide_sensitive_data),
+                'web_server'   => self::grabWebserverInfos($hide_sensitive_data),
+                'php'          => self::grabPhpInfos($hide_sensitive_data),
+                'os'           => self::grabOsInfos($hide_sensitive_data)
             ]
         ];
 
@@ -68,14 +68,14 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabGlpiInfos()
+    public static function grabGlpiInfos(bool $hide_sensitive_data = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $glpi = [
-            'uuid'               => self::getInstanceUuid(),
-            'version'            => GLPI_VERSION,
+            'uuid'               => $hide_sensitive_data ? '********' : self::getInstanceUuid(),
+            'version'            => $hide_sensitive_data ? 'x.y.z' : GLPI_VERSION,
             'plugins'            => [],
             'default_language'   => $CFG_GLPI['language'],
             'install_mode'       => GLPI_INSTALL_MODE,
@@ -99,7 +99,7 @@ class Telemetry extends CommonGLPI
         foreach ($plugins->getList(['directory', 'version']) as $plugin) {
             $glpi['plugins'][] = [
                 'key'       => $plugin['directory'],
-                'version'   => $plugin['version']
+                'version'   => $hide_sensitive_data ? 'x.y.z' : $plugin['version']
             ];
         }
 
@@ -119,7 +119,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabDbInfos()
+    public static function grabDbInfos(bool $hide_sensitive_data = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -139,7 +139,7 @@ class Telemetry extends CommonGLPI
 
         $db = [
             'engine'    => $dbinfos['Server Software'],
-            'version'   => $dbinfos['Server Version'],
+            'version'   => $hide_sensitive_data ? 'x.y.z' : $dbinfos['Server Version'],
             'size'      => $size_res['dbsize'],
             'log_size'  => '',
             'sql_mode'  => $dbinfos['Server SQL Mode']
@@ -155,7 +155,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabWebserverInfos()
+    public static function grabWebserverInfos(bool $hide_sensitive_data = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -194,7 +194,7 @@ class Telemetry extends CommonGLPI
             ;
             if (preg_match("/^Server: {$server_string_pattern}/im", $headers, $header_matches) === 1) {
                 $server['engine']  = $header_matches['engine'];
-                $server['version'] = $header_matches['version'] ?? null;
+                $server['version'] = $hide_sensitive_data ? 'x.y.z' : ($header_matches['version'] ?? null);
             }
         }
 
@@ -206,10 +206,10 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabPhpInfos()
+    public static function grabPhpInfos(bool $hide_sensitive_data = false)
     {
         $php = [
-            'version'   => str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
+            'version'   => $hide_sensitive_data ? 'x.y.z' : str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
             'modules'   => get_loaded_extensions(),
             'setup'     => [
                 'max_execution_time'    => ini_get('max_execution_time'),
@@ -229,7 +229,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabOsInfos()
+    public static function grabOsInfos(bool $hide_sensitive_data = false)
     {
         $distro = false;
         if (file_exists('/etc/redhat-release')) {
@@ -238,7 +238,7 @@ class Telemetry extends CommonGLPI
         $os = [
             'family'       => php_uname('s'),
             'distribution' => ($distro ?: ''),
-            'version'      => php_uname('r')
+            'version'      => $hide_sensitive_data ? 'x.y.z' : php_uname('r'),
         ];
         return $os;
     }

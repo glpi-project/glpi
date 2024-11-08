@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-if (strpos($_SERVER['PHP_SELF'], "ldapdaterestriction.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-AuthLDAP::showDateRestrictionForm($_POST);
+$migration->changeField('glpi_users', 'entities_id', 'entities_id', "int unsigned DEFAULT '0'");

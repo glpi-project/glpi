@@ -36,6 +36,7 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -49,8 +50,10 @@ use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
+use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\Section;
 use InvalidArgumentException;
 use RuntimeException;
@@ -208,6 +211,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportBasicFormProperties($form, $form_export_id);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
+        $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
 
         return $form_spec;
@@ -241,6 +245,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importBasicFormProperties($form_spec, $mapper);
         $form = $this->importSections($form, $form_spec);
         $form = $this->importComments($form, $form_spec);
+        $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
 
         return $form;
@@ -410,6 +415,109 @@ final class FormSerializer extends AbstractFormSerializer
         return $form;
     }
 
+    private function exportQuestions(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getQuestions() as $question) {
+            $question_spec = new QuestionContentSpecification();
+            $question_spec->name = $question->fields['name'];
+            $question_spec->type = $question->fields['type'];
+            $question_spec->is_mandatory = $question->fields['is_mandatory'];
+            $question_spec->rank = $question->fields['rank'];
+            $question_spec->description = $question->fields['description'];
+            $question_spec->default_value = $question->fields['default_value'];
+            $question_spec->extra_data = $question->fields['extra_data'];
+            $question_spec->section_rank = $form->getSections()[$question->fields['forms_sections_id']]->fields['rank'];
+
+            $question_type = new $question_spec->type();
+            if ($question_type->getDefaultValueConfigClass() !== null) {
+                $default_value_config = $question_type->getDefaultValueConfig(
+                    json_decode($question_spec->default_value ?? "[]", true)
+                );
+                if ($default_value_config !== null) {
+                    $serialized_default_value = $default_value_config->jsonSerialize();
+                    if (
+                        $default_value_config instanceof ConfigWithForeignKeysInterface
+                    ) {
+                        $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                            $default_value_config::listForeignKeysHandlers($question_spec),
+                            $serialized_default_value
+                        );
+                        array_push($form_spec->data_requirements, ...$requirements);
+
+                        $question_spec->default_value = json_encode(
+                            $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                                $default_value_config::listForeignKeysHandlers($question_spec),
+                                $serialized_default_value
+                            )
+                        );
+                    }
+                }
+            }
+
+            $form_spec->questions[] = $question_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importQuestions(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        /** @var QuestionContentSpecification $question_spec */
+        foreach ($form_spec->questions as $question_spec) {
+            // Retrieve section from their rank
+            $section = current(array_filter(
+                $form->getSections(),
+                fn (Section $section) => $section->fields['rank'] === $question_spec->section_rank
+            ));
+
+            $question_type = new $question_spec->type();
+            if ($question_type->getDefaultValueConfigClass() !== null) {
+                $default_value_config = $question_type->getDefaultValueConfig(
+                    json_decode($question_spec->default_value ?? "[]", true)
+                );
+                if ($default_value_config !== null) {
+                    $serialized_default_value = json_decode($question_spec->default_value, true);
+                    if (
+                        $default_value_config instanceof ConfigWithForeignKeysInterface
+                    ) {
+                        $serialized_default_value = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                            $default_value_config::listForeignKeysHandlers($question_spec),
+                            $serialized_default_value,
+                            $mapper
+                        );
+                    }
+                    $question_spec->default_value = json_encode($serialized_default_value);
+                }
+            }
+
+            $question = new Question();
+            $id = $question->add([
+                '_from_import'      => true,
+                'name'              => $question_spec->name,
+                'type'              => $question_spec->type,
+                'is_mandatory'      => $question_spec->is_mandatory,
+                'rank'              => $question_spec->rank,
+                'description'       => $question_spec->description,
+                'default_value'     => $question_spec->default_value,
+                'extra_data'        => $question_spec->extra_data,
+                'forms_sections_id' => $section->fields['id'],
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create question");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
     private function exportAccesControlPolicies(
         Form $form,
         FormContentSpecification $form_spec,
@@ -428,13 +536,13 @@ final class FormSerializer extends AbstractFormSerializer
             $serialized_config = $config->jsonSerialize();
             if ($config instanceof ConfigWithForeignKeysInterface) {
                 $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
-                    $config::listForeignKeysHandlers(),
+                    $config::listForeignKeysHandlers($policy_spec),
                     $serialized_config
                 );
                 array_push($form_spec->data_requirements, ...$requirements);
 
                 $serialized_config = $this->replaceForeignKeysByNameInSerializedJsonConfig(
-                    $config::listForeignKeysHandlers(),
+                    $config::listForeignKeysHandlers($policy_spec),
                     $serialized_config,
                 );
             }
@@ -466,7 +574,7 @@ final class FormSerializer extends AbstractFormSerializer
             $serialized_config = $policy_spec->config_data;
             if (is_a($config_class, ConfigWithForeignKeysInterface::class, true)) {
                 $serialized_config = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
-                    $config_class::listForeignKeysHandlers(),
+                    $config_class::listForeignKeysHandlers($policy_spec),
                     $serialized_config,
                     $mapper
                 );

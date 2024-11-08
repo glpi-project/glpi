@@ -39,6 +39,7 @@ use AllAssets;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\URL;
 use Toolbox;
 
 final class QueryBuilder implements SearchInputInterface
@@ -86,6 +87,7 @@ final class QueryBuilder implements SearchInputInterface
         foreach ($params as $key => $val) {
             $p[$key] = $val;
         }
+        $p['target'] = URL::sanitizeURL($p['target']);
 
         // Itemtype name used in JS function names, etc
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);

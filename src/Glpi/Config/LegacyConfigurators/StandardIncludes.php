@@ -310,5 +310,8 @@ TWIG, $twig_params);
         if (!isset($CFG_GLPI['root_doc'])) {
             Config::detectRootDoc();
         }
+
+        // Load Language file
+        Session::loadLanguage();
     }
 }

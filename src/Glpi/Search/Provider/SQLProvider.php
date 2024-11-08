@@ -1150,10 +1150,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $SEARCH = [];
         switch ($searchtype) {
-            /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
-                $nott = !$nott;
-            //negated, use contains case
             case "contains":
                 // FIXME
                 // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
@@ -1181,7 +1178,10 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                 }
-                $SEARCH = [$nott ? "NOT LIKE" : "LIKE", self::makeTextSearchValue($val)];
+                $operator = ($searchtype === 'contains' && $nott) || ($searchtype === 'notcontains' && !$nott)
+                    ? "NOT LIKE"
+                    : "LIKE";
+                $SEARCH = [$operator, self::makeTextSearchValue($val)];
                 break;
 
             case "equals":
