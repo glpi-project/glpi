@@ -150,7 +150,7 @@ final class QueryBuilder implements SearchInputInterface
      * will call displaySearchoptionValue for the next part (value)
      *
      * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for meta criteria
+     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
      *                            - num: index of the criteria
      *                            - field: field key of the criteria
      *                            - p: params of showGenericSearch method
@@ -372,7 +372,7 @@ final class QueryBuilder implements SearchInputInterface
      * @since 9.4
      *
      * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for meta criteria
+     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
      *                            - num: index of the criteria
      *                            - p: params of showGenericSearch method
      *
