@@ -58,4 +58,3 @@ $migration->addField(
 );
 
 $migration->removeConfig(['url_base_api']);
-
