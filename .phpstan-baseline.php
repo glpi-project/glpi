@@ -2588,18 +2588,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$field$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$table$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
 	// identifier: method.notFound
 	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\:\\:setOrientation\\(\\)\\.$#',
 	'count' => 1,
@@ -2760,18 +2748,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Provider\\\\SearchProviderInterface\\:\\:constructSQL\\(\\)\\.$#',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$digits$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
-];
-$ignoreErrors[] = [
-	// identifier: parameter.notFound
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$period$#',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
 ];
 $ignoreErrors[] = [
 	// identifier: return.void
