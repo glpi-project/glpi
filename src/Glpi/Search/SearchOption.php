@@ -615,7 +615,7 @@ final class SearchOption implements \ArrayAccess
      * Clean search options depending on the user active profile
      *
      * @param class-string<\CommonDBTM>  $itemtype     Item type to manage
-     * @param integer $action       Action which is used to manupulate searchoption
+     * @param integer $action       Action which is used to manipulate searchoption
      *                               (default READ)
      * @param boolean $withplugins  Get plugins options (true by default)
      *
@@ -765,7 +765,7 @@ final class SearchOption implements \ArrayAccess
      * plugin name is provided.
      *
      * @param string $string_identifier
-     * @param string $plugin
+     * @param ?string $plugin
      * @return int
      */
     public static function generateAProbablyUniqueId(string $string_identifier, ?string $plugin = null): int

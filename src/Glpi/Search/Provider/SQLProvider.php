@@ -4595,7 +4595,7 @@ final class SQLProvider implements SearchProviderInterface
 
             if ($onlycount) {
                 Profiler::getInstance()->stop('SQLProvider::constructData');
-                //we just want to coutn results; no need to continue process
+                //we just want to count results; no need to continue process
                 return;
             }
 
@@ -4875,7 +4875,7 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string  $field  Nname (should be ` protected)
+     * @param string  $field  Name (should be ` protected)
      * @param string  $val    Value to search
      * @param boolean $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
@@ -4961,7 +4961,7 @@ final class SQLProvider implements SearchProviderInterface
             // Remove leading `^`
             $val = ltrim(preg_replace('/^\^/', '', $val));
         } else {
-            // Add % wildcard before searched string if not begining by a `^`
+            // Add % wildcard before searched string if not beginning by a `^`
             $val = '%' . $val;
         }
 
@@ -5038,7 +5038,7 @@ final class SQLProvider implements SearchProviderInterface
                 $oparams = $searchopt[$ID]['addobjectparams'];
             }
 
-            // Search option may not exists in subtype
+            // Search option may not exist in subtype
             // This is the case for "Inventory number" for a Software listed from ReservationItem search
             $subtype_so = SearchOption::getOptionsForItemtype($data["TYPE"]);
             if (!array_key_exists($ID, $subtype_so)) {
@@ -5349,7 +5349,7 @@ final class SQLProvider implements SearchProviderInterface
                             ? $data[$ID][$k]['name']
                             : $data[$ID][$k]['tickets_id_2'];
 
-                        // If link ID is int or integer string, force conversion to int. Coversion to int and then string to compare is needed to ensure it isn't a decimal
+                        // If link ID is int or integer string, force conversion to int. Conversion to int and then string to compare is needed to ensure it isn't a decimal
                         if (is_numeric($linkid) && ((string)(int)$linkid === (string)$linkid)) {
                             $linkid = (int) $linkid;
                         }

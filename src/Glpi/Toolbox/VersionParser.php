@@ -57,10 +57,10 @@ class VersionParser
             '',
             [
                 '/^',
-                '(?<major>\d+)', // Major release numero, always present
-                '\.(?<minor>\d+)', // Minor release numero, always present
-                '(\.(?<bugfix>\d+))?', // Bugfix numero, not always present (e.g. GLPI 9.2)
-                '(\.(?<tag_fail>\d+))?', // Redo tag operation numero, rarely present (e.g. GLPI 9.4.1.1)
+                '(?<major>\d+)', // Major release number, always present
+                '\.(?<minor>\d+)', // Minor release number, always present
+                '(\.(?<bugfix>\d+))?', // Bugfix number, not always present (e.g. GLPI 9.2)
+                '(\.(?<tag_fail>\d+))?', // Redo tag operation number, rarely present (e.g. GLPI 9.4.1.1)
                 '(?<stability_flag>-' . self::UNSTABLE_FLAG_PATTERN . ')?', // Stability flag, optional
                 '$/'
             ]
@@ -77,7 +77,7 @@ class VersionParser
     }
 
     /**
-     * Check if given version is a stable release (i.e. does not contains a stability flag refering to unstable state).
+     * Check if given version is a stable release (i.e. does not contain a stability flag referring to unstable state).
      *
      * @param string $version
      *
