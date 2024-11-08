@@ -4682,7 +4682,7 @@ class CommonDBTM extends CommonGLPI
 
         $ok = false;
         if (is_array($crit) && (count($crit) > 0)) {
-            $crit['FIELDS'] = [$this::getTable() => 'id'];
+            $crit['FIELDS'] = [$this::getTable() => $this::getIndexName()];
             $ok = true;
             $iterator = $DB->request($this->getTable(), $crit);
             foreach ($iterator as $row) {
