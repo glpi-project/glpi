@@ -3593,6 +3593,44 @@ class TicketTest extends DbTestCase
             ])
         );
 
+        /**
+         * Ticket with satisfaction
+         */
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $result = $entity->update([
+            'id'                => 0,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->assertTrue($result);
+        // Create a ticket
+        $ticket = new \Ticket();
+        $tickets_id_3 = $ticket->add([
+            'name'        => "test autopurge 3",
+            'content'     => "test autopurge 3",
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int)$tickets_id_3);
+        // Close ticket
+        $this->assertTrue($ticket->update([
+            'id' => $tickets_id_3,
+            'status' => \CommonITILObject::CLOSED
+        ]));
+        // Set closedate to 15 days ago
+        $this->assertTrue(
+            $DB->update('glpi_tickets', [
+                'closedate' => date('Y-m-d 10:00:00', time() - 15 * DAY_TIMESTAMP),
+            ], [
+                'id' => $tickets_id_3,
+            ])
+        );
+        // Verify survey created
+        $satisfaction = new \TicketSatisfaction();
+        $this->assertTrue($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
+
+
        // launch Cron for closing tickets
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'purgeticket');
@@ -3606,6 +3644,10 @@ class TicketTest extends DbTestCase
        //second ticket is still present
         $this->assertTrue($ticket->getFromDB($tickets_id_2));
         $this->assertEquals(\CommonITILObject::CLOSED, (int)$ticket->fields['status']);
+
+        // third ticket should have been removed with its satisfaction
+        $this->assertFalse($ticket->getFromDB($tickets_id_3));
+        $this->assertFalse($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
     }
 
     public function testMerge()
