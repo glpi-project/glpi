@@ -1367,7 +1367,7 @@ class Problem extends CommonITILObject
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
                     TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
                         'tree' => $tree
                     ]);

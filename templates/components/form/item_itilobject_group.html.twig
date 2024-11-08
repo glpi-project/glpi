@@ -30,19 +30,15 @@
  # ---------------------------------------------------------------------
  #}
 
-<table class='tab_cadre_fixe'>
-    <tr class='tab_bg_1'>
-        <th> {{ __('Last tickets') }} </th>
-    </tr>
-    <tr class='tab_bg_1'>
-        <td class='text-start'>
-            {{ __('Child groups') }}
-            {% do call('Dropdown::showYesNo', [
-                'tree',
-                tree,
-                -1,
-                {'on_change': 'reloadTab("start=0&tree="+this.value)'}
-            ]) %}
-        </td>
-    </tr>
-</table>
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{{
+    fields.dropdownYesNo(
+        'tree',
+        tree,
+        __('Show child groups objects'),
+        {
+            'on_change': 'reloadTab("start=0&tree="+this.value)'
+        }
+    )
+}}
