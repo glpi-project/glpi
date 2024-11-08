@@ -106,6 +106,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.2",
         "atoum/stubs": "^2.6",
+        "cpx/cpx": "^1.0",
         "friendsoftwig/twigcs": "^6.4",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
