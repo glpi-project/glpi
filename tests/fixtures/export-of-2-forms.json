@@ -7,10 +7,33 @@
             "header": "",
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
+            "sections": [
+                {
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0
+                }
+            ],
+            "questions": [
+                {
+                    "name": "Watchers",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
+                    "is_mandatory": false,
+                    "rank": 2,
+                    "description": null,
+                    "default_value": "{\"users_ids\":[\"glpi\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
+                    "extra_data": "{\"is_multiple_actors\":true}",
+                    "section_rank": 0
+                }
+            ],
             "data_requirements": [
                 {
                     "itemtype": "Entity",
                     "name": "E2ETestEntity"
+                },
+                {
+                    "itemtype": "User",
+                    "name": "glpi"
                 }
             ]
         },
@@ -20,10 +43,33 @@
             "header": "",
             "entity_name": "Missing entity",
             "is_recursive": false,
+            "sections": [
+                {
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0
+                }
+            ],
+            "questions": [
+                {
+                    "name": "Watchers",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
+                    "is_mandatory": false,
+                    "rank": 2,
+                    "description": null,
+                    "default_value": "{\"users_ids\":[\"Missing user\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
+                    "extra_data": "{\"is_multiple_actors\":true}",
+                    "section_rank": 0
+                }
+            ],
             "data_requirements": [
                 {
                     "itemtype": "Entity",
                     "name": "Missing entity"
+                },
+                {
+                    "itemtype": "User",
+                    "name": "Missing user"
                 }
             ]
         }

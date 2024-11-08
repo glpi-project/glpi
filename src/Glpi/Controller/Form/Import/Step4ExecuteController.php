@@ -61,10 +61,12 @@ final class Step4ExecuteController extends AbstractController
         $mapper = new DatabaseMapper(Session::getActiveEntities());
 
         $replacements = $request->request->all()["replacements"] ?? [];
-        foreach ($replacements as $itemtype => $replacements_for_itemtype) {
-            foreach ($replacements_for_itemtype as $original_name => $items_id) {
-                $mapper->addMappedItem($itemtype, $original_name, $items_id);
-            }
+        foreach ($replacements as $replacement_data) {
+            $mapper->addMappedItem(
+                $replacement_data['itemtype'],
+                $replacement_data['original_name'],
+                $replacement_data['replacement_id']
+            );
         }
 
         return $this->render("pages/admin/form/import/step4_execute.html.twig", [
