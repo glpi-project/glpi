@@ -383,7 +383,6 @@ trait PlanningEvent
      *    - color
      *    - event_type_color
      *    - check_planned (boolean)
-     *    - display_done_events (boolean)
      *
      * @return array of planning item
      **/
@@ -400,7 +399,6 @@ trait PlanningEvent
             'color'               => '',
             'event_type_color'    => '',
             'check_planned'       => false,
-            'display_done_events' => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -509,13 +507,13 @@ trait PlanningEvent
             $WHERE['state'] = ['!=', Planning::INFO];
         }
 
-        if (!$options['display_done_events']) {
+        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
             $WHERE[] = [
                 'OR' => [
-                    'state'  => Planning::TODO,
-                    'AND'    => [
-                        'state'  => Planning::INFO,
-                        'end'    => ['>', QueryFunction::now()]
+                    'state' => Planning::TODO,
+                    [
+                        'state' => Planning::INFO,
+                        'end' => ['>', QueryFunction::now()]
                     ]
                 ]
             ];
