@@ -272,7 +272,7 @@ final class SearchEngine
      *
      * @param string $itemtype      Item type
      * @param array  $params        Array of parameters
-     *                               may include sort, order, start, list_limit, deleted, criteria, meta criteria
+     *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
      * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criteria)
      *
      * @return array prepare to be used for a search (include criteria and others needed information)

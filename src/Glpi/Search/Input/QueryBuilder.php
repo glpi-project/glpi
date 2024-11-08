@@ -50,7 +50,7 @@ final class QueryBuilder implements SearchInputInterface
      * Params need to parsed before using Search::manageParams function
      *
      * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, meta criteria
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      * @return void
      **/
@@ -123,7 +123,7 @@ final class QueryBuilder implements SearchInputInterface
      * @since 11.0
      *
      * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, meta criteria
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      * @return void
      */
