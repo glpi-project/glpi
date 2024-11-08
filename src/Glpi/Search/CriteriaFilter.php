@@ -66,7 +66,7 @@ final class CriteriaFilter extends CommonDBChild
         $nb = 0;
         if (($filter = self::getForItem($item))) {
             // important: array_walk_recursive iterates only over non-array values
-            // so we need to count only when we we found the 'field' key
+            // so we need to count only when we found the 'field' key
             array_walk_recursive($filter->fields['search_criteria'], function ($value, $key) use (&$nb) {
                 if ($key === 'field') {
                     $nb++;

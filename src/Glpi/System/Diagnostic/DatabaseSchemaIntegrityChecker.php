@@ -246,7 +246,7 @@ class DatabaseSchemaIntegrityChecker
      * Check if there is differences between effective schema and schema contained in given file.
      *
      * @param string $schema_path           The absolute path to the schema file
-     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be include in results
+     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be included in results
      * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      * @return array    List of tables that differs from the expected schema.
@@ -326,7 +326,7 @@ class DatabaseSchemaIntegrityChecker
      * Check if there is differences between effective schema and expected schema for given version/context.
      *
      * @param string|null $schema_version   Installed schema version
-     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be include in results
+     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be included in results
      * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      * @return array    List of tables that differs from the expected schema.
@@ -499,10 +499,10 @@ class DatabaseSchemaIntegrityChecker
             && $dbversion !== null
             && version_compare(VersionParser::getNormalizedVersion($dbversion), '10.0', '<')
         ) {
-            // Before GLPI 10.0.0, COLLATE property was not explicitely defined for glpi_notimportedemails,
+            // Before GLPI 10.0.0, COLLATE property was not explicitly defined for glpi_notimportedemails,
             // and charset was not the same as other tables.
             // If installed schema is < 10.0.0, we exclude CHARACTER SET and COLLATE properties from
-            // diff as we cannot easilly predict effective values (COLLATE will depend on server configuration)
+            // diff as we cannot easily predict effective values (COLLATE will depend on server configuration)
             // and, anyway, it will be fixed during GLPI 10.0.0 migration.
             $column_replacements['/( CHARACTER SET \w+)? COLLATE \w+/i'] = '';
         }
@@ -537,7 +537,7 @@ class DatabaseSchemaIntegrityChecker
             // MariaDB in some recent version (at least 10.11.7) seems to mention it on some indexes, but we do not know why.
             '/(`\w+`)\(250\)/' => '$1',
             // Mysql and MariaDB does not always have the same default value for index type depending on the index
-            // for example, the create query might return "UNIQUE KEY `unicity` USING HASH (`users_id`)" one one side
+            // for example, the create query might return "UNIQUE KEY `unicity` USING HASH (`users_id`)" one side
             // and "UNIQUE KEY `unicity` (`users_id`)" on the other side, despite being the same index.
             '/(UNIQUE KEY|FULLTEXT KEY|KEY) (.*) USING (\w+)/i' => '$1 $2',
         ];
@@ -575,7 +575,7 @@ class DatabaseSchemaIntegrityChecker
             unset($properties['ROW_FORMAT']);
         }
         if (!$this->strict && ($properties['ROW_FORMAT'] ?? '') === 'DYNAMIC') {
-            // MySQL 5.7+ and MariaDB 10.2+ does not ouput ROW_FORMAT when ROW_FORMAT has not been specified in creation query
+            // MySQL 5.7+ and MariaDB 10.2+ does not output ROW_FORMAT when ROW_FORMAT has not been specified in creation query
             // and so uses default value.
             // Drop it if value is 'DYNAMIC' as we assume this is the default value.
             unset($properties['ROW_FORMAT']);
@@ -604,10 +604,10 @@ class DatabaseSchemaIntegrityChecker
             && $dbversion !== null
             && version_compare(VersionParser::getNormalizedVersion($dbversion), '10.0', '<')
         ) {
-            // Before GLPI 10.0.0, COLLATE property was not explicitely defined for glpi_notimportedemails,
+            // Before GLPI 10.0.0, COLLATE property was not explicitly defined for glpi_notimportedemails,
             // and charset was not the same as other tables.
             // If installed schema is < 10.0.0, we exclude DEFAULT CHARSET and COLLATE properties from
-            // diff as we cannot easilly predict effective values (COLLATE will depend on server configuration)
+            // diff as we cannot easily predict effective values (COLLATE will depend on server configuration)
             // and, anyway, it will be fixed during GLPI 10.0.0 migration.
             unset($properties['DEFAULT CHARSET']);
             unset($properties['COLLATE']);
@@ -793,7 +793,7 @@ class DatabaseSchemaIntegrityChecker
             $is_latest_version     = $schema_version === GLPI_SCHEMA_VERSION;
 
             if (!$is_stable_version && !$is_latest_version) {
-                // Cannot check integrity if version is not stable, unless installed version is latest one.
+                // Cannot check integrity if version is not stable, unless installed version is the latest one.
                 return false;
             }
         }

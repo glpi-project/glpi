@@ -80,7 +80,7 @@ final class InstallationNotOverriden extends AbstractRequirement
 
         if ($version_files_count == 0) {
             // Cannot do the check.
-            // Indicating that `version` directory is missing would be useless, as it would probably incitate administrator
+            // Indicating that `version` directory is missing would be useless, as it would probably encourage administrator
             // to restore it, and it would result in a "false positive" type validation.
             $this->out_of_context = true;
             return;

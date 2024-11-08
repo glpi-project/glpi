@@ -50,7 +50,7 @@ final class QueryBuilder implements SearchInputInterface
      * Params need to parsed before using Search::manageParams function
      *
      * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, meta criteria
      *
      * @return void
      **/
@@ -123,7 +123,7 @@ final class QueryBuilder implements SearchInputInterface
      * @since 11.0
      *
      * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, meta criteria
      *
      * @return void
      */
@@ -150,7 +150,7 @@ final class QueryBuilder implements SearchInputInterface
      * will call displaySearchoptionValue for the next part (value)
      *
      * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
+     *                            - itemtype: main itemtype for criteria, sub one for meta criteria
      *                            - num: index of the criteria
      *                            - field: field key of the criteria
      *                            - p: params of showGenericSearch method
@@ -372,7 +372,7 @@ final class QueryBuilder implements SearchInputInterface
      * @since 9.4
      *
      * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
+     *                            - itemtype: main itemtype for criteria, sub one for meta criteria
      *                            - num: index of the criteria
      *                            - p: params of showGenericSearch method
      *
@@ -598,7 +598,7 @@ final class QueryBuilder implements SearchInputInterface
 
     /**
      * Display a group of nested criteria.
-     * A group (parent) criteria  can contains children criteria (who also cantains children, etc)
+     * A group (parent) criteria  can contain children criteria (who also contain children, etc)
      *
      * @since 9.4
      *
@@ -940,8 +940,7 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Get the input value validation pattern for given datatype.
      *
-     * @param string    $table
-     * @param string    $field
+     * @param string    $datatype
      * @param bool      $with_delimiters
      *      True to return a complete pattern, including delimiters.
      *      False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.
