@@ -31,7 +31,7 @@
  #}
 
 {% if linknewitil %}
-    <div class='firstbloc'>
+    <div class='mb-3'>
         {{ call('Html::showSimpleForm', [call(itemtype_1 ~ '::getFormURL'), '_add_fromitem', __('New %s for this item')|format(call(itemtype_1 ~ '::getTypeName', [0])), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
     </div>
 {% endif %}
