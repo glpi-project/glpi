@@ -107,6 +107,12 @@ describe ('Import forms', () => {
                 cy.getDropdownByLabelText("Replacement value for 'Missing entity'").selectDropdownValue("»E2ETestEntity");
             });
         });
+        cy.get("@issues").eq(2).within(() => {
+            cy.findByText("Missing user").should('exist');
+            cy.document().within(() => {
+                cy.getDropdownByLabelText("Replacement value for 'Missing user'").selectDropdownValue("E2E Tests");
+            });
+        });
 
         // Step 2: preview
         cy.findByRole('button', {'name': "Preview import"}).click();
