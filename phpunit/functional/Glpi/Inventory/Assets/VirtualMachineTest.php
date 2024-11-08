@@ -283,11 +283,30 @@ class VirtualMachineTest extends AbstractInventoryAsset
               'itemtype' => 'Computer',
           ]));
 
+          $netpname_computer_linked_first = new \NetworkName();
+          $this->assertTrue($netpname_computer_linked_first->getFromDBByCrit([
+              'items_id' => $netport_computer_linked_first->fields['id'],
+              'itemtype' => 'NetworkPort',
+          ]));
+
+          $ip_computer_linked_first = new \IPAddress();
+          $this->assertTrue($ip_computer_linked_first->getFromDBByCrit([
+              'items_id' => $netpname_computer_linked_first->fields['id'],
+              'itemtype' => 'NetworkName',
+              'name' => '10.100.240.11'
+          ]));
+
           //get Operating system Computer
-          $os_computer_linked_first = new \Item_OperatingSystem();
-          $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
+          $itemos_computer_linked_first = new \Item_OperatingSystem();
+          $this->assertTrue($itemos_computer_linked_first->getFromDBByCrit([
               'items_id' => $computer_linked_first->fields['id'],
               'itemtype' => 'Computer',
+          ]));
+
+          $os_computer_linked_first = new \OperatingSystem();
+          $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
+              'id' => $itemos_computer_linked_first->fields['operatingsystems_id'],
+              'name' => 'OS Test'
           ]));
 
           $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
