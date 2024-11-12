@@ -135,6 +135,42 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
+}  else if (isset($_POST['blacklist_document'])) {
+    $doc = new Document();
+    $doc->getFromDB((int)$_POST['documents_id']);
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $doc->update([
+            'id'                => $doc->fields['id'],
+            'is_blacklisted'    => true
+        ]);
+    }
+    Html::back();
+} else if (isset($_POST['whitelist_document'])) {
+    $doc = new Document();
+    $doc->getFromDB((int)$_POST['documents_id']);
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $doc->update([
+            'id'                => $doc->fields['id'],
+            'is_blacklisted'    => false
+        ]);
+    }
+    Html::back();
+}  else if (isset($_POST['delete_document'])) {
+    $track = new Ticket();
+    $track->getFromDB((int)$_POST['tickets_id']);
+    $doc = new Document();
+    $doc->getFromDB((int)$_POST['documents_id']);
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $document_item = new Document_Item();
+        $found_document_items = $document_item->find([
+            $track->getAssociatedDocumentsCriteria(),
+            'documents_id' => $doc->getID()
+        ]);
+        foreach ($found_document_items as $item) {
+            $document_item->delete($item, true);
+        }
+    }
+    Html::back();
 } else {
     $menus = ["management", "document"];
     Document::displayFullPageForItem($_GET["id"], $menus, [
