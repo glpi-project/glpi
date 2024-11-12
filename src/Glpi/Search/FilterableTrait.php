@@ -90,11 +90,15 @@ trait FilterableTrait
             'criteria' => $criteria,
         ]);
 
+        // The result of itemMatchFilter was always equal to true even when the match was not correct.
+        // This is due to the result of the SQL query, which always returns at least one row even if the columns are empty.
         if ($data['data']['totalcount'] > 0) {
-            if (!isset($data['data']['rows'][0]['id'])) {
-                return false;
-            }
-            return true;
+            // Remove invalid rows before counting
+            $validRows = array_filter($data['data']['rows'], function ($row) use ($id_field) {
+                return isset($row[$id_field]);
+            });
+
+            return count($validRows) > 0;
         }
 
         return false;
