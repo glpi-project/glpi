@@ -74,7 +74,7 @@ if (!isset($_GET["order"])) {
     $_GET["order"] = "";
 }
 
-if (!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"]) || !is_int((int)$_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
 
