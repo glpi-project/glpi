@@ -96,6 +96,8 @@ trait FilterableTrait
             }
             return true;
         }
+
+        return false;
     }
 
     public function saveFilter(
