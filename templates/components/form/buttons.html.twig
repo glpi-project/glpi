@@ -42,7 +42,7 @@
 
 {% if canedit or item.canEdit(item.fields['id']) %}
       <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
-         {% if withtemplate|length > 0 or item.isNewID(id) %}
+         {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button class="btn btn-primary me-2" type="submit" name="add" value="1">
                   <i class="fas fa-plus"></i>
