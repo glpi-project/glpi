@@ -8740,7 +8740,7 @@ JSON;
                     $this->assertSame($entity_id, $asset->getEntity());
                     if (
                         $asset->maybeRecursive()
-                        // && !($asset instanceof \Glpi\Inventory\Asset\Software)
+                        && !($asset instanceof \Glpi\Inventory\Asset\Software)
                     ) {
                         $this->assertTrue($asset->isRecursive());
                     }

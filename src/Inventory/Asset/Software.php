@@ -250,11 +250,9 @@ class Software extends InventoryAsset
         global $DB;
 
         $mainasset_entities_id = 0;
-        $mainasset_is_recursive = 0;
         // get entity of the parent asset
         if (isset($this->main_asset)) {
             $mainasset_entities_id = $this->main_asset->getEntityID();
-            $mainasset_is_recursive = $this->main_asset->getEntityRecursive();
         }
 
         // find configuration for main asset entity in which entity we must create the software
@@ -272,7 +270,7 @@ class Software extends InventoryAsset
         if ($strategy == Entity::CONFIG_NEVER) {
             // Configuration says that software can be created in the computer's entity
             $this->entities_id  = $mainasset_entities_id;
-            $this->is_recursive = $mainasset_is_recursive;
+            $this->is_recursive = 0;
         } else {
             // Software should be created in a different entity than main asset one
             $this->entities_id  = $entities_id_software;
