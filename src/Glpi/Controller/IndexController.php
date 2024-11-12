@@ -35,6 +35,7 @@
 namespace Glpi\Controller;
 
 use Auth;
+use Glpi\Http\Firewall;
 use Html;
 use Session;
 use Toolbox;
@@ -58,7 +59,7 @@ final class IndexController extends AbstractController
         ],
         name: "glpi_index"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
         return new HeaderlessStreamedResponse($this->call(...));

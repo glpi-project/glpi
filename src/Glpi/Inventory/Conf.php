@@ -99,7 +99,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_peripheral
  * @property int $import_env
  * @property string $auth_required
- *
+ * @property bool $enabled_inventory
  */
 class Conf extends CommonGLPI
 {

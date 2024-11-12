@@ -116,12 +116,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/inventory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
@@ -3417,12 +3411,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',

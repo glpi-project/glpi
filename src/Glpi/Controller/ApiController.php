@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
+use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -54,7 +55,7 @@ final class ApiController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
