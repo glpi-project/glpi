@@ -407,8 +407,7 @@ class MassiveAction
 
             $this->start_time = microtime(true);
 
-            /** @var number $max_time */
-            $max_time = get_cfg_var("max_execution_time");
+            $max_time = (int) get_cfg_var("max_execution_time");
             $max_time = ($max_time == 0) ? 60 : $max_time;
 
             $this->timeout_delay                  = ($max_time - 3);

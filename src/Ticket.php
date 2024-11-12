@@ -3487,6 +3487,48 @@ JAVASCRIPT;
     }
 
 
+    /**
+     * Check if the category is valid for the given type and entity.
+     *
+     * @param array $input An associative array containing 'itilcategories_id', 'type', and 'entities_id'.
+     *
+     * @return bool
+     */
+    public static function isCategoryValid(array $input): bool
+    {
+        $cat = new ITILCategory();
+        if ($cat->getFromDB($input['itilcategories_id'])) {
+            switch ($input['type']) {
+                case self::INCIDENT_TYPE:
+                    if (!$cat->fields['is_incident']) {
+                        return false;
+                    }
+                    break;
+
+                case self::DEMAND_TYPE:
+                    if (!$cat->fields['is_request']) {
+                        return false;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            // Check category / entity validity
+            if (
+                $cat->fields['entities_id'] != $input['entities_id']
+                && !(
+                    $cat->isRecursive()
+                    && in_array($input['entities_id'], getSonsOf('glpi_entities', $cat->fields['entities_id']))
+                )
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public function showForm($ID, array $options = [])
     {
        // show full create form only to tech users
@@ -3588,31 +3630,12 @@ JAVASCRIPT;
         }
 
         // Check category / type validity
-        if ($options['itilcategories_id']) {
-            $cat = new ITILCategory();
-            if ($cat->getFromDB($options['itilcategories_id'])) {
-                switch ($options['type']) {
-                    case self::INCIDENT_TYPE:
-                        if (!$cat->getField('is_incident')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    case self::DEMAND_TYPE:
-                        if (!$cat->getField('is_request')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                // Check category / entity validity
-                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
-                    $options['itilcategories_id'] = 0;
-                    $this->fields['itilcategories_id'] = 0;
-                }
-            }
+        if (
+            $options['itilcategories_id']
+            && !$this::isCategoryValid($options)
+        ) {
+            $options['itilcategories_id'] = 0;
+            $this->fields['itilcategories_id'] = 0;
         }
 
         if ($options['type'] <= 0) {

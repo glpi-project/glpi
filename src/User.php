@@ -790,14 +790,28 @@ class User extends CommonDBTM
     {
         parent::unsetUndisclosedFields($fields);
 
-        $user = new self();
-        $can_see_token = Session::getLoginUserID() === $fields['id']
-            || (
-                $user->can($fields['id'], UPDATE)
-                && $user->currentUserHaveMoreRightThan($fields['id'])
-            );
-        if (!$can_see_token) {
-            unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+        if (
+            array_key_exists('password_forget_token', $fields)
+            || array_key_exists('password_forget_token_date', $fields)
+        ) {
+            if (array_key_exists('id', $fields)) {
+                // `id` is present mainly when the whole object is fetched.
+                // In this case, we must show the token only if the user is allowed to read it.
+                $user = new self();
+                $can_see_token = Session::getLoginUserID() === $fields['id']
+                    || (
+                        $user->can($fields['id'], UPDATE)
+                        && $user->currentUserHaveMoreRightThan($fields['id'])
+                    );
+            } else {
+                // `id` may be missing when a partial object is fetch.
+                // In this case, we cannot ensure that the user is allowed to read the token
+                // and we must NOT show it.
+                $can_see_token = false;
+            }
+            if (!$can_see_token) {
+                unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+            }
         }
     }
 

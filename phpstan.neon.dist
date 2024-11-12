@@ -2,8 +2,6 @@ includes:
     - .phpstan-baseline.php
 
 parameters:
-    parallel:
-        maximumNumberOfProcesses: 4
     level: 4
     bootstrapFiles:
         - stubs/glpi_constants.php
@@ -23,7 +21,9 @@ parameters:
         - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
         - { message: '/Access to protected property/', paths: [ 'front/dropdown.common.form.php' ] }
         - { message: '/LDAP\\Connection/', reportUnmatched: false }
-
+        -
+            message: '/\/config\/config_db.php" is not a file or it does not exist./'
+            reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
 
