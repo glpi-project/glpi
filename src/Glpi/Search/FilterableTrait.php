@@ -90,7 +90,12 @@ trait FilterableTrait
             'criteria' => $criteria,
         ]);
 
-        return $data['data']['totalcount'] > 0;
+        if ($data['data']['totalcount'] > 0) {
+            if (!isset($data['data']['rows'][0]['id'])) {
+                return false;
+            }
+            return true;
+        }
     }
 
     public function saveFilter(
