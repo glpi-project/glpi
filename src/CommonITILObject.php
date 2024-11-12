@@ -4359,6 +4359,20 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $tab[] = [
+            'id'                 => '139',
+            'table'              => ITILSolution::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+            ],
+            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date_creation') . ')'
+        ];
+
         return $tab;
     }
 
