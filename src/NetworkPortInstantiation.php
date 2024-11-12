@@ -597,7 +597,7 @@ TWIG, $twig_params);
             if ($device2->can($device2->fields["id"], READ)) {
                 echo $oppositePort->getLink();
                 if ($device1->fields["entities_id"] !== $device2->fields["entities_id"]) {
-                     echo "<br>(" . htmlspecialchars(Dropdown::getDropdownName(
+                     echo "<br>(" . htmlescape(Dropdown::getDropdownName(
                          "glpi_entities",
                          $device2->getEntityID()
                      )) . ")";
@@ -626,7 +626,7 @@ TWIG, $twig_params);
                 }
                 printf(
                     __s('%1$s on %2$s'),
-                    "<span class='b'>" . htmlspecialchars($netname) . "</span>",
+                    "<span class='b'>" . htmlescape($netname) . "</span>",
                     "<span class='b'>" . $device2->getName() . "</span>"
                 );
                 echo "<br>(" . Dropdown::getDropdownName(
@@ -646,7 +646,7 @@ TWIG, $twig_params);
                             ]
                         );
                     } else {
-                        echo "<a href=\"" . htmlspecialchars($netport->getFormURLWithID($ID)) . "\">" . _sx('button', 'Connect') . "</a>";
+                        echo "<a href=\"" . htmlescape($netport->getFormURLWithID($ID)) . "\">" . _sx('button', 'Connect') . "</a>";
                     }
                 } else {
                     echo "&nbsp;";
@@ -716,7 +716,7 @@ TWIG, $twig_params);
             $params
         );
 
-        echo "<span id='show_" . htmlspecialchars($p['name']) . "$rand'>&nbsp;</span>";
+        echo "<span id='show_" . htmlescape($p['name']) . "$rand'>&nbsp;</span>";
 
         return $rand;
     }

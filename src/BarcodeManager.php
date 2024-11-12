@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+class BarcodeManager
+{
+    public function generateQRCode(CommonDBTM $item)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        if (
+            $item->getId() === -1 ||
+            !in_array($item::class, $CFG_GLPI["asset_types"])
+        ) {
+            return false;
+        }
+        $barcode = new \Com\Tecnick\Barcode\Barcode();
+        $qrcode = $barcode->getBarcodeObj(
+            'QRCODE,H',
+            $CFG_GLPI["url_base"] . $item->getLinkURL(),
+            -2,
+            -2,
+            'black',
+            array(-2, -2, -2, -2)
+        )->setBackgroundColor('white');
+        return $qrcode;
+    }
+
+    public static function renderQRCode(CommonDBTM $item)
+    {
+        $barcode_manager = new self();
+        $qrcode = $barcode_manager->generateQRCode($item);
+        if ($qrcode) {
+            return $qrcode->getHtmlDiv();
+        }
+        return false;
+    }
+}

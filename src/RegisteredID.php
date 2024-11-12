@@ -70,13 +70,13 @@ class RegisteredID extends CommonDBChild
      **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var): string
     {
-        $field_name = htmlspecialchars($field_name);
-        $child_count_js_var = htmlspecialchars($child_count_js_var);
+        $field_name = htmlescape($field_name);
+        $child_count_js_var = htmlescape($child_count_js_var);
         $result  = "<select name=\'" . $field_name . "_type[-'+$child_count_js_var+']\'>";
         $result .= "<option value=\'\'>" . Dropdown::EMPTY_VALUE . "</option>";
         foreach (self::getRegisteredIDTypes() as $name => $label) {
-            $name = htmlspecialchars($name);
-            $label = htmlspecialchars($label);
+            $name = htmlescape($name);
+            $label = htmlescape($label);
             $result .= "<option value=\'$name\'>$label</option>";
         }
         $result .= "</select> : ";
@@ -92,10 +92,10 @@ class RegisteredID extends CommonDBChild
         } else {
             $value = $this->getName();
         }
-        $value             = htmlspecialchars($value);
+        $value             = htmlescape($value);
         $result            = "";
-        $main_field        = htmlspecialchars($field_name . "[$id]");
-        $type_field        = htmlspecialchars($field_name . "_type[$id]");
+        $main_field        = htmlescape($field_name . "[$id]");
+        $type_field        = htmlescape($field_name . "_type[$id]");
         $registeredIDTypes = self::getRegisteredIDTypes();
 
         if ($canedit) {
@@ -104,9 +104,9 @@ class RegisteredID extends CommonDBChild
             foreach ($registeredIDTypes as $name => $label) {
                 $result .= sprintf(
                     "<option value='%s'%s>%s</option>",
-                    htmlspecialchars($name),
+                    htmlescape($name),
                     $this->fields['device_type'] === $name ? " selected" : "",
-                    htmlspecialchars($label)
+                    htmlescape($label)
                 );
             }
             $result .= "</select> : <input type='text' size='30' name='$main_field' value='$value' class='form-control'>\n";
@@ -115,7 +115,7 @@ class RegisteredID extends CommonDBChild
             if (!empty($this->fields['device_type'])) {
                 $result .= sprintf(
                     __s('%1$s: %2$s'),
-                    htmlspecialchars($registeredIDTypes[$this->fields['device_type']]),
+                    htmlescape($registeredIDTypes[$this->fields['device_type']]),
                     $value
                 );
             } else {

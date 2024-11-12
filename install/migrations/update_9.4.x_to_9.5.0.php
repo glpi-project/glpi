@@ -173,7 +173,7 @@ function update94xto950()
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.5 add table glpi_clustertypes");
+        $DB->doQuery($query);
     }
 
     if (!$DB->tableExists('glpi_clusters')) {
@@ -203,7 +203,7 @@ function update94xto950()
          KEY `entities_id` (`entities_id`),
          KEY `is_recursive` (`is_recursive`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.5 add table glpi_clusters");
+        $DB->doQuery($query);
     }
 
     if (!$DB->tableExists('glpi_items_clusters')) {
@@ -216,7 +216,7 @@ function update94xto950()
          UNIQUE KEY `unicity` (`clusters_id`,`itemtype`,`items_id`),
          KEY `item` (`itemtype`,`items_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.5 add table glpi_items_clusters");
+        $DB->doQuery($query);
     }
 
     $migration->addField('glpi_states', 'is_visible_cluster', 'bool', [
@@ -285,7 +285,7 @@ function update94xto950()
             KEY `entities_id` (`entities_id`),
             KEY `is_recursive` (`is_recursive`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-            $DB->doQueryOrDie($query, "add table glpi_{$itiltype}templates");
+            $DB->doQuery($query);
             $migration->addPostQuery(
                 $DB->buildInsert(
                     "glpi_{$itiltype}templates",
@@ -307,7 +307,7 @@ function update94xto950()
             UNIQUE KEY `unicity` (`{$itiltype}templates_id`,`num`),
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-            $DB->doQueryOrDie($query, "add table glpi_{$itiltype}templatehiddenfields");
+            $DB->doQuery($query);
         }
 
         if (!$DB->tableExists("glpi_{$itiltype}templatemandatoryfields")) {
@@ -319,7 +319,7 @@ function update94xto950()
             UNIQUE KEY `unicity` (`{$itiltype}templates_id`,`num`),
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-            $DB->doQueryOrDie($query, "add table glpi_{$itiltype}templatemandatoryfields");
+            $DB->doQuery($query);
             $migration->addPostQuery(
                 $DB->buildInsert(
                     "glpi_{$itiltype}templatemandatoryfields",
@@ -341,7 +341,7 @@ function update94xto950()
             PRIMARY KEY (`id`),
             KEY `{$itiltype}templates_id` (`{$itiltype}templates_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-            $DB->doQueryOrDie($query, "add table glpi_{$itiltype}templatepredefinedfields");
+            $DB->doQuery($query);
         } else {
            //drop key -- usefull only for 9.5 rolling release
             $migration->dropKey("glpi_{$itiltype}templatepredefinedfields", 'unicity');
@@ -371,7 +371,7 @@ function update94xto950()
          INDEX `date_creation` (`date_creation`),
          INDEX `is_private` (`is_private`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_itilfollowuptemplates");
+        $DB->doQuery($query);
     }
     /** /add templates for followups */
 
@@ -425,7 +425,7 @@ function update94xto950()
         foreach ($elements_to_fix as $data) {
             $data['picture_front'] = $fix_picture_fct($data['picture_front']);
             $data['picture_rear']  = $fix_picture_fct($data['picture_rear']);
-            $DB->updateOrDie($table, $data, ['id' => $data['id']]);
+            $DB->update($table, $data, ['id' => $data['id']]);
         }
     }
 
@@ -440,7 +440,7 @@ function update94xto950()
     );
     foreach ($elements_to_fix as $data) {
         $data['blueprint'] = $fix_picture_fct($data['blueprint']);
-        $DB->updateOrDie('glpi_dcrooms', $data, ['id' => $data['id']]);
+        $DB->update('glpi_dcrooms', $data, ['id' => $data['id']]);
     }
     /** /Make datacenter pictures path relative */
 
@@ -500,7 +500,7 @@ function update94xto950()
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_planningexternalevents");
+        $DB->doQuery($query);
 
         $new_rights = ALLSTANDARDRIGHT + PlanningExternalEvent::MANAGE_BG_EVENTS;
         $migration->addRight('externalevent', $new_rights, [
@@ -541,7 +541,7 @@ function update94xto950()
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_planningeventcategories");
+        $DB->doQuery($query);
     }
 
    // partial update (for developers)
@@ -573,7 +573,7 @@ function update94xto950()
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_planningexternaleventtemplates");
+        $DB->doQuery($query);
     }
     /** /Add Externals events for planning */
 
@@ -745,7 +745,7 @@ function update94xto950()
          KEY `source_asset` (`itemtype_source`, `items_id_source`),
          KEY `impacted_asset` (`itemtype_impacted`, `items_id_impacted`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_impacts");
+        $DB->doQuery($query);
     }
 
    // Impact compounds
@@ -756,7 +756,7 @@ function update94xto950()
             `color` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8_unicode_ci',
             PRIMARY KEY (`id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_impacts_compounds");
+        $DB->doQuery($query);
     }
 
    // Impact parents
@@ -785,7 +785,7 @@ function update94xto950()
             KEY `source` (`itemtype`, `items_id`),
             KEY `parent_id` (`parent_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_impacts_parent");
+        $DB->doQuery($query);
     }
     /** /Impact analysis */
 
@@ -845,7 +845,7 @@ function update94xto950()
 
     /** Add Apple File System (All Apple devices since 2017) */
     if (countElementsInTable('glpi_filesystems', ['name' => 'APFS']) === 0) {
-        $DB->insertOrDie('glpi_filesystems', [
+        $DB->insert('glpi_filesystems', [
             'name'   => 'APFS'
         ]);
     }
@@ -868,7 +868,7 @@ function update94xto950()
          PRIMARY KEY (`id`),
          UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_kanbans");
+        $DB->doQuery($query);
     }
     if (!$DB->fieldExists('glpi_users', 'refresh_views')) {
         $migration->changeField('glpi_users', 'refresh_ticket_list', 'refresh_views', 'int DEFAULT NULL');
@@ -932,7 +932,7 @@ function update94xto950()
             KEY `date_mod` (`date_mod`),
             KEY `date_creation` (`date_creation`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_vobjects");
+        $DB->doQuery($query);
     }
     /** /Add glpi_vobjects table for CalDAV server */
 
@@ -966,7 +966,7 @@ function update94xto950()
          PRIMARY KEY (`id`),
          UNIQUE KEY `key` (`key`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_dashboards_dashboards");
+        $DB->doQuery($query);
     }
     if (!$DB->tableExists('glpi_dashboards_items')) {
         $query = "CREATE TABLE `glpi_dashboards_items` (
@@ -982,7 +982,7 @@ function update94xto950()
         PRIMARY KEY (`id`),
         KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_dashboards_items");
+        $DB->doQuery($query);
     }
     if (!$DB->tableExists('glpi_dashboards_rights')) {
         $query = "CREATE TABLE `glpi_dashboards_rights` (
@@ -994,7 +994,7 @@ function update94xto950()
          KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
          UNIQUE KEY `unicity` (`dashboards_dashboards_id`, `itemtype`,`items_id`)
        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_dashboards_rights");
+        $DB->doQuery($query);
     }
 
    // migration from previous development versions
@@ -1089,7 +1089,7 @@ function update94xto950()
             PRIMARY KEY (`id`),
             KEY `name` (`name`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_domaintypes");
+        $DB->doQuery($query);
     }
 
     $dfields = [
@@ -1131,7 +1131,7 @@ function update94xto950()
             KEY `FK_device` (`items_id`, `itemtype`),
             KEY `item` (`itemtype`, `items_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_domains_items");
+        $DB->doQuery($query);
     }
 
     foreach (['Computer', 'NetworkEquipment', 'Printer'] as $itemtype) {
@@ -1145,7 +1145,7 @@ function update94xto950()
                  //migrate existing data
                  $migration->migrationOneTable('glpi_domains_items');
                 foreach ($iterator as $row) {
-                    $DB->insertOrDie("glpi_domains_items", [
+                    $DB->insert("glpi_domains_items", [
                         'domains_id'   => $row['domains_id'],
                         'itemtype'     => $itemtype,
                         'items_id'     => $row['id']
@@ -1210,7 +1210,7 @@ function update94xto950()
             PRIMARY KEY (`id`),
             KEY `name` (`name`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_domainrelations");
+        $DB->doQuery($query);
         $relations = DomainRelation::getDefaults();
         foreach ($relations as $relation) {
             $migration->addPostQuery(
@@ -1239,7 +1239,7 @@ function update94xto950()
             PRIMARY KEY (`id`),
             KEY `name` (`name`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_domainrecordtypes");
+        $DB->doQuery($query);
         $types = DomainRecordType::getDefaults();
         foreach ($types as $type) {
             unset($type['fields']); // This field was not present before GLPI 10.0
@@ -1279,7 +1279,7 @@ function update94xto950()
             KEY `is_deleted` (`is_deleted`),
             KEY `date_creation` (`date_creation`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_domainrecords");
+        $DB->doQuery($query);
     }
 
     if ($DB->fieldExists('glpi_domainrecords', 'status')) {
@@ -1290,18 +1290,17 @@ function update94xto950()
 
     /** Domains expiration notifications */
     if (countElementsInTable('glpi_notifications', ['itemtype' => 'Domain']) === 0) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplates',
             [
                 'name'            => 'Alert domains',
                 'itemtype'        => 'Domain',
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add domains expiration notification template'
+            ]
         );
         $notificationtemplate_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplatetranslations',
             [
                 'notificationtemplates_id' => $notificationtemplate_id,
@@ -1321,8 +1320,7 @@ PLAINTEXT
 ##ENDFOREACHdomains##&lt;/p&gt;
 HTML
             ,
-            ],
-            'Add domains expiration notification template translations'
+            ]
         );
 
         $notifications_data = [
@@ -1336,7 +1334,7 @@ HTML
             ]
         ];
         foreach ($notifications_data as $notification_data) {
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_notifications',
                 [
                     'name'            => $notification_data['name'],
@@ -1348,39 +1346,35 @@ HTML
                     'is_active'       => 1,
                     'date_creation'   => new QueryExpression('NOW()'),
                     'date_mod'        => new QueryExpression('NOW()'),
-                ],
-                'Add domains expiration notification'
+                ]
             );
             $notification_id = $DB->insertId();
 
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_notifications_notificationtemplates',
                 [
                     'notifications_id'         => $notification_id,
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $notificationtemplate_id,
-                ],
-                'Add domains expiration notification template instance'
+                ]
             );
 
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_notificationtargets',
                 [
                     'items_id'         => Notification::ITEM_TECH_IN_CHARGE,
                     'type'             => 1,
                     'notifications_id' => $notification_id,
-                ],
-                'Add domains expiration notification targets'
+                ]
             );
 
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_notificationtargets',
                 [
                     'items_id'         => Notification::ITEM_TECH_GROUP_IN_CHARGE,
                     'type'             => 1,
                     'notifications_id' => $notification_id,
-                ],
-                'Add domains expiration notification targets'
+                ]
             );
         }
     }
@@ -1404,7 +1398,7 @@ HTML
             `max_depth` INT NOT NULL DEFAULT '5',
             PRIMARY KEY (`id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->doQueryOrDie($query, "add table glpi_impactcontexts");
+        $DB->doQuery($query);
 
        // Update glpi_impactitems
         $migration->dropField("glpi_impactitems", "zoom");
@@ -1506,7 +1500,7 @@ HTML
         ]
     );
     if ($passwordexpires_notif_count === 0) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications',
             [
                 'name'            => 'Password expires alert',
@@ -1518,43 +1512,39 @@ HTML
                 'is_active'       => 1,
                 'date_creation'   => new QueryExpression('NOW()'),
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add password expires notification'
+            ]
         );
         $notification_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplates',
             [
                 'name'            => 'Password expires alert',
                 'itemtype'        => 'User',
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add password expires notification template'
+            ]
         );
         $notificationtemplate_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                 'notificationtemplates_id' => $notificationtemplate_id,
-            ],
-            'Add password expires notification template instance'
+            ]
         );
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtargets',
             [
                 'items_id'         => 19,
                 'type'             => 1,
                 'notifications_id' => $notification_id,
-            ],
-            'Add password expires notification targets'
+            ]
         );
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplatetranslations',
             [
                 'notificationtemplates_id' => $notificationtemplate_id,
@@ -1594,8 +1584,7 @@ PLAINTEXT
 &lt;p&gt;##lang.password.update.link## &lt;a href="##user.password.update.url##"&gt;##user.password.update.url##&lt;/a&gt;&lt;/p&gt;
 HTML
             ,
-            ],
-            'Add password expires notification template translations'
+            ]
         );
     }
     CronTask::Register(
@@ -1628,18 +1617,17 @@ HTML
             'itemtype' => 'Glpi\Marketplace\Controller'
         ]) === 0
     ) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplates',
             [
                 'name'            => 'Plugin updates',
                 'itemtype'        => 'Glpi\Marketplace\Controller',
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add plugins updates notification template'
+            ]
         );
         $notificationtemplate_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtemplatetranslations',
             [
                 'notificationtemplates_id' => $notificationtemplate_id,
@@ -1660,11 +1648,10 @@ PLAINTEXT
 ##ENDFOREACHplugins##&lt;/ul&gt;
 HTML
             ,
-            ],
-            'Add plugins updates notification template translations'
+            ]
         );
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications',
             [
                 'name'            => 'Check plugin updates',
@@ -1676,29 +1663,26 @@ HTML
                 'is_active'       => 1,
                 'date_creation'   => new QueryExpression('NOW()'),
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add plugins updates notification'
+            ]
         );
         $notification_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                 'notificationtemplates_id' => $notificationtemplate_id,
-            ],
-            'Add plugins updates notification template instance'
+            ]
         );
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtargets',
             [
                 'items_id'         => Notification::GLOBAL_ADMINISTRATOR,
                 'type'             => 1,
                 'notifications_id' => $notification_id,
-            ],
-            'Add domains expiration notification targets'
+            ]
         );
     }
     /** /Marketplace */
@@ -1775,26 +1759,24 @@ HTML
         ) {
            // rule matches previous default rule (same criteria and actions)
            // so we can replace criteria
-            $DB->deleteOrDie('glpi_rulecriterias', ['rules_id' => $rule->fields['id']]);
-            $DB->insertOrDie(
+            $DB->delete('glpi_rulecriterias', ['rules_id' => $rule->fields['id']]);
+            $DB->insert(
                 'glpi_rulecriterias',
                 [
                     'rules_id'  => $rule->fields['id'],
                     'criteria'  => 'TYPE',
                     'condition' => 0,
                     'pattern'   => Auth::LDAP,
-                ],
-                'Update default right assignement rule'
+                ]
             );
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_rulecriterias',
                 [
                     'rules_id'  => $rule->fields['id'],
                     'criteria'  => 'TYPE',
                     'condition' => 0,
                     'pattern'   => Auth::MAIL,
-                ],
-                'Update default right assignement rule'
+                ]
             );
         }
     }
@@ -1835,7 +1817,7 @@ HTML
          KEY `states_id` (`states_id`),
          KEY `manufacturers_id` (`manufacturers_id`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_passivedcequipments");
+        $DB->doQuery($query);
     }
     if (!$DB->tableExists('glpi_passivedcequipmentmodels')) {
         $query = "CREATE TABLE `glpi_passivedcequipmentmodels` (
@@ -1859,7 +1841,7 @@ HTML
          KEY `date_creation` (`date_creation`),
          KEY `product_number` (`product_number`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_passivedcequipmentmodels");
+        $DB->doQuery($query);
     }
     if (!$DB->tableExists('glpi_passivedcequipmenttypes')) {
         $query = "CREATE TABLE `glpi_passivedcequipmenttypes` (
@@ -1873,7 +1855,7 @@ HTML
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_passivedcequipmenttypes");
+        $DB->doQuery($query);
     }
     if (!$DB->fieldExists('glpi_states', 'is_visible_passivedcequipment')) {
         $migration->addField('glpi_states', 'is_visible_passivedcequipment', 'bool', [
@@ -1939,7 +1921,7 @@ HTML
                  KEY `item` (`reminders_id`,`language`),
                  KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "add table glpi_remindertranslations");
+        $DB->doQuery($query);
     }
     /**  Reminders translations */
 

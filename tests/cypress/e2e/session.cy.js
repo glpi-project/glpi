@@ -48,9 +48,9 @@ describe("Session", () => {
         cy.findByRole('checkbox', {name: "Remember me"}).check();
         cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
 
-        // Submit, the url should now contain /front/central.php or /front/helpdesk.public.php
+        // After logging in, the url should contain /front/central.php or /Helpdesk
         cy.findByRole('button', {name: "Sign in"}).click();
-        cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
+        cy.url().should('match', /(\/front\/central.php|\/Helpdesk)/);
 
         // Validate cookies
         cy.getCookies().should('have.length.gte', 2).then((cookies) => {

@@ -135,7 +135,7 @@ class Html
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, false);
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(
+                htmlescape(sprintf(
                     __('%1$s %2$s'),
                     $time,
                     _x('adjective', 'Invalid')
@@ -186,7 +186,7 @@ class Html
         if (!is_string($string)) {
             return $string;
         }
-        return htmlspecialchars($string);
+        return htmlescape($string);
     }
 
     /**
@@ -219,7 +219,7 @@ class Html
             $append = '&nbsp;(...)';
         }
 
-        return \htmlspecialchars($string) . $append;
+        return \htmlescape($string) . $append;
     }
 
     /**
@@ -557,13 +557,13 @@ class Html
 
         if ($ref_title != "") {
             echo "<span class='btn bg-blue-lt pe-none' aria-disabled='true'>
-            " . htmlspecialchars($ref_title) . "
+            " . htmlescape($ref_title) . "
          </span>";
         }
 
         if (is_array($ref_btts) && count($ref_btts)) {
             foreach ($ref_btts as $key => $val) {
-                echo "<a class='btn btn-outline-secondary' href='" . htmlspecialchars($key) . "'>" . htmlspecialchars($val) . "</a>";
+                echo "<a class='btn btn-outline-secondary' href='" . htmlescape($key) . "'>" . htmlescape($val) . "</a>";
             }
         }
         echo "</div>";
@@ -616,7 +616,7 @@ class Html
      **/
     public static function displayBackLink()
     {
-        echo '<a href="' . htmlspecialchars(self::getBackUrl()) . '">' . __s('Back') . "</a>";
+        echo '<a href="' . htmlescape(self::getBackUrl()) . '">' . __s('Back') . "</a>";
     }
 
     /**
@@ -666,7 +666,7 @@ class Html
      */
     public static function getRefererUrl(): ?string
     {
-        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $referer = URL::sanitizeURL($_SERVER['HTTP_REFERER'] ?? '');
 
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
@@ -708,7 +708,7 @@ class Html
      **/
     public static function addConfirmationOnAction($string, $additionalactions = '')
     {
-        return "onclick=\"" . htmlspecialchars(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
+        return "onclick=\"" . htmlescape(Html::getConfirmationOnActionScript($string, $additionalactions)) . "\"";
     }
 
 
@@ -1026,27 +1026,27 @@ HTML;
             'js_files'  => [],
         ];
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/base.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
             Html::requireJs('notifications_ajax');
         }
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/leaflet.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/leaflet.css'];
         Html::requireJs('leaflet');
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr.css'];
         // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/flatpickr/themes/dark.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr/themes/dark.css'];
         Html::requireJs('flatpickr');
 
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
         $is_monaco_added = false;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
-            $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
+            $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             $is_monaco_added = true;
         }
 
@@ -1079,7 +1079,7 @@ HTML;
             }
 
             if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/fullcalendar.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
                 Html::requireJs('fullcalendar');
             }
 
@@ -1089,7 +1089,7 @@ HTML;
             }
 
             if (in_array('rateit', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
                 Html::requireJs('rateit');
             }
 
@@ -1112,7 +1112,7 @@ HTML;
             }
 
             if (in_array('gridstack', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/gridstack.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/gridstack.css'];
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/gridstack-grids.scss'];
                 Html::requireJs('gridstack');
             }
@@ -1139,7 +1139,7 @@ HTML;
 
             if (in_array('monaco', $jslibs) && !$is_monaco_added) {
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
-                $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             }
 
             if (in_array('home-scss-file', $jslibs)) {
@@ -1148,7 +1148,7 @@ HTML;
         }
 
         if (Session::getCurrentInterface() == "helpdesk") {
-            $tpl_vars['css_files'][] = ['path' => 'public/lib/jquery.rateit.css'];
+            $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
             Html::requireJs('rateit');
         }
 
@@ -1195,20 +1195,17 @@ HTML;
             }
         }
 
-        if ($theme->isCustomTheme()) {
-            $theme_path = $theme->getKey() . '?is_custom_theme=1';
-
-            // Custom theme files might be modified by external source
-            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
-        } else {
-            $theme_path = $theme->getPath();
-        }
-        $tpl_vars['css_files'][] = ['path' => 'public/lib/tabler.css'];
+        $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
-        if ($theme->isCustomTheme()) {
+        $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
+        foreach (ThemeManager::getInstance()->getAllThemes() as $info) {
+            if (!$info->isCustomTheme()) {
+                continue;
+            }
+            $theme_path = $info->getKey() . '?is_custom_theme=1';
+            // Custom theme files might be modified by external source
+            $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
             $tpl_vars['css_files'][] = ['path' => $theme_path];
-        } else {
-            $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
         }
 
         // Add specific meta tags for plugins
@@ -1224,9 +1221,9 @@ HTML;
         $tpl_vars['custom_header_tags'] = $custom_header_tags;
 
 
-        $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
+        $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
-        $tpl_vars['js_modules'][] = ['path' => 'public/build/vue/app.js'];
+        $tpl_vars['js_modules'][] = ['path' => 'build/vue/app.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
@@ -1481,7 +1478,7 @@ HTML;
 
         $menu = [
             'home' => [
-                'default' => '/front/helpdesk.public.php',
+                'default' => '/Helpdesk',
                 'title'   => __('Home'),
                 'icon'    => 'fas fa-home',
             ],
@@ -1729,10 +1726,10 @@ HTML;
         if (isset($_SESSION['glpilanguage'])) {
            // select2
             $filename = sprintf(
-                'public/lib/select2/js/i18n/%s.js',
+                'lib/select2/js/i18n/%s.js',
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
             );
-            if (file_exists(GLPI_ROOT . '/' . $filename)) {
+            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
             }
         }
@@ -1925,10 +1922,17 @@ HTML;
         $user = Session::getLoginUserID() !== false ? User::getById(Session::getLoginUserID()) : null;
 
         $platform = "";
-        if (!defined('TU_USER')) {
-            $parser = new UserAgentParser();
+        $parser = new UserAgentParser();
+        try {
             $ua = $parser->parse();
             $platform = $ua->platform();
+        } catch (InvalidArgumentException $e) {
+            // To avoid log overload, we suppress the InvalidArgumentException error.
+            // Some non-standard clients, such as bots or simplified HTTP services,
+            // don’t always send the User-Agent header,
+            // and privacy-focused browsers or extensions may also block it.
+            // Additionally, server configurations like proxies or firewalls
+            // may remove this header for security reasons.
         }
 
         $help_url_key = Session::getCurrentInterface() === 'central'
@@ -2255,7 +2259,7 @@ HTML;
 
         $out .= "<input type='checkbox' class='form-check-input " . $params['class'] . "' title=\"" . $params['title'] . "\" ";
         if (isset($params['onclick'])) {
-            $params['onclick'] = htmlspecialchars($params['onclick'], ENT_QUOTES);
+            $params['onclick'] = htmlescape($params['onclick']);
             $out .= " onclick='{$params['onclick']}'";
         }
 
@@ -2338,7 +2342,7 @@ HTML;
 
         if (empty($options['name'])) {
             // encode quotes and brackets to prevent maformed name attribute
-            $id = htmlspecialchars($id, ENT_QUOTES);
+            $id = htmlescape($id);
             $id = str_replace(['[', ']'], ['&amp;#91;', '&amp;#93;'], $id);
             $options['name'] = "item[$itemtype][" . $id . "]";
         }
@@ -2563,11 +2567,11 @@ HTML;
             } else {
                 $out .= "onclick='modal_massiveaction_window$identifier.show();'";
             }
-            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlspecialchars($p['title']) . "\">";
+            $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
                 $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
             }
-            $out .= "<span>" . htmlspecialchars($p['title']) . "</span>";
+            $out .= "<span>" . htmlescape($p['title']) . "</span>";
             $out .= "</a>";
 
             if (
@@ -2669,6 +2673,7 @@ HTML;
          ? "mode: 'range',"
          : "";
 
+        $name = htmlescape($name);
         $output = <<<HTML
       <div class="input-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
@@ -2690,9 +2695,7 @@ HTML;
          ? "mode: 'multiple',"
          : "";
 
-        $value = is_array($p['value'])
-         ? json_encode($p['value'])
-         : "'{$p['value']}'";
+        $value = json_encode($p['value']);
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
         $js = <<<JS
@@ -2859,9 +2862,11 @@ JS;
          ? "<i class='input-group-text fas fa-times-circle fa-lg pointer' data-clear role='button' title='" . __s('Clear') . "'></i>"
          : "";
 
+        $name = htmlescape($name);
+        $value = htmlescape($p['value']);
         $output = <<<HTML
          <div class="input-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
-            <input type="text" name="{$name}" value="{$p['value']}"
+            <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <i class="input-group-text far fa-calendar-alt fa-lg pointer" data-toggle="" role="button"></i>
             $clear
@@ -2870,11 +2875,11 @@ HTML;
 
         $date_format = Toolbox::getDateFormat('js') . " H:i:S";
 
-        $min_attr = !empty($p['min'])
-         ? "minDate: '{$p['min']}',"
+        $min_attr = !empty($p['mindate'])
+         ? "minDate: '{$p['mindate']}',"
          : "";
-        $max_attr = !empty($p['max'])
-         ? "maxDate: '{$p['max']}',"
+        $max_attr = !empty($p['maxdate'])
+         ? "maxDate: '{$p['maxdate']}',"
          : "";
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
@@ -3531,7 +3536,7 @@ JS;
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs6/' . $language . '.js';
+        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
 
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
@@ -3542,8 +3547,8 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
-        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/tabler.css', ['force_no_version' => true]));
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
@@ -3551,7 +3556,7 @@ JS;
 
         // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
         // Reverted to the previous version here, but this should be fixed properly
-        $skin_url = $CFG_GLPI['root_doc'] . "/public/lib/tinymce/skins/ui/oxide";
+        $skin_url = $CFG_GLPI['root_doc'] . "/lib/tinymce/skins/ui/oxide";
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3911,7 +3916,7 @@ JAVASCRIPT
        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
-            $out .= "<tr><th colspan='6'>" . htmlspecialchars($title) . "</th></tr>";
+            $out .= "<tr><th colspan='6'>" . htmlescape($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
@@ -3976,7 +3981,7 @@ JAVASCRIPT
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
-                $key = htmlspecialchars($key);
+                $key = htmlescape($key);
                 echo "<tr><td>";
                 echo $key;
                 echo "</td><td>";
@@ -4009,7 +4014,7 @@ JAVASCRIPT
                                 echo "(object) " . get_class($val);
                             }
                         } else {
-                            echo htmlspecialchars($val ?? "");
+                            echo htmlescape($val);
                         }
                     }
                 }
@@ -4224,13 +4229,13 @@ JAVASCRIPT
         if (($num > 0) && ($num < $tot)) {
            // TRANS %1$d %2$d are numbers (displayed, total)
             $cpt = "<span class='primary-bg primary-fg count'>" .
-            htmlspecialchars(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
+            htmlescape(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
         } else {
            // $num is 0, so means configured to display nothing
            // or $num == $tot
             $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
         }
-        return sprintf(__s('%1$s %2$s'), htmlspecialchars($string), $cpt);
+        return sprintf(__s('%1$s %2$s'), htmlescape($string), $cpt);
     }
 
 
@@ -4280,7 +4285,7 @@ JAVASCRIPT
                 $link .= " class='pointer' ";
             }
         }
-        $action  = " submitGetLink('$action', " . htmlspecialchars(json_encode($fields)) . ");";
+        $action  = " submitGetLink('$action', " . htmlescape(json_encode($fields)) . ");";
 
         if (is_array($confirm) || strlen($confirm)) {
             $link .= self::addConfirmationOnAction($confirm, $action);
@@ -4289,7 +4294,7 @@ JAVASCRIPT
         }
 
         // Ensure $btlabel is properly escaped
-        $btlabel = htmlspecialchars($btlabel);
+        $btlabel = htmlescape($btlabel);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
@@ -4691,12 +4696,12 @@ JS;
         }
        // Do not escape title if it is an image or a i tag (fontawesome)
         if (!preg_match('/<i(mg)?.*/', $text)) {
-            $text = htmlspecialchars($text);
+            $text = htmlescape($text);
         }
 
         return sprintf(
             '<a href="%1$s" %2$s>%3$s</a>',
-            htmlspecialchars($url),
+            htmlescape($url),
             Html::parseAttributes($options),
             $text
         );
@@ -4730,7 +4735,7 @@ JS;
         }
         return sprintf(
             '<input type="hidden" name="%1$s" %2$s />',
-            htmlspecialchars($fieldName),
+            htmlescape($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -4759,7 +4764,7 @@ JS;
         return sprintf(
             '<input type="%1$s" name="%2$s" %3$s />',
             $type,
-            htmlspecialchars($fieldName),
+            htmlescape($fieldName),
             Html::parseAttributes($options)
         );
     }
@@ -4790,7 +4795,7 @@ JS;
             }
 
             $original_field_name = str_ends_with($name, '[]') ? substr($name, 0, -2) : $name;
-            $original_field_name = htmlspecialchars($original_field_name);
+            $original_field_name = htmlescape($original_field_name);
 
             $select .= sprintf(
                 '<input type="hidden" name="%1$s" value="" %2$s>',
@@ -4800,18 +4805,18 @@ JS;
         }
         $select .= sprintf(
             '<select name="%1$s" %2$s>',
-            htmlspecialchars($name),
+            htmlescape($name),
             self::parseAttributes($options)
         );
         foreach ($values as $key => $value) {
             $select .= sprintf(
                 '<option value="%1$s"%2$s>%3$s</option>',
-                htmlspecialchars($key),
+                htmlescape($key),
                 ($selected != false && (
                 $key == $selected
                 || is_array($selected) && in_array($key, $selected))
                 ) ? ' selected="selected"' : '',
-                htmlspecialchars($value)
+                htmlescape($value)
             );
         }
         $select .= '</select>';
@@ -4870,7 +4875,7 @@ JS;
             $options['alt']   = $caption;
             return sprintf(
                 '<input type="image" src="%s" %s />',
-                htmlspecialchars($image),
+                htmlescape($image),
                 Html::parseAttributes($options)
             );
         }
@@ -4885,7 +4890,7 @@ JS;
                <span>$caption</span>
             </button>&nbsp;";
 
-        return sprintf($button, htmlspecialchars(strip_tags($caption)), Html::parseAttributes($options));
+        return sprintf($button, htmlescape(strip_tags($caption)), Html::parseAttributes($options));
     }
 
 
@@ -4986,7 +4991,7 @@ HTML;
             $value = implode(' ', $value);
         }
 
-        return sprintf('%1$s="%2$s"', htmlspecialchars($key), htmlspecialchars($value));
+        return sprintf('%1$s="%2$s"', htmlescape($key), htmlescape($value));
     }
 
 
@@ -5199,7 +5204,7 @@ HTML;
         if ($p['only_uploaded_files']) {
             $display .= "<div class='fileupload only-uploaded-files'>";
         } else {
-            $display .= "<div class='fileupload draghoverable' id='" . htmlspecialchars($p['dropZone']) . "'>";
+            $display .= "<div class='fileupload draghoverable' id='" . htmlescape($p['dropZone']) . "'>";
 
             if ($p['showtitle']) {
                 $display .= "<b>";
@@ -5242,8 +5247,8 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
-                      data-uploader-name=\"" . htmlspecialchars($p['name']) . "\"
-                      data-url='" . htmlspecialchars($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
+                      data-uploader-name=\"" . htmlescape($p['name']) . "\"
+                      data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
@@ -5445,7 +5450,7 @@ HTML;
         $p = array_merge($p, $options);
 
        // div who will receive and display file list
-        $display = "<div id='" . htmlspecialchars($p['filecontainer']) . "' class='fileupload_info'>";
+        $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
                 $prefix  = substr($upload, 0, 23);
@@ -5474,9 +5479,9 @@ HTML;
                 ];
 
                 // Show the name and size of the upload
-                $display .= "<p id='" . htmlspecialchars($upload['id']) . "'>&nbsp;";
-                $display .= "<img src='" . htmlspecialchars($extensionIcon) . "' title='" . htmlspecialchars($extension) . "'>&nbsp;";
-                $display .= "<b>" . htmlspecialchars($upload['display']) . "</b>&nbsp;(" . htmlspecialchars(Toolbox::getSize($upload['size'])) . ")";
+                $display .= "<p id='" . htmlescape($upload['id']) . "'>&nbsp;";
+                $display .= "<img src='" . htmlescape($extensionIcon) . "' title='" . htmlescape($extension) . "'>&nbsp;";
+                $display .= "<b>" . htmlescape($upload['display']) . "</b>&nbsp;(" . htmlescape(Toolbox::getSize($upload['size'])) . ")";
 
                 $name = '_' . $p['name'] . '[' . $uploadId . ']';
                 $display .= Html::hidden($name, ['value' => $upload['name']]);
@@ -5498,7 +5503,7 @@ HTML;
                     1 => $upload['id'] . '2',
                 ]);
                 $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
-                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlspecialchars($deleteUpload) . '"></span>';
+                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlescape($deleteUpload) . '"></span>';
 
                 $display .= "</p>";
             }
@@ -5879,7 +5884,7 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
                 break;
             case 'tinymce':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
@@ -5888,24 +5893,24 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
                 break;
             case 'flatpickr':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/flatpickr.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
-                    $filename = "public/lib/flatpickr/l10n/" .
+                    $filename = "lib/flatpickr/l10n/" .
                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
-                    if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                    if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
             case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fullcalendar.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     foreach ([2, 3] as $loc) {
-                        $filename = "public/lib/fullcalendar/core/locales/" .
+                        $filename = "lib/fullcalendar/core/locales/" .
                          strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/' . $filename)) {
+                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                             $_SESSION['glpi_js_toload'][$name][] = $filename;
                             break;
                         }
@@ -5913,20 +5918,20 @@ HTML;
                 }
                 break;
             case 'rateit':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery.rateit.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
                 break;
             case 'fileupload':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/jquery-file-upload.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
                 break;
             case 'charts':
-                $_SESSION['glpi_js_toload']['charts'][] = 'public/lib/echarts.js';
+                $_SESSION['glpi_js_toload']['charts'][] = 'lib/echarts.js';
                 break;
             case 'notifications_ajax':
                 $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
                 break;
             case 'fuzzy':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/fuzzy.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
                 break;
             case 'dashboard':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
@@ -5935,25 +5940,25 @@ HTML;
                 $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
                 break;
             case 'gridstack':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/gridstack.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack.js';
                 break;
             case 'masonry':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/masonry.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/masonry.js';
                 break;
             case 'sortable':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/sortable.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/sortable.js';
                 break;
             case 'rack':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
                 break;
             case 'leaflet':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/leaflet.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet.js';
                 break;
             case 'log_filters':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
                 break;
             case 'photoswipe':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
                 break;
             case 'reservations':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
@@ -6013,9 +6018,9 @@ HTML;
        //locales for js libraries
         if (isset($_SESSION['glpilanguage'])) {
            // select2
-            $filename = "public/lib/select2/js/i18n/" .
+            $filename = "lib/select2/js/i18n/" .
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
-            if (file_exists(GLPI_ROOT . '/' . $filename)) {
+            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
         }
@@ -6556,7 +6561,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/css_compiled';
+        return $root_dir . '/public/css_compiled';
     }
 
     /**
@@ -6660,5 +6665,16 @@ CSS;
     public static function resetAjaxParam(): void
     {
         self::$is_ajax_request = false;
+    }
+
+    /**
+     * Sanitize a input name to prevent XSS.
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function sanitizeInputName(string $name): string
+    {
+        return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
     }
 }

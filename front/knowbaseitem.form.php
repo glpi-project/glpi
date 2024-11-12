@@ -148,14 +148,14 @@ if (isset($_POST["add"])) {
     $kb->check($_GET["id"], UPDATE);
     if ($kb->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item has been reverted to revision %s'),
                 $_GET['to_rev']
             ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            htmlspecialchars(sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item has not been reverted to revision %s'),
                 $_GET['to_rev']
             )),

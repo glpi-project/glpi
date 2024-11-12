@@ -58,6 +58,11 @@ class Cable extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'management';
+    }
+
     public static function getFieldLabel()
     {
         return self::getTypeName(1);

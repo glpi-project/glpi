@@ -55,6 +55,12 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
+
+            return false;
+        }
+
         if (!empty($input['mail_server'])) {
             $input["connect_string"] = Toolbox::constructMailServerConfig($input);
         }
@@ -73,6 +79,12 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
+
+            return false;
+        }
+
         if (!empty($input['mail_server'])) {
             $input["connect_string"] = Toolbox::constructMailServerConfig($input);
         }

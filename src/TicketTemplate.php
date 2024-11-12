@@ -135,40 +135,4 @@ class TicketTemplate extends ITILTemplate
 
         return $tab;
     }
-
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-        if ($item instanceof ITILTemplate) {
-            switch ($tabnum) {
-                case 1:
-                    $item->showCentralPreview($item);
-                    return true;
-
-                case 2:
-                    static::showHelpdeskPreview($item);
-                    return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Print preview for Ticket template
-     *
-     * @param $tt ITILTemplate object
-     *
-     * @return void
-     **/
-    public static function showHelpdeskPreview(ITILTemplate $tt)
-    {
-
-        if (!$tt->getID()) {
-            return false;
-        }
-        if ($tt->getFromDBWithData($tt->getID())) {
-            $ticket = new  Ticket();
-            $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
-        }
-    }
 }

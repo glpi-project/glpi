@@ -453,6 +453,27 @@ class ProjectTest extends DbTestCase
         $this->assertEquals($expected, $tasks_clone);
     }
 
+    public function testCloneWithOverridenInput()
+    {
+        $project = $this->createItem(
+            'Project',
+            [
+                'name' => __FUNCTION__,
+            ]
+        );
+
+        $description = <<<PLAINTEXT
+            > a
+            > multiline
+            > description
+PLAINTEXT;
+
+        $projects_id_clone = $project->clone(['content' => $description]);
+        $project_clone = new \Project();
+        $this->assertTrue($project_clone->getFromDB($projects_id_clone));
+        $this->assertEquals($description, $project_clone->fields['content']);
+    }
+
     /**
      * Functional test to ensure that project's states colors are shown in
      * the search results

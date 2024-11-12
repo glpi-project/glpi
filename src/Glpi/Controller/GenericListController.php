@@ -43,7 +43,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class GenericListController extends AbstractController
 {
-    #[Route("/{class}/Search", name: "glpi_generic_list")]
+    #[Route("/{class}/Search", name: "glpi_itemtype_list", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');

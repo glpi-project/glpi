@@ -296,7 +296,7 @@ final class AssetDefinition extends AbstractDefinition
         if (array_key_exists('capacities', $input)) {
             if (!$this->validateCapacityArray($input['capacities'])) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         __('Capacities')
                     )),

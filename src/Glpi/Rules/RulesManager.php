@@ -84,7 +84,7 @@ final class RulesManager
             }
 
             if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass->getType()]) === 0) {
-                $ruleclass->initRules(false, false, false);
+                $ruleclass->initRules(false);
             }
 
             // Mark collection as already initialized, to not reinitialize it on next update

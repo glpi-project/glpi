@@ -3152,13 +3152,11 @@ CREATE TABLE `glpi_groups_users` (
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_manager` tinyint NOT NULL DEFAULT '0',
-  `is_userdelegate` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`groups_id`),
   KEY `groups_id` (`groups_id`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `is_manager` (`is_manager`),
-  KEY `is_userdelegate` (`is_userdelegate`)
+  KEY `is_manager` (`is_manager`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7712,7 +7710,7 @@ CREATE TABLE `glpi_users` (
   `date_sync` timestamp NULL DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `profiles_id` int unsigned NOT NULL DEFAULT '0',
-  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `entities_id` int unsigned DEFAULT '0',
   `usertitles_id` int unsigned NOT NULL DEFAULT '0',
   `usercategories_id` int unsigned NOT NULL DEFAULT '0',
   `date_format` int DEFAULT NULL,

@@ -43,7 +43,7 @@ use Glpi\DBAL\QueryExpression;
 /** Password initialization notification */
 $notification_exists = countElementsInTable('glpi_notifications', ['itemtype' => 'User', 'event' => 'passwordinit']) > 0;
 if (!$notification_exists) {
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notifications',
         [
             'id'              => null,
@@ -56,23 +56,21 @@ if (!$notification_exists) {
             'is_active'       => 1,
             'date_creation'   => new QueryExpression('NOW()'),
             'date_mod'        => new QueryExpression('NOW()')
-        ],
-        '11.0 Add password initialization notification'
+        ]
     );
     $notification_id = $DB->insertId();
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplates',
         [
             'name' => 'Password Initialization',
             'itemtype' => 'User'
-        ],
-        '11.0 Add password initialization template'
+        ]
     );
 
     $notificationtemplate_id = $DB->insertId();
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplatetranslations',
         [
             'notificationtemplates_id' => $notificationtemplate_id,
@@ -90,28 +88,25 @@ if (!$notification_exists) {
     &lt;p&gt;##lang.passwordinit.information##&lt;/p&gt;
     &lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;
     HTML,
-        ],
-        '11.0 Add password initialization notification template translations'
+        ]
     );
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notifications_notificationtemplates',
         [
             'notifications_id'         => $notification_id,
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $notificationtemplate_id,
-        ],
-        '11.0 Add password initialization notification template'
+        ]
     );
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtargets',
         [
             'items_id'         => '19',
             'type'             => '1',
             'notifications_id' => $notification_id,
-        ],
-        '11.0 Add password initialization target'
+        ]
     );
 }
 /** /Password initialization notification */
@@ -119,18 +114,17 @@ if (!$notification_exists) {
 
 /** Change Satisfaction notification */
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'Change', 'event' => 'satisfaction']) === 0) {
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplates',
         [
             'name'            => 'Change Satisfaction',
             'itemtype'        => 'Change',
             'date_mod'        => new QueryExpression('NOW()'),
-        ],
-        'Add change satisfaction survey notification template'
+        ]
     );
     $notificationtemplate_id = $DB->insertId();
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplatetranslations',
         [
             'notificationtemplates_id' => $notificationtemplate_id,
@@ -148,8 +142,7 @@ PLAINTEXT,
 &lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;
 HTML,
-        ],
-        'Add change satisfaction survey notification template translations'
+        ]
     );
 
     $notifications_data = [
@@ -163,7 +156,7 @@ HTML,
         ]
     ];
     foreach ($notifications_data as $notification_data) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications',
             [
                 'name'            => $notification_data['name'],
@@ -175,40 +168,36 @@ HTML,
                 'is_active'       => 1,
                 'date_creation'   => new QueryExpression('NOW()'),
                 'date_mod'        => new QueryExpression('NOW()'),
-            ],
-            'Add change satisfaction survey notification'
+            ]
         );
         $notification_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                 'notificationtemplates_id' => $notificationtemplate_id,
-            ],
-            'Add change satisfaction survey notification template instance'
+            ]
         );
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notificationtargets',
             [
                 'items_id'         => 3,
                 'type'             => 1,
                 'notifications_id' => $notification_id,
-            ],
-            'Add change satisfaction survey notification targets'
+            ]
         );
 
         if ($notification_data['event'] === 'replysatisfaction') {
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_notificationtargets',
                 [
                     'items_id'         => 2,
                     'type'             => 1,
                     'notifications_id' => $notification_id,
-                ],
-                'Add change satisfaction survey notification targets'
+                ]
             );
         }
     }
@@ -217,14 +206,14 @@ HTML,
 
 /** Add new notification for AutoBump */
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'auto_reminder']) === 0) {
-    $DB->insertOrDie('glpi_notificationtemplates', [
+    $DB->insert('glpi_notificationtemplates', [
         'name' => 'Automatic reminder',
         'itemtype' => 'Ticket'
     ]);
 
     $notificationtemplate_id = $DB->insertId();
 
-    $DB->insertOrDie('glpi_notificationtemplatetranslations', [
+    $DB->insert('glpi_notificationtemplatetranslations', [
         'notificationtemplates_id' => $notificationtemplate_id,
         'language' => '',
         'subject' => '##ticket.action## ##ticket.name##',
@@ -244,7 +233,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
             &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
     ]);
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notifications',
         [
             'name'            => 'Automatic reminder',
@@ -253,8 +242,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
             'comment'         => null,
             'is_recursive'    => 1,
             'is_active'       => 0,
-        ],
-        'Add automatic reminder notification'
+        ]
     );
     $notification_id = $DB->insertId();
 
@@ -274,14 +262,14 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
     ];
 
     foreach ($targets as $target) {
-        $DB->insertOrDie('glpi_notificationtargets', [
+        $DB->insert('glpi_notificationtargets', [
             'items_id'         => $target['items_id'],
             'type'             => $target['type'],
             'notifications_id' => $notification_id,
         ]);
     }
 
-    $DB->insertOrDie('glpi_notifications_notificationtemplates', [
+    $DB->insert('glpi_notifications_notificationtemplates', [
         'notifications_id'         => $notification_id,
         'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
         'notificationtemplates_id' => $notificationtemplate_id,

@@ -129,6 +129,12 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
+    #[Override]
+    public function maybeRecursive(): bool
+    {
+        return false;
+    }
+
     public function getAnswers(): array
     {
         $answers = [];
@@ -167,6 +173,16 @@ final class AnswersSet extends CommonDBChild
         return array_filter(
             $answers,
             fn (Answer $answer) => $answer->getRawType() == $type
+        );
+    }
+
+    /** @return Answer[] */
+    public function getAnswersByTypes(array $types): array
+    {
+        $answers = $this->getAnswers();
+        return array_filter(
+            $answers,
+            fn (Answer $answer) => in_array($answer->getRawType(), $types)
         );
     }
 

@@ -54,8 +54,9 @@ class ProfileRight extends CommonDBChild
      * @note Unlike the default implementation, this one handles the fact that some or all profile rights
      *       are already in the DB (but set to 0) when the cloned profile is created.
      *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
+     *       The $clone_as_template parameter is ignored.
      */
-    public function clone(array $override_input = [], bool $history = true)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -160,7 +160,7 @@ class Document extends CommonDBTM
                 ) <= 1)
             ) {
                 if (unlink(GLPI_DOC_DIR . "/" . $this->fields["filepath"])) {
-                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('Successful deletion of the file %s'),
                         $this->fields["filepath"]
                     )));
@@ -173,7 +173,7 @@ class Document extends CommonDBTM
                         E_USER_WARNING
                     );
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(
+                        htmlescape(sprintf(
                             __('Failed to delete the file %s'),
                             $this->fields["filepath"]
                         )),
@@ -447,10 +447,10 @@ class Document extends CommonDBTM
 
         $initfileout = null;
         if ($fileout !== null) {
-            $initfileout = htmlspecialchars($fileout);
+            $initfileout = htmlescape($fileout);
             $fileout     = Toolbox::strlen($fileout) > $len
-                ? htmlspecialchars(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
-                : htmlspecialchars($fileout);
+                ? htmlescape(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
+                : htmlescape($fileout);
         }
 
         $out   = '';
@@ -1043,7 +1043,7 @@ class Document extends CommonDBTM
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__('File %s not found.'), $filename)),
+                htmlescape(sprintf(__('File %s not found.'), $filename)),
                 false,
                 ERROR
             );
@@ -1070,7 +1070,7 @@ class Document extends CommonDBTM
             ) <= 1)
         ) {
             if (unlink(GLPI_DOC_DIR . "/" . $input['current_filepath'])) {
-                Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('Successful deletion of the file %s'),
                     $input['current_filename']
                 )));
@@ -1085,7 +1085,7 @@ class Document extends CommonDBTM
                     E_USER_WARNING
                 );
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('Failed to delete the file %1$s'),
                         $input['current_filename']
                     )),
@@ -1581,43 +1581,6 @@ class Document extends CommonDBTM
             finfo_file($fileinfo, $file),
             ['image/jpeg', 'image/png','image/gif', 'image/bmp', 'image/webp']
         );
-    }
-
-    /**
-     * Get image path for a specified context.
-     * Will call image resize if needed.
-     *
-     * @since 9.2.1
-     *
-     * @param string  $path    Original path
-     * @param string  $context Context
-     * @param integer $mwidth  Maximal width
-     * @param integer $mheight Maximal height
-     *
-     * @return string Image path on disk
-     *
-     * @deprecated 11.0.0
-     */
-    public static function getImage($path, $context, $mwidth = null, $mheight = null)
-    {
-        Toolbox::deprecated();
-
-        if ($mwidth === null || $mheight === null) {
-            switch ($context) {
-                case 'mail':
-                    $mwidth  = $mwidth ?? 400;
-                    $mheight = $mheight ?? 300;
-                    break;
-                case 'timeline':
-                    $mwidth  = $mwidth ?? 100;
-                    $mheight = $mheight ?? 100;
-                    break;
-                default:
-                    throw new \RuntimeException("Unknown context $context!");
-            }
-        }
-
-        return self::getResizedImagePath($path, $mwidth, $mheight);
     }
 
     /**

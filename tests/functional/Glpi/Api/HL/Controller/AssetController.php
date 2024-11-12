@@ -389,8 +389,6 @@ class AssetController extends \HLAPITestCase
 
     public function testDropdownTranslations()
     {
-        global $CFG_GLPI;
-
         $this->login();
         $state = new \State();
         $this->integer($state_id = $state->add([
@@ -412,7 +410,6 @@ class AssetController extends \HLAPITestCase
             'value'     => 'Essai',
         ]))->isGreaterThan(0);
 
-        $CFG_GLPI['translate_dropdowns'] = true;
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
             /** @var \HLAPICallAsserter $call */
@@ -442,8 +439,6 @@ class AssetController extends \HLAPITestCase
 
     public function testMissingDropdownTranslation()
     {
-        global $CFG_GLPI;
-
         $this->login();
         $state = new \State();
         $this->integer($state_id = $state->add([
@@ -457,7 +452,6 @@ class AssetController extends \HLAPITestCase
             'states_id' => $state_id,
         ]))->isGreaterThan(0);
 
-        $CFG_GLPI['translate_dropdowns'] = true;
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
             /** @var \HLAPICallAsserter $call */

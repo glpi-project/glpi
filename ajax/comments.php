@@ -83,7 +83,7 @@ if (
 
             if (isset($_POST['withlink']) && $link !== null) {
                 echo "<script type='text/javascript' >";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
+                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlescape($link) . "');";
                 echo "</script>";
             }
             break;
@@ -121,10 +121,8 @@ if (
                 } else {
                     $table = getTableForItemType($_POST['itemtype']);
                 }
-                $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
-                if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo htmlspecialchars($tmpname["comment"]);
-                }
+
+                echo Dropdown::getDropdownComments($table, (int) $_POST["value"]);
 
                 if (isset($_POST['withlink'])) {
                     echo "<script type='text/javascript' >";
@@ -139,8 +137,8 @@ if (
 
                     //if item have a DC position (reload url to it's rack)
                     if (
-                        method_exists($item, 'isRackPart')
-                        && ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true))
+                        method_exists($item, 'getParentRack')
+                        && ($rack = $item->getParentRack())
                     ) {
                         echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
                   html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";

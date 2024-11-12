@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
-use Glpi\Form\DefaultFormsManager;
+use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
@@ -575,18 +575,19 @@ class Toolbox
             finfo_close($finfo);
         }
 
-       // don't download picture files, see them inline
-        $attachment = "";
-       // if not begin 'image/'
+        $can_be_inlined = false;
         if (
-            strncmp($mime, 'image/', 6) !== 0
-            && $mime != 'application/pdf'
-            // svg vector of attack, force attachment
-            // see https://github.com/glpi-project/glpi/issues/3873
-            || $mime == 'image/svg+xml'
+            str_starts_with(strtolower($mime), 'image/')
+            && strtolower($mime) !== 'image/svg+xml'
         ) {
-            $attachment = ' attachment;';
+            // images files can be inlined
+            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+            $can_be_inlined = true;
+        } elseif (strtolower($mime) === 'application/pdf') {
+            // PDF files can be inlined
+            $can_be_inlined = true;
         }
+        $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
         $etag = md5_file($file);
         $lastModified = filemtime($file);
@@ -1502,7 +1503,7 @@ class Toolbox
                     if ($matches[1] !== $CFG_GLPI['url_base']) {
                         Session::addMessageAfterRedirect(__s('Redirection failed'));
                         if (Session::getCurrentInterface() === "helpdesk") {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                            Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
                         } else {
                             Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
                         }
@@ -1566,7 +1567,7 @@ class Toolbox
                                     }
                                 }
 
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
                                 // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             case "preference":
@@ -1578,7 +1579,7 @@ class Toolbox
                                 // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
 
                             default:
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
                         }
                         // @phpstan-ignore deadCode.unreachable (defensive programming)
                         break;
@@ -2126,10 +2127,6 @@ class Toolbox
                 );
 
                 $stmt = $DB->prepare($DB->buildInsert($table, $reference));
-                if (false === $stmt) {
-                     $msg = "Error preparing statement in table $table";
-                     throw new \RuntimeException($msg);
-                }
 
                 $types = str_repeat('s', count($data[0]));
                 foreach ($data as $row) {
@@ -2157,8 +2154,8 @@ class Toolbox
             }
 
             // Create default forms
-            $default_forms_manager = new DefaultFormsManager();
-            $default_forms_manager->createDefaultForms();
+            $default_forms_manager = new DefaultDataManager();
+            $default_forms_manager->initializeData();
 
             // Initalize rules
             RulesManager::initializeRules();
@@ -2178,7 +2175,7 @@ class Toolbox
 
             if (defined('GLPI_SYSTEM_CRON')) {
                // Downstream packages may provide a good system cron
-                $DB->updateOrDie(
+                $DB->update(
                     'glpi_crontasks',
                     [
                         'mode'   => 2
@@ -2186,8 +2183,7 @@ class Toolbox
                     [
                         'name'      => ['!=', 'watcher'],
                         'allowmode' => ['&', 2]
-                    ],
-                    '4203'
+                    ]
                 );
             }
         }
@@ -2868,7 +2864,7 @@ class Toolbox
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlspecialchars($path);
+        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlescape($path);
     }
 
     /**

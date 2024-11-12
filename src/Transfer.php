@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
+use Glpi\Toolbox\URL;
 
 /**
  * Transfer engine.
@@ -87,6 +88,19 @@ final class Transfer extends CommonDBTM
     public static function getSectorizedDetails(): array
     {
         return ['admin', Rule::class, self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        return [
+            // Required for pagination
+            'target' => self::getFormURL(),
+        ];
     }
 
     public function maxActionsCount()
@@ -3813,6 +3827,9 @@ final class Transfer extends CommonDBTM
         if ($referer_url === null || !str_contains($referer_url, "transfer.form.php")) {
             $edit_form = false;
         }
+
+        $options['target'] = URL::sanitizeURL($options['target']);
+
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
             'item' => $this,
             'edit_mode' => $edit_form,

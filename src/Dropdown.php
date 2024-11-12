@@ -153,6 +153,9 @@ class Dropdown
                 $params[$key] = $val;
             }
         }
+
+        $params['name'] = Html::sanitizeInputName($params['name']);
+
         $output       = '';
         $name         = $params['emptylabel'];
         $comment      = "";
@@ -192,11 +195,11 @@ class Dropdown
             !$params['multiple']
             && ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0))
         ) {
-            $tmpname = self::getDropdownName($table, $params['value'], 1);
-
-            if ($tmpname["name"] != "&nbsp;") {
-                $name    = $tmpname["name"];
-                $comment = $tmpname["comment"];
+            $dropdown_name    = self::getDropdownName($table, $params['value']);
+            $dropdown_comment = self::getDropdownComments($table, (int) $params['value']);
+            if ($dropdown_name !== '') {
+                $name    = $dropdown_name;
+                $comment = $dropdown_comment;
             }
         } else if ($params['multiple']) {
             foreach ($params['values'] as $value) {
@@ -516,9 +519,16 @@ class Dropdown
      * @param string  $default      default value returned when item not exists
      *
      * @return string|array the value of the dropdown
+     *      The returned `comment` will corresponds to a safe HTML string.
+     *
+     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      **/
     public static function getDropdownName($table, $id, $withcomment = false, $translate = true, $tooltip = true, string $default = '')
     {
+        if ($withcomment) {
+            Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
+        }
+
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -533,81 +543,46 @@ class Dropdown
         }
 
         $name    = "";
-        $comment = "";
 
         if ($id) {
             $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
-            $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
             $JOIN          = [];
-            $JOINS         = [];
-            if ($translate) {
-                if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
-                    $SELECTNAME = 'namet.value AS transname';
-                    $JOINS['glpi_dropdowntranslations AS namet'] = [
-                        'ON' => [
-                            'namet'  => 'items_id',
-                            $table   => 'id', [
-                                'AND' => [
-                                    'namet.itemtype'  => getItemTypeForTable($table),
-                                    'namet.language'  => $_SESSION['glpilanguage'],
-                                    'namet.field'     => 'name'
+            if ($translate && Session::haveTranslations(getItemTypeForTable($table), 'name')) {
+                $SELECTNAME = 'namet.value AS transname';
+                $JOIN = [
+                    'LEFT JOIN' => [
+                        'glpi_dropdowntranslations AS namet' => [
+                            'ON' => [
+                                'namet'  => 'items_id',
+                                $table   => 'id', [
+                                    'AND' => [
+                                        'namet.itemtype'  => getItemTypeForTable($table),
+                                        'namet.language'  => $_SESSION['glpilanguage'],
+                                        'namet.field'     => 'name'
+                                    ]
                                 ]
                             ]
                         ]
-                    ];
-                }
-                if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
-                    $SELECTCOMMENT = 'namec.value AS transcomment';
-                    $JOINS['glpi_dropdowntranslations AS namec'] = [
-                        'ON' => [
-                            'namec'  => 'items_id',
-                            $table   => 'id', [
-                                'AND' => [
-                                    'namec.itemtype'  => getItemTypeForTable($table),
-                                    'namec.language'  => $_SESSION['glpilanguage'],
-                                    'namec.field'     => 'comment'
-                                ]
-                            ]
-                        ]
-                    ];
-                }
-
-                if (count($JOINS)) {
-                    $JOIN = ['LEFT JOIN' => $JOINS];
-                }
+                    ]
+                ];
             }
 
             $criteria = [
                 'SELECT' => [
                     "$table.*",
                     $SELECTNAME,
-                    $SELECTCOMMENT
                 ],
                 'FROM'   => $table,
                 'WHERE'  => ["$table.id" => $id]
             ] + $JOIN;
             $iterator = $DB->request($criteria);
 
-           /// TODO review comment management...
-           /// TODO getDropdownName need to return only name
-           /// When needed to use comment use class instead : getComments function
-           /// GetName of class already give Name !!
-           /// TODO CommonDBTM : review getComments to be recursive and add information from class hierarchy
-           /// getUserName have the same system : clean it too
-           /// Need to study the problem
             if (count($iterator)) {
                 $data = $iterator->current();
                 if ($translate && !empty($data['transname'])) {
                     $name = $data['transname'];
                 } else {
                     $name = $data[$itemtype::getNameField()];
-                }
-                if (isset($data["comment"])) {
-                    if ($translate && !empty($data['transcomment'])) {
-                        $comment = $data['transcomment'];
-                    } else {
-                        $comment = $data["comment"];
-                    }
                 }
 
                 switch ($table) {
@@ -620,69 +595,6 @@ class Dropdown
                     case "glpi_contacts":
                        //TRANS: %1$s is the name, %2$s is the firstname
                         $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
-                        if ($tooltip) {
-                            if (!empty($data["phone"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
-                                    "</span>" . htmlspecialchars($data['phone'])
-                                );
-                            }
-                            if (!empty($data["phone2"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('Phone 2'),
-                                    "</span>" . htmlspecialchars($data['phone2'])
-                                );
-                            }
-                            if (!empty($data["mobile"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('Mobile phone'),
-                                    "</span>" . htmlspecialchars($data['mobile'])
-                                );
-                            }
-                            if (!empty($data["fax"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('Fax'),
-                                    "</span>" . htmlspecialchars($data['fax'])
-                                );
-                            }
-                            if (!empty($data["email"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . _n('Email', 'Emails', 1),
-                                    "</span>" . htmlspecialchars($data['email'])
-                                );
-                            }
-                        }
-                        break;
-
-                    case "glpi_suppliers":
-                        if ($tooltip) {
-                            if (!empty($data["phonenumber"])) {
-                                 $comment .= "<br>" . sprintf(
-                                     __('%1$s: %2$s'),
-                                     "<span class='b'>" . htmlspecialchars(Phone::getTypeName(1)),
-                                     "</span>" . htmlspecialchars($data['phonenumber'])
-                                 );
-                            }
-                            if (!empty($data["fax"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('Fax'),
-                                    "</span>" . htmlspecialchars($data['fax'])
-                                );
-                            }
-                            if (!empty($data["email"])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . _sn('Email', 'Emails', 1),
-                                    "</span>" . htmlspecialchars($data['email'])
-                                );
-                            }
-                        }
                         break;
 
                     case "glpi_sockets":
@@ -697,48 +609,6 @@ class Dropdown
                             )
                         );
                         break;
-
-                    case "glpi_budgets":
-                        if ($tooltip) {
-                            if (!empty($data['locations_id'])) {
-                                 $comment .= "<br>" . sprintf(
-                                     __('%1$s: %2$s'),
-                                     "<span class='b'>" . htmlspecialchars(Location::getTypeName(1)) . "</span>",
-                                     self::getDropdownName(
-                                         "glpi_locations",
-                                         $data["locations_id"],
-                                         false,
-                                         $translate
-                                     )
-                                 );
-                            }
-                            if (!empty($data['budgettypes_id'])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . _sn('Type', 'Types', 1) . "</span>",
-                                    self::getDropdownName(
-                                        "glpi_budgettypes",
-                                        $data["budgettypes_id"],
-                                        false,
-                                        $translate
-                                    )
-                                );
-                            }
-                            if (!empty($data['begin_date'])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('Start date') . "</span>",
-                                    Html::convDateTime($data["begin_date"])
-                                );
-                            }
-                            if (!empty($data['end_date'])) {
-                                $comment .= "<br>" . sprintf(
-                                    __('%1$s: %2$s'),
-                                    "<span class='b'>" . __s('End date') . "</span>",
-                                    Html::convDateTime($data["end_date"])
-                                );
-                            }
-                        }
                 }
             }
         }
@@ -750,11 +620,201 @@ class Dropdown
         if ($withcomment) {
             return [
                 'name'      => $name,
-                'comment'   => $comment
+                'comment'   => Dropdown::getDropdownComments((string) $table, (int) $id, (bool) $translate, (bool) $tooltip),
             ];
         }
 
         return $name;
+    }
+
+    /**
+     * Get comments of a dropdown entry.
+     * The returned value is a safe HTML string.
+     *
+     * @param string  $table
+     * @param integer $id
+     * @param boolean $translate
+     * @param boolean $tooltip
+     *
+     * @return string
+     **/
+    public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $itemtype = getItemTypeForTable($table);
+
+        $criteria = [
+            'SELECT'    => [
+                "$table.*",
+            ],
+            'FROM'      => $table,
+            'LEFT JOIN' => [],
+            'WHERE'     => ["$table.id" => $id]
+        ];
+
+        if (!$DB->fieldExists($table, 'comment')) {
+            $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('comment'));
+        }
+
+        if (
+            $translate
+            && Session::haveTranslations($itemtype, 'comment')
+        ) {
+            $criteria['SELECT'][] = 'comment_translations.value AS translated_comment';
+            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS comment_translations'] = [
+                'ON' => [
+                    'comment_translations'  => 'items_id',
+                    $table                  => 'id',
+                    [
+                        'AND' => [
+                            'comment_translations.itemtype' => $itemtype,
+                            'comment_translations.language' => $_SESSION['glpilanguage'],
+                            'comment_translations.field'    => 'comment'
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('translated_comment'));
+        }
+
+        if (
+            is_a($itemtype, CommonTreeDropdown::class, true)
+            && $translate
+            && Session::haveTranslations($itemtype, 'completename')
+        ) {
+            $criteria['SELECT'][] = 'completename_translations.value AS translated_completename';
+            $criteria['LEFT JOIN']['glpi_dropdowntranslations AS completename_translations'] = [
+                'ON' => [
+                    'completename_translations'  => 'items_id',
+                    $table                       => 'id',
+                    [
+                        'AND' => [
+                            'completename_translations.itemtype' => $itemtype,
+                            'completename_translations.language' => $_SESSION['glpilanguage'],
+                            'completename_translations.field'    => 'completename'
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('translated_completename'));
+        }
+
+
+        $iterator = $DB->request($criteria);
+
+        if ($iterator->count() === 0) {
+            return '';
+        }
+
+        $data = $iterator->current();
+
+        $extra_rows = [];
+
+        if ($tooltip) {
+            if (is_a($itemtype, CommonTreeDropdown::class, true)) {
+                $extra_rows[__('Complete name')] = $data['translated_completename'] ?: $data['completename'];
+            }
+
+            $fields = [];
+            switch ($itemtype) {
+                case Contact::class:
+                    $fields = [
+                        'phone'     => Phone::getTypeName(1),
+                        'phone2'    => __('Phone 2'),
+                        'mobile'    => __('Mobile phone'),
+                        'fax'       => __('Fax'),
+                        'email'     => _n('Email', 'Emails', 1),
+                    ];
+                    foreach ($fields as $key => $label) {
+                        if (!empty($data[$key])) {
+                            $extra_rows[$label] = $data[$key];
+                        }
+                    }
+                    break;
+
+                case Supplier::class:
+                    $fields = [
+                        'phonenumber'   => Phone::getTypeName(1),
+                        'fax'           => __('Fax'),
+                        'email'         => _n('Email', 'Emails', 1),
+                    ];
+                    foreach ($fields as $key => $label) {
+                        if (!empty($data[$key])) {
+                            $extra_rows[$label] = $data[$key];
+                        }
+                    }
+                    break;
+
+                case Budget::class:
+                    if (!empty($data['locations_id'])) {
+                        $extra_rows[Location::getTypeName(1)] = self::getDropdownName(
+                            'glpi_locations',
+                            $data['locations_id'],
+                            translate: $translate
+                        );
+                    }
+                    if (!empty($data['budgettypes_id'])) {
+                        $extra_rows[_n('Type', 'Types', 1)] = self::getDropdownName(
+                            'glpi_budgettypes',
+                            $data['budgettypes_id'],
+                            translate: $translate
+                        );
+                    }
+                    if (!empty($data['begin_date'])) {
+                        $extra_rows[__('Start date')] = Html::convDateTime($data['begin_date']);
+                    }
+                    if (!empty($data['end_date'])) {
+                        $extra_rows[__('End date')] = Html::convDateTime($data['end_date']);
+                    }
+                    break;
+
+                case Location::class:
+                    if (!empty($data['alias'])) {
+                        $extra_rows[__('Alias')] = $data['alias'];
+                    }
+                    if (!empty($data['code'])) {
+                        $extra_rows[__('Code')] = $data['code'];
+                    }
+                    $address_comment = '';
+                    $address = $data['address'];
+                    $town    = $data['town'];
+                    $country = $data['country'];
+                    if (!empty($address)) {
+                        $address_comment .= $address;
+                    }
+                    if (!empty($address) && (!empty($town) || !empty($country))) {
+                        $address_comment .= "\n";
+                    }
+                    if (!empty($town)) {
+                        $address_comment .= $town;
+                    }
+                    if (!empty($country)) {
+                        if (!empty($town)) {
+                            $address_comment .= ' - ';
+                        }
+                        $address_comment .= $country;
+                    }
+                    if (trim($address_comment) !== '') {
+                        $extra_rows[__('Address')] = $address_comment;
+                    }
+                    break;
+            }
+        }
+
+        $output = TemplateRenderer::getInstance()->render(
+            'components/dropdown/comments.html.twig',
+            [
+                'comment'    => $data['translated_comment'] ?: $data['comment'],
+                'extra_rows' => $extra_rows,
+            ]
+        );
+
+        // trim output to ease emptyness checks
+        return mb_trim($output);
     }
 
 
@@ -1380,7 +1440,7 @@ JAVASCRIPT;
         echo "<div class='container-fluid text-start'>";
         echo "<div class='mb-3 row'>";
 
-        $title = htmlspecialchars($title);
+        $title = htmlescape($title);
         echo "<label class='col-sm-1 col-form-label'>$title</label>";
         $selected = '';
 
@@ -2156,40 +2216,6 @@ JAVASCRIPT;
         ]);
     }
 
-
-    /**
-     * Toggle view in LDAP user import/synchro between no restriction and date restriction
-     *
-     * @param $enabled (default 0)
-     **/
-    public static function showAdvanceDateRestrictionSwitch($enabled = 0)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $rand = mt_rand();
-        $url  = $CFG_GLPI["root_doc"] . "/ajax/ldapdaterestriction.php";
-        echo "<script type='text/javascript' >";
-        echo "function activateRestriction() {";
-         $params = ['enabled' => 1];
-         Ajax::updateItemJsCode('date_restriction', $url, $params);
-        echo "};";
-
-        echo "function deactivateRestriction() {";
-         $params = ['enabled' => 0];
-         Ajax::updateItemJsCode('date_restriction', $url, $params);
-        echo "};";
-        echo "</script>";
-
-        echo "</table>";
-        echo "<span id='date_restriction'>";
-        $_POST['enabled'] = $enabled;
-        include(GLPI_ROOT . "/ajax/ldapdaterestriction.php");
-        echo "</span>";
-        return $rand;
-    }
-
-
     /**
      * Dropdown of values in an array
      *
@@ -2298,37 +2324,37 @@ JAVASCRIPT;
         if ($param['readonly']) {
             $to_display = [];
             foreach ($param['values'] as $value) {
-                $output .= "<input type='hidden' name='" . htmlspecialchars($field_name) . "' value='" . htmlspecialchars($value) . "'>";
+                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
                 if (isset($elements[$value])) {
-                    $to_display[] = htmlspecialchars($elements[$value]);
+                    $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . htmlspecialchars($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected
-                $output .= "<input type='hidden' name='" . htmlspecialchars($original_field_name) . "' value=''>";
+                $output .= "<input type='hidden' name='" . htmlescape($original_field_name) . "' value=''>";
             }
-            $output  .= "<select name='" . htmlspecialchars($field_name) . "' id='" . htmlspecialchars($field_id) . "'";
+            $output  .= "<select name='" . htmlescape($field_name) . "' id='" . htmlescape($field_id) . "'";
 
             if ($param['width'] !== '') {
-                $output .= " style='width: " . htmlspecialchars($param['width']) . "'";
+                $output .= " style='width: " . htmlescape($param['width']) . "'";
             }
 
             if ($param['tooltip']) {
-                $output .= ' title="' . htmlspecialchars($param['tooltip']) . '"';
+                $output .= ' title="' . htmlescape($param['tooltip']) . '"';
             }
 
             if ($param['class']) {
-                $output .= ' class="' . htmlspecialchars($param['class']) . '"';
+                $output .= ' class="' . htmlescape($param['class']) . '"';
             }
 
             if (!empty($param["on_change"])) {
-                $output .= " onChange='" . htmlspecialchars($param["on_change"]) . "'";
+                $output .= " onChange='" . htmlescape($param["on_change"]) . "'";
             }
 
             if ((is_int($param["size"])) && ($param["size"] > 0)) {
-                $output .= " size='" . htmlspecialchars($param["size"]) . "'";
+                $output .= " size='" . htmlescape($param["size"]) . "'";
             }
 
             if ($param["multiple"]) {
@@ -2348,14 +2374,14 @@ JAVASCRIPT;
             }
 
             if ($param['aria_label'] !== '') {
-                $output .= " aria-label='" . htmlspecialchars($param['aria_label']) . "'";
+                $output .= " aria-label='" . htmlescape($param['aria_label']) . "'";
             }
 
             if (!empty($param['add_data_attributes'])) {
                 if (is_array($param['add_data_attributes'])) {
                     $output .= implode(' ', array_map(
                         function ($key, $value) {
-                            return htmlspecialchars('data-' . $key) . '="' . htmlspecialchars($value) . '"';
+                            return htmlescape('data-' . $key) . '="' . htmlescape($value) . '"';
                         },
                         array_keys($param['add_data_attributes']),
                         $param['add_data_attributes']
@@ -2368,7 +2394,7 @@ JAVASCRIPT;
             foreach ($elements as $key => $val) {
                // optgroup management
                 if (is_array($val)) {
-                    $opt_goup = htmlspecialchars($key);
+                    $opt_goup = htmlescape($key);
                     if ($max_option_size < strlen($opt_goup)) {
                         $max_option_size = strlen($opt_goup);
                     }
@@ -2378,18 +2404,18 @@ JAVASCRIPT;
                     if (isset($param['option_tooltips'][$key])) {
                         if (is_array($param['option_tooltips'][$key])) {
                             if (isset($param['option_tooltips'][$key]['__optgroup_label'])) {
-                                $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]['__optgroup_label']) . '"';
+                                $output .= ' title="' . htmlescape($param['option_tooltips'][$key]['__optgroup_label']) . '"';
                             }
                             $optgroup_tooltips = $param['option_tooltips'][$key];
                         } else {
-                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
+                            $output .= ' title="' . htmlescape($param['option_tooltips'][$key]) . '"';
                         }
                     }
                     $output .= ">";
 
                     foreach ($val as $key2 => $val2) {
                         if (!isset($param['used'][$key2])) {
-                            $output .= "<option value='" . htmlspecialchars($key2) . "'";
+                            $output .= "<option value='" . htmlescape($key2) . "'";
                            // Do not use in_array : trouble with 0 and empty value
                             foreach ($param['values'] as $value) {
                                 if (strcmp($key2, $value) === 0) {
@@ -2398,9 +2424,9 @@ JAVASCRIPT;
                                 }
                             }
                             if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
-                                $output .= ' title="' . htmlspecialchars($optgroup_tooltips[$key2]) . '"';
+                                $output .= ' title="' . htmlescape($optgroup_tooltips[$key2]) . '"';
                             }
-                            $output .= ">" .  htmlspecialchars($val2) . "</option>";
+                            $output .= ">" .  htmlescape($val2) . "</option>";
                             if ($max_option_size < strlen($val2)) {
                                 $max_option_size = strlen($val2);
                             }
@@ -2409,7 +2435,7 @@ JAVASCRIPT;
                     $output .= "</optgroup>";
                 } else {
                     if (!isset($param['used'][$key])) {
-                        $output .= "<option value='" . htmlspecialchars($key) . "'";
+                        $output .= "<option value='" . htmlescape($key) . "'";
                        // Do not use in_array : trouble with 0 and empty value
                         foreach ($param['values'] as $value) {
                             if (strcmp($key, $value) === 0) {
@@ -2418,9 +2444,9 @@ JAVASCRIPT;
                             }
                         }
                         if (isset($param['option_tooltips'][$key])) {
-                            $output .= ' title="' . htmlspecialchars($param['option_tooltips'][$key]) . '"';
+                            $output .= ' title="' . htmlescape($param['option_tooltips'][$key]) . '"';
                         }
-                        $output .= ">" . htmlspecialchars($val) . "</option>";
+                        $output .= ">" . htmlescape($val) . "</option>";
                         if (!is_null($val) && ($max_option_size < strlen($val))) {
                             $max_option_size = strlen($val);
                         }
@@ -2429,7 +2455,7 @@ JAVASCRIPT;
             }
 
             if ($param['other'] !== false) {
-                $output .= "<option value='" . htmlspecialchars($other_select_option) . "'";
+                $output .= "<option value='" . htmlescape($other_select_option) . "'";
                 if (is_string($param['other'])) {
                     $output .= " selected";
                 }
@@ -2438,9 +2464,9 @@ JAVASCRIPT;
 
             $output .= "</select>";
             if ($param['other'] !== false) {
-                $output .= "<input name='" . htmlspecialchars($other_select_option) . "' id='" . htmlspecialchars($other_select_option) . "' type='text'";
+                $output .= "<input name='" . htmlescape($other_select_option) . "' id='" . htmlescape($other_select_option) . "' type='text'";
                 if (is_string($param['other'])) {
-                    $output .= " value=\"" . htmlspecialchars($param['other']) . "\"";
+                    $output .= " value=\"" . htmlescape($param['other']) . "\"";
                 } else {
                     $output .= " style=\"display: none\"";
                 }
@@ -2463,7 +2489,7 @@ JAVASCRIPT;
            // Hack for All / None because select2 does not provide it
             $select   = __('All');
             $deselect = __('None');
-            $output  .= "<div class='invisible' id='selectallbuttons_" . htmlspecialchars($field_id) . "'>";
+            $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
             $output  .= "<a class='btn btn-sm' " .
                       "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select" .
@@ -2604,7 +2630,7 @@ JAVASCRIPT;
                // Templates edition
                 if (!empty($params['withtemplate'])) {
                     echo "<input type='hidden' name='is_global' value='" .
-                        htmlspecialchars($params['management_restrict']) . "'>";
+                        htmlescape($params['management_restrict']) . "'>";
                     echo (!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
                     echo (!$params['value'] ? __s('Unit management') : __s('Global management'));

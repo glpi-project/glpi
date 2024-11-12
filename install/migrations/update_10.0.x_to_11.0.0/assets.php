@@ -63,7 +63,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 } else {
     foreach (['profiles', 'translations'] as $field) {
         $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
@@ -123,7 +123,7 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 } else {
     $migration->addField('glpi_assets_assets', 'assets_assetmodels_id', 'fkey');
     $migration->addKey('glpi_assets_assets', 'assets_assetmodels_id');
@@ -173,7 +173,7 @@ if (!$DB->tableExists('glpi_assets_assetmodels')) {
           KEY `product_number` (`product_number`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_assets_assettypes')) {
@@ -192,7 +192,7 @@ if (!$DB->tableExists('glpi_assets_assettypes')) {
           KEY `date_creation` (`date_creation`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
@@ -211,7 +211,7 @@ if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
           KEY `name` (`name`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-    $DB->doQueryOrDie($query);
+    $DB->doQuery($query);
 }
 
 // Dev migration

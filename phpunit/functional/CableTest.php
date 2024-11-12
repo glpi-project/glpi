@@ -43,27 +43,6 @@ use Glpi\SocketModel;
 
 class CableTest extends DbTestCase
 {
-    public function testAddSocket()
-    {
-
-        $socket = getItemByTypeName(Socket::class, '_socket01');
-        $location = getItemByTypeName('Location', '_location01');
-        $expected = $socket->getName() . " (" . $location->getName() . ")";
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID());
-        $this->assertSame($expected, $ret);
-
-        // test of return with comments
-        $expected = ['name'    => $expected,
-            'comment' => "Comment for socket _socket01"
-        ];
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID(), true);
-        $this->assertSame($expected, $ret);
-
-        // test of return without $tooltip
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID(), true, true, false);
-        $this->assertSame($expected, $ret);
-    }
-
     public function testAddNetworkPortThenSocket()
     {
         $this->login();

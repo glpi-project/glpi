@@ -150,7 +150,7 @@ final class Kernel extends BaseKernel
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        //  Global core controllers
+        // Global core controllers
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
 
         // Env-specific route files.

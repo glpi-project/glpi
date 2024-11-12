@@ -41,4 +41,22 @@
             margin-bottom: 0 !important;
         }
     }
+
+    .fileupload {
+        margin: 0;
+    }
+
+    .only-uploaded-files {
+        .fileupload_info {
+            margin-bottom: 0;
+
+            p:first-child {
+                margin-top: 10px;
+            }
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
 }

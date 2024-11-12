@@ -227,8 +227,10 @@ class Event extends CommonDBTM
                     break;
 
                 default:
-                    $type = getSingular($type);
                     $url  = '';
+                    if (!is_a($type, \CommonDBTM::class, true)) {
+                        $type = getSingular($type);
+                    }
                     if ($item = getItemForItemtype($type)) {
                         $url  =  $item->getFormURLWithID($items_id);
                     }
@@ -334,7 +336,9 @@ class Event extends CommonDBTM
             if (isset($logItemtype[$type])) {
                 $itemtype = $logItemtype[$type];
             } else {
-                $type = getSingular($type);
+                if (!is_a($type, \CommonDBTM::class, true)) {
+                    $type = getSingular($type);
+                }
                 if ($item = getItemForItemtype($type)) {
                     $itemtype = $item->getTypeName(1);
                 }
@@ -364,86 +368,6 @@ class Event extends CommonDBTM
         } else {
             return $output;
         }
-    }
-
-    /**
-     * Print a nice tab for last event
-     *
-     * Print a great tab to present lasts events occurred on glpi
-     *
-     * @param string  $target  where to go when complete
-     * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
-     * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
-     * @param integer $start   (default 0)
-     * @deprecated 11.0.0
-     **/
-    public static function showList($target, $order = 'DESC', $sort = 'date', $start = 0)
-    {
-        Toolbox::deprecated('Use Search::show(Glpi\Event::class);');
-        $DBread = DBConnection::getReadConnection();
-
-       // Show events from $result in table form
-        list($logItemtype, $logService) = self::logArray();
-
-       // Columns of the Table
-        $items = [
-            "type"     => [__('Source'), ""],
-            "items_id" => [__('ID'), ""],
-            "date"     => [_n('Date', 'Dates', 1), ""],
-            "service"  => [__('Service'), "width='8%'"],
-            "level"    => [__('Level'), "width='8%'"],
-            "message"  => [__('Message'), "width='50%'"]
-        ];
-
-       // define default sorting
-        if (!isset($items[$sort])) {
-            $sort = "date";
-        }
-        if ($order != "ASC") {
-            $order = "DESC";
-        }
-
-       // Query Database
-        $iterator = $DBread->request([
-            'FROM'   => 'glpi_events',
-            'ORDER'  => "$sort $order",
-            'START'  => (int)$start,
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
-        ]);
-
-        $events = [];
-        foreach ($iterator as $data) {
-            $itemtype_name = null;
-            $itemtype_icon = CommonDBTM::getIcon();
-            if (isset($logItemtype[$data['type']])) {
-                $itemtype_name = $logItemtype[$data['type']];
-            } else {
-                // Converts lowercase plural string into corresponding classname
-                $item = getItemForItemtype(getSingular($data['type']));
-                if ($item !== false) {
-                    $itemtype_name = $item->getTypeName();
-                    $itemtype_icon = $item->getIcon();
-                }
-            }
-            $data['itemtype_name'] = $itemtype_name;
-            $data['itemtype_icon'] = $itemtype_icon;
-
-            $events[] = $data;
-        }
-
-        // Number of results
-        $numrows = countElementsInTable("glpi_events");
-
-        TemplateRenderer::getInstance()->display('pages/admin/events_list.html.twig', [
-            'count'     => $numrows,
-            'order'     => $order,
-            'sort'      => $sort,
-            'start'     => $start,
-            'target'    => $target,
-            'events'    => $events,
-            'itemtypes' => $logItemtype,
-            'services'  => $logService,
-        ]);
     }
 
     public static function getIcon()

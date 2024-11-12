@@ -71,6 +71,11 @@ class Enclosure extends CommonDBTM
         return ['assets', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -300,6 +305,19 @@ class Enclosure extends CommonDBTM
         );
     }
 
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+
+        if (isset($query_params['position'])) {
+            $options['position'] = $query_params['position'];
+        }
+        if (isset($query_params['room'])) {
+            $options['room'] = $query_params['room'];
+        }
+
+        return $options;
+    }
 
     public function prepareInputForAdd($input)
     {

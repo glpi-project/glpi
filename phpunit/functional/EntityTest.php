@@ -297,6 +297,89 @@ class EntityTest extends DbTestCase
         $this->runChangeEntityParent(true);
     }
 
+    public function testMoveParentEntity(): void
+    {
+        $this->doTestMoveParentEntity(false);
+    }
+
+    /**
+     * @tags cache
+     */
+    public function testMoveParentEntityCached(): void
+    {
+        $this->doTestMoveParentEntity(true);
+    }
+
+    private function doTestMoveParentEntity(bool $cache): void
+    {
+        $this->login();
+
+        $entities = [];
+
+        // Create the test entities
+        $parent_id = 0;
+        for ($i = 0; $i < 5; $i++) {
+            $entity = $this->createItem(
+                \Entity::class,
+                [
+                    'name'         => sprintf('Level %s entity', $i + 1),
+                    'entities_id'  => $parent_id
+                ]
+            );
+            $entities[$i] = $entity;
+            $parent_id = $entity->getID();
+        }
+
+        // Validate that sons/ancestors are correctly set
+        $this->checkEntitiesTree($entities, $cache);
+
+        // Move the "Level 3 entity"
+        $entities[2]->update(['id' => $entities[2]->getID(), 'entities_id' => 0]);
+
+        // Validate that sons/ancestors are correctly updated
+        $this->checkEntitiesTree(\array_slice($entities, 2), $cache);
+        $this->checkEntitiesTree(\array_slice($entities, 0, 2), $cache);
+    }
+
+    /**
+     * Check that the entities tree is correctly returned by `getAncestorsOf`/`getSonsOf` methods.
+     *
+     * @param array $entities   The entities list. Each item is supposed to be the son of the previous item, and the
+     *                          first item is supposed to be a son of the root entity.
+     * @param bool $cache
+     */
+    private function checkEntitiesTree(array $entities, bool $cache): void
+    {
+        global $GLPI_CACHE;
+
+        foreach ($entities as $key => $entity) {
+            $expected_sons_ids = \array_map(
+                static fn (\Entity $ent) => $ent->getID(),
+                \array_slice($entities, $key)
+            );
+            $expected_sons = \array_combine($expected_sons_ids, $expected_sons_ids);
+
+            $expected_ancestors_ids = array_merge(
+                [0], // root entity
+                \array_map(
+                    static fn (\Entity $ent) => $ent->getID(),
+                    \array_slice($entities, 0, $key)
+                )
+            );
+            $expected_ancestors = \array_combine($expected_ancestors_ids, $expected_ancestors_ids);
+
+            $this->assertSame($expected_ancestors, getAncestorsOf('glpi_entities', $entity->getID()));
+            if ($cache === true) {
+                $this->assertSame($expected_ancestors, $GLPI_CACHE->get('ancestors_cache_glpi_entities_' . $entity->getID()));
+            }
+
+            $this->assertSame($expected_sons, getSonsOf('glpi_entities', $entity->getID()));
+            if ($cache === true) {
+                $this->assertSame($expected_sons, $GLPI_CACHE->get('sons_cache_glpi_entities_' . $entity->getID()));
+            }
+        }
+    }
+
     public function testInheritGeolocation()
     {
         $this->login();
@@ -1199,6 +1282,25 @@ class EntityTest extends DbTestCase
 
         $this->assertTrue($new_entity->getFromDB($entities_id));
         $this->assertEquals('New entity', $new_entity->fields['name']);
+    }
+
+    /**
+     * Regression test to ensure that renaming an entity doesn't force it to become a child of the root entity (ID 0)
+     */
+    public function testRenameDoesntChangeParent(): void
+    {
+        $this->login();
+        $entity = $this->createItem('Entity', [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue($entity->update([
+            'id'   => $entity->getID(),
+            'name' => __FUNCTION__ . ' renamed',
+        ]));
+        $this->assertTrue($entity->getFromDB($entity->getID()));
+        $this->assertEquals($this->getTestRootEntity(true), $entity->fields['entities_id']);
+        $this->assertEquals(__FUNCTION__ . ' renamed', $entity->fields['name']);
     }
 
     public static function entityTreeProvider(): iterable

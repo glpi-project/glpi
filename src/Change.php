@@ -1342,7 +1342,7 @@ class Change extends CommonITILObject
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        htmlspecialchars(getUserName($d["users_id"]));
+                                        htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -1553,7 +1553,7 @@ class Change extends CommonITILObject
         $rand      = mt_rand();
         if ($change->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
-            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>
@@ -1569,7 +1569,7 @@ class Change extends CommonITILObject
                 foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                     $user = new User();
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
-                         $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
+                         $name     = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         if ($viewusers) {
                             $name = sprintf(
                                 __s('%1$s %2$s'),
@@ -1585,7 +1585,7 @@ class Change extends CommonITILObject
                         }
                          echo $name;
                     } else {
-                        echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
+                        echo htmlescape($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -1604,13 +1604,13 @@ class Change extends CommonITILObject
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='change" . htmlspecialchars($change->fields["id"] . $rand) . "' href='" .
+            $link = "<a id='change" . htmlescape($change->fields["id"] . $rand) . "' href='" .
             Change::getFormURLWithID($change->fields["id"]);
             if ($forcetab != '') {
-                $link .= "&amp;forcetab=" . htmlspecialchars($forcetab);
+                $link .= "&amp;forcetab=" . htmlescape($forcetab);
             }
             $link .= "'>";
-            $link .= "<span class='b'>" . htmlspecialchars($change->fields["name"]) . "</span></a>";
+            $link .= "<span class='b'>" . htmlescape($change->fields["name"]) . "</span></a>";
             $link = sprintf(
                 __s('%1$s %2$s'),
                 $link,

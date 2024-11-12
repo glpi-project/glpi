@@ -305,22 +305,18 @@ class Item_Devices extends CommonDBRelation
         switch ($field) {
             case 'items_id':
                 if (isset($values['itemtype'])) {
+                    $table = getTableForItemType($values['itemtype']);
+                    $value = (int) $values[$field];
+                    $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
-                        $valueData = Dropdown::getDropdownName(
-                            getTableForItemType($values['itemtype']),
-                            $values[$field],
-                            1
-                        );
-                        return sprintf(
-                            __('%1$s %2$s'),
-                            $valueData['name'],
-                            Html::showToolTip($valueData['comment'], ['display' => false])
-                        );
+                        $comments = Dropdown::getDropdownComments($table, $value);
+                         return sprintf(
+                             __('%1$s %2$s'),
+                             htmlescape($name),
+                             Html::showToolTip($comments, ['display' => false])
+                         );
                     }
-                    return Dropdown::getDropdownName(
-                        getTableForItemType($values['itemtype']),
-                        $values[$field]
-                    );
+                    return htmlescape($name);
                 }
                 break;
         }
@@ -636,7 +632,7 @@ class Item_Devices extends CommonDBRelation
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                   action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . htmlspecialchars($item->getType()) . "'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
         }
 
         $table = new HTMLTableMain();
@@ -763,7 +759,7 @@ class Item_Devices extends CommonDBRelation
             echo "\n<form id='form_device_action$rand' name='form_device_action$rand'
                   action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='items_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . htmlspecialchars($item->getType()) . "'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item->getType()) . "'>\n";
         }
 
         $table->display(['display_super_for_each_group' => false,
@@ -1078,7 +1074,7 @@ class Item_Devices extends CommonDBRelation
                                 $content = Html::progressBar("percent" . mt_rand(), [
                                     'create'  => true,
                                     'percent' => $percent,
-                                    'message' => htmlspecialchars($message),
+                                    'message' => htmlescape($message),
                                     'display' => false
                                 ]);
                                 break;
@@ -1543,7 +1539,7 @@ class Item_Devices extends CommonDBRelation
 
         if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(
+                htmlescape(sprintf(
                     __('%1$s: %2$s'),
                     static::getTypeName(),
                     __('A device ID is mandatory')
@@ -1596,7 +1592,7 @@ class Item_Devices extends CommonDBRelation
             }
             if (isset($input[$field]) && !$canUpdate) {
                 unset($input[$field]);
-                Session::addMessageAfterRedirect(htmlspecialchars(__('Update of ' . $attributs['short name'] . ' denied')));
+                Session::addMessageAfterRedirect(htmlescape(__('Update of ' . $attributs['short name'] . ' denied')));
             }
         }
 

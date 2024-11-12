@@ -4149,53 +4149,6 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
-
-    public function testCanDelegateeCreateTicket()
-    {
-        $normal_id   = getItemByTypeName('User', 'normal', true);
-        $tech_id     = getItemByTypeName('User', 'tech', true);
-        $postonly_id = getItemByTypeName('User', 'post-only', true);
-        $tuser_id    = getItemByTypeName('User', TU_USER, true);
-
-       // check base behavior (only standard interface can create for other users)
-        $this->login();
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('tech', 'tech');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('post-only', 'postonly');
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($normal_id));
-
-       // create a test group
-        $group = new \Group();
-        $groups_id = $group->add(['name' => 'test delegatee']);
-        $this->assertGreaterThan(0, $groups_id);
-
-       // make postonly delegate of the group
-        $gu = new \Group_User();
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'         => $postonly_id,
-                'groups_id'        => $groups_id,
-                'is_userdelegate' => 1,
-            ])
-        );
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'  => $normal_id,
-                'groups_id' => $groups_id,
-            ])
-        );
-
-        // check postonly can now create (yes for normal and himself) or not (no for others) for other users
-        $this->login('post-only', 'postonly');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($postonly_id));
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tech_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tuser_id));
-    }
-
     public function testCanAddFollowupsDefaults()
     {
         $tech_id = getItemByTypeName('User', 'tech', true);
@@ -4805,81 +4758,6 @@ HTML
     {
         $instance = new \Ticket();
         $this->assertEquals($expected, $instance->convertContentForTicket($content, $files, $tags));
-    }
-
-    protected function testIsValidatorProvider(): array
-    {
-        // Existing users from database
-        $users_id_1 = getItemByTypeName(User::class, "glpi", true);
-        $users_id_2 = getItemByTypeName(User::class, "tech", true);
-
-        // Tickets to create before tests
-        $this->createItems(\Ticket::class, [
-            [
-                'name'    => 'testIsValidatorProvider 1',
-                'content' => 'testIsValidatorProvider 1',
-            ],
-            [
-                'name'    => 'testIsValidatorProvider 2',
-                'content' => 'testIsValidatorProvider 2',
-            ],
-        ]);
-
-        // Get id of created tickets to reuse later
-        $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
-        $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
-
-        // TicketValidation items to create before tests
-        $this->createItems(TicketValidation::class, [
-            [
-                'tickets_id'      => $tickets_id_1,
-                'itemtype_target' => 'User',
-                'items_id_target' => $users_id_1,
-            ],
-            [
-                'tickets_id'      => $tickets_id_2,
-                'itemtype_target' => 'User',
-                'items_id_target' => $users_id_2,
-            ],
-        ]);
-
-        return [
-            [
-                'tickets_id' => $tickets_id_1,
-                'users_id'   => $users_id_1,
-                'expected'   => true,
-            ],
-            [
-                'tickets_id' => $tickets_id_1,
-                'users_id'   => $users_id_2,
-                'expected'   => false,
-            ],
-            [
-                'tickets_id' => $tickets_id_2,
-                'users_id'   => $users_id_1,
-                'expected'   => false,
-            ],
-            [
-                'tickets_id' => $tickets_id_2,
-                'users_id'   => $users_id_2,
-                'expected'   => true,
-            ],
-        ];
-    }
-
-    public function testIsValidator()
-    {
-        $this->login();
-
-        $provider = $this->testIsValidatorProvider();
-        foreach ($provider as $row) {
-            $tickets_id = $row['tickets_id'];
-            $users_id = $row['users_id'];
-            $expected = $row['expected'];
-            $ticket = new \Ticket();
-            $this->assertTrue($ticket->getFromDB($tickets_id));
-            $this->assertEquals($expected, @$ticket->isValidator($users_id));
-        }
     }
 
     public function testGetTeamRoles(): void

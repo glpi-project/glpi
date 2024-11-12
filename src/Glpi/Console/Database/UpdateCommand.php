@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\Database;
 
+use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
@@ -91,10 +92,8 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     #[Override]
     public function getSpecificMandatoryRequirements(): array
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        return [new DatabaseTablesEngine($DB)];
+        $valid_db = $this->db instanceof DBmysql && $this->db->connected;
+        return $valid_db ? [new DatabaseTablesEngine($this->db)] : [];
     }
 
     protected function configure()

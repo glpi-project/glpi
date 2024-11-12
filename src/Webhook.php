@@ -44,7 +44,6 @@ use Glpi\Http\Request;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
-use GuzzleHttp\Client as Guzzle_Client;
 
 class Webhook extends CommonDBTM implements FilterableInterface
 {
@@ -82,6 +81,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
     }
 
     public static function canCreate(): bool

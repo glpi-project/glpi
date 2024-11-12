@@ -448,8 +448,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             $resolved_value['name'] = __('Duplicated by');
         }
         return !$with_icon
-            ? htmlspecialchars($resolved_value['name'])
-            : sprintf($icon_tag, htmlspecialchars($resolved_value['icon']), htmlspecialchars($resolved_value['name']));
+            ? htmlescape($resolved_value['name'])
+            : sprintf($icon_tag, htmlescape($resolved_value['icon']), htmlescape($resolved_value['name']));
     }
 
     /**

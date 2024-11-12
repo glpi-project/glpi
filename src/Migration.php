@@ -126,7 +126,7 @@ class Migration
     {
         if (!isCommandLine() && $id != $this->current_message_area_id) {
             $this->current_message_area_id = $id;
-            echo "<div id='" . htmlspecialchars($this->current_message_area_id) . "'></div>";
+            echo "<div id='" . htmlescape($this->current_message_area_id) . "'></div>";
         }
 
         $this->displayMessage(__('Work in progress...'));
@@ -436,7 +436,7 @@ class Migration
                     $query = "UPDATE `$table`
                         SET `$field` = " . $params['update'] . " " .
                         $params['condition'] . "";
-                    $DB->doQueryOrDie($query, $this->version . " set $field in $table");
+                    $DB->doQuery($query);
                 }
                 return true;
             }
@@ -644,7 +644,7 @@ class Migration
 
         if (!$DB->tableExists("$newtable") && $DB->tableExists("$oldtable")) {
             $query = "RENAME TABLE `$oldtable` TO `$newtable`";
-            $DB->doQueryOrDie($query, $this->version . " rename $oldtable");
+            $DB->doQuery($query);
 
            // Clear possibly forced value of table name.
            // Actually the only forced value in core is for config table.
@@ -683,7 +683,7 @@ class Migration
             if (isCommandLine()) {
                 throw new \RuntimeException($message);
             } else {
-                echo htmlspecialchars($message) . "\n";
+                echo htmlescape($message) . "\n";
                 die(1);
             }
         }
@@ -714,12 +714,12 @@ class Migration
            // $DB->doQuery($query);
 
             $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
-            $DB->doQueryOrDie($query, $this->version . " create $newtable");
+            $DB->doQuery($query);
 
             if ($insert) {
                //needs DB::insert to support subqueries to get migrated
                 $query = "INSERT INTO `$newtable` (SELECT * FROM `$oldtable`)";
-                $DB->doQueryOrDie($query, $this->version . " copy from $oldtable to $newtable");
+                $DB->doQuery($query);
             }
         }
     }
@@ -750,7 +750,7 @@ class Migration
                 }
             }
 
-            $DB->insertOrDie($table, $values, $this->version . " insert in $table");
+            $DB->insert($table, $values);
 
             return $DB->insertId();
         }
@@ -773,7 +773,7 @@ class Migration
         if (isset($this->change[$table])) {
             $query = "ALTER TABLE `$table` " . implode(" ,\n", $this->change[$table]) . " ";
             $this->displayMessage(sprintf(__('Change of the database layout - %s'), $table));
-            $DB->doQueryOrDie($query, $this->version . " multiple alter in $table");
+            $DB->doQuery($query);
             unset($this->change[$table]);
         }
 
@@ -781,7 +781,7 @@ class Migration
             $this->displayMessage(sprintf(__('Adding fulltext indices - %s'), $table));
             foreach ($this->fulltexts[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
-                $DB->doQueryOrDie($query, $this->version . " $idx");
+                $DB->doQuery($query);
             }
             unset($this->fulltexts[$table]);
         }
@@ -790,7 +790,7 @@ class Migration
             $this->displayMessage(sprintf(__('Adding unicity indices - %s'), $table));
             foreach ($this->uniques[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
-                $DB->doQueryOrDie($query, $this->version . " $idx");
+                $DB->doQuery($query);
             }
             unset($this->uniques[$table]);
         }
@@ -807,7 +807,7 @@ class Migration
         global $DB;
 
         foreach ($this->queries[self::PRE_QUERY] as $query) {
-            $DB->doQueryOrDie($query['query'], $query['message']);
+            $DB->doQuery($query['query']);
         }
         $this->queries[self::PRE_QUERY] = [];
 
@@ -821,7 +821,7 @@ class Migration
         }
 
         foreach ($this->queries[self::POST_QUERY] as $query) {
-            $DB->doQueryOrDie($query['query'], $query['message']);
+            $DB->doQuery($query['query']);
         }
         $this->queries[self::POST_QUERY] = [];
 
@@ -867,7 +867,7 @@ class Migration
         foreach ($rule as $field => $value) {
             $values[$field] = $value;
         }
-        $DB->insertOrDie('glpi_rules', $values);
+        $DB->insert('glpi_rules', $values);
         $rid = $DB->insertId();
 
         // The rule criteria
@@ -876,7 +876,7 @@ class Migration
             foreach ($criterion as $field => $value) {
                 $values[$field] = $value;
             }
-            $DB->insertOrDie('glpi_rulecriterias', $values);
+            $DB->insert('glpi_rulecriterias', $values);
         }
 
         // The rule criteria actions
@@ -885,7 +885,7 @@ class Migration
             foreach ($action as $field => $value) {
                 $values[$field] = $value;
             }
-            $DB->insertOrDie('glpi_ruleactions', $values);
+            $DB->insert('glpi_ruleactions', $values);
         }
 
         return $rid;
@@ -1225,15 +1225,14 @@ class Migration
                 $reqmet = (count($iterator) === count($requiredrights));
             }
 
-            $DB->insertOrDie(
+            $DB->insert(
                 'glpi_profilerights',
                 [
                     'id'           => null,
                     'profiles_id'  => $profile['id'],
                     'name'         => $name,
                     'rights'       => $reqmet ? $rights : 0
-                ],
-                sprintf('%1$s add right for %2$s', $this->version, $name)
+                ]
             );
 
             $this->updateProfileLastRightsUpdate($profile['id']);
@@ -1312,27 +1311,6 @@ class Migration
             ),
             true
         );
-    }
-
-    /**
-     * Update right to profiles that match rights requirements
-     *    Default is to update rights of profiles with READ and UPDATE rights on config
-     *
-     * @param string  $name   Right name
-     * @param integer $rights Right to set
-     * @param array   $requiredrights Array of right name => value
-     *                   A profile must have these rights in order to get its rights updated.
-     *                   This array can be empty to add the right to every profile.
-     *                   Default is ['config' => READ | UPDATE].
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function updateRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
-    {
-        Toolbox::deprecated('Migration::updateRight() is deprecated. Use Migration::replaceRight() instead.');
-        $this->replaceRight($name, $rights, $requiredrights);
     }
 
     /**
@@ -1523,7 +1501,7 @@ class Migration
             return;
         }
 
-        $DB->updateOrDie(
+        $DB->update(
             'glpi_profiles',
             [
                 'last_rights_update' => Session::getCurrentTime()
@@ -1605,7 +1583,7 @@ class Migration
      */
     private function outputMessageToHtml(string $msg, ?string $style = null, ?string $area_id = null): void
     {
-        $msg = htmlspecialchars($msg);
+        $msg = htmlescape($msg);
 
         $msg = match ($style) {
             'title' => '<h3>' . $msg . '</h3>',
@@ -1839,11 +1817,11 @@ class Migration
                 ]);
                 if ($duplicates_iterator->count() > 0) {
                     $ids = array_column(iterator_to_array($duplicates_iterator), 'id');
-                    $DB->deleteOrDie(DisplayPreference::getTable(), ['id' => $ids]);
+                    $DB->delete(DisplayPreference::getTable(), ['id' => $ids]);
                 }
 
                 // Update display preferences
-                $DB->updateOrDie(DisplayPreference::getTable(), [
+                $DB->update(DisplayPreference::getTable(), [
                     'num' => $new_search_opt
                 ], [
                     'itemtype' => $itemtype,
@@ -1861,7 +1839,7 @@ class Migration
                         if (!$DB->tableExists($table)) {
                             continue;
                         }
-                        $DB->updateOrDie($table, [
+                        $DB->update($table, [
                             'num' => $new_search_opt
                         ], [
                             'num' => $old_search_opt
@@ -1919,7 +1897,7 @@ class Migration
 
             // Write changes if any were made
             if ($is_changed) {
-                $DB->updateOrDie(SavedSearch::getTable(), [
+                $DB->update(SavedSearch::getTable(), [
                     'query'  => http_build_query($query)
                 ], [
                     'id'     => $data['id']
@@ -1957,7 +1935,7 @@ class Migration
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        $DB->doQueryOrDie("
+        $DB->doQuery("
             CREATE TABLE `$table` (
                 `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                 `$fk_1` int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -1966,6 +1944,6 @@ class Migration
                 KEY `$fk_1` (`$fk_1`),
                 KEY `$fk_2` (`$fk_2`)
             ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;
-        ", "Create link table between $class_1 and $class_2");
+        ");
     }
 }

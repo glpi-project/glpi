@@ -243,11 +243,11 @@ class Item_Enclosure extends CommonDBRelation
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_enclosures_id$rand'>" . htmlspecialchars(Enclosure::getTypeName(1)) . "</label></td>";
+        echo "<td><label for='dropdown_enclosures_id$rand'>" . htmlescape(Enclosure::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Enclosure::dropdown(['value' => $this->fields["enclosures_id"], 'rand' => $rand]);
         echo "</td>";
-        echo "<td><label for='dropdown_position$rand'>" . htmlspecialchars(__('Position')) . "</label></td>";
+        echo "<td><label for='dropdown_position$rand'>" . htmlescape(__('Position')) . "</label></td>";
         echo "<td>";
         Dropdown::showNumber(
             'position',

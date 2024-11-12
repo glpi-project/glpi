@@ -39,6 +39,7 @@ describe('Item form question type', () => {
 
         cy.createWithAPI('Ticket', {
             'name': 'Test ticket',
+            'content': '',
         }).as('ticket_id');
 
         cy.login();

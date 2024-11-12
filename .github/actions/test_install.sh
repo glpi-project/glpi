@@ -4,6 +4,9 @@ set -e -u -x -o pipefail
 LOG_FILE="./tests/files/_log/install.log"
 mkdir -p $(dirname "$LOG_FILE")
 
+# Run the check requirements command to make sure it is working
+bin/console system:check_requirements
+
 # Execute install
 bin/console database:install \
   --ansi --no-interaction \

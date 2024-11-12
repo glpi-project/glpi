@@ -200,7 +200,7 @@ class Datacenter extends CommonDBTM
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        $label = htmlspecialchars(DCRoom::getTypeName(Session::getPluralNumber()));
+        $label = htmlescape(DCRoom::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
             $rooms = "<i class='ti ti-building pointer'
                       title=\"$label\"></i>

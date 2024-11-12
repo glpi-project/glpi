@@ -616,7 +616,8 @@ abstract class CommonDropdown extends CommonDBTM
             return false;
         }
 
-        $ID = htmlspecialchars($this->fields['id']);
+        $ID = (int)$this->fields['id'];
+        $target = htmlescape($target);
 
         echo "<div class='center'><p class='red'>";
         echo __s("Caution: you're about to remove a heading used for one or more items.");
@@ -626,10 +627,10 @@ abstract class CommonDropdown extends CommonDBTM
            // Delete form (set to 0)
             echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
-            echo "<form action='" . htmlspecialchars($target) . "' method='post'>";
+            echo "<form action='" . $target . "' method='post'>";
             echo "<table class='tab_cadre'><tr>";
             echo "<td><input type='hidden' name='id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='" . htmlspecialchars($this->getType()) . "' />";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
             echo "<input type='hidden' name='forcepurge' value='1'>";
             echo "<input class='btn btn-primary' type='submit' name='purge'
                 value=\"" . _sx('button', 'Confirm') . "\">";
@@ -666,7 +667,7 @@ abstract class CommonDropdown extends CommonDBTM
             $replacement_options
         );
         echo "<input type='hidden' name='id' value='$ID' />";
-        echo "<input type='hidden' name='itemtype' value='" . htmlspecialchars($this->getType()) . "' />";
+        echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
         echo "</td><td>";
         echo "<input class='btn btn-primary' type='submit' name='replace' value=\"" . _sx('button', 'Replace') . "\">";
         echo "</td><td>";
@@ -843,7 +844,7 @@ abstract class CommonDropdown extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'merge':
-                echo "&nbsp;" . htmlspecialchars($_SESSION['glpiactive_entity_shortname']);
+                echo "&nbsp;" . htmlescape($_SESSION['glpiactive_entity_shortname']);
                 echo "<br><br>" . Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
                 return true;
         }

@@ -1595,7 +1595,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
 
         $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\"" .
-             htmlspecialchars($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
+             htmlescape($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
         $html .= $parent->getStatusIcon($val['status']);
         $html .= "&nbsp;<a id='content_tracking_" . $val["id"] . $rand . "'
                    href='" . $parenttype::getFormURLWithID($val[$parenttype_fk]) . "'
@@ -1640,12 +1640,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $html .= "</span>";
         }
         $html .= "<div>";
-        $html .= htmlspecialchars(sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])));
+        $html .= htmlescape(sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])));
         $html .= "</div>";
 
        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
         $content = $val['content'];
-        $html .= "<div class='event-description rich_text_container'>" . htmlspecialchars($content) . "</div>";
+        $html .= "<div class='event-description rich_text_container'>" . htmlescape($content) . "</div>";
         $html .= $recall;
 
         $parent->getFromDB($val[$parent->getForeignKeyField()]);
@@ -1936,7 +1936,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             }
 
             $bgcolor = $_SESSION["glpipriority_" . $item_link->fields["priority"]];
-            $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>
@@ -1945,13 +1945,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
          </td>";
 
             echo "<td>";
-            echo htmlspecialchars($item_link->fields['name']);
+            echo htmlescape($item_link->fields['name']);
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='" . htmlspecialchars(strtolower($item_link->getType())) . "ticket" . htmlspecialchars($item_link->fields["id"] . $rand) . "' href='" .
+            $link = "<a id='" . htmlescape(strtolower($item_link->getType())) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='" .
                    $item_link->getFormURLWithID($item_link->fields["id"]);
-            $link .= "&amp;forcetab=" . htmlspecialchars($tab_name) . "$1";
+            $link .= "&amp;forcetab=" . htmlescape($tab_name) . "$1";
             $link   .= "'>";
             $link = sprintf(
                 __s('%1$s %2$s'),

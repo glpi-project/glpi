@@ -45,6 +45,7 @@ use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Monitor;
@@ -95,15 +96,15 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $this->createAndGetFormWithMultipleItemQuestions(),
             config: $specific_values,
             answers: [
-                "Computer 1" => [
+                "Your Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
                 ],
-                "Monitor 1" => [
+                "Your Monitors" => [
                     'itemtype' => Monitor::getType(),
                     'items_id' => $monitors[1]->getID(),
                 ],
-                "Computer 2" => [
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
                 ]
@@ -132,8 +133,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
         $specific_answers = new AssociatedItemsFieldConfig(
             strategy: AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
             specific_question_ids: [
-                $this->getQuestionId($form, "Computer 1"),
-                $this->getQuestionId($form, "Monitor 1"),
+                $this->getQuestionId($form, "Your Computer"),
+                $this->getQuestionId($form, "Your Monitors"),
+                $this->getQuestionId($form, "Computer"),
             ]
         );
 
@@ -150,24 +152,25 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $specific_answers,
             answers: [
-                "Computer 1" => [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ],
-                "Monitor 1" => [
-                    'itemtype' => Monitor::getType(),
-                    'items_id' => $monitors[1]->getID(),
-                ],
-                "Computer 2" => [
-                    'itemtype' => Computer::getType(),
-                    'items_id' => $computers[0]->getID(),
                 ]
             ],
             expected_associated_items: [
                 Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
                 Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
             ]
@@ -195,27 +198,47 @@ final class AssociatedItemsFieldTest extends DbTestCase
             expected_associated_items: []
         );
 
-        // Test with answers
+        // Test with answers: match QuestionTypeItem
         $this->sendFormAndAssertAssociatedItems(
             form: $form,
             config: $last_valid_answer,
             answers: [
-                "Computer 1" => [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ],
-                "Monitor 1" => [
-                    'itemtype' => Monitor::getType(),
-                    'items_id' => $monitors[1]->getID(),
-                ],
-                "Computer 2" => [
-                    'itemtype' => Computer::getType(),
-                    'items_id' => $computers[0]->getID(),
                 ]
             ],
             expected_associated_items: [
                 Computer::getType() => [
-                    $computers[0]->getID() => $computers[0]->getID(),
+                    $computers[1]->getID() => $computers[1]->getID(),
+                ]
+            ]
+        );
+
+        // Test with answers: match QuestionTypeUserDevice
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: $last_valid_answer,
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ]
+            ],
+            expected_associated_items: [
+                Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
+                    $monitors[1]->getID() => $monitors[1]->getID(),
                 ]
             ]
         );
@@ -247,7 +270,7 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $all_valid_answers,
             answers: [
-                "Computer 1" => [
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
                 ],
@@ -264,25 +287,53 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $all_valid_answers,
             answers: [
-                "Computer 1" => [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
+                ]
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                    $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                "Monitor 1" => [
-                    'itemtype' => Monitor::getType(),
-                    'items_id' => $monitors[1]->getID(),
+                Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
+                    $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                "Computer 2" => [
+            ]
+        );
+
+        // Test with answers with same computers
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: $all_valid_answers,
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
                 ]
             ],
             expected_associated_items: [
                 Computer::getType() => [
-                    $computers[1]->getID() => $computers[1]->getID(),
                     $computers[0]->getID() => $computers[0]->getID(),
                 ],
                 Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
             ]
@@ -355,17 +406,14 @@ final class AssociatedItemsFieldTest extends DbTestCase
 
     private function createAndGetFormWithMultipleItemQuestions(): Form
     {
-        $computers = $this->createComputers(3);
-        $monitors = $this->createMonitors(3);
+        $computer = $this->createItem(Computer::class, ['name' => "Computer 1", 'entities_id' => 0]);
 
         $builder = new FormBuilder();
-        $builder->addQuestion("Computer 1", QuestionTypeItem::class, $computers[0]->getID(), json_encode([
-            'itemtype' => Computer::getType(),
+        $builder->addQuestion("Your Computer", QuestionTypeUserDevice::class);
+        $builder->addQuestion("Your Monitors", QuestionTypeUserDevice::class, null, json_encode([
+            'is_multiple_devices' => true,
         ]));
-        $builder->addQuestion("Monitor 1", QuestionTypeItem::class, $monitors[0]->getID(), json_encode([
-            'itemtype' => Monitor::getType(),
-        ]));
-        $builder->addQuestion("Computer 2", QuestionTypeItem::class, $computers[1]->getID(), json_encode([
+        $builder->addQuestion("Computer", QuestionTypeItem::class, $computer->getID(), json_encode([
             'itemtype' => Computer::getType(),
         ]));
 

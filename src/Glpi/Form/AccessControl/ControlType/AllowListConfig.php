@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Group;
 use Override;
 use Profile;
@@ -61,7 +62,7 @@ final class AllowListConfig implements
     }
 
     #[Override]
-    public static function listForeignKeysHandlers(): array
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
         return [
             new ForeignKeyArrayHandler(

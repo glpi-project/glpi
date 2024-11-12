@@ -58,6 +58,6 @@ if (
         echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
         echo "</script>";
     } else {
-        echo htmlspecialchars(Ticket::getPriorityName($priority));
+        echo htmlescape(Ticket::getPriorityName($priority));
     }
 }

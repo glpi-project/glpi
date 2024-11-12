@@ -34,7 +34,6 @@
  */
 
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Http\Response;
 
 if (isset($_POST['id'])) {
     $stencil = Stencil::getStencilFromID($_POST['id']);

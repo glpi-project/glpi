@@ -81,15 +81,14 @@ function update910to911()
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'software']]);
         foreach ($prights as $profrights) {
-            $DB->insertOrDie(
+            $DB->insert(
                 "glpi_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
                     'name'         => "license",
                     'rights'       => $profrights['rights']
-                ],
-                "9.1 add right for softwarelicense"
+                ]
             );
         }
     }

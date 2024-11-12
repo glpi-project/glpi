@@ -44,13 +44,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 final class LegacyItemtypeRouteListenerTest extends TestCase
 {
     #[DataProvider('provideItemtypes')]
     public function testFindDbClass(string $path_info, string $expected_class_name): void
     {
-        $listener = new LegacyItemtypeRouteListener();
+        $listener = new LegacyItemtypeRouteListener($this->getUrlMatcherMock());
         $request = $this->createRequest($path_info);
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
 
@@ -399,7 +400,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
     #[DataProvider('provideClassesForPlugin')]
     public function testFindClassForPlugin(string $path_info, string $class): void
     {
-        $listener = new LegacyItemtypeRouteListener();
+        $listener = new LegacyItemtypeRouteListener($this->getUrlMatcherMock());
         $request = $this->createRequest($path_info);
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
 
@@ -445,5 +446,13 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         $req->server->set('PATH_INFO', $path_info);
 
         return $req;
+    }
+
+    private function getUrlMatcherMock(): UrlMatcherInterface
+    {
+        $mock = $this->createMock(UrlMatcherInterface::class);
+        $mock->method('match')->willThrowException(new \Exception());
+
+        return $mock;
     }
 }

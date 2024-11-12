@@ -790,10 +790,13 @@ class User extends CommonDBTM
     {
         parent::unsetUndisclosedFields($fields);
 
-        if (
-            !array_key_exists('id', $fields)
-            || !(new self())->currentUserHaveMoreRightThan($fields['id'])
-        ) {
+        $user = new self();
+        $can_see_token = Session::getLoginUserID() === $fields['id']
+            || (
+                $user->can($fields['id'], UPDATE)
+                && $user->currentUserHaveMoreRightThan($fields['id'])
+            );
+        if (!$can_see_token) {
             unset($fields['password_forget_token'], $fields['password_forget_token_date']);
         }
     }
@@ -862,7 +865,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            array_map('htmlspecialchars', $password_errors),
+                            array_map('htmlescape', $password_errors),
                             false,
                             ERROR
                         );
@@ -986,7 +989,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, true);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         }
     }
@@ -1094,7 +1097,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            array_map('htmlspecialchars', $password_errors),
+                            array_map('htmlescape', $password_errors),
                             false,
                             ERROR
                         );
@@ -1114,29 +1117,35 @@ class User extends CommonDBTM
             unset($input["password"]);
         }
 
-        // prevent changing tokens and emails from users with lower rights
-        $protected_input_keys = [
-            'api_token',
-            '_reset_api_token',
-            'cookie_token',
-            'password_forget_token',
-            'personal_token',
-            '_reset_personal_token',
-
-            '_useremails',
-        ];
-        if (!isCommandLine()) {
-            // Disallow `_emails` input unless on CLI context (e.g. LDAP sync command).
-            $protected_input_keys[] = '_emails';
-        }
         if (
-            count(array_intersect($protected_input_keys, array_keys($input))) > 0
-            && !Session::isCron() // cron context is considered safe
-            && (int) $input['id'] !== Session::getLoginUserID()
-            && !$this->currentUserHaveMoreRightThan($input['id'])
+            Session::getLoginUserID() !== false
+            && ((int) $input['id']) !== Session::getLoginUserID()
         ) {
-            foreach ($protected_input_keys as $input_key) {
-                unset($input[$input_key]);
+            // Security checks to prevent an unathorized user to update sensitive fields of another user.
+            // These checks are done only if a "user" session is active.
+            $protected_input_keys = [
+                // Security tokens
+                'api_token',
+                '_reset_api_token',
+                'cookie_token',
+                'password_forget_token',
+                'personal_token',
+                '_reset_personal_token',
+
+                // Prevent changing emails that could then be used to get the password reset token
+                '_useremails',
+                '_emails',
+
+                // Prevent disabling another user account
+                'is_active',
+            ];
+            if (
+                count(array_intersect($protected_input_keys, array_keys($input))) > 0
+                && !$this->currentUserHaveMoreRightThan($input['id'])
+            ) {
+                foreach ($protected_input_keys as $input_key) {
+                    unset($input[$input_key]);
+                }
             }
         }
 
@@ -1174,12 +1183,15 @@ class User extends CommonDBTM
         }
 
        // Security on default entity  update
-        if (
-            isset($input['entities_id'])
-            && ($input['entities_id'] > 0)
-            && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
-        ) {
-            unset($input['entities_id']);
+        if (isset($input['entities_id'])) {
+            if (
+                ($input['entities_id'] > 0)
+                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+            ) {
+                unset($input['entities_id']);
+            } elseif ($input['entities_id'] == -1) {
+                $input['entities_id'] = 'NULL';
+            }
         }
 
        // Security on default group  update
@@ -1281,7 +1293,7 @@ class User extends CommonDBTM
             try {
                 $this->forgetPassword($email, false);
             } catch (\Glpi\Exception\ForgetPasswordException $e) {
-                Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             }
         } elseif (in_array('password', $this->updates)) {
             $alert = new Alert();
@@ -2578,7 +2590,7 @@ class User extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Download user VCard');
-            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
+            $vcard_url = htmlescape(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
@@ -2590,7 +2602,7 @@ HTML;
             $toolbar[] = $vcard_btn;
 
             $error_message = null;
-            $impersonate_form = htmlspecialchars(self::getFormURLWithID($ID));
+            $impersonate_form = htmlescape(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
                 $csrf_token = Session::getNewCSRFToken();
@@ -2621,7 +2633,7 @@ HTML;
 JAVASCRIPT;
                 $toolbar[] = $impersonate_btn . Html::scriptBlock($impersonate_js);
             } elseif ($error_message !== null) {
-                $error_message = htmlspecialchars($error_message);
+                $error_message = htmlescape($error_message);
                 $impersonate_btn = <<<HTML
                <button type="button" name="impersonate" value="1"
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
@@ -2699,10 +2711,10 @@ HTML;
             ($this->fields["authtype"] == Auth::DB_GLPI)
         ) {
            //display login field for new records, or if this is not external auth
-            echo "<td><input name='name' id='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
+            echo "<td><input name='name' id='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         } else {
             echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value=\"" . htmlspecialchars($this->fields["name"]) . "\" class='form-control'></td>";
+            echo "<input type='hidden' name='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         }
 
         if (!$simplified_form && !empty($this->fields["name"])) {
@@ -2882,7 +2894,7 @@ JAVASCRIPT;
 
         $phonerand = mt_rand();
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
+        echo "<td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
         echo Html::input(
             'phone',
             [
@@ -2906,7 +2918,7 @@ JAVASCRIPT;
                 }
                 if (!empty($this->fields["user_dn"])) {
                   //TRANS: %s is the user dn
-                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlspecialchars($this->fields["user_dn"]));
+                    echo '<br>' . sprintf(__s('%1$s: %2$s'), __s('User DN'), htmlescape($this->fields["user_dn"]));
                 }
                 if ($this->fields['is_deleted_ldap']) {
                     echo '<br>' . __s('User missing in LDAP directory');
@@ -2964,7 +2976,7 @@ JAVASCRIPT;
             echo "</td>";
             echo "<td rowspan='4' class='middle'><label for='comment'>" . __s('Comments') . "</label></td>";
             echo "<td class='center middle' rowspan='4'>";
-            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlspecialchars($this->fields["comment"] ?? '') . "</textarea>";
+            echo "<textarea class='form-control' id='comment' name='comment' >" . htmlescape($this->fields["comment"]) . "</textarea>";
             echo "</td></tr>";
 
             $admnumrand = mt_rand();
@@ -2987,7 +2999,7 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
             $locrand = mt_rand();
-            echo "<td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
+            echo "<td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             $entities = $this->getEntities();
             if (count($entities) <= 0) {
                 $entities = -1;
@@ -3009,14 +3021,14 @@ JAVASCRIPT;
             echo "</td></tr>";
             $profilerand = mt_rand();
             echo "<tr class='tab_bg_1'>";
-            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlspecialchars(Profile::getTypeName(1)) . "</label></td><td>";
+            echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlescape(Profile::getTypeName(1)) . "</label></td><td>";
             Profile::dropdownUnder(['name'  => '_profiles_id',
                 'rand'  => $profilerand,
                 'value' => Profile::getDefault()
             ]);
 
             $entrand = mt_rand();
-            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlspecialchars(Entity::getTypeName(1)) . "</label></td><td>";
+            echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlescape(Entity::getTypeName(1)) . "</label></td><td>";
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
                 'rand'                => $entrand,
@@ -3048,14 +3060,12 @@ JAVASCRIPT;
                 $entrand = mt_rand();
                 echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __s('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields["entities_id"],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
                 echo "</td></tr>";
 
@@ -3187,11 +3197,11 @@ JAVASCRIPT;
                            && !empty($this->fields["password"])));
 
             echo "<div class='center'>";
-            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . htmlspecialchars($target) . "' autocomplete='off'>";
+            echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='" . htmlescape($target) . "' autocomplete='off'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlspecialchars($this->fields["name"]));
-            echo "<input type='hidden' name='name' value='" . htmlspecialchars($this->fields["name"]) . "'>";
-            echo "<input type='hidden' name='id' value='" . htmlspecialchars($this->fields["id"]) . "'>";
+            echo "<tr><th colspan='4'>" . sprintf(__s('%1$s: %2$s'), __s('Login'), htmlescape($this->fields["name"]));
+            echo "<input type='hidden' name='name' value='" . htmlescape($this->fields["name"]) . "'>";
+            echo "<input type='hidden' name='id' value='" . htmlescape($this->fields["id"]) . "'>";
             echo "</th></tr>";
 
             $surnamerand = mt_rand();
@@ -3236,7 +3246,7 @@ JAVASCRIPT;
                 && isset($authtype['firstname_field'])
                 && !empty($authtype['firstname_field'])
             ) {
-                echo htmlspecialchars($this->fields["firstname"]);
+                echo htmlescape($this->fields["firstname"]);
             } else {
                 echo Html::input(
                     'firstname',
@@ -3257,7 +3267,7 @@ JAVASCRIPT;
                 if (empty($this->fields['sync_field'])) {
                     echo Dropdown::EMPTY_VALUE;
                 } else {
-                    echo htmlspecialchars($this->fields['sync_field']);
+                    echo htmlescape($this->fields['sync_field']);
                 }
                 echo "</td></tr>";
             } else {
@@ -3346,13 +3356,13 @@ JAVASCRIPT;
             }
 
             $phonerand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlspecialchars(Phone::getTypeName(1)) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
 
             if (
                 $extauth
                 && isset($authtype['phone_field']) && !empty($authtype['phone_field'])
             ) {
-                echo htmlspecialchars($this->fields["phone"]);
+                echo htmlescape($this->fields["phone"]);
             } else {
                 echo Html::input(
                     'phone',
@@ -3377,7 +3387,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])
             ) {
-                echo htmlspecialchars($this->fields["mobile"]);
+                echo htmlescape($this->fields["mobile"]);
             } else {
                 echo Html::input(
                     'mobile',
@@ -3418,7 +3428,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])
             ) {
-                echo htmlspecialchars($this->fields["phone2"]);
+                echo htmlescape($this->fields["phone2"]);
             } else {
                 echo Html::input(
                     'phone2',
@@ -3434,14 +3444,12 @@ JAVASCRIPT;
             if (count($_SESSION['glpiactiveentities']) > 1) {
                 $entrand = mt_rand();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __s('Default entity') . "</td><td>";
-                $toadd = [];
-                if (!in_array(0, $entities)) {
-                    $toadd = [0 => __('Full structure')];
-                }
-                Entity::dropdown(['value'  => $this->fields['entities_id'],
+                $toadd = [-1 => __('Full structure')];
+                Entity::dropdown([
+                    'value'  => ($this->fields['entities_id'] === null) ? -1 : $this->fields['entities_id'],
                     'rand'   => $entrand,
                     'entity' => $entities,
-                    'toadd' => $toadd,
+                    'toadd'  => $toadd,
                 ]);
             } else {
                 echo "<td colspan='2'>&nbsp;";
@@ -3467,7 +3475,7 @@ JAVASCRIPT;
             echo "</td><td colspan='2'></td></tr>";
 
             $locrand = mt_rand();
-            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlspecialchars(Location::getTypeName(1)) . "</label></td><td>";
+            echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             Location::dropdown(['value'  => $this->fields['locations_id'],
                 'rand'   => $locrand,
                 'entity' => $entities
@@ -4294,46 +4302,6 @@ JAVASCRIPT;
 
 
     /**
-     * Get all groups where the current user have delegating.
-     *
-     * @since 0.83
-     *
-     * @param integer|string $entities_id ID of the entity to restrict
-     *
-     * @return integer[]
-     */
-    public static function getDelegateGroupsForUser($entities_id = '')
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT'          => 'glpi_groups_users.groups_id',
-            'DISTINCT'        => true,
-            'FROM'            => 'glpi_groups_users',
-            'INNER JOIN'      => [
-                'glpi_groups'  => [
-                    'FKEY'   => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'           => [
-                'glpi_groups_users.users_id'        => Session::getLoginUserID(),
-                'glpi_groups_users.is_userdelegate' => 1
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1)
-        ]);
-
-        $groups = [];
-        foreach ($iterator as $data) {
-            $groups[$data['groups_id']] = $data['groups_id'];
-        }
-        return $groups;
-    }
-
-
-    /**
      * Execute the query to select box with all glpi users where select key = name
      *
      * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
@@ -4387,42 +4355,6 @@ JAVASCRIPT;
 
             case "id":
                 $WHERE = ['glpi_users.id' => Session::getLoginUserID()];
-                break;
-
-            case "delegate":
-                $groups = self::getDelegateGroupsForUser($entity_restrict);
-                $users  = [];
-                if (count($groups)) {
-                    $iterator = $DB->request([
-                        'SELECT'    => 'glpi_users.id',
-                        'FROM'      => 'glpi_groups_users',
-                        'LEFT JOIN' => [
-                            'glpi_users'   => [
-                                'FKEY'   => [
-                                    'glpi_groups_users'  => 'users_id',
-                                    'glpi_users'         => 'id'
-                                ]
-                            ]
-                        ],
-                        'WHERE'     => [
-                            'glpi_groups_users.groups_id' => $groups,
-                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
-                        ]
-                    ]);
-                    foreach ($iterator as $data) {
-                           $users[$data["id"]] = $data["id"];
-                    }
-                }
-               // Add me to users list for central
-                if (Session::getCurrentInterface() == 'central') {
-                    $users[Session::getLoginUserID()] = Session::getLoginUserID();
-                }
-
-                if (count($users)) {
-                    $WHERE = ['glpi_users.id' => $users];
-                } else {
-                    $WHERE = ['0'];
-                }
                 break;
 
             case "groups":
@@ -4862,7 +4794,7 @@ JAVASCRIPT;
             }
 
             if ($p['readonly']) {
-                return '<span class="form-control" readonly>' . htmlspecialchars($user_name) . '</span>';
+                return '<span class="form-control" readonly>' . htmlescape($user_name) . '</span>';
             }
 
             if ($p['value'] === 'myself') {
@@ -5779,11 +5711,11 @@ JAVASCRIPT;
                 Session::addMessageAfterRedirect(__s('Reset password successful.'));
             }
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
         } catch (\Glpi\Exception\PasswordTooWeakException $e) {
            // Force display on error
             foreach ($e->getMessages() as $message) {
-                Session::addMessageAfteRredirect(htmlspecialchars($message), false, ERROR);
+                Session::addMessageAfteRredirect(htmlescape($message), false, ERROR);
             }
         }
 
@@ -5805,7 +5737,7 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
         Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.'));
@@ -5827,7 +5759,7 @@ JAVASCRIPT;
         try {
             $this->forgetPassword($email, true);
         } catch (\Glpi\Exception\ForgetPasswordException $e) {
-            Session::addMessageAfterRedirect(htmlspecialchars($e->getMessage()), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
         Session::addMessageAfterRedirect(__s('The given email address will receive the information required to define password.'));
@@ -5877,6 +5809,10 @@ JAVASCRIPT;
                 ]
             ]
         ];
+
+        // Randomly increase the response time to prevent an attacker to be able to detect whether
+        // a notification was sent (a longer response time could correspond to a SMTP operation).
+        sleep(rand(1, 3));
 
         // Try to find a single user matching the given email
         if (!$this->getFromDBbyEmail($email, $condition)) {
@@ -5950,10 +5886,10 @@ JAVASCRIPT;
 
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . htmlspecialchars(AuthLDAP::getTypeName(1)) . "</th></tr>";
+        echo "<tr><th colspan='2'>" . htmlescape(AuthLDAP::getTypeName(1)) . "</th></tr>";
 
         echo "<tr class='tab_bg_2'><td>" . __s('User DN') . "</td>";
-        echo "<td>" . htmlspecialchars($this->fields['user_dn']) . "</td></tr>";
+        echo "<td>" . htmlescape($this->fields['user_dn']) . "</td></tr>";
 
         if ($this->fields['user_dn']) {
             $config_ldap = new AuthLDAP();
@@ -5994,7 +5930,7 @@ JAVASCRIPT;
                             continue;
                         }
                         echo '<tr class="tab_bg_2">';
-                        echo '<td>' . htmlspecialchars($key) . '</td>';
+                        echo '<td>' . htmlescape($key) . '</td>';
                         echo '<td>';
                         unset($values['count']);
                         $printed_values = [];
@@ -6002,7 +5938,7 @@ JAVASCRIPT;
                             if (str_contains($key, 'password')) {
                                 $value = '********';
                             }
-                            $printed_values[] = htmlspecialchars($value);
+                            $printed_values[] = htmlescape($value);
                         }
                         echo implode(', ', $printed_values);
                         echo '</td>';

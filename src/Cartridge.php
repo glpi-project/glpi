@@ -838,7 +838,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                     if ($_SESSION['glpiis_ids_visible'] || empty($printname)) {
                         $printname = sprintf(__('%1$s (%2$s)'), $printname, $data["printID"]);
                     }
-                    $printer_link = "<a href='" . htmlspecialchars(Printer::getFormURLWithID($data["printID"])) . "'><span class='fw-bold'>" . htmlspecialchars($printname) . "</span></a>";
+                    $printer_link = "<a href='" . htmlescape(Printer::getFormURLWithID($data["printID"])) . "'><span class='fw-bold'>" . htmlescape($printname) . "</span></a>";
                 } else {
                     $printer_link = NOT_AVAILABLE;
                 }
@@ -1135,8 +1135,8 @@ TWIG, ['printer_id' => $printer->getID()]);
 
         $entries = [];
         foreach ($iterator as $data) {
-            $model = '<a href="' . htmlspecialchars(CartridgeItem::getFormURLWithID($data["tID"])) . '">'
-                . htmlspecialchars(sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"]))
+            $model = '<a href="' . htmlescape(CartridgeItem::getFormURLWithID($data["tID"])) . '">'
+                . htmlescape(sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"]))
                 . '</a>';
 
             $tmp_dbeg       = explode("-", $data["date_in"]);

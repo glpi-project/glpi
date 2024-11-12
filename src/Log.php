@@ -418,7 +418,7 @@ class Log extends CommonDBTM
                     case self::HISTORY_LOCK_ITEM:
                     case self::HISTORY_UNLOCK_ITEM:
                     case self::HISTORY_RESTORE_ITEM:
-                        $tmp['change'] = htmlspecialchars($action_label);
+                        $tmp['change'] = htmlescape($action_label);
                         break;
 
                     case self::HISTORY_ADD_DEVICE:
@@ -433,8 +433,8 @@ class Log extends CommonDBTM
                      //TRANS: %s is the component name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
                         break;
 
@@ -455,13 +455,13 @@ class Log extends CommonDBTM
                              __s('%1$s: %2$s'),
                              sprintf(
                                  __s('%1$s (%2$s)'),
-                                 htmlspecialchars($action_label),
-                                 htmlspecialchars($tmp['field'])
+                                 htmlescape($action_label),
+                                 htmlescape($tmp['field'])
                              ),
                              sprintf(
                                  __s('%1$s by %2$s'),
-                                 htmlspecialchars($data["old_value"]),
-                                 htmlspecialchars($data[ "new_value"])
+                                 htmlescape($data["old_value"]),
+                                 htmlescape($data[ "new_value"])
                              )
                          );
                         break;
@@ -478,8 +478,8 @@ class Log extends CommonDBTM
                        //TRANS: %s is the component name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -495,8 +495,8 @@ class Log extends CommonDBTM
                         //TRANS: %s is the component name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -512,8 +512,8 @@ class Log extends CommonDBTM
                         //TRANS: %s is the component name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
                         break;
 
@@ -522,8 +522,8 @@ class Log extends CommonDBTM
                         //TRANS: %s is the software name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
                         break;
 
@@ -532,8 +532,8 @@ class Log extends CommonDBTM
                         //TRANS: %s is the software name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -549,8 +549,8 @@ class Log extends CommonDBTM
                         //TRANS: %s is the item name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -566,14 +566,14 @@ class Log extends CommonDBTM
                         //TRANS: %s is the item name
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
                         break;
 
                     case self::HISTORY_LOG_SIMPLE_MESSAGE:
                         $tmp['field']  = "";
-                        $tmp['change'] = htmlspecialchars($data["new_value"]);
+                        $tmp['change'] = htmlescape($data["new_value"]);
                         break;
 
                     case self::HISTORY_ADD_RELATION:
@@ -583,8 +583,8 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
 
                         if ($data['itemtype'] == 'Ticket') {
@@ -626,18 +626,18 @@ class Log extends CommonDBTM
                             if ($as) {
                                 $tmp['change'] = sprintf(
                                     __s('%1$s: %2$s'),
-                                    htmlspecialchars($action_label),
+                                    htmlescape($action_label),
                                     sprintf(
                                         __s('%1$s (%2$s)'),
-                                        htmlspecialchars($data["new_value"]),
-                                        htmlspecialchars($as)
+                                        htmlescape($data["new_value"]),
+                                        htmlescape($as)
                                     )
                                 );
                             } else {
                                 $tmp['change'] = sprintf(
                                     __s('%1$s: %2$s'),
-                                    htmlspecialchars($action_label),
-                                    htmlspecialchars($data["new_value"])
+                                    htmlescape($action_label),
+                                    htmlescape($data["new_value"])
                                 );
                             }
                         }
@@ -651,11 +651,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($data["old_value"]),
-                                htmlspecialchars($data["new_value"])
+                                htmlescape($data["old_value"]),
+                                htmlescape($data["new_value"])
                             )
                         );
                         break;
@@ -667,8 +667,8 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -679,8 +679,8 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["old_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["old_value"])
                         );
                         break;
 
@@ -691,8 +691,8 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
-                            htmlspecialchars($data["new_value"])
+                            htmlescape($action_label),
+                            htmlescape($data["new_value"])
                         );
                         break;
 
@@ -703,11 +703,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($tmp['field']),
-                                htmlspecialchars($data["new_value"])
+                                htmlescape($tmp['field']),
+                                htmlescape($data["new_value"])
                             )
                         );
 
@@ -720,11 +720,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($tmp['field']),
-                                htmlspecialchars($data["new_value"])
+                                htmlescape($tmp['field']),
+                                htmlescape($data["new_value"])
                             )
                         );
                         break;
@@ -736,11 +736,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($tmp['field']),
-                                htmlspecialchars($data["old_value"])
+                                htmlescape($tmp['field']),
+                                htmlescape($data["old_value"])
                             )
                         );
                         break;
@@ -752,11 +752,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($tmp['field']),
-                                htmlspecialchars($data["old_value"])
+                                htmlescape($tmp['field']),
+                                htmlescape($data["old_value"])
                             )
                         );
                         break;
@@ -768,11 +768,11 @@ class Log extends CommonDBTM
                         }
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (%2$s)'),
-                                htmlspecialchars($tmp['field']),
-                                htmlspecialchars($data["new_value"])
+                                htmlescape($tmp['field']),
+                                htmlescape($data["new_value"])
                             )
                         );
                         break;
@@ -780,12 +780,12 @@ class Log extends CommonDBTM
                     case self::HISTORY_SEND_WEBHOOK:
                         $tmp['change'] = sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($action_label),
+                            htmlescape($action_label),
                             sprintf(
                                 __s('%1$s (Status %2$s -> %3$s)'),
-                                htmlspecialchars($data["itemtype_link"]),
-                                htmlspecialchars($data["old_value"]),
-                                htmlspecialchars($data["new_value"])
+                                htmlescape($data["itemtype_link"]),
+                                htmlescape($data["old_value"]),
+                                htmlescape($data["new_value"])
                             )
                         );
                         break;
@@ -830,8 +830,8 @@ class Log extends CommonDBTM
                             break;
 
                         default:
-                            $data["old_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["old_value"]), false, true);
-                            $data["new_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["new_value"]), false, true);
+                            $data["old_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["old_value"]) ?? '', false, true);
+                            $data["new_value"] = RichText::getTextFromHtml($item->getValueToDisplay($searchopt, $data["new_value"]) ?? '', false, true);
                             break;
                     }
                 }
@@ -882,8 +882,8 @@ class Log extends CommonDBTM
                     }
                     $tmp['change'] = sprintf(
                         __s('Change %1$s to %2$s'),
-                        '<del>' . htmlspecialchars($oldval) . '</del>',
-                        '<ins>' . htmlspecialchars($newval) . '</ins>'
+                        '<del>' . htmlescape($oldval) . '</del>',
+                        '<ins>' . htmlescape($newval) . '</ins>'
                     );
                 }
             }

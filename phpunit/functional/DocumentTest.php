@@ -359,9 +359,9 @@ class DocumentTest extends DbTestCase
     {
         return [
             [__FILE__, false],
-            [__DIR__ . "/../../pics/add_dropdown.png", true],
-            [__DIR__ . "/../../pics/corners.gif", true],
-            [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
+            [__DIR__ . "/../../public/pics/add_dropdown.png", true],
+            [__DIR__ . "/../../public/pics/corners.gif", true],
+            [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
             [__DIR__ . "/../notanimage.jpg", false],
             [__DIR__ . "/../notafile.jpg", false]
         ];

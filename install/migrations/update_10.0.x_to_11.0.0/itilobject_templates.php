@@ -81,7 +81,7 @@ if (!$DB->tableExists('glpi_tickettemplatereadonlyfields')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`tickettemplates_id`,`num`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "add table glpi_tickettemplatereadonlyfields");
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_changetemplatereadonlyfields')) {
@@ -92,7 +92,7 @@ if (!$DB->tableExists('glpi_changetemplatereadonlyfields')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`changetemplates_id`,`num`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "add table glpi_changetemplatereadonlyfields");
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_problemtemplatereadonlyfields')) {
@@ -103,5 +103,5 @@ if (!$DB->tableExists('glpi_problemtemplatereadonlyfields')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`problemtemplates_id`,`num`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "add table glpi_problemtemplatereadonlyfields");
+    $DB->doQuery($query);
 }

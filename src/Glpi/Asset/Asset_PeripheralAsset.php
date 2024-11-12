@@ -405,8 +405,8 @@ TWIG, $twig_params);
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $label = sprintf('<i class="%s"></i> %s', htmlspecialchars($itemtype::getIcon()), htmlspecialchars($linkname));
-            $name = '<a href="' . htmlspecialchars($link) . '">' . $label . '</a>';
+            $label = sprintf('<i class="%s"></i> %s', htmlescape($itemtype::getIcon()), htmlescape($linkname));
+            $name = '<a href="' . htmlescape($link) . '">' . $label . '</a>';
             $entry['name'] = $name;
 
             if (!isset($entity_cache[$data['entities_id']])) {
@@ -562,7 +562,7 @@ TWIG, $twig_params);
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
+            $name = '<a href="' . htmlescape($link) . '">' . htmlescape($linkname) . '</a>';
             $entry['name'] = $name;
 
             if (!isset($entity_cache[$data['entities_id']])) {
@@ -613,6 +613,15 @@ TWIG, $twig_params);
     {
         /** @var \DBmysql $DB */
         global $DB;
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (
+            !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
+            || !$item->isField('is_global')
+        ) {
+            throw new \LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
+        }
 
         // Update item to unit management :
         if ($item->getField('is_global')) {

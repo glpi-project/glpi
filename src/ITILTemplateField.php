@@ -136,8 +136,6 @@ abstract class ITILTemplateField extends CommonDBChild
         $canedit = $tt->canEdit($ID);
         $fields  = $tt->getAllowedFieldsNames(false);
         $fields  = array_diff_key($fields, static::getExcludedFields());
-        $simplified_fields = $tt->getSimplifiedInterfaceFields();
-        $both_interfaces_label = sprintf(__('%1$s + %2$s'), __('Simplified interface'), __('Standard interface'));
         $display_options = [
             'relative_dates' => true,
             'comments'       => true,
@@ -167,12 +165,10 @@ abstract class ITILTemplateField extends CommonDBChild
                 // Ignore deleted/unavailable fields
                 continue;
             }
-            $interface_label = in_array($data['num'], $simplified_fields, false) ? $both_interfaces_label : __('Standard interface');
             $entry = [
                 'itemtype' => static::class,
                 'id'       => $data['id'],
                 'name'     => $fields[$data['num']],
-                'interface' => $interface_label,
             ];
             if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
                 $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
@@ -189,9 +185,7 @@ abstract class ITILTemplateField extends CommonDBChild
 
         $fields_dropdown_values = [];
         foreach ($fields as $k => $field) {
-            $is_simple_field = in_array($k, $simplified_fields, false);
-            $label = sprintf(__('%1$s (%2$s)'), $field, $is_simple_field ? $both_interfaces_label : __('Standard interface'));
-            $fields_dropdown_values[$k] = $label;
+            $fields_dropdown_values[$k] = $field;
         }
 
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
@@ -266,7 +260,6 @@ TWIG, $twig_params);
 
         $columns = [
             'name' => __('Name'),
-            'interface' => __("Profile's interface")
         ];
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
             $columns['value'] = __('Value');

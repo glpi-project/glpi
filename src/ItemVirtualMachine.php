@@ -214,7 +214,7 @@ class ItemVirtualMachine extends CommonDBChild
                         ];
                     } else {
                         $entries[] = [
-                            'name' => htmlspecialchars($computer->fields['name']),
+                            'name' => htmlescape($computer->fields['name']),
                             'serial' => NOT_AVAILABLE,
                             'comment' => NOT_AVAILABLE,
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
@@ -479,6 +479,26 @@ class ItemVirtualMachine extends CommonDBChild
             'name'               => __('processor number'),
             'datatype'           => 'string',
             'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '5',
+            'table'              => Computer::getTable(),
+            'field'              => 'uuid',
+            'name'               => __('Computer UUID'),
+            'datatype'           => 'string',
+            'linkfield'          => 'items_id',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => ItemVirtualMachine::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'item_itemtype',
+                        'specific_itemtype'  => 'Computer'
+                    ]
+                ]
+            ]
         ];
 
         return $tab;

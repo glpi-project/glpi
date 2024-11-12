@@ -37,7 +37,7 @@ describe('Helpdesk home page', () => {
         cy.changeProfile('Self-Service');
     });
     it('can use tiles', () => {
-        cy.visit('/Home');
+        cy.visit('/Helpdesk');
         cy.findByRole('region', { name: 'Quick Access' })
             .findAllByRole('link')
             .as('tiles');
@@ -87,7 +87,7 @@ describe('Helpdesk home page', () => {
                 'reminders_id': reminder_id,
             }).as('reminder_id');
         });
-        cy.visit('/Home');
+        cy.visit('/Helpdesk');
 
         // Default tab should be opened tickets
         cy.findAllByText('Open ticket 1').should('be.visible');

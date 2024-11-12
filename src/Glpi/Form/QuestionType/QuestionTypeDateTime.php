@@ -126,8 +126,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isDefaultValueCurrentTime(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -137,8 +141,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isDateEnabled(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return true;
         }
@@ -148,8 +156,12 @@ class QuestionTypeDateTime extends AbstractQuestionType
 
     public function isTimeEnabled(?Question $question): bool
     {
-        /** @var ?QuestionTypeDateTimeConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return false;
         }
@@ -177,9 +189,9 @@ class QuestionTypeDateTime extends AbstractQuestionType
             {% set rand = random() %}
 
             <div class="row g-2">
-                <div class="col-5">
+                <div class="col-6">
                     <input
-                        class="form-control mb-2"
+                        class="form-control"
                         type="{{ input_type }}"
                         id="date_input_{{ rand }}"
                         name="default_value"
@@ -327,7 +339,7 @@ TWIG;
         $template = <<<TWIG
             <input
                 type="{{ input_type }}"
-                class="form-control"
+                class="form-control w-50"
                 name="{{ question.getEndUserInputName() }}"
                 value="{{ default_value }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
@@ -355,8 +367,8 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeDateTimeConfig::class;
+        return QuestionTypeDateTimeExtraDataConfig::class;
     }
 }

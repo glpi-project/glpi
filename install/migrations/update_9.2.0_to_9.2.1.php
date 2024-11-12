@@ -89,19 +89,17 @@ function update920to921()
     }
 
    // Sla rules criterias migration
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_rulecriterias",
         ['criteria' => "slts_ttr_id"],
-        ['criteria' => "slas_id"],
-        "SLA rulecriterias migration"
+        ['criteria' => "slas_id"]
     );
 
    // Sla rules actions migration
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_ruleactions",
         ['field' => "slts_ttr_id"],
-        ['field' => "slas_id"],
-        "SLA ruleactions migration"
+        ['field' => "slas_id"]
     );
    // end fix 9.1.x migration
 
@@ -117,7 +115,7 @@ function update920to921()
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelactions");
+        $DB->doQuery($query);
     }
 
     if (!$DB->tableExists('glpi_olalevelcriterias')) {
@@ -131,7 +129,7 @@ function update920to921()
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelcriterias");
+        $DB->doQuery($query);
     }
 
     if (!$DB->tableExists('glpi_olalevels')) {
@@ -150,7 +148,7 @@ function update920to921()
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels");
+        $DB->doQuery($query);
     }
 
     if (!$DB->tableExists('glpi_olalevels_tickets')) {
@@ -164,9 +162,9 @@ function update920to921()
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels_tickets");
+        $DB->doQuery($query);
 
-        $DB->insertOrDie("glpi_crontasks", [
+        $DB->insert("glpi_crontasks", [
             'itemtype'        => "OlaLevel_Ticket",
             'name'            => "olaticket",
             'frequency'       => "604800",
@@ -180,7 +178,7 @@ function update920to921()
             'lastrun'         => null,
             'lastcode'        => null,
             'comment'         => null,
-        ], "9.2 populate glpi_crontasks for olaticket");
+        ]);
     }
 
     if (!$DB->tableExists('glpi_slms')) {
@@ -295,41 +293,36 @@ function update920to921()
     }
 
    // ProfileRights changes
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_profilerights",
         ['name' => "slm"],
-        ['name' => "sla"],
-        "SLM profilerights migration"
+        ['name' => "sla"]
     );
 
    //Sla rules criterias migration
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_rulecriterias",
         ['criteria' => "slas_ttr_id"],
-        ['criteria' => "slts_ttr_id"],
-        "SLA rulecriterias migration"
+        ['criteria' => "slts_ttr_id"]
     );
 
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_rulecriterias",
         ['criteria' => "slas_tto_id"],
-        ['criteria' => "slts_tto_id"],
-        "SLA rulecriterias migration"
+        ['criteria' => "slts_tto_id"]
     );
 
    // Sla rules actions migration
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_ruleactions",
         ['field' => "slas_ttr_id"],
-        ['field' => "slts_ttr_id"],
-        "SLA ruleactions migration"
+        ['field' => "slts_ttr_id"]
     );
 
-    $DB->updateOrDie(
+    $DB->update(
         "glpi_ruleactions",
         ['field' => "slas_tto_id"],
-        ['field' => "slts_tto_id"],
-        "SLA ruleactions migration"
+        ['field' => "slts_tto_id"]
     );
 
    //see https://github.com/glpi-project/glpi/issues/3037
@@ -387,7 +380,7 @@ function update920to921()
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
                        FROM `glpi_notifications`";
-        $DB->doQueryOrDie($query, "9.2 migrate notifications templates");
+        $DB->doQuery($query);
 
        //migrate any existing mode before removing the field
         $migration->dropField('glpi_notifications', 'mode');

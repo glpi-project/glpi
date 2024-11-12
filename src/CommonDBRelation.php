@@ -801,7 +801,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 0.84
      *
      * @param CommonDBTM $item    CommonDBTM object   the other item (ie. : $item2)
-     * @param string     $case : can be overwrite by object
+     * @param string     $case : can be overwritten by object
      *                            - 'add' when this CommonDBRelation is added (to and item)
      *                            - 'update item previous' transfert : this is removed from the old item
      *                            - 'update item next' transfert : this is added to the new item
@@ -824,7 +824,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 0.84
      *
      * @param CommonDBTM $item the other item (ie. : $item1)
-     * @param string     $case : can be overwrite by object
+     * @param string     $case : can be overwritten by object
      *                            - 'add' when this CommonDBRelation is added (to and item)
      *                            - 'update item previous' transfert : this is removed from the old item
      *                            - 'update item next' transfert : this is added to the new item
@@ -1436,14 +1436,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
         } else if (in_array($action, $specificities['normalized']['remove'])) {
             $normalized_action = 'remove';
         } else {
-           // If we cannot get normalized action, then, its not for this method !
+           // If we cannot get normalized action, then, it's not for this method!
             return parent::showMassiveActionsSubForm($ma);
         }
 
         switch ($normalized_action) {
             case 'add':
             case 'remove':
-               // Get the peer number. For Document_Item, it depends of the action's name
+               // Get the peer number. For Document_Item, it depends on the action's name
                 $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
                 switch ($peer_number) {
                     case 1:

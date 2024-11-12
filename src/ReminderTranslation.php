@@ -172,11 +172,11 @@ TWIG, $twig_params);
             if ($canedit) {
                 $entry['subject'] = sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(self::getFormURLWithID($data['id'])),
-                    htmlspecialchars($data['name'])
+                    htmlescape(self::getFormURLWithID($data['id'])),
+                    htmlescape($data['name'])
                 );
             } else {
-                $entry['subject'] = htmlspecialchars($data['name']);
+                $entry['subject'] = htmlescape($data['name']);
             }
             if (!empty($data['text'])) {
                 $entry['subject'] .= Html::showToolTip(RichText::getEnhancedHtml($data['text']), ['display' => false]);

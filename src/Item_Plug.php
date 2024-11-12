@@ -102,7 +102,7 @@ class Item_Plug extends CommonDBRelation
         if ($canedit) {
             $rand = mt_rand();
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-               action='" . htmlspecialchars(Toolbox::getItemTypeFormURL(__CLASS__)) . "' method='post'>\n";
+               action='" . htmlescape(Toolbox::getItemTypeFormURL(__CLASS__)) . "' method='post'>\n";
             echo "\t<input type='hidden' name='" . static::$items_id_1 . "' value='$ID'>\n";
             echo "\t<input type='hidden' name='itemtype' value='" . $item::class . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";

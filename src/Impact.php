@@ -290,15 +290,15 @@ JS);
            // Header
             echo '<thead>';
             echo '<tr class="noHover">';
-            echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlspecialchars($label) . '';
+            echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlescape($label) . '';
             echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
             echo '</tr>';
             echo '<tr class="noHover">';
             echo '<th>' . _sn('Item', 'Items', 1) . '</th>';
             echo '<th>' . __s('Relation') . '</th>';
-            echo '<th>' . htmlspecialchars(Ticket::getTypeName(Session::getPluralNumber())) . '</th>';
-            echo '<th>' . htmlspecialchars(Problem::getTypeName(Session::getPluralNumber())) . '</th>';
-            echo '<th>' . htmlspecialchars(Change::getTypeName(Session::getPluralNumber())) . '</th>';
+            echo '<th>' . htmlescape(Ticket::getTypeName(Session::getPluralNumber())) . '</th>';
+            echo '<th>' . htmlescape(Problem::getTypeName(Session::getPluralNumber())) . '</th>';
+            echo '<th>' . htmlescape(Change::getTypeName(Session::getPluralNumber())) . '</th>';
             echo '<th width="50px"></th>';
             echo '</tr>';
             echo '</thead>';
@@ -311,7 +311,7 @@ JS);
                 echo '<tr class="tab_bg_1">';
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
-                echo '<a>' . htmlspecialchars($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
+                echo '<a>' . htmlescape($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
                 echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
                 echo '</td>';
                 echo '</tr>';
@@ -322,16 +322,16 @@ JS);
                     echo '<td class="impact-left" width="15%">';
                     echo '<div><a target="_blank" href="' .
                     $itemtype_item['stored']->getLinkURL() . '">' .
-                    htmlspecialchars($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
+                    htmlescape($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
                     echo '</td>';
                     echo '<td width="40%"><div>';
 
                     $path = [];
                     foreach ($itemtype_item['node']['path'] as $node) {
                         if ($node['id'] == $start_node_id) {
-                            $path[] = '<b>' . htmlspecialchars($node['label']) . '</b>';
+                            $path[] = '<b>' . htmlescape($node['label']) . '</b>';
                         } else {
-                            $path[] = htmlspecialchars($node['label']);
+                            $path[] = htmlescape($node['label']);
                         }
                     }
                     $separator = '<i class="fas fa-angle-right"></i>';
@@ -376,7 +376,7 @@ JS);
        // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
-            echo '<a target="_blank" href="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlspecialchars($impact_item->fields['itemtype']) . '&items_id=' . htmlspecialchars($impact_item->fields['items_id']) . '">';
+            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlescape($impact_item->fields['itemtype']) . '&items_id=' . htmlescape($impact_item->fields['items_id']) . '">';
             echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
             echo '</a>';
         }
@@ -390,7 +390,7 @@ JS);
         if ($can_update && $impact_context) {
             $rand = mt_rand();
 
-            $setting_dialog .= '<form id="list_depth_form" action="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
+            $setting_dialog .= '<form id="list_depth_form" action="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
             $setting_dialog .= '<table class="tab_cadre_fixe">';
             $setting_dialog .= '<tr>';
             $setting_dialog .= '<td><label for="impact_max_depth_' . $rand . '">' . __s("Max depth") . '</label></td>';
@@ -468,9 +468,9 @@ JS);
          $(document).on("impactUpdated", function() {
             $.ajax({
                type: "GET",
-               url: "' . htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php",
+               url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
                data: {
-                  itemtype: "' . htmlspecialchars(get_class($item)) . '",
+                  itemtype: "' . htmlescape(get_class($item)) . '",
                   items_id: "' . $item->fields['id'] . '",
                   action  : "load",
                   view    : "list",
@@ -560,7 +560,7 @@ JS);
                     $priority = $itil_object['priority'];
                 }
             }
-            $extra = 'id="' . $id . '" style="background-color:' .  htmlspecialchars($user->fields["priority_$priority"]) . '; cursor:pointer;"';
+            $extra = 'id="' . $id . '" style="background-color:' .  htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
 
             echo Html::scriptBlock(<<<JS
                 $(document).on("click", "#$id", () => {
@@ -806,8 +806,8 @@ JS);
      */
     public static function loadLibs(): void
     {
-        echo Html::css('public/lib/cytoscape.css');
-        echo Html::script("public/lib/cytoscape.js");
+        echo Html::css('lib/cytoscape.css');
+        echo Html::script("lib/cytoscape.js");
     }
 
     /**
@@ -853,7 +853,7 @@ JS);
 
                $.ajax({
                   type: "GET",
-                  url: "' . htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php",
+                  url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
                   data: {
                      itemtype: values[0],
                      items_id: values[1],
@@ -986,7 +986,7 @@ JS);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $action = htmlspecialchars($CFG_GLPI['root_doc']) . '/ajax/impact.php';
+        $action = htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php';
         $formName = "form_impact_network";
 
         echo "<form name=\"$formName\" action=\"$action\" method=\"post\" class='no-track'>";
@@ -1041,8 +1041,8 @@ JS);
             $icon = self::checkIcon($icon);
 
             echo '<div class="impact-side-filter-itemtypes-item">';
-            echo '<h4><img class="impact-side-icon" src="' . htmlspecialchars($CFG_GLPI['root_doc']) . '/' . htmlspecialchars($icon) . '" title="' . htmlspecialchars($itemtype::getTypeName()) . '" data-itemtype="' . htmlspecialchars($itemtype) . '">';
-            echo "<span>" . htmlspecialchars($itemtype::getTypeName()) . "</span></h4>";
+            echo '<h4><img class="impact-side-icon" src="' . htmlescape($CFG_GLPI['root_doc']) . '/' . htmlescape($icon) . '" title="' . htmlescape($itemtype::getTypeName()) . '" data-itemtype="' . htmlescape($itemtype) . '">';
+            echo "<span>" . htmlescape($itemtype::getTypeName()) . "</span></h4>";
             echo '</div>'; // impact-side-filter-itemtypes-item
         }
         echo '</div>'; // impact-side-filter-itemtypes-items
@@ -1796,7 +1796,7 @@ JS);
         global $CFG_GLPI;
 
        // Form head
-        $action = htmlspecialchars(Toolbox::getItemTypeFormURL(Config::getType()));
+        $action = htmlescape(Toolbox::getItemTypeFormURL(Config::getType()));
         echo "<form name='form' action='$action' method='post'>";
 
        // Table head

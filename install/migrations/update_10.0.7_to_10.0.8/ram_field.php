@@ -57,13 +57,13 @@ foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
         ],
     ]);
     foreach ($iterator as $row) {
-        $DB->updateOrDie(
+        $DB->update(
             $table,
             ['ram' => preg_replace('/[^0-9]+/', '', $row['ram'])],
             ['id'  => $row['id']]
         );
     }
-    $DB->updateOrDie(
+    $DB->update(
         $table,
         ['ram' => null],
         [

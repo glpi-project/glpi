@@ -70,6 +70,11 @@ class Budget extends CommonDropdown
         return ['management', self::class];
     }
 
+    public static function getLogServiceName(): string
+    {
+        return 'management';
+    }
+
     public function defineTabs($options = [])
     {
 

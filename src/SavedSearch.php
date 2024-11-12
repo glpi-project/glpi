@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Features\Clonable;
+use Glpi\Toolbox\ArrayNormalizer;
 
 /**
  * Saved searches class
@@ -66,6 +67,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public static function getTypeName($nb = 0)
     {
         return _n('Saved search', 'Saved searches', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', self::class];
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -506,7 +512,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     && Session::getCurrentInterface() != "helpdesk"
                 ) {
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
+                        htmlescape(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
                         false,
                         ERROR
                     );
@@ -826,8 +832,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $user               = new User();
             $personalorderfield = $this->getPersonalOrderField();
 
-            $user->update(['id'                 => Session::getLoginUserID(),
-                $personalorderfield  => exportArrayToDB($items)
+            $user->update([
+                'id'                 => Session::getLoginUserID(),
+                $personalorderfield  => exportArrayToDB(
+                    ArrayNormalizer::normalizeValues($items, 'intval')
+                )
             ]);
             return true;
         }

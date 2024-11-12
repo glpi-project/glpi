@@ -434,7 +434,11 @@ class Application extends BaseApplication
 
         Config::detectRootDoc();
 
-        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
+        if (
+            !($this->db instanceof DBmysql)
+            || !$this->db->connected
+            || !$this->db->tableExists('glpi_configs')
+        ) {
             return;
         }
 

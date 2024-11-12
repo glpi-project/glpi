@@ -367,10 +367,10 @@ abstract class CommonITILValidation extends CommonDBChild
                     $user->getFromDB($this->fields["items_id_target"]);
                     $email   = $user->getDefaultEmail();
                     if (!empty($email)) {
-                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $user->getName())));
+                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $user->getName())));
                     } else {
                         Session::addMessageAfterRedirect(
-                            htmlspecialchars(sprintf(
+                            htmlescape(sprintf(
                                 __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
                                 $user->getName()
                             )),
@@ -381,7 +381,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
                     $target = new $this->fields["itemtype_target"]();
                     if ($target->getFromDB($this->fields["items_id_target"])) {
-                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Approval request sent to %s'), $target->getName())));
+                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $target->getName())));
                     }
                 }
             }
@@ -989,8 +989,8 @@ abstract class CommonITILValidation extends CommonDBChild
             Session::addToNavigateListItems($this->getType(), $row["id"]);
             $status  = sprintf(
                 '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
-                htmlspecialchars(self::getStatusColor($row['status'])),
-                htmlspecialchars(self::getStatus($row['status']))
+                htmlescape(self::getStatusColor($row['status'])),
+                htmlescape(self::getStatus($row['status']))
             );
 
             $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
@@ -1022,8 +1022,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 if ($doc->getFromDB($docs_values['documents_id'])) {
                     $document .= sprintf(
                         '<a href="%s">%s</a><br />',
-                        htmlspecialchars($doc->getLinkURL()),
-                        htmlspecialchars($doc->getName())
+                        htmlescape($doc->getLinkURL()),
+                        htmlescape($doc->getName())
                     );
                 }
             }
@@ -1031,11 +1031,11 @@ abstract class CommonITILValidation extends CommonDBChild
             $script = "";
             if ($canedit) {
                 $edit_title = __s('Edit');
-                $item_id = htmlspecialchars($item->fields['id']);
-                $row_id = htmlspecialchars($row["id"]);
-                $rand = htmlspecialchars($rand);
-                $view_validation_id = htmlspecialchars($this->fields[static::$items_id]);
-                $root_doc = htmlspecialchars($CFG_GLPI["root_doc"]);
+                $item_id = (int)$item->fields['id'];
+                $row_id = (int)$row["id"];
+                $rand = htmlescape($rand);
+                $view_validation_id = htmlescape($this->fields[static::$items_id]);
+                $root_doc = htmlescape($CFG_GLPI["root_doc"]);
                 $params_json = json_encode([
                     'type'             => static::class,
                     'parenttype'       => static::$itemtype,

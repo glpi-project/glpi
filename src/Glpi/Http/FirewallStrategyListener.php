@@ -41,7 +41,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class FirewallStrategyListener implements EventSubscriberInterface
 {
-    public function __construct(private FirewallInterface $firewall)
+    public function __construct(private Firewall $firewall)
     {
     }
 
@@ -66,7 +66,7 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
         } elseif ($number_of_attributes === 1) {
             $strategy = current($attributes)->strategy;
         } elseif ($event->isMainRequest()) {
-            $strategy = $this->firewall->computeFallbackStrategy($event->getRequest()->getPathInfo());
+            $strategy = $this->firewall->computeFallbackStrategy($event->getRequest());
         }
 
         if ($strategy !== null) {

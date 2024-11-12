@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\URL;
 use Override;
 use SavedSearch;
 use Ticket;
@@ -93,7 +94,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             }
         }
 
-        // Contruct parameters
+        // Construct parameters
         $globallinkto  = \Toolbox::append_params([
             'criteria'     => $search['criteria'],
             'metacriteria' => $search['metacriteria'],
@@ -118,6 +119,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             }
         }
 
+        $search['target'] = URL::sanitizeURL($search['target']);
         $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
         $href    = $prehref . $parameters;
 
@@ -154,12 +156,12 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                     $used_soptions_names[] = _n('View', 'Views', 1);
                 }
 
-                // check also if there any default filters
+                // check also if there is any default filters
                 if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
                     array_unshift($used_soptions_names, $defaultfilter['name']);
                 }
 
-                // remove latitute and longitude if as map is enabled
+                // remove latitude and longitude if as map is enabled
                 $as_map = $data['search']['as_map'] ?? 0;
                 if ($as_map == 1) {
                     unset($used_soptions_names[array_search(__('Latitude'), $used_soptions_names)]);

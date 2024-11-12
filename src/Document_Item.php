@@ -188,7 +188,7 @@ class Document_Item extends CommonDBRelation
                         __('Mandatory fields are not filled. Please correct: %s'),
                         Document::getTypeName(Session::getPluralNumber())
                     );
-                    Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
                     return false;
                 }
             }
@@ -443,7 +443,7 @@ TWIG, $twig_params);
                     }
 
                     $link     = $itemtype::getFormURLWithID($data['id']);
-                    $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . ' ' . htmlspecialchars($linkname_extra) . "</a>";
+                    $name = '<a href="' . htmlescape($link) . '">' . htmlescape($linkname) . ' ' . htmlescape($linkname_extra) . "</a>";
 
                     $entity_name = '-';
                     if (isset($data['entity'])) {
@@ -698,7 +698,7 @@ TWIG, $twig_params);
             }
 
             $link = !empty($data["link"])
-                ? '<a target="_blank" href="' . htmlspecialchars(Toolbox::formatOutputWebLink($data["link"])) . '">' . htmlspecialchars($data["link"]) . "</a>"
+                ? '<a target="_blank" href="' . htmlescape(Toolbox::formatOutputWebLink($data["link"])) . '">' . htmlescape($data["link"]) . "</a>"
                 : '';
 
             if (!isset($category_names[$data["documentcategories_id"]])) {

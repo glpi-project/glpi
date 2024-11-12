@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\DefaultFormsManager;
+use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Form\Form;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -258,7 +259,16 @@ class Update
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
         foreach ($migrations as $key => $migration_specs) {
             include_once($migration_specs['file']);
-            $migration_specs['function']();
+
+            try {
+                $migration_specs['function']();
+            } catch (\Throwable $e) {
+                $this->migration->displayError(sprintf(
+                    __('An error occurred during the update. The error was: %s'),
+                    $e->getMessage()
+                ));
+                die(1);
+            }
 
             if ($key !== array_key_last($migrations)) {
                 // Set current version to target version to ensure complete migrations to not be replayed if one
@@ -277,8 +287,8 @@ class Update
         }
 
         // Create default forms
-        $default_forms_manager = new DefaultFormsManager();
-        $default_forms_manager->createDefaultForms();
+        $helpdesk_data_manager = new DefaultDataManager();
+        $helpdesk_data_manager->initializeDataIfNeeded();
 
         // Initalize rules
         $this->migration->displayTitle(__('Initializing rules...'));
@@ -318,7 +328,7 @@ class Update
 
         if (defined('GLPI_SYSTEM_CRON')) {
            // Downstream packages may provide a good system cron
-            $DB->updateOrDie(
+            $DB->update(
                 'glpi_crontasks',
                 [
                     'mode'   => 2

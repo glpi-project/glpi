@@ -165,7 +165,7 @@ class GLPIKey
      *
      * @return bool
      */
-    public function generate(): bool
+    public function generate(bool $update_db = true): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -181,14 +181,12 @@ class GLPIKey
 
        // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
-        if ($DB instanceof DBmysql && $DB->connected) {
-            if ($this->keyExists()) {
-                $previous_key = $this->get();
-                if ($previous_key === null) {
-                    // Do not continue if unable to get previous key.
-                    // Detailed warning has already been triggered by `get()` method.
-                    return false;
-                }
+        if ($update_db && $this->keyExists()) {
+            $previous_key = $this->get();
+            if ($previous_key === null) {
+                // Do not continue if unable to get previous key when DB update is requested.
+                // Detailed warning has already been triggered by `get()` method.
+                return false;
             }
         }
 
@@ -199,11 +197,12 @@ class GLPIKey
             return false;
         }
 
-        if ($DB instanceof DBmysql && $DB->connected) {
-            if (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key)) {
-                trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
-                return false;
-            }
+        if (
+            $update_db
+            && (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key))
+        ) {
+            trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
+            return false;
         }
 
         return true;

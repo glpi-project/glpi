@@ -314,7 +314,7 @@ class Inventory
             $unhandled_data = array_diff_key($all_props, $data);
             if (count($unhandled_data)) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('Following keys has been ignored during process: %1$s'),
                         implode(
                             ', ',
@@ -885,7 +885,7 @@ class Inventory
                     $task->log($message);
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($message));
+                    Session::addMessageAfterRedirect(htmlescape($message));
                 }
             }
         }
@@ -972,7 +972,7 @@ class Inventory
                     $task->log($message);
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($message));
+                    Session::addMessageAfterRedirect(htmlescape($message));
                 }
             }
         }

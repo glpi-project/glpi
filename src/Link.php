@@ -63,6 +63,11 @@ class Link extends CommonDBTM
         return ['config', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
     /**
      * For plugins, add a tag to the links tags
      *
@@ -600,7 +605,7 @@ TWIG, $buttons_params);
                 $actions = '';
 
                 if ($manuallink->canUpdateItem()) {
-                    $actions .= '<a href="' . htmlspecialchars(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
+                    $actions .= '<a href="' . htmlescape(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
                     $actions .= '<i class="fas fa-edit"></i>';
                     $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
                     $actions .= '</a>';
@@ -690,13 +695,13 @@ TWIG, $buttons_params);
             $i     = 1;
             foreach ($links as $key => $val) {
                 $name    = ($names[$key] ?? reset($names));
-                $newlink = '<a href="' . htmlspecialchars($val) . '"';
+                $newlink = '<a href="' . htmlescape($val) . '"';
                 if ($params['open_window']) {
                     $newlink .= " target='_blank'";
                 }
                 $newlink          .= ">";
-                $linkname          = htmlspecialchars(sprintf(__('%1$s #%2$s'), $name, $i));
-                $newlink          .= htmlspecialchars(sprintf(__('%1$s: %2$s'), $linkname, $val));
+                $linkname          = htmlescape(sprintf(__('%1$s #%2$s'), $name, $i));
+                $newlink          .= htmlescape(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink          .= "</a>";
                 $computedlinks[]   = $newlink;
                 $i++;
@@ -718,10 +723,10 @@ TWIG, $buttons_params);
                 $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id'] .
                                  "&itemtype=" . $item::class .
                                  "&id=" . $item->getID() . "&rank=$key";
-                $newlink         = '<a href="' . htmlspecialchars($url) . '" target="_blank">';
+                $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
                 $newlink        .= "<i class='fa-lg fa-fw fas fa-link me-2'></i>";
-                $linkname        = htmlspecialchars(sprintf(__('%1$s #%2$s'), $name, $i));
-                $newlink        .= htmlspecialchars(sprintf(__('%1$s: %2$s'), $linkname, $val));
+                $linkname        = htmlescape(sprintf(__('%1$s #%2$s'), $name, $i));
+                $newlink        .= htmlescape(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink        .= "</a>";
                 $computedlinks[] = $newlink;
                 $i++;
@@ -842,7 +847,7 @@ TWIG, $buttons_params);
             || (isset($input['data']) && !TemplateManager::validate($input['data'], $err_msg))
         ) {
             if ($err_msg !== null) {
-                Session::addMessageAfterRedirect(htmlspecialchars($err_msg), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($err_msg), false, ERROR);
             }
             return false;
         }

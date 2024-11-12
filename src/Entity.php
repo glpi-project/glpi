@@ -685,19 +685,6 @@ class Entity extends CommonTreeDropdown
         );
     }
 
-    /**
-     * Clean caches related to entity selector.
-     *
-     * @since 10.0
-     *
-     * @return void
-     * @deprecated 10.0.12
-     */
-    public function cleanEntitySelectorCache()
-    {
-        Toolbox::deprecated('`Entity::cleanEntitySelectorCache()` no longer has any effect as the entity selector is no longer cached as a unique entry');
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];
@@ -2879,7 +2866,7 @@ class Entity extends CommonTreeDropdown
         if ($this->fields[$field] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(str_replace('_id', '_strategy', $field), $this->getID(), $field, $default_value);
             if (!$tid) {
-                return self::inheritedValue(htmlspecialchars($empty_value), true, false);
+                return self::inheritedValue(htmlescape($empty_value), true, false);
             }
             if ($item->getFromDB($tid)) {
                 return self::inheritedValue($item->getLink(), true, false);
@@ -2936,12 +2923,12 @@ class Entity extends CommonTreeDropdown
 
         // Construct HTML with special chars encoded.
         if ($title === null) {
-            $title = htmlspecialchars(implode(' > ', $names));
+            $title = htmlescape(implode(' > ', $names));
         }
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
-                static fn (string $name) => '<span class="text-nowrap">' . htmlspecialchars($name) . '</span>',
+                static fn (string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
                 $names
             )
         );
@@ -2977,17 +2964,17 @@ class Entity extends CommonTreeDropdown
         $names = explode(' > ', trim($entity->fields['completename']));
 
         // Construct HTML with special chars encoded.
-        $title       = htmlspecialchars(implode(' > ', $names));
+        $title       = htmlescape(implode(' > ', $names));
         $last_name   = array_pop($names);
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
-                static fn (string $name) => '<span class="text-nowrap text-muted">' . htmlspecialchars($name) . '</span>',
+                static fn (string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
                 $names
             )
         );
 
-        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlspecialchars($last_name) . '</a>';
+        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
 
         return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }

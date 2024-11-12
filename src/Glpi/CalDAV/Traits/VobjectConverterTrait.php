@@ -285,7 +285,7 @@ trait VobjectConverterTrait
 
         // Content is handled as plain text in CalDAV client and will be handled as rich text on GLPI side,
         // so special chars have to be encoded in html entities.
-        $content = htmlspecialchars($content);
+        $content = htmlescape($content);
 
         return $content;
     }
