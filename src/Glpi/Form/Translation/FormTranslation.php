@@ -87,7 +87,7 @@ final class FormTranslation extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof Form) {
             return self::createTabEntry(
@@ -102,13 +102,13 @@ final class FormTranslation extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         return $this->prepapreInput($input);
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepapreInput($input);
     }
