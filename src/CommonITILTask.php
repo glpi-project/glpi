@@ -1356,7 +1356,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ];
         }
 
-        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+        if (!$options['state_done']) {
             $WHERE[] = [
                 'OR' => [
                     $item->getTable() . ".state" => Planning::TODO,

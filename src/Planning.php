@@ -1587,6 +1587,11 @@ TWIG, $twig_params);
         $param['begin'] = date("Y-m-d H:i:s", $time_begin);
         $param['end']   = date("Y-m-d H:i:s", $time_end);
 
+        $param['state_done'] = true;
+        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+            $param['state_done'] = false;
+        }
+
         $raw_events = [];
         $not_planned = [];
         foreach ($CFG_GLPI['planning_types'] as $planning_type) {

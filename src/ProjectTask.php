@@ -1905,7 +1905,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ];
         }
 
-        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+        if ($options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = [
                 'OR' => [

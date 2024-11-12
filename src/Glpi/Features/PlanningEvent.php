@@ -507,7 +507,7 @@ trait PlanningEvent
             $WHERE['state'] = ['!=', Planning::INFO];
         }
 
-        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+        if (!$options['state_done']) {
             $WHERE[] = [
                 'OR' => [
                     'state' => Planning::TODO,
