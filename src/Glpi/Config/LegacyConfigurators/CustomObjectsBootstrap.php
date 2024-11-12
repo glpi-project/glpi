@@ -43,7 +43,7 @@ final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInter
 {
     public function execute(): void
     {
-        if (!DBConnection::isDbAvailable()) {
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
             // Requires the database to be available.
             return;
         }

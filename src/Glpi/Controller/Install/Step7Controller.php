@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Controller\Install;
+
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Toolbox;
+use Glpi\Controller\AbstractController;
+use Glpi\Progress\ProgressChecker;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
+class Step7Controller extends AbstractController
+{
+    private const STORED_PROGRESS_KEY = 'install_db_inserts';
+
+    public function __construct(
+        private readonly ProgressChecker $progressChecker
+    ) {
+    }
+
+    #[Route("/install/step7/start_db_inserts", methods: 'POST')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function start_inserts(): Response
+    {
+        $progressChecker = $this->progressChecker;
+
+        $this->progressChecker->startProgress(self::STORED_PROGRESS_KEY);
+
+        return new StreamedResponse(function () use ($progressChecker) {
+            try {
+                $progressCallback = static function () use ($progressChecker) {
+                    $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
+                    $progress->current++;
+                    $progressChecker->save($progress);
+                };
+                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progressCallback);
+            } catch (\Throwable $e) {
+                echo "<p>"
+                    . sprintf(
+                        __('An error occurred during the database initialization. The error was: %s'),
+                        '<br />' . $e->getMessage()
+                    )
+                    . "</p>";
+                @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
+            } finally {
+                $this->progressChecker->resetProgress(self::STORED_PROGRESS_KEY);
+            }
+        });
+    }
+
+    #[Route("/install/step7/check_progress", methods: 'POST')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function check_progress(): Response
+    {
+        return new JsonResponse($this->progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY));
+    }
+}

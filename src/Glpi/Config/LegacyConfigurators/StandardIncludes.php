@@ -90,6 +90,13 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             }
         }
 
+        $is_installing = isset($_SESSION['is_installing']);
+        if ($is_installing) {
+            $skip_db_checks = true;
+            $skip_maintenance_checks = true;
+            Session::loadLanguage();
+        }
+
         //init cache
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
@@ -113,7 +120,8 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
 
             //Options from DB, do not touch this part.
             if (
-                !Config::loadLegacyConfiguration()
+                !$is_installing
+                && !Config::loadLegacyConfiguration()
                 && !$skip_db_checks
             ) {
                 echo "Error accessing config table";

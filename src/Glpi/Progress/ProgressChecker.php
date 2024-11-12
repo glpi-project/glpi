@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Progress;
+
+use Session;
+
+final class ProgressChecker
+{
+    public function startProgress(string $key, int $max = 0): void
+    {
+        if (!isset($_SESSION['progress'])) {
+            $_SESSION['progress'] = [];
+        }
+
+        $progress = new SessionProgress($key, $max);
+
+        $this->save($progress);
+    }
+
+    public function getCurrentProgress(string $key): SessionProgress
+    {
+        if (!isset($_SESSION['progress'][$key])) {
+            throw new \RuntimeException(\sprintf(
+                "Cannot find a progress bar for key \"%s\".",
+                $key,
+            ));
+        }
+
+        $progress = $_SESSION['progress'][$key];
+
+        if (!$progress instanceof SessionProgress) {
+            throw new \RuntimeException(\sprintf(
+                "Stored progress bar value with key \"%s\" is invalid.",
+                $key,
+            ));
+        }
+
+        return $progress;
+    }
+
+    public function resetProgress(string $key): void
+    {
+        Session::start();
+
+        if (!isset($_SESSION['progress'][$key])) {
+            throw new \RuntimeException(\sprintf(
+                "Cannot reset progress bar for key \"%s\": it was not found in the current storage.",
+                $key,
+            ));
+        }
+
+        unset($_SESSION['progress'][$key]);
+
+        session_write_close();
+    }
+
+    public function save(SessionProgress $progress): void
+    {
+        Session::start();
+
+        $_SESSION['progress'][$progress->key] = $progress;
+
+        session_write_close();
+    }
+}

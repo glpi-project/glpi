@@ -2067,10 +2067,12 @@ class Toolbox
      *
      * @return void
      *
+     * @internal
+     *
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?callable $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2087,83 +2089,94 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
-            echo "Errors occurred inserting default database";
-        } else {
-           //dataset
-            Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-            $tables = require_once(__DIR__ . '/../install/empty_data.php');
-            Session::loadLanguage('', false); // Load back session language
+        $queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-            foreach ($tables as $table => $data) {
-                $reference = array_replace(
-                    $data[0],
-                    array_fill_keys(
-                        array_keys($data[0]),
-                        new QueryParam()
-                    )
-                );
-
-                $stmt = $DB->prepare($DB->buildInsert($table, $reference));
-
-                $types = str_repeat('s', count($data[0]));
-                foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
-                        $msg = $stmt->error;
-                        $msg .= "\nError execution statement in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    if (!isCommandLine()) {
-                         // Flush will prevent proxy to timeout as it will receive data.
-                         // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                         // will be shown as a single one on browser.
-                         echo ' ';
-                         Html::glpi_flush();
-                    }
-                }
+        foreach ($queries as $query) {
+            if ($progressCallback) {
+                $progressCallback();
             }
+            if (!$query) {
+                continue;
+            }
+            $DB->doQuery($query);
+        }
 
-            // Create default forms
-            $default_forms_manager = new DefaultDataManager();
-            $default_forms_manager->initializeData();
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
 
-            // Initalize rules
-            RulesManager::initializeRules();
-
-            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-            \Glpi\OAuth\Server::generateKeys();
-
-           // update default language
-            Config::setConfigurationValues(
-                'core',
-                [
-                    'language'      => $lang,
-                    'version'       => GLPI_VERSION,
-                    'dbversion'     => GLPI_SCHEMA_VERSION,
-                ]
+        foreach ($tables as $table => $data) {
+            $reference = array_replace(
+                $data[0],
+                array_fill_keys(
+                    array_keys($data[0]),
+                    new QueryParam()
+                )
             );
 
-            if (defined('GLPI_SYSTEM_CRON')) {
-               // Downstream packages may provide a good system cron
-                $DB->update(
-                    'glpi_crontasks',
-                    [
-                        'mode'   => 2
-                    ],
-                    [
-                        'name'      => ['!=', 'watcher'],
-                        'allowmode' => ['&', 2]
-                    ]
-                );
+            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+                if ($progressCallback) {
+                    $progressCallback();
+                }
+                $res = $stmt->bind_param($types, ...array_values($row));
+                if (false === $res) {
+                    $msg = "Error binding params in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                $res = $stmt->execute();
+                if (false === $res) {
+                    $msg = $stmt->error;
+                    $msg .= "\nError execution statement in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                if (!isCommandLine()) {
+                     // Flush will prevent proxy to timeout as it will receive data.
+                     // Flush requires a content to be sent, so we sent spaces as multiple spaces
+                     // will be shown as a single one on browser.
+                     echo ' ';
+                     Html::glpi_flush();
+                }
             }
+        }
+
+        // Create default forms
+        $default_forms_manager = new DefaultDataManager();
+        $default_forms_manager->initializeData();
+
+        // Initalize rules
+        RulesManager::initializeRules();
+
+        // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+        \Glpi\OAuth\Server::generateKeys();
+
+       // update default language
+        Config::setConfigurationValues(
+            'core',
+            [
+                'language'      => $lang,
+                'version'       => GLPI_VERSION,
+                'dbversion'     => GLPI_SCHEMA_VERSION,
+            ]
+        );
+
+        if (defined('GLPI_SYSTEM_CRON')) {
+           // Downstream packages may provide a good system cron
+            $DB->update(
+                'glpi_crontasks',
+                [
+                    'mode'   => 2
+                ],
+                [
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2]
+                ]
+            );
         }
     }
 

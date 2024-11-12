@@ -34,21 +34,28 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Config\ConfigProviderHasRequestTrait;
+use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Dropdown\DropdownDefinitionManager;
 
-final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInterface
+final class InstallTweaks implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
 {
+    use ConfigProviderHasRequestTrait;
+
     public function execute(): void
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
+        $request = $this->getRequest();
+
+        if (!str_starts_with($request->getPathInfo(), '/install/')) {
             return;
         }
 
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        $CFG_GLPI['url_base'] = $request->getBasePath();
+        \Config::detectRootDoc();
     }
 }

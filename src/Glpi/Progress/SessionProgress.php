@@ -32,23 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Progress;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Dropdown\DropdownDefinitionManager;
-
-final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInterface
+final class SessionProgress implements \JsonSerializable
 {
-    public function execute(): void
-    {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
-            return;
-        }
+    public readonly string $key;
+    public readonly int $max;
+    public readonly \DateTimeImmutable $startDate;
+    public int $current = 0;
+    public string|int|float|bool|null $data;
 
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
+    public function __construct(string $key, int $max)
+    {
+        $this->startDate = new \DateTimeImmutable();
+        $this->data = '';
+        $this->key = $key;
+        $this->max = $max;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'key' => $this->key,
+            'max' => $this->max,
+            'current' => $this->current,
+            'startDate' => $this->startDate->format('Y-m-d H:i:s'),
+            'data' => $this->data,
+        ];
     }
 }

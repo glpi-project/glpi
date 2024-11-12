@@ -1013,18 +1013,7 @@ class DBmysql
      */
     public function runFile($path)
     {
-        $script = fopen($path, 'r');
-        if (!$script) {
-            return false;
-        }
-        $sql_query = @fread(
-            $script,
-            @filesize($path)
-        ) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
-
-        $sql_query = $this->removeSqlRemarks($sql_query);
-        $queries = preg_split('/;\s*$/m', $sql_query);
+        $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
             $query = trim($query);
@@ -1042,6 +1031,25 @@ class DBmysql
         }
 
         return true;
+    }
+
+    /**
+     * @internal
+     *
+     * @return array<string>
+     */
+    public function getQueriesFromFile(string $path): array
+    {
+        $script = fopen($path, 'r');
+        if (!$script) {
+            return [];
+        }
+        $sql_query = @fread($script, @filesize($path)) . "\n";
+        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
+
+        $sql_query = $this->removeSqlRemarks($sql_query);
+
+        return preg_split('/;\s*$/m', $sql_query);
     }
 
     /**

@@ -70,6 +70,7 @@ function header_html($etape)
     echo Html::script("lib/fuzzy.js");
     echo Html::script("js/common.js");
     echo Html::script("js/glpi_dialog.js");
+    echo Html::script("js/glpi_install.js");
 
     // CSS
     echo Html::css('lib/tabler.css');
@@ -227,7 +228,6 @@ function step3($host, $user, $password, $update)
 //Step 4 Create and fill database.
 function step4($databasename, $newdatabasename)
 {
-
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
     $password = $_SESSION['db_access']['password'];
@@ -297,7 +297,7 @@ function step4($databasename, $newdatabasename)
 
         if (
             !$link->select_db($databasename)
-            && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`")
+            && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`;")
         ) {
             echo __s('Error in creating database!');
             echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
@@ -328,23 +328,21 @@ function step4($databasename, $newdatabasename)
     );
 
     if ($success) {
-        echo "<p>" . __s('Initializing database tables and default data...') . "</p>";
-        try {
-            Toolbox::createSchema($_SESSION["glpilanguage"]);
-        } catch (\Throwable $e) {
-            echo "<p>"
-                . sprintf(
-                    __s('An error occurred during the database initialization. The error was: %s'),
-                    '<br />' . htmlescape($e->getMessage())
-                )
-                . "</p>";
-            @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
-            $prev_form($host, $user, $password);
-            return;
-        }
-        echo "<p>" . __s('OK - database was initialized') . "</p>";
+        echo "<p>" . __('Initializing database tables and default data...') . "</p>";
 
+        $alert_name = 'glpi_install_messages_container';
+        ob_start();
         $next_form();
+        $next = ob_get_clean();
+
+        echo \sprintf('<div id="%s"></div>', $alert_name);
+        echo \sprintf(
+            '<script defer>startDatabaseInstall("%s", "%s");</script>',
+            $alert_name,
+            str_replace(["\n", '"'], ['', '\\"'], $next),
+        );
+
+        $prev_form($host, $user, $password);
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);
@@ -416,6 +414,7 @@ function step8()
         ]
     );
 
+    $_SESSION['is_installing'] = false;
     Session::destroy(); // Remove session data (debug mode for instance) set by web installation
 
     TemplateRenderer::getInstance()->display('install/step8.html.twig');
@@ -424,6 +423,7 @@ function step8()
 
 function update1($dbname)
 {
+    $_SESSION['is_installing'] = false;
 
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -478,11 +478,17 @@ if (is_writable(GLPI_SESSION_DIR)) {
 Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
 }
 
-Session::loadLanguage('', false);
+if (!isset($_SESSION["glpilanguage"])) {
+    $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
+}
+Session::loadLanguage(Session::getLanguage(), false);
 
 /**
  * @since 0.84.2
@@ -524,6 +530,8 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
     }
+
+    $_SESSION['is_installing'] = true;
 
     switch ($_POST["install"]) {
         case "lang_select": // lang ok, go accept licence
