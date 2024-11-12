@@ -273,6 +273,9 @@ The present file will list all changes made to the project; according to the
 - `Html::displayRightError()`. Throw a `Glpi\Exception\Http\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
+- `Html::jsGetElementbyID()`
+- `Html::jsGetDropdownValue()`
+- `Html::jsSetDropdownValue()`
 - `HookManager::enableCSRF()`
 - `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
 - `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.

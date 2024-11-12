@@ -741,9 +741,9 @@ class HtmlTest extends \GLPITestCase
 
     public function testJsFunctions()
     {
-        $this->assertSame("$('#myid')", \Html::jsGetElementbyID('myid'));
-        $this->assertSame("$('#myid').trigger('setValue', 'myval');", \Html::jsSetDropdownValue('myid', 'myval'));
-        $this->assertSame("$('#myid').val()", \Html::jsGetDropdownValue('myid'));
+        $this->assertSame("$('#myid')", @\Html::jsGetElementbyID('myid'));
+        $this->assertSame("$('#myid').trigger('setValue', 'myval');", @\Html::jsSetDropdownValue('myid', 'myval'));
+        $this->assertSame("$('#myid').val()", @\Html::jsGetDropdownValue('myid'));
     }
 
     public function testCleanId()

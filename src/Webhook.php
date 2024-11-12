@@ -898,7 +898,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
 
         if ($controller_class === null || $schema_name === null) {
-            echo __('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
+            echo __s('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
         // TODO Allow pinning webhooks to specific API versions

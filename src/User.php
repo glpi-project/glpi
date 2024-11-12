@@ -2727,7 +2727,7 @@ HTML;
            //display login field for new records, or if this is not external auth
             echo "<td><input name='name' id='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         } else {
-            echo "<td class='b'>" . $this->fields["name"];
+            echo "<td class='b'>" . htmlescape($this->fields["name"]);
             echo "<input type='hidden' name='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         }
 
@@ -2768,7 +2768,7 @@ HTML;
                 if (empty($this->fields['sync_field'])) {
                     echo Dropdown::EMPTY_VALUE;
                 } else {
-                    echo $this->fields['sync_field'];
+                    echo htmlescape($this->fields['sync_field']);
                 }
             }
             echo "</td></tr>";
@@ -2922,7 +2922,7 @@ JAVASCRIPT;
         if (!empty($ID)) {
             if (Session::haveRight(self::$rightname, self::READAUTHENT)) {
                 echo "<td>" . __s('Authentication') . "</td><td>";
-                echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
+                echo htmlescape(Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]));
                 if (!empty($this->fields["date_sync"])) {
                     //TRANS: %s is the date of last sync
                     echo '<br>' . sprintf(
@@ -3028,7 +3028,7 @@ JAVASCRIPT;
 
         if (empty($ID)) {
             echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2'>" . _n('Authorization', 'Authorizations', 1) . "</th>";
+            echo "<th colspan='2'>" . _sn('Authorization', 'Authorizations', 1) . "</th>";
             $recurrand = mt_rand();
             echo "<td><label for='dropdown__is_recursive$recurrand'>" .  __s('Recursive') . "</label></td><td>";
             Dropdown::showYesNo("_is_recursive", 0, -1, ['rand' => $recurrand]);
@@ -3131,7 +3131,7 @@ JAVASCRIPT;
                         'value' => $this->fields['nickname']
                     ]);
                 } else {
-                    echo $this->fields['nickname'];
+                    echo htmlescape($this->fields['nickname']);
                 }
                 echo "</td>";
                 echo "</tr>";
@@ -3152,21 +3152,21 @@ JAVASCRIPT;
                      echo "</div>";
                      echo "(" . sprintf(
                          __s('generated on %s'),
-                         Html::convDateTime($this->fields["api_token_date"])
+                         htmlescape(Html::convDateTime($this->fields["api_token_date"]))
                      ) . ")";
                 }
                 echo "</td><td>";
                 Html::showCheckbox(['name'  => '_reset_api_token',
                     'title' => __('Regenerate')
                 ]);
-                echo "&nbsp;&nbsp;" . __('Regenerate');
+                echo "&nbsp;&nbsp;" . __s('Regenerate');
                 echo "</td></tr>";
             }
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2' class='center'>";
             if ($this->fields["last_login"]) {
-                printf(__('Last login on %s'), Html::convDateTime($this->fields["last_login"]));
+                printf(__s('Last login on %s'), htmlescape(Html::convDateTime($this->fields["last_login"])));
             }
             echo "</td><td colspan='2'class='center'>";
 
@@ -3476,7 +3476,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
             ) {
-                echo $this->fields["registration_number"];
+                echo htmlescape($this->fields["registration_number"]);
             } else {
                 echo Html::input(
                     'registration_number',
@@ -4984,7 +4984,7 @@ JAVASCRIPT;
         }
 
         echo "<div class='center'>\n";
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>\n";
+        echo "<form method='post' action='" . htmlescape(self::getFormURL()) . "'>\n";
 
         echo "<table class='tab_cadre'>\n";
         echo "<tr><th colspan='4'>" . __s('Automatically add a user of an external source') . "</th></tr>\n";
@@ -5842,7 +5842,7 @@ JAVASCRIPT;
         // Check that the configuration allow this user to change his password
         if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
             trigger_error(
-                __("The authentication method configuration doesn't allow the user '$email' to change their password."),
+                "The authentication method configuration doesn't allow the user '$email' to change their password.",
                 E_USER_WARNING
             );
 
