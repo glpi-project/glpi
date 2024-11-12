@@ -39,14 +39,13 @@ use CommonDBChild;
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Translation\Context\FormTranslationHandler;
-use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
 use Log;
 use Override;
 
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface, ProvideFormTranslationsInterface
+final class Comment extends CommonDBChild implements BlockInterface
 {
     public const KEY_PREFIX_NAME = 'comment_name';
     public const KEY_PREFIX_DESCRIPTION = 'comment_description';

@@ -38,7 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\Translation\FormTranslation;
-use Glpi\Http\HeaderlessStreamedResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,7 +53,7 @@ final class ShowFormTranslationController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        return new HeaderlessStreamedResponse(function () use ($form_translation_id) {
+        return new StreamedResponse(function () use ($form_translation_id) {
             FormTranslation::displayFullPageForItem($form_translation_id, ['admin', Form::getType()], []);
         });
     }
