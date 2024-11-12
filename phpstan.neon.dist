@@ -27,5 +27,12 @@ parameters:
         -
             message: '/\/config\/config_db.php" is not a file or it does not exist./'
             reportUnmatched: false
+        -
+            # The following error will occur only on PHP >= 8.2.
+            # Unfortunately, it is not possible to ignore it using a @phpstan-ignore, so we have to
+            # handle it here.
+            message: '/If condition is always false./'
+            path: src/CommonITILObject.php
+            reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
