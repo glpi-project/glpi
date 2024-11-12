@@ -87,6 +87,47 @@ if (isset($_POST["add"])) {
     if (!$track::canUpdate()) {
         Html::displayRightError();
     }
+
+    if (isset($_POST['validation_percent'])) {
+        $nb = countElementsInTable(TicketValidation::getTable(), ['tickets_id' => $_POST['id']]);
+
+        $rejections = countElementsInTable(TicketValidation::getTable(), [
+            'tickets_id' => $_POST['id'],
+            'status' => CommonITILValidation::REFUSED
+        ]);
+
+        $validations = countElementsInTable(TicketValidation::getTable(), [
+            'tickets_id' => $_POST['id'],
+            'status' => CommonITILValidation::ACCEPTED
+        ]);
+
+        if ($nb == 0) {
+            $_POST['global_validation'] = CommonITILValidation::NONE;
+        } else if ($rejections == $nb) {
+            $_POST['global_validation'] = CommonITILValidation::REFUSED;
+        } else if ($validations > 0) {
+            switch ($_POST['validation_percent']) {
+                case 0:
+                    $_POST['global_validation'] = CommonITILValidation::ACCEPTED;
+                    break;
+                case 100:
+                    if ($rejections > 0) {
+                        $_POST['global_validation'] = CommonITILValidation::REFUSED;
+                    } else {
+                        $_POST['global_validation'] = ($validations == $nb) ? CommonITILValidation::ACCEPTED : CommonITILValidation::WAITING;
+                    }
+                    break;
+                case 50:
+                    if ($rejections >= $nb / 2) {
+                        $_POST['global_validation'] = CommonITILValidation::REFUSED;
+                    } else {
+                        $_POST['global_validation'] = ($validations >= $nb / 2) ? CommonITILValidation::ACCEPTED : CommonITILValidation::WAITING;
+                    }
+                    break;
+            }
+        }
+    }
+
     $track->update($_POST);
 
     if (isset($_POST['kb_linked_id'])) {
