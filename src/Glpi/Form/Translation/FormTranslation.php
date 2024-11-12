@@ -242,8 +242,9 @@ final class FormTranslation extends CommonDBChild
         /** @var Form $form */
         $form = $this->getItem();
         $totalHandlers = 0;
+        $formTranslationsHandlers = $form->listFormTranslationsHandlers();
         array_walk_recursive(
-            $form->listFormTranslationsHandlers(),
+            $formTranslationsHandlers,
             function () use (&$totalHandlers) {
                 $totalHandlers++;
             }
@@ -262,8 +263,9 @@ final class FormTranslation extends CommonDBChild
         /** @var Form $form */
         $form = $this->getItem();
         $totalHandlers = 0;
+        $formTranslationsHandlers = $form->listFormTranslationsHandlers();
         array_walk_recursive(
-            $form->listFormTranslationsHandlers(),
+            $formTranslationsHandlers,
             function () use (&$totalHandlers) {
                 $totalHandlers++;
             }
