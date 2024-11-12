@@ -36,9 +36,9 @@
 
 {% block more_fields %}
     {{ fields.textField('host', item.fields['host'], __('Email domain Name (users email will be login@domain)')) }}
-    {% set connect_opts = call('Toolbox::parseMailServerConnectString', [item.fields['host']]) %}
+    {% set connect_opts = call('Toolbox::parseMailServerConnectString', [item.fields['connect_string']]) %}
     {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
         'connect_opts': connect_opts,
-        'host': item.fields['host']
+        'host': item.fields['connect_string']
     }) }}
 {% endblock %}

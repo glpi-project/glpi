@@ -219,20 +219,19 @@ class AuthMail extends CommonDBTM
                         <div>
                             <h1 class="fs-2">{{ title }}</h1>
                         </div>
-                        <div class="d-flex flex-column mx-auto">
-                            {{ fields.textField('imap_login', '', login, {
-                                full_width: true,
-                                additional_attributes: {
-                                    autocomplete: 'username'
-                                }
-                            }) }}
-                            {{ fields.textField('imap_password', '', password, {
-                                full_width: true,
-                                additional_attributes: {
-                                    autocomplete: 'password'
-                                }
-                            }) }}
-                        </div>
+                        {{ fields.textField('imap_login', '', login, {
+                            full_width: true,
+                            additional_attributes: {
+                                autocomplete: 'username'
+                            }
+                        }) }}
+                        {{ fields.passwordField('imap_password', '', password, {
+                            full_width: true,
+                            clearable: false,
+                            additional_attributes: {
+                                autocomplete: 'password'
+                            }
+                        }) }}
                         <div>
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>
