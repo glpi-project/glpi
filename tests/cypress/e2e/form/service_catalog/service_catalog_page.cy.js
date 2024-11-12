@@ -31,39 +31,37 @@
  * ---------------------------------------------------------------------
  */
 
-const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
-
 describe('Service catalog page', () => {
-    before(() => {
-        // Create at least one form to make sure the list is not empty.
+
+    function createActiveForm(name, category = 0) {
         cy.createFormWithAPI({
-            'name': form_name,
+            'name': name,
             'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
             'is_active': true,
+            'forms_categories_id': category,
         }).as('form_id');
 
-        // Allow form to be displayed in the service catalog.
-        cy.login();
-        cy.changeProfile('Super-Admin');
         cy.get('@form_id').visitFormTab('Policies');
         cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
         cy.findByRole('link', {'name': /There are \d+ user\(s\) matching these criteria\./}).should('exist');
         cy.findByRole('button', {name: 'Save changes'}).click();
-    });
+    }
 
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Self-Service', true);
-        cy.visit('/ServiceCatalog');
-
-        // TODO: General A11y issues that are not related to the service catalog must be fixed before this can be enabled.
-        // cy.injectAndCheckA11y();
     });
 
     it('can pick a form in the service catalog', () => {
-        cy.findByRole('region', {'name': form_name}).as('forms');
-        // Validate that the form is displayed correctly.
+        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
 
+        cy.changeProfile('Super-Admin');
+        createActiveForm(form_name);
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Validate that the form is displayed correctly.
+        cy.findByRole('region', {'name': form_name}).as('forms');
         cy.get('@forms').within(() => {
             cy.findByText(form_name).should('exist');
             cy.findByText("Lorem ipsum dolor sit amet, consectetur adipisicing elit.").should('exist');
@@ -75,6 +73,13 @@ describe('Service catalog page', () => {
     });
 
     it('can filter forms in the service catalog', () => {
+        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+
+        cy.changeProfile('Super-Admin');
+        createActiveForm(form_name);
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
         cy.findByRole('region', {'name': form_name}).as('forms');
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
 
@@ -89,5 +94,51 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').clear();
         cy.get('@filter_input').type(form_name);
         cy.get('@forms').findByText(form_name).should('exist');
+    });
+
+    it('can pick a category in the service catalog', () => {
+        const root_category_name = `Root category: ${(new Date()).getTime()}`;
+        const child_category_name = `Child category: ${(new Date()).getTime()}`;
+        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+
+        cy.createWithAPI('Glpi\\Form\\Category', {
+            'name': root_category_name,
+            'description': "Root category description.",
+        }).as('root_category_id');
+        cy.get('@root_category_id').then(root_category_id => {
+            cy.createWithAPI('Glpi\\Form\\Category', {
+                'name': child_category_name,
+                'description': "Child category description.",
+                'forms_categories_id': root_category_id,
+            }).as('child_category_id');
+        });
+        cy.get('@child_category_id').then(child_category_id => {
+            cy.changeProfile('Super-Admin');
+            createActiveForm(form_name, child_category_id);
+        });
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Validate that the root category is displayed correctly.
+        cy.findByRole('region', {'name': root_category_name}).as('root_category');
+        cy.get('@root_category').within(() => {
+            cy.findByText(root_category_name).should('exist');
+            cy.findByText("Root category description.").should('exist');
+        });
+
+        // Validate that the child category is displayed correctly.
+        cy.get('@root_category').within(() => {
+            cy.findByRole('region', {'name': child_category_name}).as('child_category');
+            cy.get('@child_category').within(() => {
+                cy.findByText(child_category_name).should('exist');
+                cy.findByText("Child category description.").should('exist');
+            });
+        });
+
+        // Form should be hidden until we click on the category
+        cy.findByRole('region', {'name': form_name}).should('not.exist');
+        cy.get('@child_category').click();
+        cy.findByRole('region', {'name': form_name}).should('exist');
     });
 });

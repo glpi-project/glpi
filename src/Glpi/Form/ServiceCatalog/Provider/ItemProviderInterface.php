@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -6,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -30,39 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+namespace Glpi\Form\ServiceCatalog\Provider;
 
-export class GlpiFormSelfServiceController
+use Glpi\Form\ServiceCatalog\ItemRequest;
+
+/**
+ * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface
+ */
+interface ItemProviderInterface
 {
-    constructor()
-    {
-        const input = this.#getFilterInput();
-        const filterFormsDebounced = _.debounce(
-            this.#filterForms.bind(this), // .bind keep the correct "this" context
-            400,
-            false
-        );
-        input.addEventListener('input', filterFormsDebounced);
-    }
-
-    async #filterForms()
-    {
-        const input = this.#getFilterInput();
-        const url = `${CFG_GLPI.root_doc}/Forms`;
-        const url_params = new URLSearchParams({
-            filter: input.value,
-        });
-        const response = await fetch(`${url}?${url_params}`);
-        this.#getFormsArea().innerHTML = await response.text();
-    }
-
-    #getFilterInput()
-    {
-        return document.querySelector("[data-glpi-service-catalog-filter-forms]");
-    }
-
-    #getFormsArea()
-    {
-        return document.querySelector("[data-glpi-service-catalog-forms]");
-    }
+    /** @return T[] */
+    public function getItems(ItemRequest $item_request): array;
 }

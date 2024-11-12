@@ -9405,6 +9405,24 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_categories`;
+CREATE TABLE `glpi_forms_categories` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `description` longtext,
+    `illustration` varchar(255) NOT NULL DEFAULT '',
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+    `completename` text,
+    `level` int NOT NULL DEFAULT '0',
+    `ancestors_cache` longtext,
+    `sons_cache` longtext,
+    `comment` text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `level` (`level`),
+    KEY `forms_categories_id` (`forms_categories_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_forms_forms`;
 CREATE TABLE `glpi_forms_forms` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -9417,6 +9435,7 @@ CREATE TABLE `glpi_forms_forms` (
     `header` longtext,
     `illustration` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -9427,7 +9446,8 @@ CREATE TABLE `glpi_forms_forms` (
     KEY `is_deleted` (`is_deleted`),
     KEY `is_draft` (`is_draft`),
     KEY `date_mod` (`date_mod`),
-    KEY `date_creation` (`date_creation`)
+    KEY `date_creation` (`date_creation`),
+    KEY `forms_categories_id` (`forms_categories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_sections`;

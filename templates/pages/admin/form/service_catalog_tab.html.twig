@@ -66,6 +66,17 @@
             }
         ) }}
 
+        {{ fields.dropdownField(
+            'Glpi\\Form\\Category',
+            'forms_categories_id',
+            form.fields.forms_categories_id,
+            _n('Category', 'Categories', 1),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+            }
+        ) }}
+
         {# Hidden values #}
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <input type="hidden" name="id" value="{{ form.getID() }}" />

@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,25 +30,34 @@
  # ---------------------------------------------------------------------
  #}
 
-{% for form in forms %}
-    <div class="col-12 col-sm-6 col-md-4 d-flex">
-        <a
-            class="card mx-1 my-2 flex-grow-1"
-            href="{{ path("/Form/Render/" ~ form.fields.id) }}"
+<div class="col-12 col-sm-6 col-md-4 d-flex">
+    <a
+        class="card mx-1 my-2 flex-grow-1"
+        {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
+            href="{{ path(item.getServiceCatalogLink()) }}"
+        {% endif %}
+    >
+        <section
+            class="card-body"
+            aria-labelledby="{{ item.getServiceCatalogItemUniqueId() }}"
         >
-            <section class="card-body" aria-labelledby="form-{{ form.fields.id }}">
-                <div class="d-flex">
-                    {{ render_illustration(form.fields.illustration ?? 'report-issue.svg', 100) }}
-                    <div class="ms-4">
-                        <h2 id="form-{{ form.fields.id }}" class="card-title mb-2">
-                            {{ form.fields.name }}
-                        </h2>
-                        <div class="text-secondary">
-                            {{ form.fields.description|safe_html }}
-                        </div>
+            <div class="d-flex">
+                {{ render_illustration(
+                    item.getServiceCatalogItemIllustration() ?? 'report-issue.svg',
+                    100
+                ) }}
+                <div class="ms-4">
+                    <h2
+                        id="{{ item.getServiceCatalogItemUniqueId() }}"
+                        class="card-title mb-2"
+                    >
+                        {{ item.getServiceCatalogItemTitle() }}
+                    </h2>
+                    <div class="text-secondary remove-last-tinymce-margin">
+                        {{ item.getServiceCatalogItemDescription()|safe_html }}
                     </div>
                 </div>
-            </section>
-        </a>
-    </div>
-{% endfor %}
+            </div>
+        </section>
+    </a>
+</div>

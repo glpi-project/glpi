@@ -32,10 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form;
+namespace Glpi\Controller\ServiceCatalog;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -44,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FormListController extends AbstractController
+final class IndexController extends AbstractController
 {
     private ServiceCatalogManager $service_catalog_manager;
 
@@ -56,21 +58,26 @@ final class FormListController extends AbstractController
 
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
-        "/Forms",
-        name: "glpi_form_list",
-        methods: "GET",
+        "/ServiceCatalog",
+        name: "glpi_service_catalog",
+        methods: "GET"
     )]
     public function __invoke(Request $request): Response
     {
-        $filter = $request->query->getString('filter');
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: $request->query->all()
         );
-        $forms = $this->service_catalog_manager->getForms($parameters, $filter);
 
-        return $this->render('components/helpdesk_forms/forms_list.html.twig', [
-            'forms' => $forms,
+        $item_request = new ItemRequest(
+            access_parameters: $parameters,
+        );
+        $items = $this->service_catalog_manager->getItems($item_request);
+
+        return $this->render('pages/self-service/service_catalog.html.twig', [
+            'title' => __("New ticket"),
+            'menu'  => ["create_ticket"],
+            'items' => $items,
         ]);
     }
 }
