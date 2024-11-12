@@ -273,7 +273,7 @@ class ITILCategory extends CommonTreeDropdown
         ];
 
         $tab[] = [
-            'id'                 => '98',
+            'id'                 => '151',
             'table'              => 'glpi_changes',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of changes'),
