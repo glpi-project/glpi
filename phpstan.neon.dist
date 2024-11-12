@@ -2,8 +2,6 @@ includes:
     - .phpstan-baseline.php
 
 parameters:
-    parallel:
-        maximumNumberOfProcesses: 4
     level: 4
     bootstrapFiles:
         - inc/based_config.php
@@ -25,6 +23,9 @@ parameters:
         - '/\w+ has been replaced by \w+/'
         -
             message: '/LDAP\\Connection/'
+            reportUnmatched: false
+        -
+            message: '/\/config\/config_db.php" is not a file or it does not exist./'
             reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
