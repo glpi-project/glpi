@@ -83,6 +83,8 @@ dev_nodes=(
     "package.json"
     "package-lock.json"
     "phpstan.neon"
+    "phpstan.neon.dist"
+    "phpunit"
     "phpunit.xml.dist"
     "PULL_REQUEST_TEMPLATE.md"
     "stubs"
