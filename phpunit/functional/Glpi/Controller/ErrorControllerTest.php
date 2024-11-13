@@ -48,16 +48,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ErrorControllerTest extends DbTestCase
 {
-    public function tearDown(): void
-    {
-        global $FOOTER_LOADED, $HEADER_LOADED;
-
-        $FOOTER_LOADED = false;
-        $HEADER_LOADED = false;
-
-        parent::tearDown();
-    }
-
     public static function requestProvider(): iterable
     {
         $users_credentials = [
