@@ -639,7 +639,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('getUsedConfigProvider')]
+    #[DataProvider('getUsedConfigProvider')]
     public function testGetUsedConfig(
         array $root_values,
         array $child_values,
@@ -762,7 +762,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('customCssProvider')]
+    #[DataProvider('customCssProvider')]
     public function testGetCustomCssTag(
         int $entity_id,
         int $root_enable_custom_css,
@@ -868,7 +868,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('testAnonymizeSettingProvider')]
+    #[DataProvider('testAnonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,
@@ -1391,7 +1391,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('entityTreeProvider')]
+    #[DataProvider('entityTreeProvider')]
     public function testGetEntityTree(int $entity_id, array $result): void
     {
         $this->login();

@@ -76,7 +76,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataTableKey')]
+    #[DataProvider('dataTableKey')]
     public function testGetForeignKeyFieldForTable($table, $key)
     {
         $instance = new \DbUtils();
@@ -86,7 +86,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame($key, getForeignKeyFieldForTable($table));
     }
 
-    #[dataProvider('dataTableForeignKey')]
+    #[DataProvider('dataTableForeignKey')]
     public function testIsForeignKeyFieldBase($table, $key)
     {
         $instance = new \DbUtils();
@@ -115,7 +115,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertFalse(isForeignKeyField(42));
     }
 
-    #[dataProvider('dataTableForeignKey')]
+    #[DataProvider('dataTableForeignKey')]
     public function testGetTableNameForForeignKeyField($table, $key)
     {
         $instance = new \DbUtils();
@@ -193,7 +193,7 @@ class DbUtilsTest extends DbTestCase
         return $table_types_mapping;
     }
 
-    #[dataProvider('getTableForItemTypeProvider')]
+    #[DataProvider('getTableForItemTypeProvider')]
     public function testGetTableForItemType($table, $type)
     {
         $instance = new \DbUtils();
@@ -203,7 +203,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame($table, getTableForItemType($type));
     }
 
-    #[dataProvider('dataTableType')]
+    #[DataProvider('dataTableType')]
     public function testGetExpectedTableNameForClass($table, $type, $is_valid_type)
     {
         $instance = new \DbUtils();
@@ -213,7 +213,7 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
-    #[dataProvider('dataTableType')]
+    #[DataProvider('dataTableType')]
     public function testGetItemTypeForTable($table, $type, $is_valid_type)
     {
         require_once __DIR__ . '/../../tests/fixtures/another_test.php';
@@ -259,7 +259,7 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
-    #[dataProvider('getItemForItemtypeProvider')]
+    #[DataProvider('getItemForItemtypeProvider')]
     public function testGetItemForItemtype($itemtype, $is_valid, $expected_class)
     {
         // Pseudo plugin class for test
@@ -332,7 +332,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataPlural')]
+    #[DataProvider('dataPlural')]
     public function testGetPlural($singular, $plural)
     {
         $instance = new \DbUtils();
@@ -358,7 +358,7 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
-    #[dataProvider('dataPlural')]
+    #[DataProvider('dataPlural')]
     public function testGetSingular($singular, $plural)
     {
         $instance = new \DbUtils();
@@ -455,7 +455,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataCountMyEntities')]
+    #[DataProvider('dataCountMyEntities')]
     public function testCountElementsInTableForMyEntities(
         $entity,
         $recursive,
@@ -487,7 +487,7 @@ class DbUtilsTest extends DbTestCase
     }
 
 
-    #[dataProvider('dataCountEntities')]
+    #[DataProvider('dataCountEntities')]
     public function testCountElementsInTableForEntity(
         $entity,
         $table,
@@ -1501,7 +1501,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('autoNameProvider')]
+    #[DataProvider('autoNameProvider')]
     public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected)
     {
         $instance = new \DbUtils();
@@ -1577,7 +1577,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('fixItemtypeCaseProvider')]
+    #[DataProvider('fixItemtypeCaseProvider')]
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
         $name = 'glpi' . mt_rand();

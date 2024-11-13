@@ -8198,7 +8198,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
     }
 
-    #[dataProvider('getAssignUserByFieldAndRegexRules')]
+    #[DataProvider('getAssignUserByFieldAndRegexRules')]
     public function testAssignUserByFieldAndRegex($rules_fields, $xml_fields, $result)
     {
         global $DB;

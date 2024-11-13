@@ -235,7 +235,7 @@ class LocationTest extends DbTestCase
         }
     }
 
-    #[dataProvider('importProvider')]
+    #[DataProvider('importProvider')]
     public function testImport(array $input, array $imported): void
     {
         $instance = new \Location();
