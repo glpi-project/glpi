@@ -665,7 +665,7 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
