@@ -177,6 +177,7 @@ class Ajax
 
         $domid  = htmlescape($domid);
         $url    = htmlescape($url);
+        $title  = htmlescape($param['title']);
         $class  = htmlescape($param['dialog_class']);
         $height = (int) $param['height'];
         $width  = (int) $param['width'];
@@ -187,7 +188,7 @@ class Ajax
                <div class="modal-content">
                   <div class="modal-header">
                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                     <h3>{$param['title']}</h3>
+                     <h3>{$title}</h3>
                   </div>
                   <div class="modal-body">
                      <iframe id='iframe$domid' class="iframe hidden"
@@ -809,7 +810,7 @@ JS;
         $display = true
     ) {
 
-        $out = sprintf('$(#%s).load("%s"', htmlescape($toupdate), htmlescape($url));
+        $out = sprintf('$("#%s").load("%s"', htmlescape($toupdate), htmlescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;
@@ -828,9 +829,9 @@ JS;
                 $out .= $key . ":";
                 $regs = [];
                 if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
-                    $out .= sprintf('$(#%s).val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
                 } else if (is_string($val) && $val === "__VALUE__") {
-                    $out .= sprintf('$(#%s).val()', htmlescape(Html::cleanId($toobserve)));
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve)));
                 } else {
                     $out .=  json_encode($val);
                 }

@@ -759,18 +759,22 @@ class HtmlTest extends \GLPITestCase
     public function testImage()
     {
         $path = '/path/to/image.png';
-        $expected = '<img src="/path/to/image.png" title="" alt=""  />';
+        $expected = '<img src="/path/to/image.png" title="" alt="" />';
         $this->assertSame($expected, \Html::image($path));
 
         $options = [
             'title'  => 'My title',
             'alt'    => 'no img text'
         ];
-        $expected = '<img src="/path/to/image.png" title="My title" alt="no img text"  />';
+        $expected = '<img src="/path/to/image.png" title="My title" alt="no img text" />';
         $this->assertSame($expected, \Html::image($path, $options));
 
         $options = ['url' => 'mypage.php'];
-        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class=\'pointer\' /></a>';
+        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class="pointer" /></a>';
+        $this->assertSame($expected, \Html::image($path, $options));
+
+        $options = ['url' => 'mypage.php', 'class' => 'specific-class'];
+        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
         $this->assertSame($expected, \Html::image($path, $options));
     }
 

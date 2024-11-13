@@ -4437,9 +4437,13 @@ JAVASCRIPT
      * @since 0.85.
      *
      * @return string
+     *
+     * @deprecated 11.0.0
      **/
     public static function jsGetDropdownValue($id)
     {
+        Toolbox::deprecated();
+
         return self::jsGetElementbyID($id) . ".val()";
     }
 
@@ -4905,7 +4909,7 @@ JS;
 
         $icon = "";
         if (isset($options['icon'])) {
-            $icon = sprintf('<i class="%s"></i>', htmlescape($options['icon']));
+            $icon = sprintf('<i class="%s"></i>&nbsp;', htmlescape($options['icon']));
             unset($options['icon']);
         }
 
