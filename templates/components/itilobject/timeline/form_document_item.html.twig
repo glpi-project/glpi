@@ -89,16 +89,16 @@
                   </form>
                {% endif %}
                 {% if entry_i['_can_edit'] %}
-                    {% set blacklisted_class    = entry_i['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_class    = document['item']['is_blacklisted'] ? 'red' : '' %}
                     {% set blacklisted_title    = entry_i['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
-                    {% set blacklisted_action   = entry_i['is_blacklisted'] ? 'whitelist_document' : 'blacklist_document' %}
-                    <form class="d-inline" method="post" action="{{ call('Document::getFormURL') }}">
-                        <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
+                     <form class="d-inline" method="post" action="{{ call('Document::getFormURL') }}">
+                        <input type="hidden" name="id" value="{{ document['item']['id'] }}">
+                        <input type="hidden" name="is_blacklisted" value="{{ document['item']['is_blacklisted']|reverse }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="{{ blacklisted_action }}"
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
                                 title="{{ blacklisted_title }}"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="ti ti-ban {{ blacklisted_class }}"></i>
+                           <i class="ti ti-ban {{ blacklisted_class }}"></i>
                         </button>
                      </form>
                 {% endif %}

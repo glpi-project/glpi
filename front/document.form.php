@@ -135,26 +135,6 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-}  else if (isset($_POST['blacklist_document'])) {
-    $doc = new Document();
-    $doc->getFromDB((int)$_POST['documents_id']);
-    if ($doc->can($doc->getID(), UPDATE)) {
-        $doc->update([
-            'id'                => $doc->fields['id'],
-            'is_blacklisted'    => true
-        ]);
-    }
-    Html::back();
-} else if (isset($_POST['whitelist_document'])) {
-    $doc = new Document();
-    $doc->getFromDB((int)$_POST['documents_id']);
-    if ($doc->can($doc->getID(), UPDATE)) {
-        $doc->update([
-            'id'                => $doc->fields['id'],
-            'is_blacklisted'    => false
-        ]);
-    }
-    Html::back();
 }  else if (isset($_POST['delete_document'])) {
     $track = new Ticket();
     $track->getFromDB((int)$_POST['tickets_id']);
