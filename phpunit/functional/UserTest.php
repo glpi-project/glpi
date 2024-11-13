@@ -450,7 +450,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('prepareInputForTimezoneUpdateProvider')]
+    #[DataProvider('prepareInputForTimezoneUpdateProvider')]
     public function testPrepareInputForUpdateTimezone(array $input, array $expected)
     {
         $this->login();
@@ -917,7 +917,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('rawNameProvider')]
+    #[DataProvider('rawNameProvider')]
     public function testGetFriendlyName($input, $rawname)
     {
         $user = new \User();
@@ -1222,7 +1222,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('cronPasswordExpirationNotificationsProvider')]
+    #[DataProvider('cronPasswordExpirationNotificationsProvider')]
     public function testCronPasswordExpirationNotifications(
         int $expiration_delay,
         int $notice_delay,
@@ -1932,7 +1932,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('toggleSavedSearchPinProvider')]
+    #[DataProvider('toggleSavedSearchPinProvider')]
     public function testToggleSavedSearchPin(string $initial_db_value, string $itemtype, bool $success, string $result_db_value): void
     {
         $user = $this->createItem(

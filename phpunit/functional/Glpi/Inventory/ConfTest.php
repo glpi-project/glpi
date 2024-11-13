@@ -74,7 +74,7 @@ class ConfTest extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('inventoryfilesProvider')]
+    #[DataProvider('inventoryfilesProvider')]
     public function testIsInventoryFile(string $file, bool $expected)
     {
         $conf = new \Glpi\Inventory\Conf();
@@ -95,7 +95,7 @@ class ConfTest extends \GLPITestCase
         return $provider;
     }
 
-    #[dataProvider('confProvider')]
+    #[DataProvider('confProvider')]
     public function testGetter($key, $value)
     {
         $conf = new \Glpi\Inventory\Conf();

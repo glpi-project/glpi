@@ -8050,9 +8050,7 @@ HTML
         ];
     }
 
-    /**
-     * @dataProvider isCategoryValidProvider
-     */
+    #[DataProvider('isCategoryValidProvider')]
     public function testIsCategoryValid(array $category_fields, array $input, bool $expected): void
     {
         $category = $this->createItem('ITILCategory', $category_fields);
