@@ -525,6 +525,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
 - `Toolbox::logWarning()`
+- `Toolbox::showMailServerConfig()`
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
