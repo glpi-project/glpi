@@ -37,6 +37,7 @@ namespace Glpi\Config\LegacyConfigurators;
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
 
 final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInterface
@@ -48,7 +49,9 @@ final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInter
             return;
         }
 
+        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_SYMFONY);
         AssetDefinitionManager::getInstance()->bootstrapClasses();
         DropdownDefinitionManager::getInstance()->bootstrapClasses();
+        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }

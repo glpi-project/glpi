@@ -35,6 +35,7 @@
 namespace Glpi\Config\LegacyConfigurators;
 
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
 use Plugin;
 use Update;
@@ -55,9 +56,11 @@ final readonly class InitializePlugins implements LegacyConfigProviderInterface
             return;
         }
 
+        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_SYMFONY);
         $plugin = new Plugin();
         $plugin->init(true);
 
         $this->pluginContainer->initializeContainer();
+        Profiler::getInstance()->stop('InitializePlugins::execute');
     }
 }
