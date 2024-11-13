@@ -676,7 +676,9 @@ TWIG, $twig_params);
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
                 echo Html::hidden('end', ['value'   => $_POST['reserve']["end"]]);
             }
-            echo Html::submit("<i class='fas fa-lg fa-calendar-plus'></i>&nbsp;" . _sx('button', 'Book'));
+            echo Html::submit(_x('button', 'Book'), [
+                'icon'  => 'fas fa-lg fa-calendar-plus',
+            ]);
         }
 
         echo "<input type='hidden' name='id' value=''>";

@@ -831,16 +831,26 @@ HTML;
         }
 
         if ($params['message'] !== null) {
-            $out .= Html::scriptBlock(self::jsGetElementbyID($id . '_text') . ".html(" .
-                                json_encode($params['message']) . ");");
+            $out .= Html::scriptBlock(
+                sprintf(
+                    '$("#%s_text").html("%s");',
+                    htmlescape($id),
+                    htmlescape($params['message'])
+                )
+            );
         }
 
         if (
             ($params['percent'] >= 0)
             && ($params['percent'] <= 100)
         ) {
-            $out .= Html::scriptBlock(self::jsGetElementbyID($id . '_text') . ".css('width', '" .
-                                $params['percent'] . "%' );");
+            $out .= Html::scriptBlock(
+                sprintf(
+                    '$("#%s_text").css("width", "%d%%");',
+                    htmlescape($id),
+                    (int) $params['percent']
+                )
+            );
         }
 
         if (!$params['display']) {
@@ -3400,13 +3410,13 @@ JS;
 
         if (empty($param['applyto'])) {
             if (!empty($param['link'])) {
-                $out .= "<a id='" . (!empty($param['linkid']) ? $param['linkid'] : "tooltiplink$rand") . "'
+                $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
                         class='dropdown_tooltip {$param['link_class']}'";
 
                 if (!empty($param['linktarget'])) {
-                    $out .= " target='" . $param['linktarget'] . "' ";
+                    $out .= " target='" . htmlescape($param['linktarget']) . "' ";
                 }
-                $out .= " href='" . $param['link'] . "'";
+                $out .= " href='" . htmlescape($param['link']) . "'";
 
                 if (!empty($param['popup'])) {
                     $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
@@ -3415,9 +3425,10 @@ JS;
             }
             if (isset($param['img'])) {
                //for compatibility. Use fontawesome instead.
-                $out .= "<img id='tooltip$rand' src='" . $param['img'] . "'>";
+                $out .= "<img id='tooltip$rand' src='" . htmlescape($param['img']) . "'>";
             } else {
-                $out .= "<span id='tooltip$rand' class='fas {$param['awesome-class']} fa-fw'></span>";
+                $class = htmlescape($param['awesome-class']);
+                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
             }
 
             if (!empty($param['link'])) {
@@ -3431,7 +3442,9 @@ JS;
             $param['contentid'] = "content" . $param['applyto'];
         }
 
-        $out .= "<div id='" . $param['contentid'] . "' class='tooltip-invisible'>$content</div>";
+        $contentid = htmlescape($param['contentid']);
+
+        $out .= "<div id='" . $contentid . "' class='tooltip-invisible'>$content</div>";
         if (!empty($param['popup'])) {
             $out .= Ajax::createIframeModalWindow(
                 'tooltippopup' . $rand,
@@ -3442,21 +3455,24 @@ JS;
                 ]
             );
         }
+
+        $applyto   = htmlescape($param['applyto']);
+
         $js = "$(function(){";
-        $js .= Html::jsGetElementbyID($param['applyto']) . ".qtip({
+        $js .= "$('#$applyto').qtip({
          position: { viewport: $(window) },
          content: {";
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: '" . $CFG_GLPI['root_doc'] . $param['url'] . "',
+                    url: '" . htmlescape($CFG_GLPI['root_doc'] . $param['url']) . "',
                     type: 'GET',
                     data: {},
                 },
             ";
         }
 
-        $js .= "text: " .  Html::jsGetElementbyID($param['contentid']);
+        $js .= "text: $('#$contentid')";
         if (!$param['autoclose']) {
             $js .= ", title: {text: ' ',button: true}";
         }
@@ -4384,9 +4400,13 @@ JAVASCRIPT
      * @since 0.85.
      *
      * @return string
+     *
+     * @deprecated 11.0.0
      **/
     public static function jsGetElementbyID($id)
     {
+        Toolbox::deprecated();
+
         return "$('#$id')";
     }
 
@@ -4399,9 +4419,13 @@ JAVASCRIPT
      * @since 0.85.
      *
      * @return string
+     *
+     * @deprecated 11.0.0
      **/
     public static function jsSetDropdownValue($id, $value)
     {
+        Toolbox::deprecated();
+
         return self::jsGetElementbyID($id) . ".trigger('setValue', '$value');";
     }
 
@@ -4413,9 +4437,13 @@ JAVASCRIPT
      * @since 0.85.
      *
      * @return string
+     *
+     * @deprecated 11.0.0
      **/
     public static function jsGetDropdownValue($id)
     {
+        Toolbox::deprecated();
+
         return self::jsGetElementbyID($id) . ".val()";
     }
 
@@ -4650,12 +4678,11 @@ JS;
             unset($options['url']);
         }
 
-        $class = "";
-        if ($url) {
-            $class = "class='pointer'";
+        if ($url && !array_key_exists('class', $options)) {
+            $options['class'] = 'pointer';
         }
 
-        $image = sprintf('<img src="%1$s" %2$s %3$s />', $path, Html::parseAttributes($options), $class);
+        $image = sprintf('<img src="%1$s" %2$s />', htmlescape($path), Html::parseAttributes($options));
         if ($url) {
             return Html::link($image, $url);
         }
@@ -4763,7 +4790,7 @@ JS;
         }
         return sprintf(
             '<input type="%1$s" name="%2$s" %3$s />',
-            $type,
+            htmlescape($type),
             htmlescape($fieldName),
             Html::parseAttributes($options)
         );
@@ -4882,15 +4909,17 @@ JS;
 
         $icon = "";
         if (isset($options['icon'])) {
-            $icon = "<i class='{$options['icon']}'></i>";
+            $icon = sprintf('<i class="%s"></i>&nbsp;', htmlescape($options['icon']));
+            unset($options['icon']);
         }
 
-        $button = "<button type='submit' value='%s' %s>
-               $icon
-               <span>$caption</span>
-            </button>&nbsp;";
-
-        return sprintf($button, htmlescape(strip_tags($caption)), Html::parseAttributes($options));
+        return sprintf(
+            '<button type="submit" value="%s" %s>%s<span>%s</span></button>',
+            htmlescape($caption),
+            Html::parseAttributes($options),
+            $icon,
+            htmlescape($caption)
+        );
     }
 
 
@@ -4956,18 +4985,13 @@ HTML;
      **/
     public static function parseAttributes($options = [])
     {
+        $attributes = [];
 
-        if (!is_string($options)) {
-            $attributes = [];
-
-            foreach ($options as $key => $value) {
-                $attributes[] = Html::formatAttribute($key, $value);
-            }
-            $out = implode(' ', $attributes);
-        } else {
-            $out = $options;
+        foreach ($options as $key => $value) {
+            $attributes[] = Html::formatAttribute($key, $value);
         }
-        return $out;
+
+        return implode(' ', $attributes);
     }
 
 
@@ -4983,10 +5007,6 @@ HTML;
      **/
     public static function formatAttribute($key, $value)
     {
-        if (empty($value)) {
-            $value = '';
-        }
-
         if (is_array($value)) {
             $value = implode(' ', $value);
         }
