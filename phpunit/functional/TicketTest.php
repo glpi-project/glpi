@@ -7479,4 +7479,57 @@ HTML
         $input['itilcategories_id'] = $category->getID();
         $this->assertSame($expected, \Ticket::isCategoryValid($input));
     }
+
+    public function testGlobalValidationUpdate(): void
+    {
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Global_Validation_Update',
+            'content' => 'Global_Validation_Update',
+            'validation_percent' => 0,
+        ]);
+
+        $ticketobj = new \Ticket();
+
+        $validation = new TicketValidation();
+        $validation->add([
+            'tickets_id'        => $ticket->getID(),
+            'entities_id'       => $ticket->fields['entities_id'],
+            'users_id_validate' => 1,
+            'timeline_position' => 1,
+            'status'            => CommonITILValidation::ACCEPTED,
+        ]);
+
+        $validation->add([
+            'tickets_id'        => $ticket->getID(),
+            'entities_id'       => $ticket->fields['entities_id'],
+            'users_id_validate' => 1,
+            'timeline_position' => 1,
+            'status'            => CommonITILValidation::WAITING,
+        ]);
+
+        $validation->add([
+            'tickets_id'        => $ticket->getID(),
+            'entities_id'       => $ticket->fields['entities_id'],
+            'users_id_validate' => 1,
+            'timeline_position' => 1,
+            'status'            => CommonITILValidation::REFUSED,
+        ]);
+
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILValidation::ACCEPTED, $ticket->fields['global_validation']);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 50,
+        ]);
+
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILValidation::WAITING, $ticket->fields['global_validation']);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 100,
+        ]);
+
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+        $this->assertEquals(CommonITILValidation::REFUSED, $ticket->fields['global_validation']);
+    }
 }
