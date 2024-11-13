@@ -87,7 +87,6 @@ if (isset($_POST["add"])) {
     if (!$track::canUpdate()) {
         Html::displayRightError();
     }
-
     $track->update($_POST);
 
     if (isset($_POST['kb_linked_id'])) {
