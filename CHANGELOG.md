@@ -393,6 +393,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Dashboard\Filter::displayList()`
 - `Glpi\Dashboard\Filter::field()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Glpi\Debug\Toolbar` class
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`

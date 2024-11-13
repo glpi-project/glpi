@@ -451,6 +451,8 @@ HTML;
                     // unset hash (to avoid scrolling when changing tabs)
                     url_hash   = '';
                 }
+            }).fail(function(data) {
+               $(target).html(data.responseText);
             });
          };
 
