@@ -46,6 +46,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
+use Glpi\Form\Translation\FormTranslation;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Profile;
@@ -348,6 +349,37 @@ trait FormTesterTrait
         ]);
 
         return $comment;
+    }
+
+    protected function addTranslationToForm(
+        Form $form,
+        string $language,
+        string $key,
+        string $translation,
+    ): void {
+        $form_translation = new FormTranslation();
+        if (
+            $form_translation->getFromDBByCrit([
+                Form::getForeignKeyField() => $form->getID(),
+                'language'                 => $language,
+            ]) === false
+        ) {
+            $form_translation = $this->createItem(FormTranslation::class, [
+                Form::getForeignKeyField() => $form->getID(),
+                'language'                 => $language,
+            ]);
+        }
+
+        $this->updateItem(
+            FormTranslation::class,
+            $form_translation->getID(),
+            [
+                'translations' => [
+                    $key => $translation,
+                ]
+            ],
+            ['translations']
+        );
     }
 
     protected function sendFormAndGetAnswerSet(
