@@ -111,6 +111,21 @@ abstract class InventoryAsset
         return $this;
     }
 
+    public function getEntity(): int
+    {
+        return $this->entities_id;
+    }
+
+    public function maybeRecursive()
+    {
+        return true;
+    }
+
+    public function isRecursive(): bool
+    {
+        return (bool) $this->is_recursive;
+    }
+
     /**
      * Get current data
      *
@@ -317,6 +332,19 @@ abstract class InventoryAsset
     public function setEntityID($id): InventoryAsset
     {
         $this->entities_id = $id;
+        return $this;
+    }
+
+    /**
+     * Set entity recursive from main asset
+     *
+     * @param integer $is_recursive
+     *
+     * @return $this
+     */
+    public function setEntityRecursive($is_recursive): InventoryAsset
+    {
+        $this->is_recursive = $is_recursive;
         return $this;
     }
 
