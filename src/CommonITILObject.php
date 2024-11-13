@@ -2116,39 +2116,47 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Update of the global validation status if the validation percentage has changed
-        if (isset($_POST['validation_percent'])) {
-            $nb = countElementsInTable(TicketValidation::getTable(), ['tickets_id' => $_POST['id']]);
+        if (isset($input['validation_percent'])) {
+            $nb = countElementsInTable(TicketValidation::getTable(), ['tickets_id' => $input['id']]);
 
             $rejections = countElementsInTable(TicketValidation::getTable(), [
-                'tickets_id' => $_POST['id'],
+                'tickets_id' => $input['id'],
                 'status' => CommonITILValidation::REFUSED
             ]);
 
             $validations = countElementsInTable(TicketValidation::getTable(), [
-                'tickets_id' => $_POST['id'],
+                'tickets_id' => $input['id'],
                 'status' => CommonITILValidation::ACCEPTED
             ]);
+
+            echo $validations;
 
             if ($nb == 0) {
                 $input['global_validation'] = CommonITILValidation::NONE;
             } else if ($rejections == $nb) {
                 $input['global_validation'] = CommonITILValidation::REFUSED;
             } else if ($validations > 0) {
+                echo $input['validation_percent'];
                 switch ($input['validation_percent']) {
                     case 0:
+                        echo '0';
                         $input['global_validation'] = CommonITILValidation::ACCEPTED;
                         break;
                     case 100:
                         if ($rejections > 0) {
+                            echo 'r';
                             $input['global_validation'] = CommonITILValidation::REFUSED;
                         } else {
+                            echo 'v';
                             $input['global_validation'] = ($validations == $nb) ? CommonITILValidation::ACCEPTED : CommonITILValidation::WAITING;
                         }
                         break;
                     case 50:
                         if ($rejections >= $nb / 2) {
+                            echo 'r';
                             $input['global_validation'] = CommonITILValidation::REFUSED;
                         } else {
+                            echo 'v';
                             $input['global_validation'] = ($validations >= $nb / 2) ? CommonITILValidation::ACCEPTED : CommonITILValidation::WAITING;
                         }
                         break;

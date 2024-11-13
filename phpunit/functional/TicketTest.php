@@ -7482,54 +7482,65 @@ HTML
 
     public function testGlobalValidationUpdate(): void
     {
+        $this->login();
+        $uid1 = getItemByTypeName('User', 'glpi', true);
+
         $ticket = $this->createItem('Ticket', [
             'name' => 'Global_Validation_Update',
             'content' => 'Global_Validation_Update',
-            'validation_percent' => 0,
+            'validation_percent' => 100,
         ]);
 
         $ticketobj = new \Ticket();
 
-        $validation = new TicketValidation();
-        $validation->add([
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+
+        $v1_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
-            'entities_id'       => $ticket->fields['entities_id'],
-            'users_id_validate' => 1,
-            'timeline_position' => 1,
-            'status'            => CommonITILValidation::ACCEPTED,
+            'users_id_validate' => $uid1,
         ]);
 
-        $validation->add([
-            'tickets_id'        => $ticket->getID(),
-            'entities_id'       => $ticket->fields['entities_id'],
-            'users_id_validate' => 1,
-            'timeline_position' => 1,
-            'status'            => CommonITILValidation::WAITING,
+        $this->updateItem('TicketValidation', $v1_id->getID(), [
+            'status'  => \CommonITILValidation::ACCEPTED,
         ]);
 
-        $validation->add([
+        $v2_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
-            'entities_id'       => $ticket->fields['entities_id'],
-            'users_id_validate' => 1,
-            'timeline_position' => 1,
-            'status'            => CommonITILValidation::REFUSED,
+            'users_id_validate' => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v2_id->getID(), [
+            'status'  => \CommonITILValidation::WAITING,
+        ]);
+
+        $v3_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'users_id_validate' => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v3_id->getID(), [
+            'status'  => \CommonITILValidation::REFUSED,
+        ]);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 0,
         ]);
 
         $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(CommonITILValidation::ACCEPTED, $ticket->fields['global_validation']);
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, $ticketobj->fields['global_validation']);
 
         $this->updateItem('Ticket', $ticket->getID(), [
             'validation_percent' => 50,
         ]);
 
         $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(CommonITILValidation::WAITING, $ticket->fields['global_validation']);
+        $this->assertEquals(\CommonITILValidation::WAITING, $ticketobj->fields['global_validation']);
 
         $this->updateItem('Ticket', $ticket->getID(), [
             'validation_percent' => 100,
         ]);
 
         $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(CommonITILValidation::REFUSED, $ticket->fields['global_validation']);
+        $this->assertEquals(\CommonITILValidation::REFUSED, $ticketobj->fields['global_validation']);
     }
 }
