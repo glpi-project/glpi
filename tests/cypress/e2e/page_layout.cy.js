@@ -34,9 +34,10 @@
 describe('Page layout', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
     it('Accessibility', () => {
+        cy.visit('/front/computer.php');
         cy.disableAnimations();
         cy.get('aside.navbar.sidebar .nav-link.dropdown-toggle:visible').each(($el) => {
             cy.wrap($el).click();
@@ -49,7 +50,6 @@ describe('Page layout', () => {
         cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle').click();
         cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
 
-        cy.visit('/front/computer.php');
         cy.get('header.navbar').injectAndCheckA11y();
     });
 });
