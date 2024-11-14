@@ -486,10 +486,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
         $input['users_id'] = $current_user_id;
 
-        // We may want to disable the name computation when working with fake
+        // We may want to disable the title/description values fetching when working with fake
         // feeds in our unit tests
-        $compute_name = $input['_do_not_compute_name'] ?? false;
-        if (!$compute_name) {
+        $fetch_values = ($input['_do_not_fetch_values'] ?? false) === false;
+        if ($fetch_values) {
             if ($feed = self::getRSSFeed($input['url'])) {
                 $input['have_error'] = 0;
                 $input['name']       = $feed->get_title();
@@ -506,10 +506,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (empty($input["name"])) {
             $input["name"] = __('Without title');
         }
-
-        // Owner cannot be changed
-        unset($input['users_id']);
-
         return $input;
     }
 

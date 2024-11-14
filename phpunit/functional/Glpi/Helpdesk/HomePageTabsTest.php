@@ -114,7 +114,7 @@ final class HomePageTabsTest extends DbTestCase
         $reminder = $this->createItem(RSSFeed::class, [
             'name' => 'My feed',
             'url'  => 'https://fake-rss.localhost.com/feed',
-            '_do_not_compute_name' => true,
+            '_do_not_fetch_values' => true,
         ]);
         $this->createItem(RSSFeed_User::class, [
             'users_id' => $user->getID(),

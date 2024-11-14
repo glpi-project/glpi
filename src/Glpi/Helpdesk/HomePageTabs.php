@@ -84,7 +84,6 @@ final class HomePageTabs extends CommonGLPI
             Session::haveRight("reminder_public", READ)
             && Reminder::countPublicReminders() > 0
         ) {
-            // TODO: only show if at least one reminder is visible
             $tabs[self::PUBLIC_REMINDER_TAB] = self::createTabEntry(
                 text: Reminder::getTypeName(),
                 icon: Reminder::getIcon()
@@ -95,7 +94,6 @@ final class HomePageTabs extends CommonGLPI
             Session::haveRight("rssfeed_public", READ)
             && RSSFeed::countPublicRssFedds() > 0
         ) {
-            // TODO: only show if at least one RSS feed is visible
             $tabs[self::RSS_FEED_PUBLIC] = self::createTabEntry(
                 text: RSSFeed::getTypeName(),
                 icon: RSSFeed::getIcon()
