@@ -7504,6 +7504,16 @@ HTML
             'status'  => \CommonITILValidation::ACCEPTED,
         ]);
 
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 0,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 50,
+        ]);
+
         $v2_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
             'users_id_validate' => $uid1,
@@ -7511,6 +7521,12 @@ HTML
 
         $this->updateItem('TicketValidation', $v2_id->getID(), [
             'status'  => \CommonITILValidation::WAITING,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::WAITING, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 100,
         ]);
 
         $v3_id = $this->createItem('TicketValidation', [
@@ -7522,25 +7538,7 @@ HTML
             'status'  => \CommonITILValidation::REFUSED,
         ]);
 
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 0,
-        ]);
 
-        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(\CommonITILValidation::ACCEPTED, $ticketobj->fields['global_validation']);
-
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 50,
-        ]);
-
-        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(\CommonITILValidation::WAITING, $ticketobj->fields['global_validation']);
-
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 100,
-        ]);
-
-        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-        $this->assertEquals(\CommonITILValidation::REFUSED, $ticketobj->fields['global_validation']);
+        $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
     }
 }
