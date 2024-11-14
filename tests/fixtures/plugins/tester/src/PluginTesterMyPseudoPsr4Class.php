@@ -32,10 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-final class PluginTesterMyPseudoPsr4Class extends CommonDropdown
+final class PluginTesterMyPseudoPsr4Class extends CommonDBTM
 {
     public static function getTypeName($nb = 0): string
     {
-        return 'Tester plugin pseudo-PSR4 dropdown';
+        return 'Tester plugin pseudo-PSR4 itemtype';
     }
 }

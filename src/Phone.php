@@ -86,6 +86,15 @@ class Phone extends CommonDBTM
         return _n('Phone', 'Phones', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

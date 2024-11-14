@@ -36,6 +36,7 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -43,13 +44,16 @@ use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
+use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
+use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\Section;
 use InvalidArgumentException;
 use RuntimeException;
@@ -68,9 +72,9 @@ final class FormSerializer extends AbstractFormSerializer
         $export_specification = new ExportContentSpecification();
         $export_specification->version = $this->getVersion();
 
-        foreach ($forms as $form) {
+        foreach ($forms as $index => $form) {
             // Add forms to the main export spec
-            $form_spec = $this->exportFormToSpec($form);
+            $form_spec = $this->exportFormToSpec($form, $index);
             $export_specification->addForm($form_spec);
         }
 
@@ -83,6 +87,7 @@ final class FormSerializer extends AbstractFormSerializer
     public function previewImport(
         string $json,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResultPreview {
         $export_specification = $this->deserialize($json);
 
@@ -97,12 +102,43 @@ final class FormSerializer extends AbstractFormSerializer
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
 
+            $form_id = $form_spec->id;
             $form_name = $form_spec->name;
-            if ($mapper->validateRequirements($requirements)) {
-                $results->addValidForm($form_name);
-            } else {
-                $results->addInvalidForm($form_name);
+            if (in_array($form_id, $skipped_forms)) {
+                $results->addSkippedForm($form_id, $form_name);
+                continue;
             }
+
+            if ($mapper->validateRequirements($requirements)) {
+                $results->addValidForm($form_id, $form_name);
+            } else {
+                $results->addInvalidForm($form_id, $form_name);
+            }
+        }
+
+        return $results;
+    }
+
+    public function listIssues(
+        DatabaseMapper $mapper,
+        string $json
+    ): ImportResultIssues {
+        $export_specification = $this->deserialize($json);
+
+        // Validate version
+        if ($export_specification->version !== $this->getVersion()) {
+            throw new InvalidArgumentException("Unsupported version");
+        }
+
+        $results = new ImportResultIssues();
+        foreach ($export_specification->forms as $form_spec) {
+            $requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($requirements);
+
+            $results->addIssuesForForm(
+                $form_spec->id,
+                $mapper->getInvalidRequirements($requirements)
+            );
         }
 
         return $results;
@@ -111,6 +147,7 @@ final class FormSerializer extends AbstractFormSerializer
     public function importFormsFromJson(
         string $json,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): ImportResult {
         $export_specification = $this->deserialize($json);
 
@@ -124,6 +161,11 @@ final class FormSerializer extends AbstractFormSerializer
         foreach ($export_specification->forms as $form_spec) {
             $requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($requirements);
+
+            $form_id = $form_spec->id;
+            if (in_array($form_id, $skipped_forms)) {
+                continue;
+            }
 
             if (!$mapper->validateRequirements($requirements)) {
                 $result->addFailedFormImport(
@@ -163,12 +205,13 @@ final class FormSerializer extends AbstractFormSerializer
         return $filename . ".json";
     }
 
-    private function exportFormToSpec(Form $form): FormContentSpecification
+    private function exportFormToSpec(Form $form, int $form_export_id): FormContentSpecification
     {
         // TODO: questions, ...
-        $form_spec = $this->exportBasicFormProperties($form);
+        $form_spec = $this->exportBasicFormProperties($form, $form_export_id);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
+        $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
 
         return $form_spec;
@@ -202,6 +245,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importBasicFormProperties($form_spec, $mapper);
         $form = $this->importSections($form, $form_spec);
         $form = $this->importComments($form, $form_spec);
+        $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
 
         return $form;
@@ -246,9 +290,11 @@ final class FormSerializer extends AbstractFormSerializer
     }
 
     private function exportBasicFormProperties(
-        Form $form
+        Form $form,
+        int $form_export_id
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
+        $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
         $spec->header       = $form->fields['header'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
@@ -369,6 +415,109 @@ final class FormSerializer extends AbstractFormSerializer
         return $form;
     }
 
+    private function exportQuestions(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getQuestions() as $question) {
+            $question_spec = new QuestionContentSpecification();
+            $question_spec->name = $question->fields['name'];
+            $question_spec->type = $question->fields['type'];
+            $question_spec->is_mandatory = $question->fields['is_mandatory'];
+            $question_spec->rank = $question->fields['rank'];
+            $question_spec->description = $question->fields['description'];
+            $question_spec->default_value = $question->fields['default_value'];
+            $question_spec->extra_data = $question->fields['extra_data'];
+            $question_spec->section_rank = $form->getSections()[$question->fields['forms_sections_id']]->fields['rank'];
+
+            $question_type = new $question_spec->type();
+            if ($question_type->getDefaultValueConfigClass() !== null) {
+                $default_value_config = $question_type->getDefaultValueConfig(
+                    json_decode($question_spec->default_value ?? "[]", true)
+                );
+                if ($default_value_config !== null) {
+                    $serialized_default_value = $default_value_config->jsonSerialize();
+                    if (
+                        $default_value_config instanceof ConfigWithForeignKeysInterface
+                    ) {
+                        $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                            $default_value_config::listForeignKeysHandlers($question_spec),
+                            $serialized_default_value
+                        );
+                        array_push($form_spec->data_requirements, ...$requirements);
+
+                        $question_spec->default_value = json_encode(
+                            $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                                $default_value_config::listForeignKeysHandlers($question_spec),
+                                $serialized_default_value
+                            )
+                        );
+                    }
+                }
+            }
+
+            $form_spec->questions[] = $question_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importQuestions(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        /** @var QuestionContentSpecification $question_spec */
+        foreach ($form_spec->questions as $question_spec) {
+            // Retrieve section from their rank
+            $section = current(array_filter(
+                $form->getSections(),
+                fn (Section $section) => $section->fields['rank'] === $question_spec->section_rank
+            ));
+
+            $question_type = new $question_spec->type();
+            if ($question_type->getDefaultValueConfigClass() !== null) {
+                $default_value_config = $question_type->getDefaultValueConfig(
+                    json_decode($question_spec->default_value ?? "[]", true)
+                );
+                if ($default_value_config !== null) {
+                    $serialized_default_value = json_decode($question_spec->default_value, true);
+                    if (
+                        $default_value_config instanceof ConfigWithForeignKeysInterface
+                    ) {
+                        $serialized_default_value = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                            $default_value_config::listForeignKeysHandlers($question_spec),
+                            $serialized_default_value,
+                            $mapper
+                        );
+                    }
+                    $question_spec->default_value = json_encode($serialized_default_value);
+                }
+            }
+
+            $question = new Question();
+            $id = $question->add([
+                '_from_import'      => true,
+                'name'              => $question_spec->name,
+                'type'              => $question_spec->type,
+                'is_mandatory'      => $question_spec->is_mandatory,
+                'rank'              => $question_spec->rank,
+                'description'       => $question_spec->description,
+                'default_value'     => $question_spec->default_value,
+                'extra_data'        => $question_spec->extra_data,
+                'forms_sections_id' => $section->fields['id'],
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create question");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
     private function exportAccesControlPolicies(
         Form $form,
         FormContentSpecification $form_spec,
@@ -387,13 +536,13 @@ final class FormSerializer extends AbstractFormSerializer
             $serialized_config = $config->jsonSerialize();
             if ($config instanceof ConfigWithForeignKeysInterface) {
                 $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
-                    $config::listForeignKeysHandlers(),
+                    $config::listForeignKeysHandlers($policy_spec),
                     $serialized_config
                 );
                 array_push($form_spec->data_requirements, ...$requirements);
 
                 $serialized_config = $this->replaceForeignKeysByNameInSerializedJsonConfig(
-                    $config::listForeignKeysHandlers(),
+                    $config::listForeignKeysHandlers($policy_spec),
                     $serialized_config,
                 );
             }
@@ -425,7 +574,7 @@ final class FormSerializer extends AbstractFormSerializer
             $serialized_config = $policy_spec->config_data;
             if (is_a($config_class, ConfigWithForeignKeysInterface::class, true)) {
                 $serialized_config = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
-                    $config_class::listForeignKeysHandlers(),
+                    $config_class::listForeignKeysHandlers($policy_spec),
                     $serialized_config,
                     $mapper
                 );
@@ -441,7 +590,7 @@ final class FormSerializer extends AbstractFormSerializer
             ]);
 
             if (!$id) {
-                throw new RunTimeException("Failed to create access control");
+                throw new RuntimeException("Failed to create access control");
             }
         }
 

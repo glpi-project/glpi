@@ -69,6 +69,7 @@
 {# limit the number of adjacents links displayed #}
 {% set adjacents = 2 %}
 {% set skip_adjacents = false %}
+{% set rand = rand|default(random()) %}
 
 <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
     {% if not short_display %}
@@ -77,8 +78,14 @@
                 'no_onchange': fluid_search|default(false),
                 'select_class': 'search-limit-dropdown',
                 'href': href|replace({'%start%': start}),
+                'additional_attributes': short_display ? {
+                    'title': __('Rows per page'),
+                } : {
+                    'aria-labelledby': 'list_limit' ~ rand ~ '_label',
+                },
+                'rand': rand,
             } %}
-            {{ __('rows / page') }}
+            <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
         </span>
     {% endif %}
     <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">

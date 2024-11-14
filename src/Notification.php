@@ -172,6 +172,11 @@ class Notification extends CommonDBTM implements FilterableInterface
         return _n('Notification', 'Notifications', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class, self::class];
+    }
+
     /**
      *  @see CommonGLPI::getMenuContent()
      *
@@ -188,25 +193,25 @@ class Notification extends CommonDBTM implements FilterableInterface
             $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
             $menu['page']                                       = '/front/setup.notification.php';
             $menu['icon']                                       = self::getIcon();
-            $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
-            $menu['options']['notification']['page']            = Notification::getSearchURL(false);
-            $menu['options']['notification']['links']['add']    = Notification::getFormURL(false);
-            $menu['options']['notification']['links']['search'] = Notification::getSearchURL(false);
+            $menu['options'][Notification::class]['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
+            $menu['options'][Notification::class]['page']            = Notification::getSearchURL(false);
+            $menu['options'][Notification::class]['links']['add']    = Notification::getFormURL(false);
+            $menu['options'][Notification::class]['links']['search'] = Notification::getSearchURL(false);
             //saved search list
-            $menu['options']['notification']['links']['lists']  = "";
-            $menu['options']['notification']['lists_itemtype']  = Notification::getType();
+            $menu['options'][Notification::class]['links']['lists']  = "";
+            $menu['options'][Notification::class]['lists_itemtype']  = Notification::getType();
 
-            $menu['options']['notificationtemplate']['title']
+            $menu['options'][NotificationTemplate::class]['title']
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
-            $menu['options']['notificationtemplate']['page']
+            $menu['options'][NotificationTemplate::class]['page']
                         = NotificationTemplate::getSearchURL(false);
-            $menu['options']['notificationtemplate']['links']['add']
+            $menu['options'][NotificationTemplate::class]['links']['add']
                         = NotificationTemplate::getFormURL(false);
-            $menu['options']['notificationtemplate']['links']['search']
+            $menu['options'][NotificationTemplate::class]['links']['search']
                         = NotificationTemplate::getSearchURL(false);
             //saved search list
-            $menu['options']['notificationtemplate']['links']['lists']  = "";
-            $menu['options']['notificationtemplate']['lists_itemtype']  = NotificationTemplate::getType();
+            $menu['options'][NotificationTemplate::class]['links']['lists']  = "";
+            $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::getType();
         }
         if (count($menu)) {
             return $menu;

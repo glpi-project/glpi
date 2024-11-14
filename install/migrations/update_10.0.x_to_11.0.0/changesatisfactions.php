@@ -56,7 +56,7 @@ if (!$DB->tableExists('glpi_changesatisfactions')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `changes_id` (`changes_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->doQueryOrDie($query, "11.0.0 add table glpi_changesatisfactions");
+    $DB->doQuery($query);
 }
 
 // Register crontask
@@ -134,7 +134,7 @@ $migration->addRight('change', CommonITILObject::SURVEY, [
 ]);
 
 // Replace old TICKETCATEGORY tags in Entity inquest_URL field with ITILCATEGORY
-$DB->updateOrDie(
+$DB->update(
     'glpi_entities',
     [
         'inquest_URL' => new QueryExpression(
@@ -143,8 +143,7 @@ $DB->updateOrDie(
     ],
     [
         'inquest_URL' => ['LIKE', '%[TICKETCATEGORY_%'],
-    ],
-    'Replace old TICKETCATEGORY tags in Entity inquest_URL field with ITILCATEGORY'
+    ]
 );
 
 // Keep track of satisfaction on a fixed scale (for stats)

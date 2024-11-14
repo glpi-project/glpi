@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Sglobal\StatDataAverageSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataTicketAverageTime;
@@ -44,7 +45,7 @@ Session::checkRight("statistic", READ);
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
@@ -67,7 +68,7 @@ if (
 Stat::title();
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
-    exit;
+    throw new BadRequestHttpException();
 }
 
 $stat = new Stat();

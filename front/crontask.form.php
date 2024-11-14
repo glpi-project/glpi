@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * Form to edit Cron Task
  */
@@ -52,7 +54,7 @@ if (isset($_POST['execute'])) {
     }
     if ($name) {
        //TRANS: %s is a task name
-        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(__('Task %s executed'), $name)));
+        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Task %s executed'), $name)));
     }
     Html::back();
 } else if (isset($_POST["update"])) {
@@ -79,7 +81,7 @@ if (isset($_POST['execute'])) {
     Html::back();
 } else {
     if (!isset($_GET["id"]) || empty($_GET["id"])) {
-        exit();
+        throw new BadRequestHttpException();
     }
     $menus = ['config', 'crontask'];
     CronTask::displayFullPageForItem($_GET['id'], $menus);

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 
 /**
@@ -49,6 +50,11 @@ class RefusedEquipment extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Equipment refused by rules log', 'Equipments refused by rules log', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
     }
 
     public function rawSearchOptions()
@@ -180,26 +186,26 @@ class RefusedEquipment extends CommonDBTM
 
         $itemtype = $this->fields['itemtype'];
         echo "<th>" .  __s('Item type') . "</th>";
-        echo "<td>" . htmlspecialchars($itemtype::getTypeName(1))  . "</td>";
+        echo "<td>" . htmlescape($itemtype::getTypeName(1))  . "</td>";
 
         echo "<th>" . __s('Name') . "</th>";
-        echo "<td>" . htmlspecialchars($this->getName())  . "</td>";
+        echo "<td>" . htmlescape($this->getName())  . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
         echo "<th>" .  __s('Serial') . "</th>";
-        echo "<td>" . htmlspecialchars($this->fields['serial'])  . "</td>";
+        echo "<td>" . htmlescape($this->fields['serial'])  . "</td>";
 
         echo "<th>" .  __s('UUID') . "</th>";
-        echo "<td>" . htmlspecialchars($this->fields['uuid'])  . "</td>";
+        echo "<td>" . htmlescape($this->fields['uuid'])  . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
         $rule = new RuleImportAsset();
         $rule->getFromDB($this->fields['rules_id']);
-        echo "<th>" .  htmlspecialchars(Rule::getTypeName(1)) . "</th>";
+        echo "<th>" .  htmlescape(Rule::getTypeName(1)) . "</th>";
         echo "<td>";
         echo $rule->getLink();
 
@@ -219,17 +225,17 @@ class RefusedEquipment extends CommonDBTM
 
         $entity = new Entity();
         $entity->getFromDB($this->fields['entities_id']);
-        echo "<th>" .  htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" .  htmlescape(Entity::getTypeName(1)) . "</th>";
         echo "<td>" . $entity->getLink() . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
-        echo "<th>" .  htmlspecialchars(IPAddress::getTypeName(1)) . "</th>";
-        echo "<td>" . htmlspecialchars(implode(', ', importArrayFromDB($this->fields['ip']))) . "</td>";
+        echo "<th>" .  htmlescape(IPAddress::getTypeName(1)) . "</th>";
+        echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['ip']))) . "</td>";
 
         echo "<th>" .  __s('MAC address') . "</th>";
-        echo "<td>" . htmlspecialchars(implode(', ', importArrayFromDB($this->fields['mac']))) . "</td>";
+        echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['mac']))) . "</td>";
 
         echo "</tr>";
         $this->showInventoryInfo();

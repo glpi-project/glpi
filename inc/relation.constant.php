@@ -1711,6 +1711,7 @@ global $CFG_GLPI;
 $specifically_managed_types = [
     Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
     Consumable::class, // Consumables are handled manually to redefine `date_out` to `null`
+    DatabaseInstance::class, // FIXME DatabaseInstance should be a CommonDBChild with $mustBeAttached=true
     Item_Cluster::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
     Item_Enclosure::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true
     Item_Rack::class, // FIXME $mustBeAttached_1 and $mustBeAttached_2 should probably be set to true

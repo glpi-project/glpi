@@ -484,7 +484,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<tr class='tab_bg_2'><td colspan='2'>{$data["completename"]}</td></tr>";
                 foreach ($target_types as $itemtype) {
                     $nb = self::countForLicense($softwarelicense_id, $data['id'], $itemtype);
-                    $typename = htmlspecialchars($itemtype::getTypeName());
+                    $typename = htmlescape($itemtype::getTypeName());
                     echo "<tr class='tab_bg_2'><td>$tab$tab$typename</td>";
                     echo "<td class='numeric'>{$nb}</td></tr>\n";
                     $tot += $nb;
@@ -822,7 +822,7 @@ JAVASCRIPT;
             }
 
             foreach ($columns as $key => $val) {
-                $val = htmlspecialchars($val);
+                $val = htmlescape($val);
                // Non order column
                 if ($key[0] == '_') {
                     $header_end .= "<th>$val</th>";
@@ -850,7 +850,7 @@ JAVASCRIPT;
                     $itemname = sprintf(__('%1$s (%2$s)'), $itemname, $data['iID']);
                 }
 
-                $itemname = htmlspecialchars($itemname);
+                $itemname = htmlescape($itemname);
                 if ($canshowitems[$data['item_type']]) {
                     echo "<td><a href='" . $data['item_type']::getFormURLWithID($data['iID']) . "'>$itemname</a></td>";
                 } else {
@@ -860,11 +860,11 @@ JAVASCRIPT;
                 if ($showEntity) {
                     echo "<td>" . $data['entity'] . "</td>";
                 }
-                echo "<td>" . htmlspecialchars($data['serial']) . "</td>";
-                echo "<td>" . htmlspecialchars($data['otherserial']) . "</td>";
-                echo "<td>" . htmlspecialchars($data['location']) . "</td>";
-                echo "<td>" . htmlspecialchars($data['state']) . "</td>";
-                echo "<td>" . htmlspecialchars($data['groupe']) . "</td>";
+                echo "<td>" . htmlescape($data['serial']) . "</td>";
+                echo "<td>" . htmlescape($data['otherserial']) . "</td>";
+                echo "<td>" . htmlescape($data['location']) . "</td>";
+                echo "<td>" . htmlescape($data['state']) . "</td>";
+                echo "<td>" . htmlescape($data['groupe']) . "</td>";
                 echo "<td>" . formatUserLink(
                     $data['userid'],
                     $data['username'],

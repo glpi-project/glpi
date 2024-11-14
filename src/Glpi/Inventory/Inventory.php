@@ -314,7 +314,7 @@ class Inventory
             $unhandled_data = array_diff_key($all_props, $data);
             if (count($unhandled_data)) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('Following keys has been ignored during process: %1$s'),
                         implode(
                             ', ',
@@ -512,7 +512,7 @@ class Inventory
         ];
 
         if (Session::haveRight(Agent::$rightname, READ)) {
-            $menu['options']['agent'] = [
+            $menu['options'][Agent::class] = [
                 'icon'  => Agent::getIcon(),
                 'title' => Agent::getTypeName(Session::getPluralNumber()),
                 'page'  => Agent::getSearchURL(false),
@@ -523,7 +523,7 @@ class Inventory
         }
 
         if (Session::haveRight(Lockedfield::$rightname, UPDATE)) {
-            $menu['options']['lockedfield'] = [
+            $menu['options'][Lockedfield::class] = [
                 'icon'  => Lockedfield::getIcon(),
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
@@ -534,7 +534,7 @@ class Inventory
         }
 
         if (Session::haveRight(RefusedEquipment::$rightname, READ)) {
-            $menu['options']['refusedequipment'] = [
+            $menu['options'][RefusedEquipment::class] = [
                 'icon'  => RefusedEquipment::getIcon(),
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
                 'page'  => RefusedEquipment::getSearchURL(false),
@@ -543,7 +543,7 @@ class Inventory
         }
 
         if (Session::haveRight(SNMPCredential::$rightname, READ)) {
-            $menu['options']['snmpcredential'] = [
+            $menu['options'][SNMPCredential::class] = [
                 'icon'  => SNMPCredential::getIcon(),
                 'title' => SNMPCredential::getTypeName(Session::getPluralNumber()),
                 'page'  => SNMPCredential::getSearchURL(false),
@@ -885,7 +885,7 @@ class Inventory
                     $task->log($message);
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($message));
+                    Session::addMessageAfterRedirect(htmlescape($message));
                 }
             }
         }
@@ -972,7 +972,7 @@ class Inventory
                     $task->log($message);
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($message));
+                    Session::addMessageAfterRedirect(htmlescape($message));
                 }
             }
         }

@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $item = new Change_Ticket();
 if (isset($_POST["add"])) {
     if (!empty($_POST['tickets_id']) && empty($_POST['changes_id'])) {
@@ -45,7 +43,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Change::getTypeName(1)
         );
-        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     if (empty($_POST['tickets_id']) && !empty($_POST['changes_id'])) {
@@ -53,7 +51,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Ticket::getTypeName(1)
         );
-        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     $item->check(-1, CREATE, $_POST);

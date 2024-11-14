@@ -33,17 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\Http\UnprocessableEntityHttpException;
 use Glpi\Search\FilterableInterface;
-
-Session::checkLoginUser();
 
 // Read endpoint
 $action = $_POST['action'] ?? false;
 switch ($action) {
     default:
         // Invalid action
-        Response::sendError(400, "Invalid or missing value: action");
+        throw new BadRequestHttpException("Invalid or missing value: action");
 
     case "save_filter":
         // Default values for this endpoint
@@ -56,33 +57,33 @@ switch ($action) {
             !is_a($itemtype, CommonDBTM::class, true)
             || !is_a($itemtype, FilterableInterface::class, true)
         ) {
-            Response::sendError(400, 'Invalid or missing value: item_itemtype');
+            throw new BadRequestHttpException('Invalid or missing value: item_itemtype');
         }
 
         // Validate items_id
+        /** @var (CommonDBTM&FilterableInterface)|false $item */
         $item = $itemtype::getById($items_id);
         if (!$item) {
-            Response::sendError(400, 'Invalid or missing value: item_items_id');
+            throw new NotFoundHttpException('Invalid or missing value: item_items_id');
         }
 
         // Validate search criteria
         if (!is_array($search_criteria)) {
-            Response::sendError(400, 'Invalid value: criteria');
+            throw new BadRequestHttpException('Invalid value: criteria');
         }
 
         // Check rights, must be able to update parent item
         if (!$item->canUpdateItem()) {
-            Response::sendError(403, 'You are not allowed to update this item');
+            throw new AccessDeniedHttpException('You are not allowed to update this item');
         }
 
         // Save filters
         if (!$item->saveFilter($search_criteria)) {
-            Response::sendError(422, 'Unable to process data');
+            throw new UnprocessableEntityHttpException('Unable to process data');
         }
 
-        // OK
-        (new Response(200))->send();
-        break;
+        // Send empty response when OK
+        return;
 
     case "delete_filter":
         // Default values for this endpoint
@@ -94,26 +95,26 @@ switch ($action) {
             !is_a($itemtype, CommonDBTM::class, true)
             || !is_a($itemtype, FilterableInterface::class, true)
         ) {
-            Response::sendError(400, 'Invalid or missing value: itemtype');
+            throw new BadRequestHttpException('Invalid or missing value: itemtype');
         }
 
         // Validate items_id
+        /** @var (CommonDBTM&FilterableInterface)|false $item */
         $item = $itemtype::getById($items_id);
         if (!$item) {
-            Response::sendError(400, 'Invalid or missing value: items_id');
+            throw new NotFoundHttpException('Invalid or missing value: items_id');
         }
 
         // Check rights, must be able to update parent item
         if (!$item->canUpdateItem()) {
-            Response::sendError(403, 'You are not allowed to update this item');
+            throw new AccessDeniedHttpException('You are not allowed to update this item');
         }
 
         // Delete filters
         if (!$item->deleteFilter()) {
-            Response::sendError(422, 'Unable to process data');
+            throw new UnprocessableEntityHttpException('Unable to process data');
         }
 
-        // OK
-        (new Response(200))->send();
-        break;
+        // Send empty response when OK
+        return;
 }

@@ -53,6 +53,16 @@ class Cable extends CommonDBTM
         return _n('Cable', 'Cables', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogServiceName(): string
+    {
+        return 'management';
+    }
+
     public static function getFieldLabel()
     {
         return self::getTypeName(1);
@@ -106,7 +116,7 @@ class Cable extends CommonDBTM
     {
         if (static::canView()) {
             return [
-                'socket' => [
+                Socket::class => [
                     'title' => Socket::getTypeName(Session::getPluralNumber()),
                     'page'  => Socket::getSearchURL(false),
                     'links' => [

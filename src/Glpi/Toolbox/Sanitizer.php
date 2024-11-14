@@ -234,7 +234,7 @@ class Sanitizer
     }
 
     /**
-     * Check wether the value correspond to a valid namespaced class (or a callable identifier related to a valid class).
+     * Check whether the value correspond to a valid namespaced class (or a callable identifier related to a valid class).
      * Note: also support the {namespace}${tab number} format used for tab identifications
      *
      * @param string $value

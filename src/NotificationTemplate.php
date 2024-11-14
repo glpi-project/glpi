@@ -66,6 +66,11 @@ class NotificationTemplate extends CommonDBTM
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', Notification::class, self::class];
+    }
+
     public static function getIcon()
     {
         return 'ti ti-template';
@@ -273,7 +278,7 @@ class NotificationTemplate extends CommonDBTM
                      "<html>
                         <head>
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
-                         <title>" . htmlspecialchars($lang['subject']) . "</title>
+                         <title>" . htmlescape($lang['subject']) . "</title>
                          <style type='text/css'>
                            {$css}
                          </style>
@@ -496,7 +501,7 @@ class NotificationTemplate extends CommonDBTM
             }
             $data[$tag] = RichText::isRichTextHtmlContent($value)
                 ? RichText::getSafeHtml($value) // Value is rich text, make it safe
-                : nl2br(htmlspecialchars($value)); // Value is plain text, encode its entities
+                : nl2br(htmlescape($value)); // Value is plain text, encode its entities
         }
 
         return $data;

@@ -248,7 +248,7 @@
 
         {% if not options.readonly %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Show date picker') }}">
                 <i class="{{ calendar_icon }}"></i>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
@@ -432,7 +432,8 @@
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
         locked: false,
-        locked_value: null
+        locked_value: null,
+        tpl_mark: null
     }|merge(options) %}
 
     {% set required_mark = '' %}
@@ -474,5 +475,8 @@
         {{ locked_mark|raw }}
         {{ required_mark|raw }}
         {{ helper|raw }}
+        {% if options.tpl_mark is not empty %}
+            {{ options.tpl_mark|raw }}
+        {% endif %}
     </label>
 {% endmacro %}

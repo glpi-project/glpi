@@ -36,6 +36,7 @@
 namespace Glpi\Console\System;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,9 +58,12 @@ class CheckRequirementsCommand extends AbstractCommand
     {
 
         $requirements_manager = new RequirementsManager();
-        $core_requirements = $requirements_manager->getCoreRequirementList(
-            $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null
-        );
+        $optional_db = $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null;
+        $core_requirements = $requirements_manager->getCoreRequirementList($optional_db);
+
+        if ($optional_db) {
+            $core_requirements->add(new DatabaseTablesEngine($optional_db));
+        }
 
         $informations = new Table($output);
         $informations->setHeaders(

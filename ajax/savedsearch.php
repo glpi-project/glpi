@@ -36,8 +36,6 @@
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $savedsearch = new SavedSearch();
 
 if (isset($_POST["name"])) {
@@ -91,7 +89,7 @@ if ($action == 'display_mine') {
 }
 
 if ($action == 'reorder') {
-    $savedsearch->saveOrder(array_map('intval', $_POST['ids']));
+    $savedsearch->saveOrder($_POST['ids']);
     header("Content-Type: application/json; charset=UTF-8");
     echo json_encode(['res' => true]);
 }

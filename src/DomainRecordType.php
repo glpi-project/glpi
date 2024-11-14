@@ -222,7 +222,7 @@ class DomainRecordType extends CommonDropdown
         switch ($field_type) {
             case 'fields':
                 $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . htmlspecialchars($printable) . '</textarea >';
+                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . htmlescape($printable) . '</textarea >';
                 break;
         }
     }

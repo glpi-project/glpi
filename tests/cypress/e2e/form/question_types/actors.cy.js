@@ -38,7 +38,7 @@ describe('Actor form question type', () => {
         }).as('form_id');
 
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Form$main';
@@ -112,7 +112,8 @@ describe('Actor form question type', () => {
         cy.getDropdownByLabelText('Select an actor...').should('have.text', 'e2e_tests');
 
         // Focus on the question
-        cy.findByRole('option', { name: 'Test actor question' }).click();
+        cy.findByRole('option', { name: 'Test actor question' })
+            .findByRole('textbox', { name: 'Question name' }).click();
 
         // Switch to multiple actors
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();

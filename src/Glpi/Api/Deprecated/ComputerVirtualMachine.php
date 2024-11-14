@@ -88,6 +88,7 @@ class ComputerVirtualMachine implements DeprecatedInterface
     {
         $this->updateSearchOptionsUids($soptions);
         $this->deleteSearchOption($soptions, '4');
+        $this->deleteSearchOption($soptions, '5');
 
         $soptions = array_map(
             function ($soption) {

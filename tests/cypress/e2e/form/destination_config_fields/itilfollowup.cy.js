@@ -34,7 +34,7 @@
 describe('ITILFollowup configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Create form
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');

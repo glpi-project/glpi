@@ -34,10 +34,10 @@
 describe('Helpdesk home page', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Self-Service', true);
+        cy.changeProfile('Self-Service');
     });
     it('can use tiles', () => {
-        cy.visit('/Home');
+        cy.visit('/Helpdesk');
         cy.findByRole('region', { name: 'Quick Access' })
             .findAllByRole('link')
             .as('tiles');
@@ -87,22 +87,46 @@ describe('Helpdesk home page', () => {
                 'reminders_id': reminder_id,
             }).as('reminder_id');
         });
-        cy.visit('/Home');
+        cy.visit('/Helpdesk');
 
         // Default tab should be opened tickets
         cy.findAllByText('Open ticket 1').should('be.visible');
         cy.findAllByText('Open ticket 2').should('be.visible');
         cy.findAllByText('Closed ticket 1').should('not.exist');
+        cy.findByRole('tabpanel').within(() => {
+            // Validate the default columns are displayed
+            cy.findAllByRole('columnheader').should('have.length', 6);
+            cy.findByRole('columnheader', {'name': 'ID'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Title'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Entity'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Status'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Last update'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Opening date'}).should('be.visible');
+        });
 
         // Got to closed tickets tab
         cy.findByRole('tab', {'name': 'Solved tickets'}).click();
         cy.findAllByText('Open ticket 1').should('not.be.visible');
         cy.findAllByText('Open ticket 2').should('not.be.visible');
         cy.findAllByText('Closed ticket 1').should('be.visible');
+        cy.findByRole('tabpanel').within(() => {
+            // Validate the default columns are displayed
+            cy.findAllByRole('columnheader').should('have.length', 6);
+            cy.findByRole('columnheader', {'name': 'ID'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Title'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Entity'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Status'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Last update'}).should('be.visible');
+            cy.findByRole('columnheader', {'name': 'Opening date'}).should('be.visible');
+        });
 
         // Got to Reminder Feed tab
         cy.findByRole('tab', {'name': 'Reminders'}).click();
         cy.findAllByRole('link', {'name': 'Public reminder 1'}).should('be.visible');
+
+        // Return to main tab, make it easier to re-run the test as the last tab
+        // is kept in the session
+        cy.findByRole('tab', {'name': 'Ongoing tickets'}).click();
 
         // RSS feeds are not tested as they are only displayed if a real feed
         // is configurated. Since the query to the feed is done on the backend,

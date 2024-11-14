@@ -46,8 +46,6 @@ global $CFG_GLPI;
 $link = new Group_Ticket();
 $item = new Ticket();
 
-Session::checkLoginUser();
-
 if (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);

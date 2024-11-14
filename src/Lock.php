@@ -278,7 +278,7 @@ TWIG;
                 if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
                     $related_object = new $default_itemtype();
                     $related_object->getFromDB($object->fields[$default_items_id]);
-                    $name = htmlspecialchars($related_object->getName());
+                    $name = htmlescape($related_object->getName());
                     $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $name . ">" . $name . "</a>";
                 }
 
@@ -400,7 +400,7 @@ TWIG, $twig_params);
                 $relation_item = new Asset_PeripheralAsset();
                 $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Computer_Item[{$result['id']}]'>" : '',
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[{$result['id']}]'>" : '',
                     'type' => $peripheral::getTypeName(),
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
@@ -489,22 +489,22 @@ TWIG, $twig_params);
                 $item = new $itemtype();
                 if ($item->can($link_item, READ)) {
                     $url  = "<a href='" . $item->getFormURLWithID($link_item) . "'>";
-                    $url .= htmlspecialchars($item->fields["name"]) . "</a>";
+                    $url .= htmlescape($item->fields["name"]) . "</a>";
 
-                    $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlspecialchars($item->fields['name']) .
+                    $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($item->fields['name']) .
                         '</td></tr>';
                     if (isset($item->fields['serial'])) {
-                        $tooltip .= "<tr><td>" . __s('Serial number') . "</td><td>" . htmlspecialchars($item->fields['serial']) .
+                        $tooltip .= "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($item->fields['serial']) .
                             '</td></tr>';
                     }
                     if (isset($item->fields['comment'])) {
-                        $tooltip .= "<tr><td>" . __s('Comments') . "</td><td>" . htmlspecialchars($item->fields['comment']) .
+                        $tooltip .= "<tr><td>" . __s('Comments') . "</td><td>" . htmlescape($item->fields['comment']) .
                             '</td></tr></table>';
                     }
 
                     $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
                 } else {
-                    $url = htmlspecialchars($item->fields['name']);
+                    $url = htmlescape($item->fields['name']);
                 }
             }
             $subtable['entries'][] = [
@@ -868,7 +868,7 @@ TWIG, $twig_params);
                     $show_checkbox = $type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE);
                     $object_item_type = new $type();
                     $object_item_type->getFromDB($data['id']);
-                    $object_name = htmlspecialchars($data['name']);
+                    $object_name = htmlescape($data['name']);
                     $object_link = "<a href='" . $object_item_type->getLinkURL() . "'>{$object_name}</a>";
 
                     $subtable['entries'][] = [

@@ -102,11 +102,20 @@ class MailCollector extends CommonDBTM
         'passwd',
     ];
 
+    public $history_blacklist = [
+        'errors',
+        'last_collect_date',
+    ];
+
     public static function getTypeName($nb = 0)
     {
         return _n('Receiver', 'Receivers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
 
     public static function canCreate(): bool
     {
@@ -126,7 +135,7 @@ class MailCollector extends CommonDBTM
         if (static::canView()) {
             return [
                 'options' => [
-                    'notimportedemail' => [
+                    NotImportedEmail::class => [
                         'links' => [
                             'search' => '/front/notimportedemail.php',
                         ],
@@ -460,7 +469,7 @@ class MailCollector extends CommonDBTM
                     foreach ($rejected as $id => $data) {
                         if ($action == 1) {
                             Session::addMessageAfterRedirect(
-                                htmlspecialchars(sprintf(
+                                htmlescape(sprintf(
                                     __('Email %s not found. Impossible import.'),
                                     strtr($id, $clean)
                                 )),
@@ -502,7 +511,7 @@ class MailCollector extends CommonDBTM
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e, true);
                 Session::addMessageAfterRedirect(
-                    __s('An error occurred trying to connect to collector.') . "<br/>" . htmlspecialchars($e->getMessage()),
+                    __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
                     false,
                     ERROR
                 );
@@ -789,14 +798,14 @@ class MailCollector extends CommonDBTM
                     $blacklisted
                 );
                 if ($display) {
-                     Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ($error ? ERROR : INFO));
+                     Session::addMessageAfterRedirect(htmlescape($msg), false, ($error ? ERROR : INFO));
                 } else {
                     return $msg;
                 }
             } else {
                 $msg = __('Could not connect to mailgate server');
                 if ($display) {
-                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                     GLPINetwork::addErrorMessageAfterRedirect();
                 } else {
                     return $msg;
@@ -806,7 +815,7 @@ class MailCollector extends CommonDBTM
            //TRANS: %s is the ID of the mailgate
             $msg = sprintf(__('Could not find mailgate %d'), $mailgateID);
             if ($display) {
-                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 GLPINetwork::addErrorMessageAfterRedirect();
             } else {
                 return $msg;
@@ -1876,8 +1885,8 @@ class MailCollector extends CommonDBTM
             foreach ($errors as $data) {
                 $collector->getFromDB($data['id']);
                 $servers[] = [
-                    'link' => htmlspecialchars($collector->getLinkURL()),
-                    'name' => htmlspecialchars($collector->getName(['complete' => true]))
+                    'link' => htmlescape($collector->getLinkURL()),
+                    'name' => htmlescape($collector->getName(['complete' => true]))
                 ];
             }
         }
@@ -2240,16 +2249,25 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
 
         $charset = $content_type->getParameter('charset');
         if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+            /* mbstring functions do not handle the 'ks_c_5601-1987' &
+             * 'ks_c_5601-1989' charsets. However, these charsets are used, for
+             * example, by various versions of Outlook to send Korean characters.
+             * Use UHC (CP949) encoding instead. See, e.g.,
+             * http://lists.w3.org/Archives/Public/ietf-charsets/2001AprJun/0030.html */
+            if (in_array(strtolower($charset), ['ks_c_5601-1987', 'ks_c_5601-1989'])) {
+                $charset = 'UHC';
+            }
+
             if (in_array(strtoupper($charset), array_map('strtoupper', mb_list_encodings()))) {
                 $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
             } else {
-               // Convert Windows charsets names
+                // Convert Windows charsets names
                 if (preg_match('/^WINDOWS-\d{4}$/i', $charset)) {
                     $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
                 }
 
-               // Try to convert using iconv with TRANSLIT, then with IGNORE.
-               // TRANSLIT may result in failure depending on system iconv implementation.
+                // Try to convert using iconv with TRANSLIT, then with IGNORE.
+                // TRANSLIT may result in failure depending on system iconv implementation.
                 if ($converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
                     $contents = $converted;
                 } else if ($converted = iconv($charset, 'UTF-8//IGNORE', $contents)) {

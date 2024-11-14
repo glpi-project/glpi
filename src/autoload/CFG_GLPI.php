@@ -478,7 +478,7 @@ $CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', '
     'Printer', 'Software', 'Appliance', 'Cluster', 'DatabaseInstance', 'Database'
 ];
 
-$CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain'];
+$CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain', 'ApplianceEnvironment'];
 
 $CFG_GLPI['remote_management_types'] = ['Computer', 'Phone'];
 
@@ -529,7 +529,7 @@ $CFG_GLPI['javascript'] = [
     ],
     'management' => [
         'datacenter' => [
-            'dcroom' => ['gridstack', 'rack']
+            'DCRoom' => ['gridstack', 'rack']
         ],
     ],
     'config' => [
@@ -541,7 +541,7 @@ $CFG_GLPI['javascript'] = [
             'ITILValidationTemplate' => ['tinymce'],
         ],
         'notification' => [
-            'notificationtemplate' => ['tinymce']
+            'NotificationTemplate' => ['tinymce']
         ],
         'plugin' => [
             'marketplace' => ['marketplace']

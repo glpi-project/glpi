@@ -508,9 +508,7 @@ class NetworkPort extends InventoryAsset
                         $vlan->getTable(),
                         $reference
                     );
-                    if (!$this->vlan_stmt = $DB->prepare($insert_query)) {
-                        throw new \RuntimeException(sprintf('Error preparing query `%s`.', $insert_query));
-                    }
+                    $this->vlan_stmt = $DB->prepare($insert_query);
                 }
 
                 $stmt_values = array_values($stmt_columns);
@@ -538,9 +536,7 @@ class NetworkPort extends InventoryAsset
                     $pvlan->getTable(),
                     $reference
                 );
-                if (!$this->pvlan_stmt = $DB->prepare($insert_query)) {
-                    throw new \RuntimeException(sprintf('Error preparing query `%s`.', $insert_query));
-                }
+                $this->pvlan_stmt = $DB->prepare($insert_query);
             }
 
             $pvlan_stmt_values = array_values($pvlan_stmt_columns);

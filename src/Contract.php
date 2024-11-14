@@ -71,6 +71,16 @@ class Contract extends CommonDBTM
         return _n('Contract', 'Contracts', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
     public function post_getEmpty()
     {
         if (isset($_SESSION['glpiactive_entity'])) {
@@ -1060,7 +1070,7 @@ class Contract extends CommonDBTM
         ]);
         $out    = "";
         foreach ($iterator as $data) {
-            $out .= htmlspecialchars(Dropdown::getDropdownName("glpi_suppliers", $data['id'])) . "<br>";
+            $out .= htmlescape(Dropdown::getDropdownName("glpi_suppliers", $data['id'])) . "<br>";
         }
         return $out;
     }
@@ -1341,7 +1351,7 @@ class Contract extends CommonDBTM
                             $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                            Session::addMessageAfterRedirect(htmlescape(sprintf(
                                 __('%1$s: %2$s'),
                                 $entityname,
                                 $message
@@ -1366,7 +1376,7 @@ class Contract extends CommonDBTM
                         if ($task) {
                             $task->log($msg);
                         } else {
-                            Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                            Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                         }
                     }
                 }

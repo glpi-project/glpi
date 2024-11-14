@@ -60,6 +60,16 @@ class Supplier extends CommonDBTM
         return _n('Supplier', 'Suppliers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
     public function post_getEmpty()
     {
         $this->fields['is_active'] = 1;
@@ -371,7 +381,7 @@ class Supplier extends CommonDBTM
         $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
 
         if ($withname) {
-            $ret .= htmlspecialchars($this->fields["name"]);
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 
@@ -514,7 +524,7 @@ class Supplier extends CommonDBTM
                     if ($nb > 0) {
                         $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                     }
-                    echo "<td class='center'>" . htmlspecialchars($title) . "</td>";
+                    echo "<td class='center'>" . htmlescape($title) . "</td>";
                     echo "<td class='center' colspan='2'>";
                     $opt = ['order'      => 'ASC',
                         'is_deleted' => 0,
@@ -542,7 +552,7 @@ class Supplier extends CommonDBTM
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                         }
                         $link = $linktype::getFormURLWithID($data[$linkfield]);
-                        $name = "<a href='$link'>" . htmlspecialchars($name) . "</a>";
+                        $name = "<a href='$link'>" . htmlescape($name) . "</a>";
 
                         echo "<tr class='tab_bg_1";
                         if (isset($data['is_template']) && $data['is_template'] == 1) {
@@ -555,7 +565,7 @@ class Supplier extends CommonDBTM
                             if ($nb > 0) {
                                 $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                             }
-                            echo "<td class='center top' rowspan='$nb'>" . htmlspecialchars($title) . "</td>";
+                            echo "<td class='center top' rowspan='$nb'>" . htmlescape($title) . "</td>";
                         }
                         echo "<td class='center'>" . Dropdown::getDropdownName(
                             "glpi_entities",
@@ -565,9 +575,9 @@ class Supplier extends CommonDBTM
                         echo ((isset($data['is_deleted']) && $data['is_deleted']) ? " tab_bg_2_2'" : "'") . ">";
                         echo $name . "</td>";
                         echo "<td class='center'>" .
-                           (isset($data["serial"]) ? htmlspecialchars($data["serial"]) : "-") . "</td>";
+                           (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") . "</td>";
                         echo "<td class='center'>" .
-                           (isset($data["otherserial"]) ? htmlspecialchars($data["otherserial"]) : "-") . "</td>";
+                           (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
                         echo "</tr>";
                     }
                 }

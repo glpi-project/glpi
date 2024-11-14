@@ -40,8 +40,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     throw new AccessDeniedHttpException();
 }
@@ -58,15 +56,14 @@ if (isset($_GET['ajax_id'])) {
     // as we have to delete profile from `$_SESSION` during the pull operation.
     session_write_close();
 
+    header('Content-Type: application/json');
     if ($profile) {
         $data = $profile->getDebugInfo();
         if ($data) {
-            header('Content-Type: application/json');
             echo json_encode($data);
-            return;
         }
     }
-    throw new NotFoundHttpException();
+    return;
 }
 
 if (isset($_GET['action'])) {

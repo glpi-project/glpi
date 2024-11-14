@@ -44,7 +44,6 @@ use Glpi\Http\Request;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
-use GuzzleHttp\Client as Guzzle_Client;
 
 class Webhook extends CommonDBTM implements FilterableInterface
 {
@@ -77,6 +76,16 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function getTypeName($nb = 0)
     {
         return _n('Webhook', 'Webhooks', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
     }
 
     public static function canCreate(): bool
@@ -889,7 +898,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
 
         if ($controller_class === null || $schema_name === null) {
-            echo __('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
+            echo __s('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
         // TODO Allow pinning webhooks to specific API versions

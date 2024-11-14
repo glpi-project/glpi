@@ -40,17 +40,16 @@
 
 /** KnowbaseItem notifications */
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) === 0) {
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplates',
         [
             'name'            => 'Knowledge base item',
             'itemtype'        => 'KnowbaseItem',
-        ],
-        'Add new knowbase notification template'
+        ]
     );
     $notificationtemplate_id = $DB->insertId();
 
-    $DB->insertOrDie(
+    $DB->insert(
         'glpi_notificationtemplatetranslations',
         [
             'notificationtemplates_id' => $notificationtemplate_id,
@@ -104,8 +103,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
             &lt;br&gt;##lang.target.name## : ##target.name##
             &lt;br&gt;##lang.target.url## : ##target.url## &lt;/p&gt;##ENDFOREACHtargets##
             HTML
-        ],
-        'Add new knowbase notification template translation'
+        ]
     );
 
     $notifications_data = [
@@ -124,7 +122,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
     ];
 
     foreach ($notifications_data as $notification_data) {
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications',
             [
                 'name'            => $notification_data['name'],
@@ -136,19 +134,17 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
                 'is_active'       => 0,
                 'date_creation'   => null,
                 'date_mod'        => null,
-            ],
-            'Add 3 knowbase notification'
+            ]
         );
         $notification_id = $DB->insertId();
 
-        $DB->insertOrDie(
+        $DB->insert(
             'glpi_notifications_notificationtemplates',
             [
                 'notifications_id'         => $notification_id,
                 'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                 'notificationtemplates_id' => $notificationtemplate_id,
-            ],
-            'Add knowbase notification templates'
+            ]
         );
     }
 }

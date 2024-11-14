@@ -799,9 +799,9 @@ abstract class CommonDBChild extends CommonDBConnexity
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = htmlspecialchars($this->getName());
+            $value = htmlescape($this->getName());
         }
-        $field_name = htmlspecialchars($field_name . "[$id]");
+        $field_name = htmlescape($field_name . "[$id]");
 
         if ($canedit) {
             $out = "<input type='text' size='40' name='$field_name' value='$value' class='form-select'>";
@@ -863,14 +863,14 @@ abstract class CommonDBChild extends CommonDBConnexity
 
         if ($canedit) {
             $lower_name         = strtolower(get_called_class());
-            $child_count_js_var = htmlspecialchars('nb' . $lower_name . 's');
-            $div_id             = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+            $child_count_js_var = htmlescape('nb' . $lower_name . 's');
+            $div_id             = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
             $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
               " title=\"" . __s('Add') . "\"" .
-                "\" onClick=\"var row = " . Html::jsGetElementByID($div_id) . ";
+                "\" onClick=\"var row = $('#" . $div_id . "');
                              row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"
@@ -894,11 +894,11 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @todo study if we cannot use these methods for the user emails
      * @see showAddChildButtonForItemForm()
      *
-     * @param CommonDBTM   $item        the item on which to add the current CommenDBChild
+     * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
      * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|boolean|string (display) Returns false if there is a right error.
      **/
     public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {
@@ -923,7 +923,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
 
         $lower_name = strtolower(get_called_class());
-        $div_id     = htmlspecialchars("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+        $div_id     = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
 
         $query = [
             'FROM'   => static::getTable(),
@@ -1022,11 +1022,11 @@ abstract class CommonDBChild extends CommonDBConnexity
             Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
             $info = ob_get_clean();
             if (empty($info)) {
-                $info = __('Yes');
+                $info = __s('Yes');
             }
             echo $info;
         } else {
-            echo __('No');
+            echo __s('No');
         }
         echo "</td>";
     }

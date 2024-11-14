@@ -40,6 +40,9 @@ module.exports = defineConfig({
     e2e: {
         baseUrl: "http://localhost:80",
         experimentalMemoryManagement: true,
+        retries: {
+            runMode: 3,
+        },
         setupNodeEvents(on) {
             // implement node event listeners here
             // Remove --start-maximized flag from Chrome

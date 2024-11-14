@@ -92,6 +92,15 @@ class Computer extends CommonDBTM
         return _n('Computer', 'Computers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
 
     public function useDeletedToLockIfDynamic()
     {

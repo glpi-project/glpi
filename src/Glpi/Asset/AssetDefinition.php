@@ -54,6 +54,11 @@ use Session;
  */
 final class AssetDefinition extends AbstractDefinition
 {
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
+
     public static function getCustomObjectBaseClass(): string
     {
         return Asset::class;
@@ -291,7 +296,7 @@ final class AssetDefinition extends AbstractDefinition
         if (array_key_exists('capacities', $input)) {
             if (!$this->validateCapacityArray($input['capacities'])) {
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
                         __('Capacities')
                     )),

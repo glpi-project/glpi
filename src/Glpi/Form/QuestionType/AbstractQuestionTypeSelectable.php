@@ -148,8 +148,12 @@ TWIG;
      */
     public function getOptions(?Question $question): array
     {
-        /** @var ?QuestionTypeSelectableConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return [];
+        }
+
+        /** @var ?QuestionTypeSelectableExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return [];
         }
@@ -207,6 +211,7 @@ TWIG;
 
             <div
                 class="d-flex gap-1 align-items-center mb-2"
+                data-glpi-form-selectable-question-option
                 {{ extra_details ? 'data-glpi-form-editor-question-extra-details' : '' }}
             >
                 <i
@@ -299,7 +304,7 @@ TWIG;
     ): string {
         $template = <<<TWIG
             {% for value in values %}
-                <label class="form-check">
+                <label class="form-check {{ loop.last ? 'mb-0' : '' }}">
                     <input
                         type="{{ input_type }}"
                         name="{{ question.getEndUserInputName() }}[]"
@@ -351,8 +356,8 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeSelectableConfig::class;
+        return QuestionTypeSelectableExtraDataConfig::class;
     }
 }

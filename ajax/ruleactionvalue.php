@@ -39,8 +39,6 @@ if (strpos($_SERVER['PHP_SELF'], "ruleactionvalue.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 $ra = new RuleAction();
 
 $ra->displayActionSelectPattern($_POST);

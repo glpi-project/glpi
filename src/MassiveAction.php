@@ -407,8 +407,7 @@ class MassiveAction
 
             $this->start_time = microtime(true);
 
-            /** @var number $max_time */
-            $max_time = get_cfg_var("max_execution_time");
+            $max_time = (int) get_cfg_var("max_execution_time");
             $max_time = ($max_time == 0) ? 60 : $max_time;
 
             $this->timeout_delay                  = ($max_time - 3);
@@ -764,6 +763,9 @@ class MassiveAction
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
                     $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
+                    if ($item->maybeTemplate()) {
+                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _x('button', 'Create template');
+                    }
                 }
             }
 
@@ -845,6 +847,12 @@ class MassiveAction
                 $item->getForbiddenSingleMassiveActions()
             );
             $whitedlisted_actions = $item->getWhitelistedSingleMassiveActions();
+        } else if ($items_id === null) {
+            // Remove forbidden actions for multiple items (actions only allowed from a single item context)
+            $forbidden_actions = array_merge(
+                $forbidden_actions,
+                $item->getForbiddenMultipleMassiveActions()
+            );
         }
 
         if (is_array($forbidden_actions) && count($forbidden_actions)) {
@@ -917,8 +925,9 @@ class MassiveAction
      **/
     public function showDefaultSubForm()
     {
-        echo Html::submit("<i class='fas fa-save'></i><span>" . _x('button', 'Post') . "</span>", [
+        echo Html::submit(_x('button', 'Post'), [
             'name'  => 'massiveaction',
+            'icon'  => 'fas fa-save',
             'class' => 'btn btn-sm btn-primary',
         ]);
     }
@@ -1233,14 +1242,17 @@ class MassiveAction
                 echo Html::hidden('field', ['value' => $fieldname]);
                 echo "<br>";
 
-                $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
-                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                    $submitname = $ma->POST['submitname'];
-                }
-                echo Html::submit($submitname, [
+                $submit_options = [
                     'name'  => 'massiveaction',
                     'class' => 'btn btn-sm btn-primary',
-                ]);
+                ];
+                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+                    $submitname = $ma->POST['submitname'];
+                } else {
+                    $submitname = _x('button', 'Post');
+                    $submit_options['icon'] = 'fas fa-save';
+                }
+                echo Html::submit($submitname, $submit_options);
 
                 return true;
 
@@ -1262,14 +1274,43 @@ class MassiveAction
 
                 echo "<br>";
 
-                $submitname = "<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>";
-                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
-                      $submitname = $ma->POST['submitname'];
-                }
-                echo Html::submit($submitname, [
+                $submit_options = [
                     'name'  => 'massiveaction',
                     'class' => 'btn btn-sm btn-primary',
-                ]);
+                ];
+                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+                    $submitname = $ma->POST['submitname'];
+                } else {
+                    $submitname = _x('button', 'Post');
+                    $submit_options['icon'] = 'fas fa-save';
+                }
+                echo Html::submit($submitname, $submit_options);
+
+                return true;
+            case 'create_template':
+                $rand = mt_rand();
+
+                echo "<table class='w-100'><tr>";
+                echo "<td>";
+                echo __s('Name');
+                echo "</td><tr>";
+                echo "<td>" . Html::input("template_name", ['id' => "template_name$rand"]);
+                echo "</td>";
+                echo "</tr></table>";
+
+                echo "<br>";
+
+                $submit_options = [
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
+                ];
+                if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
+                    $submitname = $ma->POST['submitname'];
+                } else {
+                    $submitname = _x('button', 'Post');
+                    $submit_options['icon'] = 'fas fa-save';
+                }
+                echo Html::submit($submitname, $submit_options);
 
                 return true;
 
@@ -1280,8 +1321,9 @@ class MassiveAction
                     count($ma->items, COUNT_RECURSIVE) - count($ma->items)
                 );
                 echo "<br><br>";
-                echo Html::submit("<i class='fas fa-plus'></i><span>" . _x('button', 'Add') . "</span>", [
+                echo Html::submit(_x('button', 'Add'), [
                     'name'  => 'massiveaction',
+                    'icon'  => 'fas fa-plus',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 
@@ -1294,8 +1336,9 @@ class MassiveAction
                     'name' => 'amendment'
                 ]);
                 echo ("<br><br>");
-                echo Html::submit("<i class='fas fa-save'></i><span>" . __('Update') . "</span>", [
+                echo Html::submit(_x('button', 'Update'), [
                     'name'  => 'massiveaction',
+                    'icon'  => 'fas fa-save',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 
@@ -1308,8 +1351,9 @@ class MassiveAction
                     'name' => 'add_note'
                 ]);
                 echo ("<br><br>");
-                echo Html::submit("<i class='fas fa-plus'></i><span>" . _sx('button', 'Add') . "</span>", [
+                echo Html::submit(_x('button', 'Add'), [
                     'name'  => 'massiveaction',
+                    'icon'  => 'fas fa-plus',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 
@@ -1341,7 +1385,7 @@ class MassiveAction
         if ($this->display_progress_bars) {
             if ($this->progress_bar_displayed !== true) {
                 Html::progressBar('main_' . $this->identifier, ['create'  => true,
-                    'message' => htmlspecialchars($this->action_name)
+                    'message' => htmlescape($this->action_name)
                 ]);
                 $this->progress_bar_displayed         = true;
                 $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
@@ -1363,7 +1407,7 @@ class MassiveAction
                     Html::progressBar(
                         'itemtype_' . $this->identifier,
                         [
-                            'message' => htmlspecialchars($itemtype::getTypeName(Session::getPluralNumber())),
+                            'message' => htmlescape($itemtype::getTypeName(Session::getPluralNumber())),
                             'percent' => $percent
                         ]
                     );
@@ -1662,15 +1706,21 @@ class MassiveAction
                 break;
 
             case 'clone':
+            case 'create_template':
                 $input = $ma->POST;
+                $override_input = [];
+                if ($action === 'create_template') {
+                    $override_input['template_name'] = $input['template_name'];
+                }
                 foreach ($ids as $id) {
                    // check rights
                     if ($item->can($id, CREATE)) {
                         // recovers the item from DB
                         if ($item->getFromDB($id)) {
+                            $clone_as_template = $action === 'create_template' || $item->isTemplate();
                             if (
                                 method_exists($item, "cloneMultiple")
-                                && $item->cloneMultiple($input["nb_copy"])
+                                && $item->cloneMultiple($input["nb_copy"] ?? 1, $override_input, true, $clone_as_template)
                             ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {

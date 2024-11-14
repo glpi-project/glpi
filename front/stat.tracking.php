@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Location\StatDataClosed;
 use Glpi\Stat\Data\Location\StatDataLate;
 use Glpi\Stat\Data\Location\StatDataOpened;
@@ -48,12 +49,12 @@ Html::header(__('Statistics'), '', "helpdesk", "stat");
 Session::checkRight("statistic", READ);
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
-    exit;
+    throw new BadRequestHttpException();
 }
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }

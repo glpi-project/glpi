@@ -41,11 +41,6 @@
 class TicketRecurrent extends CommonITILRecurrent
 {
     /**
-     * @var string CommonDropdown
-     */
-    public $second_level_menu = "ticketrecurrent";
-
-    /**
      * @var string Right managements
      */
     public static $rightname = 'ticketrecurrent';
@@ -53,6 +48,11 @@ class TicketRecurrent extends CommonITILRecurrent
     public static function getTypeName($nb = 0)
     {
         return __('Recurrent tickets');
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', self::class];
     }
 
     public static function getConcreteClass()

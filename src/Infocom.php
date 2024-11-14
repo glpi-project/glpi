@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 /**
  * Infocom class
@@ -611,7 +612,7 @@ class Infocom extends CommonDBChild
                     Html::convDate($budget->fields['begin_date']),
                     Html::convDate($budget->fields['end_date'])
                 );
-                Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
             }
         }
     }
@@ -745,7 +746,7 @@ class Infocom extends CommonDBChild
                     ));
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
@@ -770,7 +771,7 @@ class Infocom extends CommonDBChild
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 }
             }
         }
@@ -882,6 +883,46 @@ class Infocom extends CommonDBChild
         }
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $ic = new self();
+
+        $item = false;
+
+        if (isset($_GET["id"])) {
+            $ic->getFromDB($_GET["id"]);
+            $_GET["itemtype"] = $ic->fields["itemtype"];
+            $_GET["items_id"] = $ic->fields["items_id"];
+        }
+
+        if (
+            isset($_GET["itemtype"])
+            && ($item = getItemForItemtype($_GET["itemtype"]))
+            && (
+                !isset($_GET["items_id"])
+                || !$item->getFromDB($_GET["items_id"])
+            )
+        ) {
+            throw new NotFoundHttpException();
+        }
+
+        Html::popHeader(self::getTypeName());
+
+        self::showForItem($item);
+
+        Html::popFooter();
+    }
+
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        // Always return to the previous page
+        return 'back';
+    }
 
     /**
      * Calculate TCO and TCO by month for an item
@@ -1942,7 +1983,8 @@ JS;
      * @param boolean $auto_renew
      * @param integer $periodicity   renewal periodicity in month if different from addwarranty
      *
-     * @return string expiration date automatically converted to the user's preferred date format
+     * @return string Expiration date automatically converted to the user's preferred date format.
+     *                The returned value is a safe HTML string.
      **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
@@ -1952,7 +1994,7 @@ JS;
             ($addwarranty == -1)
             && ($deletenotice == 0)
         ) {
-            return __('Never');
+            return __s('Never');
         }
 
         if (empty($from)) {
@@ -1972,9 +2014,9 @@ JS;
         }
 
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
-            return "<span class='red'>" . Html::convDate(date("Y-m-d", $timestamp)) . "</span>";
+            return "<span class='red'>" . htmlescape(Html::convDate(date("Y-m-d", $timestamp))) . "</span>";
         }
-        return Html::convDate(date("Y-m-d", $timestamp));
+        return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
     }
 
 
@@ -1991,7 +2033,7 @@ JS;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            $actions[$action_name] = "<i class='fa-fw " . htmlescape(self::getIcon()) . "'></i>" .
                                   __s('Enable the financial and administrative information');
         }
     }

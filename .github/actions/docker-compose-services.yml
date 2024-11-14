@@ -1,20 +1,20 @@
 services:
   db:
-    container_name: "db"
+    container_name: "glpi-test-db"
     image: "ghcr.io/glpi-project/${DB_IMAGE:-githubactions-mariadb:10.11}"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: "glpi"
     shm_size: '1gb'
   dovecot:
-    container_name: "dovecot"
+    container_name: "glpi-test-dovecot"
     image: "ghcr.io/glpi-project/githubactions-dovecot"
   memcached:
-    container_name: "memcached"
+    container_name: "glpi-test-memcached"
     image: "ghcr.io/glpi-project/githubactions-memcached"
   openldap:
-    container_name: "openldap"
+    container_name: "glpi-test-openldap"
     image: "ghcr.io/glpi-project/githubactions-openldap"
   redis:
-    container_name: "redis"
+    container_name: "glpi-test-redis"
     image: "ghcr.io/glpi-project/githubactions-redis"

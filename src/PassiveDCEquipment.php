@@ -54,6 +54,16 @@ class PassiveDCEquipment extends CommonDBTM
         return _n('Passive device', 'Passive devices', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -255,6 +265,20 @@ class PassiveDCEquipment extends CommonDBTM
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+
+        if (isset($query_params['position'])) {
+            $options['position'] = $query_params['position'];
+        }
+        if (isset($query_params['room'])) {
+            $options['room'] = $query_params['room'];
+        }
+
+        return $options;
     }
 
     public static function getIcon()

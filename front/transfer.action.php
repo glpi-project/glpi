@@ -35,7 +35,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
-Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
+Html::header(__('Transfer'), '', 'admin', 'rule', 'Transfer');
 
 $transfer = new Transfer();
 
@@ -51,7 +51,7 @@ if (isset($_POST['transfer'])) {
         echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
         echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
         Html::footer();
-        exit();
+        return;
     }
 } else if (isset($_POST['clear'])) {
     unset($_SESSION['glpitransfer_list']);
@@ -59,7 +59,7 @@ if (isset($_POST['transfer'])) {
     echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
     echo "</div>";
     Html::footer();
-    exit();
+    return;
 }
 
 unset($_SESSION['glpimassiveactionselected']);

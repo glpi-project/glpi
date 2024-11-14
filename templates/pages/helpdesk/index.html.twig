@@ -1,0 +1,116 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "layout/page_skeleton.html.twig" %}
+
+{% block content %}
+    <div class="d-flex flex-column helpdesk-home-container">
+        <div class="search-banner">
+            <div class="container-narrow">
+                <h1 class="text-dark text-center">
+                    {{ __("How can we help you?") }}
+                </h1>
+
+                <div class="input-icon search-bar-container">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        value=""
+                        class="form-control home-search"
+                        placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                    >
+                </div>
+            </div>
+        </div>
+        <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
+            <div class="container-xl">
+                {# Display password alerts #}
+                {% if password_alert|length %}
+                    <div class="alert alert-warning alert-dismissible bg-white" role="alert">
+                        <div class="d-flex mb-2">
+                            <div>
+                                <i class="ti ti-alert-triangle me-1"></i>
+                            </div>
+                            <div>
+                                {{ password_alert }}
+                            </div>
+                        </div>
+
+                        <div class="btn-list">
+                            <a class="btn btn-outline-warning" href="{{ path('/front/updatepassword.php') }} ">
+                                {{ __('Update my password') }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# TODO: deprecate this hook and make a new one that doesn't expect a table as a container #}
+                <table class="central">
+                    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_CENTRAL')) }}
+                </table>
+
+                <div class="row">
+                    {% for tile in tiles %}
+                        <div class="col-12 col-sm-6 col-md-4 d-flex">
+                            <a
+                                class="card mx-1 my-2 flex-grow-1"
+                                href="{{ path(tile.getLink()) }}"
+                            >
+                                <section class="card-body">
+                                    <div class="d-flex">
+                                        {{ render_illustration(tile.getIllustration(), 100) }}
+                                        <div class="ms-4">
+                                            <h2 class="card-title mb-2">
+                                                {{ tile.getTitle() }}
+                                            </h2>
+                                            <div class="text-secondary">
+                                                {{ tile.getDescription() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <div class="tickets-banner">
+            <div class="container-xl">
+                {{ tabs.showTabsContent() }}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

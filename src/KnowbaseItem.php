@@ -38,7 +38,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\RichText\RichText;
-use Glpi\Search\SearchEngine;
 
 /**
  * KnowbaseItem Class
@@ -1001,6 +1000,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
+        if (
+            isset($options['item_itemtype'], $options['item_items_id'])
+            && !is_a($options['item_itemtype'], CommonDBTM::class, true)
+        ) {
+            unset($options['item_itemtype'], $options['item_items_id']);
+        }
+
         $twig_params = [
             'contains' => $params["contains"],
             'options' => $options,
@@ -1019,56 +1025,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 {{ inputs.hidden('glpi_csrf_token', csrf_token()) }}
             </form>
 TWIG, $twig_params);
-    }
-
-    /**
-     * Print out an HTML form for Search knowbase item
-     *
-     * @since 0.84
-     *
-     * @param $options   $_GET
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     **/
-    public function showManageForm($options)
-    {
-        Toolbox::deprecated();
-
-        if (
-            !Session::haveRightsOr(
-                self::$rightname,
-                [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN]
-            )
-        ) {
-            return false;
-        }
-        $params['unpublished'] = 'my';
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
-
-        //Nothing should be showing this form, so not a priority to move to Twig.
-        echo "<div>";
-        echo "<form method='get' action='" . static::getSearchURL() . "'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-        $values = ['myunpublished' => __s('My unpublished articles'),
-            'allmy'         => __s('All my articles')
-        ];
-        if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            $values['allunpublished'] = __s('All unpublished articles');
-            $values['allpublished'] = __s('All published articles');
-        }
-        Dropdown::showFromArray('unpublished', $values, ['value' => $params['unpublished']]);
-        echo "</td><td class='left'>";
-        echo "<input type='submit' value=\"" . _sx('button', 'Post') . "\" class='btn btn-primary'></td>";
-        echo "</tr></table>";
-        Html::closeForm();
-        echo "</div>";
     }
 
     /**
@@ -1600,8 +1556,8 @@ TWIG, $twig_params);
                         $row_num
                     );
                 } else {
-                    echo Search::showItem($output_type, htmlspecialchars($name), $item_num, $row_num);
-                    echo Search::showItem($output_type, htmlspecialchars(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
+                    echo Search::showItem($output_type, htmlescape($name), $item_num, $row_num);
+                    echo Search::showItem($output_type, htmlescape(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
                 }
 
                 if ($showwriter) {
@@ -1628,9 +1584,9 @@ TWIG, $twig_params);
                         $categories_names[] = "<a class='kb-category'"
                             . " href='$cathref'"
                             . " data-category-id='" . $knowbaseitemcategories_id . "'"
-                            . ">" . htmlspecialchars($fullcategoryname) . '</a>';
+                            . ">" . htmlescape($fullcategoryname) . '</a>';
                     } else {
-                        $categories_names[] = htmlspecialchars($fullcategoryname);
+                        $categories_names[] = htmlescape($fullcategoryname);
                     }
                 }
                 echo Search::showItem($output_type, implode(', ', $categories_names), $item_num, $row_num);
@@ -2102,7 +2058,7 @@ TWIG, $twig_params);
                     $matches[1],
                     $matches[2],
                     Toolbox::slugify($matches[3]),
-                    htmlspecialchars($matches[3]),
+                    htmlescape($matches[3]),
                     '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>'
                 ],
                 $tpl

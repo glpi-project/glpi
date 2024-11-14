@@ -57,6 +57,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return _n('External event', 'External events', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', Planning::class, self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

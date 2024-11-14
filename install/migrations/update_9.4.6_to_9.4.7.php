@@ -52,7 +52,7 @@ function update946to947()
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.7'));
     $migration->setVersion('9.4.7');
 
-    $DB->updateOrDie('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
+    $DB->update('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
 
    // ************ Keep it at the end **************
     $migration->executeMigration();

@@ -42,7 +42,7 @@ if (!array_key_exists('cookie_refresh', $_GET)) {
     // Session cookie will not be accessible when user will be redirected from provider website
     // if `session.cookie_samesite` configuration value is `strict`.
     // Redirecting on self using `http-equiv="refresh"` will get around this limitation.
-    $url = htmlspecialchars(
+    $url = htmlescape(
         $_SERVER['REQUEST_URI']
         . (strpos($_SERVER['REQUEST_URI'], '?') !== false ? '&' : '?')
         . 'cookie_refresh'
@@ -56,7 +56,7 @@ if (!array_key_exists('cookie_refresh', $_GET)) {
     <body></body>
 </html>
 HTML;
-    exit;
+    return;
 }
 
 Session::checkRight("config", UPDATE);
@@ -67,7 +67,7 @@ if (
 ) {
     // Got an error, probably user denied access
     Session::addMessageAfterRedirect(
-        htmlspecialchars(sprintf(_x('oauth', 'Authorization failed with error: %s'), $_GET['error_description'] ?? $_GET['error'])),
+        htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $_GET['error_description'] ?? $_GET['error'])),
         false,
         ERROR
     );
@@ -122,7 +122,7 @@ if (
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(_x('oauth', 'Unable to fetch authorization code. Error is: %s'), $e->getMessage())),
+                htmlescape(sprintf(_x('oauth', 'Unable to fetch authorization code. Error is: %s'), $e->getMessage())),
                 false,
                 ERROR
             );

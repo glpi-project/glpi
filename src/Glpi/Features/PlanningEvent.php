@@ -44,12 +44,12 @@ use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\ArrayNormalizer;
 use Group_User;
 use Html;
 use Planning;
 use PlanningEventCategory;
 use PlanningRecall;
-use Glpi\DBAL\QueryExpression;
 use Reminder;
 use RRule\RRule;
 use RRule\RSet;
@@ -116,17 +116,14 @@ trait PlanningEvent
         /** @var \DBmysql $DB */
         global $DB;
 
+        $input = $this->prepareGuestsInput($input);
+
         if (
             $DB->fieldExists(static::getTable(), 'users_id')
             && (!isset($input['users_id'])
               || empty($input['users_id']))
         ) {
             $input['users_id'] = Session::getLoginUserID();
-        }
-
-       // manage guests
-        if (isset($input['users_id_guests']) && is_array($input['users_id_guests'])) {
-            $input['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
         }
 
         Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -179,12 +176,11 @@ trait PlanningEvent
 
     public function prepareInputForUpdate($input)
     {
-       // manage guests
-        if (isset($input['users_id_guests']) && is_array($input['users_id_guests'])) {
-            $input['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
+        $input = $this->prepareGuestsInput($input);
 
-           // avoid warning on update method (string comparison with old value)
-            $this->fields['users_id_guests'] = exportArrayToDB($input['users_id_guests']);
+        if (isset($this->fields['users_id_guests']) && is_array($this->fields['users_id_guests'])) {
+            // avoid warning on update method (string comparison with old value)
+            $this->fields['users_id_guests'] = exportArrayToDB($this->fields['users_id_guests']);
         }
 
         Toolbox::manageBeginAndEndPlanDates($input['plan']);
@@ -229,6 +225,17 @@ trait PlanningEvent
        // encode rrule
         if (isset($input['rrule']) && is_array($input['rrule'])) {
             $input['rrule'] = $this->encodeRrule($input['rrule']);
+        }
+
+        return $input;
+    }
+
+    private function prepareGuestsInput(array $input): array
+    {
+        if (isset($input['users_id_guests'])) {
+            $input['users_id_guests'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['users_id_guests'] ?: [], 'intval')
+            );
         }
 
         return $input;

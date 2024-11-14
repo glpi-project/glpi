@@ -33,7 +33,7 @@
 describe('File upload', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
         cy.visit('/front/document.form.php');
     });
 

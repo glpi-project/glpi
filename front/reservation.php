@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-Session::checkLoginUser();
-
 if (!isset($_GET["reservationitems_id"])) {
     $_GET["reservationitems_id"] = 0;
 }

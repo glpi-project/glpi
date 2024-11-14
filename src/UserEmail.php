@@ -52,6 +52,40 @@ class UserEmail extends CommonDBChild
         return _n('Email', 'Emails', $nb);
     }
 
+    public function canChildItem($methodItem, $methodNotItem)
+    {
+        $users_id = $this->input['users_id'] ?? $this->fields['users_id'] ?? null;
+        if ($users_id !== null && !$this->canAlterUserEmails((int) $users_id)) {
+            return false;
+        }
+
+        return parent::canChildItem($methodItem, $methodNotItem);
+    }
+
+    /**
+     * Indicates whether the current user can alter the email addresses from the target user.
+     *
+     * @param int $target_user_id
+     * @return bool
+     */
+    private function canAlterUserEmails(int $target_user_id): bool
+    {
+        $session_user_id = Session::getLoginUserID();
+
+        if ($session_user_id === false) {
+            // No active user session, action is made by a cron or a system routine, no need to check.
+            return true;
+        }
+
+        if ($target_user_id === $session_user_id) {
+            // Email is attached to the current user, no need to check.
+            return true;
+        }
+
+        // Current user can alter target user's emails only if he has more rights.
+        $user = new User();
+        return $user->currentUserHaveMoreRightThan($target_user_id);
+    }
 
     /**
      * Get default email for user. If no default email get first one
@@ -154,9 +188,9 @@ class UserEmail extends CommonDBChild
     {
 
         return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+" . htmlspecialchars($child_count_js_var) . "+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlspecialchars($field_name) .
-             "[-'+" . htmlspecialchars($child_count_js_var) . "+']\'>";
+             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
+             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
+             "[-'+" . htmlescape($child_count_js_var) . "+']\'>";
     }
 
 
@@ -173,13 +207,13 @@ class UserEmail extends CommonDBChild
         if ($this->isNewID($this->getID())) {
             $value = '';
         } else {
-            $value = htmlspecialchars($this->fields['email'] ?? '');
+            $value = htmlescape($this->fields['email']);
         }
         $result = "";
-        $field_name = htmlspecialchars($field_name . "[$id]");
+        $field_name = htmlescape($field_name . "[$id]");
         $result .= "<div class='d-flex align-items-center'>";
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
-             value='" . htmlspecialchars($this->getID()) . "'";
+             value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {
             $result .= " disabled";
         }
@@ -189,7 +223,7 @@ class UserEmail extends CommonDBChild
         $result .= ">&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
-            $result .= sprintf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
+            $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
             $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
         }

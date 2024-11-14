@@ -39,10 +39,6 @@
    {% set form_path = form_path ~ '?id=' ~ item.fields['id'] %}
 {% endif %}
 
-{% if selfservice %}
-   {% set form_path = path('front/tracking.injector.php') %}
-{% endif %}
-
 {% set track_changes = 'true' %}
 {% if item.isNewItem() %}
    {% set track_changes = 'false' %}
@@ -61,11 +57,6 @@
    {% endif %}
    {% if predefined_fields is defined %}
       <input type="hidden" name="_predefined_fields" value="{{ predefined_fields }}" />
-   {% endif %}
-
-   {% if selfservice %}
-      <input type="hidden" name="_from_helpdesk" value="1" />
-      {# TODO default requesttype #}
    {% endif %}
 
    {% if params['tickets_id'] is defined or params['_tickets_id'] is defined %}

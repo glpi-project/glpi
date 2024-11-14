@@ -33,13 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
-use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
 
@@ -96,11 +95,11 @@ class Config extends CommonDBTM
             $menu['page']    = Config::getFormURL(false);
             $menu['icon']    = Config::getIcon();
 
-            $menu['options']['apiclient']['icon']            = APIClient::getIcon();
-            $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
-            $menu['options']['apiclient']['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
-            $menu['options']['apiclient']['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
-            $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
+            $menu['options'][APIClient::class]['icon']            = APIClient::getIcon();
+            $menu['options'][APIClient::class]['title']           = APIClient::getTypeName(Session::getPluralNumber());
+            $menu['options'][APIClient::class]['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
+            $menu['options'][APIClient::class]['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
+            $menu['options'][APIClient::class]['links']['add']    = '/front/apiclient.form.php';
         }
         if (count($menu)) {
             return $menu;
@@ -249,21 +248,28 @@ class Config extends CommonDBTM
         }
 
         if (isset($input['devices_in_menu'])) {
-            $input['devices_in_menu'] = exportArrayToDB(empty($input['devices_in_menu']) ? [] : $input['devices_in_menu']);
+            $input['devices_in_menu'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['devices_in_menu'] ?: [], 'strval')
+            );
         }
 
        // lock mechanism update
-        if (isset($input['lock_use_lock_item'])) {
-            $input['lock_item_list'] = exportArrayToDB((isset($input['lock_item_list'])
-                                                      ? $input['lock_item_list'] : []));
+        if (isset($input['lock_use_lock_item']) && isset($input['lock_item_list'])) {
+            $input['lock_item_list'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['lock_item_list'] ?: [], 'strval')
+            );
         }
 
         if (isset($input[Impact::CONF_ENABLED])) {
-            $input[Impact::CONF_ENABLED] = exportArrayToDB($input[Impact::CONF_ENABLED]);
+            $input[Impact::CONF_ENABLED] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input[Impact::CONF_ENABLED] ?: [], 'strval')
+            );
         }
 
         if (isset($input['planning_work_days'])) {
-            $input['planning_work_days'] = exportArrayToDB($input['planning_work_days']);
+            $input['planning_work_days'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['planning_work_days'] ?: [], 'intval')
+            );
         }
 
        // Beware : with new management system, we must update each value
@@ -274,7 +280,7 @@ class Config extends CommonDBTM
        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
             $_SESSION['glpiskipMaintenance'] = 1;
-            $url = htmlspecialchars($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
+            $url = htmlescape($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
             Session::addMessageAfterRedirect(
                 sprintf(
                     __s('Maintenance mode activated. Backdoor using: %s'),
@@ -650,7 +656,7 @@ class Config extends CommonDBTM
             3 => __('Global View'),
             4 => _n('RSS feed', 'RSS feeds', Session::getPluralNumber()),
         ];
-        $grid = new Glpi\Dashboard\Grid('central');
+        $grid = new Grid('central');
         if ($grid::canViewOneDashboard()) {
             array_unshift($central_tabs, __('Dashboard'));
         }
@@ -694,111 +700,6 @@ class Config extends CommonDBTM
         TemplateRenderer::getInstance()->display('components/user/password_security_checks.html.twig', [
             'field' => $field
         ]);
-    }
-
-
-    /**
-     * Validate password based on security rules
-     *
-     * @since 0.84
-     *
-     * @param string $password password to validate
-     * @param bool   $display  display errors messages? (true by default)
-     *
-     * @throws PasswordTooWeakException when $display is false and the password does not matches the requirements
-     *
-     * @return boolean is password valid?
-     *
-     * @deprecated 10.0.1
-     **/
-    public static function validatePassword($password, $display = true)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        Toolbox::deprecated(
-            "Config::validatePassword() is deprecated. "
-            . "Use User::validatePassword() instead, to ensure validation against password history."
-        );
-
-        // Despite being deprecated, original code must stay as we can't call
-        // the replacement method without an User instance
-        $ok = true;
-        $exception = new \Glpi\Exception\PasswordTooWeakException();
-        if ($CFG_GLPI["use_password_security"]) {
-            if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
-                $ok = false;
-                if ($display) {
-                    Session::addMessageAfterRedirect(__s('Password too short!'), false, ERROR);
-                } else {
-                    $exception->addMessage(__('Password too short!'));
-                }
-            }
-            if (
-                $CFG_GLPI["password_need_number"]
-                && !preg_match("/[0-9]+/", $password)
-            ) {
-                $ok = false;
-                if ($display) {
-                    Session::addMessageAfterRedirect(
-                        __s('Password must include at least a digit!'),
-                        false,
-                        ERROR
-                    );
-                } else {
-                    $exception->addMessage(__('Password must include at least a digit!'));
-                }
-            }
-            if (
-                $CFG_GLPI["password_need_letter"]
-                && !preg_match("/[a-z]+/", $password)
-            ) {
-                $ok = false;
-                if ($display) {
-                    Session::addMessageAfterRedirect(
-                        __s('Password must include at least a lowercase letter!'),
-                        false,
-                        ERROR
-                    );
-                } else {
-                    $exception->addMessage(__('Password must include at least a lowercase letter!'));
-                }
-            }
-            if (
-                $CFG_GLPI["password_need_caps"]
-                && !preg_match("/[A-Z]+/", $password)
-            ) {
-                $ok = false;
-                if ($display) {
-                    Session::addMessageAfterRedirect(
-                        __s('Password must include at least a uppercase letter!'),
-                        false,
-                        ERROR
-                    );
-                } else {
-                    $exception->addMessage(__('Password must include at least a uppercase letter!'));
-                }
-            }
-            if (
-                $CFG_GLPI["password_need_symbol"]
-                && !preg_match("/\W+/", $password)
-            ) {
-                $ok = false;
-                if ($display) {
-                    Session::addMessageAfterRedirect(
-                        __s('Password must include at least a symbol!'),
-                        false,
-                        ERROR
-                    );
-                } else {
-                    $exception->addMessage(__('Password must include at least a symbol!'));
-                }
-            }
-        }
-        if (!$ok && !$display) {
-            throw $exception;
-        }
-        return $ok;
     }
 
 
@@ -982,6 +883,9 @@ class Config extends CommonDBTM
                 'version' => TCPDF_STATIC::getTCPDFVersion(),
                 'check'   => 'TCPDF'
             ],
+            [ 'name'      => 'tecnickcom/tc-lib-barcode',
+                'check'   => 'Com\\Tecnick\\Barcode\\Barcode'
+            ],
             [ 'name'    => 'sabre/dav',
                 'check'   => 'Sabre\\DAV\\Version'
             ],
@@ -1068,6 +972,9 @@ class Config extends CommonDBTM
             ],
             [ 'name'    => 'psr/cache',
                 'check'   => 'Psr\\Cache\\CacheItemPoolInterface'
+            ],
+            [ 'name'    => 'psr/container',
+                'check'   => 'Psr\\Container\\ContainerInterface'
             ],
             [ 'name'    => 'league/csv',
                 'check'   => 'League\\Csv\\Writer'
@@ -1193,6 +1100,14 @@ class Config extends CommonDBTM
             [
                 'name' => 'symfony/serializer',
                 'check' => 'Symfony\Component\Serializer\Serializer'
+            ],
+            [
+                'name' => 'symfony/property-info',
+                'check' => 'Symfony\Component\PropertyInfo\Type'
+            ],
+            [
+                'name' => 'symfony/error-handler',
+                'check' => 'Symfony\Component\ErrorHandler\ErrorHandler'
             ],
         ];
         return $deps;
@@ -1508,7 +1423,7 @@ class Config extends CommonDBTM
             echo $message . "\n";
         } else {
             $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
-            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlspecialchars($message) . "' title='" . htmlspecialchars($message) . "'/>";
+            $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlescape($message) . "' title='" . htmlescape($message) . "'/>";
 
             if ($fordebug) {
                 echo $img . $message . "\n";
@@ -1595,6 +1510,9 @@ class Config extends CommonDBTM
                     'required'  => true,
                 ],
                 'simplexml' => [
+                    'required'  => true,
+                ],
+                'bcmath' => [
                     'required'  => true,
                 ],
             //to sync/connect from LDAP
@@ -1979,7 +1897,7 @@ class Config extends CommonDBTM
             'class'   => 'purgelog_interval'
         ], $options);
 
-        $out = "<div class='" . htmlspecialchars($options['class']) . "'>";
+        $out = "<div class='" . htmlescape($options['class']) . "'>";
         $out .= Dropdown::showFromArray($name, $values, $options);
         $out .= "</div>";
 

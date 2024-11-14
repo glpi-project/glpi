@@ -132,7 +132,7 @@ function update951to952()
         if (countElementsInTable('glpi_documents_items', $unicity_fields) > 0) {
             continue; // Already declared in DB
         }
-        $DB->insertOrDie('glpi_documents_items', $doc_input);
+        $DB->insert('glpi_documents_items', $doc_input);
     }
     /* /Fix document_item migration */
 

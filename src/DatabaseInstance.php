@@ -76,6 +76,11 @@ class DatabaseInstance extends CommonDBTM
         return _n('Database instance', 'Database instances', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', Database::class, self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -185,7 +190,7 @@ class DatabaseInstance extends CommonDBTM
             'id'               => '5',
             'table'            => DatabaseInstance::getTable(),
             'field'            => 'items_id',
-            'name'             => _n('Associated item', 'Associated items', 2),
+            'name'             => _n('Item', 'Items', 1),
             'nosearch'         => true,
             'massiveaction'    => false,
             'forcegroupby'     => true,
@@ -201,6 +206,33 @@ class DatabaseInstance extends CommonDBTM
             'field'              => 'version',
             'name'               => _n('Version', 'Versions', 1),
             'datatype'           => 'text'
+        ];
+
+        $tab[] = [
+            'id'                 => '7',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Is active'),
+            'massiveaction'      => false,
+            'datatype'           => 'bool'
+        ];
+
+        $tab[] = [
+            'id'                 => '253',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'path',
+            'name'               => __('Path'),
+            'datatype'           => 'text'
+        ];
+
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'itemtype',
+            'name'               => __('Item type'),
+            'massiveaction'      => false,
+            'datatype'           => 'itemtypename',
+            'types'              => self::getTypes()
         ];
 
         $tab[] = [
@@ -314,7 +346,7 @@ class DatabaseInstance extends CommonDBTM
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         if ($item->getFromDB($values[$field])) {
-                            return "<a href='" . htmlspecialchars($item->getLinkURL()) . "'>" . htmlspecialchars($item->fields['name']) . "</a>";
+                            return "<a href='" . htmlescape($item->getLinkURL()) . "'>" . htmlescape($item->fields['name']) . "</a>";
                         } else {
                             return ' ';
                         }

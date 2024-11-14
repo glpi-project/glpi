@@ -38,7 +38,7 @@ use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 
@@ -409,8 +409,21 @@ class Session
         if (count($glpiactiveentities)) {
             $glpiactive_entity = $_SESSION['glpiactive_entity'];
             $glpiactive_entity_recursive = $_SESSION['glpiactive_entity_recursive'] ?? false;
-            $entities = [$glpiactive_entity];
-            if ($glpiactive_entity_recursive) {
+            $entities = [$glpiactive_entity => $glpiactive_entity];
+            if (
+                ($_SESSION["glpientity_fullstructure"] ?? false)
+                && isset($_SESSION['glpiactiveprofile']['entities'])
+            ) {
+                foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
+                    $entities[$val['id']] = $val['id'];
+                    if ($val['is_recursive']) {
+                        $sons = getSonsOf("glpi_entities", $val['id']);
+                        foreach ($sons as $key2 => $val2) {
+                            $entities[$key2] = $key2;
+                        }
+                    }
+                }
+            } elseif ($glpiactive_entity_recursive) {
                 $entities = getSonsOf("glpi_entities", $glpiactive_entity);
             }
 
@@ -437,6 +450,8 @@ class Session
 
         $newentities = [];
         $ancestors = [];
+
+        $_SESSION["glpientity_fullstructure"] = ($ID === 'all');
 
         if (isset($_SESSION['glpiactiveprofile'])) {
             if ($ID === "all") {
@@ -580,17 +595,20 @@ class Session
                 Search::resetSaveSearch();
                 $active_entity_done = false;
 
-               // Try to load default entity if it is a root entity
+                // Try to load default entity if it is a root entity
                 foreach ($data['entities'] as $val) {
-                    if ($val['id'] == $_SESSION["glpidefault_entity"]) {
+                    if ($val['id'] === $_SESSION["glpidefault_entity"]) {
                         if (self::changeActiveEntities($val['id'], $val['is_recursive'])) {
-                             $active_entity_done = true;
+                            $active_entity_done = true;
                         }
                     }
                 }
                 if (!$active_entity_done) {
                    // Try to load default entity
-                    if (!self::changeActiveEntities($_SESSION["glpidefault_entity"], true)) {
+                    if (
+                        $_SESSION["glpidefault_entity"] === null
+                        || !self::changeActiveEntities($_SESSION["glpidefault_entity"], true)
+                    ) {
                         // Load all entities
                         self::changeActiveEntities("all");
                     }
@@ -1047,7 +1065,7 @@ class Session
             !isset($_SESSION['valid_id'])
             || ($_SESSION['valid_id'] !== session_id())
         ) {
-            throw new SessionExpiredHttpException();
+            throw new SessionExpiredException();
         }
 
         $user_id    = self::getLoginUserID();

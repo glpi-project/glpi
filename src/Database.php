@@ -54,6 +54,11 @@ class Database extends CommonDBChild
         return _n('Database', 'Databases', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -377,7 +382,7 @@ class Database extends CommonDBChild
 
         if ($canedit) {
             echo "<div class='center firstbloc'>" .
-            "<a class='btn btn-primary' href='" . htmlspecialchars(static::getFormURL()) . "?databaseinstances_id=$ID'>";
+            "<a class='btn btn-primary' href='" . htmlescape(static::getFormURL()) . "?databaseinstances_id=$ID'>";
             echo __s('Add a database');
             echo "</a></div>\n";
         }
@@ -408,7 +413,7 @@ class Database extends CommonDBChild
         if (empty($databases)) {
             echo "<tr><th>" . __s('No database') . "</th></tr>";
         } else {
-            echo "<tr class='noHover'><th colspan='10'>" . htmlspecialchars(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";
+            echo "<tr class='noHover'><th colspan='10'>" . htmlescape(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";
 
             $header = "<tr><th>" . __s('Name') . "</th>";
             $header .= "<th>" . sprintf(__('%1$s (%2$s)'), __s('Size'), __s('Mio')) . "</th>";
@@ -452,7 +457,7 @@ class Database extends CommonDBChild
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        $label = htmlspecialchars(DatabaseInstance::getTypeName(Session::getPluralNumber()));
+        $label = htmlescape(DatabaseInstance::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
             $insts = "<i class=\"ti ti-database-import\" title=\"$label\"" .
             "></i><span class='d-none d-xxl-block'>$label</span>";
@@ -468,7 +473,7 @@ class Database extends CommonDBChild
     {
         if (static::canView()) {
             return [
-                'databaseinstance' => [
+                DatabaseInstance::class => [
                     'title' => DatabaseInstance::getTypeName(Session::getPluralNumber()),
                     'page'  => DatabaseInstance::getSearchURL(false),
                     'icon'  => DatabaseInstance::getIcon(),

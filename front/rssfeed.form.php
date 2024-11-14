@@ -43,7 +43,6 @@ if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
 $rssfeed = new RSSFeed();
-Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
     $rssfeed->check(-1, CREATE, $_POST);

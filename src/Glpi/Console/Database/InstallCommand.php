@@ -222,7 +222,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
        // Create security key
         $glpikey = new GLPIKey();
-        if (!$glpikey->generate()) {
+        if (!$glpikey->generate(update_db: false)) {
             $message = __('Security key cannot be generated!');
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE;
@@ -306,12 +306,15 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             '<comment>' . __('Loading default schema...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
         );
-       // TODO Get rid of output buffering
-        ob_start();
-        $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
-        Toolbox::createSchema($default_language, $this->db);
-        $message = ob_get_clean();
-        if (!empty($message)) {
+
+        try {
+            $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
+            Toolbox::createSchema($default_language, $this->db);
+        } catch (\Throwable $e) {
+            $message = sprintf(
+                __('An error occurred during the database initialization. The error was: %s'),
+                $e->getMessage()
+            );
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_SCHEMA_CREATION_FAILED;
         }

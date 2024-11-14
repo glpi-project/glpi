@@ -37,7 +37,7 @@ namespace tests\units;
 
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\SessionExpiredHttpException;
+use Glpi\Exception\SessionExpiredException;
 use ReflectionClass;
 
 /* Test for inc/session.class.php */
@@ -770,6 +770,9 @@ class Session extends \DbTestCase
             $profile->getFromDB($profiles_id);
             $new_input = $profile->fields;
             unset($new_input['id']);
+            foreach (['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'] as $json_field) {
+                $new_input[$json_field] = \importArrayFromDB($new_input[$json_field]);
+            }
             $new_input['name'] .= '-Impersonate';
             $new_profiles_id = $profile->add($new_input);
 
@@ -1242,7 +1245,7 @@ class Session extends \DbTestCase
             function () {
                 \Session::checkValidSessionId();
             }
-        )->isInstanceOf(SessionExpiredHttpException::class);
+        )->isInstanceOf(SessionExpiredException::class);
     }
 
     protected function checkCentralAccessProvider(): iterable

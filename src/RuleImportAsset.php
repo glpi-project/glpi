@@ -99,6 +99,22 @@ class RuleImportAsset extends Rule
                     Rule::REGEX_NOT_MATCH
                 ],
             ],
+            'virtualmachinetypes_id' => [
+                'table'     => 'glpi_virtualmachinetypes',
+                'field'     => 'name',
+                'name'      => VirtualMachineType::getTypeName(0),
+                'type'      => 'dropdown',
+                'allow_condition' => [
+                    Rule::PATTERN_IS,
+                    Rule::PATTERN_IS_NOT,
+                    Rule::PATTERN_CONTAIN,
+                    Rule::PATTERN_NOT_CONTAIN,
+                    Rule::PATTERN_BEGIN,
+                    Rule::PATTERN_END,
+                    Rule::REGEX_MATCH,
+                    Rule::REGEX_NOT_MATCH
+                ],
+            ],
             'states_id'  => [
                 'table'     => 'glpi_states',
                 'field'     => 'name',
@@ -978,6 +994,14 @@ class RuleImportAsset extends Rule
                         if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
                             $back_class = $class->getItemtype();
                         }
+
+                        if ($back_class === Unmanaged::class) {
+                            $conf = new \Glpi\Inventory\Conf();
+                            if ($conf->import_unmanaged == 0) {
+                                return $output;
+                            }
+                        }
+
                         if ($class && !isset($params['return'])) {
                             $class->rulepassed("0", $back_class, $rules_id);
                         }

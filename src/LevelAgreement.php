@@ -167,7 +167,7 @@ abstract class LevelAgreement extends CommonDBChild
         echo Html::input("name", ['value' => $this->fields["name"]]);
         echo "<td rowspan='" . $rowspan . "'>" . __s('Comments') . "</td>";
         echo "<td rowspan='" . $rowspan . "'>
-            <textarea class='form-control' rows='8' name='comment' >" . htmlspecialchars($this->fields["comment"]) . "</textarea>";
+            <textarea class='form-control' rows='8' name='comment' >" . htmlescape($this->fields["comment"]) . "</textarea>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -448,7 +448,7 @@ TWIG, $twig_params);
             $entries[] = [
                 'itemtype' => RuleTicket::class,
                 'id'       => $rule->getID(),
-                'rule'     => $canedit ? $rule->getLink() : htmlspecialchars($rule->fields["name"]),
+                'rule'     => $canedit ? $rule->getLink() : htmlescape($rule->fields["name"]),
                 'active'   => Dropdown::getYesNo($rule->fields["is_active"]),
                 'description' => $rule->fields["description"]
             ];

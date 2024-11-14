@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\RichText\RichText;
 
 /** QueuedNotification class
  *
@@ -51,10 +52,36 @@ class QueuedNotification extends CommonDBTM
         return __('Notification queue');
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', self::class];
+    }
+
     public static function canCreate(): bool
     {
         // Everybody can create : human and cron
         return Session::getLoginUserID(false);
+    }
+
+    public static function unsetUndisclosedFields(&$fields)
+    {
+        parent::unsetUndisclosedFields($fields);
+
+        if (
+            !array_key_exists('event', $fields)
+            || !array_key_exists('itemtype', $fields)
+        ) {
+            return;
+        }
+
+        $target = NotificationTarget::getInstanceByType((string) $fields['itemtype']);
+        if (
+            $target instanceof NotificationTarget
+            && !$target->canNotificationContentBeDisclosed((string) $fields['event'])
+        ) {
+            $fields['body_html'] = '********';
+            $fields['body_text'] = '********';
+        }
     }
 
     public static function getForbiddenActionsForMenu()
@@ -284,9 +311,10 @@ class QueuedNotification extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'body_html',
             'name'               => __('Email HTML body'),
-            'datatype'           => 'text',
+            'datatype'           => 'specific',
+            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
+            'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false,
-            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -294,7 +322,9 @@ class QueuedNotification extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'body_text',
             'name'               => __('Email text body'),
-            'datatype'           => 'text',
+            'datatype'           => 'specific',
+            'nosearch'           => true, // can contain sensitive data, fine-grain filtering would be too complex
+            'additionalfields'   => ['itemtype', 'event'],
             'massiveaction'      => false
         ];
 
@@ -370,10 +400,59 @@ class QueuedNotification extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
         if (!is_array($values)) {
             $values = [$field => $values];
         }
         switch ($field) {
+            case 'body_html':
+            case 'body_text':
+                if (
+                    array_key_exists('event', $values)
+                    && array_key_exists('itemtype', $values)
+                ) {
+                    $target = NotificationTarget::getInstanceByType((string) $values['itemtype']);
+                    if (
+                        $target instanceof NotificationTarget
+                        && !$target->canNotificationContentBeDisclosed((string) $values['event'])
+                    ) {
+                        return __s('The content of the notification contains sensitive information and therefore cannot be displayed.');
+                    }
+                }
+
+                // Rendering simitar to the `text` datatype
+                $value     = $values[$field];
+                $plaintext = '';
+                if ($field === 'body_html') {
+                    $plaintext = RichText::getTextFromHtml($value, false, true, true);
+                } else {
+                    $plaintext = nl2br($value);
+                }
+
+                if (Toolbox::strlen($plaintext) > $CFG_GLPI['cut']) {
+                    $rand = mt_rand();
+                    $popup_params = [
+                        'display'       => false,
+                        'awesome-class' => 'fa-comments',
+                        'autoclose'     => false,
+                        'onclick'       => true,
+                    ];
+                    $out = sprintf(
+                        __('%1$s %2$s'),
+                        "<span id='text$rand'>" . Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
+                        Html::showToolTip(
+                            '<div class="fup-popup">' . RichText::getEnhancedHtml($value) . '</div>',
+                            $popup_params
+                        )
+                    );
+                } else {
+                    $out = $plaintext;
+                }
+                return $out;
             case 'headers':
                 $values[$field] = importArrayFromDB($values[$field]);
                 $out = '';
@@ -683,11 +762,15 @@ class QueuedNotification extends CommonDBTM
             $item->getFromDB($this->fields['items_id']);
         }
 
+        $target = NotificationTarget::getInstanceByType((string) $this->fields['itemtype']);
+
         TemplateRenderer::getInstance()->display('pages/setup/notification/queued_notification.html.twig', [
             'item' => $this,
             'params' => $options,
             'parent' => $item,
             'additional_headers' => self::getSpecificValueToDisplay('headers', $this->fields),
+            'undisclose_body' => $target instanceof NotificationTarget
+                && !$target->canNotificationContentBeDisclosed((string) $this->fields['event']),
         ]);
 
         return true;

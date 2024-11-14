@@ -38,8 +38,6 @@ use Glpi\Event;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $nn = new NetworkName();
 if (isset($_POST["unaffect"])) {
     $nn->check($_POST['id'], UPDATE);

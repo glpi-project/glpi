@@ -38,11 +38,14 @@ namespace Glpi\Console\Migration;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Override;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
+    protected $requires_db_up_to_date = false;
+
     /**
      * Error code returned when failed to migrate one table.
      *
@@ -112,13 +115,6 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
                     $errors = true;
                 }
             }
-        }
-
-        if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_ALLOW_MYISAM, false)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
-                '<error>' . __('Unable to update DB configuration file.') . '</error>',
-                self::ERROR_UNABLE_TO_UPDATE_CONFIG
-            );
         }
 
         if ($errors) {

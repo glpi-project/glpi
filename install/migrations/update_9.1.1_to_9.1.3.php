@@ -78,7 +78,7 @@ function update911to913()
 
    //Fix duplicated search options
     if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
-        $DB->updateOrDie(
+        $DB->update(
             "glpi_displaypreferences",
             [
                 "num" => 17
@@ -86,12 +86,11 @@ function update911to913()
             [
                 'itemtype'  => "IPNetwork",
                 'num'       => 13
-            ],
-            "9.1.3 Fix duplicate IPNetwork Gateway search option"
+            ]
         );
     }
     if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
-        $DB->updateOrDie(
+        $DB->update(
             "glpi_displaypreferences",
             [
                 "num" => 18
@@ -99,8 +98,7 @@ function update911to913()
             [
                 'itemtype'  => "IPNetwork",
                 'num'       => 14
-            ],
-            "9.1.3 Fix duplicate IPNetwork addressable network search option"
+            ]
         );
     }
 

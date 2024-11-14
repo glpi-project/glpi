@@ -68,7 +68,6 @@ define('GLPI_AJAX_DASHBOARD', null);
 define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', null);
 define('GLPI_CALDAV_IMPORT_STATE', null);
 define('GLPI_CENTRAL_WARNINGS', null);
-define('GLPI_DEMO_MODE', null);
 define('GLPI_DOCUMENTATION_ROOT_URL', null);
 define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', null);
 define('GLPI_ENVIRONMENT_TYPE', null);

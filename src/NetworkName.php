@@ -70,6 +70,11 @@ class NetworkName extends FQDNLabel
         return _n('Network name', 'Network names', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', CommonDropdown::class, self::class];
+    }
+
     public function useDeletedToLockIfDynamic()
     {
         return false;
@@ -447,9 +452,9 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
             $delete_all_column->setHTMLClass('center');
         }
         if (!isset($options['dont_display'][$column_name])) {
-            $content = htmlspecialchars(self::getTypeName());
+            $content = htmlescape(self::getTypeName());
             if (isset($options['column_links'][$column_name])) {
-                $content = '<a href="' . htmlspecialchars($options['column_links'][$column_name]) . '">'
+                $content = '<a href="' . htmlescape($options['column_links'][$column_name]) . '">'
                     . $content
                     . '</a>';
             }
@@ -615,10 +620,10 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                 if (empty($internetName)) {
                     $internetName = "(" . $line["id"] . ")";
                 }
-                $content  = htmlspecialchars($internetName);
+                $content  = htmlescape($internetName);
                 if (Session::haveRight('internet', READ)) {
                     $content  = '<a href="' . $address->getLinkURL() . '">'
-                        . htmlspecialchars($internetName)
+                        . htmlescape($internetName)
                         . '</a>';
                 }
 
@@ -751,7 +756,7 @@ TWIG, $twig_params);
         $table                                     = new HTMLTableMain();
         $column                                    = $table->addHeader(
             'Internet',
-            htmlspecialchars(self::getTypeName(Session::getPluralNumber()))
+            htmlescape(self::getTypeName(Session::getPluralNumber()))
         );
         $t_group                                   = $table->createGroup('Main', '');
 

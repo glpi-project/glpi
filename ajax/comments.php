@@ -45,8 +45,6 @@ $this->setAjax();
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 use Glpi\Application\View\TemplateRenderer;
 
 if (
@@ -84,9 +82,13 @@ if (
             echo(implode("<br>", $comments));
 
             if (isset($_POST['withlink']) && $link !== null) {
-                echo "<script type='text/javascript' >";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . htmlspecialchars($link) . "');";
-                echo "</script>";
+                echo Html::scriptBlock(
+                    sprintf(
+                        '$("#%s").attr("href", "%s");',
+                        htmlescape($_POST['withlink']),
+                        htmlescape($link)
+                    )
+                );
             }
             break;
 
@@ -123,34 +125,43 @@ if (
                 } else {
                     $table = getTableForItemType($_POST['itemtype']);
                 }
-                $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
-                if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo htmlspecialchars($tmpname["comment"]);
-                }
+
+                echo Dropdown::getDropdownComments($table, (int) $_POST["value"]);
 
                 if (isset($_POST['withlink'])) {
-                    echo "<script type='text/javascript' >";
-                    echo Html::jsGetElementbyID($_POST['withlink']) . ".
-                    attr('href', '" . $_POST['itemtype']::getFormURLWithID($_POST["value"]) . "');";
-                    echo "</script>";
+                    echo Html::scriptBlock(
+                        sprintf(
+                            '$("#%s").attr("href", "%s");',
+                            htmlescape($_POST['withlink']),
+                            htmlescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
+                        )
+                    );
                 }
 
                 if (isset($_POST['with_dc_position'])) {
                     $item = getItemForItemtype($_POST['itemtype']);
-                    echo "<script type='text/javascript' >";
 
                     //if item have a DC position (reload url to it's rack)
                     if (
-                        method_exists($item, 'isRackPart')
-                        && ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true))
+                        method_exists($item, 'getParentRack')
+                        && ($rack = $item->getParentRack())
                     ) {
-                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
-                  html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";
+                        echo Html::scriptBlock(
+                            sprintf(
+                                '$("#%s").html("href", "&nbsp;<a class=\'fas fa-crosshairs\' href=\'%s\'></a>");',
+                                htmlescape($_POST['with_dc_position']),
+                                htmlescape($rack->getLinkURL())
+                            )
+                        );
                     } else {
                         //remove old dc position
-                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".empty();";
+                        echo Html::scriptBlock(
+                            sprintf(
+                                '$("#%s").empty();',
+                                htmlescape($_POST['with_dc_position'])
+                            )
+                        );
                     }
-                    echo "</script>";
                 }
             }
     }

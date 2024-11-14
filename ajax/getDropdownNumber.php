@@ -43,5 +43,4 @@ if (strpos($_SERVER['PHP_SELF'], "getDropdownNumber.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
 echo Dropdown::getDropdownNumber($_POST);

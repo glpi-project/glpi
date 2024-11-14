@@ -295,16 +295,6 @@ class ITILFollowup extends CommonDBChild
             $this->input["users_id"]
         );
 
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $options = ['followup_id' => $this->fields["id"],
-                'is_private'  => $this->fields['is_private']
-            ];
-            NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
-        }
-
        // Add log entry in the ITILObject
         $changes = [
             0,
@@ -325,6 +315,15 @@ class ITILFollowup extends CommonDBChild
         PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
         parent::post_addItem();
+
+        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
+
+        if ($donotif) {
+            $options = ['followup_id' => $this->fields["id"],
+                'is_private'  => $this->fields['is_private']
+            ];
+            NotificationEvent::raiseEvent("add_followup", $parentitem, $options, $this);
+        }
     }
 
     private function addToMergedTickets(): void

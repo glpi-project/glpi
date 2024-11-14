@@ -34,7 +34,7 @@
 describe ('Form editor', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('can create a form and fill its main details', () => {

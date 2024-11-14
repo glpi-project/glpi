@@ -31,8 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-import _ from 'lodash';
-
 let api_token = null;
 
 /**
@@ -44,39 +42,27 @@ let api_token = null;
  * @returns Chainable
  */
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
-    cy.session(
-        username,
-        () => {
-            cy.blockGLPIDashboards();
-            cy.visit('/', {
-                headers: {
-                    'Accept-Language': 'en-GB,en;q=0.9',
-                }
-            });
-            cy.title().should('eq', 'Authentication - GLPI');
-            cy.findByRole('textbox', {'name': "Login"}).type(username);
-            cy.findByLabelText("Password", {exact: false}).type(password);
-            cy.findByRole('checkbox', {name: "Remember me"}).check();
-            // Select 'local' from the 'auth' dropdown
-            cy.findByLabelText("Login source").select('local', { force: true });
-            // TODO: should be
-            // cy.findByRole('combobox', {name: "Login source"}).select2('local', { force: true });
+    cy.clearAllCookies();
+    cy.request('index.php').its('body').then((body) => {
+        const $html = Cypress.$(body);
 
-            cy.findByRole('button', {name: "Sign in"}).click();
-            // After logging in, the url should contain /front/central.php or /front/helpdesk.public.php
-            cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
-        },
-        {
-            validate: () => {
-                cy.getCookies().should('have.length.gte', 2).then((cookies) => {
-                    // Should be two cookies starting with 'glpi_' and one of them should end with '_rememberme'
-                    expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_'))).to.have.length(2);
-                    expect(cookies.filter((cookie) => cookie.name.startsWith('glpi_') && cookie.name.endsWith('_rememberme'))).to.have.length(1);
-                });
-            },
-            cacheAcrossSpecs: true,
-        },
-    );
+        // Parse page
+        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        const username_input = $html.find('#login_name').prop('name');
+        const password_input = $html.find('#login_password').prop('name');
+
+        // Send login request
+        cy.request({
+            method: 'POST',
+            url: '/front/login.php',
+            form: true,
+            body: {
+                [username_input]: username,
+                [password_input]: password,
+                _glpi_csrf_token: csrf,
+            }
+        });
+    });
 });
 
 /**
@@ -86,8 +72,17 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
  * @returns Chainable
  */
 Cypress.Commands.add('logout', () => {
-    cy.findByRole('link', {name: 'User menu'}).click();
-    cy.findByRole('link', {name: 'Logout'}).click();
+    cy.request('/front/logout.php');
+});
+
+Cypress.Commands.add('getCsrfToken', () => {
+    // Load any light page that have a form
+    return cy.request('/front/preference.php').its('body').then((body) => {
+        // Parse page
+        const $html = Cypress.$(body);
+        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
+        return csrf;
+    });
 });
 
 /**
@@ -95,39 +90,54 @@ Cypress.Commands.add('logout', () => {
  * @method changeProfile
  * @description Change the profile of the current user. Only supports the default GLPI profiles.
  * @param {string} profile - Profile to change to
- * @param {boolean} [verify=false] - Whether to verify that the profile was changed
  */
-Cypress.Commands.add('changeProfile', (profile, verify = false) => {
-    // If on about:blank, we need to get back to GLPI.
-    // Can happen at the start of a test if the login restored an existing session and therefore no redirect happened.
-    // With testIsolation, cypress starts each test on about:blank.
-    cy.url().then((url) => {
-        if (url === 'about:blank') {
-            cy.blockGLPIDashboards();
-            cy.visit('/');
-        }
+Cypress.Commands.add('changeProfile', (profile) => {
+    const profiles = new Map([
+        ['Self-Service', 1],
+        ['Observer',     2],
+        ['Admin',        3],
+        ['Super-Admin',  4],
+        ['Hotliner',     5],
+        ['Technician',   6],
+        ['Supervisor',   7],
+        ['Read-Only',    8],
+    ]);
+    const profile_id = profiles.get(profile);
+
+    cy.getCsrfToken().then((token) => {
+        // Send change profile request
+        cy.request({
+            method: 'POST',
+            url: '/Session/ChangeProfile',
+            form: true,
+            body: {
+                id: profile_id,
+                _glpi_csrf_token: token,
+            }
+        });
     });
-    // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
-    const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
-    // Check if we are already on the desired profile
-    cy.get('header a.user-menu-dropdown-toggle').then(() => {
-        if (!Cypress.$('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').text().match(profile_pattern)) {
-            // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
-            cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
-                cy.blockGLPIDashboards();
-                cy.visit(href, {
-                    headers: {
-                        // Cypress doesn't send this by default and it causes a real headache with GLPI since it is always used when redirecting back after a profile/entity change.
-                        // This causes e2e tests to randomly fail with the browser ending up on a /front/null page.
-                        Referer: Cypress.config('baseUrl'),
-                    }
-                }).then(() => {
-                    if (verify) {
-                        cy.get('header a.user-menu-dropdown-toggle > div > div:nth-of-type(1)').contains(profile_pattern);
-                    }
-                });
-            });
+});
+
+Cypress.Commands.add('changeEntity', (entity, is_recursive = false) => {
+    cy.getCsrfToken().then((token) => {
+        const params = {
+            _glpi_csrf_token: token,
+        };
+
+        if (entity == 'all') {
+            params['full_structure'] = true;
+        } else {
+            params['id'] = entity;
+            params['is_recursive'] = is_recursive;
         }
+
+        // Send change profile request
+        cy.request({
+            method: 'POST',
+            url: '/Session/ChangeEntity',
+            form: true,
+            body: params
+        });
     });
 });
 

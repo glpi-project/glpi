@@ -37,6 +37,7 @@ namespace Glpi\Form\Export\Specification;
 
 final class FormContentSpecification
 {
+    public int $id;
     public string $name;
     public string $header;
     public string $entity_name;
@@ -47,6 +48,9 @@ final class FormContentSpecification
 
     /** @var CommentContentSpecification[] $comments */
     public array $comments = [];
+
+    /** @var QuestionContentSpecification[] $questions */
+    public array $questions = [];
 
     /** @var AccesControlPolicyContentSpecification[] $policies */
     public array $policies = [];

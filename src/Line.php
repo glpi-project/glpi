@@ -58,6 +58,15 @@ class Line extends CommonDBTM
         return _n('Line', 'Lines', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

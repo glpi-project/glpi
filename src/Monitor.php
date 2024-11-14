@@ -81,6 +81,15 @@ class Monitor extends CommonDBTM
         return _n('Monitor', 'Monitors', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()

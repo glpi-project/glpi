@@ -60,6 +60,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return _n('Personal RSS feed', 'Personal RSS feed', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', self::class];
+    }
+
     public static function canCreate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
@@ -474,6 +479,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
+        $current_user_id = Session::getLoginUserID();
+        if ($current_user_id === false) {
+            // RSSFeeds are not supposed to be created in a sessionless context.
+            return false;
+        }
+        $input['users_id'] = $current_user_id;
+
         if ($feed = self::getRSSFeed($input['url'])) {
             $input['have_error'] = 0;
             $input['name']       = $feed->get_title();
@@ -508,6 +520,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $input['comment'] = $feed->get_description();
             }
         }
+
+        // Owner cannot be changed
+        unset($input['users_id']);
+
         return $input;
     }
 
@@ -525,7 +541,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         if (!Toolbox::isUrlSafe($url)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
+                htmlescape(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
                 false,
                 ERROR
             );
@@ -533,18 +549,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         return true;
-    }
-
-    public function pre_updateInDB()
-    {
-        // Set new user if initial user have been deleted
-        if (
-            ((int) $this->fields['users_id'] === 0)
-            && ($uid = Session::getLoginUserID())
-        ) {
-            $this->fields['users_id'] = $uid;
-            $this->updates[]          = "users_id";
-        }
     }
 
     public function post_getEmpty()
@@ -639,7 +643,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = htmlspecialchars(!Toolbox::isUrlSafe($this->fields['url'])
+            $rss_feed['error'] = htmlescape(!Toolbox::isUrlSafe($this->fields['url'])
                 ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
                 : __('Error retrieving RSS feed'));
             $this->setError(true);
@@ -736,7 +740,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             $criteria['WHERE']["$table.users_id"] = $users_id;
             $criteria['WHERE']["$table.is_active"] = 1;
 
-            $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
+            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
                     _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
            // Show public rssfeeds / not mines : need to have access to public rssfeeds
@@ -752,7 +756,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href='" . htmlspecialchars(RSSFeed::getSearchURL()) . "'>" .
+                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
                        _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
                 $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
@@ -804,14 +808,14 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 if (empty($feed_link)) {
                     $output .= $item->feed->get_title();
                 } else {
-                    $output .= '<a target="_blank" href="' . htmlspecialchars($feed_link) . '">' . $item->feed->get_title() . '</a>';
+                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . $item->feed->get_title() . '</a>';
                 }
 
                 $item_link = URL::sanitizeURL($item->get_permalink());
                 $rand = mt_rand();
                 $output .= "<div id='rssitem$rand'>";
                 if (!empty($item_link)) {
-                    $output .= '<a target="_blank" href="' . htmlspecialchars($item_link) . '">';
+                    $output .= '<a target="_blank" href="' . htmlescape($item_link) . '">';
                 }
                 $output .= $item->get_title();
                 if (!empty($item_link)) {

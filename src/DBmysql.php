@@ -151,14 +151,6 @@ class DBmysql
     public $use_utf8mb4 = false;
 
     /**
-     * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
-     * Defaults to true to keep backward compatibility with old DB.
-     *
-     * @var bool
-     */
-    public $allow_myisam = true;
-
-    /**
      * Determine if datetime fields usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
@@ -365,7 +357,7 @@ class DBmysql
      */
     public function query($query)
     {
-        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -391,16 +383,14 @@ class DBmysql
 
         $res = $this->dbh->query($query);
         if (!$res) {
-            // no translation for error logs
-            $error = "  *** MySQL query error:\n  SQL: " . $query . "\n  Error: " .
-                   $this->dbh->error . "\n";
-            $error .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
-
-            Toolbox::logSqlError($error);
-
-            ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
-
-            $debug_data['errors'] = $this->error();
+            throw new \RuntimeException(
+                sprintf(
+                    'MySQL query error: %s (%d) in SQL query "%s".',
+                    $this->dbh->error,
+                    $this->dbh->errno,
+                    $query
+                )
+            );
         }
 
         $duration = (microtime(true) - $start_time) * 1000;
@@ -408,6 +398,7 @@ class DBmysql
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->affectedRows();
 
+        // Ensure that we collect warning after affected rows
         $this->last_query_warnings = $this->fetchQueryWarnings();
 
         $warnings_string = implode(
@@ -465,37 +456,24 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        trigger_error('Executing direct queries is not allowed!', E_USER_ERROR);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
-     * Execute a MySQL query and die
-     * (optionnaly with a message) if it fails
+     * Execute a MySQL query and throw an exception if it fails.
      *
      * @param string $query   Query to execute
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function doQueryOrDie($query, $message = '')
     {
-        $res = $this->doQuery($query);
-        if (!$res) {
-            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $query,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::doQuery()`.');
+
+        return $this->doQuery($query);
     }
 
     /**
@@ -503,28 +481,20 @@ class DBmysql
      *
      * @param string $query Query to prepare
      *
-     * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
+     * @return mysqli_stmt
      */
     public function prepare($query)
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
-            // no translation for error logs
-            $error = "  *** MySQL prepare error:\n  SQL: " . $query . "\n  Error: " .
-                   $this->dbh->error . "\n";
-            $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
-
-            Toolbox::logSqlError($error);
-
-            ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
-
-            if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
-                    query: $query,
-                    time: 0,
-                    errors: $this->error()
-                );
-            }
+            throw new \RuntimeException(
+                sprintf(
+                    'MySQL prepare error: %s (%d) in SQL query "%s".',
+                    $this->dbh->error,
+                    $this->dbh->errno,
+                    $query
+                )
+            );
         }
         $this->current_query = $query;
         return $res;
@@ -1060,9 +1030,7 @@ class DBmysql
             $query = trim($query);
             if ($query != '') {
                 $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                if (!$this->doQuery($query)) {
-                    return false;
-                }
+                $this->doQuery($query);
                 if (!isCommandLine()) {
                   // Flush will prevent proxy to timeout as it will receive data.
                   // Flush requires a content to be sent, so we sent spaces as multiple spaces
@@ -1365,8 +1333,7 @@ class DBmysql
     }
 
     /**
-     * Insert a row in the database and die
-     * (optionnaly with a message) if it fails
+     * Insert a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1375,26 +1342,14 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function insertOrDie($table, $params, $message = '')
     {
-        $res = $this->insert($table, $params);
-        if (!$res) {
-            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $this->current_query,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::insert()`.');
+
+        return $this->insert($table, $params);
     }
 
     /**
@@ -1495,8 +1450,7 @@ class DBmysql
     }
 
     /**
-     * Update a row in the database or die
-     * (optionnaly with a message) if it fails
+     * Update a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1508,26 +1462,14 @@ class DBmysql
      *
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
-        $res = $this->update($table, $params, $where, $joins);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $this->current_query,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::update()`.');
+
+        return $this->update($table, $params, $where, $joins);
     }
 
     /**
@@ -1544,15 +1486,20 @@ class DBmysql
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
+        $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
+        return $this->doQuery($query);
+    }
+
+    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    {
         $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
         if ($req->count() == 0) {
-            return $this->insertOrDie($table, $data, 'Unable to create new element or update existing one');
-        } else if ($req->count() == 1 || !$onlyone) {
-            return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
+            return $this->buildInsert($table, $data);
+        } elseif ($req->count() == 1 || !$onlyone) {
+            return $this->buildUpdate($table, $data, $where);
         } else {
-            trigger_error('Update would change too many rows!', E_USER_WARNING);
-            return false;
+            throw new RuntimeException('Update would change too many rows!');
         }
     }
 
@@ -1604,8 +1551,7 @@ class DBmysql
     }
 
     /**
-     * Delete a row in the database and die
-     * (optionnaly with a message) if it fails
+     * Delete a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1616,26 +1562,14 @@ class DBmysql
      *
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
-        $res = $this->delete($table, $where, $joins);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $this->current_query,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::delete()`.');
+
+        return $this->delete($table, $where, $joins);
     }
 
 
@@ -1853,7 +1787,7 @@ class DBmysql
        //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
-            $this->dbh->query("SET SESSION time_zone = '$timezone'");
+            $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
             $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;
@@ -2084,9 +2018,10 @@ class DBmysql
         if (!$stmt->execute()) {
             throw new \RuntimeException(
                 sprintf(
-                    'Error executing statement "%s": %s',
-                    $this->current_query,
-                    $stmt->error
+                    'MySQL statement error: %s (%d) in SQL query "%s".',
+                    $stmt->error,
+                    $stmt->errno,
+                    $this->current_query
                 )
             );
         }
@@ -2136,7 +2071,7 @@ class DBmysql
         }
 
         // Usage of MyISAM
-        if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
+        if (preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
             trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
         }
 
@@ -2188,11 +2123,6 @@ class DBmysql
         if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
            // Use utf8mb4 charset for update process if there all core table are using this charset.
             $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
-        }
-
-        if ($this->getMyIsamTables(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
-            $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
         }
 
         if ($this->getSignedKeysColumns(true)->count() === 0) {

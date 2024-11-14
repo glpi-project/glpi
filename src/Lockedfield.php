@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
 
 /**
@@ -52,6 +53,11 @@ class Lockedfield extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Locked field', 'Locked fields', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
     }
 
     public static function canView(): bool

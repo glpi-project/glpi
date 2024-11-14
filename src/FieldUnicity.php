@@ -43,8 +43,6 @@ class FieldUnicity extends CommonDropdown
    // From CommonDBTM
     public $dohistory          = true;
 
-    public $first_level_menu   = "config";
-    public $second_level_menu  = "fieldunicity";
     public $can_be_translated  = false;
 
     public static $rightname          = 'config';
@@ -53,6 +51,11 @@ class FieldUnicity extends CommonDropdown
     public static function getTypeName($nb = 0)
     {
         return __('Fields unicity');
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
     }
 
     public static function canCreate(): bool
@@ -155,7 +158,7 @@ class FieldUnicity extends CommonDropdown
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
                 echo $item::getTypeName();
             }
-            echo "<input type='hidden' name='itemtype' value='" . htmlspecialchars($this->fields['itemtype']) . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {
             $options = [];
            //Add criteria : display dropdown

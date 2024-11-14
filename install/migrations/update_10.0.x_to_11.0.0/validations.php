@@ -66,7 +66,7 @@ foreach ($validation_tables as $validation_table) {
 
 // Use the fact fields had changed as an indication this one-time migration hasn't been run yet
 if ($needed_migration) {
-    $DB->updateOrDie('glpi_notificationtargets', [
+    $DB->update('glpi_notificationtargets', [
         'items_id'  => Notification::VALIDATION_TARGET,
     ], [
         'items_id'  => Notification::VALIDATION_APPROVER,

@@ -204,7 +204,7 @@ class Item_Line extends CommonDBRelation
         } else {
             echo "<table class='tab_cadre_fixehov'>";
             $header = "<tr>";
-            $header .= "<th>" . htmlspecialchars(Item_DeviceSimcard::getTypeName(1)) . "</th>";
+            $header .= "<th>" . htmlescape(Item_DeviceSimcard::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;
@@ -372,7 +372,7 @@ class Item_Line extends CommonDBRelation
         } else {
             echo "<table class='tab_cadre_fixehov'>";
             $header = "<tr>";
-            $header .= "<th>" . htmlspecialchars(Item_DeviceSimcard::getTypeName(1)) . "</th>";
+            $header .= "<th>" . htmlescape(Item_DeviceSimcard::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;
@@ -394,7 +394,7 @@ class Item_Line extends CommonDBRelation
             echo '<tr class="tab_bg_2"><th colspan="3">' . __s('Add a line') . '</th></tr>';
 
             echo '<tr class="tab_bg_1">';
-            echo '<td><label for="dropdown_items_id' . $rand . '">' . htmlspecialchars(Line::getTypeName(1)) . '</label></td>';
+            echo '<td><label for="dropdown_items_id' . $rand . '">' . htmlescape(Line::getTypeName(1)) . '</label></td>';
             echo '<td>';
             //get all used items
             $used = [];
@@ -447,7 +447,7 @@ class Item_Line extends CommonDBRelation
                 $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header .= "</th>";
             }
-            $header .= "<th>" . htmlspecialchars(Line::getTypeName(1)) . "</th>";
+            $header .= "<th>" . htmlescape(Line::getTypeName(1)) . "</th>";
             $header .= "</tr>";
 
             echo $header;

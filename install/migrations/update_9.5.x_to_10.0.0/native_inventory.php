@@ -55,7 +55,7 @@ if (!$DB->tableExists('glpi_agenttypes')) {
          PRIMARY KEY (`id`),
          KEY `name` (`name`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_agenttypes");
+    $DB->doQuery($query);
     $migration->addPostQuery(
         $DB->buildInsert(
             "glpi_agenttypes",
@@ -94,7 +94,7 @@ if (!$DB->tableExists('glpi_agents')) {
          UNIQUE KEY `deviceid` (`deviceid`),
          KEY `agenttypes_id` (`agenttypes_id`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_agents");
+    $DB->doQuery($query);
 } else {
     $migration->dropKey('glpi_agents', 'items_id');
     $migration->dropKey('glpi_agents', 'itemtype');
@@ -153,7 +153,7 @@ if (!$DB->tableExists('glpi_rulematchedlogs')) {
          KEY `agents_id` (`agents_id`),
          KEY `rules_id` (`rules_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_rulematchedlogs");
+    $DB->doQuery($query);
 } else {
     $migration->addKey('glpi_rulematchedlogs', 'agents_id');
     $migration->addKey('glpi_rulematchedlogs', 'rules_id');
@@ -172,7 +172,7 @@ if (!$DB->tableExists('glpi_lockedfields')) {
          UNIQUE KEY `unicity` (`itemtype`, `items_id`, `field`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_lockedfields");
+    $DB->doQuery($query);
 } else {
     $migration->dropKey('glpi_lockedfields', 'item');
     $migration->migrationOneTable('glpi_lockedfields');
@@ -385,7 +385,7 @@ if (!$DB->tableExists('glpi_unmanageds')) {
          KEY `agents_id` (`agents_id`),
          KEY `snmpcredentials_id` (`snmpcredentials_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_unmanageds");
+    $DB->doQuery($query);
 } else {
     $migration->addKey('glpi_unmanageds', 'is_recursive');
 }
@@ -412,7 +412,7 @@ if (!$DB->tableExists('glpi_networkporttypes')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_networkporttypes");
+    $DB->doQuery($query);
 } else {
     $migration->addKey('glpi_networkporttypes', 'is_recursive');
 }
@@ -432,10 +432,6 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
         )
     );
     $stmt = $DB->prepare($DB->buildInsert(NetworkPortType::getTable(), $reference));
-    if (false === $stmt) {
-        $msg = "Error preparing statement in table " . NetworkPortType::getTable();
-        throw new \RuntimeException($msg);
-    }
 
     $types = str_repeat('s', count($default_types[0]));
     foreach ($default_types as $row) {
@@ -470,7 +466,7 @@ if (!$DB->tableExists('glpi_printers_cartridgeinfos')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_printers_cartridgeinfos");
+    $DB->doQuery($query);
 }
 
 if (!$DB->tableExists('glpi_printerlogs')) {
@@ -498,7 +494,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_printerlogs");
+    $DB->doQuery($query);
 } else {
     foreach (['date_creation', 'date_mod'] as $date_field) {
         if (!$DB->fieldExists('glpi_printerlogs', $date_field)) {
@@ -532,7 +528,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
         );
         $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
-            $DB->deleteOrDie(
+            $DB->delete(
                 'glpi_printerlogs',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')]
@@ -555,7 +551,7 @@ if (!$DB->tableExists('glpi_networkportconnectionlogs')) {
          KEY `networkports_id_destination` (`networkports_id_destination`),
          KEY `networkports_id_source` (`networkports_id_source`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_networkportconnectionlogs");
+    $DB->doQuery($query);
 } else {
     $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_destination');
     $migration->addKey('glpi_networkportconnectionlogs', 'networkports_id_source');
@@ -578,7 +574,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_networkportmetrics");
+    $DB->doQuery($query);
 } else {
     foreach (['date_creation', 'date_mod'] as $date_field) {
         if (!$DB->fieldExists('glpi_networkportmetrics', $date_field)) {
@@ -612,7 +608,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
         );
         $to_preserve_result = $DB->doQuery($to_preserve_sql->getValue())->fetch_all(MYSQLI_ASSOC);
         if (!empty($to_preserve_result)) { // If there is no entries to preserve, it means that table is empty, and nothing has to be deleted
-            $DB->deleteOrDie(
+            $DB->delete(
                 'glpi_networkportmetrics',
                 [
                     'NOT' => ['id' => array_column($to_preserve_result, 'id')]
@@ -647,7 +643,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
          KEY `date_creation` (`date_creation`),
          KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_refusedequipments");
+    $DB->doQuery($query);
 } else {
     $migration->addKey('glpi_refusedequipments', 'entities_id');
     $migration->addKey('glpi_refusedequipments', 'agents_id');
@@ -709,7 +705,7 @@ if (!$DB->tableExists('glpi_usbvendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_usbvendors");
+    $DB->doQuery($query);
 } else {
     $migration->dropKey('glpi_usbvendors', 'vendorid');
     $migration->migrationOneTable('glpi_usbvendors');
@@ -737,7 +733,7 @@ if (!$DB->tableExists('glpi_pcivendors')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_pcivendors");
+    $DB->doQuery($query);
 } else {
     $migration->dropKey('glpi_pcivendors', 'vendorid');
     $migration->migrationOneTable('glpi_pcivendors');
@@ -762,7 +758,7 @@ if (!$DB->tableExists('glpi_snmpcredentials')) {
          KEY `snmpversion` (`snmpversion`),
          KEY `is_deleted` (`is_deleted`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->doQueryOrDie($query, "10.0 add table glpi_snmpcredentials");
+    $DB->doQuery($query);
 }
 if (countElementsInTable('glpi_snmpcredentials') === 0) {
     $migration->addPostQuery(
@@ -838,10 +834,6 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             ]
         )
     );
-    if (false === $stmt) {
-        $msg = "Error preparing statement in table " . Blacklist::getTable();
-        throw new \RuntimeException($msg);
-    }
 
     $types = 'sss';
     foreach (Blacklist::getDefaults() as $type => $values) {

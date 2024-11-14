@@ -74,7 +74,7 @@ class PrinterTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -87,6 +87,8 @@ class PrinterTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Printer($computer, $json->content->printers);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue($asset->checkConf($conf));
         $asset->setExtraData((array)$json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);

@@ -3645,6 +3645,44 @@ class TicketTest extends DbTestCase
             ])
         );
 
+        /**
+         * Ticket with satisfaction
+         */
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $result = $entity->update([
+            'id'                => 0,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->assertTrue($result);
+        // Create a ticket
+        $ticket = new \Ticket();
+        $tickets_id_3 = $ticket->add([
+            'name'        => "test autopurge 3",
+            'content'     => "test autopurge 3",
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int)$tickets_id_3);
+        // Close ticket
+        $this->assertTrue($ticket->update([
+            'id' => $tickets_id_3,
+            'status' => \CommonITILObject::CLOSED
+        ]));
+        // Set closedate to 15 days ago
+        $this->assertTrue(
+            $DB->update('glpi_tickets', [
+                'closedate' => date('Y-m-d 10:00:00', time() - 15 * DAY_TIMESTAMP),
+            ], [
+                'id' => $tickets_id_3,
+            ])
+        );
+        // Verify survey created
+        $satisfaction = new \TicketSatisfaction();
+        $this->assertTrue($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
+
+
        // launch Cron for closing tickets
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'purgeticket');
@@ -3658,6 +3696,10 @@ class TicketTest extends DbTestCase
        //second ticket is still present
         $this->assertTrue($ticket->getFromDB($tickets_id_2));
         $this->assertEquals(\CommonITILObject::CLOSED, (int)$ticket->fields['status']);
+
+        // third ticket should have been removed with its satisfaction
+        $this->assertFalse($ticket->getFromDB($tickets_id_3));
+        $this->assertFalse($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
     }
 
     public function testMerge()
@@ -4149,53 +4191,6 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
-
-    public function testCanDelegateeCreateTicket()
-    {
-        $normal_id   = getItemByTypeName('User', 'normal', true);
-        $tech_id     = getItemByTypeName('User', 'tech', true);
-        $postonly_id = getItemByTypeName('User', 'post-only', true);
-        $tuser_id    = getItemByTypeName('User', TU_USER, true);
-
-       // check base behavior (only standard interface can create for other users)
-        $this->login();
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('tech', 'tech');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->login('post-only', 'postonly');
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($normal_id));
-
-       // create a test group
-        $group = new \Group();
-        $groups_id = $group->add(['name' => 'test delegatee']);
-        $this->assertGreaterThan(0, $groups_id);
-
-       // make postonly delegate of the group
-        $gu = new \Group_User();
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'         => $postonly_id,
-                'groups_id'        => $groups_id,
-                'is_userdelegate' => 1,
-            ])
-        );
-        $this->assertGreaterThan(
-            0,
-            $gu->add([
-                'users_id'  => $normal_id,
-                'groups_id' => $groups_id,
-            ])
-        );
-
-        // check postonly can now create (yes for normal and himself) or not (no for others) for other users
-        $this->login('post-only', 'postonly');
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($postonly_id));
-        $this->assertTrue(\Ticket::canDelegateeCreateTicket($normal_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tech_id));
-        $this->assertFalse(\Ticket::canDelegateeCreateTicket($tuser_id));
-    }
-
     public function testCanAddFollowupsDefaults()
     {
         $tech_id = getItemByTypeName('User', 'tech', true);
@@ -4416,7 +4411,7 @@ HTML,
         $this->login('post-only', 'postonly');
         $this->assertFalse((bool)$ticket->canAddFollowups());
 
-       // Add user right
+        // Add user rights
         $DB->update(
             'glpi_profilerights',
             [
@@ -4428,7 +4423,25 @@ HTML,
             ]
         );
 
-       // User is requester and have ADD_AS_GROUP, he should be able to add followup
+        // User is requester and have ADD_AS_GROUP bot not UPDATEMY, he shouldn't be able to add followup
+        $this->login();
+        $this->assertfalse((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertFalse((bool)$ticket->canAddFollowups());
+
+        // Add user rights
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights' => \ITILFollowup::ADD_AS_GROUP | \ITILFollowup::ADDMY
+            ],
+            [
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
+            ]
+        );
+
+        // User is requester and have ADD_AS_GROUP & UPDATEMY, he should be able to add followup
         $this->login();
         $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
@@ -4623,13 +4636,13 @@ HTML,
         $this->assertGreaterThan(0, (int) $ticket_user->add($input_ticket_user));
         $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
 
-       // Cannot add followup as user do not have ADD_AS_FOLLOWUP right
+        // Cannot add followup as user do not have ADD_AS_OBSERVER right
         $this->login();
         $this->assertFalse((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
         $this->assertFalse((bool)$ticket->canAddFollowups());
 
-       // Add user right
+        // Add user right
         $DB->update(
             'glpi_profilerights',
             [
@@ -4641,7 +4654,62 @@ HTML,
             ]
         );
 
-       // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+        // User is observer and have ADD_AS_OBSERVER, he should be able to add followup
+        $this->login();
+        $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertTrue((bool)$ticket->canAddFollowups());
+
+        // Remove user as observer
+        $this->assertGreaterThan(0, (int) $ticket_user->deleteByCriteria([
+            'tickets_id' => $ticket->getID(),
+            'users_id'   => $post_only_id,
+            'type'       => \CommonITILActor::OBSERVER
+        ]));
+        $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
+
+        // Add user to a group and assign the group as observer
+        $group = new \Group();
+        $group_id = $group->add(['name' => 'Test group']);
+        $this->assertGreaterThan(0, (int)$group_id);
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int)$group_user->add([
+                'groups_id' => $group_id,
+                'users_id'  => $post_only_id,
+            ])
+        );
+
+        $group_ticket = new \Group_Ticket();
+        $input_group_ticket = [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group_id,
+            'type'       => \CommonITILActor::OBSERVER
+        ];
+        $this->assertGreaterThan(0, (int) $group_ticket->add($input_group_ticket));
+        $this->assertTrue($ticket->getFromDB($ticket->getID())); // Reload ticket actors
+
+        // User is in a group that is observer and has ADD_AS_OBSERVER rights but not ADD_AS_GROUP
+        $this->login();
+        $this->assertFalse((bool)$ticket->canUserAddFollowups($post_only_id));
+        $this->login('post-only', 'postonly');
+        $this->assertFalse((bool)$ticket->canAddFollowups());
+
+        // Add user right
+        $DB->update(
+            'glpi_profilerights',
+            [
+                'rights' => \ITILFollowup::ADD_AS_OBSERVER | \ITILFollowup::ADD_AS_GROUP
+            ],
+            [
+                'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+                'name'        => \ITILFollowup::$rightname,
+            ]
+        );
+
+        // User is observer and have ADD_AS_OBSERVER & ADD_AS_GROUP, he should be able to add followup
         $this->login();
         $this->assertTrue((bool)$ticket->canUserAddFollowups($post_only_id));
         $this->login('post-only', 'postonly');
@@ -4732,81 +4800,6 @@ HTML
     {
         $instance = new \Ticket();
         $this->assertEquals($expected, $instance->convertContentForTicket($content, $files, $tags));
-    }
-
-    protected function testIsValidatorProvider(): array
-    {
-        // Existing users from database
-        $users_id_1 = getItemByTypeName(User::class, "glpi", true);
-        $users_id_2 = getItemByTypeName(User::class, "tech", true);
-
-        // Tickets to create before tests
-        $this->createItems(\Ticket::class, [
-            [
-                'name'    => 'testIsValidatorProvider 1',
-                'content' => 'testIsValidatorProvider 1',
-            ],
-            [
-                'name'    => 'testIsValidatorProvider 2',
-                'content' => 'testIsValidatorProvider 2',
-            ],
-        ]);
-
-        // Get id of created tickets to reuse later
-        $tickets_id_1 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 1", true);
-        $tickets_id_2 = getItemByTypeName(\Ticket::class, "testIsValidatorProvider 2", true);
-
-        // TicketValidation items to create before tests
-        $this->createItems(TicketValidation::class, [
-            [
-                'tickets_id'      => $tickets_id_1,
-                'itemtype_target' => 'User',
-                'items_id_target' => $users_id_1,
-            ],
-            [
-                'tickets_id'      => $tickets_id_2,
-                'itemtype_target' => 'User',
-                'items_id_target' => $users_id_2,
-            ],
-        ]);
-
-        return [
-            [
-                'tickets_id' => $tickets_id_1,
-                'users_id'   => $users_id_1,
-                'expected'   => true,
-            ],
-            [
-                'tickets_id' => $tickets_id_1,
-                'users_id'   => $users_id_2,
-                'expected'   => false,
-            ],
-            [
-                'tickets_id' => $tickets_id_2,
-                'users_id'   => $users_id_1,
-                'expected'   => false,
-            ],
-            [
-                'tickets_id' => $tickets_id_2,
-                'users_id'   => $users_id_2,
-                'expected'   => true,
-            ],
-        ];
-    }
-
-    public function testIsValidator()
-    {
-        $this->login();
-
-        $provider = $this->testIsValidatorProvider();
-        foreach ($provider as $row) {
-            $tickets_id = $row['tickets_id'];
-            $users_id = $row['users_id'];
-            $expected = $row['expected'];
-            $ticket = new \Ticket();
-            $this->assertTrue($ticket->getFromDB($tickets_id));
-            $this->assertEquals($expected, @$ticket->isValidator($users_id));
-        }
     }
 
     public function testGetTeamRoles(): void
@@ -7042,6 +7035,17 @@ HTML
             ]
         );
 
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task assigned to normal user',
+                'is_private'    => 1,
+                'users_id_tech' => $normal_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
         // tech has rights to see all private followups/tasks
         yield [
             'login'              => 'tech',
@@ -7055,6 +7059,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task assigned to normal user',
                 'private task of tech user',
                 'public task',
             ],
@@ -7072,6 +7077,7 @@ HTML
             ],
             'expected_tasks'     => [
                 'private task of normal user',
+                'private task assigned to normal user',
                 'public task',
             ],
         ];
@@ -7107,6 +7113,7 @@ HTML
                 ],
                 'expected_tasks'     => [
                     'private task of normal user',
+                    'private task assigned to normal user',
                     'private task of tech user',
                     'public task',
                 ],
@@ -7910,5 +7917,144 @@ HTML
         $id = $ticket->add($input);
         $this->assertGreaterThan(0, $id);
         $this->checkInput($ticket, $id, $expected);
+    }
+
+    public static function isCategoryValidProvider(): array
+    {
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+
+        return [
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    #[DataProvider('isCategoryValidProvider')]
+    public function testIsCategoryValid(array $category_fields, array $input, bool $expected): void
+    {
+        $category = $this->createItem('ITILCategory', $category_fields);
+        $input['itilcategories_id'] = $category->getID();
+        $this->assertSame($expected, \Ticket::isCategoryValid($input));
     }
 }

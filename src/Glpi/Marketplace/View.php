@@ -248,17 +248,18 @@ class View extends CommonGLPI
             }
 
             $clean_plugin = [
-                'key'          => $key,
-                'name'         => $plugin['name'],
-                'logo_url'     => $apidata['logo_url'] ?? "",
-                'description'  => $apidata['descriptions'][0]['short_description'] ?? "",
-                'authors'      => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
-                'license'      => $apidata['license'] ?? $plugin['license'] ?? "",
-                'note'         => $apidata['note'] ?? -1,
-                'homepage_url' => $apidata['homepage_url'] ?? "",
-                'issues_url'   => $apidata['issues_url'] ?? "",
-                'readme_url'   => $apidata['readme_url'] ?? "",
-                'version'      => $plugin['version'] ?? "",
+                'key'           => $key,
+                'name'          => $plugin['name'],
+                'logo_url'      => $apidata['logo_url'] ?? "",
+                'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
+                'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
+                'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
+                'note'          => $apidata['note'] ?? -1,
+                'homepage_url'  => $apidata['homepage_url'] ?? "",
+                'issues_url'    => $apidata['issues_url'] ?? "",
+                'readme_url'    => $apidata['readme_url'] ?? "",
+                'version'       => $plugin['version'] ?? "",
+                'changelog_url' => $apidata['changelog_url'] ?? "",
             ];
 
             $plugins[] = $clean_plugin;
@@ -530,7 +531,7 @@ JS;
         $description = Toolbox::stripTags($plugin['description']);
 
         $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
-        $authors_title = htmlspecialchars($authors);
+        $authors_title = htmlescape($authors);
         $authors = strlen($authors)
             ? "<i class='fa-fw ti ti-users'></i>{$authors}"
             : "";
@@ -549,28 +550,28 @@ JS;
             ? self::getStarsHtml($plugin['note'])
             : "";
 
-        $home_url = htmlspecialchars($plugin['homepage_url'] ?? "");
+        $home_url = htmlescape($plugin['homepage_url']);
         $home_url = strlen($home_url)
             ? "<a href='{$home_url}' target='_blank' >
                <i class='ti ti-home-2 add_tooltip' title='" . __s("Homepage") . "'></i>
                </a>"
             : "";
 
-        $issues_url = htmlspecialchars($plugin['issues_url'] ?? "");
+        $issues_url = htmlescape($plugin['issues_url']);
         $issues_url = strlen($issues_url)
             ? "<a href='{$issues_url}' target='_blank' >
                <i class='ti ti-bug add_tooltip' title='" . __s("Get help") . "'></i>
                </a>"
             : "";
 
-        $readme_url = htmlspecialchars($plugin['readme_url'] ?? "");
+        $readme_url = htmlescape($plugin['readme_url']);
         $readme_url = strlen($readme_url)
             ? "<a href='{$readme_url}' target='_blank' >
                <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
                </a>"
             : "";
 
-        $changelog_url = htmlspecialchars($plugin['changelog_url'] ?? "");
+        $changelog_url = htmlescape($plugin['changelog_url']);
         $changelog_url = strlen($changelog_url)
             ? "<a href='{$changelog_url}' target='_blank' >
                <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
@@ -808,7 +809,7 @@ HTML;
             } else if ($can_be_updated) {
                 $update_title = sprintf(
                     __s("A new version (%s) is available, update?", 'marketplace'),
-                    htmlspecialchars($web_update_version)
+                    htmlescape($web_update_version)
                 );
 
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
@@ -906,7 +907,7 @@ HTML;
                                    </a>',
                 'content' => sprintf(
                     __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                    htmlspecialchars($plugin_inst->getField('name'))
+                    htmlescape($plugin_inst->getField('name'))
                 )
             ]);
 
@@ -937,7 +938,7 @@ HTML;
     {
         $icon = "";
 
-        $logo_url = htmlspecialchars($plugin['logo_url'] ?? "");
+        $logo_url = htmlescape($plugin['logo_url']);
         if (strlen($logo_url)) {
             $icon = "<img src='{$logo_url}'>";
         } else {
@@ -1146,17 +1147,20 @@ HTML;
             echo "<b>" . __("Do you want to replace the plugins setup page by the new marketplace?") . "</b>";
             echo "</div>";
             echo "<div class='card-footer'>";
-            echo Html::submit("<i class='fa fa-check'></i>&nbsp;" . __('Yes'), [
-                'name' => 'marketplace_replace_plugins_yes',
+            echo Html::submit(__('Yes'), [
+                'name'  => 'marketplace_replace_plugins_yes',
+                'icon'  => 'fa fa-check',
                 'class' => 'btn btn-primary'
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-times'></i>&nbsp;" . __('No'), [
+            echo Html::submit(__('No'), [
                 'name' => 'marketplace_replace_plugins_never',
+                'icon' => 'fa fa-times',
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-clock'></i>&nbsp;" . __('Later'), [
+            echo Html::submit(__('Later'), [
                 'name'  => 'marketplace_replace_plugins_later',
+                'icon' => 'fa fa-clock',
             ]);
             echo "</div>";
             echo Html::hidden('marketplace_replace');

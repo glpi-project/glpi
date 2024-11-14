@@ -246,14 +246,14 @@ class Rule extends CommonDBTM
             $menu['rule']['page']  = static::getSearchURL(false);
             $menu['rule']['icon']  = static::getIcon();
 
-            $menu['rule']['options']['transfer']['title']           = __('Transfer');
-            $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
-            $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
+            $menu['rule']['options'][Transfer::class]['title']           = __('Transfer');
+            $menu['rule']['options'][Transfer::class]['page']            = "/front/transfer.php";
+            $menu['rule']['options'][Transfer::class]['links']['search'] = "/front/transfer.php";
 
             if (Session::haveRightsOr("transfer", [CREATE, UPDATE])) {
-                $menu['rule']['options']['transfer']['links']['transfer_list']
+                $menu['rule']['options'][Transfer::class]['links']['transfer_list']
                                                                  = "/front/transfer.action.php";
-                $menu['rule']['options']['transfer']['links']['add'] = Transfer::getFormURL(false);
+                $menu['rule']['options'][Transfer::class]['links']['add'] = Transfer::getFormURL(false);
             }
         }
 
@@ -1929,7 +1929,7 @@ JS
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
                 $data['criteria'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1941,7 +1941,7 @@ JS
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
                 $data['actions'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlspecialchars', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1954,7 +1954,7 @@ JS
         );
 
         if ($display_entity) {
-            $entname = htmlspecialchars(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+            $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {
                 $entname = sprintf(__s('%1$s %2$s'), $entname, "<span class='fw-bold'>(" . __s('R') . ")</span>");
             }
@@ -2134,7 +2134,7 @@ JS
         $entries = [
             [
                 'action' => __('Validation'),
-                'result' => htmlspecialchars(Dropdown::getYesNo($global_result)),
+                'result' => htmlescape(Dropdown::getYesNo($global_result)),
             ]
         ];
         $output = $this->preProcessPreviewResults($output);
@@ -2159,7 +2159,7 @@ JS
             foreach ($value as $v) {
                 $entries[] = [
                     'action' => $action_def["name"],
-                    'result' => htmlspecialchars($this->getActionValue($action_def_key, $actiontype, $v))
+                    'result' => htmlescape($this->getActionValue($action_def_key, $actiontype, $v))
                 ];
             }
         }
@@ -2171,7 +2171,7 @@ JS
                 $regex_results .= "<table class='table table-sm table-borderless table-striped'>";
                 $regex_results .= "<tr><th>" . __s('Key') . "</th><th>" . __s('Value') . "</th></tr>";
                 foreach ($this->regex_results[0] as $key => $value) {
-                    $regex_results .= "<tr><td>" . htmlspecialchars($key) . "</td><td>" . htmlspecialchars($value) . "</td></tr>";
+                    $regex_results .= "<tr><td>" . htmlescape($key) . "</td><td>" . htmlescape($value) . "</td></tr>";
                 }
                 $regex_results .= "</table>";
             }
@@ -2208,9 +2208,9 @@ JS
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalCriteria($fields);
-        $text  = "<td $addtotd>" . htmlspecialchars($to_display['criterion']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['condition']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['pattern']) . "</td>";
+        $text  = "<td $addtotd>" . htmlescape($to_display['criterion']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['condition']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['pattern']) . "</td>";
         return $text;
     }
 
@@ -2239,9 +2239,9 @@ JS
     public function getMinimalActionText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalAction($fields);
-        $text  = "<td $addtotd>" . htmlspecialchars($to_display['field']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['type']) . "</td>";
-        $text .= "<td $addtotd>" . htmlspecialchars($to_display['value']) . "</td>";
+        $text  = "<td $addtotd>" . htmlescape($to_display['field']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['type']) . "</td>";
+        $text .= "<td $addtotd>" . htmlescape($to_display['value']) . "</td>";
         return $text;
     }
 
@@ -2658,9 +2658,7 @@ JS
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
                 return match ($crit['type']) {
-                    'dropdown' => ($result = Dropdown::getDropdownName($crit["table"], $value, false, false)) === '&nbsp;'
-                        ? ''
-                        : $result,
+                    'dropdown' => Dropdown::getDropdownName($crit["table"], $value, translate: false),
                     'dropdown_assign', 'dropdown_users' => getUserName($value),
                     'yesonly', 'yesno' => Dropdown::getYesNo($value),
                     'dropdown_impact' => CommonITILObject::getImpactName($value),
@@ -2962,9 +2960,9 @@ JS
 
         $entries = [];
         foreach ($rules as $rule) {
-            $name = htmlspecialchars($rule->fields["name"]);
+            $name = htmlescape($rule->fields["name"]);
             if ($canedit) {
-                $name = "<a href='" . htmlspecialchars(static::getFormURLWithID($rule->fields["id"]))
+                $name = "<a href='" . htmlescape(static::getFormURLWithID($rule->fields["id"]))
                     . "&amp;onglet=1'>" . $name . "</a>";
             }
 
@@ -3386,17 +3384,12 @@ JS
     /**
      * Create rules (initialisation).
      *
-     * @param boolean $reset        Whether to reset before adding new rules, defaults to true
-     * @param boolean $with_plugins Use plugins rules or not
-     * @param boolean $check        Check if rule exists before creating
-     * @param ?string $itemtype     Itemtype to work on
+     * @param bool      $reset      Whether to reset before adding new rules, defaults to true
+     * @param ?string   $itemtype   Itemtype to work on
      *
-     * @return boolean
-     *
-     * @FIXME Make it final in GLPI 11.0.
-     * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
+     * @return bool
      */
-    public function initRules(bool $reset = true, $with_plugins = true, $check = true, string $itemtype = null): bool
+    final public function initRules(bool $reset = true, ?string $itemtype = null): bool
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -3428,8 +3421,6 @@ JS
             if (!$DB->delete(self::getTable(), $where, $joins)) {
                 return false; // Do not continue if reset failed
             }
-
-            $check = false; // Nothing to check
         }
 
         $xml = $this->getDefaultRules();
@@ -3483,7 +3474,10 @@ JS
 
             $rule = new static();
 
-            if ($check === true && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])) {
+            if (
+                $reset === false // bypass this check in reset mode to save a query
+                && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])
+            ) {
                 // Rule already exists, ignore it.
                 continue;
             }

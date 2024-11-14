@@ -88,6 +88,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Project', 'Projects', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['tools', self::class];
+    }
+
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
@@ -217,7 +222,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public static function getAdditionalMenuOptions()
     {
         return [
-            'task' => [
+            ProjectTask::class => [
                 'title' => __('My tasks'),
                 'page'  => ProjectTask::getSearchURL(false),
                 'links' => [
@@ -1292,7 +1297,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             if ($item->fields["users_id"] && $user->getFromDB($item->fields["users_id"])) {
                 $fourth_col .= sprintf(
                     __('%1$s %2$s'),
-                    "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>",
+                    "<span class='b'>" . htmlescape($user->getName()) . "</span>",
                     Html::showToolTip(
                         $user->getInfoCard(),
                         [
@@ -1457,7 +1462,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='12'>" . htmlspecialchars(Project::getTypeName($numrows)) . "</th></tr>";
+        echo "<tr class='noHover'><th colspan='12'>" . htmlescape(Project::getTypeName($numrows)) . "</th></tr>";
         if ($numrows) {
             Project::commonListHeader();
             Session::initNavigateListItems(
@@ -1625,7 +1630,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "<tr><td colspan='4' class='subheader'>" . _sn('Manager', 'Managers', 1) . "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . htmlspecialchars(User::getTypeName(1)) . "</td>";
+        echo "<td>" . htmlescape(User::getTypeName(1)) . "</td>";
         echo "<td>";
         User::dropdown(['name'   => 'users_id',
             'value'  => $ID ? $this->fields["users_id"] : Session::getLoginUserID(),
@@ -1633,7 +1638,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'entity' => $this->fields["entities_id"]
         ]);
         echo "</td>";
-        echo "<td>" . htmlspecialchars(Group::getTypeName(1)) . "</td>";
+        echo "<td>" . htmlescape(Group::getTypeName(1)) . "</td>";
         echo "<td>";
         Group::dropdown([
             'name'      => 'groups_id',
@@ -1820,7 +1825,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                              Html::showMassiveActionCheckBox('ProjectTeam', $data["id"]);
                              echo "</td>";
                         }
-                        echo "<td>" . htmlspecialchars($item->getTypeName(1)) . "</td>";
+                        echo "<td>" . htmlescape($item->getTypeName(1)) . "</td>";
                         echo "<td>" . $item->getLink() . "</td>";
                         echo "</tr>";
                     }
@@ -2233,7 +2238,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 $parentname = $item['_parent_name'] ?? $item['_parents_id'];
 
                 $content .= "<div>";
-                $content .= Html::link(htmlspecialchars(sprintf(__('%s of %s'), $childref, $parentname)), Project::getFormURLWithID($item['_parents_id']));
+                $content .= Html::link(htmlescape(sprintf(__('%s of %s'), $childref, $parentname)), Project::getFormURLWithID($item['_parents_id']));
                 $content .= "</div>";
             }
             $content .= "<div class='flex-break'></div>";
@@ -2790,7 +2795,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         'colspan' => 4,
                         'content' => sprintf(
                             '<a href="%s">%s</a>',
-                            htmlspecialchars(self::getSearchURL() . '?' . Toolbox::append_params($options)),
+                            htmlescape(self::getSearchURL() . '?' . Toolbox::append_params($options)),
                             Html::makeTitle(__('Ongoing projects'), $displayed_row_count, count($projects_id))
                         ),
                     ]
@@ -2835,16 +2840,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         'content' => $state !== false
                             ? sprintf(
                                 '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
-                                htmlspecialchars($state->fields['color']),
-                                htmlspecialchars($state->fields['color']),
-                                htmlspecialchars($state->fields['name']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['name']),
                             )
                             : '',
                     ],
                     [
                         'content' => sprintf(
                             '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
-                            htmlspecialchars($priority)
+                            htmlescape($priority)
                         ),
                     ],
                     [

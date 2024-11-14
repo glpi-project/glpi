@@ -42,12 +42,14 @@ class ChangeTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;
 
-    public $second_level_menu         = "change";
-    public $third_level_menu          = "ChangeTemplate";
-
     public static function getTypeName($nb = 0)
     {
         return _n('Change template', 'Change templates', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', Change::class, self::class];
     }
 
     public function getCloneRelations(): array

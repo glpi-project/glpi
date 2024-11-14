@@ -151,14 +151,14 @@ class Vlan extends CommonDropdown
 
             $vlan = new self();
             if ($vlan->getFromDB($options['items_id'])) {
-                $content = htmlspecialchars(sprintf(__('%1$s - %2$s'), $vlan->getName(), $tagged_msg));
+                $content = htmlescape(sprintf(__('%1$s - %2$s'), $vlan->getName(), $tagged_msg));
                 $content .= Html::showToolTip(
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         __('ID TAG'),
                         $vlan->fields['tag']
                     )) . "<br>" .
-                    htmlspecialchars(sprintf(
+                    htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         __('Comments'),
                         $vlan->fields['comment']

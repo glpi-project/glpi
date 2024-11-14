@@ -39,7 +39,7 @@ Session::checkRight("config", READ);
 
 if (isset($_GET['check_version'])) {
     Session::addMessageAfterRedirect(
-        htmlspecialchars(Toolbox::checkNewVersionAvailable())
+        htmlescape(Toolbox::checkNewVersionAvailable())
     );
     Html::back();
 }

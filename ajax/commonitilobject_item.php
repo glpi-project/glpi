@@ -33,19 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 // Should be defined by other files that include this file.
 // See: change_item.php, item_problem.php, item_ticket.php and item_ticketrecurrent.php
 $obj = $obj ?? null;
 $item_obj = $item_obj ?? null;
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException();
 }
 
 switch ($_GET['action']) {

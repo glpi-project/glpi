@@ -46,7 +46,6 @@ global $CFG_GLPI;
 $link = new Problem_User();
 $item = new Problem();
 
-Session::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {

@@ -267,7 +267,7 @@ class Certificate_Item extends CommonDBRelation
         echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
         echo "<th>" . __s('Name') . "</th>";
         if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         }
         echo "<th>" . __s('Serial number') . "</th>";
         echo "<th>" . __s('Inventory number') . "</th>";
@@ -294,7 +294,7 @@ class Certificate_Item extends CommonDBRelation
                         }
 
                         $link = $itemtype::getFormURLWithID($data["id"]);
-                        $name = "<a href=\"" . $link . "\">" . htmlspecialchars($data["name"]) . "$ID</a>";
+                        $name = "<a href=\"" . $link . "\">" . htmlescape($data["name"]) . "$ID</a>";
 
                         echo "<tr class='tab_bg_1'>";
 
@@ -303,17 +303,17 @@ class Certificate_Item extends CommonDBRelation
                             Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                             echo "</td>";
                         }
-                        echo "<td class='center'>" . htmlspecialchars($item->getTypeName(1)) . "</td>";
+                        echo "<td class='center'>" . htmlescape($item->getTypeName(1)) . "</td>";
                         echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
                         ">" . $name . "</td>";
                         if (Session::isMultiEntitiesMode()) {
                             $entity = ($item->isEntityAssign() ?
                             Dropdown::getDropdownName("glpi_entities", $data['entity']) :
                             '-');
-                             echo "<td class='center'>" . htmlspecialchars($entity) . "</td>";
+                             echo "<td class='center'>" . htmlescape($entity) . "</td>";
                         }
-                        echo "<td class='center'>" . (isset($data["serial"]) ? htmlspecialchars($data["serial"]) : "-") . "</td>";
-                        echo "<td class='center'>" . (isset($data["otherserial"]) ? htmlspecialchars($data["otherserial"]) : "-") . "</td>";
+                        echo "<td class='center'>" . (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") . "</td>";
+                        echo "<td class='center'>" . (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
                         echo "</tr>";
                     }
                 }
@@ -432,7 +432,7 @@ class Certificate_Item extends CommonDBRelation
                  ]);
 
                  echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
+                 echo Html::submit(_x('button', 'Associate'), ['name' => 'add']);
                  echo "</td>";
                  echo "</tr>";
                  echo "</table>";
@@ -458,7 +458,7 @@ class Certificate_Item extends CommonDBRelation
         }
         echo "<th>" . __('Name') . "</th>";
         if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . htmlspecialchars(Entity::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         }
         echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
         echo "<th>" . __s('DNS name') . "</th>";
@@ -509,8 +509,8 @@ class Certificate_Item extends CommonDBRelation
                     $data["certificatetypes_id"]
                 );
                  echo "</td>";
-                 echo "<td class='center'>" . htmlspecialchars($data["dns_name"]) . "</td>";
-                 echo "<td class='center'>" . htmlspecialchars($data["dns_suffix"]) . "</td>";
+                 echo "<td class='center'>" . htmlescape($data["dns_name"]) . "</td>";
+                 echo "<td class='center'>" . htmlescape($data["dns_suffix"]) . "</td>";
                  echo "<td class='center'>" . Html::convDate($data["date_creation"]) . "</td>";
                 if (
                     $data["date_expiration"] <= date('Y-m-d')

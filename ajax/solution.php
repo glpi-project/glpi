@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\RichText\RichText;
 
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
@@ -42,12 +42,10 @@ $this->setAjax();
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 // Mandatory parameter: solutiontemplates_id
 $solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
 if ($solutiontemplates_id === null) {
-    Response::sendError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
+    throw new BadRequestHttpException("Missing or invalid parameter: 'solutiontemplates_id'");
 } else if ($solutiontemplates_id == 0) {
    // Reset form
     echo json_encode([
@@ -76,14 +74,14 @@ if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObj
 // Load solution template
 $template = new SolutionTemplate();
 if (!$template->getFromDB($solutiontemplates_id)) {
-    Response::sendError(400, "Unable to load template: $solutiontemplates_id");
+    throw new BadRequestHttpException("Unable to load template: $solutiontemplates_id");
 }
 
 if ($apply_twig) {
    // Load parent item
     $parent = new $parents_itemtype();
     if (!$parent->getFromDB($parents_id)) {
-        Response::sendError(400, "Unable to load parent item: $parents_itemtype $parents_id");
+        throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
     }
 
    // Render template content using twig

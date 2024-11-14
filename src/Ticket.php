@@ -59,8 +59,6 @@ class Ticket extends CommonITILObject
 
     public static $rightname                   = 'ticket';
 
-    protected $userentity_oncreate      = true;
-
     const MATRIX_FIELD                  = 'priority_matrix';
     const URGENCY_MASK_FIELD            = 'urgency_mask';
     const IMPACT_MASK_FIELD             = 'impact_mask';
@@ -86,6 +84,12 @@ class Ticket extends CommonITILObject
     const OWN              =  32768;
     const CHANGEPRIORITY   =  65536;
     const READNEWTICKET    = 262144;
+
+    #[Override]
+    public static function supportHelpdeskDisplayPreferences(): bool
+    {
+        return true;
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -1489,29 +1493,6 @@ class Ticket extends CommonITILObject
             return false;
         }
 
-       // Check a self-service user can create a ticket for another user.
-       // We condition the check with a bool flag set in front/tracking.injector.php (self-service ticket controller).
-       // This to avoid plugins having their process broken.
-        if (
-            isset($input['check_delegatee'], $input['_users_id_requester'])
-            && $input['check_delegatee']
-        ) {
-            $requesters_ids = is_array($input['_users_id_requester'])
-                ? $input['_users_id_requester']
-                : [$input['_users_id_requester']];
-            $can_delegatee_create_ticket = false;
-            foreach ($requesters_ids as $requester_id) {
-                if (self::canDelegateeCreateTicket($requester_id, ($input['entities_id'] ?? -2))) {
-                    $can_delegatee_create_ticket = true;
-                    break;
-                }
-            }
-            if (!$can_delegatee_create_ticket) {
-                Session::addMessageAfterRedirect(__s("You cannot create a ticket for this user"));
-                return false;
-            }
-        }
-
         if (!isset($input["requesttypes_id"])) {
             $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
         }
@@ -1599,7 +1580,7 @@ class Ticket extends CommonITILObject
             foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
                 if ($email && !NotificationMailing::isUserAddressValid($email)) {
                     Session::addMessageAfterRedirect(
-                        htmlspecialchars(sprintf(__('Invalid email address %s'), $email)),
+                        htmlescape(sprintf(__('Invalid email address %s'), $email)),
                         false,
                         ERROR
                     );
@@ -2072,7 +2053,16 @@ class Ticket extends CommonITILObject
             || Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDALLITEM, $entity_id)
             || (
                 Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_GROUP, $entity_id)
-                && $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+                && (
+                    (
+                        $this->haveAGroup(CommonITILActor::REQUESTER, $user_groups_ids)
+                        && Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADDMY, $entity_id)
+                    )
+                    || (
+                        $this->haveAGroup(CommonITILActor::OBSERVER, $user_groups_ids)
+                        && Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_OBSERVER, $entity_id)
+                    )
+                )
             )
             || (
                 Profile::haveUserRight($user_id, $rightname, ITILFollowup::ADD_AS_TECHNICIAN, $entity_id)
@@ -2083,53 +2073,6 @@ class Ticket extends CommonITILObject
             )
             || $this->isUserValidationRequested($user_id, true)
         );
-    }
-
-
-    /**
-     * Check current user can create a ticket for another given user
-     *
-     * @since 9.5.4
-     *
-     * @param int $requester_id the user for which we want to create the ticket
-     * @param int $entity_restrict check entity when search users
-     *            (keep null to check with current session entities)
-     *
-     * @return bool
-     */
-    public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null): bool
-    {
-       // if the user is a technician, no need to check delegates
-        if (Session::getCurrentInterface() == "central") {
-            return true;
-        }
-
-       // if the connected user is the ticket requester, we can create
-        if ($requester_id == $_SESSION['glpiID']) {
-            return true;
-        }
-
-        if ($entity_restrict === null) {
-            $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
-        }
-
-       // if user has no delegate groups, he can't create ticket for another user
-        $delegate_groups = User::getDelegateGroupsForUser($entity_restrict);
-        if (count($delegate_groups) == 0) {
-            return false;
-        }
-
-       // retrieve users to check if given requester is part of them
-        $users_delegatee_iterator = User::getSqlSearchResult(false, 'delegate', $entity_restrict);
-        foreach ($users_delegatee_iterator as $user_data) {
-            if ($user_data['id'] == $requester_id) {
-               // user found
-                return true;
-            }
-        }
-
-       // user not found
-        return false;
     }
 
 
@@ -2243,7 +2186,7 @@ class Ticket extends CommonITILObject
                     'rand'         => $rand
                 ];
                 echo "<table class='mx-auto'><tr>";
-                echo "<td><label for='dropdown__mergeticket$rand'>" . htmlspecialchars(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
+                echo "<td><label for='dropdown__mergeticket$rand'>" . htmlescape(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
                 Ticket::dropdown($mergeparam);
                 echo "</td></tr><tr><td><label for='with_followups'>" . __s('Merge followups') . "</label></td><td>";
                 Html::showCheckbox([
@@ -2304,7 +2247,7 @@ class Ticket extends CommonITILObject
                 echo '<div class="horizontal-form">';
 
                 echo '<div class="form-row">';
-                $label = htmlspecialchars(SolutionTemplate::getTypeName(1));
+                $label = htmlescape(SolutionTemplate::getTypeName(1));
                 echo "<label for='solution_template'>$label</label>";
                 SolutionTemplate::dropdown([
                     'name'     => "solution_template",
@@ -2336,7 +2279,7 @@ JAVASCRIPT;
                 echo '</div>'; // .form-row
 
                 echo '<div class="form-row">';
-                $label = htmlspecialchars(SolutionType::getTypeName(1));
+                $label = htmlescape(SolutionType::getTypeName(1));
                 echo "<label for='solutiontypes_id'>$label</label>";
                 SolutionType::dropdown([
                     'name'  => 'solutiontypes_id',
@@ -3106,6 +3049,10 @@ JAVASCRIPT;
             );
         }
 
+        if (Session::haveRight('change', READ)) {
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Ticket'));
+        }
+
         $tab[] = [
             'id'                 => 'tools',
             'name'               => __('Tools')
@@ -3158,7 +3105,7 @@ JAVASCRIPT;
             ],
         ];
 
-       // Filter search fields for helpdesk
+        // Filter search fields for helpdesk
         if (
             !Session::isCron() // no filter for cron
             && (Session::getCurrentInterface() != 'central')
@@ -3441,225 +3388,6 @@ JAVASCRIPT;
         return $totalcost;
     }
 
-
-    /**
-     * Print the helpdesk form
-     *
-     * @param integer $ID               ID of the user who want to display the Helpdesk
-     * @param boolean $ticket_template  Ticket template for preview : false if not used for preview
-     *                                  (false by default)
-     *
-     * @return boolean|void
-     **/
-    public function showFormHelpdesk($ID, $ticket_template = false)
-    {
-        if (!self::canCreate()) {
-            return false;
-        }
-
-        $url_validate = "";
-        if (
-            !$ticket_template
-            && Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
-        ) {
-            $opt                  = [];
-            $opt['reset']         = 'reset';
-            $opt['criteria'][0]['field']      = 55; // validation status
-            $opt['criteria'][0]['searchtype'] = 'equals';
-            $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
-            $opt['criteria'][0]['link']       = 'AND';
-
-            $opt['criteria'][1]['field']      = 59; // validation aprobator
-            $opt['criteria'][1]['searchtype'] = 'equals';
-            $opt['criteria'][1]['value']      = Session::getLoginUserID();
-            $opt['criteria'][1]['link']       = 'AND';
-
-            $url_validate = Ticket::getSearchURL() . "?" . Toolbox::append_params($opt);
-        }
-
-        $email  = UserEmail::getDefaultForUser($ID);
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
-
-       // Set default values...
-        $default_values = [
-            '_users_id_requester_notif' => [
-                'use_notification' => (($email == "") ? 0 : $default_use_notif)
-            ],
-            'nodelegate'                => 1,
-            '_users_id_requester'       => 0,
-            '_users_id_observer'        => 0,
-            '_users_id_observer_notif'  => [
-                'use_notification' => $default_use_notif
-            ],
-            'name'                      => '',
-            'content'                   => '',
-            'itilcategories_id'         => 0,
-            'locations_id'              => 0,
-            'urgency'                   => 3,
-            'items_id'                  => [],
-            'entities_id'               => $_SESSION['glpiactive_entity'],
-            'plan'                      => [],
-            '_add_validation'           => 0,
-            'type'                      => Entity::getUsedConfig(
-                'tickettype',
-                $_SESSION['glpiactive_entity'],
-                '',
-                Ticket::INCIDENT_TYPE
-            ),
-            '_right'                    => "id",
-            '_content'                  => [],
-            '_tag_content'              => [],
-            '_filename'                 => [],
-            '_tag_filename'             => [],
-            '_tasktemplates_id'         => []
-        ];
-        $options = [];
-
-       // Get default values from posted values on reload form
-        if (!$ticket_template) {
-            $options = $_POST;
-        }
-
-        $this->restoreInputAndDefaults($ID, $options, $default_values, true);
-
-       // Check category / type validity
-        if ($options['itilcategories_id']) {
-            $cat = new ITILCategory();
-            if ($cat->getFromDB($options['itilcategories_id'])) {
-                switch ($options['type']) {
-                    case self::INCIDENT_TYPE:
-                        if (!$cat->getField('is_incident')) {
-                             $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    case self::DEMAND_TYPE:
-                        if (!$cat->getField('is_request')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-       // Load ticket template if available :
-        $tt = $this->getITILTemplateToUse(
-            $ticket_template,
-            $options['type'],
-            $options['itilcategories_id'],
-            $_SESSION["glpiactive_entity"]
-        );
-
-        // override current fields in options with template fields and return the array of these predefined fields
-        $predefined_fields = $this->setPredefinedFields($tt, $options, $default_values);
-
-        $delegating = User::getDelegateGroupsForUser($options['entities_id']);
-
-        if ($options["_users_id_requester"] == 0) {
-            $options['_users_id_requester'] = Session::getLoginUserID();
-        } else {
-            $options['_right'] = "delegate";
-        }
-
-        TemplateRenderer::getInstance()->display('components/itilobject/selfservice.html.twig', [
-            'has_tickets_to_validate' => TicketValidation::getNumberToValidate(Session::getLoginUserID()) > 0,
-            'url_validate'            => $url_validate,
-            'selfservice'             => true,
-            'item'                    => $this,
-            'params'                  => $options,
-            'entities_id'             => $options['entities_id'],
-            'itiltemplate_key'        => self::getTemplateFormFieldName(),
-            'itiltemplate'            => $tt,
-            'delegating'              => $delegating,
-            'predefined_fields'       => Toolbox::prepareArrayForInput($predefined_fields),
-        ]);
-    }
-
-    /**
-     * Display a single observer selector
-     *
-     * @param array $options  Options for default values ($options of showActorAddFormOnCreate)
-     **/
-    public static function showFormHelpdeskObserver($options = [])
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-       //default values
-        $ticket = new Ticket();
-        $params = [
-            '_users_id_observer_notif' => [
-                'use_notification' => true
-            ],
-            '_users_id_observer'       => 0,
-            'entities_id'              => $_SESSION["glpiactive_entity"],
-            '_right'                   => "all",
-            'show_first'               => true,
-        ];
-
-       // overide default value by function parameters
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
-
-        if (isset($params['_tickettemplate']) && !($params['_tickettemplate'] instanceof TicketTemplate)) {
-           // Replace template ID by object for actor form
-            $tt = new TicketTemplate();
-            if ($tt->getFromDB($params['_tickettemplate'])) {
-                $params['_tickettemplate'] = $tt;
-            } else {
-                unset($params['_tickettemplate']);
-            }
-        }
-
-       // add a user selector
-        $rand = mt_rand();
-        if ($params['show_first']) {
-            $rand = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
-        }
-
-        if (isset($params['_tickettemplate'])) {
-           // Replace template object by ID for ajax
-            $params['_tickettemplate'] = $params['_tickettemplate']->getID();
-        }
-
-       // add an additionnal observer on user selection
-        Ajax::updateItemOnSelectEvent(
-            "dropdown__users_id_observer[]$rand",
-            "observer_$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/helpdesk_observer.php",
-            $params
-        );
-
-       //remove 'new observer' anchor on user selection
-        echo Html::scriptBlock("
-      $('#dropdown__users_id_observer__$rand').on('change', function(event) {
-         $('#addObserver$rand').remove();
-      });");
-
-       // add "new observer" anchor
-        echo "<a id='addObserver$rand' class='btn btn-sm btn-ghost-secondary mt-2 mb-3' onclick='this.remove()'>
-         <i class='fas fa-plus'></i>
-      </a>";
-
-       // add an additional observer on anchor click
-        Ajax::updateItemOnEvent(
-            "addObserver$rand",
-            "observer_$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/helpdesk_observer.php",
-            $params,
-            ['click']
-        );
-
-       // div for an additional observer
-        echo "<div class='actor_single' id='observer_$rand'></div>";
-    }
-
     public static function getDefaultValues($entity = 0)
     {
         /** @var array $CFG_GLPI */
@@ -3759,6 +3487,48 @@ JAVASCRIPT;
     }
 
 
+    /**
+     * Check if the category is valid for the given type and entity.
+     *
+     * @param array $input An associative array containing 'itilcategories_id', 'type', and 'entities_id'.
+     *
+     * @return bool
+     */
+    public static function isCategoryValid(array $input): bool
+    {
+        $cat = new ITILCategory();
+        if ($cat->getFromDB($input['itilcategories_id'])) {
+            switch ($input['type']) {
+                case self::INCIDENT_TYPE:
+                    if (!$cat->fields['is_incident']) {
+                        return false;
+                    }
+                    break;
+
+                case self::DEMAND_TYPE:
+                    if (!$cat->fields['is_request']) {
+                        return false;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            // Check category / entity validity
+            if (
+                $cat->fields['entities_id'] != $input['entities_id']
+                && !(
+                    $cat->isRecursive()
+                    && in_array($input['entities_id'], getSonsOf('glpi_entities', $cat->fields['entities_id']))
+                )
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public function showForm($ID, array $options = [])
     {
        // show full create form only to tech users
@@ -3834,33 +3604,6 @@ JAVASCRIPT;
             }
         }
 
-        // Check category / type validity
-        if ($options['itilcategories_id']) {
-            $cat = new ITILCategory();
-            if ($cat->getFromDB($options['itilcategories_id'])) {
-                switch ($options['type']) {
-                    case self::INCIDENT_TYPE:
-                        if (!$cat->getField('is_incident')) {
-                             $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    case self::DEMAND_TYPE:
-                        if (!$cat->getField('is_request')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                // Check category / entity validity
-                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
-                    $options['itilcategories_id'] = 0;
-                }
-            }
-        }
-
         // Default check
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -3884,6 +3627,15 @@ JAVASCRIPT;
                 // Pass to values
                 $options['entities_id']      = $first_entity;
             }
+        }
+
+        // Check category / type validity
+        if (
+            $options['itilcategories_id']
+            && !$this::isCategoryValid($options)
+        ) {
+            $options['itilcategories_id'] = 0;
+            $this->fields['itilcategories_id'] = 0;
         }
 
         if ($options['type'] <= 0) {
@@ -4678,7 +4430,7 @@ JAVASCRIPT;
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
                                     $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
-                                        htmlspecialchars(getUserName($d["users_id"]));
+                                        htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
@@ -5066,7 +4818,7 @@ JAVASCRIPT;
         $rand = mt_rand();
         if ($job->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
-            $name    = htmlspecialchars(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
+            $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
            // $rand    = mt_rand();
             echo "<tr class='tab_bg_2'>";
             echo "<td>
@@ -5083,7 +4835,7 @@ JAVASCRIPT;
                 foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                     $user = new User();
                     if ($d["users_id"] > 0 && $user->getFromDB($d["users_id"])) {
-                        $name     = "<span class='b'>" . htmlspecialchars($user->getName()) . "</span>";
+                        $name     = "<span class='b'>" . htmlescape($user->getName()) . "</span>";
                         $name     = sprintf(
                             __('%1$s %2$s'),
                             $name,
@@ -5097,7 +4849,7 @@ JAVASCRIPT;
                         );
                          echo $name;
                     } else {
-                        echo htmlspecialchars($d['alternative_email']) . "&nbsp;";
+                        echo htmlescape($d['alternative_email']) . "&nbsp;";
                     }
                     echo "<br>";
                 }
@@ -5131,12 +4883,12 @@ JAVASCRIPT;
             }
             echo "<td>";
 
-            $link = "<a id='ticket" . htmlspecialchars($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
+            $link = "<a id='ticket" . htmlescape($job->fields["id"] . $rand) . "' href='" . Ticket::getFormURLWithID($job->fields["id"]);
             if ($forcetab != '') {
                 $link .= "&amp;forcetab=" . $forcetab;
             }
             $link   .= "'>";
-            $link   .= "<span class='b'>" . htmlspecialchars($job->getNameID()) . "</span></a>";
+            $link   .= "<span class='b'>" . htmlescape($job->getNameID()) . "</span></a>";
             $link    = sprintf(
                 __s('%1$s (%2$s)'),
                 $link,
@@ -5511,7 +5263,7 @@ JAVASCRIPT;
                 'long'  => __('Steal a ticket')
             ];
                                                //TRANS: short for : To be in charge of a ticket
-            $values[self::OWN]            = ['short' => __('Beeing in charge'),
+            $values[self::OWN]            = ['short' => __('Be in charge'),
                 'long'  => __('To be in charge of a ticket')
             ];
             $values[self::CHANGEPRIORITY] = __('Change the priority');

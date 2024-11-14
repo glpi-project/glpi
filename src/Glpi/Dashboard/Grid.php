@@ -467,7 +467,13 @@ HTML;
         ]);
         $js = <<<JAVASCRIPT
       $(function () {
-         new GLPIDashboard({$js_params})
+        // Sometimes GLPIDashboard is undefined and it messes with e2e tests
+        // by throwing a blocking error
+        // TODO: investigate why this happens
+        if (typeof GLPIDashboard === 'undefined') {
+          return;
+        }
+        new GLPIDashboard({$js_params})
       });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
@@ -652,7 +658,7 @@ HTML;
         $edit_label    = __("Edit this card");
         $delete_label  = __("Delete this card");
 
-        $gridstack_id = htmlspecialchars($gridstack_id);
+        $gridstack_id = htmlescape($gridstack_id);
 
         $this->items[] = <<<HTML
          <div class="grid-stack-item"
@@ -810,7 +816,8 @@ HTML;
         echo "</div>";
         echo "</div>"; // .field
 
-        echo Html::submit("<i class='fas fa-plus'></i>&nbsp;" . _x('button', "Add"), [
+        echo Html::submit(_x('button', "Add"), [
+            'icon'  => 'fas fa-plus',
             'class' => 'btn btn-primary mt-2'
         ]);
         echo "</form>"; // form.card.display-filter-form
@@ -1281,7 +1288,7 @@ HTML;
                         ]
                     ],
                     'cache'      => false,
-                    'filters'    => Filter::getAppliableFilters($itemtype::getTable()),
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
 
                 $cards["table_count_tickets_$case"] = [
@@ -1296,7 +1303,7 @@ HTML;
                             'validation_check_user' => true,
                         ]
                     ],
-                    'filters'    => Filter::getAppliableFilters($itemtype::getTable()),
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
             }
 

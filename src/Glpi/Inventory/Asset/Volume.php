@@ -42,7 +42,7 @@ use Item_Disk;
 class Volume extends InventoryAsset
 {
     /** @var Conf */
-    private $conf;
+    private Conf $conf;
 
     public function prepare(): array
     {

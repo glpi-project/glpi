@@ -40,8 +40,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @since 9.4.0
  */
 
-Session::checkLoginUser();
-
 $item = new Itil_Project();
 
 if (isset($_POST['add'])) {

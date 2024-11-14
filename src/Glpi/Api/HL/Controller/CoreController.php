@@ -179,8 +179,8 @@ final class CoreController extends AbstractController
             str_ends_with($request->getUri()->getPath(), '.json');
         if (!$requested_json) {
             $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
-            $swagger_content .= \Html::script('/public/lib/swagger-ui.js');
-            $swagger_content .= \Html::css('/public/lib/swagger-ui.css');
+            $swagger_content .= \Html::script('/lib/swagger-ui.js');
+            $swagger_content .= \Html::css('/lib/swagger-ui.css');
             $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
             $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
             $swagger_content .= <<<HTML
@@ -426,11 +426,17 @@ HTML;
             $user_id = Session::getLoginUserID();
             if ($user_id === false) {
                 // Redirect to login page
-                $scope = implode(',', $auth_request->getScopes());
-                $client_id = $auth_request->getClient()->getIdentifier();
-                $redirect_uri = $this->getAPIPathForRouteFunction(self::class, 'authorize');
-                $redirect_uri .= '?scope=' . $scope . '&client_id=' . $client_id . '&response_type=code&redirect_uri=' . urlencode($auth_request->getRedirectUri());
-                $redirect_uri = $CFG_GLPI['url_base'] . '/api.php/v2' . $redirect_uri;
+                $redirect_params = [
+                    'scope'         => implode(' ', array_map(static fn ($s) => $s->getIdentifier(), $auth_request->getScopes())),
+                    'client_id'     => $auth_request->getClient()->getIdentifier(),
+                    'response_type' => 'code',
+                    'redirect_uri'  => $auth_request->getRedirectUri(),
+                ];
+                $redirect_uri = $CFG_GLPI['url_base']
+                    . '/api.php/v2'
+                    . $this->getAPIPathForRouteFunction(self::class, 'authorize')
+                    . '?'
+                    . http_build_query($redirect_params);
                 return new Response(302, ['Location' => $CFG_GLPI['url_base'] . '/?redirect=' . rawurlencode($redirect_uri)]);
             }
             $user = new \Glpi\OAuth\User();
@@ -455,7 +461,8 @@ HTML;
             return $response;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
+            ErrorHandler::getInstance()->handleException($exception, true);
             return new JSONResponse(null, 500);
         }
     }

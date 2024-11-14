@@ -34,7 +34,7 @@
  */
 
 use Glpi\Asset\AssetDefinition;
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $definition = new AssetDefinition();
 $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
@@ -42,7 +42,7 @@ $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystem
     : null;
 
 if ($classname === null || !class_exists($classname)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException('Bad request');
 }
 
 $rulecollection_class = $definition->getAssetModelDictionaryCollectionClassName();

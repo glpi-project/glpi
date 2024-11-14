@@ -34,7 +34,7 @@
 describe('ITILCategory configuration', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         // Create form with a single "request type" question
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');

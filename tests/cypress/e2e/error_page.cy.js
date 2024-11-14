@@ -32,14 +32,17 @@
 describe('Error page', () => {
     beforeEach(() => {
         cy.login();
+
+        // prevent race conditions with ajax callbacks and speed up execution
+        cy.intercept({path: '/ajax/debug.php**'}, { statusCode: 404, body: '' });
     });
 
     it('Displays a bad request error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
-            '/front/impactcsv.php',       // streamed response
-            '/Dropdown/InvalidClassname', // modern controller
+            '/front/impactcsv.php',     // streamed response
+            '/InvalidClassname/Search', // modern controller
         ];
 
         const expected_code    = 400;
@@ -57,9 +60,9 @@ describe('Error page', () => {
                 cy.findByTestId('stack-trace').should('exist');
             });
         }
-        cy.disableDebugMode();
 
         // Check without debug mode (stack trace should NOT be displayed)
+        cy.disableDebugMode();
         for (const url of urls) {
             cy.visit({
                 url: url,
@@ -73,10 +76,11 @@ describe('Error page', () => {
     });
 
     it('Displays an access denied error', () => {
-        cy.changeProfile('Self-Service', true);
+        cy.changeProfile('Self-Service');
 
         const urls = [
-            '/front/computer.php', // streamed response
+            '/front/central.php',  // streamed response
+            '/front/computer.php', // generic controller
             '/Form/Import',        // modern controller
         ];
 
@@ -99,11 +103,12 @@ describe('Error page', () => {
     });
 
     it('Displays a not found error', () => {
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
 
         const urls = [
-            '/front/computer.form.php?id=999999', // streamed response
-            '/Form/Render/999999',                // modern controller
+            '/front/logviewer.php?filepath=invalid', // streamed response
+            '/front/computer.form.php?id=999999',    // generic response
+            '/Form/Render/999999',                   // modern controller
         ];
 
         const expected_code    = 404;

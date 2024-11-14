@@ -44,10 +44,8 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
         $auth = new \Auth();
         if ($auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
             // User could be authenticated by a cookie
-            // Need to destroy the current session, enable cookie use, and then restart the session
-            session_destroy();
+            // Need to use cookies for session and start it manually
             ini_set('session.use_cookies', '1');
-            Session::setPath();
             Session::start();
             // unset the response to indicate a successful auth
             $input->response = null;

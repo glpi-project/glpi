@@ -52,7 +52,7 @@ class QueryParamTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataParamsProvider')]
+    #[DataProvider('dataParamsProvider')]
     public function testQueryParam($value, $expected)
     {
         $qpa = new \Glpi\DBAL\QueryParam($value);

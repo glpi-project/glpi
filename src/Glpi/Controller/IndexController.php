@@ -104,15 +104,15 @@ final class IndexController extends AbstractController
                 echo '</div>';
                 echo '</div>';
                 Html::nullFooter();
+                return;
             }
-            die();
         }
 
         //Try to detect GLPI agent calls
         $rawdata = file_get_contents("php://input");
         if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             include_once(GLPI_ROOT . '/front/inventory.php');
-            die();
+            return;
         }
 
         Session::checkCookieSecureConfig();
@@ -149,17 +149,16 @@ final class IndexController extends AbstractController
             }
         }
 
-        // redirect to ticket
-        if ($redirect !== '') {
-            Toolbox::manageRedirect($redirect);
-        }
-
-        if (count($errors)) {
+        if (count($errors) > 0) {
             TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
                 'errors'    => $errors,
-                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . str_replace("?", "&", $redirect),
+                'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
             ]);
         } else {
+            if ($redirect !== '') {
+                Toolbox::manageRedirect($redirect);
+            }
+
             if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
                 Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
             }
@@ -221,10 +220,9 @@ final class IndexController extends AbstractController
                 ]);
             }
         }
+
         // call cron
-        if (!GLPI_DEMO_MODE) {
-            CronTask::callCronForce();
-        }
+        CronTask::callCronForce();
 
         echo "</body></html>";
     }

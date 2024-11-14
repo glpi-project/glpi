@@ -62,6 +62,16 @@ class QuestionTypeItem extends AbstractQuestionType
         $this->items_id_aria_label = __('Select an item');
     }
 
+    #[Override]
+    public function formatDefaultValueForDB(mixed $value): ?string
+    {
+        if (!is_numeric($value)) {
+            return null;
+        }
+
+        return json_encode((new QuestionTypeItemDefaultValueConfig($value))->jsonSerialize());
+    }
+
     /**
      * Retrieve the allowed item types
      *
@@ -104,8 +114,12 @@ class QuestionTypeItem extends AbstractQuestionType
      */
     public function getDefaultValueItemtype(?Question $question): ?string
     {
-        /** @var ?QuestionTypeItemConfig $config */
-        $config = $this->getConfig($question);
+        if ($question === null) {
+            return null;
+        }
+
+        /** @var ?QuestionTypeItemExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
         if ($config === null) {
             return null;
         }
@@ -125,7 +139,13 @@ class QuestionTypeItem extends AbstractQuestionType
             return 0;
         }
 
-        return (int) ($question->fields['default_value'] ?? 0);
+        /** @var ?QuestionTypeItemDefaultValueConfig $config */
+        $config = $this->getDefaultValueConfig(json_decode($question->fields['default_value'] ?? '[]', true));
+        if ($config === null) {
+            return 0;
+        }
+
+        return (int) $config->getItemsId();
     }
 
     #[Override]
@@ -177,6 +197,7 @@ class QuestionTypeItem extends AbstractQuestionType
                     'add_data_attributes_itemtype_dropdown' : {
                         'glpi-form-editor-specific-question-extra-data': '',
                     },
+                    'mb'                            : '',
                 }
             ) }}
 
@@ -208,7 +229,15 @@ TWIG;
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.hiddenField(question.getEndUserInputName() ~ '[itemtype]', itemtype) }}
+            {{ fields.hiddenField(
+                question.getEndUserInputName() ~ '[itemtype]',
+                itemtype,
+                '',
+                {
+                    'no_label': true,
+                    'mb': ''
+                }
+            ) }}
             {{ fields.dropdownField(
                 itemtype,
                 question.getEndUserInputName() ~ '[items_id]',
@@ -219,6 +248,9 @@ TWIG;
                     'display_emptychoice': true,
                     'right'              : 'all',
                     'aria_label'         : aria_label,
+                    'mb'                 : '',
+                    'addicon'            : false,
+                    'comments'           : false,
                 }
             ) }}
 TWIG;
@@ -285,8 +317,14 @@ TWIG;
     }
 
     #[Override]
-    public function getConfigClass(): ?string
+    public function getExtraDataConfigClass(): ?string
     {
-        return QuestionTypeItemConfig::class;
+        return QuestionTypeItemExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultValueConfigClass(): ?string
+    {
+        return QuestionTypeItemDefaultValueConfig::class;
     }
 }

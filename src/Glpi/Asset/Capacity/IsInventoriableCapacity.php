@@ -103,7 +103,7 @@ class IsInventoriableCapacity extends AbstractCapacity
 
         //create rules
         $rules = new \RuleImportAsset();
-        $rules->initRules(true, false, false, $classname);
+        $rules->initRules(true, $classname);
     }
 
     public function onCapacityDisabled(string $classname): void

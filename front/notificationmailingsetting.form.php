@@ -60,7 +60,7 @@ if (isset($_POST["update"])) {
             } catch (\Throwable $e) {
                 ErrorHandler::getInstance()->handleException($e, true);
                 Session::addMessageAfterRedirect(
-                    htmlspecialchars(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),
+                    htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),
                     false,
                     ERROR
                 );

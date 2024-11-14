@@ -58,6 +58,11 @@ class RequirementsList implements \IteratorAggregate
         $this->requirements = $requirements;
     }
 
+    public function add(RequirementInterface $requirement): void
+    {
+        $this->requirements[] = $requirement;
+    }
+
     public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->requirements);
@@ -91,5 +96,23 @@ class RequirementsList implements \IteratorAggregate
             }
         }
         return false;
+    }
+
+    /**
+     * Get messages returned by the failed mandatory requirements.
+     *
+     * @return array
+     */
+    public function getErrorMessages(): array
+    {
+        $messages = [];
+        foreach ($this->requirements as $requirement) {
+            if ($requirement->isValidated() || $requirement->isOptional()) {
+                continue;
+            }
+            array_push($messages, ...$requirement->getValidationMessages());
+        }
+
+        return $messages;
     }
 }

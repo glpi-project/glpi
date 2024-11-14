@@ -43,8 +43,6 @@ if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
     Html::header_nocache();
 }
 
-Session::checkLoginUser();
-
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
     || (isset($_POST['allow_email']) && $_POST['allow_email'])
@@ -125,7 +123,7 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlspecialchars($default_email) . "'>";
+                        value='" . htmlescape($default_email) . "'>";
     }
 
     echo "$email_string";

@@ -38,13 +38,12 @@
  */
 
 // Replace old rule criteria itilcategories_id_cn
-$DB->updateOrDie(
+$DB->update(
     'glpi_rulecriterias',
     [
         'criteria' => 'itilcategories_id'
     ],
     [
         'criteria' => 'itilcategories_id_cn'
-    ],
-    '10.0.7 replace old rule criteria itilcategories_id_cn'
+    ]
 );

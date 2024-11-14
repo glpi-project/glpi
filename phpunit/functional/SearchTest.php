@@ -2186,12 +2186,7 @@ class SearchTest extends DbTestCase
 
     public function testSearchDdTranslation()
     {
-        global $CFG_GLPI;
-
         $this->login();
-        $conf = new \Config();
-        $conf->setConfigurationValues('core', ['translate_dropdowns' => 1]);
-        $CFG_GLPI['translate_dropdowns'] = 1;
 
         $state = new \State();
         $this->assertTrue($state->maybeTranslated());
@@ -2233,8 +2228,6 @@ class SearchTest extends DbTestCase
 
         $this->assertSame(1, $data['data']['totalcount']);
 
-        $conf->setConfigurationValues('core', ['translate_dropdowns' => 0]);
-        $CFG_GLPI['translate_dropdowns'] = 0;
         unset($_SESSION['glpi_dropdowntranslations']);
     }
 

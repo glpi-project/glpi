@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\HeaderlessStreamedResponse;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -48,7 +49,7 @@ use Toolbox;
 
 final class DropdownFormController extends AbstractController
 {
-    #[Route("/Dropdown/Form/{class}", name: "glpi_dropdown_form")]
+    #[Route("/Dropdown/{class}/Form", name: "glpi_dropdown_form")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
@@ -122,11 +123,7 @@ final class DropdownFormController extends AbstractController
                 && empty($input["forcepurge"])
             ) {
                 Html::header(
-                    $dropdown->getTypeName(1),
-                    '',
-                    "config",
-                    $dropdown->second_level_menu,
-                    \str_replace('glpi_', '', $dropdown->getTable())
+                    ...$dropdown->getHeaderParameters()
                 );
                 $dropdown->showDeleteConfirmForm($request->getPathInfo());
                 Html::footer();
@@ -182,12 +179,10 @@ final class DropdownFormController extends AbstractController
             }
         } else if ($in_modal) {
             Html::popHeader(
-                $dropdown->getTypeName(1),
+                $dropdown->getTypeName(Session::getPluralNumber()),
                 '',
                 true,
-                $dropdown->first_level_menu,
-                $dropdown->second_level_menu,
-                $dropdown->getType()
+                ...$dropdown->getSectorizedDetails()
             );
             $dropdown->showForm($id);
             Html::popFooter();
@@ -198,7 +193,7 @@ final class DropdownFormController extends AbstractController
             $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
             $options['id'] = $id;
 
-            $dropdown::displayFullPageForItem($id, null, $options);
+            $dropdown::displayFullPageForItem($id, $dropdown->getSectorizedDetails(), $options);
         }
     }
 }

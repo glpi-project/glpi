@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $category = new KnowbaseItem_KnowbaseItemCategory();
 
 if (isset($_POST["add"])) {

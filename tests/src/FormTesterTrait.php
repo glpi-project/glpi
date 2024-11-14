@@ -89,14 +89,17 @@ trait FormTesterTrait
             ]);
 
             // Create questions
+            $question_rank = 0;
             foreach ($section_data['questions'] as $question_data) {
                 $this->createItem(Question::class, [
                     'forms_sections_id' => $section->getID(),
                     'name'              => $question_data['name'],
                     'type'              => $question_data['type'],
                     'is_mandatory'      => $question_data['is_mandatory'],
+                    'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                    'rank'              => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
                 ]);
@@ -404,8 +407,9 @@ trait FormTesterTrait
     private function importForm(
         string $json,
         DatabaseMapper $mapper,
+        array $skipped_forms = [],
     ): Form {
-        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper, $skipped_forms);
         $imported_forms = $import_result->getImportedForms();
         $this->assertCount(1, $imported_forms, "Failed to import form from JSON: $json");
         $form_copy = current($imported_forms);
@@ -418,7 +422,8 @@ trait FormTesterTrait
         $json = $this->exportForm($form);
         $form_copy = $this->importForm(
             $json,
-            new DatabaseMapper([$this->getTestRootEntity(only_id: true)])
+            new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
+            [],
         );
 
         // Make sure it was not the same form object that was returned.

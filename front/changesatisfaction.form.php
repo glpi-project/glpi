@@ -36,8 +36,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
-
 $inquest = new ChangeSatisfaction();
 
 if (isset($_POST["update"])) {

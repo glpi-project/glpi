@@ -45,6 +45,13 @@ interface GlpiCommandInterface
     public function mustCheckMandatoryRequirements(): bool;
 
     /**
+     * Defines whether or not mandatory requirements must be checked before running command.
+     *
+     * @return \Glpi\System\Requirement\RequirementInterface[]
+     */
+    public function getSpecificMandatoryRequirements(): array;
+
+    /**
      * Defines whether or not command requires an up-to-date database to be executed.
      *
      * @return boolean

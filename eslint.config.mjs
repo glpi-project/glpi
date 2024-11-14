@@ -14,8 +14,9 @@ export default [
             "marketplace/*",
             "node_modules/*",
             "plugins/*",
-            "public/lib/*",
             "public/build/*",
+            "public/js/*",
+            "public/lib/*",
             "tests/config/*",
             "vendor/*",
             "**/*.min.js"

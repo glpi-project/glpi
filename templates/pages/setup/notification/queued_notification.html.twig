@@ -82,14 +82,22 @@
             <div class="tab-content" id="emailBodyTabsContent">
                 {% if has_html_content %}
                 <div class="tab-pane fade show active" id="html" role="tabpanel" aria-labelledby="html-tab">
-                    {{ fields.htmlField('', item.cleanHtml(item.fields['body_html'])|safe_html, null, field_options + {
+                    {% set body_html = item.cleanHtml(item.fields['body_html'])|safe_html %}
+                    {% if undisclose_body %}
+                        {% set body_html = __('The content of the notification contains sensitive information and therefore cannot be displayed.') %}
+                    {% endif %}
+                    {{ fields.htmlField('', body_html, null, field_options + {
                         no_label: true,
                         full_width: true,
                     }) }}
                 </div>
                 {% endif %}
                 <div class="tab-pane fade {{ has_html_content ? '' : 'show active' }}" id="text" role="tabpanel" aria-labelledby="text-tab">
-                    {{ fields.htmlField('', item.fields['body_text']|nl2br, null, field_options + {
+                    {% set body_text = item.fields['body_text']|nl2br %}
+                    {% if undisclose_body %}
+                        {% set body_text = __('The content of the notification contains sensitive information and therefore cannot be displayed.') %}
+                    {% endif %}
+                    {{ fields.htmlField('', body_text, null, field_options + {
                         no_label: true,
                         full_width: true,
                     }) }}

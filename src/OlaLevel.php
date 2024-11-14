@@ -56,6 +56,11 @@ class OlaLevel extends LevelAgreementLevel
         return CommonDBTM::getTable(__CLASS__);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', OLA::class, self::class];
+    }
+
     public function cleanDBonPurge()
     {
         parent::cleanDBonPurge();

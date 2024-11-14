@@ -80,6 +80,11 @@ class SoftwareLicense extends CommonTreeDropdown
         return _n('License', 'Licenses', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
     public function pre_updateInDB()
     {
         // Clean end alert if expire is after old one
@@ -805,7 +810,7 @@ class SoftwareLicense extends CommonTreeDropdown
             foreach ($iterator as $license) {
                 $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
-                $message .= htmlspecialchars(sprintf(
+                $message .= htmlescape(sprintf(
                     __('License %1$s expired on %2$s'),
                     Html::convDate($license["expire"]),
                     $name
@@ -827,7 +832,7 @@ class SoftwareLicense extends CommonTreeDropdown
                     } else {
                         Session::addMessageAfterRedirect(sprintf(
                             __s('%1$s: %2$s'),
-                            htmlspecialchars($entityname),
+                            htmlescape($entityname),
                             $message
                         ));
                     }
@@ -844,7 +849,7 @@ class SoftwareLicense extends CommonTreeDropdown
                 } else {
                     $entityname = Dropdown::getDropdownName(Entity::getTable(), $entity);
                    //TRANS: %s is entity name
-                    $msg = htmlspecialchars(sprintf(__('%1$s: %2$s'), $entityname, __('Send licenses alert failed')));
+                    $msg = htmlescape(sprintf(__('%1$s: %2$s'), $entityname, __('Send licenses alert failed')));
                     if ($task) {
                         $task->log($msg);
                     } else {

@@ -56,6 +56,11 @@ class DomainRecord extends CommonDBChild
         return _n('Domain record', 'Domains records', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', Domain::class, self::class];
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
@@ -480,8 +485,8 @@ TWIG, $twig_params);
                 'type'     => Dropdown::getDropdownName(DomainRecordType::getTable(), $data['domainrecordtypes_id']),
                 'name'     => sprintf(
                     '<a href="%s">%s</a>',
-                    htmlspecialchars(DomainRecord::getFormURLWithID($data['id'])),
-                    htmlspecialchars($name)
+                    htmlescape(DomainRecord::getFormURLWithID($data['id'])),
+                    htmlescape($name)
                 ),
                 'ttl'      => $data['ttl'],
                 'data'     => $data['data']

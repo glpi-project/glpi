@@ -49,6 +49,7 @@ class GLPITestCase extends TestCase
     private $str;
     protected $has_failed = false;
     private ?array $config_copy = null;
+    private array $superglobals_copy = [];
 
     /**
      * @var TestHandler
@@ -414,6 +415,25 @@ class GLPITestCase extends TestCase
     }
 
     /**
+     * Get the raw database handle object.
+     *
+     * Useful when you need to run some queries that may not be allowed by
+     * the DBMysql object.
+     *
+     * @return mysqli
+     */
+    protected function getDbHandle(): mysqli
+    {
+        /** @var \DBmysql $db */
+        global $DB;
+
+        $reflection = new ReflectionClass(\DBmysql::class);
+        $property = $reflection->getProperty("dbh");
+        $property->setAccessible(true);
+        return $property->getValue($DB);
+    }
+
+    /**
      * Store Globals
      *
      * @return void
@@ -421,6 +441,12 @@ class GLPITestCase extends TestCase
     private function storeGlobals(): void
     {
         global $CFG_GLPI;
+
+        // Super globals
+        $this->superglobals_copy['GET'] = $_GET;
+        $this->superglobals_copy['POST'] = $_POST;
+        $this->superglobals_copy['REQUEST'] = $_REQUEST;
+        $this->superglobals_copy['SERVER'] = $_SERVER;
 
         if ($this->config_copy === null) {
             $this->config_copy = $CFG_GLPI;
@@ -434,9 +460,18 @@ class GLPITestCase extends TestCase
      */
     private function resetGlobalsAndStaticValues(): void
     {
+        // Super globals
+        $_GET = $this->superglobals_copy['GET'];
+        $_POST = $this->superglobals_copy['POST'];
+        $_REQUEST = $this->superglobals_copy['REQUEST'];
+        $_SERVER = $this->superglobals_copy['SERVER'];
+
         // Globals
-        global $CFG_GLPI;
+        global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
         $CFG_GLPI = $this->config_copy;
+        $FOOTER_LOADED = false;
+        $HEADER_LOADED = false;
+
 
         // Statics values
         Log::$use_queue = false;

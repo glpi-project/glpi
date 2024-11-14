@@ -72,9 +72,19 @@ class Software extends CommonDBTM
         return _n('Software', 'Software', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public static function getMenuShorcut()
     {
         return 's';
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -724,7 +734,7 @@ class Software extends CommonDBTM
             $paramsselsoft
         );
 
-        echo "<span id='show_" . htmlspecialchars($myname . $rand) . "'>&nbsp;</span>\n";
+        echo "<span id='show_" . htmlescape($myname . $rand) . "'>&nbsp;</span>\n";
 
         return $rand;
     }

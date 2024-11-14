@@ -314,26 +314,6 @@ class ErrorHandler
     }
 
     /**
-     * SQL error handler.
-     *
-     * This handler is manually called by application when a SQL error occurred.
-     *
-     * @param integer $error_code
-     * @param string  $error_message
-     * @param string  $query
-     *
-     * @return void
-     */
-    public function handleSqlError(int $error_code, string $error_message, string $query)
-    {
-        $this->outputDebugMessage(
-            sprintf('SQL Error "%s"', $error_code),
-            sprintf('%s in query "%s"', $error_message, preg_replace('/\\n/', ' ', $query)),
-            self::ERROR_LEVEL_MAP[E_USER_ERROR]
-        );
-    }
-
-    /**
      * SQL warnings handler.
      *
      * This handler is manually called by application when warnings are triggered by a SQL query.
@@ -506,7 +486,7 @@ class ErrorHandler
             $this->output_handler->writeln($message, $verbosity);
         } else if (!isCommandLine()) {
             echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
-            . '<span class="b">' . \htmlspecialchars($error_type) . ': </span>' . \htmlspecialchars($message) . '</div>';
+            . '<span class="b">' . \htmlescape($error_type) . ': </span>' . \htmlescape($message) . '</div>';
         } else {
             echo $error_type . ': ' . $message . "\n";
         }

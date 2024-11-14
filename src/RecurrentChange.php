@@ -36,11 +36,6 @@
 class RecurrentChange extends CommonITILRecurrent
 {
     /**
-     * @var string CommonDropdown
-     */
-    public $second_level_menu = "recurrentchange";
-
-    /**
      * @var string Right managements
      */
     public static $rightname = 'recurrentchange';
@@ -48,6 +43,11 @@ class RecurrentChange extends CommonITILRecurrent
     public static function getTypeName($nb = 0)
     {
         return __('Recurrent changes');
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['helpdesk', self::class];
     }
 
     public static function getConcreteClass()

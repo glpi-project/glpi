@@ -88,6 +88,11 @@ class CronTask extends CommonDBTM
         return _n('Automatic action', 'Automatic actions', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -1159,7 +1164,7 @@ class CronTask extends CommonDBTM
                 'date'     => sprintf(
                     '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
                     $data['id'],
-                    htmlspecialchars(Html::convDateTime($data['date']))
+                    htmlescape(Html::convDateTime($data['date']))
                 ),
                 'elapsed'  => $data['elapsed'],
                 'volume'   => $data['volume'],
@@ -1950,7 +1955,7 @@ TWIG, ['msg' => __('Last run list')]);
             $msg = __('Automatic actions may not be running as expected');
             $params = [
                 'msg' => $msg,
-                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => '<li>' . htmlspecialchars($warning) . '</li>', $warnings)) . '</ul>'
+                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>'
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <span class="alert alert-warning p-1 ps-2">

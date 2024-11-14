@@ -42,8 +42,6 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 
 include(__DIR__ . '/getAbstractRightDropdownValue.php');
 
-Session::checkLoginUser();
-
 if (Session::getCurrentInterface() !== 'central') {
     $questions = (new Question())->find([
         'type' => [

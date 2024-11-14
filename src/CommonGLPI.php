@@ -592,6 +592,20 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return [];
+    }
+
+    public static function getHeaderParameters(): array
+    {
+        return [
+            static::getTypeName(\Session::getPluralNumber()),
+            '',
+            ...static::getSectorizedDetails(),
+        ];
+    }
+
     /**
      * show Tab content
      *
@@ -717,23 +731,22 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
     {
-        $text = htmlspecialchars($text);
-
-        if (empty($icon)) {
+        if ($icon === '') {
             $icon = static::getTabIconClass($form_itemtype);
         }
         if (str_contains($icon, 'fa-empty-icon')) {
             $icon = '';
         }
-        $icon = !empty($icon) ? "<i class='$icon me-2'></i>" : '';
-        if (!empty($icon)) {
-            $text = '<span class="d-flex align-items-center">' . $icon . $text . '</span>';
-        }
-        if ($nb) {
-           //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$nb</span>");
-        }
-        return $text;
+
+        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
+        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', (int)$nb) : '';
+
+        return sprintf(
+            '<span class="d-flex align-items-center">%s%s%s</span>',
+            $icon_html,
+            htmlescape($text),
+            $counter_html
+        );
     }
 
     /**
@@ -742,25 +755,28 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return void
      **/
-    public function redirectToList()
+    public function redirectToList(): void
+    {
+        Html::redirect($this->getRedirectToListUrl());
+    }
+
+    public function getRedirectToListUrl(): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (
-            isset($_GET['withtemplate'])
-            && !empty($_GET['withtemplate'])
-        ) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" .
-                        $this->getType());
-        } else if (
-            isset($_SESSION['glpilisturl'][$this->getType()])
-                 && !empty($_SESSION['glpilisturl'][$this->getType()])
-        ) {
-            Html::redirect($_SESSION['glpilisturl'][$this->getType()]);
-        } else {
-            Html::redirect($this->getSearchURL());
+        if (!empty($_GET['withtemplate'])) {
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::getType();
         }
+
+        if (
+            isset($_SESSION['glpilisturl'][static::getType()])
+            && !empty($_SESSION['glpilisturl'][static::getType()])
+        ) {
+            return $_SESSION['glpilisturl'][static::getType()];
+        }
+
+        return static::getSearchURL();
     }
 
     /**
@@ -1046,7 +1062,7 @@ class CommonGLPI implements CommonGLPIInterface
             if (!$glpilisttitle) {
                 $glpilisttitle = __('List');
             }
-            $list = "<a href='$glpilisturl' title=\"" . htmlspecialchars($glpilisttitle) . "\"
+            $list = "<a href='$glpilisturl' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
                   <i class='ti ti-list-search fa-lg'></i>
@@ -1098,7 +1114,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
-                echo htmlspecialchars($this->getNameID([
+                echo htmlescape($this->getNameID([
                     'forceid' => $this instanceof CommonITILObject
                 ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
@@ -1211,7 +1227,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
        // try to lock object
-       // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+       // $options must contain the id of the object, and if locked by manageObjectLock will contain 'locked' => 1
         ObjectLock::manageObjectLock(get_class($this), $options);
 
        // manage custom options passed to tabs

@@ -34,7 +34,7 @@
 describe ('Export forms', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin', true);
+        cy.changeProfile('Super-Admin');
     });
 
     it('Export single form', () => {

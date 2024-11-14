@@ -314,19 +314,9 @@ class ITILTemplateTest extends DbTestCase
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
 
-        switch ($itiltype) {
-            case 'Ticket':
-                $expected = [
-                    1 => 'Preview (Standard interface)',
-                    2 => 'Preview (Simplified interface)'
-                ];
-                break;
-            default:
-                $expected = [
-                    1 => 'Preview'
-                ];
-                break;
-        }
+        $expected = [
+            1 => 'Preview'
+        ];
         $this->assertSame($expected, $tpl->getTabNameForItem($tpl));
     }
 
@@ -517,6 +507,24 @@ class ITILTemplateTest extends DbTestCase
             'Not template expected'
         );
         $this->assertSame($category_tpl_id, (int)$tt->fields['id']);
+    }
+
+    /**
+     * Check that all predefined fields are set in the default values
+     */
+    #[DataProvider('itilProvider')]
+    public function testGetDefaultValues($itiltype)
+    {
+        $itemtype       = '\\' . $itiltype;
+        $default_values = $itemtype::getDefaultValues();
+        $tt_class       = $itiltype . 'Template';
+        $tt             = new $tt_class();
+        $fields         = $tt->getAllowedFields(true, true);
+        $tt_predefined  = $tt_class . 'PredefinedField';
+        $fields         = array_diff_key($fields, $tt_predefined::getExcludedFields());
+        foreach ($fields as $field) {
+            $this->assertArrayHasKey($field, $default_values);
+        }
     }
 
     private function createTemplate($itiltype)

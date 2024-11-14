@@ -127,6 +127,6 @@ if (isset($_POST["add"])) {
         $datacenter->getFromDB($options['datacenters_id']);
         $options['locations_id'] = $datacenter->fields['locations_id'];
     }
-    $menus = ["management", "datacenter", "dcroom"];
+    $menus = ["management", "datacenter", "DCRoom"];
     DCRoom::displayFullPageForItem($_GET["id"], $menus, $options);
 }
