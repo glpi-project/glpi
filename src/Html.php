@@ -1797,12 +1797,14 @@ HTML;
             }
         }
 
-        TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
+        $tpl_vars['debug_info'] = null;
 
+        \Glpi\Debug\Profiler::getInstance()->stopAll();
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
-            \Glpi\Debug\Profiler::getInstance()->stopAll();
-            (new Glpi\Debug\Toolbar())->show();
+            $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
         }
+
+        TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
     }
 
     /**
@@ -1968,9 +1970,7 @@ HTML;
      **/
     public static function helpFooter()
     {
-        if (!isCommandLine()) {
-            self::footer();
-        };
+        self::footer();
     }
 
 
@@ -1997,10 +1997,6 @@ HTML;
        // Send extra expires header if configured
         self::header_nocache();
 
-        if (isCommandLine()) {
-            return true;
-        }
-
         self::includeHeader($title);
 
         TemplateRenderer::getInstance()->display('layout/parts/page_header_empty.html.twig');
@@ -2012,9 +2008,7 @@ HTML;
      **/
     public static function nullFooter()
     {
-        if (!isCommandLine()) {
-            self::footer();
-        };
+        self::footer();
     }
 
 
