@@ -361,7 +361,24 @@ final class AssetDefinition extends AbstractDefinition
             }
 
             $removed_capacities = array_diff($old_capacities, $new_capacities);
+            $enabled_capacities = array_diff($new_capacities, $old_capacities);
             $rights_to_remove = [];
+
+            if (!empty($enabled_capacities)) {
+                // Clear the cache to ensure that the new capacities are taken into account immediately
+                AssetDefinitionManager::getInstance()->clearDefinitionsCache();
+            }
+
+            foreach ($enabled_capacities as $capacity_classname) {
+                $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
+                if ($capacity === null) {
+                    // can be null if provided by a plugin that is no longer active
+                    continue;
+                }
+                // Manually bootstrap the new capacity
+                $capacity->onClassBootstrap($this->getAssetClassName());
+                $capacity->onCapacityEnabled($this->getAssetClassName());
+            }
             foreach ($removed_capacities as $capacity_classname) {
                 $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
                 if ($capacity === null) {

@@ -126,6 +126,15 @@ abstract class AbstractDefinitionManager
     }
 
     /**
+     * Clear the definitions cache.
+     * @return void
+     */
+    final public function clearDefinitionsCache(): void
+    {
+        $this->definitions_data = [];
+    }
+
+    /**
      * Get all the dropdown definitions.
      *
      * @param bool $only_active
