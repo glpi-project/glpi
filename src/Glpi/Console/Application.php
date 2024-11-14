@@ -59,6 +59,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
 
@@ -617,5 +618,19 @@ class Application extends BaseApplication
         }
 
         return implode(':', null === $limit ? $parts : \array_slice($parts, 0, $limit));
+    }
+
+    /**
+     * Gets the Kernel associated with this Console.
+     *
+     * This method is required by most of the commands provided by the `symfony/framework-bundle`.
+     * @see \Symfony\Bundle\FrameworkBundle\Console\Application::getKernel()
+     */
+    public function getKernel(): ?KernelInterface
+    {
+        /** @var KernelInterface|null $kernel */
+        global $kernel;
+
+        return $kernel;
     }
 }
