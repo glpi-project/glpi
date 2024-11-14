@@ -31,29 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-function terminalLog(violations) {
-    cy.task(
-        'log',
-        `${violations.length} accessibility violation${
-            violations.length === 1 ? '' : 's'
-        } ${violations.length === 1 ? 'was' : 'were'} detected`
-    );
-    // pluck specific keys to keep the table readable
-    const violationData = violations.map(
-        ({ id, impact, description, nodes }) => ({
-            id,
-            impact,
-            description,
-            nodes: JSON.stringify({
-                length: nodes.length,
-                targets: nodes.map(({ target }) => target).join(', ')
-            })
-        })
-    );
-
-    cy.task('table', violationData);
-}
-
-module.exports = {
-    terminalLog
-};
+describe('External event', () => {
+    beforeEach(() => {
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+    });
+    it('Accessibility - Form', () => {
+        cy.visit('/front/planning.php');
+        cy.disableAnimations();
+        cy.get('#planning_container .fc-slats td:not(.fc-axis)').first().click();
+        cy.get('.modal.show').injectAndCheckA11y();
+    });
+});
