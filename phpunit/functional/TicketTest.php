@@ -45,6 +45,7 @@ use Entity;
 use Glpi\Team\Team;
 use Group;
 use Group_Ticket;
+use Group_User;
 use ITILCategory;
 use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -6953,9 +6954,71 @@ HTML
     {
         $now = time();
 
-        $postonly_user_id = getItemByTypeName(\User::class, 'post-only', true);
-        $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
-        $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
+        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+        $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
+        $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
+        $test_user_id     = getItemByTypeName(User::class, '_test_user', true);
+
+        $profile = $this->createItem(
+            \Profile::class,
+            [
+                'name'                => 'SeeGrouptask',
+                'interface'           => 'central',
+            ]
+        );
+
+        $profile_right = new \ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name'        => 'task',
+        ]);
+
+        $this->updateItem(
+            \ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => 121879,
+            ]
+        );
+
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name'        => 'ticket',
+        ]);
+
+        $this->updateItem(
+            \ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => 523295,
+            ]
+        );
+
+        $this->createItem(
+            Profile_User::class,
+            [
+                'users_id'    => $test_user_id,
+                'profiles_id' => $profile->getID(),
+                'entities_id' => 0,
+            ]
+        );
+
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => 'Test_Group_Task',
+            ]
+        );
+
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $test_user_id,
+            ]
+        );
+
+        $seegroup_id = $group->getID();
 
         $this->login();
 
@@ -6967,6 +7030,7 @@ HTML
                 '_users_id_requester' => $postonly_user_id,
                 '_users_id_observer'  => $normal_user_id,
                 '_users_id_assign'    => $tech_user_id,
+                '_groups_id_assign'   => $seegroup_id,
             ]
         );
 
@@ -7046,6 +7110,17 @@ HTML
             ]
         );
 
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'        => $ticket->getID(),
+                'content'           => 'private task assigned to see group',
+                'is_private'        => 1,
+                'groups_id_tech'    => $seegroup_id,
+                'date_creation'     => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+            ]
+        );
+
         // tech has rights to see all private followups/tasks
         yield [
             'login'              => 'tech',
@@ -7060,6 +7135,7 @@ HTML
             'expected_tasks'     => [
                 'private task of normal user',
                 'private task assigned to normal user',
+                'private task assigned to see group',
                 'private task of tech user',
                 'public task',
             ],
@@ -7096,6 +7172,17 @@ HTML
             ],
         ];
 
+        yield [
+            'login'              => '_test_user',
+            'pass'               => TU_PASS,
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [],
+            'expected_tasks'     => [
+                'public task',
+            ],
+        ];
+
         foreach ([null => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
             // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
             yield [
@@ -7114,6 +7201,7 @@ HTML
                 'expected_tasks'     => [
                     'private task of normal user',
                     'private task assigned to normal user',
+                    'private task assigned to see group',
                     'private task of tech user',
                     'public task',
                 ],
@@ -7153,6 +7241,10 @@ HTML
                 $this->login($login, $pass);
             } else {
                 $this->resetSession();
+            }
+
+            if ($login === '_test_user') {
+                Session::changeProfile(getItemByTypeName('Profile', 'Test_Group_Task', true));
             }
 
             $ticket = new \Ticket();
