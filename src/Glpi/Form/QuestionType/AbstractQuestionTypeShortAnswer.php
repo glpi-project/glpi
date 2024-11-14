@@ -97,7 +97,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
     {
         $template = <<<TWIG
             <input
-                class="form-control mb-2"
+                class="form-control"
                 type="{{ input_type }}"
                 name="default_value"
                 placeholder="{{ input_placeholder }}"

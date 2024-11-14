@@ -1323,8 +1323,9 @@ class Profile extends CommonDBTM
             echo "<tr'>";
             echo "<td colspan='4' class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</td></tr>";
@@ -1363,8 +1364,9 @@ class Profile extends CommonDBTM
         if ($canedit) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1417,8 +1419,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1482,8 +1485,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1531,8 +1535,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1664,8 +1669,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1774,8 +1780,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1890,8 +1897,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1943,8 +1951,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1986,8 +1995,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -2034,8 +2044,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'fas fa-save',
                 'name'  => 'update'
             ]);
             echo "</div>";

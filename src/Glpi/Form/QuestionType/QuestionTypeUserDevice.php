@@ -91,13 +91,14 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
                     'init'               : init,
                     'no_label'           : true,
                     'field_class'        : [
-                        'col-12',
+                        'col-6',
                         'devices-dropdown',
                         is_multiple_devices ? '' : 'd-none'
                     ]|join(' '),
                     'multiple'           : true,
                     'disabled'           : true,
                     'aria_label'         : aria_label_multiple_devices,
+                    'mb'                 : '',
                 }
             ) }}
 
@@ -110,13 +111,14 @@ final class QuestionTypeUserDevice extends AbstractQuestionType
                     'init'               : init,
                     'no_label'           : true,
                     'field_class'        : [
-                        'col-12',
+                        'col-6',
                         'devices-dropdown',
                         is_multiple_devices ? 'd-none' : ''
                     ]|join(' '),
                     'display_emptychoice': true,
                     'disabled'           : true,
                     'aria_label'         : aria_label_single_device,
+                    'mb'                 : '',
                 }
             ) }}
 TWIG;
@@ -183,10 +185,11 @@ TWIG;
                 '',
                 {
                     'no_label'           : true,
-                    'field_class'        : 'col-12',
+                    'field_class'        : 'col-6',
                     'display_emptychoice': true,
                     'multiple'           : is_multiple_devices,
                     'aria_label'         : aria_label,
+                    'mb'                 : '',
                 }
             ) }}
 TWIG;

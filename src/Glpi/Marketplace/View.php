@@ -1147,17 +1147,20 @@ HTML;
             echo "<b>" . __("Do you want to replace the plugins setup page by the new marketplace?") . "</b>";
             echo "</div>";
             echo "<div class='card-footer'>";
-            echo Html::submit("<i class='fa fa-check'></i>&nbsp;" . __('Yes'), [
-                'name' => 'marketplace_replace_plugins_yes',
+            echo Html::submit(__('Yes'), [
+                'name'  => 'marketplace_replace_plugins_yes',
+                'icon'  => 'fa fa-check',
                 'class' => 'btn btn-primary'
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-times'></i>&nbsp;" . __('No'), [
+            echo Html::submit(__('No'), [
                 'name' => 'marketplace_replace_plugins_never',
+                'icon' => 'fa fa-times',
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-clock'></i>&nbsp;" . __('Later'), [
+            echo Html::submit(__('Later'), [
                 'name'  => 'marketplace_replace_plugins_later',
+                'icon' => 'fa fa-clock',
             ]);
             echo "</div>";
             echo Html::hidden('marketplace_replace');

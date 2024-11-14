@@ -75,6 +75,7 @@ final class QuestionTypeFile extends AbstractQuestionType
                     'init'           : question is not null ? true: false,
                     'no_label'       : true,
                     'full_width'     : true,
+                    'mb'             : '',
                 }
             ) }}
 TWIG;
@@ -105,6 +106,7 @@ TWIG;
                     'init'                 : true,
                     'no_label'             : true,
                     'full_width'           : true,
+                    'mb'                   : '',
                 }
             ) }}
 TWIG;

@@ -176,7 +176,7 @@ class ComputerTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');

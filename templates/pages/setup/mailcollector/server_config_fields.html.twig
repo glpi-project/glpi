@@ -118,6 +118,8 @@
 {% endif %}
 
 {{ fields.textField('server_port', connect_opts['port'], __('Port (optional)')) }}
-{{ fields.htmlField('', host, __('Connection string'), {
-   add_field_class: 'fw-bold'
-}) }}
+{% if host is not empty %}
+    {{ fields.htmlField('', host, __('Connection string'), {
+       add_field_class: 'fw-bold'
+    }) }}
+{% endif %}

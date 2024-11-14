@@ -53,11 +53,13 @@
                     <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1"/>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label" for="login_password">
-                        {{ __('Password') }}
+                    <div class="d-flex">
+                        <label class="form-label" for="login_password">
+                            {{ __('Password') }}
+                        </label>
 
                         {% if show_lost_password %}
-                            <span class="form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
+                            <span class="ms-auto form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
                                 <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
                                     {{ __('Forgotten password?') }}
                                 </a>
@@ -79,7 +81,7 @@
                                 </script>
                             {% endif %}
                         {% endif %}
-                    </label>
+                    </div>
                     <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
                 </div>
 

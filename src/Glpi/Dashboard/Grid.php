@@ -816,7 +816,8 @@ HTML;
         echo "</div>";
         echo "</div>"; // .field
 
-        echo Html::submit("<i class='fas fa-plus'></i>&nbsp;" . _x('button', "Add"), [
+        echo Html::submit(_x('button', "Add"), [
+            'icon'  => 'fas fa-plus',
             'class' => 'btn btn-primary mt-2'
         ]);
         echo "</form>"; // form.card.display-filter-form

@@ -145,10 +145,10 @@
             <input type="hidden" name="skipped_forms[]" value="{{ skipped_form_id }}" />
         {% endfor %}
 
-        {% for itemtype, replacements_for_itemtype in replacements %}
-            {% for original_name, items_id in replacements_for_itemtype %}
-                <input type="hidden" name="replacements[{{ itemtype }}][{{ original_name }}]" value="{{ items_id }}"/>
-            {% endfor %}
+        {% for replacement_data in replacements %}
+            <input type="hidden" name="replacements[{{ loop.index0 }}][itemtype]" value="{{ replacement_data.itemtype }}"/>
+            <input type="hidden" name="replacements[{{ loop.index0 }}][original_name]" value="{{ replacement_data.original_name }}"/>
+            <input type="hidden" name="replacements[{{ loop.index0 }}][replacement_id]" value="{{ replacement_data.replacement_id }}"/>
         {% endfor %}
     </form>
 {% endblock content_body %}

@@ -44,7 +44,10 @@ function terminalLog(violations) {
             id,
             impact,
             description,
-            nodes: nodes.length
+            nodes: JSON.stringify({
+                length: nodes.length,
+                targets: nodes.map(({ target }) => target).join(', ')
+            })
         })
     );
 

@@ -471,7 +471,7 @@ JS);
                url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
                data: {
                   itemtype: "' . htmlescape(get_class($item)) . '",
-                  items_id: "' . $item->fields['id'] . '",
+                  items_id: ' . ((int) $item->fields['id']) . ',
                   action  : "load",
                   view    : "list",
                },
@@ -1637,7 +1637,7 @@ JS);
      */
     public static function getNodeID(CommonDBTM $item): string
     {
-        return $item::class . self::NODE_ID_DELIMITER . $item->fields['id'];
+        return $item::class . self::NODE_ID_DELIMITER . ((int) $item->fields['id']);
     }
 
     /**

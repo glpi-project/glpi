@@ -1983,7 +1983,8 @@ JS;
      * @param boolean $auto_renew
      * @param integer $periodicity   renewal periodicity in month if different from addwarranty
      *
-     * @return string expiration date automatically converted to the user's preferred date format
+     * @return string Expiration date automatically converted to the user's preferred date format.
+     *                The returned value is a safe HTML string.
      **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
@@ -1993,7 +1994,7 @@ JS;
             ($addwarranty == -1)
             && ($deletenotice == 0)
         ) {
-            return __('Never');
+            return __s('Never');
         }
 
         if (empty($from)) {
@@ -2013,9 +2014,9 @@ JS;
         }
 
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
-            return "<span class='red'>" . Html::convDate(date("Y-m-d", $timestamp)) . "</span>";
+            return "<span class='red'>" . htmlescape(Html::convDate(date("Y-m-d", $timestamp))) . "</span>";
         }
-        return Html::convDate(date("Y-m-d", $timestamp));
+        return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
     }
 
 
@@ -2032,7 +2033,7 @@ JS;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            $actions[$action_name] = "<i class='fa-fw " . htmlescape(self::getIcon()) . "'></i>" .
                                   __s('Enable the financial and administrative information');
         }
     }

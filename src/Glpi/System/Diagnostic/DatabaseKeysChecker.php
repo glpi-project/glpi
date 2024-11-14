@@ -168,7 +168,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
                     continue; // This is not another key.
                 }
                 if (count($checked_fields) >= count($other_fields)) {
-                    continue; // Other key does not contains more that expected fields, it is not a larger key.
+                    continue; // Other key does not contain more that expected fields, it is not a larger key.
                 }
 
                 foreach ($checked_fields as $i => $checked_field) {
@@ -199,7 +199,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
     {
         $index = $this->getIndex($table_name);
 
-       // Check if primary key matches matches given fields.
+       // Check if primary key matches given fields.
         if (array_key_exists('PRIMARY', $index) && $index['PRIMARY'] === $fields) {
             return true;
         }
@@ -217,7 +217,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
        // Check if a larger key exists and contains given fields.
         foreach ($index as $key_fields) {
             if (count($fields) >= count($key_fields)) {
-                continue; // Key does not contains more that expected fields, it is not a larger key.
+                continue; // Key does not contain more that expected fields, it is not a larger key.
             }
             foreach ($fields as $i => $field) {
                 if (!array_key_exists($i, $key_fields) || $key_fields[$i] !== $field) {

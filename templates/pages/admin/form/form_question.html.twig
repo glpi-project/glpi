@@ -120,7 +120,7 @@
 
             {# Display common fields #}
             <div
-                class="content-editable-tinymce"
+                class="content-editable-tinymce mt-2"
                 data-glpi-form-editor-question-description
                 {# Mark as secondary if empty #}
                 {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}

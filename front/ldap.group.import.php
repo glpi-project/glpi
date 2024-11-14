@@ -33,72 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
-
 Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);
+AuthLDAP::manageRequestValues(false);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
 
-if (isset($_GET['next']) || !isset($_SESSION['ldap_server']) && !isset($_POST['ldap_server'])) {
-    AuthLDAP::ldapChooseDirectory($_SERVER['PHP_SELF']);
-} else {
-    if (isset($_POST["change_ldap_filter"])) {
-        if (isset($_POST["ldap_filter"])) {
-            $_SESSION["ldap_group_filter"] = $_POST["ldap_filter"];
-        }
-        if (isset($_POST["ldap_filter2"])) {
-            $_SESSION["ldap_group_filter2"] = $_POST["ldap_filter2"];
-        }
-        Html::redirect($_SERVER['PHP_SELF']);
-    } else {
-        if (!isset($_GET['start'])) {
-            $_GET['start'] = 0;
-        }
-        if (isset($_SESSION["ldap_import"])) {
-            unset($_SESSION["ldap_import"]);
-        }
+$authldap = new AuthLDAP();
+$authldap->getFromDB($_REQUEST['authldaps_id'] ?? 0);
+AuthLDAP::showGroupImportForm($authldap);
 
-        if (!isset($_SESSION["ldap_server"])) {
-            if (isset($_POST["ldap_server"])) {
-                $_SESSION["ldap_server"] = $_POST["ldap_server"];
-            } else {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/ldap.php");
-            }
-        }
-
-        if (!AuthLDAP::testLDAPConnection($_SESSION["ldap_server"])) {
-            unset($_SESSION["ldap_server"]);
-            echo "<div class='center b'>" . __s('Unable to connect to the LDAP directory') . "<br>";
-            echo "<a href='" . htmlescape($_SERVER['PHP_SELF']) . "?next=listservers'>" . __s('Back') . "</a></div>";
-        } else {
-            if (!isset($_SESSION["ldap_group_filter"])) {
-                $_SESSION["ldap_group_filter"] = '';
-            }
-            if (!isset($_SESSION["ldap_group_filter2"])) {
-                $_SESSION["ldap_group_filter2"] = '';
-            }
-            if (isset($_GET["order"])) {
-                $_SESSION["ldap_sortorder"] = $_GET["order"];
-            }
-            if (!isset($_SESSION["ldap_sortorder"])) {
-                $_SESSION["ldap_sortorder"] = "ASC";
-            }
-
-            AuthLDAP::displayLdapFilter($_SERVER['PHP_SELF'], false);
-
-            AuthLDAP::showLdapGroups(
-                $_SERVER['PHP_SELF'],
-                $_GET['start'],
-                0,
-                $_SESSION["ldap_group_filter"],
-                $_SESSION["ldap_group_filter2"],
-                $_SESSION["glpiactive_entity"],
-                $_SESSION["ldap_sortorder"]
-            );
-        }
-    }
+if (
+    (isset($_REQUEST['authldaps_id']) && ((int) $_REQUEST['authldaps_id'] > 0))
+    && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
+) {
+    AuthLDAP::showLdapGroups(
+        $_SERVER['PHP_SELF'],
+        $_REQUEST['start'] ?? 0,
+        0,
+        $_REQUEST["ldap_group_filter"] ?? '',
+        $_REQUEST["ldap_group_filter2"] ?? '',
+        $_SESSION["glpiactive_entity"]
+    );
 }
 
 Html::footer();

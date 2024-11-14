@@ -35,15 +35,21 @@
 
 namespace test\units\Glpi\Helpdesk;
 
+use Auth;
+use CommonITILActor;
+use Computer;
 use DbTestCase;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\AnswersSet;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
 use Location;
+use Monitor;
+use Session;
 use Ticket;
 use User;
 
@@ -113,18 +119,37 @@ final class DefaultDataManagerTest extends DbTestCase
 
     public function testIncidentFormQuestions(): void
     {
+        $this->login();
+
         // Arrange: Get default incident form and fetch test data
         $rows = (new Form())->find(['name' => 'Report an issue']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 
-        // Create test categories and locations
+        // Create test categories, locations and user devices
         $category = $this->createItem(ITILCategory::class, [
             'name' => 'Test category',
             'is_incident' => true,
         ]);
         $location = $this->createItem(Location::class, [
             'name' => 'Test location',
+        ]);
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'Test User Computer',
+            'users_id' => Session::getLoginUserID(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $monitors = $this->createItems(Monitor::class, [
+            [
+                'name' => 'Test Monitor 1',
+                'users_id' => Session::getLoginUserID(),
+                'entities_id' => $this->getTestRootEntity(true),
+            ],
+            [
+                'name' => 'Test Monitor 2',
+                'users_id' => Session::getLoginUserID(),
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
         ]);
 
         // Fetch test users
@@ -145,8 +170,13 @@ final class DefaultDataManagerTest extends DbTestCase
             ],
             'Urgency' => 5, // Very high
             'Watchers' => [
-                User::class . '-' . $tech_user_id,
-                User::class . '-' . $normal_user_id,
+                User::getForeignKeyField() . '-' . $tech_user_id,
+                User::getForeignKeyField() . '-' . $normal_user_id,
+            ],
+            'User devices' => [
+                Computer::class . '_' . $computer->getID(),
+                Monitor::class . '_' . $monitors[0]->getID(),
+                Monitor::class . '_' . $monitors[1]->getID(),
             ]
         ]);
 
@@ -156,24 +186,61 @@ final class DefaultDataManagerTest extends DbTestCase
         $this->assertEquals('My ticket content', $ticket->fields['content']);
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
         $this->assertEquals($location->getID(), $ticket->fields['locations_id']);
-        $this->assertEquals(5, $ticket->fields['urgency']);
-        // TODO: check observers, not possible yet as there are not configurable.
+        $this->assertEquals(
+            [$tech_user_id, $normal_user_id],
+            array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'items_id')
+        );
+        $this->assertEquals(
+            [User::class, User::class],
+            array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'itemtype')
+        );
+        $this->assertEquals(
+            [Computer::class, Monitor::class, AnswersSet::class],
+            array_keys($ticket->getLinkedItems())
+        );
+        $this->assertEquals(
+            [$monitors[0]->getID(), $monitors[1]->getID()],
+            array_values($ticket->getLinkedItems()[Monitor::class])
+        );
+        $this->assertEquals(
+            [$computer->getID()],
+            array_values($ticket->getLinkedItems()[Computer::class])
+        );
     }
 
     public function testRequestFormQuestions(): void
     {
+        $this->login();
+
         // Arrange: Get default request form and fetch test data
         $rows = (new Form())->find(['name' => 'Request a service']);
         $row = current($rows);
         $form = Form::getById($row['id']);
 
-        // Create test categories and locations
+        // Create test categories, locations and user devices
         $category = $this->createItem(ITILCategory::class, [
             'name' => 'Test category',
             'is_incident' => true,
         ]);
         $location = $this->createItem(Location::class, [
             'name' => 'Test location',
+        ]);
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'Test User Computer',
+            'users_id' => Session::getLoginUserID(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $monitors = $this->createItems(Monitor::class, [
+            [
+                'name' => 'Test Monitor 1',
+                'users_id' => Session::getLoginUserID(),
+                'entities_id' => $this->getTestRootEntity(true),
+            ],
+            [
+                'name' => 'Test Monitor 2',
+                'users_id' => Session::getLoginUserID(),
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
         ]);
 
         // Fetch test users
@@ -194,8 +261,13 @@ final class DefaultDataManagerTest extends DbTestCase
             ],
             'Urgency' => 5, // Very high
             'Watchers' => [
-                User::class . '-' . $tech_user_id,
-                User::class . '-' . $normal_user_id,
+                User::getForeignKeyField() . '-' . $tech_user_id,
+                User::getForeignKeyField() . '-' . $normal_user_id,
+            ],
+            'User devices' => [
+                Computer::class . '_' . $computer->getID(),
+                Monitor::class . '_' . $monitors[0]->getID(),
+                Monitor::class . '_' . $monitors[1]->getID(),
             ]
         ]);
 
@@ -206,7 +278,26 @@ final class DefaultDataManagerTest extends DbTestCase
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
         $this->assertEquals($location->getID(), $ticket->fields['locations_id']);
         $this->assertEquals(5, $ticket->fields['urgency']);
-        // TODO: check observers, not possible yet as there are not configurable.
+        $this->assertEquals(
+            [$tech_user_id, $normal_user_id],
+            array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'items_id')
+        );
+        $this->assertEquals(
+            [User::class, User::class],
+            array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'itemtype')
+        );
+        $this->assertEquals(
+            [Computer::class, Monitor::class, AnswersSet::class],
+            array_keys($ticket->getLinkedItems())
+        );
+        $this->assertEquals(
+            [$monitors[0]->getID(), $monitors[1]->getID()],
+            array_values($ticket->getLinkedItems()[Monitor::class])
+        );
+        $this->assertEquals(
+            [$computer->getID()],
+            array_values($ticket->getLinkedItems()[Computer::class])
+        );
     }
 
     public function testIncidentFormShouldBeAccessibleBySelfServiceUsers(): void

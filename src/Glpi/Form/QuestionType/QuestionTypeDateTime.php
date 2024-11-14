@@ -189,9 +189,9 @@ class QuestionTypeDateTime extends AbstractQuestionType
             {% set rand = random() %}
 
             <div class="row g-2">
-                <div class="col-5">
+                <div class="col-6">
                     <input
-                        class="form-control mb-2"
+                        class="form-control"
                         type="{{ input_type }}"
                         id="date_input_{{ rand }}"
                         name="default_value"
@@ -339,7 +339,7 @@ TWIG;
         $template = <<<TWIG
             <input
                 type="{{ input_type }}"
-                class="form-control"
+                class="form-control w-50"
                 name="{{ question.getEndUserInputName() }}"
                 value="{{ default_value }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}

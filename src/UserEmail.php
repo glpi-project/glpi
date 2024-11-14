@@ -223,7 +223,7 @@ class UserEmail extends CommonDBChild
         $result .= ">&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
-            $result .= sprintf(__('%1$s %2$s'), $value, "<span class='b'>(" . __('D') . ")</span>");
+            $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
             $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
         }

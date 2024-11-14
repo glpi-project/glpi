@@ -229,7 +229,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected, $virtual)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -245,7 +245,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertEquals(json_decode($expected), $result[0]);
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testNoVirtuals($xml, $expected, $virtual)
     {
         $converter = new \Glpi\Inventory\Converter();

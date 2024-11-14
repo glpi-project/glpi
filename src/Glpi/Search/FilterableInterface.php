@@ -94,7 +94,7 @@ interface FilterableInterface
     /**
      * Create or update filter for the current item
      *
-     * @param array  $search_criteria Search criterias used as filter
+     * @param array  $search_criteria Search criteria used as filter
      *
      * @return bool
      */

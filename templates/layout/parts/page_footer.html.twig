@@ -58,5 +58,10 @@
       <script type="module" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}
 
+    {% if debug_info is not null %}
+        {{ include('components/debug/debug_toolbar.html.twig', {
+            debug_info: debug_info,
+        }, with_context = false) }}
+    {% endif %}
 </body>
 </html>

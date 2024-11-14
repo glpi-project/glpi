@@ -104,7 +104,8 @@ final class QuestionTypeUrgency extends AbstractQuestionType
                 {
                     'init'                : init,
                     'no_label'            : true,
-                    'display_emptychoice' : true
+                    'display_emptychoice' : true,
+                    'mb'                  : '',
                 }
             ) }}
 TWIG;
@@ -131,7 +132,8 @@ TWIG;
             {
                 'no_label'            : true,
                 'display_emptychoice' : true,
-                'aria_label'          : label
+                'aria_label'          : label,
+                'mb'                  : '',
             }
         ) }}
 TWIG;

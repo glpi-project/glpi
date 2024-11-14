@@ -101,11 +101,9 @@ final class TOTPManager
 
     /**
      * Get an instance of the TwoFactorAuth class
-     * @param int $digits Number of digits in the TOTP code
-     * @param int $period Number of seconds the TOTP code is valid for.
      * @param string $algorithm Algorithm used to generate the TOTP code.
      * @return TwoFactorAuth
-     * @throws \RobThree\Auth\TwoFactorAuthException
+     * @throws TwoFactorAuthException
      */
     private function getTwoFactorAuth(string $algorithm = 'sha1'): TwoFactorAuth
     {
@@ -125,7 +123,7 @@ final class TOTPManager
     /**
      * Generate a new TOTP secret code
      * @return string The secret code
-     * @throws \RobThree\Auth\TwoFactorAuthException
+     * @throws TwoFactorAuthException
      */
     public function createSecret(): string
     {
@@ -235,7 +233,7 @@ final class TOTPManager
      * @param int $users_id ID of the user
      * @return bool True if the code is valid, false otherwise
      * @throws \JsonException
-     * @throws \RobThree\Auth\TwoFactorAuthException
+     * @throws TwoFactorAuthException
      */
     public function verifyCodeForUser(string $code, int $users_id): bool
     {
@@ -251,7 +249,7 @@ final class TOTPManager
      * @param string $code The code to verify
      * @param string $secret The secret to use
      * @return string|false The algorithm matched if the code is valid, false otherwise
-     * @throws \RobThree\Auth\TwoFactorAuthException
+     * @throws TwoFactorAuthException
      */
     public function verifyCodeForSecret(string $code, string $secret): string|false
     {
@@ -481,7 +479,7 @@ final class TOTPManager
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
      * @param int $users_id ID of the user
      * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
-     * @param bool $regenerate_backup_codes Regenerate backup codes immedately when showing the status form
+     * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
      * @return void
      * @throws \JsonException
      * @throws TwoFactorAuthException

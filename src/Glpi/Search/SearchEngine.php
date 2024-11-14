@@ -121,7 +121,7 @@ final class SearchEngine
         $linked = [];
         foreach ($CFG_GLPI as $key => $values) {
             if ($key === 'link_types') {
-                // Links are associated to all items of a type, it does not make any sense to use them in meta search
+                // Links are associated to all items of a type, it does not make any sense to use them in metasearch
                 continue;
             }
             if ($key === 'ticket_types' && $item instanceof \CommonITILObject) {
@@ -273,7 +273,7 @@ final class SearchEngine
      * @param string $itemtype      Item type
      * @param array  $params        Array of parameters
      *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
-     * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criterias)
+     * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criteria)
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
@@ -404,7 +404,7 @@ final class SearchEngine
         }
         $data['meta_toview'] = [];
         if (!$forcetoview) {
-            // Add items to display depending of personal prefs
+            // Add items to display depending on personal prefs
             $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID(), \Session::getCurrentInterface());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
@@ -649,7 +649,7 @@ final class SearchEngine
     /**
      * @param string $itemtype The itemtype being displayed
      * @param array $params The search parameters
-     * @param array $forced_display Array of columns to display (default empty = empty use display pref and search criterias)
+     * @param array $forced_display Array of columns to display (default empty = empty use display pref and search criteria)
      * @return void
      */
     public static function showOutput(string $itemtype, array $params, array $forced_display = []): void

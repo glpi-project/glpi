@@ -1,0 +1,73 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<form method="get" action="{{ path('front/ldap.group.import.php') }}" data-submit-once>
+    <div class="card">
+        <div class="card-header justify-content-between">
+            <h1 class="fs-2">{{ __('Import new groups') }}</h1>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap row">
+                {% if has_multiple_servers %}
+                    {{ fields.dropdownField('AuthLDAP', 'authldaps_id', _request['authldaps_id'], 'AuthLDAP'|itemtype_name, {
+                        condition: {is_active: 1},
+                        display_emptychoice: false,
+                    }) }}
+                {% endif %}
+
+                {{ fields.smallTitle(__('Search criteria for groups')) }}
+
+                {% set filter_field = authldap.fields['group_search_type'] == constant('AuthLDAP::GROUP_SEARCH_USER') ? 'condition' : 'group_condition' %}
+                {{ fields.textField('ldap_group_filter', _request['ldap_group_filter']|default(authldap.fields[filter_field]), __('Filter to search in groups'), {
+                    full_width: true,
+                    label_class: 'col-xxl-3',
+                    input_class: 'col-xxl-9'
+                }) }}
+
+                {% if authldap.fields['group_search_type'] == constant('AuthLDAP::GROUP_SEARCH_BOTH') %}
+                    {{ fields.textField('ldap_group_filter2', _request['ldap_group_filter2']|default(authldap.fields['condition']), __('Search filter for users'), {
+                        full_width: true,
+                        label_class: 'col-xxl-3',
+                        input_class: 'col-xxl-9'
+                    }) }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-row-reverse">
+            {{ inputs.submit('search', _x('button', 'Search'), 1) }}
+        </div>
+    </div>
+</form>

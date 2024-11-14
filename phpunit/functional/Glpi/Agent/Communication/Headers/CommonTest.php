@@ -64,7 +64,7 @@ class CommonTest extends GLPITestCase
         ];
     }
 
-    #[dataProvider('namesProvider')]
+    #[DataProvider('namesProvider')]
     public function testHeaders($propname, $headername)
     {
         $instance = new \Glpi\Agent\Communication\Headers\Common();

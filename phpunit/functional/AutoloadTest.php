@@ -57,7 +57,7 @@ class AutoloadTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataItemType')]
+    #[DataProvider('dataItemType')]
     public function testIsPluginItemType($type, $plug, $class)
     {
         $res = isPluginItemType($type);

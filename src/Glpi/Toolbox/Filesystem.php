@@ -50,7 +50,7 @@ final class Filesystem
             return is_writable($path);
         }
 
-        // If the file does not exists, try to create it.
+        // If the file does not exist, try to create it.
         $file = @fopen($path, 'c');
         if ($file === false) {
             return false;

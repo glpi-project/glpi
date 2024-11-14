@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  Class used to manage Auth mail config
  */
@@ -183,47 +185,14 @@ class AuthMail extends CommonDBTM
      */
     public function showForm($ID, array $options = [])
     {
-        if (!Config::canUpdate()) {
+        if (!$this->can($ID, UPDATE)) {
             return false;
         }
-        if (empty($ID)) {
-            $this->getEmpty();
-        } else {
-            $this->getFromDB($ID);
-        }
 
-        $options['colspan'] = 1;
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td><input class='form-control' type='text' name='name' value='" . $this->fields["name"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td colspan='3'>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Email domain Name (users email will be login@domain)') . "</td>";
-        echo "<td><input class='form-control' type='text' name='host' value='" . $this->fields["host"] . "'>";
-        echo "</td></tr>";
-
-        Toolbox::showMailServerConfig($this->fields["connect_string"]);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-        echo "<td>";
-        echo "<textarea class='form-control' name='comment'>" . $this->fields["comment"] . "</textarea>";
-        if ($ID > 0) {
-            echo "<br>";
-           //TRANS: %s is the datetime of update
-            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-        }
-
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
+            'item' => $this,
+            'params' => $options
+        ]);
     }
 
     /**
@@ -236,23 +205,40 @@ class AuthMail extends CommonDBTM
         $ID = $this->getField('id');
 
         if ($this->getFromDB($ID)) {
-            echo "<form method='post' action='" . $this->getFormURL() . "'>";
-            echo "<input type='hidden' name='imap_string' value=\"" . $this->fields['connect_string'] . "\">";
-            echo "<div class='center'><table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . __('Test connection to email server') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Login') . "</td>";
-            echo "<td><input class='form-control' type='text' name='imap_login' value=''></td></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
-            echo "<td><input class='form-control' type='password' name='imap_password' value=''
-                    autocomplete='new-password'></td></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input type='submit' name='test' class='btn btn-primary' value=\"" . _sx('button', 'Test') . "\">" .
-              "</td>";
-            echo "</tr></table></div>";
-            Html::closeForm();
+            $twig_params = [
+                'title' => __('Test connection to email server'),
+                'login' => __('Login'),
+                'password' => __('Password'),
+                'test' => _x('button', 'Test'),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <form method="post" action="{{ 'AuthMail'|itemtype_form_path }}" data-submit-once>
+                    <div class="text-center d-flex flex-column">
+                        <div>
+                            <h1 class="fs-2">{{ title }}</h1>
+                        </div>
+                        {{ fields.textField('imap_login', '', login, {
+                            full_width: true,
+                            additional_attributes: {
+                                autocomplete: 'username'
+                            }
+                        }) }}
+                        {{ fields.passwordField('imap_password', '', password, {
+                            full_width: true,
+                            clearable: false,
+                            additional_attributes: {
+                                autocomplete: 'password'
+                            }
+                        }) }}
+                        <div>
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>
+                        </div>
+                    </div>
+                </form>
+TWIG, $twig_params);
         }
     }
 

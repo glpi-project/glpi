@@ -35,13 +35,12 @@
 namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
-use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -58,9 +57,7 @@ class ErrorController extends AbstractController
 
         $this->logException($exception, $request);
 
-        $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
-
-        return new StreamedResponse(fn() => $this->renderErrorPage($exception), $status_code);
+        return $this->getErrorResponse($exception, $request);
     }
 
     private function logException(\Throwable $exception, Request $request): void
@@ -126,23 +123,25 @@ class ErrorController extends AbstractController
         }
     }
 
-    private function renderErrorPage(\Throwable $exception): void
+    private function getErrorResponse(\Throwable $exception, Request $request): Response
     {
+        $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+
         $title = _n('Error', 'Errors', 1);
         $message = __('An unexpected error has occurred.');
 
         if ($exception instanceof HttpExceptionInterface) {
             // Default messages.
             switch (true) {
-                case ($exception instanceof AccessDeniedHttpException):
+                case ($exception instanceof AccessDeniedHttpException || $exception->getStatusCode() === 403):
                     $title   = __('Access denied');
                     $message = __('You don\'t have permission to perform this action.');
                     break;
-                case ($exception instanceof BadRequestHttpException):
+                case ($exception instanceof BadRequestHttpException || $exception->getStatusCode() === 400):
                     $title   = __('Invalid request');
                     $message = __('Invalid request parameters.');
                     break;
-                case ($exception instanceof NotFoundHttpException):
+                case ($exception instanceof NotFoundHttpException || $exception->getStatusCode() === 404):
                     $title   = __('Item not found');
                     $message = __('The requested item has not been found.');
                     break;
@@ -161,25 +160,19 @@ class ErrorController extends AbstractController
             }
         }
 
-        if (!Session::getCurrentInterface()) {
-            Html::nullHeader($title);
-        } else if ($exception instanceof OutOfMemoryError) {
-            // A minimal page is displayed as we do not have enough memory available to display the full page.
-            Html::simpleHeader($title);
-        } else if (Session::getCurrentInterface() === "central") {
-            Html::header($title);
-        } else if (Session::getCurrentInterface() === "helpdesk") {
-            Html::helpHeader($title);
-        }
-
-        $trace = '';
+        $trace = null;
         if (
             (
                 GLPI_ENVIRONMENT_TYPE === 'development'
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {
-            $trace = sprintf("%s\nIn %s::%s", $exception->getMessage(), $exception->getFile(), $exception->getLine());
+            $trace = sprintf(
+                "%s\nIn %s(%s)",
+                $exception->getMessage() ?: $exception::class,
+                $exception->getFile(),
+                $exception->getLine()
+            );
 
             if (!($exception instanceof OutOfMemoryError)) {
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
@@ -187,16 +180,50 @@ class ErrorController extends AbstractController
             }
         }
 
-        $renderer = TemplateRenderer::getInstance();
-        $renderer->display(
-            'error.html.twig',
-            [
-                'message' => $message,
-                'trace'   => $trace,
-                'link'    => Html::getBackUrl(),
-            ]
-        );
+        if ($request->getPreferredFormat() === 'json') {
+            return new JsonResponse(
+                data: [
+                    'error'   => true,
+                    'title'   => $title,
+                    'message' => $message,
+                    'trace'   => $trace,
+                ],
+                status: $status_code
+            );
+        }
 
-        \Html::footer();
+        $error_block_params = [
+            'message'   => $message,
+            'trace'     => $trace,
+            'link_url'  => null,
+            'link_text' => null,
+        ];
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'error_block.html.twig',
+                $error_block_params,
+                new Response(status: $status_code)
+            );
+        }
+
+        $header_method = match (true) {
+            // A minimal page is displayed as we do not have enough memory available to display the full page.
+            $exception instanceof OutOfMemoryError => 'simpleHeader',
+            Session::getCurrentInterface() === 'central' => 'header',
+            Session::getCurrentInterface() === 'helpdesk' => 'helpHeader',
+            default => 'nullHeader',
+        };
+
+        return $this->render(
+            'error_page.html.twig',
+            [
+                'header_method' => $header_method,
+                'page_title'    => $title,
+                'link_url'      => Html::getBackUrl(),
+                'link_text'     => __('Return to previous page'),
+            ] + $error_block_params,
+            new Response(status: $status_code)
+        );
     }
 }

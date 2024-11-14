@@ -69,10 +69,12 @@ final class Step2PreviewController extends AbstractController
     ): Response {
         $serializer = new FormSerializer();
         $mapper = new DatabaseMapper(Session::getActiveEntities());
-        foreach ($replacements as $itemtype => $replacements_for_itemtype) {
-            foreach ($replacements_for_itemtype as $original_name => $items_id) {
-                $mapper->addMappedItem($itemtype, $original_name, $items_id);
-            }
+        foreach ($replacements as $replacement_data) {
+            $mapper->addMappedItem(
+                $replacement_data['itemtype'],
+                $replacement_data['original_name'],
+                $replacement_data['replacement_id']
+            );
         }
 
         $previewResult = $serializer->previewImport($json, $mapper, $skipped_forms);

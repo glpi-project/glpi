@@ -100,7 +100,7 @@ class ProcessorTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();

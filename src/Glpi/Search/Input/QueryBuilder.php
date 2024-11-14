@@ -360,7 +360,8 @@ final class QueryBuilder implements SearchInputInterface
             $pattern = $fieldpattern['pattern'];
             $message = $fieldpattern['validation_message'];
 
-            echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
+            $field_title = __s('Criteria value');
+            echo "<input type='text' class='form-control' size='13' aria-label='{$field_title}' name='{$inputname}' value=\"" .
                 htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">" .
                 "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
         }
@@ -598,7 +599,7 @@ final class QueryBuilder implements SearchInputInterface
 
     /**
      * Display a group of nested criteria.
-     * A group (parent) criteria  can contains children criteria (who also cantains children, etc)
+     * A group (parent) criteria  can contain children criteria (who also contain children, etc)
      *
      * @since 9.4
      *
@@ -940,8 +941,7 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Get the input value validation pattern for given datatype.
      *
-     * @param string    $table
-     * @param string    $field
+     * @param string    $datatype
      * @param bool      $with_delimiters
      *      True to return a complete pattern, including delimiters.
      *      False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.

@@ -1880,7 +1880,11 @@ JAVASCRIPT;
         if (array_key_exists('default_itemtype', $options)) {
             $out .= "<script type='text/javascript' >\n";
             $out .= "$(function() {";
-            $out .= Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
+            $out .= sprintf(
+                '$("#%s").trigger("setValue", "%s");',
+                htmlescape($field_id),
+                htmlescape($params['default_itemtype'])
+            );
             $out .= "});</script>\n";
 
             $p_ajax["idtable"] = $params['default_itemtype'];

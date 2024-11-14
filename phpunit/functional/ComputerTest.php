@@ -966,7 +966,7 @@ class ComputerTest extends DbTestCase
      *
      * @return void
      */
-    #[dataProvider('formatSessionMessageAfterActionProvider')]
+    #[DataProvider('formatSessionMessageAfterActionProvider')]
     public function testFormatSessionMessageAfterAction(
         string $item_str,
         string $raw_message,

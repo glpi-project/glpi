@@ -123,7 +123,7 @@ TEXT,
         ];
     }
 
-    #[dataProvider('linkContentProvider')]
+    #[DataProvider('linkContentProvider')]
     public function testGenerateLinkContents(
         string $link,
         bool $safe_url,
@@ -278,7 +278,7 @@ TEXT,
         ];
     }
 
-    #[dataProvider('invalidLinkContentsProvider')]
+    #[DataProvider('invalidLinkContentsProvider')]
     public function testInvalidLinkContents($content)
     {
         $link = new \Link();

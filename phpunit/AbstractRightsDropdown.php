@@ -91,7 +91,7 @@ abstract class AbstractRightsDropdown extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('getPostedIdsProvider')]
+    #[DataProvider('getPostedIdsProvider')]
     public function testGetPostedIds(
         array $values,
         string $class,

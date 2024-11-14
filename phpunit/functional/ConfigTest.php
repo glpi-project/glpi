@@ -461,7 +461,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dbEngineProvider')]
+    #[DataProvider('dbEngineProvider')]
     public function testCheckDbEngine($raw, $version, $compat)
     {
         global $DB;
@@ -524,7 +524,7 @@ class ConfigTest extends DbTestCase
      * @param string $key
      * @param string $itemtype
      */
-    #[dataProvider('itemtypeLinkedToConfigurationProvider')]
+    #[DataProvider('itemtypeLinkedToConfigurationProvider')]
     public function testCleanRelationDataOfLinkedItems($key, $itemtype)
     {
 
@@ -781,7 +781,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('logConfigChangeProvider')]
+    #[DataProvider('logConfigChangeProvider')]
     public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix, string $itemtype)
     {
         global $PLUGIN_HOOKS;
