@@ -63,9 +63,10 @@ class InstallController extends AbstractController
 
         return new StreamedResponse(function () use ($progressChecker) {
             try {
-                $progressCallback = static function () use ($progressChecker) {
+                $progressCallback = static function (?int $current = null, ?int $max = null) use ($progressChecker) {
                     $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
                     $progress->current++;
+                    $progress->max = (int) $max;
                     $progressChecker->save($progress);
                 };
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progressCallback);

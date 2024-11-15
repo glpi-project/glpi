@@ -37,9 +37,9 @@ namespace Glpi\Progress;
 final class SessionProgress implements \JsonSerializable
 {
     public readonly string $key;
-    public readonly int $max;
     public readonly \DateTimeImmutable $startDate;
     public int $current = 0;
+    public int $max;
     public string|int|float|bool|null $data;
 
     public function __construct(string $key, int $max)

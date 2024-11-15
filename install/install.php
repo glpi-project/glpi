@@ -334,19 +334,19 @@ function step4($databasename, $newdatabasename)
     if ($success) {
         echo "<p>" . __('Initializing database tables and default data...') . "</p>";
 
-        $alert_name = 'glpi_install_messages_container';
-        ob_start();
-        $next_form();
-        $next = ob_get_clean();
+        echo \sprintf('<p>%s</p>', __('Progress:'));
 
-        echo \sprintf('<div id="%s"></div>', $alert_name);
-        echo \sprintf(
-            '<script defer>startDatabaseInstall("%s", "%s");</script>',
-            $alert_name,
-            str_replace(["\n", '"'], ['', '\\"'], $next),
-        );
+        echo '<div id="glpi_install_messages_container"></div>';
+
+        echo '<div id="glpi_install_success" class="container mt-4">';
+        $next_form();
+        echo '</div>';
 
         $prev_form($host, $user, $password);
+
+        echo \sprintf(
+            '<script defer>startDatabaseInstall();</script>',
+        );
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);

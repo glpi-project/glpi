@@ -2089,22 +2089,27 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
-        $queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
+        $structure_queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-        foreach ($queries as $query) {
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
+
+        $number_of_queries = \count($structure_queries);
+        foreach ($tables as $data) {
+            $number_of_queries += \count($data);
+        }
+
+        foreach ($structure_queries as $query) {
             if ($progressCallback) {
-                $progressCallback();
+                $progressCallback(null, $number_of_queries);
             }
             if (!$query) {
                 continue;
             }
             $DB->doQuery($query);
         }
-
-        //dataset
-        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-        $tables = require_once(__DIR__ . '/../install/empty_data.php');
-        Session::loadLanguage('', false); // Load back session language
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2120,7 +2125,7 @@ class Toolbox
             $types = str_repeat('s', count($data[0]));
             foreach ($data as $row) {
                 if ($progressCallback) {
-                    $progressCallback();
+                    $progressCallback(null, $number_of_queries);
                 }
                 $res = $stmt->bind_param($types, ...array_values($row));
                 if (false === $res) {
