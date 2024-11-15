@@ -327,6 +327,10 @@ function step4($databasename, $newdatabasename)
         allow_signed_keys: false
     );
 
+    /** @var array $CFG_GLPI */
+    global $CFG_GLPI;
+    $CFG_GLPI['url_base'] = \Symfony\Component\HttpFoundation\Request::createFromGlobals()->getBasePath();
+
     if ($success) {
         echo "<p>" . __('Initializing database tables and default data...') . "</p>";
 

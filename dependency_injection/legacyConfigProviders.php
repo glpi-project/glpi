@@ -66,7 +66,6 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(ProfilerStart::class)->tag($tagName, ['priority' => 180]);
     $services->set(SessionStart::class)->tag($tagName, ['priority' => 170]);
-    $services->set(InstallTweaks::class)->tag($tagName, ['priority' => 165]);
     $services->set(StandardIncludes::class)->tag($tagName, ['priority' => 160]);
     $services->set(CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
     $services->set(SessionConfig::class)->tag($tagName, ['priority' => 130]);
