@@ -95,6 +95,7 @@
       (constant('MailCollector::REQUESTER_FIELD_FROM')): __('No'),
       (constant('MailCollector::REQUESTER_FIELD_REPLY_TO')): __('Yes'),
    }, __('Use Reply-To as requester (when available)')) }}
+   {{ fields.dropdownYesNo('add_to_to_observer', item.fields['add_to_to_observer'], __('Add TO users as observer')) }}
    {{ fields.dropdownYesNo('add_cc_to_observer', item.fields['add_cc_to_observer'], __('Add CC users as observer')) }}
    {{ fields.dropdownYesNo('collect_only_unread', item.fields['collect_only_unread'], __('Collect only unread mail')) }}
    {% set create_user_helper %}
