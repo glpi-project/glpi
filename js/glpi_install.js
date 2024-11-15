@@ -63,7 +63,7 @@ function startDatabaseInstall(message_element_id, success_html)
     }, 1500);
 
 
-    fetch("/install/step7/start_db_inserts", {
+    fetch("/install/database_setup/start_db_inserts", {
         method: 'POST',
         headers: {
             'Content-Type': 'text/plain'
@@ -92,13 +92,19 @@ function checkProgress(message_fn)
 
     setTimeout(() => {
 
-        fetch("/install/step7/check_progress", {
+        fetch("/install/database_setup/check_progress", {
             method: 'POST',
         })
             .then((res) => {
+                if (res.status === 404) {
+                    // Progress not found, let's continue when necessary.
+                    return request_running ? checkProgress(message_fn) : null;
+                }
+
                 if (res.status >= 300) {
                     throw new Error('Invalid response from progress check.');
                 }
+
                 return res.json();
             })
             .then((json) => {
@@ -121,7 +127,7 @@ function checkProgress(message_fn)
                     message_fn(msg);
 
                     return checkProgress(message_fn);
-                } else {
+                } else if (json) {
                     message_fn(`Error:\n${json}`);
                 }
             })

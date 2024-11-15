@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-class Step7Controller extends AbstractController
+class InstallController extends AbstractController
 {
     private const STORED_PROGRESS_KEY = 'install_db_inserts';
 
@@ -53,7 +53,7 @@ class Step7Controller extends AbstractController
     ) {
     }
 
-    #[Route("/install/step7/start_db_inserts", methods: 'POST')]
+    #[Route("/install/database_setup/start_db_inserts", methods: 'POST')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {
@@ -83,10 +83,14 @@ class Step7Controller extends AbstractController
         });
     }
 
-    #[Route("/install/step7/check_progress", methods: 'POST')]
+    #[Route("/install/database_setup/check_progress", methods: 'POST')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function check_progress(): Response
     {
+        if (!$this->progressChecker->hasProgress(self::STORED_PROGRESS_KEY)) {
+            return new JsonResponse([], 404);
+        }
+
         return new JsonResponse($this->progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY));
     }
 }
