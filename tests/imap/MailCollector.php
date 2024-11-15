@@ -76,6 +76,7 @@ class MailCollector extends DbTestCase
                    'use_mail_date'        => '',
                    'date_creation'        => '',
                    'requester_field'      => '',
+                   'add_to_to_observer'   => '',
                    'add_cc_to_observer'   => '',
                    'collect_only_unread'  => '',
                    'create_user_from_email' => '',
@@ -597,6 +598,7 @@ class MailCollector extends DbTestCase
             'server_port'           => 143,
             'server_ssl'            => '',
             'server_cert'           => '/novalidate-cert',
+            'add_to_to_observer'    => 1,
             'add_cc_to_observer'    => 1,
             'collect_only_unread'   => 1,
             'requester_field'       => \MailCollector::REQUESTER_FIELD_REPLY_TO,
@@ -738,6 +740,7 @@ class MailCollector extends DbTestCase
                     'Ticket with observer',
                     'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
                     'A message without to header',
+                    'Ticket with multiple to',
                 ]
             ],
          // Mails having "normal" user as requester
@@ -781,12 +784,13 @@ class MailCollector extends DbTestCase
                     '43 - Korean encoding issue',
                 ]
             ],
-         // Mails having "normal" user as observer (add_cc_to_observer = true)
+            // Mails having "normal" user as observer
             [
                 'users_id'      => $nuid,
                 'actor_type'    => \CommonITILActor::OBSERVER,
                 'tickets_names' => [
-                    'Ticket with observer',
+                    'Ticket with observer',     // add_cc_to_observer = true
+                    'Ticket with multiple to',  // add_to_to_observer = true
                 ]
             ],
         ];
@@ -937,6 +941,8 @@ PLAINTEXT,
                 $names[] = $name;
             }
 
+            sort($names);
+            sort($actor_specs['tickets_names']);
             $this->array($names)->isIdenticalTo($actor_specs['tickets_names']);
         }
 
@@ -984,6 +990,8 @@ PLAINTEXT,
         foreach ($iterator as $data) {
             $filenames[$data['filename']] = $data['mime'];
         }
+        ksort($filenames);
+        ksort($expected_docs);
         $this->array($filenames)->isIdenticalTo($expected_docs);
 
         $this->integer(count($iterator))->isIdenticalTo(count($expected_docs));

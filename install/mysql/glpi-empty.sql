@@ -4265,6 +4265,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `use_mail_date` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `requester_field` int NOT NULL DEFAULT '0',
+  `add_to_to_observer` tinyint NOT NULL DEFAULT '1',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
   `create_user_from_email` tinyint NOT NULL DEFAULT '0',
