@@ -1016,17 +1016,14 @@ class DBmysql
         $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = trim($query);
-            if ($query != '') {
-                $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                $this->doQuery($query);
-                if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
-                    echo ' ';
-                    Html::glpi_flush();
-                }
+            $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
+            $this->doQuery($query);
+            if (!isCommandLine()) {
+              // Flush will prevent proxy to timeout as it will receive data.
+              // Flush requires a content to be sent, so we sent spaces as multiple spaces
+              // will be shown as a single one on browser.
+                echo ' ';
+                Html::glpi_flush();
             }
         }
 
@@ -1049,7 +1046,11 @@ class DBmysql
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 
-        return preg_split('/;\s*$/m', $sql_query);
+        $queries = preg_split('/;\s*$/m', $sql_query);
+
+        $queries = array_filter($queries, static fn ($query) => \trim($query) !== '');
+
+        return $queries;
     }
 
     /**
