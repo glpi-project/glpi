@@ -715,20 +715,22 @@ class ITILFollowup extends CommonDBChild
             ]
         ];
 
-        $tab[] = [
-            'id'                 => '140',
-            'table'              => static::getTable(),
-            'field'              => 'date',
-            'name'               => _n('Latest date', 'Latest dates', 1),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'jointype'           => 'itemtype_item',
-                'condition'          => $followup_condition
-            ],
-            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')'
-        ];
+        if ($itemtype === 'Ticket') {
+            $tab[] = [
+                'id'                 => '139',
+                'table'              => static::getTable(),
+                'field'              => 'date',
+                'name'               => _n('Latest date', 'Latest dates', 1),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'jointype'           => 'itemtype_item',
+                    'condition'          => $followup_condition
+                ],
+                'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')'
+            ];
+        }
 
         $tab[] = [
             'id'                 => '27',

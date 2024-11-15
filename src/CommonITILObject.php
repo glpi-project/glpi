@@ -4272,7 +4272,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * @since 0.85
      **/
-    public function getSearchOptionsSolution()
+    public function getSearchOptionsSolution($itemtype = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -4359,19 +4359,21 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        $tab[] = [
-            'id'                 => '139',
-            'table'              => ITILSolution::getTable(),
-            'field'              => 'date',
-            'name'               => _n('Latest date', 'Latest dates', 1),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'jointype'           => 'itemtype_item',
-            ],
-            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date_creation') . ')'
-        ];
+        if ($itemtype === 'Ticket') {
+            $tab[] = [
+                'id'                 => '140',
+                'table'              => ITILSolution::getTable(),
+                'field'              => 'date_creation',
+                'name'               => _n('Latest date', 'Latest dates', 1),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'jointype'           => 'itemtype_item',
+                ],
+                'computation' => 'MAX( ' . $DB->quoteName('TABLE.date_creation') . ')'
+            ];
+        }
 
         return $tab;
     }

@@ -995,20 +995,22 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ]
         ];
 
-        $tab[] = [
-            'id'                 => '138',
-            'table'              => static::getTable(),
-            'field'              => 'date',
-            'name'               => _n('Latest date', 'Latest dates', 1),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => $task_condition
-            ],
-            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')'
-        ];
+        if ($itemtype === 'Ticket') {
+            $tab[] = [
+                'id'                 => '141',
+                'table'              => static::getTable(),
+                'field'              => 'date',
+                'name'               => _n('Latest date', 'Latest dates', 1),
+                'datatype'           => 'datetime',
+                'massiveaction'      => false,
+                'forcegroupby'       => true,
+                'joinparams'         => [
+                    'jointype'           => 'child',
+                    'condition'          => $task_condition
+                ],
+                'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')'
+            ];
+        }
 
         $tab[] = [
             'id'                 => '33',
