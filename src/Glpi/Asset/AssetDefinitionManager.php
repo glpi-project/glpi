@@ -177,7 +177,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         return $names;
     }
 
-    protected function boostrapConcreteClass(AbstractDefinition $definition): void
+    public function boostrapConcreteClass(AbstractDefinition $definition): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

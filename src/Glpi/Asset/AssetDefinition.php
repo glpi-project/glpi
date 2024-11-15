@@ -305,6 +305,9 @@ final class AssetDefinition extends AbstractDefinition
                 );
                 $has_errors = true;
             } else {
+                $new_capacities = $input['capacities'] ?? [];
+                $old_capacities = json_decode($this->fields['capacities'] ?? '[]', associative: true) ?? [];
+                $input['_enabled_capacities'] = array_diff($new_capacities, $old_capacities);
                 $input['capacities'] = json_encode($input['capacities']);
             }
         }
@@ -331,6 +334,23 @@ final class AssetDefinition extends AbstractDefinition
                 'num'      => $field,
                 'users_id' => 0,
             ]);
+        }
+
+        $new_capacities = $this->input['_enabled_capacities'] ?? [];
+        if (!empty($new_capacities)) {
+            AssetDefinitionManager::getInstance()->clearDefinitionsCache();
+        }
+        AssetDefinitionManager::getInstance()->boostrapConcreteClass($this);
+
+        foreach ($new_capacities as $capacity_classname) {
+            $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
+            if ($capacity === null) {
+                // can be null if provided by a plugin that is no longer active
+                continue;
+            }
+            // Manually bootstrap the new capacity
+            $capacity->onClassBootstrap($this->getAssetClassName());
+            $capacity->onCapacityEnabled($this->getAssetClassName());
         }
 
         parent::post_addItem();
@@ -364,8 +384,7 @@ final class AssetDefinition extends AbstractDefinition
             $enabled_capacities = array_diff($new_capacities, $old_capacities);
             $rights_to_remove = [];
 
-            if (!empty($enabled_capacities)) {
-                // Clear the cache to ensure that the new capacities are taken into account immediately
+            if (!empty($enabled_capacities) || !empty($removed_capacities)) {
                 AssetDefinitionManager::getInstance()->clearDefinitionsCache();
             }
 

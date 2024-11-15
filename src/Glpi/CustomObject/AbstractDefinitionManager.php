@@ -95,7 +95,7 @@ abstract class AbstractDefinitionManager
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    protected function boostrapConcreteClass(AbstractDefinition $definition): void
+    public function boostrapConcreteClass(AbstractDefinition $definition): void
     {
         // Intentionally left blank
     }
