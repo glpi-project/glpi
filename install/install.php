@@ -418,7 +418,6 @@ function step8()
         ]
     );
 
-    $_SESSION['is_installing'] = false;
     Session::destroy(); // Remove session data (debug mode for instance) set by web installation
 
     TemplateRenderer::getInstance()->display('install/step8.html.twig');
