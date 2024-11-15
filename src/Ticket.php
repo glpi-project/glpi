@@ -3438,9 +3438,9 @@ JAVASCRIPT;
             ]
         ];
 
-        $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd('Ticket'));
+        $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, TicketTask::rawSearchOptionsToAdd('Ticket'));
+        $tab = array_merge($tab, TicketTask::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, $this->getSearchOptionsStats());
 
@@ -3599,7 +3599,7 @@ JAVASCRIPT;
                 'additionalfields'   => ['tickets_id_2']
             ];
 
-            $tab = array_merge($tab, $this->getSearchOptionsSolution('Ticket'));
+            $tab = array_merge($tab, $this->getSearchOptionsSolution(get_class($this)));
 
             if (Session::haveRight('ticketcost', READ)) {
                 $tab = array_merge($tab, TicketCost::rawSearchOptionsToAdd());
