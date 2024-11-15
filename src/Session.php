@@ -171,6 +171,11 @@ class Session
                     self::loadLanguage();
 
                     if ($auth->password_expired) {
+                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
+                        // fail the session check (as we use a special partial session here without profiles) and thus
+                        // destroy the session (which would make the "password expired" form impossible to submit as the
+                        // csrf check would fail as the session data would be empty).
+                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
                        // Do not init profiles, as user has to update its password to be able to use GLPI
                         return;
