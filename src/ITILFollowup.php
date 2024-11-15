@@ -715,7 +715,7 @@ class ITILFollowup extends CommonDBChild
             ]
         ];
 
-        if ($itemtype === 'Ticket') {
+        if ($itemtype === Ticket::class) {
             $tab[] = [
                 'id'                 => '139',
                 'table'              => static::getTable(),

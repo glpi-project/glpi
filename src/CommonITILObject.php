@@ -4359,7 +4359,7 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        if ($itemtype === 'Ticket') {
+        if ($itemtype === Ticket::class) {
             $tab[] = [
                 'id'                 => '140',
                 'table'              => ITILSolution::getTable(),

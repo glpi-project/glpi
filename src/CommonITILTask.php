@@ -995,7 +995,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ]
         ];
 
-        if ($itemtype === 'Ticket') {
+        if ($itemtype === Ticket::class) {
             $tab[] = [
                 'id'                 => '141',
                 'table'              => static::getTable(),
