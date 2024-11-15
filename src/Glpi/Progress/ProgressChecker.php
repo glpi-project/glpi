@@ -49,9 +49,14 @@ final class ProgressChecker
         $this->save($progress);
     }
 
+    public function hasProgress(string $key): bool
+    {
+        return isset($_SESSION['progress'][$key]) && $_SESSION['progress'][$key] instanceof SessionProgress;
+    }
+
     public function getCurrentProgress(string $key): SessionProgress
     {
-        if (!isset($_SESSION['progress'][$key])) {
+        if (!$this->hasProgress($key)) {
             throw new \RuntimeException(\sprintf(
                 "Cannot find a progress bar for key \"%s\".",
                 $key,
