@@ -2115,11 +2115,6 @@ abstract class CommonITILObject extends CommonDBTM
             PendingReason_Item::deleteForItem($this);
         }
 
-        // Update of the global validation status if the validation percentage has changed
-        if (isset($input['validation_percent'])) {
-            $input['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
-        }
-
         return $input;
     }
 
@@ -2127,6 +2122,12 @@ abstract class CommonITILObject extends CommonDBTM
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
+
+        // Update of the global validation status if the validation percentage has changed
+        if (isset($this->input['validation_percent']) && !isset($this->input['post_update'])) {
+            $this->input['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
+            $upd = $this->update(array_merge($this->input, ['post_update' => true]));
+        }
 
         // handle actors changes
         $this->updateActors();
