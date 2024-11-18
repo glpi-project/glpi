@@ -320,7 +320,7 @@ class ProjectCost extends CommonDBChild
             'ORDER'  => ['begin_date']
         ]);
 
-        $rand   = random_int();
+        $rand   = random_int(0, 2**32);
 
         if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";

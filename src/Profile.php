@@ -799,7 +799,7 @@ class Profile extends CommonDBTM
             $new     = true;
         }
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         $this->showFormHeader($options);
 
@@ -3802,7 +3802,7 @@ class Profile extends CommonDBTM
         $param['nonone']  = false;
         $param['noread']  = false;
         $param['nowrite'] = false;
-        $param['rand']    = random_int();
+        $param['rand']    = random_int(0, 2**32);
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -3845,7 +3845,7 @@ class Profile extends CommonDBTM
 
         $p['name']  = 'profiles_id';
         $p['value'] = '';
-        $p['rand']  = random_int();
+        $p['rand']  = random_int(0, 2**32);
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -4256,7 +4256,7 @@ class Profile extends CommonDBTM
         $param['value']         = '';
         $param['max_per_line']  = 10;
         $param['check_all']     = false;
-        $param['rand']          = random_int();
+        $param['rand']          = random_int(0, 2**32);
         $param['zero_on_empty'] = true;
         $param['display']       = true;
         $param['check_method']  = static fn ($element, $field) => (($field & $element) === $element);

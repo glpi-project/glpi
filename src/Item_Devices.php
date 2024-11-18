@@ -627,7 +627,7 @@ class Item_Devices extends CommonDBRelation
                   && $item->canEdit($ID)
                   && Session::haveRightsOr('device', [UPDATE, PURGE]));
         echo "<div class='spaced table-responsive'>";
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         if ($canedit) {
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                   action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
@@ -1001,7 +1001,7 @@ class Item_Devices extends CommonDBRelation
                     $peer->getFromDB($link[$fk]);
                 }
 
-                $peer_group   = $peer_type . '_' . $link[$fk] . '_' . random_int();
+                $peer_group   = $peer_type . '_' . $link[$fk] . '_' . random_int(0, 2**32);
                 $current_row->setHTMLID($peer_group);
 
                 if ($options['canedit']) {
@@ -1071,7 +1071,7 @@ class Item_Devices extends CommonDBRelation
                                     $percent = round(100 * $this->fields[$field] / $device->fields[$attributs['max']]);
                                     $message = sprintf(__('%1$s (%2$d%%) '), Html::formatNumber($this->fields[$field], false, 0), $percent);
                                 }
-                                $content = Html::progressBar("percent" . random_int(), [
+                                $content = Html::progressBar("percent" . random_int(0, 2**32), [
                                     'create'  => true,
                                     'percent' => $percent,
                                     'message' => htmlescape($message),

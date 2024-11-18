@@ -286,7 +286,7 @@ class Controller extends CommonGLPI
 
         $url      = $plugin['installation_url'];
         $filename = basename(parse_url($url, PHP_URL_PATH));
-        $dest     = GLPI_TMP_DIR . '/' . random_int() . '.' . $filename;
+        $dest     = GLPI_TMP_DIR . '/' . random_int(0, 2**32) . '.' . $filename;
 
         if (!$api->downloadArchive($url, $dest, $this->plugin_key, false)) {
             $exception = new HttpException(500);

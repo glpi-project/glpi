@@ -6084,7 +6084,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
 
                             if ($html_output && (\Toolbox::strlen($plaintext) > $CFG_GLPI['cut'])) {
-                                $rand = random_int();
+                                $rand = random_int(0, 2**32);
                                 $popup_params = [
                                     'display'       => false,
                                     'awesome-class' => 'fa-comments',

@@ -100,7 +100,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             return false;
         }
         $canedit = $item->canEdit($instID);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = self::getListForItem($item);
         $number = count($iterator);
@@ -135,7 +135,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
         if ($number) {
             echo "<div class='spaced'>";
             if ($canedit) {
-                $rand     = random_int();
+                $rand     = random_int(0, 2**32);
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
                     'container'     => 'mass' . __CLASS__ . $rand

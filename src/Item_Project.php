@@ -98,7 +98,7 @@ class Item_Project extends CommonDBRelation
             return false;
         }
         $canedit = $project->canEdit($instID);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $types_iterator = self::getDistinctTypes($instID);
         $number = count($types_iterator);

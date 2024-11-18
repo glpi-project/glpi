@@ -129,7 +129,7 @@ final class IllustrationManagerTest extends GLPITestCase
 
     public function testGetAllIllustrationNames(): void
     {
-        $virtual_dir = 'glpi' . random_int();
+        $virtual_dir = 'glpi' . random_int(0, 2**32);
 
         // Arrange: create a virtual file system and use it as our base directory
         vfsStream::setup($virtual_dir, null, [

@@ -745,7 +745,7 @@ HTML,
     public function testGetAnswerAnchors(): void
     {
         // Create test KB with multiple headers
-        $kb_name = 'Test testGetAnswerAnchors' . random_int();
+        $kb_name = 'Test testGetAnswerAnchors' . random_int(0, 2**32);
         $input = [
             'name' => $kb_name,
             'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>'

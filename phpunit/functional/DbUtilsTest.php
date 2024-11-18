@@ -1580,7 +1580,7 @@ class DbUtilsTest extends DbTestCase
     #[DataProvider('fixItemtypeCaseProvider')]
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
-        $name = 'glpi' . random_int();
+        $name = 'glpi' . random_int(0, 2**32);
         vfsStream::setup(
             $name,
             null,

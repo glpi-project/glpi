@@ -1317,7 +1317,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (count($found_kbitem)) {
-            $rand = random_int();
+            $rand = random_int(0, 2**32);
             $kbitem = new KnowbaseItem();
             $kbitem->getFromDB(reset($found_kbitem)['id']);
             $ret .= "<div class='faqadd_block'>";

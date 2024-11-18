@@ -226,7 +226,7 @@ class Profile_User extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'        => 'mass' . __CLASS__ . random_int(),
+                'container'        => 'mass' . __CLASS__ . random_int(0, 2**32),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ],
         ]);
@@ -249,7 +249,7 @@ class Profile_User extends CommonDBRelation
         }
 
         $canedit     = $entity->canEdit($ID);
-        $rand        = random_int();
+        $rand        = random_int(0, 2**32);
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
@@ -437,7 +437,7 @@ TWIG, $avatar_params) . $username;
 
         $ID      = $prof->fields['id'];
         $canedit = Session::haveRightsOr("user", [CREATE, UPDATE, DELETE, PURGE]);
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         if (!$prof->can($ID, READ)) {
             return false;
         }

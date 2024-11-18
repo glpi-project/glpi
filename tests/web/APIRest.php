@@ -3100,7 +3100,7 @@ class APIRest extends atoum
     public function test_ActorUpdate()
     {
         $headers = ['Session-Token' => $this->session_token];
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         // Group used for our tests
         $groups_id = getItemByTypeName("Group", "_test_group_1", true);

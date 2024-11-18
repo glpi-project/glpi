@@ -169,7 +169,7 @@ class FirmwareTest extends AbstractInventoryAsset
         //add lockedfield to check for DB warning on manage DeviceFirmware lockedField
         $this->assertGreaterThan(
             0,
-            (int)$DB->insert("glpi_lockedfields", ["field" => random_int(), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
+            (int)$DB->insert("glpi_lockedfields", ["field" => random_int(0, 2**32), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
         );
 
         //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares

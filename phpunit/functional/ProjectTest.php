@@ -331,7 +331,7 @@ class ProjectTest extends DbTestCase
     public function testClone()
     {
        // Create a basic project
-        $project_name = 'Project testClone' . random_int();
+        $project_name = 'Project testClone' . random_int(0, 2**32);
         $project_input = [
             'name'     => $project_name,
             'priority' => 5,
@@ -340,12 +340,12 @@ class ProjectTest extends DbTestCase
         $projects_id = getItemByTypeName("Project", $project_name, true);
 
         // Create a user
-        $user_name = 'Project testClone - User' . random_int();
+        $user_name = 'Project testClone - User' . random_int(0, 2**32);
         $this->createItems('User', [['name' => $user_name]]);
         $users_id = getItemByTypeName("User", $user_name, true);
 
         // Create a group
-        $group_name = 'Project testClone - Group' . random_int();
+        $group_name = 'Project testClone - Group' . random_int(0, 2**32);
         $this->createItems('Group', [['name' => $group_name]]);
         $groups_id = getItemByTypeName("Group", $group_name, true);
 
@@ -407,7 +407,7 @@ class ProjectTest extends DbTestCase
         $this->assertEquals($team, $team_clone);
 
         // Add a task to project
-        $task1_name = 'Project testClone - Task' . random_int();
+        $task1_name = 'Project testClone - Task' . random_int(0, 2**32);
         $task1 = $this->createItem('ProjectTask', [
             'projects_id' => $projects_id,
             'name'        => $task1_name,
@@ -415,7 +415,7 @@ class ProjectTest extends DbTestCase
         $task1_id = $task1->fields['id'];
 
         // Add a task, child of the previous task
-        $task2_name = 'Project testClone - Task' . random_int();
+        $task2_name = 'Project testClone - Task' . random_int(0, 2**32);
         $task2 = $this->createItem('ProjectTask', [
             'projects_id'     => $projects_id,
             'name'            => $task2_name,

@@ -630,7 +630,7 @@ class ConfigTest extends DbTestCase
             $user = new \User();
             $user_id = $user->add(
                 [
-                    'name'     => 'test_user_' . random_int(),
+                    'name'     => 'test_user_' . random_int(0, 2**32),
                     'authtype' => $authtype,
                 ]
             );

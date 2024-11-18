@@ -270,7 +270,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $value = $max_rate;
         }
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         $out = "<div id='rateit_$rand' class='rateit'></div>";
         $out .= Html::scriptBlock("
             $(function () {

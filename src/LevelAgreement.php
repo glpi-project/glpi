@@ -328,7 +328,7 @@ abstract class LevelAgreement extends CommonDBChild
         $instID   = $slm->fields['id'];
         $la       = new static();
         $calendar = new Calendar();
-        $rand     = random_int();
+        $rand     = random_int(0, 2**32);
         $canedit  = $slm->canEdit($instID) && Session::getCurrentInterface() === 'central';
 
         if ($canedit) {
@@ -413,7 +413,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . random_int(),
+                'container'     => 'mass' . static::class . random_int(0, 2**32),
             ]
         ]);
     }
@@ -473,7 +473,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . RuleTicket::class . random_int(),
+                'container'     => 'mass' . RuleTicket::class . random_int(0, 2**32),
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
                     'purge'  => _x('button', 'Delete permanently')

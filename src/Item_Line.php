@@ -163,7 +163,7 @@ class Item_Line extends CommonDBRelation
         global $CFG_GLPI, $DB;
 
         $ID = $line->fields['id'];
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         if (
             !$line->getFromDB($ID)
@@ -325,7 +325,7 @@ class Item_Line extends CommonDBRelation
 
         $itemtype = $item::getType();
         $ID = $item->fields['id'];
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         if (
             !$item->getFromDB($ID)

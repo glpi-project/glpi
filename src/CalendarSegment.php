@@ -364,7 +364,7 @@ class CalendarSegment extends CommonDBChild
         }
 
         $canedit = $calendar->can($ID, UPDATE);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'day', 'begin', 'end'],

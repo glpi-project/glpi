@@ -1149,7 +1149,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         self::dropdown(['entity' => $entities_id,
             'rand'   => $rand,
             'value' => $value

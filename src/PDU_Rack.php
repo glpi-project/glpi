@@ -236,7 +236,7 @@ class PDU_Rack extends CommonDBRelation
         $rack = new Rack();
         $rack->getFromDB($this->fields['racks_id']);
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='dropdown_pdus_id$rand'>" . htmlescape(PDU::getTypeName(1)) . "</label></td>";
@@ -311,7 +311,7 @@ class PDU_Rack extends CommonDBRelation
 
         $pdu     = new PDU();
         $canedit = $rack->canEdit($rack->getID());
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
         $items   = $DB->request([
             'SELECT' => ['id', 'pdus_id', 'side', 'position'],
             'FROM'   => self::getTable(),
@@ -470,7 +470,7 @@ class PDU_Rack extends CommonDBRelation
     public static function showFirstForm($racks_id = 0)
     {
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         echo "<label for='dropdown_sub_form$rand'>" . __s("The pdu will be") . "</label>&nbsp;";
         Dropdown::showFromArray('sub_form', [
             'racked'    => __('racked'),
@@ -511,7 +511,7 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand  = random_int();
+        $rand  = random_int(0, 2**32);
         $num_u = $rack->fields['number_units'];
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
@@ -591,7 +591,7 @@ JAVASCRIPT;
                     $tip .= "</span>";
 
                     $picture_c = "";
-                    $item_rand = random_int();
+                    $item_rand = random_int(0, 2**32);
 
                     if ($picture) {
                         $picture_url = Toolbox::getPictureUrl($picture);

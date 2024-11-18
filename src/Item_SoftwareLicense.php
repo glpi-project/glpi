@@ -557,7 +557,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<tr class='tab_bg_2 center'>";
             echo "<td>";
 
-            $rand = random_int();
+            $rand = random_int(0, 2**32);
             Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
                 'value'                 => 'Computer',
                 'rand'                  => $rand,
@@ -762,7 +762,7 @@ JAVASCRIPT;
         ];
         $iterator = $DB->request($criteria);
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         if ($data = $iterator->current()) {
             if ($canedit) {

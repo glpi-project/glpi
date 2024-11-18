@@ -1418,7 +1418,7 @@ class Contract extends CommonDBTM
             'name'           => 'contracts_id',
             'value'          => '',
             'entity'         => '',
-            'rand'           => random_int(),
+            'rand'           => random_int(0, 2**32),
             'entity_sons'    => false,
             'used'           => [],
             'nochecklimit'   => false,

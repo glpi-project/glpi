@@ -113,7 +113,7 @@ class Appliance_Item extends CommonDBRelation
         global $DB;
 
         $ID = $appliance->fields['id'];
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         if (
             !$appliance->getFromDB($ID)
@@ -239,7 +239,7 @@ class Appliance_Item extends CommonDBRelation
         }
 
         $canedit = $item->can($ID, UPDATE);
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         $iterator = self::getListForItem($item);
 

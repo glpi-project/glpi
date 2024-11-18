@@ -1140,7 +1140,7 @@ class MailCollector extends CommonDBTM
 
         $original = $string;
 
-        $br_marker = '==' . random_int() . '==';
+        $br_marker = '==' . random_int(0, 2**32) . '==';
 
        // Wrap content for blacklisted items
         $cleaned_count = 0;
@@ -2149,7 +2149,7 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
         }
 
         if ($rand === null) {
-            $rand = random_int();
+            $rand = random_int(0, 2**32);
         }
 
         Dropdown::showFromArray($name, $sizes, ['value' => $value, 'rand' => $rand]);

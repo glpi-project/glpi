@@ -497,7 +497,7 @@ abstract class CommonITILCost extends CommonDBChild
             'ORDER'  => 'begin_date'
         ]);
 
-        $rand   = random_int();
+        $rand   = random_int(0, 2**32);
 
         if (
             $canedit

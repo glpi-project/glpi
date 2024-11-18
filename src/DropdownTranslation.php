@@ -350,7 +350,7 @@ class DropdownTranslation extends CommonDBChild
          */
         global $DB;
 
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
         $canedit = $item->can($item->getID(), UPDATE);
 
         if ($canedit) {

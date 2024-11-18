@@ -178,7 +178,7 @@ class DocumentType extends CommonDropdown
 
         $p = [
             'display' => true,
-            'rand'    => random_int(),
+            'rand'    => random_int(0, 2**32),
         ];
 
        //merge default options with options parameter

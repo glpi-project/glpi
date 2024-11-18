@@ -455,7 +455,7 @@ class UserTest extends \DbTestCase
     {
         $this->login();
         $user = new \User();
-        $username = 'prepare_for_update_' . random_int();
+        $username = 'prepare_for_update_' . random_int(0, 2**32);
         $user_id = $user->add(
             [
                 'name'         => $username,
@@ -518,7 +518,7 @@ class UserTest extends \DbTestCase
             $messages = $row['messages'] ?? null;
 
             $user = new \User();
-            $username = 'prepare_for_update_' . random_int();
+            $username = 'prepare_for_update_' . random_int(0, 2**32);
             $user_id = $user->add(
                 [
                     'name' => $username,
@@ -1116,7 +1116,7 @@ class UserTest extends \DbTestCase
             $expected_has_password_expire = $row['expected_has_password_expire'];
 
             $user = new \User();
-            $username = 'prepare_for_update_' . random_int();
+            $username = 'prepare_for_update_' . random_int(0, 2**32);
             $user_id = $user->add(
                 [
                     'date_creation' => $creation_date,
@@ -1245,7 +1245,7 @@ class UserTest extends \DbTestCase
         for ($i = 1; $i < 100; $i += 10) {
             $user_id = $user->add(
                 [
-                    'name'     => 'cron_user_' . random_int(),
+                    'name'     => 'cron_user_' . random_int(0, 2**32),
                     'authtype' => \Auth::DB_GLPI,
                 ]
             );
@@ -1938,7 +1938,7 @@ class UserTest extends \DbTestCase
         $user = $this->createItem(
             \User::class,
             [
-                'name'                  => __FUNCTION__ . (string) random_int(),
+                'name'                  => __FUNCTION__ . (string) random_int(0, 2**32),
                 'savedsearches_pinned'  => $initial_db_value,
             ]
         );

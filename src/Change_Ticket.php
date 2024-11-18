@@ -218,7 +218,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         }
 
         $canedit = $change->canEdit($ID);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -319,7 +319,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         }
 
         $canedit = $ticket->canEdit($ID);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT'          => [

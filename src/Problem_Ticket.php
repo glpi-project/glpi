@@ -202,7 +202,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
 
         $canedit = $problem->canEdit($ID);
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         $tickets = self::getProblemTicketsData($ID);
         $used    = [];
@@ -277,7 +277,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
 
         $canedit = $ticket->can($ID, UPDATE);
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         $problems = self::getTicketProblemsData($ID);
         $used     = [];

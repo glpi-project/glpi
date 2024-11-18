@@ -300,7 +300,7 @@ class Session extends \DbTestCase
 
         $this->login();
         $user = new \User();
-        $username = 'test_must_change_pass_' . random_int();
+        $username = 'test_must_change_pass_' . random_int(0, 2**32);
         $user_id = (int)$user->add([
             'name'         => $username,
             'password'     => 'test',

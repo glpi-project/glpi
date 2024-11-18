@@ -179,7 +179,7 @@ class Domain_Item extends CommonDBRelation
             return false;
         }
         $canedit = $domain->can($instID, UPDATE);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT'    => 'itemtype',
@@ -373,7 +373,7 @@ TWIG, $twig_params);
         }
 
         $canedit      = $item->canAddItem('Domain');
-        $rand         = random_int();
+        $rand         = random_int(0, 2**32);
         $is_recursive = $item->isRecursive();
 
         $criteria = [

@@ -395,7 +395,7 @@ class DomainRecord extends CommonDBChild
         }
         $canedit = $domain->can($instID, UPDATE)
                  || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT'    => 'record.*',

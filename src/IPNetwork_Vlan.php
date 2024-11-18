@@ -104,7 +104,7 @@ class IPNetwork_Vlan extends CommonDBRelation
         }
 
         $canedit = $port->canEdit($ID);
-        $rand    = random_int();
+        $rand    = random_int(0, 2**32);
 
         $iterator = $DB->request([
             'SELECT'    => [

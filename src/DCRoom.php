@@ -301,7 +301,7 @@ class DCRoom extends CommonDBTM
         global $DB;
 
         $ID = $datacenter->getID();
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         if (
             !$datacenter->getFromDB($ID)

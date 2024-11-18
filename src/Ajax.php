@@ -173,7 +173,7 @@ class Ajax
             $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
         }
 
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
 
         $domid  = htmlescape($domid);
         $url    = htmlescape($url);
@@ -291,7 +291,7 @@ JAVASCRIPT;
        // Compute tabs ids.
         $active_id = null;
         foreach ($tabs as $key => $val) {
-            $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), random_int());
+            $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), random_int(0, 2**32));
 
             $tabs[$key]['id'] = $id;
 

@@ -47,7 +47,7 @@ if (
     && isset($_POST["actortype"])
     && isset($_POST["itemtype"])
 ) {
-    $rand = random_int();
+    $rand = random_int(0, 2**32);
     $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
 
     /** @var CommonITILObject $item */

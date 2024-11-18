@@ -576,7 +576,7 @@ class DisplayPreference extends CommonDBTM
         } else {
             $specific_actions[ __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'reset_to_default'] = _x('button', 'Reset to default');
         }
-        $rand = random_int();
+        $rand = random_int(0, 2**32);
         $massiveactionparams = [
             'width'            => 400,
             'height'           => 200,
