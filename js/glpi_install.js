@@ -97,6 +97,7 @@
                     success_element.querySelector('button').removeAttribute('disabled');
                 }
             })
+            .catch(err => message(message_element, `Request error:\n${err.message||err.toString()}`))
             .finally(() => {
                 request_running = false;
             });
