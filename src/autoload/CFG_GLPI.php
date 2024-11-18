@@ -269,7 +269,7 @@ $CFG_GLPI["contract_types"]               = [
     'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
     'Software', 'SoftwareLicense', 'Certificate',
     'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-    'DatabaseInstance',
+    'DatabaseInstance', 'User',
 ];
 
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
@@ -462,7 +462,7 @@ $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
-$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'User'];
 
 $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 

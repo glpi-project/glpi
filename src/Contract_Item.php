@@ -550,13 +550,17 @@ TWIG, $twig_params);
                 $entry['serial'] = $objdata['serial'] ?? '-';
                 $entry['otherserial'] = $objdata['otherserial'] ?? '-';
 
-                if (!isset($state_cache[$objdata['states_id']])) {
-                    $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
-                        "glpi_states",
-                        $objdata['states_id']
-                    );
+                if (isset($objdata['states_id'])) {
+                    if (!isset($state_cache[$objdata['states_id']])) {
+                        $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
+                            "glpi_states",
+                            $objdata['states_id']
+                        );
+                    }
+                    $entry['status'] = $state_cache[$objdata['states_id']];
+                } else {
+                    $entry['status'] = '';
                 }
-                $entry['status'] = $state_cache[$objdata['states_id']];
                 $entries[] = $entry;
             }
         }

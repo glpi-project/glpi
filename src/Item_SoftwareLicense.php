@@ -664,32 +664,53 @@ JAVASCRIPT;
                     'glpi_items_softwarelicenses.is_deleted'     => 0
                 ]
             ];
-            if ($DB->fieldExists($itemtable, 'serial')) {
-                $query['SELECT'][] = $itemtable . '.serial';
+            if ($itemtype == 'User') {
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "serial");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "otherserial");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "username");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(-1), "userid");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "userrealname");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "userfirstname");
             } else {
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".serial");
-            }
-            if ($DB->fieldExists($itemtable, 'otherserial')) {
-                $query['SELECT'][] = $itemtable . '.otherserial';
-            } else {
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".otherserial");
-            }
-            if ($DB->fieldExists($itemtable, 'users_id')) {
-                $query['SELECT'][] = 'glpi_users.name AS username';
-                $query['SELECT'][] = 'glpi_users.id AS userid';
-                $query['SELECT'][] = 'glpi_users.realname AS userrealname';
-                $query['SELECT'][] = 'glpi_users.firstname AS userfirstname';
-                $query['LEFT JOIN']['glpi_users'] = [
-                    'FKEY'   => [
-                        $itemtable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
-                ];
-            } else {
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".username");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userid");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userrealname");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userfirstname");
+                if ($DB->fieldExists($itemtable, 'serial')) {
+                    $query['SELECT'][] = $itemtable . '.serial';
+                } else {
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".serial")
+                    );
+                }
+                if ($DB->fieldExists($itemtable, 'otherserial')) {
+                    $query['SELECT'][] = $itemtable . '.otherserial';
+                } else {
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".otherserial")
+                    );
+                }
+                if ($DB->fieldExists($itemtable, 'users_id')) {
+                    $query['SELECT'][] = 'glpi_users.name AS username';
+                    $query['SELECT'][] = new QueryExpression('Coalesce(glpi_users.id, -1)', 'userid');
+                    $query['SELECT'][] = 'glpi_users.realname AS userrealname';
+                    $query['SELECT'][] = 'glpi_users.firstname AS userfirstname';
+                    $query['LEFT JOIN']['glpi_users'] = [
+                        'FKEY'   => [
+                            $itemtable     => 'users_id',
+                            'glpi_users'   => 'id'
+                        ]
+                    ];
+                } else {
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".username")
+                    );
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue(-1) . " AS " . $DB->quoteName($itemtable . ".userid")
+                    );
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userrealname")
+                    );
+                    $query['SELECT'][] = new QueryExpression(
+                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userfirstname")
+                    );
+                }
             }
             $entity_fkey  = Entity::getForeignKeyField();
             $entity_table = Entity::getTable();
