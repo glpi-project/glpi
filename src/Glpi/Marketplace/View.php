@@ -305,11 +305,6 @@ class View extends CommonGLPI
             $nb_plugins
         );
 
-        // Clear all output buffers
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
     }
