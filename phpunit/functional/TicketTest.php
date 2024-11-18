@@ -7479,4 +7479,66 @@ HTML
         $input['itilcategories_id'] = $category->getID();
         $this->assertSame($expected, \Ticket::isCategoryValid($input));
     }
+
+    public function testGlobalValidationUpdate(): void
+    {
+        $this->login();
+        $uid1 = getItemByTypeName('User', 'glpi', true);
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Global_Validation_Update',
+            'content' => 'Global_Validation_Update',
+            'validation_percent' => 100,
+        ]);
+
+        $ticketobj = new \Ticket();
+
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+
+        $v1_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'users_id_validate' => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v1_id->getID(), [
+            'status'  => \CommonITILValidation::ACCEPTED,
+        ]);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 0,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 50,
+        ]);
+
+        $v2_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'users_id_validate' => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v2_id->getID(), [
+            'status'  => \CommonITILValidation::WAITING,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::WAITING, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 100,
+        ]);
+
+        $v3_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'users_id_validate' => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v3_id->getID(), [
+            'status'  => \CommonITILValidation::REFUSED,
+        ]);
+
+
+        $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
+    }
 }

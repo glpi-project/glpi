@@ -2493,6 +2493,12 @@ abstract class CommonITILObject extends CommonDBTM
             $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
         }
 
+        // Update of the global validation status if the validation percentage has changed
+        if (in_array("validation_percent", $this->updates)) {
+            $this->updates[] = 'global_validation';
+            $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
+        }
+
        //Look for reopening
         $statuses = array_merge(
             $this->getSolvedStatusArray(),
