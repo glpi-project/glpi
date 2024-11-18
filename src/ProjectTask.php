@@ -1430,8 +1430,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 $projecttask->getFromDB($data['id']);
                 foreach ($projecttask->getTeam() as $projecttaskteam) {
                     $item = getItemForItemtype($projecttaskteam['itemtype']);
-                    echo "<a href='" . $item->getFormURLWithID($projecttaskteam['items_id']) . "'>" .
-                        $projecttaskteam['display_name'] . '</a><br>';
+                    echo "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>" .
+                        htmlescape($projecttaskteam['display_name']) . '</a><br>';
                 }
                 echo "</td></tr>";
             }
