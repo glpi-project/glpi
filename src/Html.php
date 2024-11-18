@@ -707,9 +707,17 @@ class Html
      *
      *
      * @return string|void Generated HTML if `display` param is true, void otherwise.
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function progressBar($id, array $options = [])
     {
+        Toolbox::deprecated(
+            '`Html::progressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $params = [
             'create'    => false,
             'message'   => null,
@@ -810,12 +818,17 @@ HTML;
      * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
      * @return string|void
+     *
      * @deprecated 11.0.0
-     * @see Html::progressBar()
-     **/
+     */
     public static function createProgressBar($msg = null, array $options = [])
     {
-        Toolbox::deprecated('Html::createProgressBar is deprecated. Use Html::progressBar instead.');
+        Toolbox::deprecated(
+            '`Html::createProgressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $options = array_replace([
             'create' => true,
             'display' => true
@@ -834,9 +847,16 @@ HTML;
      * @param string $msg message under the bar
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function changeProgressBarMessage($msg = "&nbsp;")
     {
+        Toolbox::deprecated(
+            '`Html::changeProgressBarMessage()` is deprecated.'
+            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         self::progressBar('doaction_progress', ['message' => $msg]);
         self::glpi_flush();
     }
@@ -850,9 +870,16 @@ HTML;
      * @param string $msg   message inside the bar (default is %)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function changeProgressBarPosition($crt, $tot, $msg = "")
     {
+        Toolbox::deprecated(
+            '`Html::changeProgressBarPosition()` is deprecated.'
+            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $options = [];
 
         if (!$tot) {
@@ -883,9 +910,17 @@ HTML;
      *            - forcepadding : boolean force str_pad to force refresh (default true)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayProgressBar($width, $percent, $options = [])
     {
+        Toolbox::deprecated(
+            '`Html::displayProgressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $param['title']        = __('Progress');
         $param['simple']       = false;
         $param['forcepadding'] = true;
@@ -1982,18 +2017,15 @@ TWIG,
      * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
      * This attempts to push current output all the way to the browser with a few caveats.
      * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function glpi_flush()
     {
-
-        if (
-            function_exists("ob_flush")
-            && (ob_get_length() !== false)
-        ) {
-            ob_flush();
-        }
-
-        flush();
+        trigger_error(
+            '`Html::glpi_glush()` no longer has any effect.',
+            E_USER_WARNING
+        );
     }
 
 
