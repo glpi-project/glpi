@@ -940,6 +940,7 @@ class Session
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
                   strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
+                  // TODO: how to check current route here?
                   || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
                   || defined('TU_USER')
               )

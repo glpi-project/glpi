@@ -112,6 +112,7 @@ final class IndexController extends AbstractController
         //Try to detect GLPI agent calls
         $rawdata = file_get_contents("php://input");
         if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            //FIXME: how to do the same with controllers? The only way I see is a redirect
             include_once(GLPI_ROOT . '/front/inventory.php');
             return;
         }
