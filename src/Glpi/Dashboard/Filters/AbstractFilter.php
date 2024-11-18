@@ -129,7 +129,7 @@ abstract class AbstractFilter
         bool $filled = false
     ): string {
 
-        $rand  = random_int(0, 2**32);
+        $rand  = random_int(0, 2 ** 32);
         $class = $filled ? "filled" : "";
 
         $js = <<<JAVASCRIPT
@@ -178,7 +178,7 @@ HTML;
         array $add_params = []
     ): string {
         $value     = !empty($value) ? $value : null;
-        $rand      = random_int(0, 2**32);
+        $rand      = random_int(0, 2 ** 32);
         $field     = $itemtype::dropdown([
             'name'                => $fieldname,
             'value'               => $value,

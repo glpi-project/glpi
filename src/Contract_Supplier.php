@@ -116,7 +116,7 @@ class Contract_Supplier extends CommonDBRelation
             return;
         }
         $canedit = $supplier->can($ID, UPDATE);
-        $rand    = random_int(0, 2**32);
+        $rand    = random_int(0, 2 ** 32);
 
         $iterator = self::getListForItem($supplier);
 
@@ -239,7 +239,7 @@ TWIG, $twig_params);
             return;
         }
         $canedit = $contract->can($instID, UPDATE);
-        $rand    = random_int(0, 2**32);
+        $rand    = random_int(0, 2 ** 32);
 
         $iterator = self::getListForItem($contract);
         $number = count($iterator);

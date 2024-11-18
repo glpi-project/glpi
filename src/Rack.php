@@ -410,7 +410,7 @@ class Rack extends CommonDBTM
         global $CFG_GLPI, $DB;
 
         $room_id = $room->getID();
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             !$room->getFromDB($room_id)

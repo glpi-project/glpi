@@ -208,7 +208,7 @@ class Event extends CommonDBTM
                     break;
 
                 case "infocom":
-                    $rand = random_int(0, 2**32);
+                    $rand = random_int(0, 2 ** 32);
                     echo " <a href='#' data-bs-toggle='modal' data-bs-target='#infocom$rand'>$items_id</a>";
                     Ajax::createIframeModalWindow(
                         'infocom' . $rand,

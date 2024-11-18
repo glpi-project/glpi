@@ -144,7 +144,7 @@ abstract class ITILTemplateField extends CommonDBChild
         $itil_class    = static::$itiltype;
         $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
         $itil_object   = new $itil_class();
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         $crtiteria = [
             'SELECT' => ['id', 'num'],

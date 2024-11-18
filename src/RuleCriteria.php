@@ -681,7 +681,7 @@ class RuleCriteria extends CommonDBChild
             'rule' => $rule,
             'rules_id_field' => static::$items_id,
             'item' => $this,
-            'rand' => random_int(0, 2**32)
+            'rand' => random_int(0, 2 ** 32)
         ]);
 
         return true;

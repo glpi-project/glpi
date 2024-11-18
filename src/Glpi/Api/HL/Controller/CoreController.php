@@ -622,7 +622,7 @@ HTML;
             try {
                 $options_hash = md5(json_encode($options, JSON_THROW_ON_ERROR));
             } catch (\JsonException) {
-                $options_hash = random_int(0, 2**32);
+                $options_hash = random_int(0, 2 ** 32);
             }
 
             // Group transfers by entity and options hash

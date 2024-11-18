@@ -189,7 +189,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             $active_sort = true;
         }
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'search_error'        => $search_error,
             'search_was_executed' => $search_was_executed,

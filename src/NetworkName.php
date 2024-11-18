@@ -673,7 +673,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
             return false;
         }
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             ($item::class === NetworkPort::class)

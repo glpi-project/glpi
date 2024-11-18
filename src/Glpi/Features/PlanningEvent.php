@@ -672,7 +672,7 @@ trait PlanningEvent
         global $CFG_GLPI;
 
         $html = "";
-        $rand     = random_int(0, 2**32);
+        $rand     = random_int(0, 2 ** 32);
         $users_id = "";  // show users_id reminder
         $img      = "rdv_private.png"; // default icon for reminder
         $item_fk  = getForeignKeyFieldForItemType(static::getType());
@@ -753,7 +753,7 @@ trait PlanningEvent
         $rrule = array_merge($defaults, $rrule);
 
         $default_options = [
-            'rand' => random_int(0, 2**32),
+            'rand' => random_int(0, 2 ** 32),
         ];
         $options = array_merge($default_options, $options);
         $rand    = $options['rand'];
@@ -852,7 +852,7 @@ trait PlanningEvent
         ]) . "</div>";
         $out .= "</div>";
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $out .= "<div class='field'>";
         $out .= "<label for='showdate$rand'>" . __("Exceptions") . "</label>";
         $out .= "<div>" . Html::showDateField('rrule[exceptions]', [

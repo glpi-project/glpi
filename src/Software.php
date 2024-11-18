@@ -989,7 +989,7 @@ class Software extends CommonDBTM
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . random_int(0, 2**32),
+                'container'     => 'mass' . static::class . random_int(0, 2 ** 32),
                 'specific_actions' => [
                     __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge' => __('Merge')
                 ],

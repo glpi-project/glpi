@@ -899,7 +899,7 @@ class Rule extends CommonDBTM
         }
 
         $canedit = $this->canEdit(static::$rightname);
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         $plugin = isPluginItemType(static::class);
         $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? "/plugins/{$plugin['plugin']}" : '');
@@ -1047,7 +1047,7 @@ class Rule extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $p['readonly'] = false;
 
         if (is_array($options) && count($options)) {
@@ -1176,7 +1176,7 @@ JS
      **/
     public function showCriteriasList($rules_id, $options = [])
     {
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $p['readonly'] = false;
 
         if (is_array($options) && count($options)) {
@@ -2993,7 +2993,7 @@ JS
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . self::class . random_int(0, 2**32),
+                'container'     => 'mass' . self::class . random_int(0, 2 ** 32),
                 'item'          => $this,
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),

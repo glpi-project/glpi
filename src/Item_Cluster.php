@@ -87,7 +87,7 @@ class Item_Cluster extends CommonDBRelation
         global $DB;
 
         $ID = $cluster->fields['id'];
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             !$cluster->getFromDB($ID)

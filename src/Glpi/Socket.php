@@ -652,7 +652,7 @@ class Socket extends CommonDBChild
         if ($item->isNewID($item->getID())) {
             return false;
         }
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
        // Link to open a new socket
         if ($item->getID() && self::canCreate()) {
@@ -810,7 +810,7 @@ class Socket extends CommonDBChild
         if ($order === '') {
             $order = 'ASC';
         }
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID]);
         $socket_form_url = self::getFormURL();
 

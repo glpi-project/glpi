@@ -388,7 +388,7 @@ JS);
        // Settings dialog
         $setting_dialog = "";
         if ($can_update && $impact_context) {
-            $rand = random_int(0, 2**32);
+            $rand = random_int(0, 2 ** 32);
 
             $setting_dialog .= '<form id="list_depth_form" action="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactitem.form.php" method="POST">';
             $setting_dialog .= '<table class="tab_cadre_fixe">';
@@ -524,7 +524,7 @@ JS);
 
         if ($count) {
             $priority = 1;
-            $id = "impact_list_itilcount_" . random_int(0, 2**32);
+            $id = "impact_list_itilcount_" . random_int(0, 2 ** 32);
             $link = "";
 
             switch ($type) {

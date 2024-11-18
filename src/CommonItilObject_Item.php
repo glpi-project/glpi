@@ -201,7 +201,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             }
         }
 
-        $rand  = random_int(0, 2**32);
+        $rand  = random_int(0, 2 ** 32);
         $count = 0;
         $twig_params = [
             'rand'               => $rand,
@@ -305,7 +305,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public static function showItemToAdd($object_id, $itemtype, $items_id, $options)
     {
         $params = [
-            'rand'      => random_int(0, 2**32),
+            'rand'      => random_int(0, 2 ** 32),
             'delete'    => true,
             'visible'   => true,
             'kblink'    => true
@@ -358,7 +358,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
         //can Add Item takes type as param but there is none here
         $canedit = $obj->canAddItem('');
-        $rand    = random_int(0, 2**32);
+        $rand    = random_int(0, 2 ** 32);
 
         $types_iterator = static::getDistinctTypes($instID);
         $number = count($types_iterator);
@@ -741,7 +741,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => false,
-            'rand'       => random_int(0, 2**32)
+            'rand'       => random_int(0, 2 ** 32)
         ];
 
         foreach ($options as $key => $val) {
@@ -1227,7 +1227,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $p['entity_sons']    = false;
         $p['used']           = [];
         $p['toupdate']       = '';
-        $p['rand']           = random_int(0, 2**32);
+        $p['rand']           = random_int(0, 2 ** 32);
         $p['display']        = true;
         $p['hide_if_no_elements'] = false;
 
@@ -1614,7 +1614,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $params = [static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => 0,
-            'rand'       => random_int(0, 2**32)
+            'rand'       => random_int(0, 2 ** 32)
         ];
 
         foreach ($options as $key => $val) {

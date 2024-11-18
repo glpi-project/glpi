@@ -77,7 +77,7 @@ class Item_Enclosure extends CommonDBRelation
         global $DB;
 
         $ID = $enclosure->getID();
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             !$enclosure->getFromDB($ID)
@@ -158,7 +158,7 @@ class Item_Enclosure extends CommonDBRelation
         $enclosure = new Enclosure();
         $enclosure->getFromDB($this->fields['enclosures_id']);
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='dropdown_itemtype$rand'>" . __s('Item type') . "</label></td>";

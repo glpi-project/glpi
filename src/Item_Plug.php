@@ -80,7 +80,7 @@ class Item_Plug extends CommonDBRelation
         global $DB;
 
         $ID = $item->getID();
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             !$item->getFromDB($ID)
@@ -100,7 +100,7 @@ class Item_Plug extends CommonDBRelation
         ]);
 
         if ($canedit) {
-            $rand = random_int(0, 2**32);
+            $rand = random_int(0, 2 ** 32);
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                action='" . htmlescape(Toolbox::getItemTypeFormURL(__CLASS__)) . "' method='post'>\n";
             echo "\t<input type='hidden' name='" . static::$items_id_1 . "' value='$ID'>\n";

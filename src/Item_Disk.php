@@ -214,7 +214,7 @@ class Item_Disk extends CommonDBChild
     {
         $ID = $item->fields['id'];
         $itemtype = $item->getType();
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         if (
             !$item->getFromDB($ID)

@@ -324,7 +324,7 @@ class Widget
             'alt'     => '',
             'color'   => '',
             'icon'    => '',
-            'id'      => 'bn_' . random_int(0, 2**32),
+            'id'      => 'bn_' . random_int(0, 2 ** 32),
             'filters' => [],
         ];
         $p = array_merge($default, $params);
@@ -417,7 +417,7 @@ HTML;
             'use_gradient' => false,
             'class'        => "multiple-numbers",
             'filters'      => [],
-            'rand'         => random_int(0, 2**32),
+            'rand'         => random_int(0, 2 ** 32),
         ];
         $p = array_merge($default, $params);
         $default_entry = [
@@ -568,7 +568,7 @@ HTML;
             'palette'      => '',
             'limit'        => 99999,
             'filters'      => [],
-            'rand'         => random_int(0, 2**32),
+            'rand'         => random_int(0, 2 ** 32),
         ];
         $p = array_merge($default, $params);
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
@@ -839,7 +839,7 @@ JAVASCRIPT;
             'icon'        => '',
             'horizontal'  => false,
             'distributed' => true,
-            'rand'        => random_int(0, 2**32),
+            'rand'        => random_int(0, 2 ** 32),
         ];
         $params = array_merge($default, $params);
         $default_entry = [
@@ -1006,7 +1006,7 @@ JAVASCRIPT;
             'point_labels' => false,
             'limit'        => 99999,
             'filters'      => [],
-            'rand'         => random_int(0, 2**32),
+            'rand'         => random_int(0, 2 ** 32),
         ];
         $p = array_merge($defaults, $params);
 
@@ -1395,7 +1395,7 @@ JAVASCRIPT;
             'line_width'   => 4,
             'limit'        => 99999,
             'filters'      => [],
-            'rand'         => random_int(0, 2**32),
+            'rand'         => random_int(0, 2 ** 32),
         ];
         $p = array_merge($defaults, $params);
         $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
@@ -1652,7 +1652,7 @@ HTML;
             's_criteria' => '',
             'itemtype'   => '',
             'limit'      => $_SESSION['glpilist_limit'],
-            'rand'       => random_int(0, 2**32),
+            'rand'       => random_int(0, 2 ** 32),
             'filters'    => [],
         ];
         $p = array_merge($default, $params);
@@ -1731,7 +1731,7 @@ HTML;
             'icon'         => '',
             'limit'        => 99999,
             'class'        => "articles-list",
-            'rand'         => random_int(0, 2**32),
+            'rand'         => random_int(0, 2 ** 32),
             'filters'      => [],
         ];
         $p = array_merge($default, $params);

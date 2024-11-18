@@ -121,7 +121,7 @@ class Item_Rack extends CommonDBRelation
 
     private static function showItemsList(Rack $rack, iterable $items): void
     {
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $canedit = $rack->canEdit($rack->getID());
 
         echo "<h2>" . __("Racked items") . "</h2>";
@@ -550,7 +550,7 @@ JAVASCRIPT;
         $rack = new Rack();
         $rack->getFromDB($this->fields['racks_id']);
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='dropdown_itemtype$rand'>" . __s('Item type') . "</label></td>";

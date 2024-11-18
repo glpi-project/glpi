@@ -681,7 +681,7 @@ class Group extends CommonTreeDropdown
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         $ID = $this->fields['id'];
 

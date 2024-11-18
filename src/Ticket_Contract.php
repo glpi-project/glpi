@@ -76,7 +76,7 @@ class Ticket_Contract extends CommonDBRelation
         $tabnum = 1,
         $withtemplate = 0
     ) {
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         $twig_params = [
             'item' => $item,

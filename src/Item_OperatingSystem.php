@@ -151,7 +151,7 @@ class Item_OperatingSystem extends CommonDBRelation
         global $DB;
 
        //default options
-        $params = ['rand' => random_int(0, 2**32)];
+        $params = ['rand' => random_int(0, 2 ** 32)];
 
         $columns = [
             __('Name'),
@@ -581,7 +581,7 @@ class Item_OperatingSystem extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         Dropdown::showFromArray(
             'os_field',
             [

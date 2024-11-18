@@ -1321,7 +1321,7 @@ class Change extends CommonITILObject
                 ];
                 foreach ($iterator as $data) {
                     $change = new self();
-                    $rand = random_int(0, 2**32);
+                    $rand = random_int(0, 2 ** 32);
                     $row = [
                         'values' => []
                     ];
@@ -1550,7 +1550,7 @@ class Change extends CommonITILObject
         $viewusers = User::canView();
 
         $change   = new self();
-        $rand      = random_int(0, 2**32);
+        $rand      = random_int(0, 2 ** 32);
         if ($change->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));

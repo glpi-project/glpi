@@ -6540,7 +6540,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
        /// TODO to be cleaned. Get datas and clean display links
 
@@ -7011,7 +7011,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
         $showprivate_task = [];
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         // Cache of entity names
         $entity_cache = [];
         // Cache of user names
@@ -7475,7 +7475,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         ob_start();
         Plugin::doHook(Hooks::TIMELINE_ACTIONS, [
-            'rand'   => random_int(0, 2**32),
+            'rand'   => random_int(0, 2 ** 32),
             'item'   => $this
         ]);
         $legacy_actions .= ob_get_clean() ?? '';
@@ -11191,7 +11191,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canassigntome' => false,
             'field_options' => $field_options,
             'allow_auto_submit' => false,
-            'main_rand' => random_int(0, 2**32),
+            'main_rand' => random_int(0, 2 ** 32),
         ]);
     }
 }

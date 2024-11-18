@@ -145,7 +145,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
 
         $canedit = $projecttask->canEdit($ID);
-        $rand    = random_int(0, 2**32);
+        $rand    = random_int(0, 2 ** 32);
 
         $iterator = self::getListForItem($projecttask);
 
@@ -226,7 +226,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
 
         $canedit = $ticket->canEdit($ID);
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
 
         $iterator = self::getListForItem($ticket);
 

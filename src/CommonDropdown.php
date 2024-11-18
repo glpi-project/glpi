@@ -946,7 +946,7 @@ abstract class CommonDropdown extends CommonDBTM
                 $condition[KnowbaseItem::getTable() . '.is_faq'] = 1;
             }
 
-            $rand = random_int(0, 2**32);
+            $rand = random_int(0, 2 ** 32);
             $kbitem = new KnowbaseItem();
             $found_kbitem = $kbitem->find($condition);
 

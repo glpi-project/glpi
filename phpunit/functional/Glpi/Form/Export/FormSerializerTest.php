@@ -690,7 +690,7 @@ final class FormSerializerTest extends \DbTestCase
 
     private function createAndGetFormWithBasicPropertiesFilled(): Form
     {
-        $form_name = "Form with basic properties fully filled " . random_int(0, 2**32);
+        $form_name = "Form with basic properties fully filled " . random_int(0, 2 ** 32);
         $builder = new FormBuilder($form_name);
         $builder->setHeader("My custom header")
             ->setEntitiesId($this->getTestRootEntity(only_id: true))

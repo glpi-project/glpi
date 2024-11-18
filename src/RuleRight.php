@@ -400,7 +400,7 @@ class RuleRight extends Rule
             'item' => $this,
             'match_operators' => $this->getRulesMatch(),
             'conditions' => static::getConditionsArray(),
-            'rand' => random_int(0, 2**32),
+            'rand' => random_int(0, 2 ** 32),
             'test_url' => $CFG_GLPI["root_doc"] . "/front/rule.test.php",
             'params' => [
                 'canedit' => $canedit,

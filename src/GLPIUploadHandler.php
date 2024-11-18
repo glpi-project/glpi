@@ -71,7 +71,7 @@ class GLPIUploadHandler extends UploadHandler
                         }
                     }
                 }
-                $val->id = 'doc' . $params['name'] . random_int(0, 2**32);
+                $val->id = 'doc' . $params['name'] . random_int(0, 2 ** 32);
             }
         }
 

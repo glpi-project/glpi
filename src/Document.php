@@ -1442,7 +1442,7 @@ class Document extends CommonDBTM
         foreach ($iterator as $data) {
             $values[$data['id']] = $data['name'];
         }
-        $rand = random_int(0, 2**32);
+        $rand = random_int(0, 2 ** 32);
         $readonly = $p['readonly'];
         $out = '';
         $width = '30%';

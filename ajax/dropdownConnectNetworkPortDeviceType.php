@@ -49,7 +49,7 @@ Session::checkRight("networking", UPDATE);
 
 // Make a select box
 if (class_exists($_POST["itemtype"])) {
-    $rand     = random_int(0, 2**32);
+    $rand     = random_int(0, 2 ** 32);
 
     $toupdate = [
         'value_fieldname' => 'item',

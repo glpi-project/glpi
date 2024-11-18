@@ -317,7 +317,7 @@ TWIG;
             })) > 0,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . random_int(0, 2**32)
+                'container'     => 'mass' . static::class . random_int(0, 2 ** 32)
             ]
         ]);
 

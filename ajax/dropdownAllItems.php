@@ -54,7 +54,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $link = "getDropdownUsers.php";
     }
 
-    $rand = $_POST['rand'] ?? random_int(0, 2**32);
+    $rand = $_POST['rand'] ?? random_int(0, 2 ** 32);
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 

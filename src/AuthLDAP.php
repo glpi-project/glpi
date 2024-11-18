@@ -631,7 +631,7 @@ TWIG, ['authldaps_id' => $ID]);
                 'showmassiveactions' => true,
                 'massiveactionparams' => [
                     'num_displayed' => count($entries),
-                    'container'     => 'massAuthLdapReplicate' . random_int(0, 2**32),
+                    'container'     => 'massAuthLdapReplicate' . random_int(0, 2 ** 32),
                     'item'          => $this
                 ]
             ]);
@@ -1687,7 +1687,7 @@ TWIG, $twig_params);
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . self::class . random_int(0, 2**32),
+                'container'     => 'mass' . self::class . random_int(0, 2 ** 32),
                 'specific_actions' => [$form_action => $textbutton],
                 'extraparams' => [
                     'authldaps_id' => $config_ldap->getID(),
@@ -2203,7 +2203,7 @@ TWIG, $twig_params);
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . self::class . random_int(0, 2**32),
+                'container'     => 'mass' . self::class . random_int(0, 2 ** 32),
                 'specific_actions' => [
                     __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import')
                 ],
