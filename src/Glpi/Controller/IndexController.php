@@ -115,6 +115,19 @@ final class IndexController extends AbstractController
             //FIXME: how to do the same with controllers? The only way I see is a redirect
             include_once(GLPI_ROOT . '/front/inventory.php');
             return;
+
+            /**
+             * Following won't work:
+             * - we  do bot expect a response here. Wrong place to put this code?
+             * - I do not know how to use "raw" input with guzzle.
+             */
+            /*$http_client = \Toolbox::getGuzzleClient([
+                'base_uri' => $CFG_GLPI['url_base'] . '/Inventory',
+                'connect_timeout' => \Agent::TIMEOUT
+            ]);
+            $response = $http_client->request('POST');
+
+            return $response;*/
         }
 
         Session::checkCookieSecureConfig();
