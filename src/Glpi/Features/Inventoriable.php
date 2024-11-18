@@ -137,7 +137,7 @@ trait Inventoriable
             if (static::class == RefusedEquipment::class) {
                 echo sprintf(
                     "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
-                    $CFG_GLPI['root_doc'] . '/front/inventory.php?refused=' . $this->fields['id'],
+                    $CFG_GLPI['root_doc'] . '/Inventory?refused=' . $this->fields['id'],
                     __s('Try a reimport from stored inventory file')
                 );
             }
