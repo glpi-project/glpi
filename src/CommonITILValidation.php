@@ -1521,7 +1521,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
         if ($total = count($validations)) {
             foreach ($validations as $validation) {
-                echo $validation['status'];
                 $statuses[$validation['status']]++;
             }
         }

@@ -2123,12 +2123,6 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-        // Update of the global validation status if the validation percentage has changed
-        if (isset($this->input['validation_percent']) && !isset($this->input['post_update'])) {
-            $this->input['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
-            $upd = $this->update(array_merge($this->input, ['post_update' => true]));
-        }
-
         // handle actors changes
         $this->updateActors();
 
@@ -2497,6 +2491,12 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array("closedate", $this->updates)) {
             $this->updates[]                  = "close_delay_stat";
             $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
+        }
+
+        // Update of the global validation status if the validation percentage has changed
+        if (in_array("validation_percent", $this->updates)) {
+            $this->updates[] = 'global_validation';
+            $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
         }
 
        //Look for reopening
