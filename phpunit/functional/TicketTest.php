@@ -6957,15 +6957,8 @@ HTML
         $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
         $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
         $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
-        $test_user_id     = getItemByTypeName(User::class, '_test_user', true);
 
-        $profile = $this->createItem(
-            \Profile::class,
-            [
-                'name'                => 'SeeGrouptask',
-                'interface'           => 'central',
-            ]
-        );
+        $profile = getItemByTypeName(\Profile::class, 'Observer');
 
         $profile_right = new \ProfileRight();
         $profile_right->getFromDBByCrit([
@@ -6977,29 +6970,7 @@ HTML
             \ProfileRight::class,
             $profile_right->getID(),
             [
-                'rights' => 121879,
-            ]
-        );
-
-        $profile_right->getFromDBByCrit([
-            'profiles_id' => $profile->getID(),
-            'name'        => 'ticket',
-        ]);
-
-        $this->updateItem(
-            \ProfileRight::class,
-            $profile_right->getID(),
-            [
-                'rights' => 523295,
-            ]
-        );
-
-        $this->createItem(
-            Profile_User::class,
-            [
-                'users_id'    => $test_user_id,
-                'profiles_id' => $profile->getID(),
-                'entities_id' => 0,
+                'rights' => \CommonITILTask::SEEPRIVATEGROUPS + \CommonITILTask::SEEPUBLIC,
             ]
         );
 
@@ -7014,7 +6985,7 @@ HTML
             Group_User::class,
             [
                 'groups_id' => $group->getID(),
-                'users_id'  => $test_user_id,
+                'users_id'  => $normal_user_id,
             ]
         );
 
@@ -7154,6 +7125,7 @@ HTML
             'expected_tasks'     => [
                 'private task of normal user',
                 'private task assigned to normal user',
+                'private task assigned to see group',
                 'public task',
             ],
         ];
@@ -7167,17 +7139,6 @@ HTML
             'expected_followups' => [
                 'public followup',
             ],
-            'expected_tasks'     => [
-                'public task',
-            ],
-        ];
-
-        yield [
-            'login'              => '_test_user',
-            'pass'               => TU_PASS,
-            'ticket_id'          => $ticket->getID(),
-            'options'            => [],
-            'expected_followups' => [],
             'expected_tasks'     => [
                 'public task',
             ],
@@ -7241,10 +7202,6 @@ HTML
                 $this->login($login, $pass);
             } else {
                 $this->resetSession();
-            }
-
-            if ($login === '_test_user') {
-                Session::changeProfile(getItemByTypeName('Profile', 'Test_Group_Task', true));
             }
 
             $ticket = new \Ticket();
