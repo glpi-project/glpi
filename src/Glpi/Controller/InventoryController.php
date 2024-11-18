@@ -73,7 +73,7 @@ final class InventoryController extends AbstractController
                     E_USER_WARNING
                 );
             }
-        } else if ($request->isMethod('POST')) {
+        } else if (!$request->isMethod('POST')) {
             if ($request->get('action') === 'getConfig') {
                 /**
                  * Even if Fusion protocol is not supported for getConfig requests, they
