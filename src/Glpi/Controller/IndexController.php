@@ -48,10 +48,15 @@ use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
 {
+    public function __construct(private HttpKernelInterface $http_kernel)
+    {
+    }
+
     #[Route(
         [
             "base" => "/",
@@ -62,6 +67,18 @@ final class IndexController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
+        if (
+            $request->isMethod('POST')
+            && !$request->request->has('totp_code')
+            && $request->getContent() !== ''
+        ) {
+            // POST request from the inventory agent, forward it to the inventory controller.
+            $sub_request = $request->duplicate(
+                attributes: ['_controller' => InventoryController::class]
+            );
+            return $this->http_kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        }
+
         return new HeaderlessStreamedResponse($this->call(...));
     }
 
@@ -107,27 +124,6 @@ final class IndexController extends AbstractController
                 Html::nullFooter();
                 return;
             }
-        }
-
-        //Try to detect GLPI agent calls
-        $rawdata = file_get_contents("php://input");
-        if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            //FIXME: how to do the same with controllers? The only way I see is a redirect
-            include_once(GLPI_ROOT . '/front/inventory.php');
-            return;
-
-            /**
-             * Following won't work:
-             * - we  do bot expect a response here. Wrong place to put this code?
-             * - I do not know how to use "raw" input with guzzle.
-             */
-            /*$http_client = \Toolbox::getGuzzleClient([
-                'base_uri' => $CFG_GLPI['url_base'] . '/Inventory',
-                'connect_timeout' => \Agent::TIMEOUT
-            ]);
-            $response = $http_client->request('POST');
-
-            return $response;*/
         }
 
         Session::checkCookieSecureConfig();
