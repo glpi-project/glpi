@@ -168,9 +168,7 @@ class Session
 
                     $auth->user->computePreferences();
                     foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                        if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
-                            $_SESSION["glpi$field"] = $_POST[$field];
-                        } else if (isset($auth->user->fields[$field])) {
+                        if (isset($auth->user->fields[$field])) {
                             $_SESSION["glpi$field"] = $auth->user->fields[$field];
                         }
                     }
