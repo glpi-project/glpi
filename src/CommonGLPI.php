@@ -853,10 +853,8 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURLWithID($id = 0, $full = true)
     {
-
-        $itemtype = get_called_class();
-        $link     = $itemtype::getFormURL($full);
-        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . $id;
+        $link     = static::getFormURL($full);
+        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . ((int) $id);
         return $link;
     }
 
