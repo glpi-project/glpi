@@ -1190,7 +1190,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'plan_end_date'    => __('Planned end date'),
             'planned_duration' => __('Planned duration'),
             '_effect_duration' => __('Effective duration'),
-            'fname'            => __('Father')
+            'fname'            => __('Father'),
+            '_task_team'       => ProjectTaskTeam::getTypeName(),
         ];
 
         $criteria = [
@@ -1423,6 +1424,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                       echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
                         ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
                         (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
+                }
+                echo '</td><td>';
+                $projecttask = new ProjectTask();
+                $projecttask->getFromDB($data['id']);
+                foreach ($projecttask->getTeam() as $projecttaskteam) {
+                    $item = getItemForItemtype($projecttaskteam['itemtype']);
+                    echo "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>" .
+                        htmlescape($projecttaskteam['display_name']) . '</a><br>';
                 }
                 echo "</td></tr>";
             }
