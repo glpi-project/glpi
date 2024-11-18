@@ -89,7 +89,7 @@
                      {% endif %}
 
                      {% if item.isField('is_active') %}
-                        {% if withtemplate is not empty or withtemplate == 1 %}
+                        {% if withtemplate >= 1 %}
                            {{ fields.hiddenField('is_active', item.fields['is_active'], __('Is active'), {
                               'add_field_html': __('No')
                            }) }}
