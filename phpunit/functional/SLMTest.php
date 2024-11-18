@@ -1379,7 +1379,7 @@ class SLMTest extends DbTestCase
     {
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
-        $test_ticket_name = "Test ticket with multiple LA assignation " . mt_rand();
+        $test_ticket_name = "Test ticket with multiple LA assignation " . random_int();
 
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
@@ -1602,7 +1602,7 @@ class SLMTest extends DbTestCase
     {
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
-        $test_ticket_name = "Test ticket with multiple LA assignation " . mt_rand();
+        $test_ticket_name = "Test ticket with multiple LA assignation " . random_int();
 
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results

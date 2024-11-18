@@ -305,7 +305,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
         $ID      = $asset->fields['id'];
         $canedit = $asset->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $datas = [];
         $used  = [];
@@ -341,7 +341,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             ];
 
             $twig_params = [
-                'rand' => mt_rand(),
+                'rand' => random_int(),
                 'dropdown_params' => $dropdown_params,
                 'asset' => $asset,
                 'label' => __('Connect an item'),
@@ -478,7 +478,7 @@ TWIG, $twig_params);
         }
 
         $canedit = $peripheral->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         // Is global connection ?
         $global  = $peripheral->fields['is_global'];
@@ -684,7 +684,7 @@ TWIG, $twig_params);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $rand     = mt_rand();
+        $rand     = random_int();
 
         $field_id = Html::cleanId("dropdown_" . $myname . $rand);
         $param    = [

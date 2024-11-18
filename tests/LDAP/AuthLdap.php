@@ -1542,7 +1542,7 @@ class AuthLDAP extends DbTestCase
         $CFG_GLPI['user_deleted_ldap_authorizations'] = $authorizations_option_value;
 
         // Unique user for each tests
-        $rand = mt_rand();
+        $rand = random_int();
         $uid = "toremovetest$rand";
 
         // Add a new user in directory

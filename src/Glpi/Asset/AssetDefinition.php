@@ -197,7 +197,7 @@ final class AssetDefinition extends AbstractDefinition
         }
 
         $canedit = $this->canUpdateItem();
-        $rand = mt_rand();
+        $rand = random_int();
         if ($canedit) {
             TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
                 'cancreate' => CustomFieldDefinition::canCreate(),

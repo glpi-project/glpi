@@ -206,7 +206,7 @@ class Certificate_Item extends CommonDBRelation
             return false;
         }
         $canedit = $certificate->can($instID, UPDATE);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $types_iterator = self::getDistinctTypes($instID, ['itemtype' => Certificate::getTypes(true)]);
         $number = count($types_iterator);
@@ -361,7 +361,7 @@ class Certificate_Item extends CommonDBRelation
         }
 
         $canedit      = $item->canAddItem('Certificate');
-        $rand         = mt_rand();
+        $rand         = random_int();
         $is_recursive = $item->isRecursive();
 
         $iterator = self::getListForItem($item);

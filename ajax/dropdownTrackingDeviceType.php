@@ -61,7 +61,7 @@ if ($context == "impact") {
 if ($isValidItemtype) {
     $table = getTableForItemType($itemtype);
 
-    $rand = $_POST["rand"] ?? mt_rand();
+    $rand = $_POST["rand"] ?? random_int();
 
     // Message for post-only
     if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {

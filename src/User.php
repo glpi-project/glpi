@@ -2715,7 +2715,7 @@ HTML;
             $options['no_header'] = true;
         }
         $this->showFormHeader($options);
-        $rand = mt_rand();
+        $rand = random_int();
 
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='name'>" . __('Login') . "</label></td>";
@@ -2751,7 +2751,7 @@ HTML;
             && $this->fields['auths_id']
             && AuthLDAP::isSyncFieldConfigured($this->fields['auths_id'])
         ) {
-            $syncrand = mt_rand();
+            $syncrand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __s('Synchronization field') . "</label></td><td>";
             if (
                 self::canUpdate()
@@ -2776,7 +2776,7 @@ HTML;
             echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
         }
 
-        $surnamerand = mt_rand();
+        $surnamerand = random_int();
         echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td><td>";
         echo Html::input(
             'realname',
@@ -2787,7 +2787,7 @@ HTML;
         );
         echo "</td></tr>";
 
-        $firstnamerand = mt_rand();
+        $firstnamerand = random_int();
         echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
         echo Html::input(
             'firstname',
@@ -2876,7 +2876,7 @@ JAVASCRIPT;
         }
 
         echo "<tr class='tab_bg_1'>";
-        $activerand = mt_rand();
+        $activerand = random_int();
         echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
         Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
         echo "</td>";
@@ -2888,7 +2888,7 @@ JAVASCRIPT;
         echo "</tr>";
 
         if (!$simplified_form) {
-            $sincerand = mt_rand();
+            $sincerand = random_int();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='showdate$sincerand'>" . __s('Valid since') . "</label></td><td>";
             Html::showDateTimeField("begin_date", ['value'       => $this->fields["begin_date"],
@@ -2897,7 +2897,7 @@ JAVASCRIPT;
             ]);
             echo "</td>";
 
-            $untilrand = mt_rand();
+            $untilrand = random_int();
             echo "<td><label for='showdate$untilrand'>" . __s('Valid until') . "</label></td><td>";
             Html::showDateTimeField("end_date", ['value'       => $this->fields["end_date"],
                 'rand'        => $untilrand,
@@ -2906,7 +2906,7 @@ JAVASCRIPT;
             echo "</td></tr>";
         }
 
-        $phonerand = mt_rand();
+        $phonerand = random_int();
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
         echo Html::input(
@@ -2957,7 +2957,7 @@ JAVASCRIPT;
 
         echo "</tr>";
 
-        $mobilerand = mt_rand();
+        $mobilerand = random_int();
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='textfield_mobile$mobilerand'>" . __s('Mobile phone') . "</label></td><td>";
         echo Html::input(
@@ -2970,14 +2970,14 @@ JAVASCRIPT;
         echo "</td>";
         echo "<td>";
         if (!$simplified_form) {
-            $catrand = mt_rand();
+            $catrand = random_int();
             echo "<label for='dropdown_usercategories_id$catrand'>" . _sn('Category', 'Categories', 1) . "</label></td><td>";
             UserCategory::dropdown(['value' => $this->fields["usercategories_id"], 'rand' => $catrand]);
         }
         echo "</td></tr>";
 
         if (!$simplified_form) {
-            $phone2rand = mt_rand();
+            $phone2rand = random_int();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='textfield_phone2$phone2rand'>" .  __s('Phone 2') . "</label></td><td>";
             echo Html::input(
@@ -2993,7 +2993,7 @@ JAVASCRIPT;
             echo "<textarea class='form-control' id='comment' name='comment' >" . htmlescape($this->fields["comment"]) . "</textarea>";
             echo "</td></tr>";
 
-            $admnumrand = mt_rand();
+            $admnumrand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _sx('user', 'Administrative number') . "</label></td><td>";
             echo Html::input(
                 'registration_number',
@@ -3004,7 +3004,7 @@ JAVASCRIPT;
             );
             echo "</td></tr>";
 
-            $titlerand = mt_rand();
+            $titlerand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='dropdown_usertitles_id$titlerand'>" . _sx('person', 'Title') . "</label></td><td>";
             UserTitle::dropdown(['value' => $this->fields["usertitles_id"], 'rand' => $titlerand]);
             echo "</td></tr>";
@@ -3012,7 +3012,7 @@ JAVASCRIPT;
 
         echo "<tr class='tab_bg_1'>";
         if (!empty($ID)) {
-            $locrand = mt_rand();
+            $locrand = random_int();
             echo "<td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             $entities = $this->getEntities();
             if (count($entities) <= 0) {
@@ -3029,11 +3029,11 @@ JAVASCRIPT;
         if (empty($ID)) {
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='2'>" . _sn('Authorization', 'Authorizations', 1) . "</th>";
-            $recurrand = mt_rand();
+            $recurrand = random_int();
             echo "<td><label for='dropdown__is_recursive$recurrand'>" .  __s('Recursive') . "</label></td><td>";
             Dropdown::showYesNo("_is_recursive", 0, -1, ['rand' => $recurrand]);
             echo "</td></tr>";
-            $profilerand = mt_rand();
+            $profilerand = random_int();
             echo "<tr class='tab_bg_1'>";
             echo "<td><label for='dropdown__profiles_id$profilerand'>" .  htmlescape(Profile::getTypeName(1)) . "</label></td><td>";
             Profile::dropdownUnder(['name'  => '_profiles_id',
@@ -3041,7 +3041,7 @@ JAVASCRIPT;
                 'value' => Profile::getDefault()
             ]);
 
-            $entrand = mt_rand();
+            $entrand = random_int();
             echo "</td><td><label for='dropdown__entities_id$entrand'>" .  htmlescape(Entity::getTypeName(1)) . "</label></td><td>";
             Entity::dropdown(['name'                => '_entities_id',
                 'display_emptychoice' => false,
@@ -3052,7 +3052,7 @@ JAVASCRIPT;
             echo "</td></tr>";
         } else {
             if ($higherrights || $ismyself) {
-                $profilerand = mt_rand();
+                $profilerand = random_int();
                 echo "<tr class='tab_bg_1'>";
                 echo "<td><label for='dropdown_profiles_id$profilerand'>" .  __s('Default profile') . "</label></td><td>";
 
@@ -3071,7 +3071,7 @@ JAVASCRIPT;
                 );
             }
             if ($higherrights) {
-                $entrand = mt_rand();
+                $entrand = random_int();
                 echo "</td><td><label for='dropdown_entities_id$entrand'>" .  __s('Default entity') . "</label></td><td>";
                 $entities = $this->getEntities();
                 $toadd = [-1 => __('Full structure')];
@@ -3083,7 +3083,7 @@ JAVASCRIPT;
                 ]);
                 echo "</td></tr>";
 
-                $grouprand = mt_rand();
+                $grouprand = random_int();
                 echo "<tr class='tab_bg_1'>";
                 echo "<td><label for='dropdown_profiles_id$grouprand'>" .  __s('Default group') . "</label></td><td>";
 
@@ -3102,7 +3102,7 @@ JAVASCRIPT;
                 );
 
                 echo "</td>";
-                $userrand = mt_rand();
+                $userrand = random_int();
                 echo "<td><label for='dropdown_users_id_supervisor_$userrand'>" .  __s('Supervisor') . "</label></td><td>";
 
                 User::dropdown(['name'   => 'users_id_supervisor',
@@ -3203,7 +3203,7 @@ JAVASCRIPT;
             return false;
         }
         if ($this->getFromDB($ID)) {
-            $rand     = mt_rand();
+            $rand     = random_int();
             $authtype = $this->getAuthMethodsByID();
 
             $extauth  = !(($this->fields["authtype"] == Auth::DB_GLPI)
@@ -3218,7 +3218,7 @@ JAVASCRIPT;
             echo "<input type='hidden' name='id' value='" . htmlescape($this->fields["id"]) . "'>";
             echo "</th></tr>";
 
-            $surnamerand = mt_rand();
+            $surnamerand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td><td>";
 
             if (
@@ -3253,7 +3253,7 @@ JAVASCRIPT;
                 echo "</tr>";
             }
 
-            $firstnamerand = mt_rand();
+            $firstnamerand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
             if (
                 $extauth
@@ -3290,7 +3290,7 @@ JAVASCRIPT;
 
             echo "<tr class='tab_bg_1'>";
 
-            $langrand = mt_rand();
+            $langrand = random_int();
             echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
            // Language is stored as null in DB if value is same as the global config.
             $language = $this->fields["language"];
@@ -3369,7 +3369,7 @@ JAVASCRIPT;
                 echo "</tr>";
             }
 
-            $phonerand = mt_rand();
+            $phonerand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
 
             if (
@@ -3394,7 +3394,7 @@ JAVASCRIPT;
             echo "</td>";
             echo "</tr>";
 
-            $mobilerand = mt_rand();
+            $mobilerand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_mobile$mobilerand'>" . __s('Mobile phone') . "</label></td><td>";
 
             if (
@@ -3414,7 +3414,7 @@ JAVASCRIPT;
             echo "</td>";
 
             if (count($_SESSION['glpiprofiles']) > 1) {
-                $profilerand = mt_rand();
+                $profilerand = random_int();
                 echo "<td><label for='dropdown_profiles_id$profilerand'>" . __s('Default profile') . "</label></td><td>";
 
                 $options = Dropdown::getDropdownArrayNames(
@@ -3435,7 +3435,7 @@ JAVASCRIPT;
             }
             echo "</tr>";
 
-            $phone2rand = mt_rand();
+            $phone2rand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_phone2$phone2rand'>" .  __s('Phone 2') . "</label></td><td>";
 
             if (
@@ -3456,7 +3456,7 @@ JAVASCRIPT;
 
             $entities = $this->getEntities();
             if (count($_SESSION['glpiactiveentities']) > 1) {
-                $entrand = mt_rand();
+                $entrand = random_int();
                 echo "<td><label for='dropdown_entities_id$entrand'>" . __s('Default entity') . "</td><td>";
                 $toadd = [-1 => __('Full structure')];
                 Entity::dropdown([
@@ -3470,7 +3470,7 @@ JAVASCRIPT;
             }
             echo "</td></tr>";
 
-            $admnumrand = mt_rand();
+            $admnumrand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='textfield_registration_number$admnumrand'>" . _sx('user', 'Administrative number') . "</label></td><td>";
             if (
                 $extauth
@@ -3488,7 +3488,7 @@ JAVASCRIPT;
             }
             echo "</td><td colspan='2'></td></tr>";
 
-            $locrand = mt_rand();
+            $locrand = random_int();
             echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . htmlescape(Location::getTypeName(1)) . "</label></td><td>";
             Location::dropdown(['value'  => $this->fields['locations_id'],
                 'rand'   => $locrand,
@@ -3496,7 +3496,7 @@ JAVASCRIPT;
             ]);
 
             if (Config::canUpdate()) {
-                $moderand = mt_rand();
+                $moderand = random_int();
                 echo "<td><label for='dropdown_use_mode$moderand'>" . __s('Use GLPI in mode') . "</label></td><td>";
                 $modes = [
                     Session::NORMAL_MODE => __('Normal'),
@@ -4736,7 +4736,7 @@ JAVASCRIPT;
             'used'                => [],
             'ldap_import'         => false,
             'toupdate'            => '',
-            'rand'                => mt_rand(),
+            'rand'                => random_int(),
             'display'             => true,
             '_user_index'         => 0,
             'specific_tags'       => [],
@@ -5291,7 +5291,7 @@ JAVASCRIPT;
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                'container'        => 'mass' . __CLASS__ . mt_rand(),
+                'container'        => 'mass' . __CLASS__ . random_int(),
                 'specific_actions' => [
                     'update' => __('Update'),
                 ]
@@ -6774,10 +6774,10 @@ JAVASCRIPT;
         $options['candel'] = false;
         $options['canedit'] = self::canUpdate();
         $this->showFormHeader($options);
-        $rand = mt_rand();
+        $rand = random_int();
 
         echo "<tr class='tab_bg_1'>";
-        $surnamerand = mt_rand();
+        $surnamerand = random_int();
         echo "<td><label for='textfield_realname$surnamerand'>" . __s('Surname') . "</label></td>";
         echo "<td>";
         echo Html::input(
@@ -6798,7 +6798,7 @@ JAVASCRIPT;
         echo "</td>";
         echo "</tr>";
 
-        $firstnamerand = mt_rand();
+        $firstnamerand = random_int();
         echo "<tr class='tab_bg_1'><td><label for='textfield_firstname$firstnamerand'>" . __s('First name') . "</label></td><td>";
         echo Html::input(
             'firstname',

@@ -502,7 +502,7 @@ JAVASCRIPT;
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
                 'can_delete'   => PlanningExternalEvent::canPurge(),
-                'rand'         => mt_rand(),
+                'rand'         => random_int(),
             ];
         } else {
             // short view (on Central page)
@@ -511,7 +511,7 @@ JAVASCRIPT;
                 'default_view' => 'listFull',
                 'header'       => false,
                 'height'       => 'auto',
-                'rand'         => mt_rand(),
+                'rand'         => random_int(),
                 'now'          => date("Y-m-d H:i:s"),
             ];
         }
@@ -855,7 +855,7 @@ TWIG, ['options' => $options]);
 
         $twig_params = [
             'planning_types' => $planning_types,
-            'rand'           => mt_rand(),
+            'rand'           => random_int(),
             'label'          => __('Actor'),
         ];
         // language=Twig
@@ -1043,7 +1043,7 @@ TWIG, $twig_params);
             "</a>";
             echo "</div>";
             echo "<hr>";
-            $rand = mt_rand();
+            $rand = random_int();
             $options = [
                 'from_planning_edit_ajax' => true,
                 'formoptions'             => "id='edit_event_form$rand'",
@@ -1245,7 +1245,7 @@ TWIG, $twig_params);
      */
     public static function showAddEventSubForm($params = [])
     {
-        $rand   = mt_rand();
+        $rand   = random_int();
         $params = self::cleanDates($params);
 
         $params['res_itemtype'] = $params['res_itemtype'] ?? '';
@@ -1290,7 +1290,7 @@ TWIG, $twig_params);
             echo "<input type='hidden' name='plan[id]' value='" . $params["id"] . "'>";
         }
 
-        $rand = $params['rand'] ?? mt_rand();
+        $rand = $params['rand'] ?? random_int();
         $display_dates = $params['_display_dates'] ?? true;
         $mintime = $CFG_GLPI["planning_begin"];
         if (!empty($params["begin"])) {
@@ -1352,7 +1352,7 @@ TWIG, $twig_params);
         }
 
         if (count($append_params) > 1) {
-            $rand = mt_rand();
+            $rand = random_int();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
             echo "<i class='far fa-calendar-alt'></i>";
             echo "<span class='sr-only'>" . __s('Availability') . "</span>";

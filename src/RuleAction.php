@@ -703,7 +703,7 @@ class RuleAction extends CommonDBChild
             'rules_id_field' => static::$items_id,
             'item' => $this,
             'used_actions' => $used,
-            'rand' => mt_rand()
+            'rand' => random_int()
         ]);
 
         return true;

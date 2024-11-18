@@ -169,7 +169,7 @@ class Group_User extends CommonDBRelation
 
         $canedit = $user->can($ID, UPDATE);
 
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = self::getListForItem($user);
         $groups = [];
@@ -399,7 +399,7 @@ class Group_User extends CommonDBRelation
 
        // Have right to manage members
         $canedit = self::canUpdate();
-        $rand    = mt_rand();
+        $rand    = random_int();
         $user    = new User();
         $used    = [];
         $ids     = [];

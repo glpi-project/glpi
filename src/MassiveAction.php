@@ -339,7 +339,7 @@ class MassiveAction
                             'massiveaction', 'is_deleted', 'initial_items'
                         ];
 
-                        $this->identifier  = mt_rand();
+                        $this->identifier  = random_int();
                         $this->done        = [];
                         $this->nb_done     = 0;
                         $this->action_name = $POST['action_name'];
@@ -1095,7 +1095,7 @@ class MassiveAction
                         echo "</td>";
                     }
 
-                    $next_step_rand = mt_rand();
+                    $next_step_rand = random_int();
 
                     echo "</tr></table>";
                     echo "<span id='update_next_step$next_step_rand'>&nbsp;</span>";
@@ -1257,7 +1257,7 @@ class MassiveAction
                 return true;
 
             case 'clone':
-                $rand = mt_rand();
+                $rand = random_int();
 
                 echo "<table width='100%'><tr>";
                 echo "<td>";
@@ -1288,7 +1288,7 @@ class MassiveAction
 
                 return true;
             case 'create_template':
-                $rand = mt_rand();
+                $rand = random_int();
 
                 echo "<table class='w-100'><tr>";
                 echo "<td>";

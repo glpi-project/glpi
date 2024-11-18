@@ -209,7 +209,7 @@ class RefusedEquipment extends CommonDBTM
         echo "<td>";
         echo $rule->getLink();
 
-        $rand = mt_rand();
+        $rand = random_int();
         echo sprintf(
             "<a class='btn btn-primary' style='float:right;' href='#'  data-bs-toggle='modal' data-bs-target='#allruletest%s'>%s</a>",
             $rand,

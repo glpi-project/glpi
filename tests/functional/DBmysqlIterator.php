@@ -129,7 +129,7 @@ class DBmysqlIterator extends DbTestCase
     {
         define('GLPI_SQL_DEBUG', true);
 
-        $id = mt_rand();
+        $id = random_int();
         $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'name', 'id = ' . $id]);
 
         $this->hasSqlLogRecordThatContains(

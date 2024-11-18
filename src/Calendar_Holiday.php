@@ -76,7 +76,7 @@ class Calendar_Holiday extends CommonDBRelation
 
         $canedit = $calendar->can($ID, UPDATE);
 
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = $DB->request([
             'SELECT' => [

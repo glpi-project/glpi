@@ -644,7 +644,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         ];
         $iterator = $DB->request($criteria);
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         if ($data = $iterator->current()) {
             $softwares_id  = $data['sID'];
@@ -668,7 +668,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             );
 
             if ($canedit) {
-                $rand = mt_rand();
+                $rand = random_int();
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams
                  = ['num_displayed'
@@ -989,7 +989,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         $items_id      = $item->getField('id');
         $itemtype      = $item->getType();
-        $rand          = mt_rand();
+        $rand          = random_int();
         $filters       = $_GET['filters'] ?? [];
         $is_filtered   = count($filters) > 0;
         $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
@@ -1066,7 +1066,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
             echo "<div class='table-responsive'>";
             if ($canedit) {
-                $rand = mt_rand();
+                $rand = random_int();
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams
                 = ['num_displayed'
@@ -1282,7 +1282,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         if ($number = $lic_iterator->count()) {
             if ($canedit) {
-                $rand = mt_rand();
+                $rand = random_int();
                 Html::openMassiveActionsForm('massSoftwareLicense' . $rand);
 
                 $actions = ['Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR .

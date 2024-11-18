@@ -966,7 +966,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $tID    = $item->fields['id'];
 
         $tmp    = [static::$items_id => $tID];
-        $rand   = mt_rand();
+        $rand   = random_int();
 
         $iterator = $DB->Request([
             'FROM'   => $this->getTable(),
@@ -1637,7 +1637,7 @@ HTML;
             'readonly'           => false,
             'width'              => '100%',
             'required'           => false,
-            'rand'               => mt_rand(),
+            'rand'               => random_int(),
         ];
         $params['applyto'] = 'show_validator_field' . $params['rand'];
 

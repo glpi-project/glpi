@@ -100,7 +100,7 @@ class NetworkPort_Vlan extends CommonDBRelation
         }
 
         $canedit = $port->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -195,7 +195,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
             ]
         ]);
     }
@@ -266,7 +266,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
             ]
         ]);
     }

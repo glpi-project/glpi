@@ -399,7 +399,7 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         $options     = \Search::getCleanedOptions($request["itemtype"]);
-        $randrow     = mt_rand();
+        $randrow     = random_int();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
@@ -516,7 +516,7 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         $linked =  SearchEngine::getMetaItemtypeAvailable($itemtype);
-        $rand   = mt_rand();
+        $rand   = random_int();
 
         $rowid  = 'metasearchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $rand;
         TemplateRenderer::getInstance()->display('components/search/query_builder/metacriteria.html.twig', [
@@ -565,7 +565,7 @@ final class QueryBuilder implements SearchInputInterface
             'order'      => $orders[$num] ?? 'ASC',
         ];
 
-        $randrow     = mt_rand();
+        $randrow     = random_int();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'orderrow' . $normalized_itemtype . $randrow;
 
@@ -612,7 +612,7 @@ final class QueryBuilder implements SearchInputInterface
 
         $num         = (int) $request['num'];
         $p           = $request['p'];
-        $randrow     = mt_rand();
+        $randrow     = random_int();
         $rowid       = 'searchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];

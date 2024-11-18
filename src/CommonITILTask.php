@@ -1574,7 +1574,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         global $CFG_GLPI;
 
         $html = "";
-        $rand      = mt_rand();
+        $rand      = random_int();
         $styleText = "";
         if (isset($val["state"])) {
             switch ($val["state"]) {
@@ -1917,7 +1917,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         global $DB;
 
         $job  = new $itemtype();
-        $rand = mt_rand();
+        $rand = random_int();
         if ($job->getFromDB($ID)) {
             if ($DB->fieldExists($job->getTable(), 'tickets_id')) {
                 $item_link = new Ticket();

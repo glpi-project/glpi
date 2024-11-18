@@ -154,7 +154,7 @@ class AuthTest extends DbTestCase
         $this->login();
 
         $user = new \User();
-        $username = 'test_lock_' . mt_rand();
+        $username = 'test_lock_' . random_int();
         $user_id = (int) $user->add([
             'name'         => $username,
             'password'     => 'test',

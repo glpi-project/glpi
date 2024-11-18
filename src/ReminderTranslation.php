@@ -117,7 +117,7 @@ class ReminderTranslation extends CommonDBChild
     public static function showTranslations(Reminder $item)
     {
         $canedit = $item->can($item->getID(), UPDATE);
-        $rand    = mt_rand();
+        $rand    = random_int();
         if ($canedit) {
             $twig_params = [
                 'item' => $item,

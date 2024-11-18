@@ -80,7 +80,7 @@ class SimpleCacheTest extends \GLPITestCase
             $this->assertEquals($value, $instance->get($key));
 
             // Overwriting an existing value works
-            $rand = mt_rand();
+            $rand = random_int();
             $this->assertTrue($instance->set($key, $rand));
             $this->assertEquals($rand, $instance->get($key));
 

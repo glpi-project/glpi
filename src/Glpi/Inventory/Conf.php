@@ -352,7 +352,7 @@ class Conf extends CommonGLPI
 
         $config = \Config::getConfigurationValues('inventory');
         $canedit = \Config::canUpdate();
-        $rand = mt_rand();
+        $rand = random_int();
 
         if ($canedit) {
             echo "<form name='form' action='" . $CFG_GLPI['root_doc'] . "/front/inventory.conf.php' method='post'>";

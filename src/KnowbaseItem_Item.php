@@ -114,7 +114,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             ), true);
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
         if ($canedit && $ok_state) {
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();

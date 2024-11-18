@@ -509,7 +509,7 @@ class ToolboxTest extends DbTestCase
 
         foreach ([\Computer::class, \Change::class, \Problem::class, \Ticket::class] as $itemtype) {
             $item = new $itemtype();
-            $item->fields['id'] = mt_rand(1, 50);
+            $item->fields['id'] = random_int(1, 50);
 
             $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
             if ($item instanceof \CommonDBTM) {
@@ -586,7 +586,7 @@ class ToolboxTest extends DbTestCase
     public static function convertTagToImageBaseUrlProvider()
     {
         $item = new \Ticket();
-        $item->fields['id'] = mt_rand(1, 50);
+        $item->fields['id'] = random_int(1, 50);
 
         $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
         $img_url .= '&itemtype=' . $item->getType();
@@ -655,7 +655,7 @@ class ToolboxTest extends DbTestCase
         $img_tag_3 = uniqid('', true);
 
         $item = new \Ticket();
-        $item->fields['id'] = mt_rand(1, 50);
+        $item->fields['id'] = random_int(1, 50);
 
        // Create multiple documents in DB
         $document = new \Document();
@@ -716,7 +716,7 @@ class ToolboxTest extends DbTestCase
         $img_tag = uniqid('', true);
 
         $item = new \Ticket();
-        $item->fields['id'] = mt_rand(1, 50);
+        $item->fields['id'] = random_int(1, 50);
 
        // Create multiple documents in DB
         $document = new \Document();
@@ -766,7 +766,7 @@ class ToolboxTest extends DbTestCase
         $img_tag = uniqid('', true);
 
         $item = new \Ticket();
-        $item->fields['id'] = mt_rand(1, 50);
+        $item->fields['id'] = random_int(1, 50);
 
        // Create multiple documents in DB
         $document = new \Document();
@@ -798,7 +798,7 @@ class ToolboxTest extends DbTestCase
         $img_2_tag = uniqid('', true);
 
         $item = new \Ticket();
-        $item->fields['id'] = mt_rand(1, 50);
+        $item->fields['id'] = random_int(1, 50);
 
         $document_1 = $this->createItem(
             \Document::class,

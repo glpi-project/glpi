@@ -248,7 +248,7 @@ class DBmysql
 
         if (is_array($this->dbhost)) {
             // Round robin choice
-            $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost) - 1));
+            $i    = (isset($choice) ? $choice : random_int(0, count($this->dbhost) - 1));
             $host = $this->dbhost[$i];
         } else {
             $host = $this->dbhost;

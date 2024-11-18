@@ -93,7 +93,7 @@ abstract class AbstractRightsDropdown
         }
 
         // Build DOM id
-        $field_id = $name . "_" . mt_rand();
+        $field_id = $name . "_" . random_int();
 
         // Build url
         $url = static::getAjaxUrl();

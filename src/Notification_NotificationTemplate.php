@@ -202,7 +202,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ]
         ]);
@@ -279,7 +279,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ]
         ]);

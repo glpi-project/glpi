@@ -2141,7 +2141,7 @@ HTML;
     {
 
         if (empty($rand)) {
-            $rand = mt_rand();
+            $rand = random_int();
         }
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
@@ -2238,7 +2238,7 @@ HTML;
         $params                    = [];
         $params['title']           = '';
         $params['name']            = '';
-        $params['rand']            = mt_rand();
+        $params['rand']            = random_int();
         $params['id']              = "check_" . $params['rand'];
         $params['value']           = 1;
         $params['readonly']        = false;
@@ -2405,7 +2405,7 @@ HTML;
         global $CFG_GLPI;
 
         if (empty($name)) {
-            $name = 'massaction_' . mt_rand();
+            $name = 'massaction_' . random_int();
         }
         return  "<form name='$name' id='$name' method='post'
                action='" . $CFG_GLPI["root_doc"] . "/front/massiveaction.php'
@@ -2638,7 +2638,7 @@ HTML;
             'showyear'     => false,
             'display'      => true,
             'range'        => false,
-            'rand'         => mt_rand(),
+            'rand'         => random_int(),
             'calendar_btn' => true,
             'clear_btn'    => true,
             'yearrange'    => '',
@@ -2759,7 +2759,7 @@ JS;
     public static function showColorField($name, $options = [])
     {
         $p['value']      = '';
-        $p['rand']       = mt_rand();
+        $p['rand']       = random_int();
         $p['display']    = true;
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
@@ -2816,7 +2816,7 @@ JS;
             'timestep'   => -1,
             'showyear'   => true,
             'display'    => true,
-            'rand'       => mt_rand(),
+            'rand'       => random_int(),
             'required'   => false,
             'on_change'  => '',
         ];
@@ -2956,7 +2956,7 @@ JS;
                 $p[$key] = $val;
             }
         }
-        $rand   = mt_rand();
+        $rand   = random_int();
         $output = '';
        // Validate value
         if (
@@ -3394,7 +3394,7 @@ JS;
         if (empty($content)) {
             $content = "&nbsp;";
         }
-        $rand = mt_rand();
+        $rand = random_int();
         $out  = '';
 
        // Force link for popup
@@ -3863,7 +3863,7 @@ JAVASCRIPT
         string $selector,
         string $preset_target
     ) {
-        $link_id = "template_documentation_" . mt_rand();
+        $link_id = "template_documentation_" . random_int();
         self::addTemplateDocumentationLink($preset_target, $link_id);
 
        // Move link before the given textarea
@@ -3996,7 +3996,7 @@ JAVASCRIPT
                 echo $key;
                 echo "</td><td>";
                 $is_array = is_array($val);
-                $rand     = mt_rand();
+                $rand     = random_int();
                 if ($jsexpand && $is_array) {
                     echo "<a href=\"javascript:showHideDiv('content$key$rand','','','')\">";
                     echo "=></a>";
@@ -4935,7 +4935,7 @@ JS;
     public static function progress($max, $value, $params = [])
     {
         $p = [
-            'rand'            => mt_rand(),
+            'rand'            => random_int(),
             'tooltip'         => '',
             'append_percent'  => true
         ];
@@ -5189,7 +5189,7 @@ HTML;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $randupload             = mt_rand();
+        $randupload             = random_int();
 
         $p['name']                = 'filename';
         $p['onlyimages']          = false;
@@ -5388,7 +5388,7 @@ HTML;
        //default options
         $p['name']              = 'text';
         $p['filecontainer']     = 'fileupload_info';
-        $p['rand']              = mt_rand();
+        $p['rand']              = random_int();
         $p['editor_id']         = 'text' . $p['rand'];
         $p['value']             = '';
         $p['enable_richtext']   = false;
@@ -5481,7 +5481,7 @@ HTML;
                 // Rebuild the minimal data to show the already uploaded files
                 $upload = [
                     'name'    => $upload,
-                    'id'      => 'doc' . $p['name'] . mt_rand(),
+                    'id'      => 'doc' . $p['name'] . random_int(),
                     'display' => $displayName,
                     'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
                     'prefix'  => $prefix,
@@ -5560,7 +5560,7 @@ HTML;
         $param['first_cell']           = '&nbsp;';
         $param['row_check_all']        = false;
         $param['col_check_all']        = false;
-        $param['rand']                 = mt_rand();
+        $param['rand']                 = random_int();
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {

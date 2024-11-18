@@ -1126,7 +1126,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
                 'extraparams' => [
                     'options' => [
                         'glpi_softwareversions.name' => [

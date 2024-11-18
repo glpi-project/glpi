@@ -356,7 +356,7 @@ class ITILFollowupTest extends DbTestCase
         $this->assertGreaterThan(0, $ticket_id);
 
         // Create test user
-        $rand = mt_rand();
+        $rand = random_int();
         $user = new User();
         $users_id = $user->add([
             'name' => "testIsFromSupportAgent$rand",

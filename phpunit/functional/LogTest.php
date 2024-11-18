@@ -750,7 +750,7 @@ class LogTest extends DbTestCase
         global $DB, $CFG_GLPI;
 
         $this->login($username, $password);
-        $rand = mt_rand(90000, 99999);
+        $rand = random_int(90000, 99999);
         $log_event = function () use ($rand, $DB) {
             \Log::history($rand, 'Computer', [4, '', '']);
             // Get last log entry for itemtype=Computer and items_id=$rand

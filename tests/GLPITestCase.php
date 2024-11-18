@@ -368,7 +368,7 @@ class GLPITestCase extends atoum
     protected function getUniqueInteger()
     {
         if (is_null($this->int)) {
-            return $this->int = mt_rand(1000, 10000);
+            return $this->int = random_int(1000, 10000);
         }
         return $this->int++;
     }

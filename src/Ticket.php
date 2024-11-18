@@ -2178,7 +2178,7 @@ class Ticket extends CommonITILObject
 
         switch ($ma->getAction()) {
             case 'merge_as_followup':
-                $rand = mt_rand();
+                $rand = random_int();
                 $mergeparam = [
                     'name'         => "_mergeticket",
                     'used'         => $ma->getItems()['Ticket'],
@@ -2241,7 +2241,7 @@ class Ticket extends CommonITILObject
                 return true;
 
             case 'resolve_tickets':
-                $rand = mt_rand();
+                $rand = random_int();
                 $content_id = "content$rand";
 
                 echo '<div class="horizontal-form">';
@@ -4411,7 +4411,7 @@ JAVASCRIPT;
                     }
 
                     $job = new self();
-                    $rand = mt_rand();
+                    $rand = random_int();
                     $row = [
                         'values' => []
                     ];
@@ -4815,11 +4815,11 @@ JAVASCRIPT;
         }
 
         $job  = new self();
-        $rand = mt_rand();
+        $rand = random_int();
         if ($job->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]));
-           // $rand    = mt_rand();
+           // $rand    = random_int();
             echo "<tr class='tab_bg_2'>";
             echo "<td>
             <div class='badge_block' style='border-color: $bgcolor'>

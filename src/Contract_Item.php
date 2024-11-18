@@ -264,7 +264,7 @@ class Contract_Item extends CommonDBRelation
         }
 
         $canedit = $item->can($ID, UPDATE);
-        $rand = mt_rand();
+        $rand = random_int();
 
         $iterator = self::getListForItem($item);
 
@@ -403,7 +403,7 @@ TWIG, $twig_params);
             return false;
         }
         $canedit = $contract->can($instID, UPDATE);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $types_iterator = self::getDistinctTypes($instID);
 

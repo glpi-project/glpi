@@ -91,7 +91,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
         global $DB;
 
         $ID = $camera->getID();
-        $rand = mt_rand();
+        $rand = random_int();
 
         if (
             !$camera->getFromDB($ID)

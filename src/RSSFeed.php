@@ -839,7 +839,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 }
 
                 $item_link = URL::sanitizeURL($item->get_permalink());
-                $rand = mt_rand();
+                $rand = random_int();
                 $output .= "<div id='rssitem$rand'>";
                 if (!empty($item_link)) {
                     $output .= '<a target="_blank" href="' . htmlescape($item_link) . '">';

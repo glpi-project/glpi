@@ -395,7 +395,7 @@ class Domain extends CommonDBTM
             }
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         $where = [
             'glpi_domains.is_deleted'  => 0

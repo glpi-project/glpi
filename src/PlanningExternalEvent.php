@@ -139,9 +139,9 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     {
         $this->initForm($ID, $options);
         $options['canedit'] = $this->can($ID, UPDATE);
-        $rand       = mt_rand();
-        $rand_plan  = mt_rand();
-        $rand_rrule = mt_rand();
+        $rand       = random_int();
+        $rand_plan  = random_int();
+        $rand_rrule = random_int();
 
         if (
             ($options['from_planning_ajax'] ?? false)

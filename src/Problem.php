@@ -1018,7 +1018,7 @@ class Problem extends CommonITILObject
                 ];
                 foreach ($iterator as $data) {
                     $problem = new self();
-                    $rand = mt_rand();
+                    $rand = random_int();
                     $row = [
                         'values' => []
                     ];
@@ -1248,7 +1248,7 @@ class Problem extends CommonITILObject
         $viewusers = User::canView();
 
         $problem   = new self();
-        $rand      = mt_rand();
+        $rand      = random_int();
         if ($problem->getFromDBwithData($ID)) {
             $bgcolor = $_SESSION["glpipriority_" . $problem->fields["priority"]];
             $name    = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]));

@@ -431,7 +431,7 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         $is_all = $ID === 0 ? "true" : "false";
         if ($ID > 0) {
@@ -911,7 +911,7 @@ JAVASCRIPT;
         }
 
         // js vars
-        $rand   = mt_rand();
+        $rand   = random_int();
         $ID     = (int)$ri->fields['id'];
 
         echo "<br>";

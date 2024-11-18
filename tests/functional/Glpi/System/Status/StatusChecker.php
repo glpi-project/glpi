@@ -125,7 +125,7 @@ class StatusChecker extends DbTestCase
             'host'            => 'localhost',
             'is_active'       => 1,
             'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
-            'rootdn_passwd'   => md5(mt_rand())
+            'rootdn_passwd'   => md5(random_int())
         ]);
         $this->integer($authlap_id)->isGreaterThan(0);
 

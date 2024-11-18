@@ -288,7 +288,7 @@ abstract class AbstractDefinition extends CommonDBTM
             static fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
         );
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/customobjects/translations.html.twig',

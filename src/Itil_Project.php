@@ -240,7 +240,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . self::class . mt_rand(),
+                'container'     => 'mass' . self::class . random_int(),
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ]
         ]);
@@ -263,7 +263,7 @@ TWIG, $twig_params);
         }
 
         $canedit = $itil->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $selfTable = self::getTable();
         $projectTable = Project::getTable();

@@ -726,7 +726,7 @@ class NetworkPort extends CommonDBChild
             );
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
         if ($showmassiveactions) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
         }

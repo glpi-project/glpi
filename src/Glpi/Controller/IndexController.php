@@ -185,7 +185,7 @@ final class IndexController extends AbstractController
                 }
             } else {
                 // Random number for html id/label
-                $rand = mt_rand();
+                $rand = random_int();
 
                 // Regular login
                 TemplateRenderer::getInstance()->display('pages/login.html.twig', [

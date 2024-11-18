@@ -538,7 +538,7 @@ TWIG, ['la_level' => $la_level]);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
             ]
         ]);
     }

@@ -39,7 +39,7 @@ class ExtensionConstant extends \GLPITestCase
 {
     public function testCheckOnExistingConstant()
     {
-        $test_constant = 'TEST_CONSTANT' . mt_rand();
+        $test_constant = 'TEST_CONSTANT' . random_int();
         define($test_constant, 'TEST');
         $this->newTestedInstance('Test constant', $test_constant, false, '');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
@@ -49,7 +49,7 @@ class ExtensionConstant extends \GLPITestCase
 
     public function testCheckOnMissingMandatoryConstant()
     {
-        $test_constant = 'TEST_CONSTANT' . mt_rand();
+        $test_constant = 'TEST_CONSTANT' . random_int();
         $this->newTestedInstance('Test constant', $test_constant, false, '');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
         $this->array($this->testedInstance->getValidationMessages())
@@ -58,7 +58,7 @@ class ExtensionConstant extends \GLPITestCase
 
     public function testCheckOnMissingOptionalConstant()
     {
-        $test_constant = 'TEST_CONSTANT' . mt_rand();
+        $test_constant = 'TEST_CONSTANT' . random_int();
         $this->newTestedInstance('Test constant', $test_constant, true, '');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
         $this->array($this->testedInstance->getValidationMessages())

@@ -806,7 +806,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
 
         $number = count($iterator);
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         // Display the pager
         $actions = [];
@@ -1000,7 +1000,7 @@ TWIG, ['add_label' => __('Add cartridges')]);
             return false;
         }
         $canedit = Session::haveRight("cartridge", UPDATE);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $where = ['glpi_cartridges.printers_id' => $instID];
         if ($old) {

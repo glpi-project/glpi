@@ -239,7 +239,7 @@ class IPAddress extends CommonDBChild
             return;
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
         $order       = strtoupper($_GET["order"] ?? "");

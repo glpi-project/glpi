@@ -275,7 +275,7 @@ class PlanningRecall extends CommonDBChild
         $p['users_id'] = Session::getLoginUserID();
         $p['value']    = Entity::CONFIG_NEVER;
         $p['field']    = 'begin';
-        $p['rand']     = mt_rand();
+        $p['rand']     = random_int();
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {

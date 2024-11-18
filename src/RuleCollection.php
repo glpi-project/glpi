@@ -555,7 +555,7 @@ TWIG, $twig_params);
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand(),
+                'container'     => 'mass' . static::class . random_int(),
                 'extraparams'   => [
                     'entity' => $this->entity,
                     'condition' => $p['condition'],

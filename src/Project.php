@@ -1183,7 +1183,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             }
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
 
        // Prints a job in short form
        // Should be called in a <table>-segment
@@ -1437,7 +1437,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $ID   = $this->getID();
         $this->check($ID, READ);
-        $rand = mt_rand();
+        $rand = random_int();
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
@@ -1690,7 +1690,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         );
         echo "</td></tr>";
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('Description') . "</td>";
@@ -1758,7 +1758,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         echo "<div class='center'>";
 
-        $rand = mt_rand();
+        $rand = random_int();
         $nb   = $project->getTeamCount();
 
         if ($canedit) {

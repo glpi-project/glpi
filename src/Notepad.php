@@ -321,7 +321,7 @@ class Notepad extends CommonDBChild
             return false;
         }
         $notes     = static::getAllForItem($item);
-        $rand      = mt_rand();
+        $rand      = random_int();
         $canedit   = Session::haveRight($item::$rightname, UPDATENOTE);
 
         if (

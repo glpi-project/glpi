@@ -69,7 +69,7 @@ if (count($actions)) {
             echo Html::hidden($key, ['value' => $val]);
         }
     }
-    $rand = mt_rand();
+    $rand = random_int();
 
     echo "<label for=\"dropdown_massiveaction$rand\">" . _sn('Action', 'Actions', 1) . "</label>";
     echo "&nbsp;";

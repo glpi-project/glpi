@@ -54,7 +54,7 @@ if (
     && isset($_POST['right'])
 ) {
     $display = false;
-    $rand    = mt_rand();
+    $rand    = random_int();
     $prefix = '';
     $suffix = '';
     if (isset($_POST['prefix']) && !empty($_POST['prefix'])) {

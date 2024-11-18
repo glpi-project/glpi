@@ -433,7 +433,7 @@ HTML;
                 'close'        => true,
                 'zoom'         => true,
             ],
-            'rand'               => mt_rand(),
+            'rand'               => random_int(),
             'gallery_item_class' => ''
         ];
 

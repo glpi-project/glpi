@@ -730,7 +730,7 @@ HTML;
         $buttons = "";
 
         if (strlen($error)) {
-            $rand = mt_rand();
+            $rand = random_int();
             $buttons .= "<i class='ti ti-alert-triangle plugin-error' id='plugin-error-$rand'></i>";
             Html::showToolTip($error, [
                 'applyto' => "plugin-error-$rand",
@@ -754,7 +754,7 @@ HTML;
             }
         } else if (!$is_available) {
             if (!$can_run_local_install) {
-                $rand = mt_rand();
+                $rand = random_int();
                 $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
                 Html::showToolTip(
                     __('This plugin is not available for your GLPI version.'),

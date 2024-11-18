@@ -769,7 +769,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'recursive'                => $recursive,
             'duration_dropdown_to_add' => $duration_dropdown_to_add,
             'duration'                 => $duration,
-            'rand'                     => mt_rand(),
+            'rand'                     => random_int(),
         ]);
         return true;
     }
@@ -1274,7 +1274,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             echo "</div>";
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
         if (
             ($item->getType() == 'ProjectTask')
             && $item->can($ID, UPDATE)
@@ -1376,7 +1376,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
             foreach ($iterator as $data) {
                 Session::addToNavigateListItems('ProjectTask', $data['id']);
-                $rand = mt_rand();
+                $rand = random_int();
                 echo "<tr class='" . ($data['is_deleted'] ? "tab_bg_1_2" : "tab_bg_2") . "'>";
 
                 if ($canedit) {
@@ -1502,7 +1502,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $ID      = $task->fields['id'];
         $canedit = $task->canEdit($ID);
 
-        $rand = mt_rand();
+        $rand = random_int();
         $nb   = $task->getTeamCount();
 
         if ($canedit) {
@@ -2079,7 +2079,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         global $CFG_GLPI;
 
         $html = "";
-        $rand     = mt_rand();
+        $rand     = random_int();
         $users_id = "";  // show users_id project task
         $img      = "rdv_private.png"; // default icon for project task
 

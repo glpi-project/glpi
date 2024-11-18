@@ -523,7 +523,7 @@ class Reminder extends CommonDBVisible implements
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
-        $rand = mt_rand();
+        $rand = random_int();
 
         $canedit = $this->can($ID, UPDATE);
         $options['canedit'] = $canedit;
@@ -574,7 +574,7 @@ class Reminder extends CommonDBVisible implements
 
         return TemplateRenderer::getInstance()->render('pages/tools/reminder_planning.html.twig', [
             'val' => $val,
-            'rand' => mt_rand(),
+            'rand' => random_int(),
             'user_name' => getUserName($val["users_id"]),
             'planning_img' => $CFG_GLPI["root_doc"] . "/pics/" . $img,
             'planning_recall' => $planning_recall,
@@ -756,7 +756,7 @@ class Reminder extends CommonDBVisible implements
         $rows = [];
 
         if ($nb) {
-            $rand = mt_rand();
+            $rand = random_int();
 
             foreach ($reminders as $data) {
                 $row = [

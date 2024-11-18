@@ -245,7 +245,7 @@ class NetworkAlias extends FQDNLabel
         }
 
         $canedit = $item->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = $DB->request([
             'FROM'   => 'glpi_networkaliases',

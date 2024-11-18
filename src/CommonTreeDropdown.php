@@ -664,7 +664,7 @@ TWIG, $twig_params);
             'showmassiveactions' => static::canUpdate(),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . Toolbox::slugify(static::class) . mt_rand()
+                'container'     => 'mass' . Toolbox::slugify(static::class) . random_int()
             ]
         ]);
     }

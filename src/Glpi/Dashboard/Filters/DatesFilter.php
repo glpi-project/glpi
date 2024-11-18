@@ -132,7 +132,7 @@ class DatesFilter extends AbstractFilter
             : [] // can be a string if values are not initialized yet
         ;
 
-        $rand  = mt_rand();
+        $rand  = random_int();
         $label = self::getName();
         $field = Html::showDateField('filter-dates', [
             'value'        => $values,

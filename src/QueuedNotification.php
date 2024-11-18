@@ -434,7 +434,7 @@ class QueuedNotification extends CommonDBTM
                 }
 
                 if (Toolbox::strlen($plaintext) > $CFG_GLPI['cut']) {
-                    $rand = mt_rand();
+                    $rand = random_int();
                     $popup_params = [
                         'display'       => false,
                         'awesome-class' => 'fa-comments',

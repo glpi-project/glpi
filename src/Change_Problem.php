@@ -114,7 +114,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         }
 
         $canedit = $problem->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -206,7 +206,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         }
 
         $canedit = $change->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $iterator = $DB->request([
             'SELECT' => [

@@ -311,7 +311,7 @@ class ContractCost extends CommonDBChild
             'ORDER'  => ["$sort $order"],
         ];
         $iterator = $DB->request($criteria);
-        $rand   = mt_rand();
+        $rand   = random_int();
 
         if (
             $canedit

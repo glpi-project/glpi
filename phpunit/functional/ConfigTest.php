@@ -548,7 +548,7 @@ class ConfigTest extends DbTestCase
         $item = new $itemtype();
         $item->fields = ['id' => 15];
 
-        $random_id = mt_rand(20, 100);
+        $random_id = random_int(20, 100);
 
         \Config::setConfigurationValues('core', [$key => $random_id]);
 
@@ -630,7 +630,7 @@ class ConfigTest extends DbTestCase
             $user = new \User();
             $user_id = $user->add(
                 [
-                    'name'     => 'test_user_' . mt_rand(),
+                    'name'     => 'test_user_' . random_int(),
                     'authtype' => $authtype,
                 ]
             );

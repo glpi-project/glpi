@@ -347,7 +347,7 @@ class Document_Item extends CommonDBRelation
         // it's done for both directions in self::showAssociated
         $types_iterator = self::getDistinctTypes($instID, ['NOT' => ['itemtype' => 'Document']]);
 
-        $rand   = mt_rand();
+        $rand   = random_int();
         if ($canedit) {
             $twig_params = [
                 'doc' => $doc,
@@ -520,7 +520,7 @@ TWIG, $twig_params);
         }
 
         $params         = [];
-        $params['rand'] = mt_rand();
+        $params['rand'] = random_int();
 
         self::showAddFormForItem($item, $withtemplate, $params);
         self::showListForItem($item, $withtemplate, $params);
@@ -544,7 +544,7 @@ TWIG, $twig_params);
         global $CFG_GLPI, $DB;
 
         //default options
-        $params['rand'] = mt_rand();
+        $params['rand'] = random_int();
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
@@ -609,7 +609,7 @@ TWIG, $twig_params);
                 'entity' => $entity,
                 'entities' => $entities,
                 'nb' => $nb,
-                'rand' => mt_rand()
+                'rand' => random_int()
             ]);
         }
 
@@ -739,7 +739,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit && $withtemplate < 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand()
+                'container'     => 'mass' . static::class . random_int()
             ],
         ]);
     }

@@ -6540,7 +6540,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
 
        /// TODO to be cleaned. Get datas and clean display links
 
@@ -7011,7 +7011,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
         $showprivate_task = [];
-        $rand = mt_rand();
+        $rand = random_int();
         // Cache of entity names
         $entity_cache = [];
         // Cache of user names
@@ -7475,7 +7475,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         ob_start();
         Plugin::doHook(Hooks::TIMELINE_ACTIONS, [
-            'rand'   => mt_rand(),
+            'rand'   => random_int(),
             'item'   => $this
         ]);
         $legacy_actions .= ob_get_clean() ?? '';
@@ -10644,7 +10644,7 @@ abstract class CommonITILObject extends CommonDBTM
             $max_closedate = '';
             foreach ($iterator as $itil_item) {
                 $max_closedate = $itil_item['closedate'];
-                if (mt_rand(1, 100) <= $rate) {
+                if (random_int(1, 100) <= $rate) {
                     if (
                         $inquest->add([
                             $fk             => $itil_item['id'],
@@ -10773,7 +10773,7 @@ abstract class CommonITILObject extends CommonDBTM
             && in_array($this->input["status"], $this->getClosedStatusArray())
             && ($delay == 0)
             && ($rate > 0)
-            && (mt_rand(1, 100) <= $rate)
+            && (random_int(1, 100) <= $rate)
         ) {
             $fkey = $this->getForeignKeyField();
 
@@ -11191,7 +11191,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canassigntome' => false,
             'field_options' => $field_options,
             'allow_auto_submit' => false,
-            'main_rand' => mt_rand(),
+            'main_rand' => random_int(),
         ]);
     }
 }

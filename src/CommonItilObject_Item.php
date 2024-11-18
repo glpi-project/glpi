@@ -201,7 +201,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             }
         }
 
-        $rand  = mt_rand();
+        $rand  = random_int();
         $count = 0;
         $twig_params = [
             'rand'               => $rand,
@@ -305,7 +305,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public static function showItemToAdd($object_id, $itemtype, $items_id, $options)
     {
         $params = [
-            'rand'      => mt_rand(),
+            'rand'      => random_int(),
             'delete'    => true,
             'visible'   => true,
             'kblink'    => true
@@ -358,7 +358,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
         //can Add Item takes type as param but there is none here
         $canedit = $obj->canAddItem('');
-        $rand    = mt_rand();
+        $rand    = random_int();
 
         $types_iterator = static::getDistinctTypes($instID);
         $number = count($types_iterator);
@@ -741,7 +741,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => false,
-            'rand'       => mt_rand()
+            'rand'       => random_int()
         ];
 
         foreach ($options as $key => $val) {
@@ -1227,7 +1227,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $p['entity_sons']    = false;
         $p['used']           = [];
         $p['toupdate']       = '';
-        $p['rand']           = mt_rand();
+        $p['rand']           = random_int();
         $p['display']        = true;
         $p['hide_if_no_elements'] = false;
 
@@ -1614,7 +1614,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $params = [static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => 0,
-            'rand'       => mt_rand()
+            'rand'       => random_int()
         ];
 
         foreach ($options as $key => $val) {

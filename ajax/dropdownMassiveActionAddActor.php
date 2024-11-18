@@ -43,7 +43,7 @@ Session::checkRight('ticket', UPDATE);
 
 if ($_POST["actortype"] > 0) {
     $ticket = new Ticket();
-    $rand   = mt_rand();
+    $rand   = random_int();
     $ticket->showActorAddForm(
         $_POST["actortype"],
         $rand,

@@ -216,7 +216,7 @@ abstract class CommonDBVisible extends CommonDBTM
 
         $ID      = (int)$this->fields['id'];
         $canedit = $this->canEdit($ID);
-        $rand    = mt_rand();
+        $rand    = random_int();
         $nb      = $this->countVisibilities();
         $str_type = htmlescape(strtolower($this::getType()));
         $fk = static::getForeignKeyField();

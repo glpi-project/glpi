@@ -167,7 +167,7 @@ TWIG, $twig_params);
     public static function showTranslations(KnowbaseItem $item)
     {
         $canedit = $item->can($item->getID(), UPDATE);
-        $rand    = mt_rand();
+        $rand    = random_int();
         if ($canedit) {
             $twig_params = [
                 'item' => $item,

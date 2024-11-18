@@ -41,7 +41,7 @@ if (!isset($_REQUEST['id'])) {
 
 $id = $_REQUEST['id'];
 $current = $_REQUEST['current'] ?? null;
-$rand = $_REQUEST['rand'] ?? mt_rand();
+$rand = $_REQUEST['rand'] ?? random_int();
 
 $room = new DCRoom();
 if ($room->getFromDB($id)) {

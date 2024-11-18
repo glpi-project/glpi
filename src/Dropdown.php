@@ -126,7 +126,7 @@ class Dropdown
         $params['toadd']                = [];
         $params['on_change']            = '';
         $params['condition']            = [];
-        $params['rand']                 = mt_rand();
+        $params['rand']                 = random_int();
         $params['displaywith']          = [];
        //Parameters about choice 0
        //Empty choice's label
@@ -882,7 +882,7 @@ class Dropdown
         $params['display']             = true;
         $params['width']               = '';
         $params['display_emptychoice'] = true;
-        $params['rand']         = mt_rand();
+        $params['rand']         = random_int();
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -980,7 +980,7 @@ class Dropdown
                         $values[$file] = $file;
                     }
                 }
-                $rand = mt_rand();
+                $rand = random_int();
                 self::showFromArray(
                     $myname,
                     $values,
@@ -1097,7 +1097,7 @@ JAVASCRIPT;
             if (!empty($params['rand'])) {
                 $rand = $params['rand'];
             } else {
-                $rand = mt_rand();
+                $rand = random_int();
             }
 
             $options = ['name' => $name,
@@ -1663,7 +1663,7 @@ JAVASCRIPT;
 
         $params['name']                = 'itemtype';
         $params['value']               = '';
-        $params['rand']                = mt_rand();
+        $params['rand']                = random_int();
         $params['on_change']           = '';
         $params['plural']              = false;
        //Parameters about choice 0
@@ -1797,7 +1797,7 @@ JAVASCRIPT;
             'used'                                  => [],
             'ajax_page'                             => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
             'display'                               => true,
-            'rand'                                  => mt_rand(),
+            'rand'                                  => random_int(),
             'itemtype_track_changes'                => false,
             'init'                                  => true,
             'width'                                 => '80%',
@@ -1937,7 +1937,7 @@ JAVASCRIPT;
 
         $p = [
             'value'           => 0,
-            'rand'            => mt_rand(),
+            'rand'            => random_int(),
             'min'             => 0,
             'max'             => 100,
             'step'            => 1,
@@ -2091,7 +2091,7 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $params['value']               = 0;
-        $params['rand']                = mt_rand();
+        $params['rand']                = random_int();
         $params['min']                 = 0;
         $params['max']                 = DAY_TIMESTAMP;
         $params['step']                = $CFG_GLPI["time_step"] * MINUTE_TIMESTAMP;
@@ -2274,7 +2274,7 @@ JAVASCRIPT;
         $param['size']                = 1;
         $param['display']             = true;
         $param['other']               = false;
-        $param['rand']                = mt_rand();
+        $param['rand']                = random_int();
         $param['emptylabel']          = self::EMPTY_VALUE;
         $param['display_emptychoice'] = false;
         $param['disabled']            = false;
@@ -2621,7 +2621,7 @@ JAVASCRIPT;
             }
         } else {
             if ($params['management_restrict'] == 2) {
-                $rand = mt_rand();
+                $rand = random_int();
                 $values = [MANAGEMENT_UNITARY => __('Unit management'),
                     MANAGEMENT_GLOBAL  => __('Global management')
                 ];
@@ -2754,7 +2754,7 @@ JAVASCRIPT;
             $values['-' . Search::NAMES_OUTPUT] = __('Copy names to clipboard');
         }
 
-        $rand = mt_rand();
+        $rand = random_int();
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' " .
              " title=\"" . _sx('button', 'Export') . "\">" .

@@ -242,7 +242,7 @@ HTML;
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
-        $rand = mt_rand();
+        $rand = random_int();
 
         if (!self::$embed && !$this->dashboard->canViewCurrent()) {
             return;
@@ -687,7 +687,7 @@ HTML;
      */
     public function displayAddDashboardForm()
     {
-        $rand = mt_rand();
+        $rand = random_int();
 
         echo "<form class='no-shadow display-add-dashboard-form'>";
 
@@ -803,7 +803,7 @@ HTML;
         $filters      = Filter::getFilterChoices();
         $list_filters = array_diff_key($filters, $used);
 
-        $rand = mt_rand();
+        $rand = random_int();
         echo "<form class='display-filter-form'>";
 
         echo "<div class='field'>";
@@ -875,7 +875,7 @@ HTML;
     public function displayEditRightsForm()
     {
         self::loadAllDashboards();
-        $rand   = mt_rand();
+        $rand   = random_int();
         $values = [];
 
         echo "<form class='no-shadow display-rights-form'>";

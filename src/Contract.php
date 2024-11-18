@@ -1395,7 +1395,7 @@ class Contract extends CommonDBTM
      *    - value         : integer / preselected value (default 0)
      *    - entity        : integer or array / restrict to a defined entity or array of entities
      *                      (default -1 : no restriction)
-     *    - rand          : (defauolt mt_rand)
+     *    - rand          : (defauolt random_int)
      *    - entity_sons   : boolean / if entity restrict specified auto select its sons
      *                      only available if entity is a single value not an array (default false)
      *    - used          : array / Already used items ID: not to display in dropdown (default empty)
@@ -1418,7 +1418,7 @@ class Contract extends CommonDBTM
             'name'           => 'contracts_id',
             'value'          => '',
             'entity'         => '',
-            'rand'           => mt_rand(),
+            'rand'           => random_int(),
             'entity_sons'    => false,
             'used'           => [],
             'nochecklimit'   => false,
