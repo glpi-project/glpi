@@ -248,7 +248,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . '/Inventory'
+                    $this->base_uri . '/Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml'
