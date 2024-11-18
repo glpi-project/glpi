@@ -109,8 +109,12 @@ class RequestTest extends \GLPITestCase
         $request = $this->getMockBuilder(\Glpi\Inventory\Request::class)
             ->onlyMethods(['inventory', 'prolog'])
             ->getMock();
-        $request->method('inventory')->willReturn(null);
-        $request->method('prolog')->willReturn(null);
+        $request->method('inventory')->willReturnCallback(function () {
+            return;
+        });
+        $request->method('prolog')->willReturnCallback(function () {
+            return;
+        });
 
         $request->handleContentType('Application/xml');
         $request->handleRequest($data);

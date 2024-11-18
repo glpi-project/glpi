@@ -41,8 +41,8 @@ use GuzzleHttp\Psr7\Response;
 
 class Request extends \DBTestCase
 {
-    private $http_client;
-    private $base_uri;
+    private GuzzleHttp\Client $http_client;
+    private string $base_uri;
 
     public function beforeTestMethod($method)
     {
