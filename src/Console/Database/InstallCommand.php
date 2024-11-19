@@ -272,7 +272,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             OutputInterface::VERBOSITY_VERBOSE
         );
         if (
-            !$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $mysqli>-real_escape_string($db_name) . '`')
+            !$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $mysqli->real_escape_string($db_name) . '`')
             || !$mysqli->select_db($db_name)
         ) {
             $message = sprintf(
