@@ -36,7 +36,6 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
-use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,46 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
+use Glpi\Form\QuestionVisibilityStrategy;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+/**
+ * This interface must be satisfied by any form item for which its visibility
+ * can be toggled depending on some conditions.
+ */
+interface ConditionnableInterface
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'text';
-    }
+    /**
+     * Get configured condition data from the database.
+     *
+     *  @return ConditionData[]
+     **/
+    public function getConfiguredConditionsData(): array;
 
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
-
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
-    }
+    /**
+     * Get the configured visibility strategy from the database.
+     *
+     * @return \Glpi\Form\QuestionVisibilityStrategy
+     */
+    public function getConfiguredVisibilityStrategy(): QuestionVisibilityStrategy;
 }

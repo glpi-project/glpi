@@ -52,6 +52,7 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').QUESTION.value }}"
     data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
@@ -97,10 +98,22 @@
                     data-glpi-form-editor-question-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                {% if question is null %}
+                    {% set question_strategy = enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+                {% else %}
+                    {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
+                {% endif %}
+
+                {# Visibility dropdown #}
+                {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                    'item': question,
+                }, with_context = false) }}
+
                 {# Duplicate question #}
                 <i
                     role="button"
-                    class="ti ti-copy ms-auto cursor-pointer"
+                    class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
@@ -257,6 +270,7 @@
             value="{{ constant('class', question_type) }}"
         />
     </section>
+
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,

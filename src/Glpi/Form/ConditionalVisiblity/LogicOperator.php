@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,46 +32,26 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
-
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+enum LogicOperator: string
 {
-    #[Override]
-    public function getInputType(): string
+    case AND = 'and';
+    case OR = 'or';
+
+    public function getLabel(): string
     {
-        return 'text';
+        return match ($this) {
+            self::AND => __("And"),
+            self::OR  => __("Or"),
+        };
     }
 
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
-
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
+    public static function getDropdownValues(): array
     {
         return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
+            self::AND->value => self::AND->getLabel(),
+            self::OR->value  => self::OR->getLabel(),
         ];
     }
 }

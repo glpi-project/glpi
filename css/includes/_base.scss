@@ -467,6 +467,16 @@ body pre {
     }
 }
 
+// Missing class from tabler, probably need to update it ?
+.btn-check:checked+.btn {
+    color           : var(--tblr-btn-hover-color) !important;
+    background-color: var(--tblr-btn-active-bg) !important;
+}
+
+.w-fit-content {
+    width: fit-content;
+}
+
 .accordion-button:hover, .accordion-button:focus {
     z-index: unset;
 }

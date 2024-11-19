@@ -48,6 +48,7 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').COMMENT.value }}"
     data-glpi-draggable-item
 >
     <section
@@ -82,9 +83,15 @@
                     data-glpi-form-editor-comment-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                {# Visibility dropdown #}
+                {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                    'item': comment,
+                }, with_context = false) }}
+
                 {# Duplicate comment #}
                 <i
-                    class="ti ti-copy ms-auto cursor-pointer"
+                    class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate comment") }}"
@@ -150,6 +157,7 @@
             value="{{ comment is not null ? comment.fields.rank : 0 }}"
         />
     </section>
+
     <div data-glpi-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,

@@ -37,6 +37,8 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
+use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -44,8 +46,10 @@ use Ramsey\Uuid\Uuid;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface
+final class Comment extends CommonDBChild implements BlockInterface, ConditionnableInterface
 {
+    use ConditionnableTrait;
+
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
@@ -85,6 +89,11 @@ final class Comment extends CommonDBChild implements BlockInterface
             $input['uuid'] = Uuid::uuid4();
         }
 
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
     }
@@ -105,6 +114,11 @@ final class Comment extends CommonDBChild implements BlockInterface
         ) {
             $section = Section::getById($input['forms_sections_id']);
             $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
         }
 
         return $input;
