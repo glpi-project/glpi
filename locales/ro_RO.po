@@ -5,10 +5,10 @@
 # 
 # Translators:
 # Laurenţiu Dobrotă <rauldobrota@gmail.com>, 2024
-# Estalog Toust <estalogtoust@yahoo.com>, 2024
 # Drastic Solutions <yixay88559@win-777.net>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2024
+# Estalog Toust <estalogtoust@yahoo.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
@@ -4635,7 +4635,7 @@ msgstr[2] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Elemente asociate"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5337,7 +5337,7 @@ msgstr "Firma"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Firma"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6110,7 +6110,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Schimbări"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8867,7 +8867,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Periferice"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9297,7 +9297,7 @@ msgstr "Document"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15464,7 +15464,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -18112,7 +18112,7 @@ msgstr "Alta metoda"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Alta metoda"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -21196,7 +21196,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restaurează"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23615,7 +23615,7 @@ msgstr "sistem"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "sistem"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25313,7 +25313,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27223,7 +27223,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Vederi"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

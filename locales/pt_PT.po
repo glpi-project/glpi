@@ -23,12 +23,12 @@
 # Emperium <real.emperium@gmail.com>, 2024
 # OppPMatos, 2024
 # Miguel Diaz Gonçalves, 2024
-# Pedro B., 2024
 # Patrick Rolo, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Pedro Rocha <jpnr79@gmail.com>, 2024
 # Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Pedro B., 2024
 # 
 #, fuzzy
 msgid ""
@@ -37,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Hugo Castelo Branco <hugo.castelobranco@gmail.com>, 2024\n"
+"Last-Translator: Pedro B., 2024\n"
 "Language-Team: Portuguese (Portugal) (https://app.transifex.com/glpi/teams/1637/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4581,7 +4581,7 @@ msgstr "Associar itens ao ticket"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Itens associados a ticket, alterações e problemas"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4691,7 +4691,7 @@ msgstr[2] "Tipos de item associados"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Elementos associados"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5402,7 +5402,7 @@ msgstr "Marca"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Marca"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6189,7 +6189,7 @@ msgstr "Alterar a visibilidade em entidades filhas."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Alterado"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6467,6 +6467,8 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Limpar documentos órfãos: apaga todos os documentos que não estão associados"
+" a quaisquer itens."
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -8978,7 +8980,7 @@ msgstr "ID do equipamento"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Periféricos"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9390,7 +9392,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Deseja restaurar a revisão selecionada?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9412,7 +9414,7 @@ msgstr "Documento"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15653,7 +15655,7 @@ msgstr "Operações em massa"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Mestre"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -18326,7 +18328,7 @@ msgstr "Outro"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20035,7 +20037,7 @@ msgstr[2] "Tarefas do projecto"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "Equipa assignada à tarefa"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
@@ -21452,7 +21454,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restaurar"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23890,7 +23892,7 @@ msgstr "Sistema"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25624,7 +25626,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27569,7 +27571,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Vistas"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28559,7 +28561,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Tem de selecionar pelo menos um equipamento para formar um grupo"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""

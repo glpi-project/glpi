@@ -6,11 +6,11 @@
 # Translators:
 # Georgi Komsiyski <georgi.komsiyski@gmail.com>, 2022
 # Z K, 2022
-# Nikolay Zaynelov <mravunko@yahoo.com>, 2024
 # Emil Yakimov <yakimov@engineer.bg>, 2024
-# Zornitsa Koleva <zkoleva_@abv.bg>, 2024
-# Yoan Bojilov <admin@videnov.bg>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
+# Yoan Bojilov <admin@videnov.bg>, 2024
+# Zornitsa Koleva <zkoleva_@abv.bg>, 2024
+# Nikolay Zaynelov <mravunko@yahoo.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
@@ -2695,7 +2695,7 @@ msgstr "Актьори"
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -4588,7 +4588,7 @@ msgstr[1] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Свързани елементи"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5288,7 +5288,7 @@ msgstr "Тип"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Тип"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6046,7 +6046,7 @@ msgstr "Промяна на видимостта в дъщерните обек�
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Променен"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8777,7 +8777,7 @@ msgstr "Device_id"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9184,7 +9184,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Желаете ли да върнете избраната ревизия?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9205,7 +9205,7 @@ msgstr "Документ"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Документ"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15317,7 +15317,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Главен"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15867,7 +15867,7 @@ msgstr[1] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Монитор"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -17940,7 +17940,7 @@ msgstr "Друго"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Друго"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20965,7 +20965,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Възстановяване"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21677,7 +21677,7 @@ msgstr "Втори елемент"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Вторичен"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23365,7 +23365,7 @@ msgstr "Система"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -23583,7 +23583,7 @@ msgstr[1] ""
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Team members"
-msgstr ""
+msgstr "Участници в екип"
 
 #: phpunit/functional/RuleTest.php:324 front/stat.graph.php:94
 #: src/CommonITILTask.php:976 src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -25050,7 +25050,7 @@ msgstr "Всичко"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Всичко"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26946,7 +26946,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Изгледи"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -27145,7 +27145,7 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:301
 msgid "Watchers"
-msgstr ""
+msgstr "Наблюдатели"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -28126,7 +28126,7 @@ msgstr "cur"
 
 #: js/modules/Knowbase.js:119
 msgid "current"
-msgstr ""
+msgstr "текущ"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig

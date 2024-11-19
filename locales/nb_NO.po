@@ -8,11 +8,11 @@
 # Kheder Habachi <habachi89@gmail.com>, 2022
 # Bjørnar Seppola <bjs@blindeforbundet.no>, 2023
 # Kjell Edvard Medhaug <keme6206@gmail.com>, 2024
-# Evert Meulie <evert@arkivo.no>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # seppola <bjornar@seppola.net>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # jostein berge <jbe01@karmoy.kommune.no>, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Evert Meulie <evert@arkivo.no>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: jostein berge <jbe01@karmoy.kommune.no>, 2024\n"
+"Last-Translator: Evert Meulie <evert@arkivo.no>, 2024\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://app.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2679,7 +2679,7 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:2165
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:108
 msgid "Actors"
-msgstr ""
+msgstr "Aktører"
 
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
@@ -4463,7 +4463,7 @@ msgstr "Elementer som kan knyttes til en sak"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Elementer som kan knyttes til saker, endringer og problemer"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4568,7 +4568,7 @@ msgstr[1] "Tilknyttede elementtyper"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Tilknyttete elementer"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5261,7 +5261,7 @@ msgstr "Merke"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Merke"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6010,7 +6010,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Endret"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8570,7 +8570,7 @@ msgstr ""
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Details"
-msgstr ""
+msgstr "Detaljer"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:63
 msgid "Developer"
@@ -8712,7 +8712,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Enheter"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9116,7 +9116,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Vil du gjennopprette valgte revisjon ?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9137,7 +9137,7 @@ msgstr "Dokument"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Dokument"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -13658,7 +13658,7 @@ msgstr "Element suksessfullt lagt til"
 
 #: src/NotificationTargetFieldUnicity.php:66
 msgid "Item successfully added but duplicate record on"
-msgstr ""
+msgstr "Element lagt til, men duplikatoppføring på"
 
 #: src/CommonDBTM.php:4522
 #, php-format
@@ -15088,7 +15088,7 @@ msgstr "Ledergruppe"
 
 #: src/NotificationTargetProject.php:66
 msgid "Manager group except manager users"
-msgstr ""
+msgstr "Ledergruppe unntatt lederbrukere"
 
 #: src/NotificationTarget.php:1063
 msgid "Manager of group"
@@ -15196,7 +15196,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Hoved"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15744,7 +15744,7 @@ msgstr[1] "Skjermer"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Skjerm"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -16080,7 +16080,7 @@ msgstr[1] "Nettverksenheter"
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:185 src/Agent.php:219
 msgid "Network discovery (SNMP)"
-msgstr ""
+msgstr "Nettverksoppdagelse (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
@@ -16107,7 +16107,7 @@ msgstr[1] "Nettverksgrensesnitter"
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Agent/Communication/AbstractRequest.php:183 src/Agent.php:211
 msgid "Network inventory (SNMP)"
-msgstr ""
+msgstr "Nettverksinventar (SNMP)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network inventory threads"
@@ -16832,7 +16832,7 @@ msgstr "Nord"
 
 #: src/Agent.php:756 src/Agent.php:777
 msgid "Not allowed"
-msgstr ""
+msgstr "Ikke tillatt"
 
 #: src/Problem.php:712 src/Change.php:734 src/Ticket.php:3285
 msgctxt "status"
@@ -17521,6 +17521,8 @@ msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
 "no expiration date"
 msgstr ""
+"I søkemotoren, bruk \"Expiration contains NULL\" for å søke etter lisenser "
+"uten utløpsdato"
 
 #: src/Glpi/Dashboard/Provider.php:592 src/Glpi/Dashboard/Provider.php:739
 #: src/Glpi/Dashboard/FakeProvider.php:236
@@ -17806,7 +17808,7 @@ msgstr "Annet"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Annet"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -17835,6 +17837,8 @@ msgid ""
 "Other financial and administrative information (licenses, cartridges, "
 "consumables)"
 msgstr ""
+"Annen økonomisk og administrativ informasjon (lisenser, tonerkassetter, "
+"forbruksvarer)"
 
 #: src/CommonDBTM.php:4526
 msgid "Other item exist"
@@ -19308,7 +19312,7 @@ msgstr "Behandles"
 #: src/NotificationTargetCommonITILObject.php:2189
 #, php-format
 msgid "Processing %1$s"
-msgstr ""
+msgstr "Behandler %1$s"
 
 #: src/Problem.php:702 src/Ticket.php:3276
 #: src/Glpi/Dashboard/Provider.php:1304
@@ -19392,7 +19396,7 @@ msgstr ""
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Profile to be used when locking items"
-msgstr ""
+msgstr "Profil som skal brukes ved låsing av elementer"
 
 #: src/Profile.php:819 src/Profile.php:2114
 msgid "Profile's interface"
@@ -20542,7 +20546,7 @@ msgstr ""
 #: src/Agent.php:805
 #, php-format
 msgid "Requested at %s"
-msgstr ""
+msgstr "Forespurt %s"
 
 #: src/Infocom.php:1376
 msgid "Requested item not found"
@@ -20813,7 +20817,7 @@ msgstr "Reset API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Gjenopprett"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21347,7 +21351,7 @@ msgstr ""
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "Lagre nytt passord"
 
 #: src/NetworkEquipmentModelStencil.php:58
 msgid "Save port data"
@@ -22349,7 +22353,7 @@ msgstr "Enkelt grensesnitt"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Simplified interface help link"
-msgstr ""
+msgstr "Forenklet grensesnitt-hjelpelenke"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:101
 #: src/Telemetry.php:456
@@ -22718,7 +22722,7 @@ msgstr "Standard grensesnitt"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Standard interface help link"
-msgstr ""
+msgstr "Standard grensesnitt-hjelpelenke"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:192
 msgid "Staples"
@@ -23205,7 +23209,7 @@ msgstr "Systemet"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Systemet"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -23688,7 +23692,7 @@ msgstr ""
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "LDAP-utvidelsen for PHP-fortolkeren er ikke installert"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid ""
@@ -24873,7 +24877,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26341,7 +26345,7 @@ msgstr ""
 #: src/RuleAsset.php:141 src/NotificationTargetCommonITILObject.php:1957
 #: src/NotificationTargetCommonITILObject.php:1993
 msgid "User location"
-msgstr ""
+msgstr "Brukerens plassering"
 
 #: src/NotificationTargetCommonITILObject.php:144
 msgid "User mentioned"
@@ -26761,7 +26765,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Visninger"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -27647,7 +27651,7 @@ msgstr ""
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "Du må aktivere minst én varslingsmåte."
 
 #: src/SNMPCredential.php:222
 msgid "You must enter a username"
@@ -28315,7 +28319,7 @@ msgstr ""
 
 #: templates/forgotpassword.html.twig
 msgid "send me back"
-msgstr ""
+msgstr "send meg tilbake"
 
 #: src/DeviceCamera.php:185
 msgid "sensorsize"
@@ -28363,7 +28367,7 @@ msgstr ""
 
 #: templates/forgotpassword.html.twig
 msgid "to the login screen."
-msgstr ""
+msgstr "til innloggingsskjermen."
 
 #: src/Session.php:540 src/Session.php:545
 msgid "tree structure"

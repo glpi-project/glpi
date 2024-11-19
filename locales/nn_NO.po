@@ -4559,7 +4559,7 @@ msgstr[1] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Assosierte saker"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5251,7 +5251,7 @@ msgstr "Merke"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Merke"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -8699,7 +8699,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Enheter"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -17774,7 +17774,7 @@ msgstr "Anna"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Anna"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20779,7 +20779,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Gjennopprette"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23163,7 +23163,7 @@ msgstr "Systemet"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Systemet"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24819,7 +24819,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26707,7 +26707,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Visninger"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

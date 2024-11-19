@@ -36,12 +36,14 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # Nikolai Petrov <techobsl@yandex.ru>, 2024
 # Nick Pryazhnikov, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
-# leruetkins, 2024
-# Mikhail Degterev <mikhail.degterev@gmail.com>, 2024
 # Konstantin Panin, 2024
 # Dmitrii S, 2024
+# Mikhail Degterev <mikhail.degterev@gmail.com>, 2024
+# leruetkins, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Alexander Sokolov <a.sokolov@outlook.com>, 2024
+# Petr Kutepov, 2024
+# Lev Shereshevsky <Lev.Shereshevsky@sms-a.ru>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -50,7 +52,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Alexander Sokolov <a.sokolov@outlook.com>, 2024\n"
+"Last-Translator: Lev Shereshevsky <Lev.Shereshevsky@sms-a.ru>, 2024\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3953,7 +3955,7 @@ msgstr "Произведен ответ на запрос проверки"
 #: src/NotificationTargetTicket.php:526 src/NotificationTargetChange.php:243
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr "Ответ на запрос об утверждении был предоставлен%s"
+msgstr "Ответ на запрос утверждения предоставил(а) %s"
 
 #: src/Appliance_Item.php:352
 msgid "An appliance is required"
@@ -4643,7 +4645,7 @@ msgstr "Связывать элементы с заявкой"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Соотнесение элементов с заявками, изменениями и проблемами"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4758,7 +4760,7 @@ msgstr[3] "Типы связанных элементов"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Связанные элементы"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5474,7 +5476,7 @@ msgstr "Торговая марка"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Торговая марка"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6286,7 +6288,7 @@ msgstr "Изменить видимость для подчинённых орг
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Измененный"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -9120,7 +9122,7 @@ msgstr "ID устройства"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Устройств"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9537,7 +9539,7 @@ msgstr "Вы хотите заменить страницу настройки �
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Вы хотите восстановить выбранные доработки?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9560,7 +9562,7 @@ msgstr "Документ"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Документ"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -14166,7 +14168,7 @@ msgstr[3] ""
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1280
 #, php-format
 msgid "Item %s (%s) not found."
-msgstr "Объект%s (%s) не найден."
+msgstr "Объект %s (%s) не найден."
 
 #. TRANS: %s is the type of the component
 #: src/Item_Devices.php:117
@@ -15892,7 +15894,7 @@ msgstr "Массовые действия"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Мастер"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -16429,7 +16431,7 @@ msgstr[3] ""
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:733
 #, php-format
 msgid "Model %s (%s) not found."
-msgstr "Модель%s (%s) не найдена."
+msgstr "Модель %s (%s) не найдена."
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Model for automatic entity transfer on inventories"
@@ -18594,7 +18596,7 @@ msgstr "Другое"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Другое"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -19027,7 +19029,7 @@ msgstr ""
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:69
 msgid "Passwords do not match"
-msgstr ""
+msgstr "Пароли не совпадают"
 
 #: src/Reservation.php:1131
 msgid "Past reservations"
@@ -19135,18 +19137,18 @@ msgstr "Уведомление о периоде"
 #: src/Peripheral.php:83
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Устройство"
+msgstr[1] "Устройства"
+msgstr[2] "Устройств"
+msgstr[3] "Устройства"
 
 #: src/PeripheralModel.php:41 src/Rule.php:331
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Модель устройства"
+msgstr[1] "Модели устройств"
+msgstr[2] "Моделей устройств"
+msgstr[3] "Моделей устройств"
 
 #: src/Rule.php:403
 msgid "Peripheral type"
@@ -19863,7 +19865,7 @@ msgstr ""
 #: src/Item_Enclosure.php:250 src/Rack.php:126 src/Glpi/Socket.php:335
 #: src/Glpi/Socket.php:759
 msgid "Position"
-msgstr "Классификация"
+msgstr "Положение"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Position in room"
@@ -20655,7 +20657,7 @@ msgid ""
 "Racks plugin data has to be updated to %s version. It can be done using the "
 "--update-plugin option."
 msgstr ""
-"Данные плагина Стойки Racks необходимо обновить до версии%s. Это можно "
+"Данные плагина Стойки Racks необходимо обновить до версии %s. Это можно "
 "сделать используя параметр --update-plugin."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:262
@@ -21792,7 +21794,7 @@ msgstr "REST API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Восстановить"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22075,8 +22077,8 @@ msgstr "SECURE"
 #, php-format
 msgid "SELinux boolean %s is %s, some features may require this to be on."
 msgstr ""
-"SELinux логически%s - %s, некоторые функции могут потребовать включения этой"
-" опции."
+"SELinux логически %s - %s, некоторые функции могут потребовать включения "
+"этой опции."
 
 #: src/Glpi/System/Requirement/SeLinux.php:46
 msgid "SELinux configuration"
@@ -24252,7 +24254,7 @@ msgstr "Система"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25994,7 +25996,7 @@ msgstr "Всего"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Всего"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26831,7 +26833,7 @@ msgstr "Разблокированные элементы"
 
 #: js/modules/ObjectLock.js:98
 msgid "Unlock request sent!"
-msgstr ""
+msgstr "Отправлен запрос на разблокировку"
 
 #: phpunit/functional/LogTest.php:484 src/Log.php:1207
 msgid "Unlock the item"
@@ -26840,10 +26842,10 @@ msgstr "Разблокировать элемент"
 #: src/Unmanaged.php:55
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Неуправляемый актив"
+msgstr[1] "Неуправляемые активы"
+msgstr[2] "Неуправляемых активов"
+msgstr[3] "Неуправляемые активы"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -26939,20 +26941,20 @@ msgstr "Обновление (участник)"
 
 #: src/ITILSubItemRights.php:64
 msgid "Update (author)"
-msgstr ""
+msgstr "Обновление (автор)"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update ?"
-msgstr ""
+msgstr "Обновить?"
 
 #: src/AutoUpdateSystem.php:42
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Источник обновления"
+msgstr[1] "Источники обновления"
+msgstr[2] "Источников обновления"
+msgstr[3] "Источники обновления"
 
 #: phpunit/functional/LogTest.php:506 src/Log.php:1155
 msgid "Update a field"
@@ -27948,7 +27950,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Просмотров"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28897,7 +28899,7 @@ msgstr "Вы должны ввести имя пользователя"
 #: src/Glpi/Marketplace/View.php:982
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr "Вы должны иметь%s подписчиков, что бы получить этот плагин"
+msgstr "Вы должны иметь %s подписчиков, что бы получить этот плагин"
 
 #: src/CommonDropdown.php:644
 msgid "You must replace all uses of this dropdown by another."

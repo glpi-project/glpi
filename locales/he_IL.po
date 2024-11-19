@@ -2730,7 +2730,7 @@ msgstr "שחקנים"
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "אד הוק"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -4523,7 +4523,7 @@ msgstr "פריטים שנתן לקשר לקריאה"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "פריטים נלווים לכרטיסים, שינויים ובעיות"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4633,7 +4633,7 @@ msgstr[2] "סוגי פריטים משויכים"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "פריטים משוייכים"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5083,7 +5083,7 @@ msgstr "זמן ממוצע לקחת בחשבון"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5333,7 +5333,7 @@ msgstr "מותג"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "מותג"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -5829,9 +5829,9 @@ msgstr[2] "מחסניות"
 #: src/Printer_CartridgeInfo.php:46
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "מידע על מלאי מחסניות"
+msgstr[1] "מידע על מלאי מחסניות"
+msgstr[2] "מידע על מלאי מחסניות"
 
 #: templates/pages/assets/cartridge.html.twig src/CartridgeItem.php:64
 msgid "Cartridge model"
@@ -8850,7 +8850,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "התקנים"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9279,7 +9279,7 @@ msgstr "מסמך"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "מסמך"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15426,7 +15426,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "ראשי"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15980,7 +15980,7 @@ msgstr[2] "צגים"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "צג"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -18069,7 +18069,7 @@ msgstr "אחר"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "אחר"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -21168,7 +21168,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "שחזר"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21882,7 +21882,7 @@ msgstr "פריט שני"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "משני"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23581,7 +23581,7 @@ msgstr "מערכת"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "מערכת"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25269,7 +25269,7 @@ msgstr "סך הכל"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "סך הכל"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27184,7 +27184,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "צפיות"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28127,7 +28127,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "עליך לבחור לפחות נכס אחד כדי ליצור קבוצה"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""

@@ -2706,7 +2706,7 @@ msgstr "Actors"
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -4487,7 +4487,7 @@ msgstr "Associable items to a ticket"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Associable items to tickets, changes and problems"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4592,7 +4592,7 @@ msgstr[1] "Associated Item Types"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Associated items"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5288,7 +5288,7 @@ msgstr "Brand"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Brand"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6052,7 +6052,7 @@ msgstr "Change visibility in child entities."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Changed"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6327,6 +6327,8 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Clean orphaned documents: deletes all documents that are not associated with"
+" any items."
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -8779,7 +8781,7 @@ msgstr "Device_id"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Custom Devices"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9191,7 +9193,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Do you want to restore the selected revision?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9212,7 +9214,7 @@ msgstr "Document"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15328,7 +15330,7 @@ msgstr "Massive actions"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15881,7 +15883,7 @@ msgstr[1] "Monitors"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Monitor"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -17960,7 +17962,7 @@ msgstr "Other"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Other"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -21012,7 +21014,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restore"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21720,7 +21722,7 @@ msgstr "Second Item"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Secondary"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23407,7 +23409,7 @@ msgstr "System"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "System"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -23625,7 +23627,7 @@ msgstr[1] "Team Members"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Team members"
-msgstr ""
+msgstr "Team Members"
 
 #: phpunit/functional/RuleTest.php:324 front/stat.graph.php:94
 #: src/CommonITILTask.php:976 src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -25130,7 +25132,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27036,7 +27038,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Views"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28230,7 +28232,7 @@ msgstr "cur"
 
 #: js/modules/Knowbase.js:119
 msgid "current"
-msgstr ""
+msgstr "current"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
