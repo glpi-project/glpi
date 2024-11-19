@@ -443,7 +443,7 @@ class NetworkAlias extends FQDNLabel
                 Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td><a href='" . $alias->getFormURLWithID($data['alias_id']) . "'>" .
+                    echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>" .
                           htmlescape($data['alias']) . "</a></td>";
                     echo "<td><a href='" . $address->getLinkURL() . "'>" . htmlescape($address->getInternetName()) .
                     "</a></td>";
