@@ -290,3 +290,39 @@
         }
     }
 }
+
+.logic-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-pink-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.question-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-indigo-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-teal-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-selector {
+    border: 0 !important;
+    background-color: var(--tblr-yellow-lt) !important;
+}
+
+.visibility-dropdown-card {
+    width: 600px;
+}

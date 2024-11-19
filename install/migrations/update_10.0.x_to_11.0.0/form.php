@@ -103,6 +103,8 @@ if (!$DB->tableExists('glpi_forms_sections')) {
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `rank` int NOT NULL DEFAULT '0',
+            `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),
             UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
@@ -124,6 +126,8 @@ if (!$DB->tableExists('glpi_forms_questions')) {
             `description` longtext,
             `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
             `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
+            `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),
             UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
@@ -142,6 +146,8 @@ if (!$DB->tableExists('glpi_forms_comments')) {
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `rank` int NOT NULL DEFAULT '0',
+            `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),
             UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
@@ -329,6 +335,13 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
     $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
+
+    $migration->addField("glpi_forms_questions", "visibility_strategy", "string");
+    $migration->addField("glpi_forms_questions", "conditions", "json");
+    $migration->addField("glpi_forms_sections", "visibility_strategy", "string");
+    $migration->addField("glpi_forms_sections", "conditions", "json");
+    $migration->addField("glpi_forms_comments", "visibility_strategy", "string");
+    $migration->addField("glpi_forms_comments", "conditions", "json");
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
