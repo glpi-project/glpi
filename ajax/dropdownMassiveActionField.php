@@ -56,7 +56,7 @@ if (isset($_POST['inline']) && $_POST['inline']) {
 }
 $submitname = _sx('button', 'Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {
-    $submitname = $_POST['submitname'];
+    $submitname = htmlescape($_POST['submitname']);
 }
 
 

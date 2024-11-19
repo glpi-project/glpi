@@ -1375,6 +1375,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             echo $header;
 
             foreach ($iterator as $data) {
+
                 Session::addToNavigateListItems('ProjectTask', $data['id']);
                 $rand = mt_rand();
                 echo "<tr class='" . ($data['is_deleted'] ? "tab_bg_1_2" : "tab_bg_2") . "'>";
@@ -1388,26 +1389,26 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 }
 
                 echo "<td>";
-                $link = "<a id='ProjectTask" . $data["id"] . $rand . "' href='" .
-                        ProjectTask::getFormURLWithID($data['id']) . "'>" . $data['name'] .
-                        (empty($data['name']) ? "(" . $data['id'] . ")" : "") . "</a>";
+                $link = "<a id='ProjectTask" . (int)$data["id"] . $rand . "' href='" .
+                        htmlescape(ProjectTask::getFormURLWithID($data['id'])) . "'>" . htmlescape($data['name']) .
+                        (empty($data['name']) ? "(" . (int)$data['id'] . ")" : "") . "</a>";
                 echo sprintf(
-                    __('%1$s %2$s'),
+                    __s('%1$s %2$s'),
                     $link,
                     Html::showToolTip(
                         RichText::getEnhancedHtml($data['content']),
                         ['display' => false,
-                            'applyto' => "ProjectTask" . $data["id"] . $rand
+                            'applyto' => "ProjectTask" . (int)$data["id"] . $rand
                         ]
                     )
                 );
                 echo "</td>";
                 $name = !empty($data['transname2']) ? $data['transname2'] : $data['tname'];
-                echo "<td>" . $name . "</td>";
+                echo "<td>" . htmlescape($name) . "</td>";
                 echo "<td";
                 $statename = !empty($data['transname3']) ? $data['transname3'] : $data['sname'];
-                echo " style=\"background-color:" . $data['color'] . "\"";
-                echo ">" . $statename . "</td>";
+                echo " style=\"background-color:" . htmlescape($data['color']) . "\"";
+                echo ">" . htmlescape($statename) . "</td>";
                 echo "<td>";
                 echo Dropdown::getValueWithUnit($data["percent_done"], "%");
                 echo "</td>";
@@ -1421,9 +1422,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 echo "<td>";
                 if ($data['projecttasks_id'] > 0) {
                       $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                      echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
-                        ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
-                        (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
+                      echo "<a id='ProjectTask" . (int)$data["projecttasks_id"] . $rand . "' href='" .
+                        htmlescape(ProjectTask::getFormURLWithID($data['projecttasks_id'])) . "'>" . htmlescape($father) .
+                        (empty($father) ? "(" . (int)$data['projecttasks_id'] . ")" : "") . "</a>";
                 }
                 echo '</td><td>';
                 $projecttask = new ProjectTask();
