@@ -1375,7 +1375,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             echo $header;
 
             foreach ($iterator as $data) {
-
                 Session::addToNavigateListItems('ProjectTask', $data['id']);
                 $rand = mt_rand();
                 echo "<tr class='" . ($data['is_deleted'] ? "tab_bg_1_2" : "tab_bg_2") . "'>";
