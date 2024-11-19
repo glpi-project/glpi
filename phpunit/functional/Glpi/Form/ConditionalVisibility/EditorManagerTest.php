@@ -1,0 +1,275 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Form\ConditionalVisiblity;
+
+use Glpi\Form\ConditionalVisiblity\ConditionData;
+use Glpi\Form\ConditionalVisiblity\EditorManager;
+use Glpi\Form\ConditionalVisiblity\FormData;
+use Glpi\Form\ConditionalVisiblity\LogicOperator;
+use Glpi\Form\ConditionalVisiblity\ValueOperator;
+use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use GLPITestCase;
+
+final class EditorManagerTest extends GLPITestCase
+{
+    private function getManagerWithData(FormData $form_data): EditorManager
+    {
+        $editor_manager = new EditorManager();
+        $editor_manager->setFormData($form_data);
+        return $editor_manager;
+    }
+
+    public function testDefaultConditionIsAdded(): void
+    {
+        // Arrange: create an editor manager with no conditions
+        $form_data = new FormData([]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the defined conditions
+        $conditions = $editor_manager->getDefinedConditions();
+
+        // Assert: the defined conditions should contain a single default condition
+        $this->assertEquals($conditions, [
+            new ConditionData(
+                item_uuid: '',
+                item_type: '',
+                value_operator: null,
+                value: null,
+            )
+        ]);
+    }
+
+    public function testConditionAreFound(): void
+    {
+        // Arrange: create an editor manager with two conditions
+        $form_data = new FormData([
+            'conditions' => [
+                [
+                    'item' => 'question-1',
+                    'value_operator' => ValueOperator::EQUALS->value,
+                    'value' => 'foo',
+                ],
+                [
+                    'logic_operator' => LogicOperator::OR->value,
+                    'item' => 'question-2',
+                    'value_operator' => ValueOperator::EQUALS->value,
+                    'value' => 'bar',
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the defined conditions
+        $conditions = $editor_manager->getDefinedConditions();
+
+        // Assert: the two defined conditions should be found
+        $this->assertEquals($conditions, [
+            new ConditionData(
+                item_uuid: 1,
+                item_type: 'question',
+                value_operator: ValueOperator::EQUALS->value,
+                value: 'foo',
+            ),
+            new ConditionData(
+                item_uuid: 2,
+                item_type: 'question',
+                logic_operator: LogicOperator::OR->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: 'bar',
+            ),
+        ]);
+    }
+
+    public function testConditionsHaveDefaultLogicOperators(): void
+    {
+        // Arrange: create an editor manager one conditon without logic operator
+        $form_data = new FormData([
+            'conditions' => [
+                [
+                    'item' => 'question-1',
+                    'value_operator' => ValueOperator::EQUALS->value,
+                    'value' => 'foo',
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the defined condition
+        $conditions = $editor_manager->getDefinedConditions();
+        $condition = array_pop($conditions);
+
+        // Assert: the fallback "AND" operator must be found
+        $this->assertEquals(LogicOperator::AND, $condition->getLogicOperator());
+    }
+
+    public function testOnlyValidQuestionsAreReturnedForDropdowns(): void
+    {
+        // Arrange: create an editor manager with three questions
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Question 2',
+                    'type' => QuestionTypeFile::class, // do not support conditions
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Question 3',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the questions dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: the dropdown values should contain the two questions
+        $this->assertEquals($dropdown_values, [
+            'question-1' => 'Question 1',
+            'question-3' => 'Question 3',
+        ]);
+    }
+
+    public function testSelectedQuestionIsExcludedFromDropdownValues(): void
+    {
+        // Arrange: create an editor manager with three questions
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Question 2',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Question 3',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+            'selected_item_uuid' => 3,
+            'selected_item_type' => 'question',
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the questions dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: the dropdown values should contain the two questions
+        $this->assertEquals($dropdown_values, [
+            'question-1' => 'Question 1',
+            'question-2' => 'Question 2',
+        ]);
+    }
+
+    public function testValueOperatorsForValidQuestionAreReturned(): void
+    {
+        // Arrange: create an editor manager with three questions
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Question 2',
+                    'type' => QuestionTypeFile::class, // do not support conditions
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Question 3',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the operators for a valid question
+        $dropdown_values = $editor_manager->getValueOperatorDropdownValues(1);
+
+        // Assert: the expected operators are found
+        $this->assertEquals([
+            'equals'       => __("Is equal to"),
+            'not_equals'   => __("Is not equal to"),
+            'contains'     => __("Contains"),
+            'not_contains' => __("Do not contains"),
+        ], $dropdown_values);
+    }
+
+    public function testValueOperatorsForInvalidQuestionAreNotReturned(): void
+    {
+        // Arrange: create an editor manager with three questions
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Question 2',
+                    'type' => QuestionTypeFile::class, // do not support conditions
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Question 3',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the operators for a valid question
+        $dropdown_values = $editor_manager->getValueOperatorDropdownValues(2);
+
+        // Assert: the expected operators are found
+        $this->assertEquals([], $dropdown_values);
+    }
+}

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,46 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedForConditionInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
+use Glpi\Form\QuestionVisibilityStrategy;
+use JsonException;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedForConditionInterface
+trait ConditionnableTrait
 {
-    #[Override]
-    public function getInputType(): string
+    /** @return ConditionData[] */
+    public function getConditionsData(): array
     {
-        return 'text';
+        parent::post_getFromDB();
+
+        try {
+            $raw_data = json_decode(
+                json       : $this->fields['conditions'],
+                associative: true,
+                flags      : JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $raw_data = [];
+        }
+
+        $form_data = new FormData([
+            'conditions' => $raw_data,
+        ]);
+
+        return $form_data->getConditionsData();
     }
 
-    #[Override]
-    public function getName(): string
+    public function getVisibilityStrategy(): QuestionVisibilityStrategy
     {
-        return __("Text");
-    }
+        $strategy_value = $this->fields['visibility_strategy'] ?? "";
+        $strategy = QuestionVisibilityStrategy::tryFrom($strategy_value);
+        if ($strategy === null) {
+            $strategy = QuestionVisibilityStrategy::ALWAYS_VISIBLE;
+        }
 
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
+        return $strategy;
     }
 }

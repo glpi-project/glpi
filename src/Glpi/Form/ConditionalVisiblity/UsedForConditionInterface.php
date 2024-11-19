@@ -33,46 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedForConditionInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
-
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedForConditionInterface
+/**
+ * Not all questions types are valid to be used as a condition for another
+ * questions visibility parameters.
+ * Valid questions types must implement this interface.
+ */
+interface UsedForConditionInterface
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'text';
-    }
-
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
-
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
-    }
+    /** @return ValueOperator[] */
+    public function getSupportedValueOperators(): array;
 }
