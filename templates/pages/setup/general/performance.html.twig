@@ -75,10 +75,7 @@
             <th class="fw-normal">{{ _n('Memory', 'Memories', 1) }}</th>
             <td>{{ __('%1$s / %2$s')|format(used|formatted_size, max|formatted_size) }}</td>
             <td>
-               {{ call('Html::displayProgressBar', [100, rate, {
-                  simple: true,
-                  forcepadding: false
-               }]) }}
+               {{ progress_bar(rate) }}
             </td>
             {% if rate > 5 and rate < 75 %}
                {{ _self.success_icon_msg(__('%1$s memory usage is correct')|format(opcache_ext)) }}
@@ -94,10 +91,7 @@
             <th class="fw-normal">{{ __('Hits rate') }}</th>
             <td>{{ __('%1$s / %2$s')|format(hits, num_requests) }}</td>
             <td>
-               {{ call('Html::displayProgressBar', [100, hit_rate, {
-                  simple: true,
-                  forcepadding: false
-               }]) }}
+               {{ progress_bar(hit_rate) }}
             </td>
             {% if hit_rate > 90 %}
                {{ _self.success_icon_msg(__('%1$s hits rate is correct')|format(opcache_ext)) }}

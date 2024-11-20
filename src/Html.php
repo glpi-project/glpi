@@ -980,6 +980,33 @@ HTML;
         }
     }
 
+    /**
+     * Returns a static progress bar HTML snippet.
+     *
+     * @param float $percentage
+     * @param string $label
+     *
+     * @return string
+     */
+    public static function getProgressBar(float $percentage, ?string $label = null): string
+    {
+        if ($label === null) {
+            $label = floor($percentage) . ' %';
+        }
+
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(
+            <<<TWIG
+              <div class="progress" style="height: 15px; min-width: 50px;">
+                 <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
+                    aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
+              </div>
+TWIG,
+            [
+                'percentage' => $percentage,
+                'label'      => $label,
+            ]
+        );
+    }
 
     /**
      * Include common HTML headers
