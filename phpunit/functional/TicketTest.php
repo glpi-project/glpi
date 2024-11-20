@@ -62,6 +62,7 @@ use Session;
 
 class TicketTest extends DbTestCase
 {
+
     public static function addActorsProvider(): iterable
     {
         $default_use_notifications = 1;
@@ -540,6 +541,117 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(0, $ticket_id);
 
         $this->checkActors($ticket, $expected_actors);
+    }
+
+    public function testSearchOptions()
+    {
+        $this->login();
+
+        $last_followup_date = '2016-01-01 00:00';
+        $last_task_date = '2017-01-01 00:00';
+        $last_solution_date = '2018-01-01 00:00';
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'  => 'Ticket',
+            'items_id' => $ticket_id,
+            'content'    => 'followup content',
+            'date'       => '2015-01-01 00:00:00',
+        ]);
+
+        $followup->add([
+            'itemtype'  => 'Ticket',
+            'items_id' => $ticket_id,
+            'content'    => 'followup content',
+            'date'       => '2015-02-01 00:00:00',
+        ]);
+
+        $task = new \TicketTask();
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => '2015-01-01 00:00:00',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => $last_task_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => '2016-01-01 00:00:00',
+            ])
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => 'Ticket',
+                'items_id' => $ticket_id,
+                'content'    => 'solution content',
+                'date_creation' => '2017-01-01 00:00:00',
+                'status' => 2,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$followup->add([
+                'itemtype'  => $ticket::getType(),
+                'items_id'  => $ticket_id,
+                'add_reopen'   => '1',
+                'content'      => 'This is required',
+                'date'         => $last_followup_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => 'Ticket',
+                'items_id' => $ticket_id,
+                'content'    => 'solution content',
+                'date_creation' => $last_solution_date,
+            ])
+        );
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'field' => 1,
+                'searchtype' => 'contains',
+                'value' => 'title',
+            ]
+        ];
+        $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria]);
+        $ticket_with_so = $data['data']['rows'][0];
+
+        $this->assertSame(1, $data['data']['totalcount']);
+        $this->assertEquals($ticket_id, $ticket_with_so['id']);
+        $this->assertStringContainsString($last_followup_date, $ticket_with_so['Ticket_139']['displayname']);
+        $this->assertStringContainsString($last_solution_date, $ticket_with_so['Ticket_140']['displayname']);
+        $this->assertStringContainsString($last_task_date, $ticket_with_so['Ticket_141']['displayname']);
     }
 
 
