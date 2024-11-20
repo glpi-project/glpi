@@ -7077,7 +7077,7 @@ HTML
                 'content'       => 'private task assigned to normal user',
                 'is_private'    => 1,
                 'users_id_tech' => $normal_user_id,
-                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+40s', $now)), // to ensure result order is correct
             ]
         );
 
