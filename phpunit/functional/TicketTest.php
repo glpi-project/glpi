@@ -546,9 +546,9 @@ class TicketTest extends DbTestCase
     {
         $this->login();
 
-        $last_followup_date = '2016-01-01 00:00';
-        $last_task_date = '2017-01-01 00:00';
-        $last_solution_date = '2018-01-01 00:00';
+        $last_followup_date = '2016-01-01 00:00:00';
+        $last_task_date = '2017-01-01 00:00:00';
+        $last_solution_date = '2018-01-01 00:00:00';
 
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
@@ -645,14 +645,14 @@ class TicketTest extends DbTestCase
         ];
         $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria]);
         $this->assertSame(1, $data['data']['totalcount']);
-        $ticket_with_so = $data['data']['rows'][0];
+        $ticket_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
-        $this->assertTrue(array_key_exists('Ticket_139', $ticket_with_so));
-        $this->assertStringContainsString($last_followup_date, $ticket_with_so['Ticket_139']['displayname']);
-        $this->assertTrue(array_key_exists('Ticket_140', $ticket_with_so));
-        $this->assertStringContainsString($last_solution_date, $ticket_with_so['Ticket_140']['displayname']);
-        $this->assertTrue(array_key_exists('Ticket_141', $ticket_with_so));
-        $this->assertStringContainsString($last_task_date, $ticket_with_so['Ticket_141']['displayname']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_139', $ticket_with_so));
+        $this->assertEquals($last_followup_date, $ticket_with_so['ITEM_Ticket_139']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_140', $ticket_with_so));
+        $this->assertEquals($last_solution_date, $ticket_with_so['ITEM_Ticket_140']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_141', $ticket_with_so));
+        $this->assertEquals($last_task_date, $ticket_with_so['ITEM_Ticket_141']);
     }
 
 
