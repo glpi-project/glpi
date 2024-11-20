@@ -35,6 +35,7 @@
 namespace Glpi\Controller;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Http\Firewall;
 use Symfony\Component\HttpFoundation\Request;
 use Glpi\Inventory\Conf;
@@ -71,9 +72,9 @@ final class InventoryController extends AbstractController
                 if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
                     $contents = file_get_contents($inventory_file);
                 } else {
-                    trigger_error(
-                        sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id),
-                        E_USER_WARNING
+                    throw new HttpException(
+                        404,
+                        sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id)
                     );
                 }
             } else if (!$request->isMethod('POST')) {
