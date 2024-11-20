@@ -1604,12 +1604,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DatabaseInstance.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_int\\(\\) with int will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
