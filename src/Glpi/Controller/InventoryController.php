@@ -45,14 +45,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class InventoryController extends AbstractController
 {
-    public static bool $is_inventory = false;
+    public static bool $is_running = false;
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
     public function __invoke(Request $request): Response
     {
         $conf = new Conf();
-        self::$is_inventory = true;
+        self::$is_running = true;
 
         if ($conf->enabled_inventory != 1) {
             throw new AccessDeniedHttpException("Inventory is disabled");

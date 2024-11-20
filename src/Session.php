@@ -940,7 +940,7 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  InventoryController::$is_inventory === true
+                  InventoryController::$is_running === true
                   || defined('TU_USER')
               )
         );
