@@ -1009,7 +1009,7 @@ class Toolbox
     {
 
         if (file_exists($dir)) {
-            chmod($dir, 0777);
+            chmod($dir, 0755);
 
             if (is_dir($dir)) {
                 $id_dir = opendir($dir);
