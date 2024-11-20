@@ -644,12 +644,14 @@ class TicketTest extends DbTestCase
             ]
         ];
         $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria]);
-        $ticket_with_so = $data['data']['rows'][0];
-
         $this->assertSame(1, $data['data']['totalcount']);
+        $ticket_with_so = $data['data']['rows'][0];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
+        $this->assertTrue(array_key_exists('Ticket_139', $ticket_with_so));
         $this->assertStringContainsString($last_followup_date, $ticket_with_so['Ticket_139']['displayname']);
+        $this->assertTrue(array_key_exists('Ticket_140', $ticket_with_so));
         $this->assertStringContainsString($last_solution_date, $ticket_with_so['Ticket_140']['displayname']);
+        $this->assertTrue(array_key_exists('Ticket_141', $ticket_with_so));
         $this->assertStringContainsString($last_task_date, $ticket_with_so['Ticket_141']['displayname']);
     }
 
