@@ -51,7 +51,7 @@
                 action: 'get_items_from_itemtype'
             }
         ]) %}
-        {{ fields.dropdownField(item.fields['itemtype'], 'items_id', item.fields['items_id'], _x('Item', 'Items', 1)) }}
+        {{ fields.dropdownField(item.fields['itemtype'], 'items_id', item.fields['items_id'], _n('Item', 'Items', 1)) }}
     {% else %}
         {% do call('Ajax::updateItemOnSelectEvent', [
             'dropdown_itemtype' ~ rand,
@@ -67,7 +67,7 @@
         {% set result_itemtype_field %}
             <span id="results_itemtype{{ rand }}"></span>
         {% endset %}
-        {{ fields.htmlField('', result_itemtype_field, _x('Item', 'Items', 1)) }}
+        {{ fields.htmlField('', result_itemtype_field, _n('Item', 'Items', 1)) }}
     {% endif %}
     {{ parent() }}
 {% endblock %}

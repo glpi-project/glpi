@@ -139,6 +139,10 @@ class DatabaseInstance extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['itemtype']) || empty($input['items_id'])) {
+            Session::addMessageAfterRedirect(__s('An item is required'), false, ERROR);
+            return false;
+        }
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
             return false;
@@ -147,6 +151,15 @@ class DatabaseInstance extends CommonDBTM
             unset($input['date_lastbackup']);
         }
         return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if ((array_key_exists('itemtype', $input) && empty($input['itemtype'])) || (array_key_exists('items_id', $input) && empty($input['items_id']))) {
+            Session::addMessageAfterRedirect(__s('An item is required'), false, ERROR);
+            return false;
+        }
+        return parent::prepareInputForUpdate($input);
     }
 
     public function rawSearchOptions()

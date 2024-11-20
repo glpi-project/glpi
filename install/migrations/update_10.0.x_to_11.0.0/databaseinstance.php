@@ -40,3 +40,20 @@
 
 // The size field seems to be unsused and rather a copy-paste from the glpi_databases table
 $migration->dropField('glpi_databaseinstances', 'size');
+
+// Block update if any database instance is currently unlinked
+$unlinked_it = $DB->request([
+    'SELECT' => ['id'],
+    'FROM'   => 'glpi_databaseinstances',
+    'WHERE' => [
+        'OR' => [
+            'itemtype' => '',
+            'items_id' => 0
+        ]
+    ]
+]);
+
+if (count($unlinked_it)) {
+    $unlinked_id_string = implode(', ', array_column(iterator_to_array($unlinked_it), 'id'));
+    throw new \RuntimeException("Some database instances are not linked to an item: {$unlinked_id_string}");
+}
