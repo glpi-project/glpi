@@ -61,10 +61,6 @@
    <input type="hidden" name="is_template" value="1" />
 {% elseif item.isNewItem() %}
    {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
-{% else %}
-   {% if noid == false and (session('glpiis_ids_visible') or nametype|length == 0) %}
-      {% set nametype = __('%1$s - %2$s')|format(nametype, item.fields['id']) %}
-   {% endif %}
 {% endif %}
 
 {% if item.canEdit(item.fields['id']) %}
