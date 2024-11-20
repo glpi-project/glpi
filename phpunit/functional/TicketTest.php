@@ -62,7 +62,6 @@ use Session;
 
 class TicketTest extends DbTestCase
 {
-
     public static function addActorsProvider(): iterable
     {
         $default_use_notifications = 1;
