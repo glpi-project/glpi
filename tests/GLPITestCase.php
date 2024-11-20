@@ -412,6 +412,10 @@ class GLPITestCase extends atoum
             case SoftwareLicense::class:
                 $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
                 break;
+            case DatabaseInstance::class:
+                $input['itemtype']          = Computer::class;
+                $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
+                break;
         }
 
         return $input;
