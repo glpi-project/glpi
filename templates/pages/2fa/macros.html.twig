@@ -49,7 +49,7 @@
                if ($(this).val().length === 1) {
                    const next = $(this).next();
                    if (next.length === 0) {
-                       $(this).closest('form').submit();
+                       $(this).closest('form').find('button[name="continue"]').click();
                        input_fields.prop('disabled', true);
                    }
                }
@@ -64,7 +64,7 @@
                    if (next.length) {
                        next.focus();
                    } else {
-                       $(this).closest('form').submit();
+                       $(this).closest('form').find('button[name="continue"]').click();
                        input_fields.prop('disabled', true);
                    }
                }
