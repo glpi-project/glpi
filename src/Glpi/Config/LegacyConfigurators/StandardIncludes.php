@@ -90,16 +90,15 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             }
         }
 
-        $is_installing = isset($_SESSION['is_installing']);
-        if ($is_installing) {
-            $skip_db_checks = true;
-            $skip_maintenance_checks = true;
-            Session::loadLanguage();
-        }
-
         //init cache
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+
+        $is_installing = isset($_SESSION['is_installing']);
+        if ($is_installing) {
+            Session::loadLanguage();
+            return;
+        }
 
         // Check if the DB is configured properly
         if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

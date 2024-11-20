@@ -75,24 +75,34 @@ final class ProgressChecker
         return $progress;
     }
 
-    public function resetProgress(string $key): void
+    public function deleteProgress(string $key): void
     {
         Session::start();
-
-        if (!isset($_SESSION['progress'][$key])) {
-            throw new \RuntimeException(\sprintf(
-                "Cannot reset progress bar for key \"%s\": it was not found in the current storage.",
-                $key,
-            ));
-        }
 
         unset($_SESSION['progress'][$key]);
 
         session_write_close();
     }
 
+    public function endProgress(string $key): void
+    {
+        Session::start();
+
+        $progress = $this->getCurrentProgress($key);
+        $progress->finished_at = new \DateTimeImmutable();
+        $this->save($progress);
+
+        session_write_close();
+    }
+
     public function save(SessionProgress $progress): void
     {
+        // Mandatory here:
+        // If you execute "save($progress)" several times, PHP will send a "Cookie: ..." HTTP header.
+        // Use it thousands of times and you will have thousands of "Cookie: ..." HTTP header lines,
+        // resulting in a "Header too big" or "File too big" HTTP error response.
+        @ini_set('session.use_cookies', 0);
+
         Session::start();
 
         $_SESSION['progress'][$progress->key] = $progress;

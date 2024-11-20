@@ -30,32 +30,26 @@
  * ---------------------------------------------------------------------
  */
 (() => {
-    let request_running = false;
+    function updateProgress(single_message_element, progress_element, value, max, text) {
+        value = value || 0;
+        max = max || 1;
+        const percentage = (value / max * 100);
 
-    function updateProgress(progress_element, value, max) {
-        // Trick for visual aid to understand it's not yet finished.
-        // Values "100" are used when it's *really* finished
-        if (max !== 100 && value !== 100 && value && max === value) {
-            value = (max * 0.98).toFixed(0);
-        }
+        const bar = progress_element.querySelector('.progress-bar');
+        bar.style.width = `${percentage}%`;
+        bar.innerHTML = `${Math.floor(percentage)}%`;
+        bar.setAttribute('aria-valuenow', percentage);
 
-        if (value) {
-            progress_element.value = value;
-        } else {
-            progress_element.removeAttribute('value');
-        }
-
-        if (max) {
-            progress_element.max = max;
-        } else {
-            progress_element.removeAttribute('max');
+        if (text && text.length) {
+            console.info('Text', {text});
+            single_message_element.innerHTML = text.trim().replace(/\n/gi, '<br>');
         }
     }
 
-    function message(msg_list_element, text) {
+    function message(message_list_element, text) {
         const alert = document.createElement('p');
         alert.innerHTML = text;
-        msg_list_element.appendChild(alert);
+        message_list_element.appendChild(alert);
     }
 
     function startDatabaseInstall()
@@ -67,48 +61,44 @@
         const success_element = document.getElementById(success_element_id);
 
         const progress_container_element = document.createElement('p');
-        const progress_element = document.createElement('progress');
+        const progress_element = document.createElement('div');
+        progress_element.className = "progress";
+        progress_element.style.height = '15px';
+        progress_element.innerHTML = '<div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>';
         progress_container_element.appendChild(progress_element);
-        const message_element = document.createElement('div');
+        const message_list_element = document.createElement('div');
+        const single_message_element = document.createElement('p');
 
-        success_element.querySelector('button').setAttribute('disabled', true);
-        
-        messages_container.appendChild(message_element);
+        success_element.querySelector('button').setAttribute('disabled', 'disabled');
+
+        messages_container.appendChild(message_list_element);
+        messages_container.appendChild(single_message_element);
         messages_container.appendChild(progress_container_element);
 
-        request_running = true;
-
         setTimeout(() => {
-            checkProgress(message_element, progress_element);
+            checkProgress(message_list_element, single_message_element, progress_element);
         }, 1500);
 
         fetch("/install/database_setup/start_db_inserts", {
             method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
         })
             .then((res) => res.text())
             .then((text) => {
                 if (text && text.trim().length) {
-                    message(message_element, `Error:\n${text}`);
+                    message(message_list_element, `Error:\n${text}`);
                 } else {
-                    updateProgress(progress_element, 100, 100);
+                    updateProgress(single_message_element, progress_element, 1, 1);
                     success_element.querySelector('button').removeAttribute('disabled');
                 }
             })
-            .catch(err => message(message_element, `Request error:\n${err.message||err.toString()}`))
-            .finally(() => {
-                request_running = false;
+            .catch(function (err) {
+                message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
+                updateProgress(single_message_element, progress_element, 0, 10);
             });
     }
 
-    function checkProgress(message_element, progress_element)
+    function checkProgress(message_list_element, single_message_element, progress_element)
     {
-        if (!request_running) {
-            return;
-        }
-
         setTimeout(() => {
 
             fetch("/install/database_setup/check_progress", {
@@ -116,30 +106,38 @@
             })
                 .then((res) => {
                     if (res.status === 404) {
-                        // Progress not found, let's continue when necessary.
-                        return request_running ? checkProgress(message_element, progress_element) : null;
+                        // Progress not found, let's stop here.
+                        updateProgress(single_message_element, progress_element, 1, 1);
+                        return null;
                     }
 
                     if (res.status >= 300) {
-                        throw new Error('Invalid response from progress check.');
+                        throw new Error(`Invalid response from server, expected 200 or 404, found "${res.status}".`);
                     }
 
                     return res.json();
                 })
                 .then((json) => {
-                    if (!request_running) {
+                    if (json.started_at) {
+                        if (json.finished_at) {
+                            // Finished, nothing else to do!
+                            updateProgress(single_message_element, progress_element, 1, 1);
+                            return;
+                        }
+
+                        updateProgress(single_message_element, progress_element, json.current, json.max, json.data);
+
+                        checkProgress(message_list_element, single_message_element, progress_element);
                         return;
                     }
 
-                    if (json && json.current) {
-                        updateProgress(progress_element, json.current, json.max);
-
-                        return checkProgress(message_element, progress_element);
-                    } else if (json) {
-                        message(message_element, `Error:\n${json}`);
-                    }
+                    console.info(json);
+                    message(message_list_element, `Result Error when checking progress:\n${JSON.stringify(json)}`);
                 })
-                .catch((err) => message(message_element, err.message || err.toString()));
+                .catch((err) => {
+                    message(message_list_element, `Request Error when checking progress:\n${err.message || err.toString()}`);
+                    updateProgress(single_message_element, progress_element, 0, 1);
+                });
 
         }, 500);
     }

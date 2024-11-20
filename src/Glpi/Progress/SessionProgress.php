@@ -37,14 +37,15 @@ namespace Glpi\Progress;
 final class SessionProgress implements \JsonSerializable
 {
     public readonly string $key;
-    public readonly \DateTimeImmutable $startDate;
+    public readonly \DateTimeImmutable $started_at;
+    public ?\DateTimeImmutable $finished_at = null;
     public int $current = 0;
     public int $max;
     public string|int|float|bool|null $data;
 
     public function __construct(string $key, int $max)
     {
-        $this->startDate = new \DateTimeImmutable();
+        $this->started_at = new \DateTimeImmutable();
         $this->data = '';
         $this->key = $key;
         $this->max = $max;
@@ -56,7 +57,8 @@ final class SessionProgress implements \JsonSerializable
             'key' => $this->key,
             'max' => $this->max,
             'current' => $this->current,
-            'startDate' => $this->startDate->format('Y-m-d H:i:s'),
+            'started_at' => $this->started_at->format('Y-m-d H:i:s'),
+            'finished_at' => $this->finished_at?->format('Y-m-d H:i:s'),
             'data' => $this->data,
         ];
     }

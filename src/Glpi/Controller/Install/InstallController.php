@@ -34,8 +34,11 @@
 
 namespace Glpi\Controller\Install;
 
+use Glpi\Cache\CacheManager;
 use Glpi\Http\Firewall;
+use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Toolbox;
 use Glpi\Controller\AbstractController;
@@ -49,7 +52,7 @@ class InstallController extends AbstractController
     private const STORED_PROGRESS_KEY = 'install_db_inserts';
 
     public function __construct(
-        private readonly ProgressChecker $progressChecker
+        private readonly ProgressChecker $progressChecker,
     ) {
     }
 
@@ -63,13 +66,14 @@ class InstallController extends AbstractController
 
         return new StreamedResponse(function () use ($progressChecker) {
             try {
-                $progressCallback = static function (?int $current = null, ?int $max = null) use ($progressChecker) {
+                $progress_callback = static function (?int $current = null, ?int $max = null, ?string $data = null) use ($progressChecker) {
                     $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
-                    $progress->current++;
+                    $progress->current += $current ?? 1;
                     $progress->max = (int) $max;
+                    $progress->data .= $data ? ("\n" . $data) : '';
                     $progressChecker->save($progress);
                 };
-                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progressCallback);
+                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
             } catch (\Throwable $e) {
                 echo "<p>"
                     . sprintf(
@@ -79,7 +83,7 @@ class InstallController extends AbstractController
                     . "</p>";
                 @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
             } finally {
-                $this->progressChecker->resetProgress(self::STORED_PROGRESS_KEY);
+                $this->progressChecker->endProgress(self::STORED_PROGRESS_KEY);
             }
         });
     }

@@ -334,7 +334,7 @@ function step4($databasename, $newdatabasename)
     if ($success) {
         echo "<p>" . __('Initializing database tables and default data...') . "</p>";
 
-        echo \sprintf('<p>%s</p>', __('Progress:'));
+        echo \sprintf('<p>%s :</p>', __('Progress'));
 
         echo '<div id="glpi_install_messages_container"></div>';
 

@@ -2064,6 +2064,7 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @param ?\Closure<?int, ?int, ?string> $progressCallback
      *
      * @return void
      *
@@ -2072,10 +2073,14 @@ class Toolbox
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?callable $progressCallback = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?\Closure $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!$progressCallback) {
+            $progressCallback = function ($a = null, $b = null, $c = null) {};
+        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2100,16 +2105,20 @@ class Toolbox
         foreach ($tables as $data) {
             $number_of_queries += \count($data);
         }
+        $number_of_queries += 7; // For other calls :)
+        if (defined('GLPI_SYSTEM_CRON')) { $number_of_queries++; }
+
+        $progressCallback(null, $number_of_queries, __('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
-            if ($progressCallback) {
-                $progressCallback(null, $number_of_queries);
-            }
+            $progressCallback(null, $number_of_queries);
             if (!$query) {
                 continue;
             }
             $DB->doQuery($query);
         }
+
+        $progressCallback(null, $number_of_queries, __('Adding empty data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2124,9 +2133,7 @@ class Toolbox
 
             $types = str_repeat('s', count($data[0]));
             foreach ($data as $row) {
-                if ($progressCallback) {
-                    $progressCallback(null, $number_of_queries);
-                }
+                $progressCallback(null, $number_of_queries);
                 $res = $stmt->bind_param($types, ...array_values($row));
                 if (false === $res) {
                     $msg = "Error binding params in table $table\n";
@@ -2143,17 +2150,18 @@ class Toolbox
             }
         }
 
-        // Create default forms
+        $progressCallback(null, $number_of_queries, __('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
 
-        // Initalize rules
+        $progressCallback(null, $number_of_queries, __('Initalizing rules…'));
         RulesManager::initializeRules();
 
+        $progressCallback(null, $number_of_queries, __('Generating keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
 
-       // update default language
+        $progressCallback(null, $number_of_queries, __('Updating default language…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2164,6 +2172,7 @@ class Toolbox
         );
 
         if (defined('GLPI_SYSTEM_CRON')) {
+            $progressCallback(null, $number_of_queries, __('Configuring cron tasks…'));
            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
