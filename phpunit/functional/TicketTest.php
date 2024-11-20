@@ -7088,7 +7088,7 @@ HTML
                 'content'           => 'private task assigned to see group',
                 'is_private'        => 1,
                 'groups_id_tech'    => $seegroup_id,
-                'date_creation'     => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+                'date_creation'     => date('Y-m-d H:i:s', strtotime('+50s', $now)), // to ensure result order is correct
             ]
         );
 
