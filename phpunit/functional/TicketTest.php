@@ -561,14 +561,14 @@ class TicketTest extends DbTestCase
 
         $followup = new \ITILFollowup();
         $followup->add([
-            'itemtype'  => 'Ticket',
+            'itemtype'  => $ticket::getType(),
             'items_id' => $ticket_id,
             'content'    => 'followup content',
             'date'       => '2015-01-01 00:00:00',
         ]);
 
         $followup->add([
-            'itemtype'  => 'Ticket',
+            'itemtype'  => $ticket::getType(),
             'items_id' => $ticket_id,
             'content'    => 'followup content',
             'date'       => '2015-02-01 00:00:00',
@@ -606,7 +606,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int)$solution->add([
-                'itemtype'  => 'Ticket',
+                'itemtype'  => $ticket::getType(),
                 'items_id' => $ticket_id,
                 'content'    => 'solution content',
                 'date_creation' => '2017-01-01 00:00:00',
@@ -628,7 +628,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int)$solution->add([
-                'itemtype'  => 'Ticket',
+                'itemtype'  => $ticket::getType(),
                 'items_id' => $ticket_id,
                 'content'    => 'solution content',
                 'date_creation' => $last_solution_date,
@@ -638,9 +638,9 @@ class TicketTest extends DbTestCase
         $criteria = [
             [
                 'link' => 'AND',
-                'field' => 1,
+                'field' => 2,
                 'searchtype' => 'contains',
-                'value' => 'title',
+                'value' => $ticket_id,
             ]
         ];
         $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria]);
