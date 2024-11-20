@@ -41,6 +41,7 @@ use Html;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig\TwigTest;
 
 /**
@@ -66,7 +67,13 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
             new TwigFilter('truncate_left', [$this, 'truncateLeft']),
-            new TwigFilter('progress_bar', [$this, 'getProgressBar'], ['is_safe' => ['html']]),
+        ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('progress_bar', [$this, 'getProgressBar'], ['is_safe' => ['html']]),
         ];
     }
 
