@@ -52,52 +52,55 @@ final class InventoryController extends AbstractController
     public function __invoke(Request $request): Response
     {
         $conf = new Conf();
-        self::$is_running = true;
-
         if ($conf->enabled_inventory != 1) {
             throw new AccessDeniedHttpException("Inventory is disabled");
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
         $inventory_request->handleHeaders();
+        $refused_id = $request->get('refused');
 
+        self::$is_running = true;
         $refused = new \RefusedEquipment();
 
-        $handle = true;
-        $contents = '';
-        if ($refused_id = $request->get('refused')) {
-            \Session::checkRight("config", READ);
-            if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
-                $contents = file_get_contents($inventory_file);
+        try {
+            $handle = true;
+            $contents = '';
+            if ($refused_id) {
+                \Session::checkRight("config", READ);
+                if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
+                    $contents = file_get_contents($inventory_file);
+                } else {
+                    trigger_error(
+                        sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id),
+                        E_USER_WARNING
+                    );
+                }
+            } else if (!$request->isMethod('POST')) {
+                if ($request->get('action') === 'getConfig') {
+                    /**
+                     * Even if Fusion protocol is not supported for getConfig requests, they
+                     * should be handled and answered with a json content type
+                     */
+                    $inventory_request->handleContentType('application/json');
+                    $inventory_request->addError('Protocol not supported', 400);
+                } else {
+                    // Method not allowed answer without content
+                    $inventory_request->addError(null, 405);
+                }
+                $handle = false;
             } else {
-                trigger_error(
-                    sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id),
-                    E_USER_WARNING
-                );
+                $contents = file_get_contents("php://input");
             }
-        } else if (!$request->isMethod('POST')) {
-            if ($request->get('action') === 'getConfig') {
-                /**
-                 * Even if Fusion protocol is not supported for getConfig requests, they
-                 * should be handled and answered with a json content type
-                 */
-                $inventory_request->handleContentType('application/json');
-                $inventory_request->addError('Protocol not supported', 400);
-            } else {
-                // Method not allowed answer without content
-                $inventory_request->addError(null, 405);
-            }
-            $handle = false;
-        } else {
-            $contents = file_get_contents("php://input");
-        }
 
-        if ($handle) {
-            try {
+            if ($handle) {
                 $inventory_request->handleRequest($contents);
-            } catch (\Throwable $e) {
-                $inventory_request->addError($e->getMessage());
             }
+        } catch (\Throwable $e) {
+            //empty
+            $inventory_request->addError($e->getMessage());
+        } finally {
+            self::$is_running = false;
         }
 
         $inventory_request->handleMessages();
