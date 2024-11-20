@@ -68,6 +68,52 @@ class Lockedfield extends CommonDBTM
         return Session::haveRight(self::$rightname, UPDATE);
     }
 
+    public function canCreateItem()
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public function canUpdateItem()
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public function canPurgeItem()
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        $lock = new self();
+        $lock->getFromDB($items_id);
+        if ($lock->canAccessItemEntity($lock->fields['itemtype'], $lock->fields['items_id'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if user can access main item entity
+     *
+     * @param string $itemtype
+     * @param int    $items_id
+     *
+     * @return bool
+     */
+    private function canAccessItemEntity(string $itemtype, int $items_id): bool
+    {
+        $item = new $itemtype();
+        if (
+            $item->getFromDB($items_id) //not a global lock
+            && $item->isEntityAssign()
+            && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
