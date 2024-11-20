@@ -44,6 +44,7 @@ if (!defined('GLPI_ROOT')) {
 
 $conf = new Conf();
 if ($conf->enabled_inventory != 1) {
+    http_response_code(403);
     die("Inventory is disabled");
 }
 
