@@ -7583,23 +7583,18 @@ abstract class CommonITILObject extends CommonDBTM
                     'is_private' => 0,
                 ];
             } else {
+                $current_user_id = (Session::getCurrentInterface() === "central") ? (int)Session::getLoginUserID() : 0;
+
+                $restrict_task = [
+                    'OR' => [
+                        'is_private' => 0,
+                        'users_id'   => $current_user_id,
+                        'users_id_tech' => $current_user_id,
+                    ]
+                ];
+
                 if (Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATEGROUPS)) {
-                    $restrict_task = [
-                        'OR' => [
-                            'is_private' => 0,
-                            'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                            'users_id_tech' => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                            'groups_id_tech' => $_SESSION["glpigroups"],
-                        ]
-                    ];
-                } else {
-                    $restrict_task = [
-                        'OR' => [
-                            'is_private' => 0,
-                            'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                            'users_id_tech' => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                        ]
-                    ];
+                    $restrict_task['OR']['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
             }
         }
