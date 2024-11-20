@@ -839,6 +839,11 @@ class Inventory
         return $this->metadata;
     }
 
+    public function getAssets()
+    {
+        return $this->assets;
+    }
+
     public function getMainAsset(): MainAsset
     {
         return $this->mainasset;

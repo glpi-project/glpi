@@ -870,7 +870,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
             $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
               " title=\"" . __s('Add') . "\"" .
-                "\" onClick=\"var row = " . Html::jsGetElementByID($div_id) . ";
+                "\" onClick=\"var row = $('#" . $div_id . "');
                              row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"

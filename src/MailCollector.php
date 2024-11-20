@@ -927,7 +927,7 @@ class MailCollector extends CommonDBTM
         }
 
         $tos = $headers['tos'];
-        if (is_array($tos) && count($tos)) {
+        if (is_array($tos) && count($tos) && $this->getField("add_to_to_observer")) {
             foreach ($tos as $to) {
                 if (
                     $to != $requester

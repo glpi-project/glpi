@@ -35,18 +35,24 @@
 
 namespace Glpi\Application;
 
-final class ConfigurationConstants
+final class SystemConfigurator
 {
-    public function __construct(private string $root_dir)
+    public function __construct(private string $root_dir, private ?string $env)
     {
     }
 
-    public function computeConstants(?string $env = null): void
+    public function __invoke(): void
     {
-        if ($env !== null) {
+        $this->computeConstants();
+        $this->setSessionConfiguration();
+    }
+
+    private function computeConstants(): void
+    {
+        if ($this->env !== null) {
             // Force the `GLPI_ENVIRONMENT_TYPE` constant.
             // The value defined in the server env variables will be ignored.
-            define('GLPI_ENVIRONMENT_TYPE', $env);
+            define('GLPI_ENVIRONMENT_TYPE', $this->env);
         }
 
         // Define GLPI_* constants that can be customized by admin.
@@ -222,5 +228,16 @@ final class ConfigurationConstants
                 @mkdir($value, recursive: true);
             }
         }
+    }
+
+    private function setSessionConfiguration(): void
+    {
+        // Force session to use cookies.
+        ini_set('session.use_only_cookies', '1');
+
+        // Force session cookie name.
+        // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
+        // for every GLPI instance, enven if they are served by the same server (mostly for dev envs).
+        session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '')));
     }
 }

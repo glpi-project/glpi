@@ -159,6 +159,7 @@ class Monitor extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add monitor
                     $val->entities_id = $entities_id;
+                    $val->is_recursive = $this->is_recursive;
                     $val->is_dynamic = 1;
                     $items_id = $monitor->add($this->handleInput($val, $monitor));
                 } else {

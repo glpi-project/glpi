@@ -62,7 +62,7 @@ class AuthTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('loginProvider')]
+    #[DataProvider('loginProvider')]
     public function testIsValidLogin($login, $isvalid)
     {
         $this->assertSame($isvalid, \Auth::isValidLogin($login));
@@ -144,7 +144,7 @@ class AuthTest extends DbTestCase
     /**
      * Test that account is lock when authentication is done using an expired password.
      */
-    #[dataProvider('lockStrategyProvider')]
+    #[DataProvider('lockStrategyProvider')]
     public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock)
     {
         /** @var array $CFG_GLPI */
@@ -185,7 +185,7 @@ class AuthTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('validateLoginProvider')]
+    #[DataProvider('validateLoginProvider')]
     public function testValidateLogin(string $login, string $password, bool $noauto, $login_auth, bool $expected)
     {
         $auth = new \Auth();

@@ -35,10 +35,10 @@
 namespace Glpi\Controller\Helpdesk;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Glpi\SelfService\HomePageTabs;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

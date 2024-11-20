@@ -35,7 +35,7 @@
 namespace Glpi\Kernel;
 
 use GLPI;
-use Glpi\Application\ConfigurationConstants;
+use Glpi\Application\SystemConfigurator;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
@@ -58,10 +58,10 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
-        // Initialize configuration constants.
+        // Initialize system configuration.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
-        (new ConfigurationConstants($this->getProjectDir()))->computeConstants($env);
+        (new SystemConfigurator($this->getProjectDir(), $env))();
 
         // TODO: refactor the GLPI class.
         $glpi = (new GLPI());

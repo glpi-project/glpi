@@ -101,7 +101,7 @@ if (
     ) {
         $email_string =  $default_email[$user_index];
        // Clean alternative email
-        echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
+        echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
     } else if (count($emails) > 1) {
        // Several emails : select in the list
@@ -122,8 +122,8 @@ if (
             ]
         );
     } else {
-        $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlescape($default_email) . "'>";
+        $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
+         :               value='" . htmlescape($default_email) . "'>";
     }
 
     echo "$email_string";

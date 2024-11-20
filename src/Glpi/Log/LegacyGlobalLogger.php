@@ -34,6 +34,7 @@
 
 namespace Glpi\Log;
 
+use Glpi\Exception\Http\HttpExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -91,6 +92,15 @@ class LegacyGlobalLogger implements LoggerInterface
 
     public function log($level, \Stringable|string $message, array $context = []): void
     {
+        if (isset($context['exception']) && $context['exception'] instanceof HttpExceptionInterface) {
+            // Bypass \Symfony\Component\HttpKernel\EventListener\ErrorListener's logging system.
+            // Symfony is force-logging all exceptions, even the deliberately thrown HTTP exceptions.
+            // In GLPI, 4xx exception are not usually an "issue", and are logged in the "access" channel.
+            // However, Symfony logs them in the "error" channel.
+            // To keep most of Symfony's behavior in non-HTTP exceptions, we just remove the HttpExceptionInterface from it.
+            return;
+        }
+
         $this->getLogger()->log($level, $message, $context);
     }
 }

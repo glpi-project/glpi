@@ -190,7 +190,7 @@ trait Inventoriable
         echo '<td>' . __s('Inventory tag') . '</td>';
         echo '<td>' . htmlescape($this->agent->fields['tag']) . '</td>';
         echo '<td>' . __s('Last inventory') . '</td>';
-        echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
+        echo '<td>' . htmlescape(Html::convDateTime($this->agent->fields['last_contact'])) . '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';

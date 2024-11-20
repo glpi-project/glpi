@@ -94,10 +94,12 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         // The user's current groups are stored in his session
         // If there was any change regarding groups membership and/or configuration, we
         // need to reset the data stored in his session
-        $last_group_change = $GLPI_CACHE->get('last_group_change');
         if (
             isset($_SESSION['glpigroups'])
-            && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change
+            && (
+                !isset($_SESSION['glpigroups_cache_date'])
+                || $_SESSION['glpigroups_cache_date'] < $GLPI_CACHE->get('last_group_change')
+            )
         ) {
             Session::loadGroups();
         }

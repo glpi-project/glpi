@@ -273,6 +273,9 @@ The present file will list all changes made to the project; according to the
 - `Html::displayRightError()`. Throw a `Glpi\Exception\Http\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
+- `Html::jsGetElementbyID()`
+- `Html::jsGetDropdownValue()`
+- `Html::jsSetDropdownValue()`
 - `HookManager::enableCSRF()`
 - `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
 - `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.
@@ -307,6 +310,8 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `AuthLDAP::ldapChooseDirectory()`
+- `AuthLDAP::displayLdapFilter()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::dropdownUserRestoredActions()`
 - `AuthLDAP::getLdapDeletedUserActionOptions()`
@@ -388,6 +393,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Dashboard\Filter::displayList()`
 - `Glpi\Dashboard\Filter::field()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
+- `Glpi\Debug\Toolbar` class
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumbSpecificValueToDisplay()`
@@ -499,6 +505,7 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `Session::buildSessionName()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
@@ -523,6 +530,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
 - `Toolbox::logWarning()`
+- `Toolbox::showMailServerConfig()`
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`

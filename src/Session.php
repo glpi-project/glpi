@@ -168,9 +168,7 @@ class Session
 
                     $auth->user->computePreferences();
                     foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                        if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
-                            $_SESSION["glpi$field"] = $_POST[$field];
-                        } else if (isset($auth->user->fields[$field])) {
+                        if (isset($auth->user->fields[$field])) {
                             $_SESSION["glpi$field"] = $auth->user->fields[$field];
                         }
                     }
@@ -191,6 +189,11 @@ class Session
                     self::loadLanguage();
 
                     if ($auth->password_expired) {
+                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
+                        // fail the session check (as we use a special partial session here without profiles) and thus
+                        // destroy the session (which would make the "password expired" form impossible to submit as the
+                        // csrf check would fail as the session data would be empty).
+                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
                        // Do not init profiles, as user has to update its password to be able to use GLPI
                         return;
@@ -249,48 +252,11 @@ class Session
     public static function start()
     {
         if (session_status() === PHP_SESSION_NONE) {
-            ini_set('session.use_only_cookies', '1'); // Force session to use cookies
-            session_name(self::buildSessionName());
-
-            @session_start();
+            session_start();
         }
-       // Define current time for sync of action timing
+
+        // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-    }
-
-    /**
-     * Build the session name based on GLPI's folder path + full domain + port
-     *
-     * Adding the full domain name prevent two GLPI instances on the same
-     * domain (e.g. test.domain and prod.domain) with identical folder's
-     * path (e.g. /var/www/glpi) to compete for the same cookie name
-     *
-     * Adding the port prevent some conflicts when using docker
-     *
-     * @param string|null $path Default to GLPI_ROOT
-     * @param string|null $host Default to $_SERVER['HTTP_HOST']
-     * @param string|null $port Default to $_SERVER['SERVER_PORT']
-     *
-     * @return string An unique session name
-     */
-    public static function buildSessionName(
-        ?string $path = null,
-        ?string $host = null,
-        ?string $port = null
-    ): string {
-        if (is_null($path)) {
-            $path = realpath(GLPI_ROOT);
-        }
-
-        if (is_null($host)) {
-            $host = $_SERVER['HTTP_HOST'] ?? '';
-        }
-
-        if (is_null($port)) {
-            $port = $_SERVER['SERVER_PORT'] ?? '';
-        }
-
-        return "glpi_" . md5($path . $host . $port);
     }
 
 

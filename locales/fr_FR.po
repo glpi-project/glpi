@@ -13,9 +13,9 @@
 # Jordan B, 2024
 # Legastelois François <flegastelois@teclib.com>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# Johan Cwiklinski, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Cédric Anne, 2024
+# Johan Cwiklinski, 2024
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2024\n"
+"Last-Translator: Johan Cwiklinski, 2024\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2758,7 +2758,7 @@ msgstr "Acteurs"
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -4563,7 +4563,7 @@ msgstr "Matériels associables à un ticket"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Éléments associables aux tickets, changements et problèmes"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4673,7 +4673,7 @@ msgstr[2] "Types d'élément associé"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Éléments associés"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5129,7 +5129,7 @@ msgstr "Delai moyen de prise en compte"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "o"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5383,7 +5383,7 @@ msgstr "Marque"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Marque"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -5897,9 +5897,9 @@ msgstr[2] "Cartouches"
 #: src/Printer_CartridgeInfo.php:46
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Cartouche - Information inventoriée"
+msgstr[1] "Cartouche - Informations inventoriées"
+msgstr[2] "Cartouche - Informations inventoriées"
 
 #: templates/pages/assets/cartridge.html.twig src/CartridgeItem.php:64
 msgid "Cartridge model"
@@ -6176,7 +6176,7 @@ msgstr "Changer la visibilité des entités enfants."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Changé"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6456,6 +6456,8 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Nettoyage des documents orphelins : supprime tous les documents qui ne sont "
+"associés à aucun éléments."
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -6956,7 +6958,7 @@ msgstr[2] "Ordinateurs"
 
 #: src/ItemVirtualMachine.php:488
 msgid "Computer UUID"
-msgstr ""
+msgstr "UUID de l'ordinateur"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:195
 msgid "Computer inventory"
@@ -8971,7 +8973,7 @@ msgstr "Device ID"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Périphériques"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9388,7 +9390,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Voulez-vous restaurer l'article depuis la révision sélectionnée ?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9410,7 +9412,7 @@ msgstr "Document"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15669,7 +15671,7 @@ msgstr "Actions massives"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Maître (master)"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15951,7 +15953,7 @@ msgstr "Méthode"
 #: src/Toolbox.php:826 js/common.js:652
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "Mio"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:367
 msgid "Microphone"
@@ -16238,7 +16240,7 @@ msgstr[2] "Moniteurs"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Moniteur"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -16896,7 +16898,7 @@ msgstr "Mois suivant"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
-msgstr ""
+msgstr "Prochaine date de renouvellement"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Next run"
@@ -18350,7 +18352,7 @@ msgstr "Autre"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -18881,9 +18883,9 @@ msgstr "Préavis de période"
 #: src/Peripheral.php:83
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Périphérique"
+msgstr[1] "Périphériques"
+msgstr[2] "Périphériques"
 
 #: src/PeripheralModel.php:41 src/Rule.php:331
 msgid "Peripheral model"
@@ -19049,7 +19051,7 @@ msgstr ""
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "Pio"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
@@ -20070,11 +20072,11 @@ msgstr[2] "Tâches de projet"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "Groupe de l'équipe de la tâche de projet"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
-msgstr ""
+msgstr "Utilisateur de l'équipe de la tâche projet"
 
 #: src/ProjectTaskTemplate.php:50
 msgid "Project task template"
@@ -21489,7 +21491,7 @@ msgstr "API REST"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restaurer"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22211,7 +22213,7 @@ msgstr "Second élément "
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Secondaire (secondary)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23928,7 +23930,7 @@ msgstr "Système"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Système"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24156,7 +24158,7 @@ msgstr[2] "Membres de l'équipe"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Team members"
-msgstr ""
+msgstr "Membres de l'équipe"
 
 #: phpunit/functional/RuleTest.php:324 front/stat.graph.php:94
 #: src/CommonITILTask.php:976 src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -25672,7 +25674,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26525,9 +26527,9 @@ msgstr "Déverrouiller l'élément"
 #: src/Unmanaged.php:55
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Équipement non géré"
+msgstr[1] "Équipements non gérés"
+msgstr[2] "Équipements non gérés"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -27618,7 +27620,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Vues"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28265,7 +28267,7 @@ msgstr "Hier"
 #: src/Toolbox.php:832 js/common.js:658
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "Yio"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format
@@ -28623,7 +28625,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Vous devez sélectionner au moins un objet pour construire un groupe"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -28754,7 +28756,7 @@ msgstr "Vos tickets à valider"
 #: src/Toolbox.php:831 js/common.js:657
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "Zio"
 
 #: js/modules/Form/WebIconSelector.js:169
 msgctxt "icons"

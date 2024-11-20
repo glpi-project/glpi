@@ -333,7 +333,7 @@ class DomainTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('linkContentProvider')]
+    #[DataProvider('linkContentProvider')]
     public function testGenerateLinkContents(
         string $link,
         bool $safe_url,

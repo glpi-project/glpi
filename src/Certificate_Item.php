@@ -432,7 +432,7 @@ class Certificate_Item extends CommonDBRelation
                  ]);
 
                  echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
+                 echo Html::submit(_x('button', 'Associate'), ['name' => 'add']);
                  echo "</td>";
                  echo "</tr>";
                  echo "</table>";

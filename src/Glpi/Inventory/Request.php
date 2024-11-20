@@ -50,7 +50,7 @@ use Unmanaged;
 class Request extends AbstractRequest
 {
     /** @var Inventory */
-    private $inventory;
+    private Inventory $inventory;
 
     /** @var bool */
     private bool $is_discovery = false;
@@ -67,15 +67,15 @@ class Request extends AbstractRequest
     /**
      * Handle Query
      *
-     * @param string $query   Query mode (one of self::*_QUERY or self::*_ACTION)
-     * @param mixed  $content Contents, optional
+     * @param string $action   Query mode (one of self::*_QUERY or self::*_ACTION)
+     * @param mixed|null $content Contents, optional
      *
      * @return boolean
      */
-    protected function handleAction($query, $content = null): bool
+    protected function handleAction(string $action, mixed $content = null): bool
     {
-        $this->query = $query;
-        switch ($query) {
+        $this->query = $action;
+        switch ($action) {
             case self::GET_PARAMS:
                 $this->getParams($content);
                 break;
@@ -104,7 +104,7 @@ class Request extends AbstractRequest
             case self::DEPLOY_ACTION:
             case self::WOL_ACTION:
             default:
-                $this->addError("Query '$query' is not supported.", 501);
+                $this->addError("Query '$action' is not supported.", 501);
                 return false;
         }
         return true;
@@ -117,7 +117,7 @@ class Request extends AbstractRequest
      *
      * @return array
      */
-    protected function handleTask($task): array
+    protected function handleTask(string $task): array
     {
         $params = [
             'options' => [
@@ -156,7 +156,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function getParams($data)
+    public function getParams(mixed $data): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -190,7 +190,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function prolog($data)
+    public function prolog(mixed $data): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -231,7 +231,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function networkDiscovery($data)
+    public function networkDiscovery(mixed $data): void
     {
         $this->network_inventory_mode = Hooks::NETWORK_DISCOVERY;
         $this->is_discovery = true;
@@ -246,7 +246,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function networkInventory($data)
+    public function networkInventory(mixed $data): void
     {
         $this->network_inventory_mode = Hooks::NETWORK_INVENTORY;
         $this->network($data);
@@ -259,7 +259,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function network($data)
+    public function network(mixed $data): void
     {
         $this->inventory = new Inventory();
         $this->inventory
@@ -303,7 +303,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function contact($data)
+    public function contact(mixed $data): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -321,7 +321,7 @@ class Request extends AbstractRequest
         if ($raw_data !== null && property_exists($raw_data, 'enabled-tasks')) {
             foreach ($raw_data->{'enabled-tasks'} as $task) {
                 $handle = $this->handleTask($task);
-                if (is_array($handle) && count($handle)) {
+                if (count($handle)) {
                     // Insert related task information under tasks list property
                     $response['tasks'][$task] = $handle;
                 } else {
@@ -344,7 +344,7 @@ class Request extends AbstractRequest
      *
      * @return void
      */
-    public function inventory($data)
+    public function inventory(mixed $data): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

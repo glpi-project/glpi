@@ -187,6 +187,16 @@ final class Firewall
     private function computeFallbackStrategyForCore(string $path): string
     {
         if (!file_exists($this->root_dir . $path)) {
+            $paths = [
+                '/_wdt/' => self::STRATEGY_NO_CHECK,
+                '/_profiler/' => self::STRATEGY_NO_CHECK,
+            ];
+            foreach ($paths as $checkPath => $strategy) {
+                if (\str_starts_with($path, $checkPath)) {
+                    return $strategy;
+                }
+            }
+
             // Modern controllers
             return self::FALLBACK_STRATEGY;
         }

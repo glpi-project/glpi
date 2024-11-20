@@ -161,7 +161,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -2747,7 +2747,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
     }
 
-    #[dataProvider('prepareConnectionsProvider')]
+    #[DataProvider('prepareConnectionsProvider')]
     public function testPrepareConnections($json_source)
     {
         $networkEquipment = new \NetworkEquipment();

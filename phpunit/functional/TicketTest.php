@@ -3645,6 +3645,44 @@ class TicketTest extends DbTestCase
             ])
         );
 
+        /**
+         * Ticket with satisfaction
+         */
+        // Update Entity to enable survey
+        $entity = new \Entity();
+        $result = $entity->update([
+            'id'                => 0,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+        ]);
+        $this->assertTrue($result);
+        // Create a ticket
+        $ticket = new \Ticket();
+        $tickets_id_3 = $ticket->add([
+            'name'        => "test autopurge 3",
+            'content'     => "test autopurge 3",
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int)$tickets_id_3);
+        // Close ticket
+        $this->assertTrue($ticket->update([
+            'id' => $tickets_id_3,
+            'status' => \CommonITILObject::CLOSED
+        ]));
+        // Set closedate to 15 days ago
+        $this->assertTrue(
+            $DB->update('glpi_tickets', [
+                'closedate' => date('Y-m-d 10:00:00', time() - 15 * DAY_TIMESTAMP),
+            ], [
+                'id' => $tickets_id_3,
+            ])
+        );
+        // Verify survey created
+        $satisfaction = new \TicketSatisfaction();
+        $this->assertTrue($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
+
+
        // launch Cron for closing tickets
         $mode = - \CronTask::MODE_EXTERNAL; // force
         \CronTask::launch($mode, 5, 'purgeticket');
@@ -3658,6 +3696,10 @@ class TicketTest extends DbTestCase
        //second ticket is still present
         $this->assertTrue($ticket->getFromDB($tickets_id_2));
         $this->assertEquals(\CommonITILObject::CLOSED, (int)$ticket->fields['status']);
+
+        // third ticket should have been removed with its satisfaction
+        $this->assertFalse($ticket->getFromDB($tickets_id_3));
+        $this->assertFalse($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
     }
 
     public function testMerge()
@@ -7875,5 +7917,209 @@ HTML
         $id = $ticket->add($input);
         $this->assertGreaterThan(0, $id);
         $this->checkInput($ticket, $id, $expected);
+    }
+
+    public static function isCategoryValidProvider(): array
+    {
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+
+        return [
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_root_entity_no_recursive',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_child_entity',
+                    'entities_id' => $ent1,
+                ],
+                'input' => [
+                    'entities_id'       => $ent1,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => true,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_request',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_request' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::INCIDENT_TYPE,
+                ],
+                'expected' => false,
+            ],
+            [
+                'category_fields' => [
+                    'name' => 'category_no_incident',
+                    'entities_id' => $ent0,
+                    'is_recursive' => 1,
+                    'is_incident' => 0,
+                ],
+                'input' => [
+                    'entities_id'       => $ent0,
+                    'type'              => \Ticket::DEMAND_TYPE,
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    #[DataProvider('isCategoryValidProvider')]
+    public function testIsCategoryValid(array $category_fields, array $input, bool $expected): void
+    {
+        $category = $this->createItem('ITILCategory', $category_fields);
+        $input['itilcategories_id'] = $category->getID();
+        $this->assertSame($expected, \Ticket::isCategoryValid($input));
+    }
+
+    public function testGlobalValidationUpdate(): void
+    {
+        $this->login();
+        $uid1 = getItemByTypeName('User', 'glpi', true);
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Global_Validation_Update',
+            'content' => 'Global_Validation_Update',
+            'validation_percent' => 100,
+        ]);
+
+        $ticketobj = new \Ticket();
+
+        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
+
+        $v1_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'itemtype_target'   => User::class,
+            'items_id_target'   => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v1_id->getID(), [
+            'status'  => \CommonITILValidation::ACCEPTED,
+        ]);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 0,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 50,
+        ]);
+
+        $v2_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'itemtype_target'   => User::class,
+            'items_id_target'   => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v2_id->getID(), [
+            'status'  => \CommonITILValidation::WAITING,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::WAITING, TicketValidation::computeValidationStatus($ticket));
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'validation_percent' => 100,
+        ]);
+
+        $v3_id = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'itemtype_target'   => User::class,
+            'items_id_target'   => $uid1,
+        ]);
+
+        $this->updateItem('TicketValidation', $v3_id->getID(), [
+            'status'  => \CommonITILValidation::REFUSED,
+        ]);
+
+
+        $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
     }
 }

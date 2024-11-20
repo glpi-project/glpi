@@ -104,7 +104,7 @@ class SoftwareTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -812,7 +812,7 @@ class SoftwareTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('softwareProvider')]
+    #[DataProvider('softwareProvider')]
     public function testSoftwareWithHtmlentites($path)
     {
         $fixtures_path = FIXTURE_DIR . '/inventories/software/';

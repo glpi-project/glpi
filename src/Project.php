@@ -1039,6 +1039,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name'               => __('Real end date'),
             'datatype'           => 'datetime',
             'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'splititems'         => true,
             'joinparams'         => [
                 'jointype'  => 'child'
             ]
