@@ -164,4 +164,20 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertInstanceOf(\Agent::class, $computer_agent);
         $this->assertEquals($computer_agent->fields, $db_agent->fields);
     }
+
+    public function testMustBeLinked()
+    {
+        $this->login();
+
+        $this->assertFalse((new \DatabaseInstance())->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true)
+        ]));
+        $this->assertTrue((new \DatabaseInstance())->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'itemtype' => \Computer::class,
+            'items_id' => getItemByTypeName('Computer', '_test_pc01')
+        ]));
+    }
 }
