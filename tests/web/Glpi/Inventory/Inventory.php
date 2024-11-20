@@ -56,7 +56,7 @@ class Inventory extends \GLPITestCase
     {
         $res = $this->http_client->request(
             'POST',
-            $this->base_uri . 'front/inventory.php',
+            $this->base_uri . 'Inventory',
             [
                 'headers' => [
                     'Content-Type' => 'application/xml'
