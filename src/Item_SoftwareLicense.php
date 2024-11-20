@@ -865,12 +865,16 @@ JAVASCRIPT;
                 echo "<td>" . htmlescape($data['location']) . "</td>";
                 echo "<td>" . htmlescape($data['state']) . "</td>";
                 echo "<td>" . htmlescape($data['groupe']) . "</td>";
-                echo "<td>" . formatUserLink(
-                    $data['userid'],
-                    $data['username'],
-                    $data['userrealname'],
-                    $data['userfirstname'],
-                ) . "</td>";
+                if ($data['userid'] !== null) {
+                    echo "<td>" . formatUserLink(
+                        $data['userid'],
+                        $data['username'],
+                        $data['userrealname'],
+                        $data['userfirstname'],
+                    ) . "</td>";
+                } else {
+                    echo "<td></td>";
+                }
                 echo "</tr>\n";
 
                 $iterator->next();
