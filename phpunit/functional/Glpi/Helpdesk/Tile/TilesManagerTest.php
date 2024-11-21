@@ -36,13 +36,19 @@ namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
 use DbTestCase;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
+use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Session\SessionInfo;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use InvalidArgumentException;
 use Profile;
 
 final class TilesManagerTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     private function getManager(): TilesManager
     {
         return new TilesManager();
@@ -72,7 +78,8 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Assert: there should be two tiles defined for our profile
-        $tiles = $manager->getTiles($profile);
+        $session = new SessionInfo(profile_id: $profile->getID());
+        $tiles = $manager->getTiles($session);
         $this->assertCount(2, $tiles);
 
         $first_tile = $tiles[0];
@@ -109,5 +116,130 @@ final class TilesManagerTest extends DbTestCase
             'illustration' => "request-service.svg",
             'url'          => "https://glpi-project.org",
         ]);
+    }
+
+    public function testOnlyActiveFormTileAreFound(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create a self service profile and mutliple form tiles
+        $forms = [];
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        $builder = new FormBuilder("Inactive form");
+        $builder->setIsActive(false);
+        $builder->setEntitiesId($test_entity_id);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        $builder = new FormBuilder("Active form");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId($test_entity_id);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        foreach ($forms as $form) {
+            $manager->addTile($profile, FormTile::class, [
+                'forms_forms_id' => $form->getID(),
+            ]);
+        }
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+        );
+        $tiles = $manager->getTiles($session);
+
+        // Assert: only the active form tile should be found
+        $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
+        $this->assertEquals(["Active form"], $form_names);
+    }
+
+    public function testOnlyFormWithValidAccessPoliciesAreFound(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create a self service profile and mutliple form tiles
+        $forms = [];
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        $builder = new FormBuilder("Form without access policies");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId($test_entity_id);
+        $forms[] = $this->createForm($builder);
+
+        $builder = new FormBuilder("Form with access policies");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId($test_entity_id);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        foreach ($forms as $form) {
+            $manager->addTile($profile, FormTile::class, [
+                'forms_forms_id' => $form->getID(),
+            ]);
+        }
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+        );
+        $tiles = $manager->getTiles($session);
+
+        // Assert: only the form with a valid access policy should be found
+        $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
+        $this->assertEquals(["Form with access policies"], $form_names);
+    }
+
+    public function testOnlyFormVisibleFromActiveEntityAreFound(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create a self service profile and mutliple form tiles
+        $forms = [];
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        $builder = new FormBuilder("Form inside current entity");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId($test_entity_id);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        $builder = new FormBuilder("Form inside entity");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId(0);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        foreach ($forms as $form) {
+            $manager->addTile($profile, FormTile::class, [
+                'forms_forms_id' => $form->getID(),
+            ]);
+        }
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+        );
+        $tiles = $manager->getTiles($session);
+
+        // Assert: only the form with a valid access policy should be found
+        $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
+        $this->assertEquals(["Form inside current entity"], $form_names);
     }
 }

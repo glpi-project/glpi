@@ -34,35 +34,43 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-use CommonDBTM;
-use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
 use InvalidArgumentException;
-use ReflectionClass;
 use RuntimeException;
 use Profile;
 
 final class TilesManager
 {
     /** @return TileInterface[] */
-    public function getTiles(Profile $profile): array
+    public function getTiles(SessionInfo $session_info): array
     {
+        // Load tiles for the given profile
         $profile_tiles = (new Profile_Tile())->find([
-            'profiles_id' => $profile->getID(),
+            'profiles_id' => $session_info->getProfileId(),
         ]);
 
         $tiles = [];
         foreach ($profile_tiles as $row) {
+            // Validate tile itemtype
             $itemtype = $row['itemtype'];
-
             $tile = getItemForItemtype($itemtype);
             if (!($tile instanceof TileInterface)) {
                 continue;
             }
 
+            // Try to load tile from database
             $tile = new $itemtype();
-            if ($tile->getFromDb($row['items_id'])) {
-                $tiles[] = $tile;
+            if (!$tile->getFromDb($row['items_id'])) {
+                continue;
             }
+
+            // Make sure the tile is valid for the given session and entity details
+            if (!$tile->isAccessibleForSession($session_info)) {
+                continue;
+            }
+
+            // The tile is valid, add it to the list
+            $tiles[] = $tile;
         }
 
         return $tiles;

@@ -3141,6 +3141,29 @@ class CommonDBTM extends CommonGLPI
         }
     }
 
+    /** @param int[] $entities_ids */
+    public function isAccessibleFromEntities(array $entities_ids): bool
+    {
+        if (!$this->isEntityAssign()) {
+            // Item does not have any entity so it is always visible.
+            return true;
+        }
+
+        if ($this->maybeRecursive() && $this->fields['is_recursive']) {
+            // Item is recursive, check if it is accessible from any of the ancestors of the given entities.
+            return in_array(
+                $this->getEntityID(),
+                getAncestorsOf("glpi_entities", $entities_ids),
+            );
+        } else {
+            // Item is not recursive, check if it is accessible from any of the given entities.
+            return in_array(
+                $this->getEntityID(),
+                $entities_ids,
+            );
+        }
+    }
+
     /**
      * Check if have right on this entity
      *

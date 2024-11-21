@@ -34,6 +34,8 @@
 
  namespace Glpi\Helpdesk\Tile;
 
+ use Glpi\Session\SessionInfo;
+
 interface TileInterface
 {
     public function getTitle(): string;
@@ -43,4 +45,5 @@ interface TileInterface
     public function getIllustration(): string;
 
     public function getTileUrl(): string;
+    public function isValid(SessionInfo $session_info): bool;
 }

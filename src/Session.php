@@ -2376,6 +2376,7 @@ class Session
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
+            active_entities_ids: $_SESSION['glpiactiveentities'],
         );
     }
 

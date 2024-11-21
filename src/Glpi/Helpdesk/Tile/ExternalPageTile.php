@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\Session\SessionInfo;
 use Override;
 
 final class ExternalPageTile extends CommonDBTM implements TileInterface
@@ -61,5 +62,11 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     public function getTileUrl(): string
     {
         return $this->fields['url'];
+    }
+
+    #[Override]
+    public function isValid(SessionInfo $session_info): bool
+    {
+        return true;
     }
 }

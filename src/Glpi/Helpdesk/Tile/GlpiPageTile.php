@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\Session\SessionInfo;
 use Html;
 use Override;
 
@@ -76,5 +77,15 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
         };
 
         return Html::getPrefixedUrl($url);
+    }
+
+    #[Override]
+    public function isValid(SessionInfo $session_info): bool
+    {
+        // We could check rights here for extra safety but it is not really needed
+        // since tiles are defined per profile so a page tile defined for a
+        // profile should be accessible to the user of that profile.
+        // TODO: add extra safety check here when we have more time.
+        return true;
     }
 }

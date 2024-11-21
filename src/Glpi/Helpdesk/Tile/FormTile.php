@@ -35,7 +35,10 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBChild;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
 use Html;
 use Override;
 
@@ -97,5 +100,29 @@ final class FormTile extends CommonDBChild implements TileInterface
         }
 
         return Html::getPrefixedUrl('/Form/Render/' .  $this->form->getID());
+    }
+
+    #[Override]
+    public function isValid(SessionInfo $session_info): bool
+    {
+        $form_access_manager = FormAccessControlManager::getInstance();
+
+        // Form must be active
+        if (!$this->form->isActive()) {
+            return false;
+        }
+
+        // Check that the form entity is visible
+        if ($this->form->isAccessibleFromEntities($session_info->getActiveEntitiesIds())) {
+            return false;
+        }
+
+        // Check if the user can answer the form
+        $form_access_params = new FormAccessParameters(session_info: $session_info);
+        if (!$form_access_manager->canAnswerForm($this->form, $form_access_params)) {
+            return false;
+        }
+
+        return true;
     }
 }

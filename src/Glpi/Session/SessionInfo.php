@@ -35,12 +35,16 @@
 
 namespace Glpi\Session;
 
+use Profile;
+
 final readonly class SessionInfo
 {
     public function __construct(
         private int $user_id = 0,
         private array $group_ids = [],
         private int $profile_id = 0,
+        /** @var int[] $entities_ids */
+        private array $active_entities_ids = [],
     ) {
     }
 
@@ -57,5 +61,11 @@ final readonly class SessionInfo
     public function getProfileId(): int
     {
         return $this->profile_id;
+    }
+
+    /** @return int[] */
+    public function getActiveEntitiesIds(): array
+    {
+        return $this->active_entities_ids;
     }
 }
