@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Html;
 use Override;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface
@@ -63,9 +64,9 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     }
 
     #[Override]
-    public function getTileLink(): string
+    public function getTileUrl(): string
     {
-        return match ($this->fields['page']) {
+        $url = match ($this->fields['page']) {
             self::PAGE_SERVICE_CATALOG => '/ServiceCatalog',
             self::PAGE_FAQ             => '/front/helpdesk.faq.php',
             self::PAGE_RESERVATION     => '/front/reservationitem.php',
@@ -73,5 +74,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
             self::PAGE_APPROVAL        => '/front/ticket.php',
             default                    => '/Helpdesk',
         };
+
+        return Html::getPrefixedUrl($url);
     }
 }

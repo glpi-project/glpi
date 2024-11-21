@@ -80,14 +80,14 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("GLPI project", $first_tile->getTitle());
         $this->assertEquals("Link to GLPI project website", $first_tile->getDescription());
         $this->assertEquals("request-service.svg", $first_tile->getIllustration());
-        $this->assertEquals("https://glpi-project.org", $first_tile->getTileLink());
+        $this->assertEquals("https://glpi-project.org", $first_tile->getTileUrl());
 
         $second_tile = $tiles[1];
         $this->assertInstanceOf(GlpiPageTile::class, $second_tile);
         $this->assertEquals("FAQ", $second_tile->getTitle());
         $this->assertEquals("Link to the FAQ", $second_tile->getDescription());
         $this->assertEquals("browse-help.svg", $second_tile->getIllustration());
-        $this->assertEquals("/front/helpdesk.faq.php", $second_tile->getTileLink());
+        $this->assertEquals("/glpi/front/helpdesk.faq.php", $second_tile->getTileUrl());
     }
 
     public function testTilesCantBeAddedToCentralProfiles(): void

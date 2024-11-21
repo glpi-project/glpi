@@ -42,5 +42,5 @@ interface TileInterface
 
     public function getIllustration(): string;
 
-    public function getTileLink(): string;
+    public function getTileUrl(): string;
 }

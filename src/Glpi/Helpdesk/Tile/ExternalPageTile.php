@@ -58,7 +58,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     }
 
     #[Override]
-    public function getTileLink(): string
+    public function getTileUrl(): string
     {
         return $this->fields['url'];
     }

@@ -385,7 +385,7 @@ final class DefaultDataManagerTest extends DbTestCase
             $this->assertNotEmpty($tile->getTitle());
             $this->assertNotEmpty($tile->getDescription());
             $this->assertContains($tile->getIllustration(), $valid_illustrations);
-            $this->assertNotEmpty($tile->getTileLink());
+            $this->assertNotEmpty($tile->getTileUrl());
         }
     }
 }

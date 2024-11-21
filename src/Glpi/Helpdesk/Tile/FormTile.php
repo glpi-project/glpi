@@ -36,6 +36,7 @@ namespace Glpi\Helpdesk\Tile;
 
 use CommonDBChild;
 use Glpi\Form\Form;
+use Html;
 use Override;
 
 final class FormTile extends CommonDBChild implements TileInterface
@@ -89,11 +90,12 @@ final class FormTile extends CommonDBChild implements TileInterface
     }
 
     #[Override]
-    public function getTileLink(): string
+    public function getTileUrl(): string
     {
         if ($this->form === null) {
             return "";
         }
-        return '/Form/Render/' .  $this->form->getID();
+
+        return Html::getPrefixedUrl('/Form/Render/' .  $this->form->getID());
     }
 }
