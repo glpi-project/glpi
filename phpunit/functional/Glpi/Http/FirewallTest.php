@@ -198,7 +198,6 @@ class FirewallTest extends \DbTestCase
                 '/front/cron.php',
                 '/front/css.php',
                 '/front/document.send.php',
-                '/front/inventory.php',
                 '/front/locale.php',
                 '/front/login.php',
                 '/front/logout.php',

@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +50,7 @@ final class CaldavController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
         return new HeaderlessStreamedResponse(function () {

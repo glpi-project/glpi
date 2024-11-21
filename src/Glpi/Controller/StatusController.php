@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Http\Firewall;
 use Session;
 use Glpi\Api\HL\Router;
 use Glpi\Application\ErrorHandler;
@@ -50,7 +51,7 @@ final class StatusController extends AbstractController
         "/status.php",
         name: "glpi_status"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
         // Force in normal mode

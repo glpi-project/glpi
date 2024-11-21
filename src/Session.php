@@ -35,6 +35,7 @@
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
+use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
@@ -944,8 +945,7 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
-                  || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
+                  InventoryController::$is_running === true
                   || defined('TU_USER')
               )
         );

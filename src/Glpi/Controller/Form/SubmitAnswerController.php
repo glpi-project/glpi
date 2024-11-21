@@ -45,6 +45,7 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +55,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SubmitAnswerController extends AbstractController
 {
-    #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/SubmitAnswers",
         name: "glpi_form_submit_answers",

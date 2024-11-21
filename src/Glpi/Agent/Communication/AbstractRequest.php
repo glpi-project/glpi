@@ -626,7 +626,9 @@ abstract class AbstractRequest
             case 'application/x-br':
             case 'application/x-compress-br':
                 if (!function_exists('brotli_compress')) {
-                    $this->addError('Brotli PHP extension is missing!', 415);
+                    $exception = new \Glpi\Exception\Http\HttpException(415, 'Brotli PHP extension is missing!');
+                    $exception->setMessageToDisplay('Unsupported compression');
+                    throw $exception;
                 } else {
                     $this->compression = self::COMPRESS_BR;
                 }
