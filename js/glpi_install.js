@@ -121,7 +121,7 @@
                     if (json.started_at) {
                         if (json.finished_at) {
                             // Finished, nothing else to do!
-                            updateProgress(single_message_element, progress_element, 1, 1);
+                            updateProgress(single_message_element, progress_element, 1, 1, json.data);
                             return;
                         }
 

@@ -2105,7 +2105,7 @@ class Toolbox
         foreach ($tables as $data) {
             $number_of_queries += \count($data);
         }
-        $number_of_queries += 7; // For other calls :)
+        $number_of_queries += 8; // For other calls
         if (defined('GLPI_SYSTEM_CRON')) { $number_of_queries++; }
 
         $progressCallback(null, $number_of_queries, __('Creating database structure…'));
@@ -2185,6 +2185,8 @@ class Toolbox
                 ]
             );
         }
+
+        $progressCallback($number_of_queries, $number_of_queries, __('Done!'));
     }
 
 
