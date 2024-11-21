@@ -66,7 +66,7 @@
    {% set networkports %}
       {% do call('Glpi\\Socket::showNetworkPortForm', [
          item.fields['itemtype'],
-         item.fields['items_id'],
+         item.fields['items_id'] ?? 0,
          item.fields['networkports_id'],
          params
       ]) %}
