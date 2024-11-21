@@ -37,9 +37,9 @@ namespace Glpi\Session;
 
 use Profile;
 
-final readonly class SessionInfo
+final class SessionInfo
 {
-    private Profile $profile;
+    private ?Profile $profile = null;
     private ?array $rights = null;
 
     public function __construct(
