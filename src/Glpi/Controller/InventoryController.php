@@ -105,7 +105,7 @@ final class InventoryController extends AbstractController
     }
 
     #[Route("/Inventory/RefusedEquipment", name: "glpi_refused_inventory", methods: 'POST')]
-    public function refused(Request $request): Response
+    public function refusedEquipement(Request $request): Response
     {
         $conf = new Conf();
         if ($conf->enabled_inventory != 1) {
