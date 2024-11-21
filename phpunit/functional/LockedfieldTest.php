@@ -934,10 +934,7 @@ class LockedfieldTest extends DbTestCase
 
         $global_lockedfield = new \Lockedfield();
         $global_lockedfield_id = (int)$global_lockedfield->add([
-            'itemtype'      => 'Computer',
-            'items_id'      => '0',
-            'fields'        => 'otherserial',
-            'is_global'     => 1,
+            'item' => 'Computer - manufacturers_id'
         ]);
         $this->assertGreaterThan(0, $global_lockedfield_id);
 
