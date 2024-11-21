@@ -74,7 +74,7 @@ final class IndexController extends AbstractController
         ) {
             // POST request from the inventory agent, forward it to the inventory controller.
             $sub_request = $request->duplicate(
-                attributes: ['_controller' => InventoryController::class]
+                attributes: ['_controller' => InventoryController::class . '::index']
             );
             return $this->http_kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
         }
