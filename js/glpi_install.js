@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 (() => {
-    function updateProgress(single_message_element, progress_element, value, max, text) {
+    function update_progress(single_message_element, progress_element, value, max, text) {
         value = value || 0;
         max = max || 1;
         const percentage = (value / max * 100);
@@ -52,7 +52,7 @@
         message_list_element.appendChild(alert);
     }
 
-    function startDatabaseInstall()
+    async function start_database_install(progress_key)
     {
         const message_element_id = 'glpi_install_messages_container';
         const success_element_id = 'glpi_install_success';
@@ -76,71 +76,87 @@
         messages_container.appendChild(progress_container_element);
 
         setTimeout(() => {
-            checkProgress(message_list_element, single_message_element, progress_element);
+            check_progress({
+                key: progress_key,
+                error_callback: (error) => {
+                    message(message_list_element, `Progress error:\n${error}`);
+                    update_progress(single_message_element, progress_element, 0, 1);
+                },
+                progress_callback: (json) => {
+                    if (!json || !json.length || json['finished_at']) {
+                        update_progress(single_message_element, progress_element, 100, 100);
+                        return false;
+                    }
+                    update_progress(single_message_element, progress_element, json.current, json.max, json.data);
+                },
+            });
         }, 1500);
 
-        fetch("/install/database_setup/start_db_inserts", {
-            method: 'POST',
-        })
-            .then((res) => res.text())
-            .then((text) => {
-                if (text && text.trim().length) {
-                    message(message_list_element, `Error:\n${text}`);
-                } else {
-                    updateProgress(single_message_element, progress_element, 1, 1);
-                    success_element.querySelector('button').removeAttribute('disabled');
-                }
-            })
-            .catch(function (err) {
-                message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-                updateProgress(single_message_element, progress_element, 0, 10);
-            });
+        try {
+            const res = await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
+            const text = await res.text();
+            if (text && text.trim().length) {
+                message(message_list_element, `Error:\n${text}`);
+            } else {
+                update_progress(single_message_element, progress_element, 1, 1);
+                success_element.querySelector('button').removeAttribute('disabled');
+            }
+        } catch (err) {
+            message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
+            update_progress(single_message_element, progress_element, 0, 1);
+        }
     }
 
-    function checkProgress(message_list_element, single_message_element, progress_element)
+    /**
+     * @param parameters
+     * @param {string} parameters.key Mandatory. The progress bar's unique key.
+     * @param {function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
+     * @param {function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback.
+     */
+    function check_progress(parameters)
     {
-        setTimeout(() => {
+        if (!parameters.key) {
+            throw new Error('Progress key is mandatory.');
+        }
 
-            fetch("/install/database_setup/check_progress", {
-                method: 'POST',
-            })
-                .then((res) => {
-                    if (res.status === 404) {
-                        // Progress not found, let's stop here.
-                        updateProgress(single_message_element, progress_element, 1, 1);
-                        return null;
-                    }
+        const start_timeout = 250;
 
-                    if (res.status >= 300) {
-                        throw new Error(`Invalid response from server, expected 200 or 404, found "${res.status}".`);
-                    }
-
-                    return res.json();
-                })
-                .then((json) => {
-                    if (json.started_at) {
-                        if (json.finished_at) {
-                            // Finished, nothing else to do!
-                            updateProgress(single_message_element, progress_element, 1, 1, json.data);
-                            return;
-                        }
-
-                        updateProgress(single_message_element, progress_element, json.current, json.max, json.data);
-
-                        checkProgress(message_list_element, single_message_element, progress_element);
-                        return;
-                    }
-
-                    console.info(json);
-                    message(message_list_element, `Result Error when checking progress:\n${JSON.stringify(json)}`);
-                })
-                .catch((err) => {
-                    message(message_list_element, `Request Error when checking progress:\n${err.message || err.toString()}`);
-                    updateProgress(single_message_element, progress_element, 0, 1);
+        setTimeout(async () => {
+            try {
+                const res = await fetch('/progress/check/' + parameters.key, {
+                    method: 'POST',
                 });
 
-        }, 500);
+                if (res.status === 404) {
+                    const cb_err_result = parameters.error_callback('Not found');
+                    if (!cb_err_result) {
+                        return;
+                    }
+                }
+
+                if (res.status >= 300) {
+                    parameters.error_callback(`Invalid response from server, expected 200 or 404, found "${res.status}".`);
+                    return;
+                }
+
+                const json =  await res.json();
+
+                debugger;
+                if (json['key'] && json['started_at']) {
+                    if (parameters.progress_callback(json) !== false) {
+                        // Recursive call, including the timeout
+                        check_progress(parameters);
+                    }
+
+                    return;
+                }
+
+                parameters.error_callback(`Result error when checking progress:\n${err.message || err.toString()}`);
+            } catch (err) {
+                parameters.error_callback(`Request error when checking progress:\n${err.message || err.toString()}`);
+            }
+        }, start_timeout);
     }
 
-    window.startDatabaseInstall = startDatabaseInstall;
+    window.start_database_install = start_database_install;
 })();

@@ -34,12 +34,8 @@
 
 namespace Glpi\Controller\Install;
 
-use Glpi\Cache\CacheManager;
 use Glpi\Http\Firewall;
-use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Toolbox;
 use Glpi\Controller\AbstractController;
 use Glpi\Progress\ProgressChecker;
@@ -49,7 +45,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class InstallController extends AbstractController
 {
-    private const STORED_PROGRESS_KEY = 'install_db_inserts';
+    public const STORED_PROGRESS_KEY = 'install_db_inserts';
 
     public function __construct(
         private readonly ProgressChecker $progressChecker,
@@ -68,7 +64,11 @@ class InstallController extends AbstractController
             try {
                 $progress_callback = static function (?int $current = null, ?int $max = null, ?string $data = null) use ($progressChecker) {
                     $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
-                    $progress->current += $current ?? 1;
+                    if (!$current) {
+                        $progress->current++;
+                    } else {
+                        $progress->current = $current;
+                    }
                     $progress->max = (int) $max;
                     $progress->data .= $data ? ("\n" . $data) : '';
                     $progressChecker->save($progress);
@@ -86,16 +86,5 @@ class InstallController extends AbstractController
                 $this->progressChecker->endProgress(self::STORED_PROGRESS_KEY);
             }
         });
-    }
-
-    #[Route("/install/database_setup/check_progress", methods: 'POST')]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function check_progress(): Response
-    {
-        if (!$this->progressChecker->hasProgress(self::STORED_PROGRESS_KEY)) {
-            return new JsonResponse([], 404);
-        }
-
-        return new JsonResponse($this->progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY));
     }
 }

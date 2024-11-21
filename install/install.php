@@ -345,7 +345,8 @@ function step4($databasename, $newdatabasename)
         $prev_form($host, $user, $password);
 
         echo \sprintf(
-            '<script defer>startDatabaseInstall();</script>',
+            '<script defer>start_database_install("%s");</script>',
+            \Glpi\Controller\Install\InstallController::STORED_PROGRESS_KEY,
         );
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
