@@ -81,6 +81,20 @@ class Lockedfield extends CommonDBTM
         return true;
     }
 
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        $lock = new self();
+        $lock->getFromDB($items_id);
+        $item = new $lock->fields['itemtype']();
+        if (
+            $item->getFromDB($lock->fields['items_id']) //not a global lock
+            && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
