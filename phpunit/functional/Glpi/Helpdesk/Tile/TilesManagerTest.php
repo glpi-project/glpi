@@ -219,7 +219,7 @@ final class TilesManagerTest extends DbTestCase
         $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
-        $builder = new FormBuilder("Form inside entity");
+        $builder = new FormBuilder("Form outside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
         $builder->allowAllUsers();
