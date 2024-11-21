@@ -125,7 +125,7 @@ final class SessionInfo
 
     private function getRights(): array
     {
-        if ($this->rights !== null) {
+        if ($this->rights === null) {
             $profile = $this->getProfile();
             $profile->cleanProfile();
             $this->rights = $profile->fields;
