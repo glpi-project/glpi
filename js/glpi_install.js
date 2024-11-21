@@ -83,8 +83,8 @@
                     update_progress(single_message_element, progress_element, 0, 1);
                 },
                 progress_callback: (json) => {
-                    if (!json || !json.length || json['finished_at']) {
-                        update_progress(single_message_element, progress_element, 100, 100);
+                    if (!json || Object.keys(json).length === 0 || json['finished_at']) {
+                        update_progress(single_message_element, progress_element, 100, 100, json['finished_at'] ? json.data : null);
                         return false;
                     }
                     update_progress(single_message_element, progress_element, json.current, json.max, json.data);
