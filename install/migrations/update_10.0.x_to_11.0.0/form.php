@@ -205,7 +205,7 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
     );
 }
 if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `profiles_id` int unsigned NOT NULL DEFAULT '0',
@@ -218,7 +218,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
     );
 }
 if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
@@ -228,7 +228,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
     );
 }
 if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
@@ -240,7 +240,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
     );
 }
 if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
-    $DB->doQueryOrDie(
+    $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
