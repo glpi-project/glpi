@@ -249,9 +249,6 @@ class Software extends InventoryAsset
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $mainasset_entities_id = 0;
         // get entity of the parent asset
         if (isset($this->main_asset)) {
