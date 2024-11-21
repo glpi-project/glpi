@@ -54,11 +54,8 @@ final class TilesManager
         foreach ($profile_tiles as $row) {
             $itemtype = $row['itemtype'];
 
-            if (
-                !is_a($itemtype, TileInterface::class, true)
-                || !is_a($itemtype, CommonDBTM::class, true)
-                || (new ReflectionClass($itemtype))->isAbstract()
-            ) {
+            $tile = getItemForItemtype($itemtype);
+            if (!($tile instanceof TileInterface)) {
                 continue;
             }
 
