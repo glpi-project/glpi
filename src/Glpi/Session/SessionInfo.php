@@ -39,6 +39,9 @@ use Profile;
 
 final readonly class SessionInfo
 {
+    private Profile $profile;
+    private ?array $rights = null;
+
     public function __construct(
         private int $user_id = 0,
         private array $group_ids = [],
@@ -67,5 +70,67 @@ final readonly class SessionInfo
     public function getActiveEntitiesIds(): array
     {
         return $this->active_entities_ids;
+    }
+
+    public function hasRight(string $right, int $action): bool
+    {
+        $rights = $this->getRights();
+
+        if (!isset($rights[$right])) {
+            return false;
+        }
+
+        return ((int) $rights[$right] & $action) > 0;
+    }
+
+    public function hasAnyRights(string $right, array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if ($this->hasRight($right, $action)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasAllRights(string $right, array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if (!$this->hasRight($right, $action)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getProfile(): ?Profile
+    {
+        if ($this->profile_id === 0) {
+            return null;
+        }
+
+        if ($this->profile === null) {
+            $profile = Profile::getById($this->profile_id);
+            if (!$profile) {
+                return null;
+            }
+
+            $this->profile = $profile;
+        }
+
+        return $this->profile;
+    }
+
+    private function getRights(): array
+    {
+        if ($this->rights !== null) {
+            $profile = $this->getProfile();
+            $profile->cleanProfile();
+            $this->rights = $profile->fields;
+        }
+
+        return $this->rights;
     }
 }

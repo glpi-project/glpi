@@ -38,6 +38,7 @@ use CommonDBTM;
 use Glpi\Session\SessionInfo;
 use Html;
 use Override;
+use TicketValidation;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface
 {
@@ -82,10 +83,15 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     #[Override]
     public function isValid(SessionInfo $session_info): bool
     {
-        // We could check rights here for extra safety but it is not really needed
-        // since tiles are defined per profile so a page tile defined for a
-        // profile should be accessible to the user of that profile.
-        // TODO: add extra safety check here when we have more time.
-        return true;
+        return match ($this->fields['page']) {
+            self::PAGE_SERVICE_CATALOG => true,
+            self::PAGE_FAQ             => true,
+            self::PAGE_RESERVATION     => $session_info->hasRight('reservation', READ),
+            self::PAGE_APPROVAL        => $session_info->hasAnyRights('ticketvalidation', [
+                TicketValidation::VALIDATEINCIDENT,
+                TicketValidation::VALIDATEREQUEST,
+            ]),
+            default                    => false,
+        };
     }
 }
