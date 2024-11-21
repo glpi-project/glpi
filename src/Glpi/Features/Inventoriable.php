@@ -55,7 +55,7 @@ trait Inventoriable
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
-           //file does not exists
+           //file does not exist
             return true;
         }
 
@@ -81,7 +81,7 @@ trait Inventoriable
         $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
 
         $conf = new Conf();
-        //Check for JSON file, and the XML if JSON does not exists
+        //Check for JSON file, and the XML if JSON does not exist
         $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
         if (!file_exists($inventory_dir_path . $filename)) {
             $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
@@ -134,12 +134,18 @@ trait Inventoriable
                 \htmlescape($title)
             );
 
-            if (static::class == RefusedEquipment::class) {
-                echo sprintf(
-                    "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
-                    $CFG_GLPI['root_doc'] . '/Inventory?refused=' . $this->fields['id'],
-                    __s('Try a reimport from stored inventory file')
-                );
+            if (static::class === RefusedEquipment::class) {
+                $url = $CFG_GLPI['root_doc'] . '/RefusedEquipment/Inventory/' . $this->fields['id'];
+                $title = __s('Try a reimport from stored inventory file');
+                echo <<<HTML
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"
+                                title="{$title}"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                style="float: right;margin-right: .5em;"
+                                formaction="{$url}">
+                           <i class="fas fa-redo"></i>
+                        </button>
+HTML;
             }
         } else {
             echo sprintf(

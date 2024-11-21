@@ -44,12 +44,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class InventoryController extends AbstractController
+final class InventoryRefusedController extends AbstractController
 {
-    public static bool $is_running = false;
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
-    #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
+    #[Route("/RefusedEquipment/Inventory/{refused_id}", requirements: ['refused_id' => '\d+'], name: "glpi_refused_inventory", methods: 'POST')]
     public function __invoke(Request $request): Response
     {
         $conf = new Conf();
@@ -58,50 +55,28 @@ final class InventoryController extends AbstractController
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
-        $inventory_request->handleHeaders();
+        $refused_id = (int)$request->get('refused_id');
 
-        self::$is_running = true;
         $refused = new \RefusedEquipment();
 
         try {
-            $handle = true;
-            $contents = '';
-            if (!$request->isMethod('POST')) {
-                if ($request->get('action') === 'getConfig') {
-                    /**
-                     * Even if Fusion protocol is not supported for getConfig requests, they
-                     * should be handled and answered with a json content type
-                     */
-                    $inventory_request->handleContentType('application/json');
-                    $inventory_request->addError('Protocol not supported', 400);
-                } else {
-                    // Method not allowed answer without content
-                    $inventory_request->addError(null, 405);
-                }
-                $handle = false;
+            \Session::checkRight("config", READ);
+            if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
+                $contents = file_get_contents($inventory_file);
             } else {
-                $contents = file_get_contents("php://input");
+                throw new HttpException(
+                    404,
+                    sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id)
+                );
             }
-
-            if ($handle) {
-                $inventory_request->handleRequest($contents);
-            }
+            $inventory_request->handleRequest($contents);
         } catch (\Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
-        } finally {
-            self::$is_running = false;
         }
 
-        $inventory_request->handleMessages();
-
-        $response = new Response();
-        $response->setStatusCode($inventory_request->getHttpResponseCode());
-        $headers = $inventory_request->getHeaders(true);
-        foreach ($headers as $key => $value) {
-            $response->headers->set($key, $value);
-        }
-        $response->setContent($inventory_request->getResponse());
+        $redirect_url = $refused->handleInventoryRequest($inventory_request);
+        $response = new RedirectResponse($redirect_url);
         return $response;
     }
 }
