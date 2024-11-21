@@ -452,3 +452,7 @@ body pre {
         color: var(--tblr-muted) !important;
     }
 }
+
+.accordion-button:hover, .accordion-button:focus {
+    z-index: unset;
+}
