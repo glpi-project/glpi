@@ -932,6 +932,15 @@ class LockedfieldTest extends DbTestCase
             $computer->update(['id' => $cid, 'otherserial' => 'AZERTY'])
         );
 
+        $global_lockedfield = new \Lockedfield();
+        $global_lockedfield_id = (int)$global_lockedfield->add([
+            'itemtype'      => 'Computer',
+            'items_id'      => '0',
+            'fields'        => 'otherserial',
+            'is_global'     => 1,
+        ]);
+        $this->assertGreaterThan(0, $cid);
+
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
 
@@ -939,18 +948,35 @@ class LockedfieldTest extends DbTestCase
         $entities_id_child = getItemByTypeName(\Entity::class, '_test_child_1', true);
         $this->assertTrue(\Session::changeActiveEntities($entities_id_child));
 
-        // load lockedfiled and check for purge
+
+        // Check for computer lockedfield
         $this->assertTrue($lockedfield->getFromDBByCrit(['itemtype' => \Computer::class, "items_id" => $cid]));
         $this->assertFalse($lockedfield->canPurgeItem());
-        $this->assertFalse($lockedfield->delete($lockedfield->fields, 1));
+        $this->assertFalse($lockedfield->can($lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertFalse(\Lockedfield::isMassiveActionAllowed($lockedfield->fields['id']));
+
+        //check for global lockedfield
+        $this->assertTrue($global_lockedfield->canPurgeItem());
+        $this->assertTrue($global_lockedfield->can($global_lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
 
         // move back to root entity
         $entities_id_root = getItemByTypeName(\Entity::class, '_test_root_entity', true);
         $this->assertTrue(\Session::changeActiveEntities($entities_id_root));
 
-        // load lockedfiled and check for purge
+        // Check for computer lockedfield
         $this->assertTrue($lockedfield->getFromDBByCrit(['itemtype' => \Computer::class, "items_id" => $cid]));
         $this->assertTrue($lockedfield->canPurgeItem());
-        $this->assertTrue($lockedfield->delete($lockedfield->fields, 1));
+        $this->assertTrue($lockedfield->can($lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($lockedfield->fields['id']));
+
+        //check for global lockedfield
+        $this->assertTrue($global_lockedfield->canPurgeItem());
+        $this->assertTrue($global_lockedfield->can($global_lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
     }
 }
