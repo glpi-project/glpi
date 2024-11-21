@@ -215,10 +215,8 @@ class Socket extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        // If no items_id is set, do not store itemtype or items_id
-        if (!isset($input['items_id']) || empty($input['items_id'])) {
-            unset($input['itemtype']);
-            unset($input['items_id']);
+        if (empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
         }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
@@ -227,10 +225,8 @@ class Socket extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        // If no items_id is set, do not store itemtype or items_id
-        if (!isset($input['items_id']) || empty($input['items_id'])) {
-            unset($input['itemtype']);
-            unset($input['items_id']);
+        if (isset($input['items_id']) && empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
         }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
