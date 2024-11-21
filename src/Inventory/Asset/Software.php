@@ -302,6 +302,7 @@ class Software extends InventoryAsset
 
         $db_software = [];
         $db_software_wo_version = [];
+        $db_software_data = [];
 
         //Load existing software versions from db. Grab required fields
         //to build comparison key @see getFullCompareKey
