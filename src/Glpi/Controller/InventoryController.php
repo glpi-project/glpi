@@ -61,7 +61,6 @@ final class InventoryController extends AbstractController
         $inventory_request->handleHeaders();
 
         self::$is_running = true;
-        $refused = new \RefusedEquipment();
 
         try {
             $handle = true;
