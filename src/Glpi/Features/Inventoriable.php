@@ -135,7 +135,7 @@ trait Inventoriable
             );
 
             if (static::class === RefusedEquipment::class) {
-                $url = $CFG_GLPI['root_doc'] . '/RefusedEquipment/Inventory/' . $this->fields['id'];
+                $url = $CFG_GLPI['root_doc'] . '/RefusedEquipment/Inventory';
                 $title = __s('Try a reimport from stored inventory file');
                 echo <<<HTML
                         <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"

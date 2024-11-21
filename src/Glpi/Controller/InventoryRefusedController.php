@@ -46,7 +46,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class InventoryRefusedController extends AbstractController
 {
-    #[Route("/RefusedEquipment/Inventory/{refused_id}", requirements: ['refused_id' => '\d+'], name: "glpi_refused_inventory", methods: 'POST')]
+    #[Route("/RefusedEquipment/Inventory", name: "glpi_refused_inventory", methods: 'POST')]
     public function __invoke(Request $request): Response
     {
         $conf = new Conf();
@@ -55,7 +55,7 @@ final class InventoryRefusedController extends AbstractController
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
-        $refused_id = (int)$request->get('refused_id');
+        $refused_id = (int)$request->get('id');
 
         $refused = new \RefusedEquipment();
 
