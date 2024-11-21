@@ -50,7 +50,7 @@ final class InventoryController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
-    public function __invoke(Request $request): Response
+    public function index(Request $request): Response
     {
         $conf = new Conf();
         if ($conf->enabled_inventory != 1) {
@@ -101,6 +101,40 @@ final class InventoryController extends AbstractController
             $response->headers->set($key, $value);
         }
         $response->setContent($inventory_request->getResponse());
+        return $response;
+    }
+
+    #[Route("/Inventory/RefusedEquipment", name: "glpi_refused_inventory", methods: 'POST')]
+    public function refused(Request $request): Response
+    {
+        $conf = new Conf();
+        if ($conf->enabled_inventory != 1) {
+            throw new AccessDeniedHttpException("Inventory is disabled");
+        }
+
+        $inventory_request = new \Glpi\Inventory\Request();
+        $refused_id = (int)$request->get('id');
+
+        $refused = new \RefusedEquipment();
+
+        try {
+            \Session::checkRight("config", READ);
+            if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
+                $contents = file_get_contents($inventory_file);
+            } else {
+                throw new HttpException(
+                    404,
+                    sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $refused_id)
+                );
+            }
+            $inventory_request->handleRequest($contents);
+        } catch (\Throwable $e) {
+            //empty
+            $inventory_request->addError($e->getMessage());
+        }
+
+        $redirect_url = $refused->handleInventoryRequest($inventory_request);
+        $response = new RedirectResponse($redirect_url);
         return $response;
     }
 }
