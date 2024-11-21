@@ -115,16 +115,16 @@
     --tblr-gray-900: var(--tblr-dark);
     --tblr-gray-50: var(--tblr-gray-200);
     --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
-    --glpi-zindex-dropdown: $zindex-dropdown;
-    --glpi-zindex-sticky: $zindex-sticky;
-    --glpi-zindex-fixed: $zindex-fixed;
-    --glpi-zindex-offcanvas-backdrop: $zindex-offcanvas-backdrop;
-    --glpi-zindex-offcanvas: $zindex-offcanvas;
-    --glpi-zindex-modal-backdrop: $zindex-modal-backdrop;
-    --glpi-zindex-modal: $zindex-modal;
-    --glpi-zindex-popover: $zindex-popover;
-    --glpi-zindex-tooltip: $zindex-tooltip;
-    --glpi-zindex-toast: $zindex-toast;
+    --glpi-zindex-dropdown: #{$zindex-dropdown};
+    --glpi-zindex-sticky: #{$zindex-sticky};
+    --glpi-zindex-fixed: #{$zindex-fixed};
+    --glpi-zindex-offcanvas-backdrop: #{$zindex-offcanvas-backdrop};
+    --glpi-zindex-offcanvas: #{$zindex-offcanvas};
+    --glpi-zindex-modal-backdrop: #{$zindex-modal-backdrop};
+    --glpi-zindex-modal: #{$zindex-modal};
+    --glpi-zindex-popover: #{$zindex-popover};
+    --glpi-zindex-tooltip: #{$zindex-tooltip};
+    --glpi-zindex-toast: #{$zindex-toast};
 }
 
 @media(prefers-reduced-motion) {
