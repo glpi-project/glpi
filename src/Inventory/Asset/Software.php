@@ -310,6 +310,7 @@ class Software extends InventoryAsset
             'SELECT' => [
                 'glpi_items_softwareversions.id as item_soft_version_id',
                 'glpi_softwares.id as softid',
+                'glpi_softwares.is_helpdesk_visible as is_helpdesk_visible',
                 'glpi_softwares.name',
                 'glpi_softwareversions.id AS versionid',
                 'glpi_softwareversions.name AS version',
@@ -370,10 +371,11 @@ class Software extends InventoryAsset
                 'name'      => $data['name'],
             ];
             $db_software_data[$key_wo_version] = [
-                'softid'             => $data['softid'],
-                'softwarecategories' => $data['softwarecategories_id'],
-                'name'               => $data['name'],
-                'manufacturer'       => $data['manufacturers_id'],
+                'softid'                => $data['softid'],
+                'softwarecategories'    => $data['softwarecategories_id'],
+                'name'                  => $data['name'],
+                'manufacturer'          => $data['manufacturers_id'],
+                'is_helpdesk_visible'   => $data['is_helpdesk_visible'],
             ];
         }
 
