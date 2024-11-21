@@ -88,6 +88,7 @@ class Lockedfield extends CommonDBTM
         $item = new $lock->fields['itemtype']();
         if (
             $item->getFromDB($lock->fields['items_id']) //not a global lock
+            && $item->isEntityAssign()
             && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
         ) {
             return false;

@@ -939,7 +939,7 @@ class LockedfieldTest extends DbTestCase
             'fields'        => 'otherserial',
             'is_global'     => 1,
         ]);
-        $this->assertGreaterThan(0, $cid);
+        $this->assertGreaterThan(0, $global_lockedfield_id);
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
