@@ -134,7 +134,7 @@ trait Inventoriable
                 \htmlescape($title)
             );
 
-            if (static::class === RefusedEquipment::class) {
+            if (static::class === RefusedEquipment::class) { //@phpstan-ignore-line - phpstan bug with traits
                 $url = $CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment';
                 $title = __s('Try a reimport from stored inventory file');
                 echo <<<HTML
