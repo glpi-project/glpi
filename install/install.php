@@ -70,6 +70,7 @@ function header_html($etape)
     echo Html::script("lib/fuzzy.js");
     echo Html::script("js/common.js");
     echo Html::script("js/glpi_dialog.js");
+    echo Html::script("js/check_progress.js");
     echo Html::script("js/glpi_install.js");
 
     // CSS
