@@ -2079,7 +2079,9 @@ class Toolbox
         global $DB;
 
         if (!$progressCallback) {
-            $progressCallback = function ($a = null, $b = null, $c = null) {};
+            $progressCallback = function ($a = null, $b = null, $c = null)
+            {
+            };
         }
 
         if (null === $database) {

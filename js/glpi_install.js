@@ -45,7 +45,6 @@
         const success_element = document.getElementById('glpi_install_success');
 
         const message_list_element = document.createElement('div');
-        const single_message_element = document.createElement('p');
 
         success_element.querySelector('button').setAttribute('disabled', 'disabled');
 
@@ -56,7 +55,6 @@
         });
 
         messages_container.appendChild(message_list_element);
-        messages_container.appendChild(single_message_element);
 
         setTimeout(() => {
             progress.start();
@@ -67,13 +65,13 @@
             const text = await res.text();
             if (text && text.trim().length) {
                 message(message_list_element, `Error:\n${text}`);
-                progress.stop();
+                progress.stop(false);
             } else {
                 success_element.querySelector('button').removeAttribute('disabled');
             }
         } catch (err) {
             message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-            progress.stop();
+            progress.stop(false);
         }
     }
 

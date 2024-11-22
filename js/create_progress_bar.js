@@ -1,12 +1,42 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
 
 /**
- * @param parameters
- * @param {HTMLElement} parameters.container Mandatory. The progress bar's unique key.
- * @param {string} parameters.key Mandatory. The progress bar's unique key.
- * @param {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
- * @param {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
- *
- * @return {{start: function, stop: function}}
+ * @param     parameters
+ * @param     {HTMLElement} parameters.container Mandatory. The progress bar's unique key.
+ * @param     {string} parameters.key Mandatory. The progress bar's unique key.
+ * @param     {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
+ * @param     {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
+ * @return    {{start: function, stop: function}}
  */
 function create_progress_bar(parameters)
 {
@@ -17,7 +47,7 @@ function create_progress_bar(parameters)
         throw new Error('Progress container is mandatory.');
     }
     if (!(parameters.container instanceof HTMLElement)) {
-        throw new Error('Progress key must be an HTML element, "' + (parameters.container?.constructor?.name || typeof parameters.container) + '" found.');
+        throw new Error(`Progress key must be an HTML element, "${parameters.container?.constructor?.name || typeof parameters.container}" found.`);
     }
 
     const main_container = document.createElement('div');
@@ -48,7 +78,7 @@ function create_progress_bar(parameters)
             "'": '&#039;'
         };
 
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        return text.replace(/[&<>"']/g, (m) => map[m]);
     }
 
     /**
@@ -74,7 +104,6 @@ function create_progress_bar(parameters)
         set_bar_percentage(percentage);
 
         if (text && text.length) {
-            console.info('Text', {text});
             messages_container.innerHTML = escapeHtml(text.trim()).replace(/\n/gi, '<br>');
         }
     }
@@ -88,10 +117,10 @@ function create_progress_bar(parameters)
     }
 
     async function check_progress() {
+        is_running = true;
         setTimeout(async () => {
-            is_running = true;
             try {
-                const res = await fetch('/progress/check/' + parameters.key, {
+                const res = await fetch(`/progress/check/${parameters.key}`, {
                     method: 'POST',
                     signal: abort_controller.signal,
                 });
@@ -128,7 +157,7 @@ function create_progress_bar(parameters)
                     return;
                 }
 
-                parameters?.error_callback(`Result error when checking progress:\n${err.message || err.toString()}`);
+                parameters?.error_callback(`JSON returned by progress check endpoint is invalid.`);
                 reset_progress();
             } catch (err) {
                 parameters?.error_callback(`Request error when checking progress:\n${err.message || err.toString()}`);
@@ -147,7 +176,7 @@ function create_progress_bar(parameters)
         } finally {
             abort_controller = new AbortController();
         }
-        if (typeof new_percentage === 'number') {
+        if (new_percentage !== null && new_percentage !== undefined) {
             set_bar_percentage(new_percentage);
         }
     }
@@ -157,7 +186,7 @@ function create_progress_bar(parameters)
         progress_bar.classList.remove('bg-warning');
         set_bar_percentage(0);
 
-        check_progress().then(() => console.info('Progress started'));
+        check_progress().then(() => {});
     }
 
     return {
