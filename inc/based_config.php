@@ -123,7 +123,7 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
     }
 
    // Define constants values from downstream distribution file
-    if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
+    if (!defined('TU_USER') && file_exists(GLPI_ROOT . '/inc/downstream.php')) {
         include_once(GLPI_ROOT . '/inc/downstream.php');
     }
 
