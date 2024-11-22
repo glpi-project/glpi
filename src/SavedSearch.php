@@ -1323,11 +1323,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
             $params = null;
             if (class_exists($this->getField('itemtype'))) {
-                $params = $this->prepareQueryToUse(
-                    $this->getField('type'),
-                    $query_tab,
-                    $enable_partial_warnings
-                );
+                $params = $search::manageParams($this->getField('itemtype'), $_GET);
             }
 
             if (!$params) {
