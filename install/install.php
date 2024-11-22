@@ -339,7 +339,7 @@ function step4($databasename, $newdatabasename)
 
         echo '<div id="glpi_install_messages_container"></div>';
 
-        echo '<div id="glpi_install_success" class="container mt-4">';
+        echo '<div id="glpi_install_success" class="container">';
         $next_form();
         echo '</div>';
 

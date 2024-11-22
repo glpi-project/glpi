@@ -5,6 +5,8 @@
  * @param {string} parameters.key Mandatory. The progress bar's unique key.
  * @param {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
  * @param {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
+ *
+ * @return {{start: function, stop: function}}
  */
 function create_progress_bar(parameters)
 {
@@ -19,26 +21,22 @@ function create_progress_bar(parameters)
     }
 
     const main_container = document.createElement('div');
-    main_container.style.paddingLeft = '20px';
-    main_container.style.paddingRight = '20px';
-
-    const progress_container = document.createElement('div');
-    const progress = document.createElement('div');
-    progress.className = "progress";
-    progress.style.height = '15px';
-    progress.innerHTML = '<div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>';
-    const progress_bar = progress.querySelector('.progress-bar');
-    progress_container.appendChild(progress);
-
-    const messages_container = document.createElement('div');
-
-    main_container.appendChild(progress_container);
-    main_container.appendChild(messages_container);
+    main_container.innerHTML = `
+        <div style="padding-left: 20px; padding-right: 20px;">
+            <div class="progress" style="height: 15px;">
+                <div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <div class="messages_container"></div>
+        </div>
+    `;
+    const progress_bar = main_container.querySelector('.progress-bar');
+    const messages_container = main_container.querySelector('.messages_container');
 
     parameters.container.appendChild(main_container);
 
     const start_timeout = 250;
 
+    let is_running = true;
     let abort_controller = new AbortController();
 
     function escapeHtml(text) {
@@ -82,6 +80,8 @@ function create_progress_bar(parameters)
     }
 
     function reset_progress() {
+        is_running = false;
+
         set_bar_percentage(null);
         progress_bar.classList.remove('bg-info');
         progress_bar.classList.add('bg-warning');
@@ -89,6 +89,7 @@ function create_progress_bar(parameters)
 
     async function check_progress() {
         setTimeout(async () => {
+            is_running = true;
             try {
                 const res = await fetch('/progress/check/' + parameters.key, {
                     method: 'POST',
@@ -137,6 +138,10 @@ function create_progress_bar(parameters)
     }
 
     function stop(new_percentage) {
+        if (!is_running) {
+            return;
+        }
+
         try {
             abort_controller.abort();
         } finally {
