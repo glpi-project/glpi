@@ -7104,9 +7104,9 @@ HTML
                 'public followup',
             ],
             'expected_tasks'     => [
-                'private task of normal user',
-                'private task assigned to normal user',
                 'private task assigned to see group',
+                'private task assigned to normal user',
+                'private task of normal user',
                 'private task of tech user',
                 'public task',
             ],
@@ -7123,9 +7123,9 @@ HTML
                 'public followup',
             ],
             'expected_tasks'     => [
-                'private task of normal user',
-                'private task assigned to normal user',
                 'private task assigned to see group',
+                'private task assigned to normal user',
+                'private task of normal user',
                 'public task',
             ],
         ];
@@ -7160,9 +7160,9 @@ HTML
                     'public followup',
                 ],
                 'expected_tasks'     => [
-                    'private task of normal user',
-                    'private task assigned to normal user',
                     'private task assigned to see group',
+                    'private task assigned to normal user',
+                    'private task of normal user',
                     'private task of tech user',
                     'public task',
                 ],
