@@ -30,66 +30,36 @@
  * ---------------------------------------------------------------------
  */
 (() => {
-    function update_progress(single_message_element, progress_element, value, max, text) {
-        value = value || 0;
-        max = max || 1;
-        const percentage = (value / max * 100);
-
-        const bar = progress_element.querySelector('.progress-bar');
-        bar.style.width = `${percentage}%`;
-        bar.innerHTML = `${Math.floor(percentage)}%`;
-        bar.setAttribute('aria-valuenow', percentage);
-
-        if (text && text.length) {
-            console.info('Text', {text});
-            single_message_element.innerHTML = text.trim().replace(/\n/gi, '<br>');
-        }
-    }
-
     function message(message_list_element, text) {
         const alert = document.createElement('p');
         alert.innerHTML = text;
         message_list_element.appendChild(alert);
     }
 
-    async function start_database_install(progress_key)
+    async function start_database_install(dom_element, progress_key)
     {
-        const message_element_id = 'glpi_install_messages_container';
-        const success_element_id = 'glpi_install_success';
+        if (!dom_element) {
+            throw new Error('No DOM element provided to start database install.');
+        }
+        const messages_container = document.getElementById('glpi_install_messages_container');
+        const success_element = document.getElementById('glpi_install_success');
 
-        const messages_container = document.getElementById(message_element_id);
-        const success_element = document.getElementById(success_element_id);
-
-        const progress_container_element = document.createElement('p');
-        const progress_element = document.createElement('div');
-        progress_element.className = "progress";
-        progress_element.style.height = '15px';
-        progress_element.innerHTML = '<div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>';
-        progress_container_element.appendChild(progress_element);
         const message_list_element = document.createElement('div');
         const single_message_element = document.createElement('p');
 
         success_element.querySelector('button').setAttribute('disabled', 'disabled');
 
+        const progress = create_progress_bar({
+            key: progress_key,
+            container: messages_container,
+            error_callback: (error) => message(message_list_element, `Progress error:\n${error}`),
+        });
+
         messages_container.appendChild(message_list_element);
         messages_container.appendChild(single_message_element);
-        messages_container.appendChild(progress_container_element);
 
         setTimeout(() => {
-            check_progress({
-                key: progress_key,
-                error_callback: (error) => {
-                    message(message_list_element, `Progress error:\n${error}`);
-                    update_progress(single_message_element, progress_element, 0, 1);
-                },
-                progress_callback: (json) => {
-                    if (!json || Object.keys(json).length === 0 || json['finished_at']) {
-                        update_progress(single_message_element, progress_element, 100, 100, json['finished_at'] ? json.data : null);
-                        return false;
-                    }
-                    update_progress(single_message_element, progress_element, json.current, json.max, json.data);
-                },
-            });
+            progress.start();
         }, 1500);
 
         try {
@@ -97,13 +67,13 @@
             const text = await res.text();
             if (text && text.trim().length) {
                 message(message_list_element, `Error:\n${text}`);
+                progress.stop();
             } else {
-                update_progress(single_message_element, progress_element, 1, 1);
                 success_element.querySelector('button').removeAttribute('disabled');
             }
         } catch (err) {
             message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-            update_progress(single_message_element, progress_element, 0, 1);
+            progress.stop();
         }
     }
 

@@ -70,7 +70,7 @@ function header_html($etape)
     echo Html::script("lib/fuzzy.js");
     echo Html::script("js/common.js");
     echo Html::script("js/glpi_dialog.js");
-    echo Html::script("js/check_progress.js");
+    echo Html::script("js/create_progress_bar.js");
     echo Html::script("js/glpi_install.js");
 
     // CSS
@@ -346,7 +346,7 @@ function step4($databasename, $newdatabasename)
         $prev_form($host, $user, $password);
 
         echo \sprintf(
-            '<script defer>start_database_install("%s");</script>',
+            '<script defer>start_database_install(document.getElementById("glpi_install_messages_container"), "%s");</script>',
             \Glpi\Controller\Install\InstallController::STORED_PROGRESS_KEY,
         );
     } else { // can't create config_db file
