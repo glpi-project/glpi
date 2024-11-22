@@ -32,97 +32,74 @@
 
 {% if linknewitil %}
     <div class='mb-3'>
-        {{ call('Html::showSimpleForm', [call(itemtype_1 ~ '::getFormURL'), '_add_fromitem', __('New %s for this item')|format(call(itemtype_1 ~ '::getTypeName', [0])), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
+        {{ call('Html::showSimpleForm', [itemtype_1|itemtype_form_path, '_add_fromitem', __('New %s for this item')|format(itemtype_1|itemtype_name(1)), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
     </div>
 {% endif %}
-<div>
-{% if number > 0 %}
-    <table class='tab_cadre_fixehov'>
+<div class="mb-3">
+    {% if number > 0 %}
+        {{ call('Session::initNavigateListItems', [itemtype_1, __(item.getTypeName(1)) ~ " " ~ item.getName()]) }}
+        {% set superheader_raw = false %}
         {% if readall %}
-            {{ call('Session::initNavigateListItems', [itemtype_1, __(item.getTypeName(1)) ~ " " ~ item.getName()]) }}
-            <tr class='noHover'>
-                <th colspan={{ colspan }}>
-                    {{ __('%d linked %s')|format(number, call(itemtype_1 ~ '::getTypeName', [number])) }}
-                    (<a href="{{ call(itemtype_1 ~ '::getSearchURL') }}?{{ params|url_encode('&') }}">{{ __('Show all') }}</a>)
-                </th>
-            </tr>
+            {% set superheader %}
+                {{ __('%d linked %s')|format(number, itemtype_1|itemtype_name(number)) }}
+                (<a href="{{ itemtype_1|itemtype_search_path }}?{{ params|url_encode('&') }}">{{ __('Show all') }}</a>)
+            {% endset %}
+            {% set superheader_raw = true %}
         {% else %}
-            <tr>
-                <th colspan={{ colspan }}>
-                    {{ call(itemtype_1 ~ '::getTypeName', [1]) }} : {{ __("You don't have right to see all") }}
-                </th>
-            </tr>
+            {% set superheader = __("You don't have right to see all %s")|format(itemtype_1|itemtype_name(get_plural_number())) %}
         {% endif %}
-{% else %}
-    <table class='tab_cadre_fixehov'>
-        <tr class='noHover'>
-            <th colspan={{ colspan }}>
-                {{ __('No %s on this item')|format(call(itemtype_1 ~ '::getTypeName', [number])) }}
-            </th>
-        </tr>
-{% endif %}
+    {% endif %}
 
-{% if number > 0 %}
-    {% set values = [] %}
+    {% if number > 0 %}
+        {% set values = [] %}
 
-    {% for data in iterator %}
-        {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
-    {% endfor %}
+        {% for data in iterator %}
+            {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+        {% endfor %}
 
-    {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
-    {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
-    {% set datatable_params = {
-        'is_tab': true,
-        'nopager': true,
-        'nofilter': true,
-        'nosort': true,
-        'entries': entries,
-        'total_number': entries|length,
-        'showmassiveactions': canedit,
-    } %}
-    {% set merged_params = datatable_params|merge(common_columns) %}
+        {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+        {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+        {% set datatable_params = {
+            'super_header': {
+                'label': superheader,
+                'is_raw': superheader_raw,
+            },
+            'is_tab': true,
+            'nopager': true,
+            'nofilter': true,
+            'nosort': true,
+            'entries': entries,
+            'total_number': entries|length,
+            'showmassiveactions': canedit,
+        } %}
+        {% set merged_params = datatable_params|merge(common_columns) %}
 
-    {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
-{% endif %}
-    </table>
+        {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
+    {% endif %}
 </div>
 
 {% if showform %}
-    <div class='spaced'>
-        <table class='tab_cadre_fixehov'>
-            <tr class='noHover'>
-                <th colspan='{{ colspan }}'>
-                    {{ __('%s on linked items')|format(call(itemtype_1 ~ '::getTypeName', [number])) }}
-                </th>
-            </tr>
-            {% if number2 > 0 %}
-                {% set values = [] %}
+    {% if number2 > 0 %}
+        {% set values = [] %}
 
-                {% for data in iterator2 %}
-                    {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
-                {% endfor %}
+        {% for data in iterator2 %}
+            {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+        {% endfor %}
 
-                {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
-                {% set entries2 = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
-                {% set datatable_params = {
-                    'is_tab': true,
-                    'nopager': true,
-                    'nofilter': true,
-                    'nosort': true,
-                    'entries': entries2,
-                    'total_number': entries2|length,
-                    'showmassiveactions': canedit,
-                } %}
-                {% set merged_params = datatable_params|merge(common_columns) %}
+        {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+        {% set entries2 = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+        {% set datatable_params = {
+            'super_header': __('%s on linked items')|format(itemtype_1|itemtype_name(number)),
+            'is_tab': true,
+            'nopager': true,
+            'nofilter': true,
+            'nosort': true,
+            'entries': entries2,
+            'total_number': entries2|length,
+            'showmassiveactions': canedit,
+        } %}
+        {% set merged_params = datatable_params|merge(common_columns) %}
 
-                {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
-            {% else %}
-                <tr>
-                    <td>
-                        {{ __('None found.') }}
-                    </td>
-                </tr>
-            {% endif %}
-        </table>
-    </div>
+        {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
+    {% endif %}
 {% endif %}
