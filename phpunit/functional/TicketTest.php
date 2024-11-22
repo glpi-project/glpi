@@ -643,7 +643,7 @@ class TicketTest extends DbTestCase
                 'value' => $ticket_id,
             ]
         ];
-        $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria]);
+        $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria], [139,140,141]);
         $this->assertSame(1, $data['data']['totalcount']);
         $ticket_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
