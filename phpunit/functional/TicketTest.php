@@ -647,7 +647,7 @@ class TicketTest extends DbTestCase
         $this->assertSame(1, $data['data']['totalcount']);
         $ticket_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
-        $this->assertTrue(array_key_exists('ITEM_Ticket_139', $ticket_with_so), "Erreur : La clé 'ITEM_Ticket_139' n'existe pas dans le tableau. Clés disponibles : " . implode(', ', array_keys($ticket_with_so)));
+        $this->assertTrue(array_key_exists('ITEM_Ticket_139', $ticket_with_so));
         $this->assertEquals($last_followup_date, $ticket_with_so['ITEM_Ticket_139']);
         $this->assertTrue(array_key_exists('ITEM_Ticket_140', $ticket_with_so));
         $this->assertEquals($last_solution_date, $ticket_with_so['ITEM_Ticket_140']);
