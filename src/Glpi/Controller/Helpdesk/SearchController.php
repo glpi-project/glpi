@@ -36,6 +36,7 @@ namespace Glpi\Controller\Helpdesk;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -69,10 +70,13 @@ final class SearchController extends AbstractController
         $filter = $request->query->getString('filter');
 
         // Get forms
-        $parameters = new FormAccessParameters(
-            session_info: Session::getCurrentSessionInfo(),
+        $items_request = new ItemRequest(
+            access_parameters: new FormAccessParameters(
+                session_info: Session::getCurrentSessionInfo(),
+            ),
+            filter: $filter
         );
-        $forms = $this->service_catalog_manager->getForms($parameters, $filter);
+        $forms = $this->service_catalog_manager->getItems($items_request);
 
         // Get FAQ entries
         $query = KnowbaseItem::getListRequest([
