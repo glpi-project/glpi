@@ -5328,6 +5328,11 @@ JAVASCRIPT;
             $opt['criteria'][1]['value']      = Session::getLoginUserID();
             $opt['criteria'][1]['link']       = 'AND';
 
+            $opt['criteria'][2]['field']      = 12; // ticket status
+            $opt['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][2]['value']      = Ticket::CLOSED;
+            $opt['criteria'][2]['link']       = 'AND NOT';
+
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
                 'text'    => __('Tickets waiting for your approval'),

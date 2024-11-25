@@ -670,7 +670,20 @@ abstract class CommonITILValidation extends CommonDBChild
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'status'             => self::WAITING,
-                'users_id_validate'  => $users_id
+                'users_id_validate'  => $users_id,
+                'NOT' => [
+                    'AND' => [
+                        [
+                            'tickets_id' => new QuerySubQuery([
+                                'SELECT' => 'id',
+                                'FROM'   => 'glpi_tickets',
+                                'WHERE'  => [
+                                    'status' => CommonITILObject::CLOSED
+                                ]
+                            ])
+                        ]
+                    ]
+                ]
             ]
         ])->current();
 
