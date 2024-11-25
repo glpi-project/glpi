@@ -878,12 +878,6 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
-    public function getServiceCatalogItemUniqueId(): string
-    {
-        return 'form-' . $this->getID();
-    }
-
-    #[Override]
     public function getServiceCatalogLink(): string
     {
         return "/Form/Render/" . $this->getID();

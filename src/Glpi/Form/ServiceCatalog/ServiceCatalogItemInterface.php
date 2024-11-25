@@ -53,14 +53,4 @@ interface ServiceCatalogItemInterface
      * @return string
      */
     public function getServiceCatalogItemIllustration(): string;
-
-    /**
-     * Unique ID that will be used to reference some DOM node using `id=xxx` and
-     * `aria-labelled-by=xxx`.
-     *
-     * Using some kind of unique prefix + the current item id is usually enough,
-     * e.g. 'form-41' or 'category-7845'.
-     * @return string
-     */
-    public function getServiceCatalogItemUniqueId(): string;
 }

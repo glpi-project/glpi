@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
+
 <div class="col-12 col-sm-6 col-md-4 d-flex">
     <a
         class="card mx-1 my-2 flex-grow-1"
@@ -39,7 +41,7 @@
     >
         <section
             class="card-body"
-            aria-labelledby="{{ item.getServiceCatalogItemUniqueId() }}"
+            aria-labelledby="{{ unique_dom_id }}"
         >
             <div class="d-flex">
                 {{ render_illustration(
@@ -48,7 +50,7 @@
                 ) }}
                 <div class="ms-4">
                     <h2
-                        id="{{ item.getServiceCatalogItemUniqueId() }}"
+                        id="{{ unique_dom_id }}"
                         class="card-title mb-2"
                     >
                         {{ item.getServiceCatalogItemTitle() }}

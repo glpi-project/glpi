@@ -41,13 +41,14 @@
     {% endif %}
     {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
         <div class="col-12 d-flex">
+            {% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
             <section
                 class="card mx-1 my-2 flex-grow-1"
-                aria-labelledby="{{ item.getServiceCatalogItemUniqueId() }}"
+                aria-labelledby="{{ unique_dom_id }}"
             >
                 <div class="card-body">
                     <div class="card-title mb-0 d-flex align-items-center w-100">
-                        <h2 id="{{ item.getServiceCatalogItemUniqueId() }}" class="mb-0 fs-2">
+                        <h2 id="{{ unique_dom_id }}" class="mb-0 fs-2">
                             {{ item.getServiceCatalogItemTitle() }}
                         </h2>
                         <div class="card-subtitle ms-2 remove-last-tinymce-margin">
