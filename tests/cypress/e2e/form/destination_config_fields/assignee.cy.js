@@ -43,6 +43,7 @@ describe('Assignee configuration', () => {
             const assignee_name = `Test Assignee - ${form_id}`;
             cy.createWithAPI('User', {
                 name: assignee_name,
+                _profiles_id: 6, // Technician
             }).as('assignee_id');
 
             cy.findByRole('button', {'name': "Add a new question"}).click();

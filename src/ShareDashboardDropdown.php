@@ -43,7 +43,7 @@ class ShareDashboardDropdown extends AbstractRightsDropdown
         return $CFG_GLPI['root_doc'] . "/ajax/getShareDashboardDropdownValue.php";
     }
 
-    protected static function getTypes(): array
+    protected static function getTypes(array $options = []): array
     {
         return [
             User::getType(),

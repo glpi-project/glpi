@@ -42,6 +42,7 @@ use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Tests\FormBuilder;
@@ -241,7 +242,7 @@ final class ValidationFieldTest extends DbTestCase
                 specific_question_ids: [$this->getQuestionId($form, "GLPI User")]
             ),
             answers: [
-                "Assignee" => Group::getForeignKeyField() . '-' . $users[0]->getID(),
+                "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
                     'items_id' => $users[1]->getID(),
@@ -320,7 +321,12 @@ final class ValidationFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleActorsQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addQuestion("Assignee", QuestionTypeAssignee::class);
+        $builder->addQuestion(
+            "Assignee",
+            QuestionTypeAssignee::class,
+            '',
+            json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
+        );
         $builder->addQuestion("GLPI User", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => User::class,
         ]));
@@ -333,13 +339,32 @@ final class ValidationFieldTest extends DbTestCase
 
     private function createAndGetUserActors(): array
     {
+        $entities_id = $this->getTestRootEntity()->getID();
+        $profiles_id = getItemByTypeName(\Profile::class, 'Technician', true);
+
         $users = $this->createItems(
             User::class,
             [
-                ['name' => 'ValidationFieldTest User 1', 'entities_id' => $this->getTestRootEntity()->getID()],
-                ['name' => 'ValidationFieldTest User 2', 'entities_id' => $this->getTestRootEntity()->getID()],
-                ['name' => 'ValidationFieldTest User 3', 'entities_id' => $this->getTestRootEntity()->getID()],
-                ['name' => 'ValidationFieldTest User 4', 'entities_id' => $this->getTestRootEntity()->getID()],
+                [
+                    'name' => 'ValidationFieldTest User 1',
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
+                ],
+                [
+                    'name' => 'ValidationFieldTest User 2',
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
+                ],
+                [
+                    'name' => 'ValidationFieldTest User 3',
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
+                ],
+                [
+                    'name' => 'ValidationFieldTest User 4',
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
+                ]
             ]
         );
 

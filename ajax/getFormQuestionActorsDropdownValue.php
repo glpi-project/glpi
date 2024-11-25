@@ -57,4 +57,10 @@ if (Session::getCurrentInterface() !== 'central') {
     }
 }
 
-show_rights_dropdown(FormActorsDropdown::class);
+$options = [
+    'allowed_types'    => $_POST['allowed_types']    ?? [],
+    'right_for_users'  => $_POST['right_for_users']  ?? 'all',
+    'group_conditions' => $_POST['group_conditions'] ?? [],
+];
+
+show_rights_dropdown(FormActorsDropdown::class, $options);

@@ -43,7 +43,7 @@ final class ProjectTaskTeamDropdown extends AbstractRightsDropdown
         return $CFG_GLPI['root_doc'] . "/ajax/getProjectTaskTeamDropdownValue.php";
     }
 
-    protected static function getTypes(): array
+    protected static function getTypes(array $options = []): array
     {
         return ProjectTask::getTeamMembersItemtypes();
     }
