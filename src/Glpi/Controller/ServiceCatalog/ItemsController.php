@@ -35,7 +35,7 @@
 namespace Glpi\Controller\ServiceCatalog;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
@@ -71,7 +71,7 @@ final class ItemsController extends AbstractController
         if ($category_id > 0) {
             $category = Category::getById($category_id);
             if (!$category) {
-                throw new BadRequestHttpException();
+                throw new NotFoundHttpException();
             }
         }
 
