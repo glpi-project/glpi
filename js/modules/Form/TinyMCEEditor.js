@@ -33,7 +33,7 @@
 
 /* global strip_tags, onTinyMCEChange, submitparentForm */
 
-import '../../../public/lib/tinymce.js';
+import '../../../lib/tinymce.js';
 import '../../fileupload.js';
 import '../../RichText/ContentTemplatesParameters.js';
 
@@ -44,7 +44,7 @@ export default class TinyMCEEditor {
         plugins = [],
         readonly = false,
         content_css = '',
-        skin_url = `${CFG_GLPI['root_doc']}/public/lib/tinymce/skins/ui/oxide`,
+        skin_url = `${CFG_GLPI['root_doc']}/lib/tinymce/skins/ui/oxide`,
         cache_suffix = '',
         invalid_elements = [],
         height = 150,
@@ -58,7 +58,7 @@ export default class TinyMCEEditor {
     } = {}) {
         element_id = $.escapeSelector(element_id);
         const richtext_layout = CFG_GLPI['richtext_layout'] || 'inline';
-        const lang_url = `${CFG_GLPI['root_doc']}/public/lib/tinymce-i18n/langs6/${language}.js`;
+        const lang_url = `${CFG_GLPI['root_doc']}/lib/tinymce-i18n/langs6/${language}.js`;
 
         const config = Object.assign({
             license_key: 'gpl',
