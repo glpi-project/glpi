@@ -40,7 +40,6 @@ use Glpi\Config\LegacyConfigurators\ConfigRest;
 use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;
 use Glpi\Config\LegacyConfigurators\CustomObjectsBootstrap;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
-use Glpi\Config\LegacyConfigurators\InstallTweaks;
 use Glpi\Config\LegacyConfigurators\ProfilerStart;
 use Glpi\Config\LegacyConfigurators\SessionConfig;
 use Glpi\Config\LegacyConfigurators\SessionStart;

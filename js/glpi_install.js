@@ -42,11 +42,13 @@
             throw new Error('No DOM element provided to start database install.');
         }
         const messages_container = document.getElementById('glpi_install_messages_container');
-        const success_element = document.getElementById('glpi_install_success');
+        const success_container = document.getElementById('glpi_install_success');
+        const back_button_container = document.getElementById('glpi_install_back');
 
         const message_list_element = document.createElement('div');
 
-        success_element.querySelector('button').setAttribute('disabled', 'disabled');
+        success_container.querySelector('button').setAttribute('disabled', 'disabled');
+        back_button_container.querySelector('input').setAttribute('disabled', 'disabled');
 
         const create_progress_bar = window.create_progress_bar;
 
@@ -57,7 +59,7 @@
         const progress = create_progress_bar({
             key: progress_key,
             container: messages_container,
-            error_callback: (error) => message(message_list_element, `Progress error:\n${error}`),
+            error_callback: () => message(message_list_element, __('An unexpected error has occurred.')),
         });
 
         messages_container.appendChild(message_list_element);
@@ -71,13 +73,15 @@
             const text = await res.text();
             if (text && text.trim().length) {
                 message(message_list_element, `Error:\n${text}`);
-                progress.stop(false);
+                progress.error();
             } else {
-                success_element.querySelector('button').removeAttribute('disabled');
+                success_container.querySelector('button').removeAttribute('disabled');
             }
         } catch (err) {
             message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-            progress.stop(false);
+            progress.error();
+        } finally {
+            back_button_container.querySelector('input').removeAttribute('disabled');
         }
     }
 

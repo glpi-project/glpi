@@ -2079,7 +2079,7 @@ class Toolbox
         global $DB;
 
         if (!$progressCallback) {
-            $progressCallback = function (?int $a = null, ?int $b = null, ?string $c = null) {
+            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
             };
         }
 
@@ -2111,17 +2111,17 @@ class Toolbox
             $number_of_queries++;
         }
 
-        $progressCallback(null, $number_of_queries, __('Creating database structure…'));
+        $progressCallback(max: $number_of_queries, data: __('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
-            $progressCallback(null, $number_of_queries);
+            $progressCallback();
             if (!$query) {
                 continue;
             }
             $DB->doQuery($query);
         }
 
-        $progressCallback(null, $number_of_queries, __('Adding empty data…'));
+        $progressCallback(data: __('Adding empty data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2136,7 +2136,7 @@ class Toolbox
 
             $types = str_repeat('s', count($data[0]));
             foreach ($data as $row) {
-                $progressCallback(null, $number_of_queries);
+                $progressCallback();
                 $res = $stmt->bind_param($types, ...array_values($row));
                 if (false === $res) {
                     $msg = "Error binding params in table $table\n";
@@ -2153,18 +2153,18 @@ class Toolbox
             }
         }
 
-        $progressCallback(null, $number_of_queries, __('Creating default forms…'));
+        $progressCallback(data: __('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
 
-        $progressCallback(null, $number_of_queries, __('Initalizing rules…'));
+        $progressCallback(data: __('Initalizing rules…'));
         RulesManager::initializeRules();
 
-        $progressCallback(null, $number_of_queries, __('Generating keys…'));
+        $progressCallback(data: __('Generating keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
 
-        $progressCallback(null, $number_of_queries, __('Updating default language…'));
+        $progressCallback(data: __('Updating default language…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2175,7 +2175,7 @@ class Toolbox
         );
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback(null, $number_of_queries, __('Configuring cron tasks…'));
+            $progressCallback(data: __('Configuring cron tasks…'));
            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
@@ -2189,7 +2189,7 @@ class Toolbox
             );
         }
 
-        $progressCallback($number_of_queries, $number_of_queries, __('Done!'));
+        $progressCallback($number_of_queries, $number_of_queries);
     }
 
 

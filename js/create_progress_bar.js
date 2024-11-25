@@ -36,7 +36,7 @@
  * @param     {string} parameters.key Mandatory. The progress bar's unique key.
  * @param     {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
  * @param     {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
- * @return    {{start: function, stop: function}}
+ * @return    {{start: function, error: function}}
  */
 function create_progress_bar(parameters)
 {
@@ -69,24 +69,12 @@ function create_progress_bar(parameters)
     let is_running = true;
     let abort_controller = new AbortController();
 
-    function escapeHtml(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-
-        return text.replace(/[&<>"']/g, (m) => map[m]);
-    }
-
     /**
      * @param {null|number} percentage
      */
     function set_bar_percentage(percentage) {
         progress_bar.style.width = `${typeof percentage === 'number' ? percentage : 0}%`;
-        progress_bar.innerHTML = typeof percentage === 'number' ? `${Math.floor(percentage)}%` : '-';
+        progress_bar.innerHTML = typeof percentage === 'number' ? `${Math.floor(percentage)} %` : '-';
         progress_bar.setAttribute('aria-valuenow', percentage || '0');
 
     }
@@ -104,11 +92,11 @@ function create_progress_bar(parameters)
         set_bar_percentage(percentage);
 
         if (text && text.length) {
-            messages_container.innerHTML = escapeHtml(text.trim()).replace(/\n/gi, '<br>');
+            messages_container.innerHTML = _.escape(text.trim()).replace(/\n/gi, '<br>');
         }
     }
 
-    function reset_progress() {
+    function stop_progress_with_warning_state() {
         is_running = false;
 
         set_bar_percentage(null);
@@ -128,14 +116,14 @@ function create_progress_bar(parameters)
                 if (res.status === 404) {
                     const cb_err_result = parameters?.error_callback('Not found');
                     if (!cb_err_result) {
-                        reset_progress();
+                        stop_progress_with_warning_state();
                         return;
                     }
                 }
 
                 if (res.status >= 300) {
                     parameters?.error_callback(`Invalid response from server, expected 200 or 404, found "${res.status}".`);
-                    reset_progress();
+                    stop_progress_with_warning_state();
                     return;
                 }
 
@@ -158,15 +146,15 @@ function create_progress_bar(parameters)
                 }
 
                 parameters?.error_callback(`JSON returned by progress check endpoint is invalid.`);
-                reset_progress();
+                stop_progress_with_warning_state();
             } catch (err) {
                 parameters?.error_callback(`Request error when checking progress:\n${err.message || err.toString()}`);
-                reset_progress();
+                stop_progress_with_warning_state();
             }
         }, start_timeout);
     }
 
-    function stop(new_percentage) {
+    function error() {
         if (!is_running) {
             return;
         }
@@ -176,9 +164,7 @@ function create_progress_bar(parameters)
         } finally {
             abort_controller = new AbortController();
         }
-        if (new_percentage !== null && new_percentage !== undefined) {
-            set_bar_percentage(new_percentage);
-        }
+        stop_progress_with_warning_state();
     }
 
     function start() {
@@ -191,6 +177,6 @@ function create_progress_bar(parameters)
 
     return {
         start,
-        stop,
+        error,
     };
 }

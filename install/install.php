@@ -295,13 +295,10 @@ function step4($databasename, $newdatabasename)
     if ($databasename === '' && $newdatabasename !== '') {
         // create new db
         $databasename = $link->real_escape_string($newdatabasename);
-        $query = $link->prepare('CREATE DATABASE IF NOT EXISTS ?');
-        $query->execute([$databasename]);
-        $db_result = $query->fetch();
 
         if (
             !$link->select_db($databasename)
-            && !$db_result
+            && !$link->query(\sprintf("CREATE DATABASE IF NOT EXISTS `%s`;", $databasename))
         ) {
             echo __s('Error in creating database!');
             echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
@@ -346,7 +343,9 @@ function step4($databasename, $newdatabasename)
         $next_form();
         echo '</div>';
 
+        echo '<div id="glpi_install_back" class="container">';
         $prev_form($host, $user, $password);
+        echo '</div>';
 
         echo \sprintf(
             '<script defer>start_database_install(document.getElementById("glpi_install_messages_container"), "%s");</script>',

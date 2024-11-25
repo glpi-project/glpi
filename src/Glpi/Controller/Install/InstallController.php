@@ -64,12 +64,10 @@ class InstallController extends AbstractController
             try {
                 $progress_callback = static function (?int $current = null, ?int $max = null, ?string $data = null) use ($progressChecker) {
                     $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
-                    if (!$current) {
-                        $progress->current++;
-                    } else {
-                        $progress->current = $current;
+                    $progress->current = $current ?? ($progress->current + 1);
+                    if ($max !== null) {
+                        $progress->max = $max;
                     }
-                    $progress->max = (int) $max;
                     $progress->data .= $data ? ("\n" . $data) : '';
                     $progressChecker->save($progress);
                 };
