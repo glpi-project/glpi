@@ -4359,9 +4359,9 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
-        if ($itemtype === Ticket::class) {
+        if ($itemtype === Ticket::class || $itemtype === Change::class || $itemtype === Problem::class) {
             $tab[] = [
-                'id'                 => '140',
+                'id'                 => '100',
                 'table'              => ITILSolution::getTable(),
                 'field'              => 'date_creation',
                 'name'               => _n('Latest date', 'Latest dates', 1),
