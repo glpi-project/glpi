@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,39 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+namespace Glpi\Form\ServiceCatalog;
 
-export class GlpiFormSelfServiceController
+interface ServiceCatalogItemInterface
 {
-    constructor()
-    {
-        const input = this.#getFilterInput();
-        const filterFormsDebounced = _.debounce(
-            this.#filterForms.bind(this), // .bind keep the correct "this" context
-            400,
-            false
-        );
-        input.addEventListener('input', filterFormsDebounced);
-    }
+    /**
+     * Title that will be displayed in the service catalog
+     * @return string
+     */
+    public function getServiceCatalogItemTitle(): string;
 
-    async #filterForms()
-    {
-        const input = this.#getFilterInput();
-        const url = `${CFG_GLPI.root_doc}/Forms`;
-        const url_params = new URLSearchParams({
-            filter: input.value,
-        });
-        const response = await fetch(`${url}?${url_params}`);
-        this.#getFormsArea().innerHTML = await response.text();
-    }
+    /**
+     * Description that will be displayed in the service catalog
+     * @return string
+     */
+    public function getServiceCatalogItemDescription(): string;
 
-    #getFilterInput()
-    {
-        return document.querySelector("[data-glpi-service-catalog-filter-forms]");
-    }
-
-    #getFormsArea()
-    {
-        return document.querySelector("[data-glpi-service-catalog-forms]");
-    }
+    /**
+     * Illustration that will be displayed in the service catalog
+     * @return string
+     */
+    public function getServiceCatalogItemIllustration(): string;
 }

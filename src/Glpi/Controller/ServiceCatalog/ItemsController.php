@@ -32,10 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form;
+namespace Glpi\Controller\ServiceCatalog;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Category;
+use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -44,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ServiceCatalogController extends AbstractController
+final class ItemsController extends AbstractController
 {
     private ServiceCatalogManager $service_catalog_manager;
 
@@ -56,22 +59,42 @@ final class ServiceCatalogController extends AbstractController
 
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
-        "/ServiceCatalog",
-        name: "glpi_service_catalog",
-        methods: "GET"
+        "/ServiceCatalog/Items",
+        name: "glpi_form_list",
+        methods: "GET",
     )]
     public function __invoke(Request $request): Response
     {
+        // Read category
+        $category = null;
+        $category_id = $request->query->getInt('category');
+        if ($category_id > 0) {
+            $category = Category::getById($category_id);
+            if (!$category) {
+                throw new NotFoundHttpException();
+            }
+        }
+
+        // Read filter
+        $filter = $request->query->getString('filter');
+
+        // Build session + url params
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: $request->query->all()
         );
-        $forms = $this->service_catalog_manager->getForms($parameters);
 
-        return $this->render('pages/self-service/service_catalog.html.twig', [
-            'title'     => __("New ticket"),
-            'menu'      => ["create_ticket"],
-            'forms'     => $forms,
-        ]);
+        // Get items from the service catalog
+        $item_request = new ItemRequest(
+            access_parameters: $parameters,
+            filter: $filter,
+            category: $category,
+        );
+        $items = $this->service_catalog_manager->getItems($item_request);
+
+        return $this->render(
+            'components/helpdesk_forms/service_catalog_items.html.twig',
+            ['items' => $items]
+        );
     }
 }

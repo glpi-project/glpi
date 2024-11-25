@@ -75,6 +75,7 @@ trait FormTesterTrait
             'is_active'             => $builder->getIsActive(),
             'header'                => $builder->getHeader(),
             'is_draft'              => $builder->getIsDraft(),
+            'forms_categories_id'   => $builder->getCategory(),
             '_do_not_init_sections' => true, // We will handle sections ourselves
         ]);
 

@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,44 +33,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Helpdesk;
+namespace Glpi\Form\ServiceCatalog;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Helpdesk\HomePageTabs;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use User;
-use Session;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Category;
 
-final class IndexController extends AbstractController
+final class ItemRequest
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
+    public function __construct(
+        private FormAccessParameters $access_parameters,
+        private string $filter = "",
+        private ?Category $category = null,
+    ) {
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
-    #[Route(
-        "/Helpdesk",
-        name: "glpi_helpdesk_index",
-        methods: "GET"
-    )]
-    public function __invoke(Request $request): Response
+    public function getFormAccessParameters(): FormAccessParameters
     {
-        $user = User::getById(Session::getLoginUserID());
+        return $this->access_parameters;
+    }
 
-        return $this->render('pages/helpdesk/index.html.twig', [
-            'title' => __("Home"),
-            'menu'  => ['helpdesk-home'],
-            'tiles' => $this->tiles_manager->getTiles(),
-            'tabs'  => new HomePageTabs(),
-            'password_alert' => $user->getPasswordExpirationMessage(),
-        ]);
+    public function getFilter(): string
+    {
+        return $this->filter;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
     }
 }

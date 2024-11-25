@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
+use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -1219,6 +1220,7 @@ JAVASCRIPT;
                     'PlanningExternalEventTemplate' => null,
                     'PlanningEventCategory' => null,
                     'PendingReason' => null,
+                    Category::class => null,
                 ],
 
                 _n('Type', 'Types', Session::getPluralNumber()) => [

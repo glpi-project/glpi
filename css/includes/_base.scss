@@ -453,6 +453,13 @@ body pre {
     }
 }
 
+.remove-last-tinymce-margin {
+    // Remove annoying margin from tinymce's last paragraph
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
 .accordion-button:hover, .accordion-button:focus {
     z-index: unset;
 }

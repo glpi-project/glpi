@@ -705,6 +705,11 @@ $RELATION = [
         "_glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
     ],
 
+    'glpi_forms_categories' => [
+        'glpi_forms_categories' => 'forms_categories_id',
+        'glpi_forms_forms' => 'forms_categories_id',
+    ],
+
     'glpi_forms_forms' => [
         "_glpi_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
         "_glpi_forms_answerssets"                       => "forms_forms_id",

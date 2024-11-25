@@ -47,6 +47,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Html;
 use Log;
 use MassiveAction;
@@ -57,7 +58,7 @@ use Session;
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM
+final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
 {
     public static $rightname = 'form';
 
@@ -856,5 +857,29 @@ final class Form extends CommonDBTM
             is_a($class, QuestionTypeInterface::class, true)
             && !(new ReflectionClass($class))->isAbstract()
         ;
+    }
+
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
+    {
+        return $this->fields['name'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
+    {
+        return $this->fields['description'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
+    {
+        return $this->fields['illustration'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogLink(): string
+    {
+        return "/Form/Render/" . $this->getID();
     }
 }

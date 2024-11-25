@@ -42,7 +42,7 @@
             <input
                 class="form-control"
                 placeholder="{{ __("Search for forms...") }}"
-                data-glpi-service-catalog-filter-forms
+                data-glpi-service-catalog-filter-items
             >
             <span class="input-icon-addon" style="font-size: 18px;">
                 <i class="ti ti-search"></i>
@@ -55,11 +55,11 @@
     <section
         aria-label="{{ __("Forms") }}"
         class="row mb-5"
-        data-glpi-service-catalog-forms
+        data-glpi-service-catalog-items
     >
         {{ include(
-            'components/helpdesk_forms/forms_list.html.twig',
-            {forms: forms},
+            'components/helpdesk_forms/service_catalog_items.html.twig',
+            {items: items},
             with_context = false
         ) }}
     </section>
@@ -67,9 +67,9 @@
     <script>
         (async function() {
             const module = await import(
-                "{{ js_path('js/modules/Forms/SelfServiceController.js') }}"
+                "{{ js_path('js/modules/Forms/ServiceCatalogController.js') }}"
             );
-            new module.GlpiFormSelfServiceController();
+            new module.GlpiFormServiceCatalogController();
         })();
     </script>
 {% endblock content_body %}
