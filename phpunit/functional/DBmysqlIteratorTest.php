@@ -39,6 +39,7 @@ use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
 class DBmysqlIteratorTest extends DbTestCase
@@ -52,21 +53,21 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->it = new \DBmysqlIterator(null);
     }
 
-    public function testSqlError()
+    public function testSqlError(): void
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $this->exception(
-            function () use ($DB) {
-                $DB->request(['FROM' => 'fakeTable']);
-            }
-        )->isInstanceOf(\RuntimeException::class)
-         ->hasMessage("MySQL query error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\".");
+        $this->expectExceptionObject(
+            new \RuntimeException(
+                "MySQL query error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\"."
+            )
+        );
+        $DB->request(['FROM' => 'fakeTable']);
     }
 
 
-    public function testOnlyTable()
+    public function testOnlyTable(): void
     {
         $it = $this->it->execute(['FROM' => 'foo']);
         $this->assertSame('SELECT * FROM `foo`', $it->getSql());
@@ -85,9 +86,17 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testNoTableWithWhere()
     {
         $this->expectExceptionObject(new \LogicException('Missing table name.'));
-        $this->it->execute('', ['foo' => 1]);
+        $this->it->execute(['foo' => 1]);
     }
 
+    /**
+     * This is really an error, no table but a WHERE clause
+     */
+    public function testNoTableEmptyFromWithWhere()
+    {
+        $this->expectExceptionObject(new \LogicException('Missing table name.'));
+        $this->it->execute(['FROM' => '', 'foo' => 1]);
+    }
 
     /**
      * Temporarily, this is an error, will be allowed later
@@ -95,7 +104,7 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testNoTableWithoutWhere()
     {
         $this->expectExceptionObject(new \LogicException('Missing table name.'));
-        $this->it->execute('');
+        $this->it->execute(['']);
     }
 
 
@@ -114,7 +123,7 @@ class DBmysqlIteratorTest extends DbTestCase
         //define('GLPI_SQL_DEBUG', true);
 
         $id = mt_rand();
-        $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'name', 'id = ' . $id]);
+        $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'name', 'id = ' . $id], true);
 
         $this->hasSqlLogRecordThatContains(
             'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
@@ -409,8 +418,9 @@ class DBmysqlIteratorTest extends DbTestCase
                 ]
             ]
         );
-        $this->string($it->getSql())->isIdenticalTo(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')',
+            $it->getSql()
         );
 
         //condition set as associative array should work also
@@ -430,8 +440,9 @@ class DBmysqlIteratorTest extends DbTestCase
                 ]
             ]
         );
-        $this->string($it->getSql())->isIdenticalTo(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')',
+            $it->getSql()
         );
 
 
@@ -459,19 +470,19 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testBadJoin()
     {
         $this->expectExceptionObject(new \LogicException('BAD JOIN'));
-        $this->it->execute('foo', ['LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
+        $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => ['ON' => ['a' => 'id', 'b' => 'a_id']]]);
     }
 
     public function testBadJoinValue()
     {
         $this->expectExceptionObject(new \LogicException('BAD JOIN, value must be [ table => criteria ].'));
-        $this->it->execute('foo', ['LEFT JOIN' => 'bar']);
+        $this->it->execute(['FROM' => 'foo', 'LEFT JOIN' => 'bar']);
     }
 
     public function testBadJoinFkey()
     {
         $this->expectExceptionObject(new \LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].'));
-        $this->it->execute('foo', ['INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
+        $this->it->execute(['FROM' => 'foo', 'INNER JOIN' => ['bar' => ['FKEY' => 'akey']]]);
     }
 
     public function testAnalyseJoins()
@@ -570,7 +581,7 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testEmptyIn(): void
     {
         $this->expectExceptionObject(new \RuntimeException('Empty IN are not allowed'));
-        $this->it->execute('foo', ['bar' => []]);
+        $this->it->execute(['FROM' => 'foo', 'bar' => []]);
     }
 
     public function testFkey()
@@ -621,7 +632,6 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testRange()
     {
-
         $it = $this->it->execute(['FROM' => 'foo', 'START' => 5, 'LIMIT' => 10]);
         $this->assertSame('SELECT * FROM `foo` LIMIT 10 OFFSET 5', $it->getSql());
 
@@ -1422,24 +1432,24 @@ class DBmysqlIteratorTest extends DbTestCase
             'id' => [1, 2, 3]
         ];
         $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
-        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+        $this->assertEquals($expected, $iterator->analyseCrit($criteria));
 
         // Explicit IN (array form)
         $criteria = [
             'id' => ['IN', [1, 2, 3]]
         ];
         $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
-        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+        $this->assertEquals($expected, $iterator->analyseCrit($criteria));
 
         // Explicit NOT IN (array form)
         $criteria = [
             'id' => ['NOT IN', [1, 2, 3]]
         ];
         $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
-        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+        $this->assertEquals($expected, $iterator->analyseCrit($criteria));
     }
 
-    protected function resultProvider(): iterable
+    public static function resultProvider(): iterable
     {
         // Data from GLPI 9.5- (autosanitized)
         yield [
@@ -1484,12 +1494,11 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider resultProvider
-     */
+    /*
+    #[DataProvider('resultProvider')]
     public function testAutoUnsanitize(array $db_data, array $result): void
     {
-
+        //PHPUnit cannot mack native functions.
         $this->mockGenerator->orphanize('__construct');
         $mysqli_result = new \mock\mysqli_result();
         $this->calling($mysqli_result)->fetch_assoc = $db_data;
@@ -1504,7 +1513,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $db->request(['FROM' => 'glpi_mocks']);
 
         $this->array($iterator->current())->isEqualTo($result);
-    }
+    }*/
 
     public function testRawFKeyCondition()
     {
@@ -1516,7 +1525,7 @@ class DBmysqlIteratorTest extends DbTestCase
         );
     }
 
-    protected function requestArgsProvider(): iterable
+    public static function requestArgsProvider(): iterable
     {
         // Table name as first param, default value for criteria argument
         yield [
@@ -1591,113 +1600,75 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider requestArgsProvider
-     */
+    #[DataProvider('requestArgsProvider')]
     public function testConvertOldRequestArgsToCriteria(array $params, array $expected, string $sql): void
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
-
+        $db = $this->getMockBuilder('DBMysql')
+            ->disableOriginalConstructor()
+             ->getMock();
         $iterator = new \DBmysqlIterator($db);
 
-        $result = null;
-        $this->when(
-            function () use ($iterator, $params, &$result) {
                 $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-                $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
+        $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
                 \error_reporting($reporting_level); // restore previous level
-            }
-        )
-         ->error
-         ->withMessage('The `test()` method signature changed. Its previous signature is deprecated.')
-         ->withType(E_USER_DEPRECATED)
-         ->exists();
 
-        $this->array($result)->isEqualTo($expected);
+        $this->hasPhpLogRecordThatContains(
+            'The `test()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
+        $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @dataProvider requestArgsProvider
-     */
+    #[DataProvider('requestArgsProvider')]
     public function testExecuteWithOldSignature(array $params, array $expected, string $sql): void
     {
-        $this->mockGenerator->orphanize('__construct');
-        $mysqli_result = new \mock\mysqli_result();
-        $this->calling($mysqli_result)->fetch_assoc = [];
-        $this->calling($mysqli_result)->data_seek   = true;
-        $this->calling($mysqli_result)->free        = true;
-
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
-        $this->calling($db)->doQuery = $mysqli_result;
-        $this->calling($db)->numrows = 1;
-
-        $iterator = new \DBmysqlIterator($db);
-        $this->when(
-            function () use ($iterator, $params) {
+        $iterator = new \DBmysqlIterator(null);
+        $iterator->execute(...$params);
                 $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-                $iterator = $iterator->execute(...$params);
                 \error_reporting($reporting_level); // restore previous level
-            }
-        )
-         ->error
-         ->withMessage('The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.')
-         ->withType(E_USER_DEPRECATED)
-         ->exists();
 
-        $this->string($iterator->getSql())->isEqualTo($sql);
+        $this->hasPhpLogRecordThatContains(
+            'The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
+        $this->assertEquals($sql, $iterator->getSql());
     }
 
     public function testExecuteWithRawDirectQuery(): void
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
+        $db = $this->getMockBuilder('DBMysql')
+            ->disableOriginalConstructor()
+             ->getMock();
 
         $iterator = new \DBmysqlIterator($db);
-        $this->exception(
-            function () use ($iterator) {
-                $iterator->execute('SELECT * FROM `glpi_computers`');
-            }
-        )
-         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
+        $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
+        $iterator->execute('SELECT * FROM `glpi_computers`');
     }
 
-    /**
-     * @dataProvider requestArgsProvider
-     */
+    #[DataProvider('requestArgsProvider')]
     public function testBuildQueryWithOldSignature(array $params, array $expected, string $sql): void
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
+        $db = $this->getMockBuilder('DBMysql')
+            ->disableOriginalConstructor()
+             ->getMock();
 
         $iterator = new \DBmysqlIterator($db);
-        $this->when(
-            function () use ($iterator, $params) {
-                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-                $iterator = $iterator->buildQuery(...$params);
-                \error_reporting($reporting_level); // restore previous level
-            }
-        )
-         ->error
-         ->withMessage('The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.')
-         ->withType(E_USER_DEPRECATED)
-         ->exists();
-
-        $this->string($iterator->getSql())->isEqualTo($sql);
+        $iterator->buildQuery(...$params);
+        $this->hasPhpLogRecordThatContains(
+            'The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
+        $this->assertEquals($sql, $iterator->getSql());
     }
 
     public function testBuildQueryWithRawDirectQuery(): void
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
+        $db = $this->getMockBuilder('DBMysql')
+            ->disableOriginalConstructor()
+             ->getMock();
 
         $iterator = new \DBmysqlIterator($db);
-        $this->exception(
-            function () use ($iterator) {
-                $iterator->buildQuery('SELECT * FROM `glpi_computers`');
-            }
-        )
-         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
+        $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
+        $iterator->buildQuery('SELECT * FROM `glpi_computers`');
     }
 }
