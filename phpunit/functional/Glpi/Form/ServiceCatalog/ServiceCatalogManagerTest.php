@@ -389,7 +389,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             $items
         );
 
-        // Assert: only items without categories must be found
+        // Assert: only root items must be found
         $this->assertEquals([
             "Root form 1",
             "Root form 2",
