@@ -91,25 +91,25 @@ final class QuestionTypeObserverTest extends AbstractQuestionTypeActorsTest
     public static function invalidActorsProvider(): iterable
     {
         yield 'invalid user' => [
-            [User::getForeignKeyField() . "-999999"],
+            'answer' => [User::getForeignKeyField() . "-999999"],
             'expected_exception' => \Exception::class,
             'expected_message' => "Invalid actor ID: 999999",
         ];
 
         yield 'invalid group' => [
-            [Group::getForeignKeyField() . "-999999"],
+            'answer' => [Group::getForeignKeyField() . "-999999"],
             'expected_exception' => \Exception::class,
             'expected_message' => "Invalid actor ID: 999999",
         ];
 
         yield 'invalid user and group' => [
-            [User::getForeignKeyField() . "-999999", Group::getForeignKeyField() . "-999999"],
+            'answer' => [User::getForeignKeyField() . "-999999", Group::getForeignKeyField() . "-999999"],
             'expected_exception' => \Exception::class,
             'expected_message' => "Invalid actor ID: 999999",
         ];
 
         yield 'valid user and invalid group' => [
-            [
+            'answer' => [
                 User::getForeignKeyField() . "-" . getItemByTypeName(User::class, "glpi", true),
                 Group::getForeignKeyField() . "-999999"
             ],
@@ -118,7 +118,7 @@ final class QuestionTypeObserverTest extends AbstractQuestionTypeActorsTest
         ];
 
         yield 'multiple valid actors for single actors question' => [
-            [
+            'answer' => [
                 User::getForeignKeyField() . "-" . getItemByTypeName(User::class, "glpi", true),
                 Group::getForeignKeyField() . "-" . getItemByTypeName(Group::class, "_test_group_1", true),
             ],
@@ -135,33 +135,33 @@ final class QuestionTypeObserverTest extends AbstractQuestionTypeActorsTest
         $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
 
         yield 'valid user' => [
-            [User::getForeignKeyField() . "-$glpi_id"],
-            [
+            'answer' => [User::getForeignKeyField() . "-$glpi_id"],
+            'expected' => [
                 [
                     'itemtype' => User::class,
                     'items_id' => $glpi_id,
                 ]
             ],
-            false
+            'allow_multiple_actors' => false
         ];
 
         yield 'valid group' => [
-            [Group::getForeignKeyField() . "-$test_group_1_id"],
-            [
+            'answer' => [Group::getForeignKeyField() . "-$test_group_1_id"],
+            'expected' => [
                 [
                     'itemtype' => Group::class,
                     'items_id' => $test_group_1_id,
                 ]
             ],
-            false
+            'allow_multiple_actors' => false
         ];
 
         yield 'multiple valid users' => [
-            [
+            'answer' => [
                 User::getForeignKeyField() . "-$glpi_id",
                 User::getForeignKeyField() . "-$tech_id",
             ],
-            [
+            'expected' => [
                 [
                     'itemtype' => User::class,
                     'items_id' => $glpi_id,
@@ -171,15 +171,15 @@ final class QuestionTypeObserverTest extends AbstractQuestionTypeActorsTest
                     'items_id' => $tech_id,
                 ]
             ],
-            true
+            'allow_multiple_actors' => true
         ];
 
         yield 'multiple valid groups' => [
-            [
+            'answer' => [
                 Group::getForeignKeyField() . "-$test_group_1_id",
                 Group::getForeignKeyField() . "-$test_group_2_id",
             ],
-            [
+            'expected' => [
                 [
                     'itemtype' => Group::class,
                     'items_id' => $test_group_1_id,
@@ -189,7 +189,7 @@ final class QuestionTypeObserverTest extends AbstractQuestionTypeActorsTest
                     'items_id' => $test_group_2_id,
                 ]
             ],
-            true
+            'allow_multiple_actors' => true
         ];
     }
 

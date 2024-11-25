@@ -339,28 +339,31 @@ final class ValidationFieldTest extends DbTestCase
 
     private function createAndGetUserActors(): array
     {
+        $entities_id = $this->getTestRootEntity()->getID();
+        $profiles_id = getItemByTypeName(\Profile::class, 'Technician', true);
+
         $users = $this->createItems(
             User::class,
             [
                 [
                     'name' => 'ValidationFieldTest User 1',
-                    'entities_id' => $this->getTestRootEntity()->getID(),
-                    '_profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
                 ],
                 [
                     'name' => 'ValidationFieldTest User 2',
-                    'entities_id' => $this->getTestRootEntity()->getID(),
-                    '_profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
                 ],
                 [
                     'name' => 'ValidationFieldTest User 3',
-                    'entities_id' => $this->getTestRootEntity()->getID(),
-                    '_profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
                 ],
                 [
                     'name' => 'ValidationFieldTest User 4',
-                    'entities_id' => $this->getTestRootEntity()->getID(),
-                    '_profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)
+                    'entities_id' => $entities_id,
+                    '_profiles_id' => $profiles_id
                 ]
             ]
         );

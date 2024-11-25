@@ -206,13 +206,14 @@ final class AssigneeFieldTest extends DbTestCase
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $technician_profiles_id = getItemByTypeName('Profile', 'Technician', true);
         $user1 = $this->createItem(User::class, [
             'name' => 'testLocationFromSpecificQuestions User',
-            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true)
+            '_profiles_id' => $technician_profiles_id
         ]);
         $user2 = $this->createItem(User::class, [
             'name' => 'testLocationFromSpecificQuestions User 2',
-            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true)
+            '_profiles_id' => $technician_profiles_id
         ]);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
         $supplier = $this->createItem(Supplier::class, [
@@ -274,12 +275,13 @@ final class AssigneeFieldTest extends DbTestCase
             ITILActorFieldStrategy::LAST_VALID_ANSWER
         );
 
+        $technician_profiles_id = getItemByTypeName('Profile', 'Technician', true);
         $user1 = $this->createItem(User::class, [
             'name' => 'testLocationFromSpecificQuestions User',
-            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true)
+            '_profiles_id' => $technician_profiles_id
         ]);
         $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2',
-            '_profiles_id' => getItemByTypeName('Profile', 'Technician', true)
+            '_profiles_id' => $technician_profiles_id
         ]);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
         $supplier = $this->createItem(Supplier::class, [

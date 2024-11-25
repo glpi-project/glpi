@@ -81,7 +81,7 @@ final class AllowListDropdown extends AbstractRightsDropdown
     }
 
     #[Override]
-    protected static function getTypes(): array
+    protected static function getTypes(array $options = []): array
     {
         return [
             User::getType(),
