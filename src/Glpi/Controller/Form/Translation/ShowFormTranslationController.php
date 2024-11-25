@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Controller\Form\Translation;
 
-use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
+use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Form\Form;
+use Glpi\Form\Translation\FormTranslation;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-interface BlockInterface extends ProvideFormTranslationsInterface
+final class ShowFormTranslationController extends AbstractController
 {
-    public const KEY_PREFIX_NAME = 'block_name';
-    public const KEY_PREFIX_DESCRIPTION = 'block_description';
+    #[Route("/Form/Translation/{form_translation_id}", name: "glpi_show_form_translation", methods: "GET")]
+    public function __invoke(Request $request, int $form_translation_id): Response
+    {
+        // Right check
+        if (!FormTranslation::canView()) {
+            throw new AccessDeniedHttpException();
+        }
 
-    public function displayBlockForEditor(): void;
+        return new StreamedResponse(function () use ($form_translation_id) {
+            FormTranslation::displayFullPageForItem($form_translation_id, ['admin', Form::getType()], []);
+        });
+    }
 }

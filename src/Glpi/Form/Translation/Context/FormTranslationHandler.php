@@ -33,14 +33,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Form\Translation\Context;
 
-use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
-
-interface BlockInterface extends ProvideFormTranslationsInterface
+final class FormTranslationHandler
 {
-    public const KEY_PREFIX_NAME = 'block_name';
-    public const KEY_PREFIX_DESCRIPTION = 'block_description';
+    public function __construct(
+        private string $key,
+        private string $name,
+        private string $value,
+    ) {
+    }
 
-    public function displayBlockForEditor(): void;
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }
