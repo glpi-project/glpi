@@ -82,7 +82,6 @@
 
       ul.filters {
          border: 0;
-         padding: 5px;
          list-style: none;
          margin: 0;
          padding: 0;
@@ -363,7 +362,7 @@
    background-image: -moz-linear-gradient(left, red 50%, green 0%);
    background-image: -ms-linear-gradient(left, red 50%, green 0%);
    background-image: -o-linear-gradient(left, red 50%, green 0%);
-   background-image: linear-gradient(left, red 50%, green 0%);
+   background-image: linear-gradient(to left, red 50%, green 0%);
 }
 
 .partialavailablebegin {
@@ -371,7 +370,7 @@
    background-image: -moz-linear-gradient(left, green 50%, red 0%);
    background-image: -ms-linear-gradient(left, green 50%, red 0%);
    background-image: -o-linear-gradient(left, green 50%, red 0%);
-   background-image: linear-gradient(left, green 50%, red 0%);
+   background-image: linear-gradient(to left, green 50%, red 0%);
 }
 
 .planning-context-menu {
