@@ -2064,7 +2064,7 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?\Closure<?int, ?int, ?string> $progressCallback
+     * @param ?\Closure $progressCallback
      *
      * @return void
      *
@@ -2079,8 +2079,7 @@ class Toolbox
         global $DB;
 
         if (!$progressCallback) {
-            $progressCallback = function ($a = null, $b = null, $c = null)
-            {
+            $progressCallback = function (?int $a = null, ?int $b = null, ?string $c = null) {
             };
         }
 
@@ -2108,7 +2107,9 @@ class Toolbox
             $number_of_queries += \count($data);
         }
         $number_of_queries += 8; // For other calls
-        if (defined('GLPI_SYSTEM_CRON')) { $number_of_queries++; }
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_queries++;
+        }
 
         $progressCallback(null, $number_of_queries, __('Creating database structure…'));
 

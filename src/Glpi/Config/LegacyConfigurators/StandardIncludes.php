@@ -119,8 +119,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
 
             //Options from DB, do not touch this part.
             if (
-                !$is_installing
-                && !Config::loadLegacyConfiguration()
+                !Config::loadLegacyConfiguration()
                 && !$skip_db_checks
             ) {
                 echo "Error accessing config table";

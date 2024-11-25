@@ -48,6 +48,12 @@
 
         success_element.querySelector('button').setAttribute('disabled', 'disabled');
 
+        const create_progress_bar = window.create_progress_bar;
+
+        if (typeof create_progress_bar === 'undefined') {
+            throw new Error('Function "create_progress_bar" is not defined. Did you load the associated JS file correctly?');
+        }
+
         const progress = create_progress_bar({
             key: progress_key,
             container: messages_container,
