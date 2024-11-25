@@ -295,10 +295,13 @@ function step4($databasename, $newdatabasename)
     if ($databasename === '' && $newdatabasename !== '') {
         // create new db
         $databasename = $link->real_escape_string($newdatabasename);
+        $query = $link->prepare('CREATE DATABASE IF NOT EXISTS ?');
+        $query->execute([$databasename]);
+        $db_result = $query->fetch();
 
         if (
             !$link->select_db($databasename)
-            && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`;")
+            && !$db_result
         ) {
             echo __s('Error in creating database!');
             echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
