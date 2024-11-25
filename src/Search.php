@@ -1279,20 +1279,20 @@ class Search
                 if (isset($criterion['link'])) {
                     switch ($criterion['link']) {
                         case "AND":
-                            $LINK       = " OR ";
+                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
                             $globallink = " AND ";
                             break;
                         case "AND NOT":
-                            $LINK       = " AND ";
+                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
                             $NOT        = 1;
                             $globallink = " AND ";
                             break;
                         case "OR":
-                            $LINK       = " OR ";
+                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
                             $globallink = " OR ";
                             break;
                         case "OR NOT":
-                            $LINK       = " AND ";
+                            $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
                             $NOT        = 1;
                             $globallink = " OR ";
                             break;
