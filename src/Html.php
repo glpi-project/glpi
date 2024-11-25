@@ -2039,7 +2039,7 @@ HTML;
             : 'helpdesk_doc_url';
         $help_url = !empty($CFG_GLPI[$help_url_key])
             ? $CFG_GLPI[$help_url_key]
-            : 'http://glpi-project.org/documentation';
+            : 'https://glpi-project.org/documentation';
 
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
