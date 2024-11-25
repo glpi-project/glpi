@@ -536,6 +536,219 @@ class SearchTest extends DbTestCase
         );
     }
 
+    public static function testViewCriterionProvider(): array
+    {
+        return [
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            /*[
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],*/
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            /*[
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],*/
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+        ];
+    }
+
+    #[DataProvider('testViewCriterionProvider')]
+    public function testViewCriterionNew(string $itemtype, array $criteria, int $expected)
+    {
+        $data = $this->doSearch($itemtype, [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => $criteria
+        ]);
+
+        $this->assertSame($expected, $data['data']['totalcount']);
+    }
+
+
     public function testSearchOnRelationTable()
     {
         $data = $this->doSearch(\Change_Ticket::class, [

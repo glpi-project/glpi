@@ -160,7 +160,7 @@ final class SystemConfigurator
         }
 
         // Define constants values from downstream distribution file
-        if (file_exists($this->root_dir . '/inc/downstream.php')) {
+        if (!defined('TU_USER') && file_exists($this->root_dir . '/inc/downstream.php')) {
             include_once($this->root_dir . '/inc/downstream.php');
         }
 

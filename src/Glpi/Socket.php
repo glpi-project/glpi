@@ -143,12 +143,18 @@ class Socket extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['items_id']) && empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }

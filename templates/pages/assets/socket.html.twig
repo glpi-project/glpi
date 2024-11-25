@@ -63,7 +63,7 @@
     {% set networkports %}
         {% set netport_params = params|merge({
             'itemtype': parent['itemtype'],
-            'items_id': parent['items_id'],
+            'items_id': parent['items_id'] ?? 0,
             'networkports_id': item.fields['networkports_id'],
         }) %}
         {% include 'pages/assets/socket_networkport.html.twig' with netport_params only %}
