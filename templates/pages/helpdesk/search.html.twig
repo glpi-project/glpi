@@ -37,7 +37,7 @@
     </h2>
 
     <div class="list-group list-group-flush list-group-hoverable pb-3">
-        {% for faq in faq_entries %}
+        {% for faq in faq_entries|slice(0, 20) %}
             <div class="list-group-item border-0 pt-1 pb-1">
                 <a
                     href="{{ path("/front/helpdesk.faq.php?id=" ~ faq.id) }}"
@@ -71,7 +71,7 @@
     </h2>
 
     <div class="list-group list-group-flush list-group-hoverable pb-3">
-        {% for form in forms %}
+        {% for form in forms|slice(0, 20) %}
             <div class="list-group-item border-0 pt-1 pb-1">
                 <a
                     href="{{ path("/Form/Render/" ~ form.getID()) }}"
