@@ -88,7 +88,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Constructor
      *
-     * @param DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+     * @param ?DBmysql $dbconnexion Database Connection (must be a CommonDBTM object)
      *
      * @return void
      */
