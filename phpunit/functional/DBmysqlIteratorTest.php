@@ -65,7 +65,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertStringContainsString($req, $this->it->getSql());
     }
 
-    protected function legacyQueryProvider(): iterable
+    public static function legacyQueryProvider(): iterable
     {
         yield [
             'input'  => 'SELECT * FROM glpi_computers',
