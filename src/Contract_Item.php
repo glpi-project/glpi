@@ -161,7 +161,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'contract_types'
+            'itemtype_list'      => 'items_contract_types'
         ];
 
         return $tab;
@@ -209,12 +209,12 @@ class Contract_Item extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
+                    return self::createTabEntry(_n('Affected Item', 'Affected Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
 
                 default:
                     if (
                         $_SESSION['glpishow_count_on_tabs']
-                        && in_array($item::class, $CFG_GLPI["contract_types"], true)
+                        && in_array($item::class, $CFG_GLPI["items_contract_types"], true)
                     ) {
                         $nb = self::countForItem($item);
                     }
@@ -482,6 +482,7 @@ TWIG, $twig_params);
                 foreach ($iterator as $objdata) {
                     $data[$itemtype][$objdata['id']] = $objdata;
                     $used[$itemtype][$objdata['id']] = $objdata['id'];
+                    $totalnb++;
                 }
             }
         }
@@ -509,7 +510,7 @@ TWIG, $twig_params);
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownItemsFromItemtypes('', null, {
-                                itemtypes: config('contract_types'),
+                                itemtypes: config('items_contract_types'),
                                 entity_restrict: entity_restrict,
                                 checkright: true,
                                 used: used
@@ -550,13 +551,17 @@ TWIG, $twig_params);
                 $entry['serial'] = $objdata['serial'] ?? '-';
                 $entry['otherserial'] = $objdata['otherserial'] ?? '-';
 
-                if (!isset($state_cache[$objdata['states_id']])) {
-                    $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
-                        "glpi_states",
-                        $objdata['states_id']
-                    );
+                if (isset($objdata['states_id'])) {
+                    if (!isset($state_cache[$objdata['states_id']])) {
+                        $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
+                            "glpi_states",
+                            $objdata['states_id']
+                        );
+                    }
+                    $entry['status'] = $state_cache[$objdata['states_id']];
+                } else {
+                    $entry['status'] = '';
                 }
-                $entry['status'] = $state_cache[$objdata['states_id']];
                 $entries[] = $entry;
             }
         }
