@@ -812,11 +812,16 @@ JAVASCRIPT;
                 Html::showMassiveActions($massiveactionparams);
             }
 
-            $soft       = new Software();
-            $soft->getFromDB($license->fields['softwares_id']);
+            $soft = new Software();
+            if (!empty($license->fields['softwares_id'])) {
+                $soft->getFromDB($license->fields['softwares_id']);
+                $softwareName = $soft->fields["name"];
+            } else {
+                $softwareName = __('No software linked');
+            }
             $showEntity = ($license->isRecursive());
 
-            $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
+            $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $softwareName);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["license"]);
 
             Session::initNavigateListItems($data['item_type'], $text);

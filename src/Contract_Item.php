@@ -482,6 +482,7 @@ TWIG, $twig_params);
                 foreach ($iterator as $objdata) {
                     $data[$itemtype][$objdata['id']] = $objdata;
                     $used[$itemtype][$objdata['id']] = $objdata['id'];
+                    $totalnb++;
                 }
             }
         }

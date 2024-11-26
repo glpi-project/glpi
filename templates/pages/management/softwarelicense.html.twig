@@ -43,8 +43,12 @@
       <input type="hidden" name="softwares_id" value="{{ item.fields['softwares_id'] }}" />
 
       {% set software_link %}
-         <a href="{{ call('Software::getFormURLWithID', [item.fields['softwares_id']]) }}">
-         {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
+         {% if item.fields['softwares_id'] > 0 %}
+            <a href="{{ call('Software::getFormURLWithID', [item.fields['softwares_id']]) }}">
+            {{ call('Dropdown::getDropdownName', ["glpi_softwares", item.fields['softwares_id']]) }} </a>
+         {% else %}
+            {{ __('Not linked to any software') }}
+         {% endif %}
       {% endset %}
 
       {{ fields.field(
