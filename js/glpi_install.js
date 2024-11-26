@@ -59,7 +59,13 @@
         const progress = create_progress_bar({
             key: progress_key,
             container: messages_container,
-            error_callback: () => message(message_list_element, __('An unexpected error has occurred.')),
+            error_callback: (msg) => {
+                if (msg.match('timed out')) {
+                    message(message_list_element, msg);
+                } else {
+                    message(message_list_element, __('An unexpected error has occurred.'));
+                }
+            },
         });
 
         messages_container.appendChild(message_list_element);

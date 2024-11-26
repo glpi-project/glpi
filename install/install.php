@@ -243,8 +243,8 @@ function step4($databasename, $newdatabasename)
         echo " <input type='hidden' name='db_pass' value='" . htmlescape(rawurlencode($password)) . "'>";
         echo "<input type='hidden' name='update' value='no'>";
         echo "<input type='hidden' name='install' value='Etape_2'>";
-        echo "<p class='submit'><input type='submit' name='submit' class='submit' value='" .
-            __s('Back') . "'></p>";
+        echo "<div class='submit'><input type='submit' name='submit' class='submit btn btn-secondary' value='" .
+            __s('Back') . "'></div>";
         Html::closeForm();
     };
 

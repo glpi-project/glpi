@@ -89,7 +89,7 @@ final class ProgressChecker
         Session::start();
 
         $progress = $this->getCurrentProgress($key);
-        $progress->finished_at = new \DateTimeImmutable();
+        $progress->finish();
         $this->save($progress);
 
         session_write_close();

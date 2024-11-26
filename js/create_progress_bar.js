@@ -114,7 +114,7 @@ function create_progress_bar(parameters)
                 });
 
                 if (res.status === 404) {
-                    const cb_err_result = parameters?.error_callback('Not found');
+                    const cb_err_result = parameters?.error_callback(__('Not found'));
                     if (!cb_err_result) {
                         stop_progress_with_warning_state();
                         return;
@@ -122,15 +122,26 @@ function create_progress_bar(parameters)
                 }
 
                 if (res.status >= 300) {
-                    parameters?.error_callback(`Invalid response from server, expected 200 or 404, found "${res.status}".`);
+                    parameters?.error_callback(__('Invalid response from server, expected 200 or 404, found "%s".').replace('%s', res.status.toString()));
                     stop_progress_with_warning_state();
                     return;
                 }
 
                 const json =  await res.json();
 
-                if (json['key'] && json['started_at']) {
+                if (json['key'] && json['started_at'] && json['updated_at']) {
                     update_progress(json.current, json.max, json.data);
+
+                    const now = new Date().getTime();
+                    const updated_at = new Date(json['updated_at']).getTime();
+                    const diff = now - updated_at;
+                    const max_diff = 1000 * 45;// 45 seconds
+                    if (diff > max_diff) {
+                        parameters?.error_callback(__('Main process timed out'));
+                        stop_progress_with_warning_state();
+                        return;
+                    }
+
                     if (
                         (
                             !parameters.progress_callback
@@ -145,10 +156,10 @@ function create_progress_bar(parameters)
                     return;
                 }
 
-                parameters?.error_callback(`JSON returned by progress check endpoint is invalid.`);
+                parameters?.error_callback(__('JSON returned by progress check endpoint is invalid.'));
                 stop_progress_with_warning_state();
             } catch (err) {
-                parameters?.error_callback(`Request error when checking progress:\n${err.message || err.toString()}`);
+                parameters?.error_callback(__(`Request error when checking progress:\n%s`).replace('%s', err.message || err.toString()));
                 stop_progress_with_warning_state();
             }
         }, start_timeout);

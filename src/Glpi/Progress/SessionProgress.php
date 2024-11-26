@@ -38,17 +38,72 @@ final class SessionProgress implements \JsonSerializable
 {
     public readonly string $key;
     public readonly \DateTimeImmutable $started_at;
-    public ?\DateTimeImmutable $finished_at = null;
-    public int $current = 0;
-    public int $max;
-    public string|int|float|bool|null $data;
+    private ?\DateTimeImmutable $finished_at = null;
+    private \DateTimeImmutable $updated_at;
+    private int $current = 0;
+    private int $max;
+    private string $data = '';
 
     public function __construct(string $key, int $max)
     {
         $this->started_at = new \DateTimeImmutable();
-        $this->data = '';
+        $this->updated_at = new \DateTimeImmutable();
         $this->key = $key;
         $this->max = $max;
+    }
+
+    public function finish(): void
+    {
+        $this->finished_at = new \DateTimeImmutable();
+        $this->update();
+    }
+
+    public function getCurrent(): int
+    {
+        return $this->current;
+    }
+
+    public function increment(int $increment = 1): void
+    {
+        $this->update();
+        $this->current += $increment;
+    }
+
+    public function setCurrent(int $current): void
+    {
+        if ($this->current !== $current) {
+            $this->update();
+        }
+
+        $this->current = $current;
+    }
+
+    public function getMax(): int
+    {
+        return $this->max;
+    }
+
+    public function setMax(int $max): void
+    {
+        if ($this->max !== $max) {
+            $this->update();
+        }
+
+        $this->max = $max;
+    }
+
+    public function getData(): string
+    {
+        return $this->data;
+    }
+
+    public function appendData(string $data): void
+    {
+        if ($data !== '') {
+            $this->update();
+        }
+
+        $this->data .= "\n" . $data;
     }
 
     public function jsonSerialize(): array
@@ -57,9 +112,15 @@ final class SessionProgress implements \JsonSerializable
             'key' => $this->key,
             'max' => $this->max,
             'current' => $this->current,
-            'started_at' => $this->started_at->format('Y-m-d H:i:s'),
-            'finished_at' => $this->finished_at?->format('Y-m-d H:i:s'),
+            'started_at' => $this->started_at->format('c'),
+            'finished_at' => $this->finished_at?->format('c'),
+            'updated_at' => $this->updated_at?->format('c'),
             'data' => $this->data,
         ];
+    }
+
+    private function update(): void
+    {
+        $this->updated_at = new \DateTimeImmutable();
     }
 }

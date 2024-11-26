@@ -64,11 +64,13 @@ class InstallController extends AbstractController
             try {
                 $progress_callback = static function (?int $current = null, ?int $max = null, ?string $data = null) use ($progressChecker) {
                     $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
-                    $progress->current = $current ?? ($progress->current + 1);
+                    $current === null ? $progress->increment() : $progress->setCurrent($current);
                     if ($max !== null) {
-                        $progress->max = $max;
+                        $progress->setMax($max);
                     }
-                    $progress->data .= $data ? ("\n" . $data) : '';
+                    if ($data) {
+                        $progress->appendData($data);
+                    }
                     $progressChecker->save($progress);
                 };
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
