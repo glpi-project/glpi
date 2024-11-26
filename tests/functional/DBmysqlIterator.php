@@ -1635,7 +1635,9 @@ class DBmysqlIterator extends DbTestCase
         $result = null;
         $this->when(
             function () use ($iterator, $params, &$result) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
                 $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
+                \error_reporting($reporting_level); // restore previous level
             }
         )
          ->error
@@ -1665,7 +1667,9 @@ class DBmysqlIterator extends DbTestCase
         $iterator = new \DBmysqlIterator($db);
         $this->when(
             function () use ($iterator, $params) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
                 $iterator = $iterator->execute(...$params);
+                \error_reporting($reporting_level); // restore previous level
             }
         )
          ->error
@@ -1701,7 +1705,9 @@ class DBmysqlIterator extends DbTestCase
         $iterator = new \DBmysqlIterator($db);
         $this->when(
             function () use ($iterator, $params) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
                 $iterator = $iterator->buildQuery(...$params);
+                \error_reporting($reporting_level); // restore previous level
             }
         )
          ->error

@@ -52,6 +52,9 @@ class ErrorHandler extends \GLPITestCase
 
         foreach ([Session::NORMAL_MODE, Session::DEBUG_MODE] as $session_mode) {
             foreach ([GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING, GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION] as $env) {
+                $suppress_info   = $env !== GLPI::ENV_DEVELOPMENT;
+                $suppress_notice = !in_array($env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true);
+
                 yield [
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
@@ -82,8 +85,8 @@ class ErrorHandler extends \GLPITestCase
                     'error_call'           => function () {
                         trigger_error('some notice', E_USER_NOTICE);
                     },
-                    'expected_log_level'   => Level::Notice,
-                    'expected_msg_pattern' => $log_prefix
+                    'expected_log_level'   => $suppress_notice ? null : Level::Notice,
+                    'expected_msg_pattern' => $suppress_notice ? null : $log_prefix
                         . preg_quote('PHP User Notice (' . E_USER_NOTICE . '): some notice', '/')
                         . $log_suffix,
                 ];
@@ -94,8 +97,8 @@ class ErrorHandler extends \GLPITestCase
                     'error_call'           => function () {
                         trigger_error('this method is deprecated', E_USER_DEPRECATED);
                     },
-                    'expected_log_level'   => Level::Info,
-                    'expected_msg_pattern' => $log_prefix
+                    'expected_log_level'   => $suppress_info ? null : Level::Info,
+                    'expected_msg_pattern' => $suppress_info ? null : $log_prefix
                         . preg_quote('PHP User deprecated function (' . E_USER_DEPRECATED . '): this method is deprecated', '/')
                         . $log_suffix,
                 ];
@@ -107,8 +110,8 @@ class ErrorHandler extends \GLPITestCase
                         $param = new \ReflectionParameter([\Config::class, 'getTypeName'], 0);
                         $param->isCallable();
                     },
-                    'expected_log_level'   => Level::Info,
-                    'expected_msg_pattern' => $log_prefix
+                    'expected_log_level'   => $suppress_info ? null : Level::Info,
+                    'expected_msg_pattern' => $suppress_info ? null : $log_prefix
                         . preg_quote('PHP Deprecated function (' . E_DEPRECATED . '): Method ReflectionParameter::isCallable() is deprecated', '/')
                         . $log_suffix,
                 ];
@@ -128,13 +131,13 @@ class ErrorHandler extends \GLPITestCase
         int $session_mode,
         string $env,
         callable $error_call,
-        Level $expected_log_level,
-        string $expected_msg_pattern
+        ?Level $expected_log_level,
+        ?string $expected_msg_pattern
     ) {
         $handler = new TestHandler();
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
-        $previous_use_mode         = $_SESSION['glpi_use_mode'];
+        $previous_use_mode = $_SESSION['glpi_use_mode'];
 
         $error_handler = $this->callPrivateConstructor(
             \Glpi\Application\ErrorHandler::class,
@@ -154,15 +157,13 @@ class ErrorHandler extends \GLPITestCase
         $_SESSION['glpi_use_mode'] = $session_mode;
         $error_call();
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
-        $this->integer(count($handler->getRecords()))->isEqualTo(1);
-        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
-        if (
-            $env === GLPI::ENV_DEVELOPMENT
-            || (
-                $session_mode === Session::DEBUG_MODE
-                && ($expected_log_level->isHigherThan(Level::Info)  || !in_array($env, [GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION]))
-            )
-        ) {
+        if ($expected_log_level !== null) {
+            $this->integer(count($handler->getRecords()))->isEqualTo(1);
+            $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
+        } else {
+            $this->integer(count($handler->getRecords()))->isEqualTo(0);
+        }
+        if ($expected_msg_pattern !== null && ($env === GLPI::ENV_DEVELOPMENT || $session_mode === Session::DEBUG_MODE)) {
             $this->output->matches($expected_msg_pattern);
         } else {
             $this->output->isEmpty();
@@ -177,6 +178,9 @@ class ErrorHandler extends \GLPITestCase
 
         foreach ([Session::NORMAL_MODE, Session::DEBUG_MODE] as $session_mode) {
             foreach ([GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING, GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION] as $env) {
+                $suppress_info   = $env !== GLPI::ENV_DEVELOPMENT;
+                $suppress_notice = !in_array($env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true);
+
                 yield [
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
@@ -190,8 +194,8 @@ class ErrorHandler extends \GLPITestCase
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
                     'error_code'           => E_NOTICE,
-                    'expected_log_level'   => Level::Notice,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Notice' . $log_suffix,
+                    'expected_log_level'   => $suppress_notice ? null : Level::Notice,
+                    'expected_msg_pattern' => $suppress_notice ? null : $log_prefix . 'PHP Notice' . $log_suffix,
                     'is_fatal_error'       => false,
                 ];
 
@@ -226,8 +230,8 @@ class ErrorHandler extends \GLPITestCase
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
                     'error_code'           => E_USER_NOTICE,
-                    'expected_log_level'   => Level::Notice,
-                    'expected_msg_pattern' => $log_prefix . 'PHP User Notice' . $log_suffix,
+                    'expected_log_level'   => $suppress_notice ? null : Level::Notice,
+                    'expected_msg_pattern' => $suppress_notice ? null : $log_prefix . 'PHP User Notice' . $log_suffix,
                     'is_fatal_error'       => false,
                 ];
 
@@ -235,8 +239,8 @@ class ErrorHandler extends \GLPITestCase
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
                     'error_code'           => E_DEPRECATED,
-                    'expected_log_level'   => Level::Info,
-                    'expected_msg_pattern' => $log_prefix . 'PHP Deprecated function' . $log_suffix,
+                    'expected_log_level'   => $suppress_info ? null : Level::Info,
+                    'expected_msg_pattern' => $suppress_info ? null : $log_prefix . 'PHP Deprecated function' . $log_suffix,
                     'is_fatal_error'       => false,
                 ];
 
@@ -244,8 +248,8 @@ class ErrorHandler extends \GLPITestCase
                     'session_mode'         => $session_mode,
                     'env'                  => $env,
                     'error_code'           => E_USER_DEPRECATED,
-                    'expected_log_level'   => Level::Info,
-                    'expected_msg_pattern' => $log_prefix . 'PHP User deprecated function' . $log_suffix,
+                    'expected_log_level'   => $suppress_info ? null : Level::Info,
+                    'expected_msg_pattern' => $suppress_info ? null : $log_prefix . 'PHP User deprecated function' . $log_suffix,
                     'is_fatal_error'       => false,
                 ];
             }
@@ -261,20 +265,21 @@ class ErrorHandler extends \GLPITestCase
         int $session_mode,
         string $env,
         int $error_code,
-        Level $expected_log_level,
-        string $expected_msg_pattern,
+        ?Level $expected_log_level,
+        ?string $expected_msg_pattern,
         bool $is_fatal_error
     ) {
         $handler = new TestHandler();
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
-        $previous_use_mode         = $_SESSION['glpi_use_mode'];
+        $previous_use_mode = $_SESSION['glpi_use_mode'];
 
         $error_handler = $this->callPrivateConstructor(
             \Glpi\Application\ErrorHandler::class,
             [$logger, $env]
         );
         $error_handler->setForwardToInternalHandler(false);
+        $error_handler->register();
 
         // Assert that nothing is logged when using '@' operator
         $_SESSION['glpi_use_mode'] = $session_mode;
@@ -305,16 +310,13 @@ class ErrorHandler extends \GLPITestCase
             $_SESSION['glpi_use_mode'] = $previous_use_mode;
         }
 
-        $this->integer(count($handler->getRecords()))->isEqualTo(1);
-        $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
-
-        if (
-            $env === GLPI::ENV_DEVELOPMENT
-            || (
-                $session_mode === Session::DEBUG_MODE
-                && ($expected_log_level->isHigherThan(Level::Info)  || !in_array($env, [GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION]))
-            )
-        ) {
+        if ($expected_log_level !== null) {
+            $this->integer(count($handler->getRecords()))->isEqualTo(1);
+            $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
+        } else {
+            $this->integer(count($handler->getRecords()))->isEqualTo(0);
+        }
+        if ($expected_msg_pattern !== null && ($env === GLPI::ENV_DEVELOPMENT || $session_mode === Session::DEBUG_MODE)) {
             $this->output->matches($expected_msg_pattern);
         } else {
             $this->output->isEmpty();
