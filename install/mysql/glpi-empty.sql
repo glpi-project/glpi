@@ -3159,6 +3159,52 @@ CREATE TABLE `glpi_groups_users` (
   KEY `is_manager` (`is_manager`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_helpdesks_tiles_profiles_tiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_profiles_tiles`;
+CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `profiles_id` (`profiles_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_formtiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_formtiles`;
+CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `forms_forms_id` (`forms_forms_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_glpipagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_glpipagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `page` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_externalpagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_externalpagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `url` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_holidays
 

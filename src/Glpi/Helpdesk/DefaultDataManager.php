@@ -63,17 +63,23 @@ use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Helpdesk\Tile\TilesManager;
 use ITILCategory;
 use Location;
+use Profile;
 use Ticket;
 
 final class DefaultDataManager
 {
     private AnswerTagProvider $answer_tag_provider;
+    private TilesManager $tiles_manager;
 
     public function __construct()
     {
         $this->answer_tag_provider = new AnswerTagProvider();
+        $this->tiles_manager = new TilesManager();
     }
 
     public function initializeDataIfNeeded(): void
@@ -87,8 +93,58 @@ final class DefaultDataManager
 
     public function initializeData(): void
     {
-        $this->createIncidentForm();
+        $incident_form = $this->createIncidentForm();
         $this->createRequestForm();
+
+        foreach ($this->getHelpdeskProfiles() as $profile) {
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Browse help articles"),
+                'description'  => __("See all available help articles and our FAQ."),
+                'illustration' => "browse-help.svg",
+                'page'         => GlpiPageTile::PAGE_FAQ,
+            ]);
+
+            $this->tiles_manager->addTile($profile, FormTile::class, [
+                'forms_forms_id' => $incident_form->getID(),
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Request a service"),
+                'description'  => __("Ask for a service to be provided by our team."),
+                'illustration' => "request-service.svg",
+                'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Make a reservation"),
+                'description'  => __("Pick an available asset and reserve it for a given date."),
+                'illustration' => "make-reservation.svg",
+                'page'         => GlpiPageTile::PAGE_RESERVATION,
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("View approval requests"),
+                'description'  => __("View all tickets waiting for your validation."),
+                'illustration' => "approval-request.svg",
+                'page'         => GlpiPageTile::PAGE_APPROVAL,
+            ]);
+        }
+    }
+
+    /** @return Profile[] */
+    private function getHelpdeskProfiles(): array
+    {
+        $profiles = [];
+        $profiles_data = (new Profile())->find(['interface' => 'helpdesk']);
+
+        foreach ($profiles_data as $row) {
+            $profile = new Profile();
+            $profile->getFromResultSet($row);
+            $profile->post_getFromDB();
+            $profiles[] = $profile;
+        }
+
+        return $profiles;
     }
 
     private function dataHasBeenInitialized(): bool
@@ -96,7 +152,7 @@ final class DefaultDataManager
         return countElementsInTable(Form::getTable()) > 0;
     }
 
-    private function createIncidentForm(): void
+    private function createIncidentForm(): Form
     {
         // Create form
         $form = $this->createForm(
@@ -156,6 +212,8 @@ final class DefaultDataManager
 
         // Allow all users
         $this->allowAllUsers($form);
+
+        return $form;
     }
 
     private function createRequestForm(): void

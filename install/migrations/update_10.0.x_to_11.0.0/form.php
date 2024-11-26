@@ -204,6 +204,53 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
+if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
+    $DB->doQuery(
+        "CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `profiles_id` int unsigned NOT NULL DEFAULT '0',
+            `itemtype` varchar(255) DEFAULT NULL,
+            `items_id` int unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`),
+            KEY `profiles_id` (`profiles_id`),
+            KEY `item` (`itemtype`,`items_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
+if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
+    $DB->doQuery(
+        "CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`),
+            KEY `forms_forms_id` (`forms_forms_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
+if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
+    $DB->doQuery(
+        "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `title` varchar(255) DEFAULT NULL,
+            `description` varchar(255) DEFAULT NULL,
+            `illustration` varchar(255) DEFAULT NULL,
+            `page` varchar(255) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
+if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
+    $DB->doQuery(
+        "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `title` varchar(255) DEFAULT NULL,
+            `description` varchar(255) DEFAULT NULL,
+            `illustration` varchar(255) DEFAULT NULL,
+            `url` text DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
 
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);

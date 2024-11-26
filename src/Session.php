@@ -2376,6 +2376,7 @@ class Session
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
+            active_entities_ids: $_SESSION['glpiactiveentities'],
         );
     }
 
@@ -2393,5 +2394,20 @@ class Session
     public static function resetAjaxParam(): void
     {
         self::$is_ajax_request = false;
+    }
+
+    public static function getCurrentProfile(): Profile
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            throw new RuntimeException("No active session");
+        }
+
+        $profile = Profile::getById($profile_id);
+        if (!$profile) {
+            throw new RuntimeException("Failed to load profile: $profile_id");
+        }
+
+        return $profile;
     }
 }

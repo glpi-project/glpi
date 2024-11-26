@@ -44,8 +44,11 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersSet;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Form\Form;
+use Glpi\Helpdesk\Tile\Profile_Tile;
+use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\UI\IllustrationManager;
 use ITILCategory;
 use Location;
 use Monitor;
@@ -72,7 +75,7 @@ final class DefaultDataManagerTest extends DbTestCase
         // Arrange: count the number of forms that already exist in the database
         $number_of_forms_before = countElementsInTable(Form::getTable());
 
-        // Act: create default forms
+        // Act: initialize default data
         $this->getManager()->initializeDataIfNeeded();
 
         // Assert: there must be not be any new forms
@@ -338,5 +341,51 @@ final class DefaultDataManagerTest extends DbTestCase
 
         // Assert: the user should be able to see the form
         $this->assertEquals(true, $can_answer);
+    }
+
+    public function testsTilesAreAddedAfterInstallation(): void
+    {
+        $this->assertEquals(5, countElementsInTable(Profile_Tile::getTable()));
+    }
+
+    public function testNoTilesAreCreatedWhenDatabaseIsNotEmpty(): void
+    {
+        // Arrange: count the number of tiles that already exist in the database
+        $number_of_tiles_before = countElementsInTable(Profile_Tile::getTable());
+
+        // Act: initialize default data
+        $this->getManager()->initializeDataIfNeeded();
+
+        // Assert: there must be not be any new tiles
+        $number_of_tiles_after = countElementsInTable(Profile_Tile::getTable());
+        $number_of_new_tiles = $number_of_tiles_after - $number_of_tiles_before;
+        $this->assertEquals(0, $number_of_new_tiles);
+    }
+
+    public function testDefaultTilesAreValid(): void
+    {
+        // Arrange: load valid illustration names
+        $illustration_manager = new IllustrationManager();
+        $valid_illustrations = $illustration_manager->getAllIllustrationsNames();
+
+        // Act: load the default tiles
+        $profile_tiles = (new Profile_Tile())->find([]);
+        $tiles = array_map(function ($row) {
+            $itemtype = $row['itemtype'];
+            $tile = new $itemtype();
+            $tile->getFromDb($row['items_id']);
+            return $tile;
+        }, $profile_tiles);
+
+        // Assert: there should be at least one tile and each tile should have a
+        // valid title, description, illustration and link
+        $this->assertNotEmpty($tiles);
+        foreach ($tiles as $tile) {
+            $this->assertInstanceOf(TileInterface::class, $tile);
+            $this->assertNotEmpty($tile->getTitle());
+            $this->assertNotEmpty($tile->getDescription());
+            $this->assertContains($tile->getIllustration(), $valid_illustrations);
+            $this->assertNotEmpty($tile->getTileUrl());
+        }
     }
 }

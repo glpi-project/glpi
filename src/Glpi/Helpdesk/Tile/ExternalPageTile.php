@@ -32,18 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
- namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Helpdesk\Tile;
 
- use Glpi\Session\SessionInfo;
+use CommonDBTM;
+use Glpi\Session\SessionInfo;
+use Override;
 
-interface TileInterface
+final class ExternalPageTile extends CommonDBTM implements TileInterface
 {
-    public function getTitle(): string;
+    #[Override]
+    public function getTitle(): string
+    {
+        return $this->fields['title'];
+    }
 
-    public function getDescription(): string;
+    #[Override]
+    public function getDescription(): string
+    {
+        return $this->fields['description'];
+    }
 
-    public function getIllustration(): string;
+    #[Override]
+    public function getIllustration(): string
+    {
+        return $this->fields['illustration'];
+    }
 
-    public function getTileUrl(): string;
-    public function isValid(SessionInfo $session_info): bool;
+    #[Override]
+    public function getTileUrl(): string
+    {
+        return $this->fields['url'];
+    }
+
+    #[Override]
+    public function isValid(SessionInfo $session_info): bool
+    {
+        return true;
+    }
 }
