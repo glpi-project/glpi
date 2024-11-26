@@ -324,6 +324,11 @@ class Provider
                         'field'      => 55,
                         'searchtype' => 'equals',
                         'value'      => CommonITILValidation::WAITING,
+                    ],
+                    [
+                        'field'      => 12,
+                        'searchtype' => 'equals',
+                        'value'      => Ticket::CLOSED,
                     ]
                 ];
 
@@ -338,6 +343,7 @@ class Provider
 
                 $where = [
                     'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
+                    'NOT' => ['glpi_tickets.status' => Ticket::CLOSED],
                 ];
 
                 if ($params['validation_check_user']) {
