@@ -74,7 +74,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             // Totally unsecure config
             yield [
                 'cookie_secure'   => $false,
-                'cookie_httponly' => $false,
                 'cookie_samesite' => 'none',
                 'server_https'    => 'on',
                 'server_port'     => '443',
@@ -84,7 +83,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             // Strict config
             yield [
                 'cookie_secure'   => $true,
-                'cookie_httponly' => $true,
                 'cookie_samesite' => 'strict',
                 'server_https'    => 'on',
                 'server_port'     => '443',
@@ -94,7 +92,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             // cookie_secure can be 0 if query is not on HTTPS
             yield [
                 'cookie_secure'   => $false,
-                'cookie_httponly' => $true,
                 'cookie_samesite' => 'strict',
                 'server_https'    => 'off',
                 'server_port'     => '80',
@@ -104,7 +101,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['HTTPS'])
             yield [
                 'cookie_secure'   => $false,
-                'cookie_httponly' => $true,
                 'cookie_samesite' => 'strict',
                 'server_https'    => 'on',
                 'server_port'     => null,
@@ -114,20 +110,9 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['SERVER_PORT'])
             yield [
                 'cookie_secure'   => $false,
-                'cookie_httponly' => $true,
                 'cookie_samesite' => 'strict',
                 'server_https'    => null,
                 'server_port'     => '443',
-                'is_valid'        => false,
-            ];
-
-            // cookie_httponly should be 1
-            yield [
-                'cookie_secure'   => $false,
-                'cookie_httponly' => $false,
-                'cookie_samesite' => 'strict',
-                'server_https'    => 'off',
-                'server_port'     => '80',
                 'is_valid'        => false,
             ];
 
@@ -142,7 +127,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             foreach ($samesite_is_valid as $samesite => $is_valid) {
                 yield [
                     'cookie_secure'   => $false,
-                    'cookie_httponly' => $true,
                     'cookie_samesite' => $samesite,
                     'server_https'    => 'off',
                     'server_port'     => '80',
@@ -150,7 +134,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
                 ];
                 yield [
                     'cookie_secure'   => $false,
-                    'cookie_httponly' => $true,
                     'cookie_samesite' => strtolower($samesite),
                     'server_https'    => 'off',
                     'server_port'     => '80',
@@ -165,19 +148,15 @@ class SessionsSecurityConfiguration extends \GLPITestCase
      */
     public function testCheckWithLowercaseLaxSameSiteConfig(
         string $cookie_secure,
-        string $cookie_httponly,
         string $cookie_samesite,
         ?string $server_https,
         ?string $server_port,
         bool $is_valid
     ) {
-        $this->function->ini_get = function ($name) use ($cookie_secure, $cookie_httponly, $cookie_samesite) {
+        $this->function->ini_get = function ($name) use ($cookie_secure, $cookie_samesite) {
             switch ($name) {
                 case 'session.cookie_secure':
                     return $cookie_secure;
-                    break;
-                case 'session.cookie_httponly':
-                    return $cookie_httponly;
                     break;
                 case 'session.cookie_samesite':
                     return $cookie_samesite;
@@ -200,7 +179,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
                 'Checking the session cookie configuration of the web server cannot be done in the CLI context.',
                 'You should apply the following recommendations for configuring the web server.',
                 'PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.',
-                'PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.',
                 'PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.',
             ]
         );

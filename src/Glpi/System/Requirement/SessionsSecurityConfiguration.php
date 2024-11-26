@@ -56,7 +56,6 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         $is_cli = isCommandLine();
 
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $cookie_httponly = filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
 
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
@@ -68,10 +67,6 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         $cookie_secure_ko = $is_https_request && !$cookie_secure;
         if ($is_cli || $cookie_secure_ko) {
             $this->validation_messages[] = __('PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.');
-        }
-        $cookie_httponly_ko = !$cookie_httponly;
-        if ($is_cli || $cookie_httponly_ko) {
-            $this->validation_messages[] = __('PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.');
         }
 
         // 'session.cookie_samesite' can be:
@@ -89,7 +84,7 @@ class SessionsSecurityConfiguration extends AbstractRequirement
             $this->validation_messages[] = __('PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.');
         }
 
-        $this->validated = !$cookie_secure_ko && !$cookie_httponly_ko && !$cookie_samesite_ko;
+        $this->validated = !$cookie_secure_ko && !$cookie_samesite_ko;
 
         if (!$is_cli && $this->validated) {
             $this->validation_messages[] = __('Sessions configuration is secured.');

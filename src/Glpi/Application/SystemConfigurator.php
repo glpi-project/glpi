@@ -233,7 +233,11 @@ final class SystemConfigurator
     private function setSessionConfiguration(): void
     {
         // Force session to use cookies.
+        ini_set('session.use_trans_sid', '0');
         ini_set('session.use_only_cookies', '1');
+
+        // Force session cookie security.
+        ini_set('session.cookie_httponly', '1');
 
         // Force session cookie name.
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique

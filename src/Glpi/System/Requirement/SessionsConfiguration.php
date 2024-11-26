@@ -57,22 +57,11 @@ class SessionsConfiguration extends AbstractRequirement
         }
 
        // Check configuration values
-        $is_autostart_on   = ini_get('session.auto_start') == 1;
-        $is_usetranssid_on = ini_get('session.use_trans_sid') == 1
-         || isset($_POST[session_name()]) || isset($_GET[session_name()]);
+        $is_autostart_on = filter_var(ini_get('session.auto_start'), FILTER_VALIDATE_BOOLEAN);
 
-        if ($is_autostart_on || $is_usetranssid_on) {
-            if ($is_autostart_on && $is_usetranssid_on) {
-                $this->validation_messages[] = __('"session.auto_start" and "session.use_trans_sid" must be set to off.');
-            } else if ($is_autostart_on) {
-                $this->validation_messages[] = __('"session.auto_start" must be set to off.');
-            } else {
-                $this->validation_messages[] = __('"session.use_trans_sid" must be set to off.');
-            }
-
+        if ($is_autostart_on) {
+            $this->validation_messages[] = __('"session.auto_start" must be set to off.');
             $this->validated = false;
-            $this->validation_messages[] = __('See .htaccess file in the GLPI root for more information.');
-
             return;
         }
 

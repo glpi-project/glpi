@@ -1742,7 +1742,6 @@ class Auth extends CommonGLPI
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $cookie_httponly = filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
 
         if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
@@ -1757,7 +1756,7 @@ class Auth extends CommonGLPI
                 'path'     => $cookie_path,
                 'domain'   => $cookie_domain,
                 'secure'   => $cookie_secure,
-                'httponly' => $cookie_httponly,
+                'httponly' => true,
                 'samesite' => $cookie_samesite,
             ]
         );
