@@ -41,7 +41,6 @@
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if ($DB->fieldExists(SoftwareLicense::getTable(), 'softwares_id')) {
-    $migration->dropKey(SoftwareLicense::getTable(), 'softwares_id');
     $migration->changeField(
         SoftwareLicense::getTable(),
         'softwares_id',
