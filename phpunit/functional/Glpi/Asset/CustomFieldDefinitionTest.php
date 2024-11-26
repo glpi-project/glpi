@@ -45,8 +45,9 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\Asset\CustomFieldType\URLType;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class CustomFieldDefinition extends DbTestCase
+class CustomFieldDefinitionTest extends DbTestCase
 {
     /**
      * Ensure custom fields are removed from assets when the custom field definition is removed
@@ -87,24 +88,24 @@ class CustomFieldDefinition extends DbTestCase
         $custom_field_definition->delete(['id' => $custom_field_definition->getID()]);
 
         $asset->getFromDB($asset->getID());
-        $this->string($asset->fields['custom_fields'])->isEqualTo('{"' . $custom_field_definition_2->getID() . '": "value2"}');
+        $this->assertEquals('{"' . $custom_field_definition_2->getID() . '": "value2"}', $asset->fields['custom_fields']);
     }
 
     public function testGetAllowedDropdownItemtypes()
     {
         $allowed_itemtypes = \Glpi\Asset\AssetDefinitionManager::getInstance()->getAllowedDropdownItemtypes();
-        $this->array($allowed_itemtypes)->isNotEmpty();
+        $this->assertNotEmpty($allowed_itemtypes);
         foreach ($allowed_itemtypes as $group => $opts) {
-            $this->array($opts)->isNotEmpty();
-            $this->boolean(is_string($group))->isTrue();
+            $this->assertNotEmpty($opts);
+            $this->assertIsString($group);
             foreach ($opts as $classname => $label) {
-                $this->boolean(is_subclass_of($classname, \CommonDBTM::class))->isTrue();
-                $this->string($label)->isNotEmpty();
+                $this->assertTrue(is_subclass_of($classname, \CommonDBTM::class));
+                $this->assertNotEmpty($label);
             }
         }
     }
 
-    protected function validateValueProvider()
+    public static function validateValueProvider()
     {
         return [
             [
@@ -232,19 +233,17 @@ class CustomFieldDefinition extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider validateValueProvider
-     */
+    #[DataProvider('validateValueProvider')]
     public function testValidateValue($field_params, $given_value, $expected_value, $is_valid)
     {
         $value = $given_value;
         $custom_field = new \Glpi\Asset\CustomFieldDefinition();
         $custom_field->fields = $field_params;
         if (!$is_valid) {
-            $this->exception(static fn () => $custom_field->getFieldType()->normalizeValue($value));
-            $this->boolean($this->exception instanceof \InvalidArgumentException)->isTrue();
+            $this->expectException(\InvalidArgumentException::class);
+            $custom_field->getFieldType()->normalizeValue($value);
         } else {
-            $this->variable($custom_field->getFieldType()->normalizeValue($value))->isEqualTo($expected_value);
+            $this->assertEquals($expected_value, $custom_field->getFieldType()->normalizeValue($value));
         }
     }
 
@@ -252,7 +251,7 @@ class CustomFieldDefinition extends DbTestCase
     {
         $custom_field = new \Glpi\Asset\CustomFieldDefinition();
         $custom_field->getEmpty();
-        $this->array($custom_field->fields['field_options'])->isEmpty();
+        $this->assertEmpty($custom_field->fields['field_options']);
     }
 
     public function testGetSearchOption()
@@ -273,10 +272,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition->getID();
         $opt = $custom_field_definition->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test string');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'default')");
-        $this->string($opt['datatype'])->isEqualTo('string');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test string', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'default')", (string) $opt['computation']);
+        $this->assertEquals('string', $opt['datatype']);
 
         $custom_field_definition_2 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -287,11 +286,11 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_2->getID();
         $opt = $custom_field_definition_2->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test text');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'default text')");
-        $this->string($opt['datatype'])->isEqualTo('text');
-        $this->array($opt)->notHasKey('htmltext');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test text', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'default text')", (string) $opt['computation']);
+        $this->assertEquals('text', $opt['datatype']);
+        $this->assertArrayNotHasKey('htmltext', $opt);
 
         $custom_field_definition_4 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -302,10 +301,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_4->getID();
         $opt = $custom_field_definition_4->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test number');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420')");
-        $this->string($opt['datatype'])->isEqualTo('number');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test number', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '420')", (string) $opt['computation']);
+        $this->assertEquals('number', $opt['datatype']);
 
         $custom_field_definition_5 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -316,10 +315,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_5->getID();
         $opt = $custom_field_definition_5->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test date');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01')");
-        $this->string($opt['datatype'])->isEqualTo('date');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test date', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01')", (string) $opt['computation']);
+        $this->assertEquals('date', $opt['datatype']);
 
         $custom_field_definition_6 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -330,10 +329,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_6->getID();
         $opt = $custom_field_definition_6->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test datetime');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01 03:25:15')");
-        $this->string($opt['datatype'])->isEqualTo('datetime');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test datetime', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '2021-01-01 03:25:15')", (string) $opt['computation']);
+        $this->assertEquals('datetime', $opt['datatype']);
 
         $custom_field_definition_7 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -345,8 +344,8 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_7->getID();
         $opt = $custom_field_definition_7->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test dropdown');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test dropdown', $opt['name']);
 
         $custom_field_definition_8 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -357,10 +356,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_8->getID();
         $opt = $custom_field_definition_8->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test url');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'https://glpi-project.org')");
-        $this->string($opt['datatype'])->isEqualTo('string');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test url', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), 'https://glpi-project.org')", (string) $opt['computation']);
+        $this->assertEquals('string', $opt['datatype']);
 
         $custom_field_definition_9 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
@@ -371,10 +370,10 @@ class CustomFieldDefinition extends DbTestCase
         ]);
         $field_id = $custom_field_definition_9->getID();
         $opt = $custom_field_definition_9->getFieldType()->getSearchOption();
-        $this->integer($opt['id'])->isEqualTo($opt_id_offset + $field_id);
-        $this->string($opt['name'])->isEqualTo('Test bool');
-        $this->string((string) $opt['computation'])->isEqualTo("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1')");
-        $this->string($opt['datatype'])->isEqualTo('bool');
+        $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
+        $this->assertEquals('Test bool', $opt['name']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1')", (string) $opt['computation']);
+        $this->assertEquals('bool', $opt['datatype']);
     }
 
     public function testSystemNameUnqiue()
@@ -383,21 +382,21 @@ class CustomFieldDefinition extends DbTestCase
 
         $field = new \Glpi\Asset\CustomFieldDefinition();
 
-        $this->integer($field->add([
+        $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'default_value' => 'default',
-        ]))->isGreaterThan(0);
+        ]));
 
-        $this->boolean($field->add([
+        $this->assertFalse($field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
             'name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'default_value' => 'default',
-        ]))->isFalse();
+        ]));
 
         $this->hasSessionMessages(ERROR, ['The system name must be unique among fields for this asset definition']);
     }
@@ -440,7 +439,7 @@ class CustomFieldDefinition extends DbTestCase
             'FROM' => $field::getTable(),
             'WHERE' => ['id' => $fields_id],
         ]);
-        $this->string($it->current()['default_value'])->isEqualTo(json_encode('2021-01-01 01:25:15'));
+        $this->assertEquals(json_encode('2021-01-01 01:25:15'), $it->current()['default_value']);
 
         $it = $DB->request([
             'SELECT' => [
@@ -455,13 +454,13 @@ class CustomFieldDefinition extends DbTestCase
             'FROM' => $asset::getTable(),
             'WHERE' => ['id' => $asset->getID()],
         ]);
-        $this->string($it->current()['value'])->isEqualTo('2024-04-05 05:25:15');
+        $this->assertEquals('2024-04-05 05:25:15', $it->current()['value']);
 
         // Ensure the values are converted to the user's timezone when read from the database
         $field->getFromDB($fields_id);
-        $this->string($field->fields['default_value'])->isEqualTo('2021-01-01 03:25:15');
+        $this->assertEquals('2021-01-01 03:25:15', $field->fields['default_value']);
         $asset->getFromDB($asset->getID());
-        $this->string($asset->fields['custom_test_datetime'])->isEqualTo('2024-04-05 07:25:15');
+        $this->assertEquals('2024-04-05 07:25:15', $asset->fields['custom_test_datetime']);
 
         date_default_timezone_set($original_tz);
     }
@@ -503,20 +502,20 @@ class CustomFieldDefinition extends DbTestCase
             'custom_test_two' => getItemByTypeName(\Computer::class, '_test_pc01', true),
         ]);
 
-        $this->integer(countElementsInTable(\Log::getTable(), [
+        $this->assertEquals(1, countElementsInTable(\Log::getTable(), [
             'itemtype' => $asset_definition->getAssetClassName(),
             'items_id' => $asset->getID(),
             'id_search_option' => $field_1->getSearchOptionID(),
             'old_value' => 'default',
             'new_value' => 'value',
-        ]))->isIdenticalTo(1);
+        ]));
 
-        $this->integer(countElementsInTable(\Log::getTable(), [
+        $this->assertEquals(1, countElementsInTable(\Log::getTable(), [
             'itemtype' => $asset_definition->getAssetClassName(),
             'items_id' => $asset->getID(),
             'id_search_option' => $field_2->getSearchOptionID(),
             'old_value' => '',
             'new_value' => '_test_pc01',
-        ]))->isIdenticalTo(1);
+        ]));
     }
 }
