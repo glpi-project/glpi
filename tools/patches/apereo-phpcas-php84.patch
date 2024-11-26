@@ -1,0 +1,35 @@
+diff --git a/source/CAS.php b/source/CAS.php
+index df6bc82..da145bc 100644
+--- a/source/CAS.php
++++ b/source/CAS.php
+@@ -347,7 +347,7 @@ class phpCAS
+      */
+     public static function client($server_version, $server_hostname,
+         $server_port, $server_uri, $service_base_url,
+-        $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null
++        $changeSessionID = true, ?\SessionHandlerInterface $sessionHandler = null
+     ) {
+         phpCAS :: traceBegin();
+         if (is_object(self::$_PHPCAS_CLIENT)) {
+@@ -402,7 +402,7 @@ class phpCAS
+      */
+     public static function proxy($server_version, $server_hostname,
+         $server_port, $server_uri, $service_base_url,
+-        $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null
++        $changeSessionID = true, ?\SessionHandlerInterface $sessionHandler = null
+     ) {
+         phpCAS :: traceBegin();
+         if (is_object(self::$_PHPCAS_CLIENT)) {
+diff --git a/source/CAS/Client.php b/source/CAS/Client.php
+index 8ca9711..42709e9 100644
+--- a/source/CAS/Client.php
++++ b/source/CAS/Client.php
+@@ -938,7 +938,7 @@ class CAS_Client
+         $server_uri,
+         $service_base_url,
+         $changeSessionID = true,
+-        \SessionHandlerInterface $sessionHandler = null
++        ?\SessionHandlerInterface $sessionHandler = null
+     ) {
+         // Argument validation
+         if (gettype($server_version) != 'string')

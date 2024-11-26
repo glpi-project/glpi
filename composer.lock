@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7fbe4971a89637e80066017f3eeef72",
+    "content-hash": "093f173c565f7d2b5be80c807843fc1a",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -8986,16 +8986,16 @@
     "packages-dev": [
         {
             "name": "atoum/atoum",
-            "version": "4.2.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "fd9a339de252ea774ab755b3fd25dd19be2dbefb"
+                "reference": "e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/fd9a339de252ea774ab755b3fd25dd19be2dbefb",
-                "reference": "fd9a339de252ea774ab755b3fd25dd19be2dbefb",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
+                "reference": "e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
                 "shasum": ""
             },
             "require": {
@@ -9016,6 +9016,7 @@
                 "ext-mbstring": "Provides support for UTF-8 strings",
                 "ext-xdebug": "Provides code coverage report (>= 2.3)"
             },
+            "default-branch": true,
             "bin": [
                 "bin/atoum"
             ],
@@ -9067,27 +9068,28 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/4.2.0"
+                "source": "https://github.com/atoum/atoum/tree/main"
             },
-            "time": "2023-07-30T12:52:23+00:00"
+            "time": "2024-07-31T12:02:10+00:00"
         },
         {
             "name": "atoum/stubs",
-            "version": "2.6.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/stubs.git",
-                "reference": "df8b73b0358de7283ecba91d8f4a9683f583993d"
+                "reference": "fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/stubs/zipball/df8b73b0358de7283ecba91d8f4a9683f583993d",
-                "reference": "df8b73b0358de7283ecba91d8f4a9683f583993d",
+                "url": "https://api.github.com/repos/atoum/stubs/zipball/fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
+                "reference": "fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
                 "shasum": ""
             },
             "suggest": {
                 "atoum/atoum": "Include atoum in your projet dependencies"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -9120,7 +9122,7 @@
                 "issues": "https://github.com/atoum/stubs/issues",
                 "source": "https://github.com/atoum/stubs/tree/master"
             },
-            "time": "2018-01-29T22:41:37+00:00"
+            "time": "2024-07-30T18:02:37+00:00"
         },
         {
             "name": "friendsoftwig/twigcs",
@@ -11723,7 +11725,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "atoum/atoum": 20,
+        "atoum/stubs": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

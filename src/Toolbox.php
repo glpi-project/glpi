@@ -262,7 +262,7 @@ class Toolbox
      *
      * @return void
      **/
-    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
+    private static function log(?LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
     {
         static $tps = 0;
 

@@ -161,7 +161,7 @@ final class ServiceCatalogManager
 
     private function hasChildren(
         ItemRequest $item_request,
-        ServiceCatalogCompositeInterface $composite = null,
+        ?ServiceCatalogCompositeInterface $composite = null,
     ): bool {
         $leaf_providers = array_filter(
             $this->providers,
