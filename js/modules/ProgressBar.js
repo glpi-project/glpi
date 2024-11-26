@@ -47,15 +47,20 @@ export class ProgressBar
      * @param {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
      * @param {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
      */
-    constructor(parameters) {
-        if (!parameters.key) {
+    constructor({
+        container,
+        key,
+        progress_callback = () => {},
+        error_callback = () => {},
+    }) {
+        if (!key) {
             throw new Error('Progress key is mandatory.');
         }
-        if (!parameters.container) {
+        if (!container) {
             throw new Error('Progress container is mandatory.');
         }
-        if (!(parameters.container instanceof HTMLElement)) {
-            throw new Error(`Progress key must be an HTML element, "${parameters.container?.constructor?.name || typeof parameters.container}" found.`);
+        if (!(container instanceof HTMLElement)) {
+            throw new Error(`Progress key must be an HTML element, "${container?.constructor?.name || typeof container}" found.`);
         }
 
         const main_container = document.createElement('div');
@@ -71,7 +76,7 @@ export class ProgressBar
         this.#main_container = main_container;
         this.#progress_bar = main_container.querySelector('.progress-bar');
         this.#messages_container = main_container.querySelector('.messages_container');
-        this.#parameters = parameters;
+        this.#parameters = { container, key, progress_callback, error_callback };
     }
 
     init() {
@@ -82,7 +87,6 @@ export class ProgressBar
         this.#initialized = true;
         this.#parameters.container.appendChild(this.#main_container);
 
-        let is_running = true;
         this.#abort_controller = new AbortController();
     }
 
