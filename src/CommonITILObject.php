@@ -4272,7 +4272,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * @since 0.85
      **/
-    public function getSearchOptionsSolution($itemtype = null)
+    public function getSearchOptionsSolution()
     {
         /** @var \DBmysql $DB */
         global $DB;
