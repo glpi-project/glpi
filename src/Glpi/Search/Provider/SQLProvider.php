@@ -1061,7 +1061,7 @@ final class SQLProvider implements SearchProviderInterface
         return $dbi->analyseCrit($criteria);
     }
 
-    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
+    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0, $allow_invalid = false): ?array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1079,9 +1079,8 @@ final class SQLProvider implements SearchProviderInterface
             $searchtype == 'contains'
             && !preg_match(QueryBuilder::getInputValidationPattern($opt['datatype'] ?? '')['pattern'], $val)
         ) {
-            return [ // Invalid search
-                '1=0'
-            ];
+            // Invalid search
+            return $allow_invalid ? [] : ['1=0'];
         }
 
         $inittable = $table;
@@ -4433,6 +4432,11 @@ final class SQLProvider implements SearchProviderInterface
                                 $tmplink = " ";
                             }
 
+                            $allow_invalid = false;
+                            if (isset($criterion['field']) && $criterion['field'] == "view") {
+                                $allow_invalid = true;
+                            }
+
                             $new_where = \Search::addWhere(
                                 $tmplink,
                                 $NOT,
@@ -4440,9 +4444,10 @@ final class SQLProvider implements SearchProviderInterface
                                 $key2,
                                 $criterion['searchtype'],
                                 $criterion['value'],
-                                $meta
+                                $meta,
+                                allow_invalid: $allow_invalid,
                             );
-                            if ($new_where !== false) {
+                            if ($new_where !== false && $new_where !== '') {
                                 $first2  = false;
                                 $view_sql .=  $new_where;
                             }

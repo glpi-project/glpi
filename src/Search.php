@@ -636,14 +636,15 @@ class Search
      * @param string  $searchtype   Searchtype used (equals or contains)
      * @param string  $val          Item num in the request
      * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
+     * @param boolean $allow_invalid Should we allow invalid search options (default false)
      *
      * @return string|false Where string or false if an error occured or if there was no valid WHERE string that could be created.
      **/
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
+    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0, $allow_invalid = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta);
+        $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta, $allow_invalid);
         if (count($criteria) === 0) {
             return '';
         }
