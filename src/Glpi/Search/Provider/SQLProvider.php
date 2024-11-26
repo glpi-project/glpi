@@ -4425,6 +4425,12 @@ final class SQLProvider implements SearchProviderInterface
                     if (isset($val2['nosearch']) && $val2['nosearch']) {
                         continue;
                     }
+                    if (!preg_match(QueryBuilder::getInputValidationPattern($val2['datatype'] ?? '')['pattern'], $criterion['value'])) {
+                        // Do not add a clause on the current field if the searched term does not match the exepected pattern.
+                        // For instance, do not filter on date fields if the searched value is a word.
+                        continue;
+                    }
+
                     if (is_array($val2)) {
                         // Add Where clause if not to be done in HAVING CLAUSE
                         if (!$is_having && !isset($val2["usehaving"])) {
