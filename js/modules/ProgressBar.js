@@ -162,8 +162,8 @@ export class ProgressBar
                     }
                 }
 
-                if (res.status >= 300) {
-                    _this.#parameters?.error_callback(__('Invalid response from server, expected 200 or 404, found "%s".').replace('%s', res.status.toString()));
+                if (res.status >= 400) {
+                    _this.#parameters?.error_callback(__('Error response from server with code "%s".').replace('%s', res.status.toString()));
                     _this.#stop_progress_with_warning_state();
                     return;
                 }
