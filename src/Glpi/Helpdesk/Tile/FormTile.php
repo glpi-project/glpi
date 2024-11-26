@@ -113,7 +113,7 @@ final class FormTile extends CommonDBChild implements TileInterface
         }
 
         // Check that the form entity is visible
-        if ($this->form->isAccessibleFromEntities($session_info->getActiveEntitiesIds())) {
+        if (!$this->form->isAccessibleFromEntities($session_info->getActiveEntitiesIds())) {
             return false;
         }
 

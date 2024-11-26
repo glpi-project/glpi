@@ -3149,19 +3149,25 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        if ($this->maybeRecursive() && $this->fields['is_recursive']) {
-            // Item is recursive, check if it is accessible from any of the ancestors of the given entities.
-            return in_array(
+        // Check if the item entity is in the list of given entities.
+        if (in_array($this->getEntityID(), $entities_ids)) {
+            return true;
+        }
+
+        // If the item is recursive, we also check if it is accessible from any
+        // of the ancestors of the given entities.
+        if (
+            $this->maybeRecursive()
+            && $this->fields['is_recursive']
+            && in_array(
                 $this->getEntityID(),
                 getAncestorsOf("glpi_entities", $entities_ids),
-            );
-        } else {
-            // Item is not recursive, check if it is accessible from any of the given entities.
-            return in_array(
-                $this->getEntityID(),
-                $entities_ids,
-            );
+            )
+        ) {
+            return true;
         }
+
+        return false;
     }
 
     /**

@@ -222,6 +222,14 @@ final class TilesManagerTest extends DbTestCase
         $builder = new FormBuilder("Form outside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
+        $builder->setIsRecursive(false);
+        $builder->allowAllUsers();
+        $forms[] = $this->createForm($builder);
+
+        $builder = new FormBuilder("Form inside recursive parent entity");
+        $builder->setIsActive(true);
+        $builder->setEntitiesId(0);
+        $builder->setIsRecursive(true);
         $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
@@ -240,6 +248,9 @@ final class TilesManagerTest extends DbTestCase
 
         // Assert: only the form with a valid access policy should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
-        $this->assertEquals(["Form inside current entity"], $form_names);
+        $this->assertEquals([
+            "Form inside current entity",
+            "Form inside recursive parent entity",
+        ], $form_names);
     }
 }
