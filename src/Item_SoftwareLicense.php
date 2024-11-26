@@ -146,7 +146,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
                 echo "<td>";
-                $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
+                $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['license_types'], [
                     'width'                 => 'unset'
                 ]);
 
@@ -558,17 +558,23 @@ class Item_SoftwareLicense extends CommonDBRelation
             echo "<td>";
 
             $rand = mt_rand();
-            Dropdown::showItemTypes('itemtype', $CFG_GLPI['software_types'], [
+
+            $entity_restrict = $license->fields['is_recursive']
+                    ? getSonsOf('glpi_entities', $license->fields['entities_id'])
+                    : $license->fields['entities_id'];
+
+            Dropdown::showItemTypes('itemtype', $CFG_GLPI['license_types'], [
                 'value'                 => 'Computer',
                 'rand'                  => $rand,
                 'width'                 => 'unset',
-                'display_emptychoice'   => false
+                'display_emptychoice'   => false,
             ]);
 
             $p = ['idtable'            => '__VALUE__',
                 'rand'                  => $rand,
                 'name'                  => "items_id",
-                'width'                 => 'unset'
+                'width'                 => 'unset',
+                'entity_restrict'    => $entity_restrict
             ];
 
             Ajax::updateItemOnSelectEvent(
@@ -625,7 +631,7 @@ JAVASCRIPT;
         Html::printAjaxPager(__('Affected items'), $start, $number);
 
         $queries = [];
-        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+        foreach ($CFG_GLPI['license_types'] as $itemtype) {
             $canshowitems[$itemtype] = $itemtype::canView();
             $itemtable = $itemtype::getTable();
             $query = [
@@ -999,7 +1005,7 @@ JAVASCRIPT;
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
-                            _n('Item', 'Items', Session::getPluralNumber()),
+                            _n('Affected Item', 'Affected Items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
                             'ti ti-package'

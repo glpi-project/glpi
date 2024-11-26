@@ -269,8 +269,10 @@ $CFG_GLPI["contract_types"]               = [
     'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
     'Software', 'SoftwareLicense', 'Certificate',
     'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-    'DatabaseInstance', 'User',
+    'DatabaseInstance'
 ];
+
+$CFG_GLPI["items_contract_types"] = array_merge($CFG_GLPI["contract_types"], ['User']);
 
 $CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
     'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
@@ -462,9 +464,11 @@ $CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
 
-$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'User'];
+$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
 
 $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
+
+$CFG_GLPI['license_types'] = array_merge($CFG_GLPI['software_types'], ['User']);
 
 $CFG_GLPI['disk_types'] = ['Computer', 'NetworkEquipment', 'Phone', 'Printer'];
 
