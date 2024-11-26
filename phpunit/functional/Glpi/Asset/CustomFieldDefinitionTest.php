@@ -518,4 +518,41 @@ class CustomFieldDefinitionTest extends DbTestCase
             'new_value' => '_test_pc01',
         ]));
     }
+
+    public function testAddTranslationsOnCreate()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $this->assertGreaterThan(0, $field->add([
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test',
+            'label' => 'Test',
+            'type' => StringType::class,
+            'translations' => [
+                'fr_FR' => 'test_fr'
+            ]
+        ]));
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->assertEquals('test_fr', $field->getFriendlyName());
+    }
+
+    public function testAddTranslationsOnUpdate()
+    {
+        $asset_definition = $this->initAssetDefinition();
+        $field = new \Glpi\Asset\CustomFieldDefinition();
+        $this->assertGreaterThan(0, $field->add([
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'name' => 'test',
+            'label' => 'Test',
+            'type' => StringType::class,
+        ]));
+        $this->assertTrue($field->update([
+            'id' => $field->getID(),
+            'translations' => [
+                'fr_FR' => 'test_fr'
+            ]
+        ]));
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->assertEquals('test_fr', $field->getFriendlyName());
+    }
 }

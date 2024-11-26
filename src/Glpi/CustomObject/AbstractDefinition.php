@@ -328,14 +328,11 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item' => $this,
                 'classname' => $this->getCustomObjectClassName(),
                 'translations' => $translations,
-                'fields_dropdown' => Dropdown::showFromArray('field', $custom_fields, [
+                'fields_dropdown' => Dropdown::showFromArray('field', [0 => __('Asset name')] + $custom_fields, [
                     'display'             => false,
                     'display_emptychoice' => false,
                     'width'               => '100%',
                     'rand'                => $rand,
-                    'toadd'               => [
-                        0 => __('Asset name'),
-                    ]
                 ]),
                 'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display'             => false,
