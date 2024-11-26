@@ -665,6 +665,8 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $tab = [];
 
@@ -712,6 +714,24 @@ class ITILFollowup extends CommonDBChild
                 'condition'          => $followup_condition
             ]
         ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
+            ],
+            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')',
+            'nometa'             => true // cannot GROUP_CONCAT a MAX
+        ];
+
 
         $tab[] = [
             'id'                 => '27',

@@ -815,6 +815,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $task = new static();
         $tab = [];
@@ -991,6 +993,22 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'jointype'           => 'child',
                 'condition'          => $task_condition,
             ]
+        ];
+
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => $task_condition
+            ],
+            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')',
+            'nometa'             => true // cannot GROUP_CONCAT a MAX
         ];
 
         $tab[] = [
