@@ -48,7 +48,7 @@ final class SessionConfig implements LegacyConfigProviderInterface, ConfigProvid
 
     public function execute(): void
     {
-        Profiler::getInstance()->start('SessionConfig::execute', Profiler::CATEGORY_SYMFONY);
+        Profiler::getInstance()->start('SessionConfig::execute', Profiler::CATEGORY_BOOT);
         if (
             isset($_SESSION['glpi_use_mode'])
             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)

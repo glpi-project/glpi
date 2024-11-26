@@ -45,7 +45,7 @@ final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigPr
 
     public function execute(): void
     {
-        Profiler::getInstance()->start('CleanPHPSelfParam::execute', Profiler::CATEGORY_SYMFONY);
+        Profiler::getInstance()->start('CleanPHPSelfParam::execute', Profiler::CATEGORY_BOOT);
         // Security of PHP_SELF
         $self = \Html::cleanParametersURL($this->getRequest()->server->get('PHP_SELF'));
 

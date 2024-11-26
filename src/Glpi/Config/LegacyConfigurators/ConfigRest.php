@@ -59,7 +59,7 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         $HEADER_LOADED = false;
         $FOOTER_LOADED = false;
 
-        Profiler::getInstance()->start('ConfigRest::execute', Profiler::CATEGORY_SYMFONY);
+        Profiler::getInstance()->start('ConfigRest::execute', Profiler::CATEGORY_BOOT);
         // Security : check CSRF token
         if (!isAPI() && count($_POST) > 0) {
             if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {

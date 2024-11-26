@@ -56,7 +56,7 @@ final readonly class InitializePlugins implements LegacyConfigProviderInterface
             return;
         }
 
-        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_SYMFONY);
+        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
         $plugin = new Plugin();
         $plugin->init(true);
 

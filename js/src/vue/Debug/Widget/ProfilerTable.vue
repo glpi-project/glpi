@@ -35,7 +35,7 @@
             twig: '#64ad52',
             plugins: '#a077a6',
             search: '#b6803d',
-            symfony: '#a24e55',
+            boot: '#a24e55',
         };
 
         let bg_color = '';
