@@ -520,7 +520,6 @@ class SearchTest extends DbTestCase
             "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(1=0\s*\)/"
         ];
 
         foreach ($regexps as $regexp) {
@@ -599,7 +598,7 @@ class SearchTest extends DbTestCase
                 ],
                 'expected' => 0
             ],
-            /*[
+            [
                 'itemtype' => 'Computer',
                 'criteria' => [
                     [
@@ -610,7 +609,7 @@ class SearchTest extends DbTestCase
                     ],
                 ],
                 'expected' => 8
-            ],*/
+            ],
             [
                 'itemtype' => 'Computer',
                 'criteria' => [
@@ -695,7 +694,7 @@ class SearchTest extends DbTestCase
                 ],
                 'expected' => 0
             ],
-            /*[
+            [
                 'itemtype' => 'Computer',
                 'criteria' => [
                     [
@@ -706,7 +705,7 @@ class SearchTest extends DbTestCase
                     ],
                 ],
                 'expected' => 8
-            ],*/
+            ],
             [
                 'itemtype' => 'Computer',
                 'criteria' => [
