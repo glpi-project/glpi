@@ -29,67 +29,61 @@
  *
  * ---------------------------------------------------------------------
  */
-(() => {
+import { ProgressBar } from './modules/ProgressBar.js';
+
+export async function start_database_install(dom_element, progress_key)
+{
     function message(message_list_element, text) {
         const alert = document.createElement('p');
         alert.innerHTML = text;
         message_list_element.appendChild(alert);
     }
 
-    async function start_database_install(dom_element, progress_key)
-    {
-        if (!dom_element) {
-            throw new Error('No DOM element provided to start database install.');
-        }
-        const messages_container = document.getElementById('glpi_install_messages_container');
-        const success_container = document.getElementById('glpi_install_success');
-        const back_button_container = document.getElementById('glpi_install_back');
-
-        const message_list_element = document.createElement('div');
-
-        success_container.querySelector('button').setAttribute('disabled', 'disabled');
-        back_button_container.querySelector('input').setAttribute('disabled', 'disabled');
-
-        const create_progress_bar = window.create_progress_bar;
-
-        if (typeof create_progress_bar === 'undefined') {
-            throw new Error('Function "create_progress_bar" is not defined. Did you load the associated JS file correctly?');
-        }
-
-        const progress = create_progress_bar({
-            key: progress_key,
-            container: messages_container,
-            error_callback: (msg) => {
-                if (msg.match('timed out')) {
-                    message(message_list_element, msg);
-                } else {
-                    message(message_list_element, __('An unexpected error has occurred.'));
-                }
-            },
-        });
-
-        messages_container.appendChild(message_list_element);
-
-        setTimeout(() => {
-            progress.start();
-        }, 1500);
-
-        try {
-            const res = await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
-            const text = await res.text();
-            if (text && text.trim().length) {
-                message(message_list_element, `Error:\n${text}`);
-                progress.error();
-            } else {
-                success_container.querySelector('button').removeAttribute('disabled');
-            }
-        } catch (err) {
-            message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-            progress.error();
-        } finally {
-            back_button_container.querySelector('input').removeAttribute('disabled');
-        }
+    if (!dom_element) {
+        throw new Error('No DOM element provided to start database install.');
     }
+    const messages_container = document.getElementById('glpi_install_messages_container');
+    const success_container = document.getElementById('glpi_install_success');
+    const back_button_container = document.getElementById('glpi_install_back');
 
-    window.start_database_install = start_database_install;
-})();
+    const message_list_element = document.createElement('div');
+
+    success_container.querySelector('button').setAttribute('disabled', 'disabled');
+    back_button_container.querySelector('input').setAttribute('disabled', 'disabled');
+
+    const progress = new ProgressBar({
+        key: progress_key,
+        container: messages_container,
+        error_callback: (msg) => {
+            if (msg.match('timed out')) {
+                message(message_list_element, msg);
+            } else {
+                message(message_list_element, __('An unexpected error has occurred.'));
+            }
+        },
+    });
+
+    progress.init();
+
+    messages_container.appendChild(message_list_element);
+
+    setTimeout(() => {
+        progress.start();
+    }, 1500);
+
+    try {
+        const res = await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
+        const text = await res.text();
+        if (text && text.trim().length) {
+            message(message_list_element, `Error:\n${text}`);
+            progress.error();
+        } else {
+            success_container.querySelector('button').removeAttribute('disabled');
+        }
+    } catch (err) {
+        message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
+        progress.error();
+    } finally {
+        back_button_container.querySelector('input').removeAttribute('disabled');
+    }
+}
