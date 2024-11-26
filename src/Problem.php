@@ -519,11 +519,11 @@ class Problem extends CommonITILObject
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, ITILFollowup::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, ProblemTask::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, ProblemTask::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, $this->getSearchOptionsSolution(get_class($this)));
+        $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
         $tab = array_merge($tab, $this->getSearchOptionsStats());
 

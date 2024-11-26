@@ -420,15 +420,15 @@ class ChangeTest extends DbTestCase
                 'value' => $change_id,
             ]
         ];
-        $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [98,99,100]);
+        $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $change_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($change_id, $change_with_so['id']);
-        $this->assertTrue(array_key_exists('ITEM_Change_98', $change_with_so));
-        $this->assertEquals($last_followup_date, $change_with_so['ITEM_Change_98']);
-        $this->assertTrue(array_key_exists('ITEM_Change_99', $change_with_so));
-        $this->assertEquals($last_task_date, $change_with_so['ITEM_Change_99']);
-        $this->assertTrue(array_key_exists('ITEM_Change_100', $change_with_so));
-        $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_100']);
+        $this->assertTrue(array_key_exists('ITEM_Change_72', $change_with_so));
+        $this->assertEquals($last_followup_date, $change_with_so['ITEM_Change_72']);
+        $this->assertTrue(array_key_exists('ITEM_Change_73', $change_with_so));
+        $this->assertEquals($last_task_date, $change_with_so['ITEM_Change_73']);
+        $this->assertTrue(array_key_exists('ITEM_Change_74', $change_with_so));
+        $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
     }
 }

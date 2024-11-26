@@ -715,22 +715,23 @@ class ITILFollowup extends CommonDBChild
             ]
         ];
 
-        if ($itemtype === Ticket::class || $itemtype === Change::class || $itemtype === Problem::class) {
-            $tab[] = [
-                'id'                 => '98',
-                'table'              => static::getTable(),
-                'field'              => 'date',
-                'name'               => _n('Latest date', 'Latest dates', 1),
-                'datatype'           => 'datetime',
-                'massiveaction'      => false,
-                'forcegroupby'       => true,
-                'joinparams'         => [
-                    'jointype'           => 'itemtype_item',
-                    'condition'          => $followup_condition
-                ],
-                'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')'
-            ];
-        }
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
+            ],
+            'computation' => 'MAX( ' . $DB->quoteName('TABLE.date') . ')',
+            'nometa'             => true // cannot GROUP_CONCAT a MAX
+        ];
+
 
         $tab[] = [
             'id'                 => '27',

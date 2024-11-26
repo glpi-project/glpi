@@ -296,15 +296,15 @@ class ProblemTest extends DbTestCase
                 'value' => $problem_id,
             ]
         ];
-        $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [98,99,100]);
+        $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $problem_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($problem_id, $problem_with_so['id']);
-        $this->assertTrue(array_key_exists('ITEM_Problem_98', $problem_with_so));
-        $this->assertEquals($last_followup_date, $problem_with_so['ITEM_Problem_98']);
-        $this->assertTrue(array_key_exists('ITEM_Problem_99', $problem_with_so));
-        $this->assertEquals($last_task_date, $problem_with_so['ITEM_Problem_99']);
-        $this->assertTrue(array_key_exists('ITEM_Problem_100', $problem_with_so));
-        $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_100']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_72', $problem_with_so));
+        $this->assertEquals($last_followup_date, $problem_with_so['ITEM_Problem_72']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_73', $problem_with_so));
+        $this->assertEquals($last_task_date, $problem_with_so['ITEM_Problem_73']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_74', $problem_with_so));
+        $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_74']);
     }
 }
