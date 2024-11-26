@@ -353,20 +353,6 @@ class DbTestCase extends \GLPITestCase
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
-        // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), []);
-
-        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryCollectionClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryCollectionClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryClass', $definition);
-        $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
-
         return $definition;
     }
 
@@ -468,14 +454,6 @@ class DbTestCase extends \GLPITestCase
         $this->array(
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         )->contains($capacity);
-
-        // Force boostrap to trigger methods such as "onClassBootstrap"
-        $manager = AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod(
-            $manager,
-            'boostrapConcreteClass',
-            $definition
-        );
 
         return $definition;
     }

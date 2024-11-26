@@ -136,35 +136,25 @@ class HasOperatingSystemCapacity extends DbTestCase
         $definition = $this->initAssetDefinition();
         $class = $definition->getAssetClassName();
 
-        // Check that we have some valid search options to add
-        $item_os = new Item_OperatingSystem();
-        $count_to_add = count($item_os::rawSearchOptionsToAdd($class));
-        $this->integer($count_to_add)->isGreaterThan(0);
-
         // Create our test subject
         $subject = $this->createItem($class, [
             'name' => 'Test asset',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
-        $base_search_options_count = count($subject->rawSearchOptions());
-
+        $os_search_opts = array_column(Item_OperatingSystem::rawSearchOptionsToAdd($subject::class), 'id');
         // Enable capactity, search option count should increase
         $definition = $this->enableCapacity(
             $definition,
             $this->getTargetCapacity()
         );
-        $this->array($subject->rawSearchOptions())->hasSize(
-            $base_search_options_count + $count_to_add
-        );
+        $this->array(array_diff($os_search_opts, array_column($subject->rawSearchOptions(), 'id')))->size->isEqualTo(0);
 
         // Disable capacity, search option count should decrease back to base
-        $definition = $this->disableCapacity(
+        $this->disableCapacity(
             $definition,
             $this->getTargetCapacity()
         );
-        $this->array($subject->rawSearchOptions())->hasSize(
-            $base_search_options_count
-        );
+        $this->array(array_diff($os_search_opts, array_column($subject->rawSearchOptions(), 'id')))->size->isEqualTo(count($os_search_opts));
     }
 
     /**

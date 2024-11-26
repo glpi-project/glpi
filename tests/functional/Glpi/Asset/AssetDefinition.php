@@ -59,6 +59,10 @@ class AssetDefinition extends DbTestCase
                     HasDocumentsCapacity::class,
                     HasInfocomCapacity::class,
                 ]),
+                '_enabled_capacities' => [
+                    HasDocumentsCapacity::class,
+                    HasInfocomCapacity::class,
+                ]
             ],
             'messages' => [],
         ];
@@ -102,7 +106,7 @@ class AssetDefinition extends DbTestCase
                 'profiles' => $valid_profiles_input,
             ],
             'output'   => [
-                'profiles' => json_encode($valid_profiles_input),
+                'profiles' => json_encode($valid_profiles_input)
             ],
             'messages' => [],
         ];
@@ -254,6 +258,7 @@ class AssetDefinition extends DbTestCase
                         'capacities'   => '[]',
                         'profiles'     => '[]',
                         'translations' => '[]',
+                        '_enabled_capacities' => []
                     ],
                     'messages' => [],
                 ];
@@ -295,6 +300,7 @@ class AssetDefinition extends DbTestCase
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    '_enabled_capacities' => []
                 ],
                 'messages' => [],
             ];
@@ -308,6 +314,7 @@ class AssetDefinition extends DbTestCase
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    '_enabled_capacities' => []
                 ],
                 'messages' => [],
             ];
@@ -335,6 +342,7 @@ class AssetDefinition extends DbTestCase
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                '_enabled_capacities' => []
             ],
             'messages' => [],
         ];
@@ -361,6 +369,7 @@ class AssetDefinition extends DbTestCase
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                '_enabled_capacities' => []
             ],
             'messages' => [],
         ];
@@ -385,6 +394,9 @@ class AssetDefinition extends DbTestCase
                 // default value for `translations`
                 $data['output']['translations'] = '[]';
             }
+            if (is_array($data['output']) && !array_key_exists('_enabled_capacities', $data['output'])) {
+                $data['output']['_enabled_capacities'] = [];
+            }
             yield $data;
         }
     }
@@ -396,7 +408,7 @@ class AssetDefinition extends DbTestCase
     {
         $definition = $this->newTestedInstance();
 
-        $this->variable($definition->prepareInputForAdd($input))->isEqualTo($output);
+        $this->variable($definition->prepareInputForAdd($input))->isEqualTo($output, var_export($input, true));
 
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);

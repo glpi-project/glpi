@@ -91,6 +91,13 @@ abstract class Asset extends CommonDBTM
         return static::$definition;
     }
 
+    public static function reloadDefinition(): void
+    {
+        $definition = new (get_class(static::getDefinition()))();
+        $definition->getFromDB(static::getDefinition()->getID());
+        static::$definition = $definition;
+    }
+
     public static function getDefinitionClass(): string
     {
         return AssetDefinition::class;

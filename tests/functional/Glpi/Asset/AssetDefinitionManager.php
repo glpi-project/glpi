@@ -48,6 +48,7 @@ class AssetDefinitionManager extends DbTestCase
     public function testLoadConcreteClass(): void
     {
         // use a loop to simulate multiple classes
+        /** @var array<class-string<Asset>, AssetDefinition> $mapping */
         $mapping = [];
         for ($i = 0; $i < 5; $i++) {
             $system_name = $this->getUniqueString();
@@ -56,7 +57,8 @@ class AssetDefinitionManager extends DbTestCase
 
         foreach ($mapping as $expected_classname => $definition) {
             $this->boolean(class_exists($expected_classname))->isTrue();
-            $this->object($expected_classname::getDefinition())->isEqualTo($definition);
+            // Not an object comparison since $definition may have some extra data from the add process while `getDefinition` returns a freshly loaded version
+            $this->array($expected_classname::getDefinition()->fields)->isEqualTo($definition->fields);
         }
     }
 

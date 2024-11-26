@@ -337,9 +337,7 @@ final class AssetDefinition extends AbstractDefinition
         }
 
         $new_capacities = $this->input['_enabled_capacities'] ?? [];
-        if (!empty($new_capacities)) {
-            AssetDefinitionManager::getInstance()->clearDefinitionsCache();
-        }
+        AssetDefinitionManager::getInstance()->clearDefinitionsCache();
         AssetDefinitionManager::getInstance()->boostrapConcreteClass($this);
 
         foreach ($new_capacities as $capacity_classname) {
@@ -386,6 +384,7 @@ final class AssetDefinition extends AbstractDefinition
 
             if (!empty($enabled_capacities) || !empty($removed_capacities)) {
                 AssetDefinitionManager::getInstance()->clearDefinitionsCache();
+                $this->getAssetClassName()::reloadDefinition();
             }
 
             foreach ($enabled_capacities as $capacity_classname) {
