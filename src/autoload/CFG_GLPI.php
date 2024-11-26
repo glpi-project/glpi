@@ -269,7 +269,7 @@ $CFG_GLPI["contract_types"]               = [
     'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
     'Software', 'SoftwareLicense', 'Certificate',
     'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-    'DatabaseInstance'
+    'DatabaseInstance',
 ];
 
 $CFG_GLPI["items_contract_types"] = array_merge($CFG_GLPI["contract_types"], ['User']);
