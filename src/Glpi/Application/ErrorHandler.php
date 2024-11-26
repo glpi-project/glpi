@@ -63,7 +63,7 @@ class ErrorHandler
         E_USER_ERROR        => LogLevel::ERROR,
         E_USER_WARNING      => LogLevel::WARNING,
         E_USER_NOTICE       => LogLevel::NOTICE,
-        E_STRICT            => LogLevel::NOTICE,
+        2048                => LogLevel::NOTICE, // 2048 = deprecated E_STRICT
         E_RECOVERABLE_ERROR => LogLevel::ERROR,
         E_DEPRECATED        => LogLevel::INFO,
         E_USER_DEPRECATED   => LogLevel::INFO,
@@ -227,9 +227,34 @@ class ErrorHandler
             set_exception_handler([$this, 'handleException']);
         }
 
-        // Force reporting of all errors, to ensure that all log levels that are supposed to be
-        // pushed in logs according to `GLPI_LOG_LVL`/`GLPI_ENVIRONMENT_TYPE` are actually reported.
-        error_reporting(E_ALL);
+        // Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
+        // actually reported, and to prevent reporting other errors.
+        $reporting_level = E_ALL;
+        foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
+            if (
+                $this->env !== GLPI::ENV_DEVELOPMENT
+                && in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
+            ) {
+                // Do not report debug and info messages unless in development env.
+                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
+                //
+                // Suppressing the deprecations in the testing environment is mandatory to prevent deprecations
+                // triggered in vendor code to make our test suite fail.
+                // We may review this part once we will have migrate all our test suite on PHPUnit.
+                // For now, we rely on PHPStan to detect usages of deprecated code.
+                $reporting_level = $reporting_level & ~$value;
+            }
+
+            if (
+                !in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+                && $log_level === LogLevel::NOTICE
+            ) {
+                // Do not report notice messages unless in development/testing env.
+                // Notices are errors with no functional impact, so we do not want people to report them as issues.
+                $reporting_level = $reporting_level & ~$value;
+            }
+        }
+        error_reporting($reporting_level);
 
         // Disable native error displaying as it will be handled by `self::outputDebugMessage()`.
         ini_set('display_errors', 'Off');
@@ -435,15 +460,6 @@ class ErrorHandler
             return;
         }
 
-        if (
-            in_array($this->env, [GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION])
-            && in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
-        ) {
-            // On staging/production environment, do not output debug/info messages.
-            // These messages are not supposed to be intended for end users, as they have no functional impact.
-            return;
-        }
-
         $is_dev_env         = $this->env === GLPI::ENV_DEVELOPMENT;
         $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
         $is_console_context = $this->output_handler instanceof OutputInterface;
@@ -513,7 +529,7 @@ class ErrorHandler
             E_USER_ERROR        => 'User Error',
             E_USER_WARNING      => 'User Warning',
             E_USER_NOTICE       => 'User Notice',
-            E_STRICT            => 'Runtime Notice',
+            2048                => 'Runtime Notice', // 2048 = deprecated E_STRICT
             E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
             E_DEPRECATED        => 'Deprecated function',
             E_USER_DEPRECATED   => 'User deprecated function',

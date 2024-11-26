@@ -594,7 +594,9 @@ class LegacyRouterListener extends \GLPITestCase
 
         $this->when(
             function () use ($event) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
                 $this->testedInstance->onKernelRequest($event);
+                \error_reporting($reporting_level); // restore previous level
             }
         )->error
             ->withMessage('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.')

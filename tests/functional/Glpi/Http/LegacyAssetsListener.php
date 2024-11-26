@@ -594,7 +594,9 @@ class LegacyAssetsListener extends \GLPITestCase
         $response = null;
         $this->when(
             function () use ($request, &$response) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
                 $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+                \error_reporting($reporting_level); // restore previous level
             }
         )->error
             ->withMessage('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.')
