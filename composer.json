@@ -104,8 +104,8 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "^4.2",
-        "atoum/stubs": "^2.6",
+        "atoum/atoum": "dev-main#e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
+        "atoum/stubs": "dev-master#fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
         "friendsoftwig/twigcs": "^6.4",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
@@ -188,19 +188,21 @@
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "build": [
             "bin/console dependencies install"
+        ],
+        "patch": [
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true",
+            "patch -f -p1 -d vendor/apereo/phpcas/ < tools/patches/apereo-phpcas-php84.patch || true"
         ]
     }
 }
