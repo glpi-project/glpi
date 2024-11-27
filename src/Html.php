@@ -42,7 +42,7 @@ use Glpi\Console\Application;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Exception\Http\RedirectException;
+use Glpi\Exception\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -434,7 +434,7 @@ class Html
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
-        throw new RedirectException(\addslashes($dest), $http_response_code);
+        throw new RedirectException($dest, $http_response_code);
     }
 
     /**

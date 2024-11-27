@@ -37,7 +37,7 @@ namespace Glpi\Http;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\AuthenticationFailedException;
-use Glpi\Exception\Http\RedirectException;
+use Glpi\Exception\RedirectException;
 use Glpi\Exception\SessionExpiredException;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -64,6 +64,12 @@ final class AccessErrorListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+
+        if ($request->isXmlHttpRequest()) {
+            // Do not redirect AJAX requests.
+            return;
+        }
+
         $throwable = $event->getThrowable();
 
         $response = null;
@@ -79,7 +85,7 @@ final class AccessErrorListener implements EventSubscriberInterface
                 )
             );
         } elseif ($throwable instanceof RedirectException) {
-            $response = new RedirectResponse($throwable->url, $throwable->getStatusCode());
+            $response = $throwable->getResponse();
         } elseif (
             $throwable instanceof AccessDeniedHttpException
             && ($_SESSION['_redirected_from_profile_selector'] ?? false)

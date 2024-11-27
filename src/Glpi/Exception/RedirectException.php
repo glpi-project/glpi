@@ -32,30 +32,26 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception\Http;
+namespace Glpi\Exception;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException as BaseException;
 
 /**
- * @internal Not to be used unless you absolutely know what you are doing. This will be removed in the future when all the code is under Dependency Injection and proper HTTP routing.
+ * @internal Not to be used unless you absolutely know what you are doing.
+ *           This will be removed in the future when all the code is under Dependency Injection and proper HTTP routing.
  */
-class RedirectException extends BaseException implements HttpExceptionInterface
+class RedirectException extends Exception
 {
-    use HttpExceptionTrait;
-
-    public readonly string $url;
+    private RedirectResponse $response;
 
     public function __construct(string $url, int $http_code = 302)
     {
-        $this->url = $url;
+        $this->response = new RedirectResponse($url, $http_code);
+    }
 
-        /**
-         * Will automatically trigger an exception if the HTTP code isn't a Redirect one.
-         * @see RedirectResponse::isRedirect
-         */
-        new RedirectResponse('', $http_code);
-
-        parent::__construct($http_code);
+    public function getResponse(): RedirectResponse
+    {
+        return $this->response;
     }
 }
