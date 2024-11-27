@@ -54,7 +54,12 @@ export async function start_database_install(dom_element, progress_key)
     const progress = new ProgressBar({
         key: progress_key,
         container: messages_container,
+        success_callback: () => {
+            success_container.querySelector('button').removeAttribute('disabled');
+            back_button_container.querySelector('input').removeAttribute('disabled');
+        },
         error_callback: (msg) => {
+            back_button_container.querySelector('input').removeAttribute('disabled');
             if (msg.match('timed out')) {
                 message(message_list_element, msg);
             } else {
@@ -75,6 +80,5 @@ export async function start_database_install(dom_element, progress_key)
         await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
     } catch (err) {
     } finally {
-        back_button_container.querySelector('input').removeAttribute('disabled');
     }
 }

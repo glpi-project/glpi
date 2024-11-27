@@ -48,12 +48,14 @@ export class ProgressBar
      * @param {string} parameters.key Mandatory. The progress bar's unique key.
      * @param {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
      * @param {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
+     * @param {null|function} parameters.success_callback The function that will be called for when the progress has ended and is at 100%.
      */
     constructor({
         container,
         key,
         progress_callback = () => {},
         error_callback = () => {},
+        success_callback = () => {},
     }) {
         if (!key) {
             throw new Error('Progress key is mandatory.');
@@ -176,35 +178,40 @@ export class ProgressBar
 
                 const json =  await res.json();
 
-                if (json['key'] && json['started_at'] && json['updated_at']) {
-                    this.#update_progress(json.current, json.max, json.data);
-
-                    const now = new Date().getTime();
-                    const updated_at = new Date(json['updated_at']).getTime();
-                    const diff = now - updated_at;
-                    const max_diff = 1000 * 45;// 45 seconds
-                    if (diff > max_diff) {
-                        _this.#parameters?.error_callback(__('Main process seems to have timed out. It may be still running in the background though.'));
-                        _this.#stop_progress_with_warning_state();
-                        return;
-                    }
-
-                    if (
-                        (
-                            !_this.#parameters.progress_callback
-                            || (_this.#parameters.progress_callback && _this.#parameters.progress_callback(json) !== false)
-                        )
-                        && !json['finished_at']
-                    ) {
-                        // Recursive call, including the timeout
-                        _this.#check_progress();
-                    }
+                if (!json['key'] || !json['started_at'] || !json['updated_at']) {
+                    _this.#parameters?.error_callback(__('JSON returned by progress check endpoint is invalid.'));
+                    _this.#stop_progress_with_warning_state();
 
                     return;
                 }
 
-                _this.#parameters?.error_callback(__('JSON returned by progress check endpoint is invalid.'));
-                _this.#stop_progress_with_warning_state();
+                this.#update_progress(json.current, json.max, json.data);
+
+                const now = new Date().getTime();
+                const updated_at = new Date(json['updated_at']).getTime();
+                const diff = now - updated_at;
+                const max_diff = 1000 * 45; // 45 seconds
+                if (diff > max_diff) {
+                    _this.#parameters?.error_callback(__('Main process seems to have timed out. It may be still running in the background though.'));
+                    _this.#stop_progress_with_warning_state();
+                    return;
+                }
+
+                if (json['finished_at']) {
+                    this.#parameters.success_callback();
+                    return;
+                }
+
+                if (
+                    (
+                        !_this.#parameters.progress_callback
+                        || (_this.#parameters.progress_callback && _this.#parameters.progress_callback(json) !== false)
+                    )
+                    && !json['finished_at']
+                ) {
+                    // Recursive call, including the timeout
+                    _this.#check_progress();
+                }
             } catch (err) {
                 _this.#parameters?.error_callback(__(`Request error when checking progress:\n%s`).replace('%s', err.message || err.toString()));
                 _this.#stop_progress_with_warning_state();
