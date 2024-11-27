@@ -1116,19 +1116,8 @@ PLAINTEXT,
 
     public static function mailServerProtocolsHookProvider()
     {
-       // Create valid classes
-        eval(<<<CLASS
-class PluginTesterFakeProtocol implements Glpi\Mail\Protocol\ProtocolInterface {
-   public function setNoValidateCert(bool \$novalidatecert) {}
-   public function connect(\$host, \$port = null, \$ssl = false) {}
-   public function login(\$user, \$password) {}
-}
-class PluginTesterFakeStorage extends Laminas\Mail\Storage\Imap {
-   public function __construct(\$params) {}
-   public function close() {}
-}
-CLASS
-        );
+        require_once FIXTURE_DIR . '/plugintesterfakeprotocol.php';
+        require_once FIXTURE_DIR . '/plugintesterfakestorage.php';
 
         return [
             // Check that invalid hook result does not alter core protocols specs
@@ -1242,6 +1231,9 @@ CLASS
     ) {
         global $PLUGIN_HOOKS;
 
+        require_once FIXTURE_DIR . '/plugintesterfakeprotocol.php';
+        require_once FIXTURE_DIR . '/plugintesterfakestorage.php';
+
         $hooks_backup = $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS['mail_server_protocols']['tester'] = function () use ($hook_result) {
@@ -1249,7 +1241,7 @@ CLASS
         };
 
         // Get protocol
-        $protocol  = null;
+        $protocol = null;
         $getProtocol = function () use ($type, &$protocol) {
             $protocol = \Toolbox::getMailServerProtocolInstance($type);
         };
