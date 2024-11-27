@@ -337,13 +337,12 @@ function step4($databasename, $newdatabasename)
 
         echo '<div id="glpi_install_messages_container"></div>';
 
-        echo '<div id="glpi_install_success" class="container">';
+        echo '<span id="glpi_install_success" class="container">';
         $next_form();
-        echo '</div>';
-
-        echo '<div id="glpi_install_back" class="container">';
+        echo '</span>';
+        echo '<span id="glpi_install_back" class="container">';
         $prev_form($host, $user, $password);
-        echo '</div>';
+        echo '</span>';
 
         echo \sprintf(
             <<<HTML

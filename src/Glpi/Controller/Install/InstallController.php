@@ -69,12 +69,13 @@ class InstallController extends AbstractController
                         $progress->setMax($max);
                     }
                     if ($data) {
-                        $progress->appendData($data);
+                        $progress->setData($data);
                     }
                     $progressChecker->save($progress);
                 };
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
             } catch (\Throwable $e) {
+                $progressChecker->abortProgress(self::STORED_PROGRESS_KEY);
                 echo "<p>"
                     . sprintf(
                         __('An error occurred during the database initialization. The error was: %s'),

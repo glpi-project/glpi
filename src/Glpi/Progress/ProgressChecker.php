@@ -95,6 +95,17 @@ final class ProgressChecker
         session_write_close();
     }
 
+    public function abortProgress(string $key): void
+    {
+        Session::start();
+
+        $progress = $this->getCurrentProgress($key);
+        $progress->fail();
+        $this->save($progress);
+
+        session_write_close();
+    }
+
     public function save(SessionProgress $progress): void
     {
         // Mandatory here:

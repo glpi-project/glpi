@@ -29,7 +29,7 @@
  *
  * ---------------------------------------------------------------------
  */
-import { ProgressBar } from './modules/ProgressBar.js';
+import { ProgressBar } from './ProgressBar.js';
 
 export async function start_database_install(dom_element, progress_key)
 {
@@ -56,15 +56,11 @@ export async function start_database_install(dom_element, progress_key)
         container: messages_container,
         success_callback: () => {
             success_container.querySelector('button').removeAttribute('disabled');
-            back_button_container.querySelector('input').removeAttribute('disabled');
+            back_button_container.querySelector('input').style.display = 'none';
         },
         error_callback: (msg) => {
             back_button_container.querySelector('input').removeAttribute('disabled');
-            if (msg.match('timed out')) {
-                message(message_list_element, msg);
-            } else {
-                message(message_list_element, __('An unexpected error has occurred.'));
-            }
+            message(message_list_element, msg);
         },
     });
 

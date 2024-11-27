@@ -2189,7 +2189,7 @@ class Toolbox
             );
         }
 
-        $progressCallback($number_of_queries, $number_of_queries);
+        $progressCallback($number_of_queries, $number_of_queries, __('Done!'));
     }
 
 

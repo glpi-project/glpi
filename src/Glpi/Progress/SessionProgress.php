@@ -40,6 +40,7 @@ final class SessionProgress implements \JsonSerializable
     public readonly \DateTimeImmutable $started_at;
     private ?\DateTimeImmutable $finished_at = null;
     private \DateTimeImmutable $updated_at;
+    private bool $failed = false;
     private int $current = 0;
     private int $max;
     private string $data = '';
@@ -58,9 +59,10 @@ final class SessionProgress implements \JsonSerializable
         $this->update();
     }
 
-    public function getCurrent(): int
+    public function fail(): void
     {
-        return $this->current;
+        $this->finish();
+        $this->failed = true;
     }
 
     public function increment(int $increment = 1): void
@@ -78,11 +80,6 @@ final class SessionProgress implements \JsonSerializable
         $this->current = $current;
     }
 
-    public function getMax(): int
-    {
-        return $this->max;
-    }
-
     public function setMax(int $max): void
     {
         if ($this->max !== $max) {
@@ -92,18 +89,13 @@ final class SessionProgress implements \JsonSerializable
         $this->max = $max;
     }
 
-    public function getData(): string
-    {
-        return $this->data;
-    }
-
-    public function appendData(string $data): void
+    public function setData(string $data): void
     {
         if ($data !== '') {
             $this->update();
         }
 
-        $this->data .= "\n" . $data;
+        $this->data = $data;
     }
 
     public function jsonSerialize(): array
@@ -116,6 +108,7 @@ final class SessionProgress implements \JsonSerializable
             'finished_at' => $this->finished_at?->format('c'),
             'updated_at' => $this->updated_at->format('c'),
             'data' => $this->data,
+            'failed' => $this->failed,
         ];
     }
 
