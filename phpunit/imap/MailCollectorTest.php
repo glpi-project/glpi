@@ -599,8 +599,7 @@ class MailCollectorTest extends DbTestCase
     private function doConnect()
     {
         if (null === $this->collector) {
-            $this->newTestedInstance();
-            $collector = $this->testedInstance;
+            $collector = new \MailCollector();
             $this->collector = $collector;
         } else {
             $collector = $this->collector;
