@@ -52,7 +52,7 @@ class InstallController extends AbstractController
     ) {
     }
 
-    #[Route("/install/database_setup/start_db_inserts", methods: 'POST')]
+    #[Route("/install/init_database", methods: 'POST')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {

@@ -72,9 +72,5 @@ export async function start_database_install(dom_element, progress_key)
         progress.start();
     }, 1500);
 
-    try {
-        await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
-    } catch (err) {
-    } finally {
-    }
+    await fetch("/install/init_database", {method: 'POST'});
 }

@@ -171,7 +171,7 @@ export class ProgressBar
                 }
 
                 if (res.status >= 400) {
-                    throw new Error('Error response from server with code "' + res.status.toString() + '".');
+                    throw new Error(`Error response from server with code "${res.status.toString()}".`);
                 }
 
                 const json =  await res.json();
