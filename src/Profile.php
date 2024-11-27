@@ -2926,6 +2926,20 @@ class Profile extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '177',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TaskTemplate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TaskTemplate::class,
+            'rightname'          => TaskTemplate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TaskTemplate::$rightname]
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => 'admin',
             'name'               => __('Administration')
         ];
