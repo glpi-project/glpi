@@ -345,6 +345,18 @@ class RuleTicket extends Rule
                         ) {
                                $output['_groups_id_requester'] = $output['users_default_groups'];
                         }
+                        if (
+                            ( $action->fields['field'] == '_groups_id_observer')
+                            && isset($output['users_default_groups'])
+                        ) {
+                            $output['_groups_id_observer'] = $output['users_default_groups'];
+                        }
+                        if (
+                            ( $action->fields['field'] == '_groups_id_assign')
+                            && isset($output['users_default_groups'])
+                        ) {
+                            $output['_groups_id_assign'] = $output['users_default_groups'];
+                        }
                         break;
 
                     case 'fromitem':
@@ -846,7 +858,7 @@ class RuleTicket extends Rule
         $actions['_groups_id_assign']['name']                 = __('Technician group');
         $actions['_groups_id_assign']['type']                 = 'dropdown';
         $actions['_groups_id_assign']['condition']            = ['is_assign' => 1];
-        $actions['_groups_id_assign']['force_actions']        = ['assign', 'append'];
+        $actions['_groups_id_assign']['force_actions']        = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_assign']['permitseveral']        = ['append'];
         $actions['_groups_id_assign']['appendto']             = '_additional_groups_assigns';
 
@@ -871,7 +883,7 @@ class RuleTicket extends Rule
         $actions['_groups_id_observer']['name']               = _n('Watcher group', 'Watcher groups', 1);
         $actions['_groups_id_observer']['type']               = 'dropdown';
         $actions['_groups_id_observer']['condition']          = ['is_watcher' => 1];
-        $actions['_groups_id_observer']['force_actions']      = ['assign', 'append'];
+        $actions['_groups_id_observer']['force_actions']      = ['assign', 'append', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_observer']['permitseveral']      = ['append'];
         $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
 
