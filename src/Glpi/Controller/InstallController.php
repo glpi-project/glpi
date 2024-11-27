@@ -32,23 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Install;
+namespace Glpi\Controller;
 
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Toolbox;
-use Glpi\Controller\AbstractController;
-use Glpi\Progress\ProgressChecker;
+use Glpi\Progress\ProgressManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Toolbox;
 
 class InstallController extends AbstractController
 {
-    public const STORED_PROGRESS_KEY = 'install_db_inserts';
+    public const PROGRESS_KEY_INIT_DATABASE = 'init_database';
 
     public function __construct(
-        private readonly ProgressChecker $progressChecker,
+        private readonly ProgressManager $progressManager,
     ) {
     }
 
@@ -56,36 +55,31 @@ class InstallController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {
-        $progressChecker = $this->progressChecker;
+        $progressManager = $this->progressManager;
 
-        $this->progressChecker->startProgress(self::STORED_PROGRESS_KEY);
+        $this->progressManager->startProgress(self::PROGRESS_KEY_INIT_DATABASE);
 
-        return new StreamedResponse(function () use ($progressChecker) {
+        return new StreamedResponse(function () use ($progressManager) {
             try {
-                $progress_callback = static function (?int $current = null, ?int $max = null, ?string $data = null) use ($progressChecker) {
-                    $progress = $progressChecker->getCurrentProgress(self::STORED_PROGRESS_KEY);
-                    $current === null ? $progress->increment() : $progress->setCurrent($current);
+                $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progressManager) {
+                    $progress = $progressManager->getCurrentProgress(self::PROGRESS_KEY_INIT_DATABASE);
+                    $progress->setCurrent($current);
                     if ($max !== null) {
                         $progress->setMax($max);
                     }
-                    if ($data) {
+                    if ($data !== null) {
                         $progress->setData($data);
                     }
-                    $progressChecker->save($progress);
+                    $progressManager->save($progress);
                 };
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
             } catch (\Throwable $e) {
-                $progressChecker->abortProgress(self::STORED_PROGRESS_KEY);
-                echo "<p>"
-                    . sprintf(
-                        __('An error occurred during the database initialization. The error was: %s'),
-                        '<br />' . $e->getMessage()
-                    )
-                    . "</p>";
-                @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
-            } finally {
-                $this->progressChecker->endProgress(self::STORED_PROGRESS_KEY);
+                $progressManager->abortProgress(self::PROGRESS_KEY_INIT_DATABASE);
+                // Try to remove the config file, to be able to restart the process.
+                @unlink(GLPI_CONFIG_DIR . '/config_db.php');
             }
+
+            $this->progressManager->endProgress(self::PROGRESS_KEY_INIT_DATABASE);
         });
     }
 }

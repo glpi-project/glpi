@@ -36,7 +36,7 @@ namespace Glpi\Progress;
 
 use Session;
 
-final class ProgressChecker
+final class ProgressManager
 {
     public function startProgress(string $key, int $max = 0): void
     {
@@ -63,7 +63,11 @@ final class ProgressChecker
             ));
         }
 
+        Session::start();
+
         $progress = $_SESSION['progress'][$key];
+
+        session_write_close();
 
         if (!$progress instanceof SessionProgress) {
             throw new \RuntimeException(\sprintf(
@@ -86,24 +90,16 @@ final class ProgressChecker
 
     public function endProgress(string $key): void
     {
-        Session::start();
-
         $progress = $this->getCurrentProgress($key);
         $progress->finish();
         $this->save($progress);
-
-        session_write_close();
     }
 
     public function abortProgress(string $key): void
     {
-        Session::start();
-
         $progress = $this->getCurrentProgress($key);
         $progress->fail();
         $this->save($progress);
-
-        session_write_close();
     }
 
     public function save(SessionProgress $progress): void

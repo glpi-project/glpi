@@ -66,6 +66,17 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                $GLPI_CACHE
         ;
 
+        if (isset($_SESSION['is_installing'])) {
+            // Force `root_doc` value
+            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+            $CFG_GLPI['root_doc'] = $request->getBasePath();
+
+            $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+
+            Session::loadLanguage(with_plugins: false);
+            return;
+        }
+
         Config::detectRootDoc();
 
         $skip_db_checks = false;
@@ -93,12 +104,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         //init cache
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-
-        $is_installing = isset($_SESSION['is_installing']);
-        if ($is_installing) {
-            Session::loadLanguage();
-            return;
-        }
 
         // Check if the DB is configured properly
         if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

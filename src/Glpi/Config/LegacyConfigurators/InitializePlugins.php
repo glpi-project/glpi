@@ -49,9 +49,9 @@ final readonly class InitializePlugins implements LegacyConfigProviderInterface
     {
         /*
          * On startup, register all plugins configured for use,
-         * except during the database update process.
+         * except during the database install/update process.
          */
-        if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (isset($_SESSION['is_installing']) || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             return;
         }
 

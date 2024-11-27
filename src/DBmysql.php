@@ -1016,15 +1016,7 @@ class DBmysql
         $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
             $this->doQuery($query);
-            if (!isCommandLine()) {
-              // Flush will prevent proxy to timeout as it will receive data.
-              // Flush requires a content to be sent, so we sent spaces as multiple spaces
-              // will be shown as a single one on browser.
-                echo ' ';
-                Html::glpi_flush();
-            }
         }
 
         return true;
@@ -1042,7 +1034,6 @@ class DBmysql
             return [];
         }
         $sql_query = @fread($script, @filesize($path)) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 

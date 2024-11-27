@@ -38,8 +38,6 @@ export class ProgressBar
     #messages_container;
     #main_container;
     #parameters;
-    #abort_controller;
-    #request_running = false;
     #initialized = false;
 
     /**
@@ -94,8 +92,6 @@ export class ProgressBar
 
         this.#initialized = true;
         this.#parameters.container.appendChild(this.#main_container);
-
-        this.#abort_controller = new AbortController();
     }
 
     start() {
@@ -104,20 +100,6 @@ export class ProgressBar
         this.#set_bar_percentage(0);
         this.#check_progress();
     }
-
-    error() {
-        if (!this.#request_running) {
-            return;
-        }
-
-        try {
-            this.#abort_controller.abort();
-        } finally {
-            this.#abort_controller = new AbortController();
-        }
-        this.#stop_progress_with_warning_state();
-    }
-
 
     /**
      * @param {number} value
@@ -145,25 +127,20 @@ export class ProgressBar
     }
 
     #stop_progress_with_warning_state() {
-        this.#request_running = false;
-
-        this.#set_bar_percentage(null);
+        this.#progress_bar.innerHTML = __('failed');
         this.#progress_bar.classList.remove('bg-info');
-        this.#progress_bar.classList.add('bg-warning');
+        this.#progress_bar.classList.add('bg-danger');
     }
 
     #check_progress() {
-        this.#request_running = true;
-
         const _this = this;
 
         const start_timeout = 250;
 
         setTimeout(async () => {
             try {
-                const res = await fetch(`/progress/check/${_this.#parameters.key}`, {
+                const res = await fetch(`${CFG_GLPI.root_doc}/progress/check/${_this.#parameters.key}`, {
                     method: 'POST',
-                    signal: _this.#abort_controller.signal,
                 });
 
                 if (res.status === 404) {
@@ -189,7 +166,7 @@ export class ProgressBar
                 const now = new Date().getTime();
                 const updated_at = new Date(json['updated_at']).getTime();
                 const diff = now - updated_at;
-                const max_diff = 1000 * 20; // 20 seconds
+                const max_diff = 1000 * 20; // 20 seconds timeout
                 if (diff > max_diff) {
                     _this.#parameters?.error_callback(__('Main process seems to have timed out. It may be still running in the background though.'));
                     _this.#stop_progress_with_warning_state();
@@ -201,16 +178,8 @@ export class ProgressBar
                     return;
                 }
 
-                if (
-                    (
-                        !_this.#parameters.progress_callback
-                        || (_this.#parameters.progress_callback && _this.#parameters.progress_callback(json) !== false)
-                    )
-                    && !json['finished_at']
-                ) {
-                    // Recursive call, including the timeout
-                    _this.#check_progress();
-                }
+                // Recursive call, including the timeout
+                _this.#check_progress();
             } catch (err) {
                 _this.#parameters?.error_callback(__('An unexpected error has occurred.'));
                 _this.#stop_progress_with_warning_state();

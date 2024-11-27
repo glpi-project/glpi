@@ -91,7 +91,7 @@ final class SessionProgress implements \JsonSerializable
 
     public function setData(string $data): void
     {
-        if ($data !== '') {
+        if ($this->data !== $data) {
             $this->update();
         }
 

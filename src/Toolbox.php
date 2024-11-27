@@ -2102,26 +2102,34 @@ class Toolbox
         $tables = require_once(__DIR__ . '/../install/empty_data.php');
         Session::loadLanguage('', false); // Load back session language
 
-        $number_of_queries = \count($structure_queries);
+        $done_steps = 0;
+
+        $number_of_steps = \count($structure_queries);
         foreach ($tables as $data) {
-            $number_of_queries += \count($data);
-        }
-        $number_of_queries += 8; // For other calls
-        if (defined('GLPI_SYSTEM_CRON')) {
-            $number_of_queries++;
+            $number_of_steps += \count($data);
         }
 
-        $progressCallback(null, $number_of_queries, __('Creating database structure…'));
+        // For post install steps
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $default_lang_weight = 1;
+        $cron_config_weight = 1;
+        $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_steps += $cron_config_weight;
+        }
+
+        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
-            $progressCallback();
-            if (!$query) {
-                continue;
-            }
             $DB->doQuery($query);
+
+            $done_steps++;
+            $progressCallback($done_steps);
         }
 
-        $progressCallback(null, null, __('Adding empty data…'));
+        $progressCallback($done_steps, null, __('Adding empty data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2136,7 +2144,6 @@ class Toolbox
 
             $types = str_repeat('s', count($data[0]));
             foreach ($data as $row) {
-                $progressCallback();
                 $res = $stmt->bind_param($types, ...array_values($row));
                 if (false === $res) {
                     $msg = "Error binding params in table $table\n";
@@ -2150,21 +2157,27 @@ class Toolbox
                     $msg .= print_r($row, true);
                     throw new \RuntimeException($msg);
                 }
+
+                $done_steps++;
+                $progressCallback($done_steps);
             }
         }
 
-        $progressCallback(null, null, __('Creating default forms…'));
+        $progressCallback($done_steps, null, __('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
+        $done_steps += $init_form_weight;
 
-        $progressCallback(null, null, __('Initalizing rules…'));
+        $progressCallback($done_steps, null, __('Initalizing rules…'));
         RulesManager::initializeRules();
+        $done_steps += $init_rules_weight;
 
-        $progressCallback(null, null, __('Generating keys…'));
+        $progressCallback($done_steps, null, __('Generating keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
+        $done_steps += $generate_keys_weight;
 
-        $progressCallback(null, null, __('Updating default language…'));
+        $progressCallback($done_steps, null, __('Updating default language…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2173,9 +2186,10 @@ class Toolbox
                 'dbversion'     => GLPI_SCHEMA_VERSION,
             ]
         );
+        $done_steps += $default_lang_weight;
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback(null, null, __('Configuring cron tasks…'));
+            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
@@ -2187,9 +2201,10 @@ class Toolbox
                     'allowmode' => ['&', 2]
                 ]
             );
+            $done_steps += $cron_config_weight;
         }
 
-        $progressCallback($number_of_queries, $number_of_queries, __('Done!'));
+        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
 

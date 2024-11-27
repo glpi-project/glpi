@@ -226,7 +226,6 @@ final class Firewall
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
-            '/progress/check/' => self::STRATEGY_NO_CHECK,
         ];
 
         foreach ($paths as $checkPath => $strategy) {
