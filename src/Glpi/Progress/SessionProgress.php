@@ -114,7 +114,7 @@ final class SessionProgress implements \JsonSerializable
             'current' => $this->current,
             'started_at' => $this->started_at->format('c'),
             'finished_at' => $this->finished_at?->format('c'),
-            'updated_at' => $this->updated_at?->format('c'),
+            'updated_at' => $this->updated_at->format('c'),
             'data' => $this->data,
         ];
     }

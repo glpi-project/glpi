@@ -345,9 +345,10 @@ function step4($databasename, $newdatabasename)
         $prev_form($host, $user, $password);
         echo '</div>';
 
-        echo \sprintf(<<<HTML
+        echo \sprintf(
+            <<<HTML
             <script defer type="module">
-                import { start_database_install } from '/js/glpi_install.js';
+                import { start_database_install } from '/js/modules/GlpiInstall.js';
                 start_database_install(document.getElementById("glpi_install_messages_container"), "%s");
             </script>
             HTML,

@@ -2064,7 +2064,7 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?\Closure $progressCallback
+     * @param ?Closure $progressCallback
      *
      * @return void
      *
@@ -2073,7 +2073,7 @@ class Toolbox
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?\Closure $progressCallback = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2111,7 +2111,7 @@ class Toolbox
             $number_of_queries++;
         }
 
-        $progressCallback(max: $number_of_queries, data: __('Creating database structure…'));
+        $progressCallback(null, $number_of_queries, __('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
             $progressCallback();
@@ -2121,7 +2121,7 @@ class Toolbox
             $DB->doQuery($query);
         }
 
-        $progressCallback(data: __('Adding empty data…'));
+        $progressCallback(null, null, __('Adding empty data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2153,18 +2153,18 @@ class Toolbox
             }
         }
 
-        $progressCallback(data: __('Creating default forms…'));
+        $progressCallback(null, null, __('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
 
-        $progressCallback(data: __('Initalizing rules…'));
+        $progressCallback(null, null, __('Initalizing rules…'));
         RulesManager::initializeRules();
 
-        $progressCallback(data: __('Generating keys…'));
+        $progressCallback(null, null, __('Generating keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
 
-        $progressCallback(data: __('Updating default language…'));
+        $progressCallback(null, null, __('Updating default language…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2175,7 +2175,7 @@ class Toolbox
         );
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback(data: __('Configuring cron tasks…'));
+            $progressCallback(null, null, __('Configuring cron tasks…'));
            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',

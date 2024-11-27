@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+import _ from 'lodash';
+
 export class ProgressBar
 {
     #progress_bar;
@@ -64,13 +66,13 @@ export class ProgressBar
         }
 
         const main_container = document.createElement('div');
-            main_container.innerHTML = `
-            <div style="padding-left: 20px; padding-right: 20px;">
-                <div class="progress" style="height: 15px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                </div>
-                <div class="messages_container"></div>
+        main_container.innerHTML = `
+        <div style="padding-left: 20px; padding-right: 20px;">
+            <div class="progress" style="height: 15px;">
+                <div class="progress-bar bg-info" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
             </div>
+            <div class="messages_container"></div>
+        </div>
         `;
 
         this.#main_container = main_container;
@@ -209,16 +211,4 @@ export class ProgressBar
             }
         }, start_timeout);
     }
-}
-
-/**
- * @param     parameters
- * @param     {HTMLElement} parameters.container Mandatory. The progress bar's unique key.
- * @param     {string} parameters.key Mandatory. The progress bar's unique key.
- * @param     {null|function} parameters.progress_callback The function that will be called for each progress response. If the return value is "false", this stops the progress checks.
- * @param     {null|function} parameters.error_callback The function that will be called for each error, either exceptions or non-200 HTTP responses. Stops the progress checks by default, unless you return a true-ish value from the callback, or unless the error is non-recoverable and implies stopping
- * @return    {{start: function, error: function}}
- */
-function progressBar(parameters)
-{
 }
