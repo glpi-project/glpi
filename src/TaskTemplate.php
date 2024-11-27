@@ -47,7 +47,7 @@ class TaskTemplate extends AbstractITILChildTemplate
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'taskcategory';
+    public static $rightname          = 'tasktemplate';
 
 
 

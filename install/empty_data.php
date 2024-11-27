@@ -5659,6 +5659,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'taskcategory',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'statistic',
                 'rights' => self::RIGHT_NONE,
@@ -5941,6 +5945,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'taskcategory',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'tasktemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -6243,6 +6251,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -6537,6 +6549,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'taskcategory',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'tasktemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
@@ -6838,6 +6854,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -7125,6 +7145,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -7405,6 +7429,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'taskcategory',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'tasktemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -7761,6 +7789,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'taskcategory',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'tasktemplate',
                 'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,

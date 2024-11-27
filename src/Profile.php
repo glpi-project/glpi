@@ -1141,6 +1141,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(TaskCategory::class, 'central'),
                             $fn_get_rights(State::class, 'central'),
                             $fn_get_rights(ITILFollowupTemplate::class, 'central'),
+                            $fn_get_rights(TaskTemplate::class, 'central'),
                             $fn_get_rights(SolutionTemplate::class, 'central'),
                             $fn_get_rights(ITILValidationTemplate::class, 'central'),
                             $fn_get_rights(Calendar::class, 'central'),
