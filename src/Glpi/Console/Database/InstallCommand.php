@@ -310,17 +310,13 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         $progress_bar = new ProgressBar($output);
         $progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
-        $progress_bar_started = false;
+        $progress_bar->setMessage(''); // Empty message on iteration start
+        $progress_bar->start();
 
         try {
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
-            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar, &$progress_bar_started) {
-                if (!$progress_bar_started) {
-                    $progress_bar->setMessage(''); // Empty message on iteration start
-                    $progress_bar->start();
-                    $progress_bar_started = true;
-                }
+            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar) {
                 if ($max !== null) {
                     $progress_bar->setMaxSteps($max);
                 }
