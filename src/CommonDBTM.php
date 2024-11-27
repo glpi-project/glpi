@@ -1374,7 +1374,6 @@ class CommonDBTM extends CommonGLPI
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
                     $this->post_addItem();
-                    Webhook::raise('new', $this);
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -1422,6 +1421,7 @@ class CommonDBTM extends CommonGLPI
                         //Check if we have to automatically fill dates
                         Infocom::manageDateOnStatusChange($this);
                     }
+                    Webhook::raise('new', $this);
                     Plugin::doHook(Hooks::ITEM_ADD, $this);
 
                     // As add have succeeded, clean the old input value
