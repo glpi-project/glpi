@@ -326,6 +326,7 @@ class Provider
                         'value'      => CommonITILValidation::WAITING,
                     ],
                     [
+                        'link'       => 'AND NOT',
                         'field'      => 12,
                         'searchtype' => 'equals',
                         'value'      => Ticket::CLOSED,
