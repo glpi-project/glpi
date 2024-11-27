@@ -431,8 +431,6 @@ class Html
      * @param string $http_response_code Forces the HTTP response code to the specified value
      *
      * @return never
-     *
-     * @TODO: check if $http_response_code is still used.
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {

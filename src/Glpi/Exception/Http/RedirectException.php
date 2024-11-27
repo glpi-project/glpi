@@ -46,13 +46,16 @@ class RedirectException extends BaseException implements HttpExceptionInterface
 
     public readonly string $url;
 
-    public function __construct(string $url, int $http_code = 302, string $message = '')
+    public function __construct(string $url, int $http_code = 302)
     {
         $this->url = $url;
 
-        // Will automatically trigger an exception if the HTTP code isn't a Redirect one.
+        /**
+         * Will automatically trigger an exception if the HTTP code isn't a Redirect one.
+         * @see RedirectResponse::isRedirect
+         */
         new RedirectResponse('', $http_code);
 
-        parent::__construct($http_code, $message);
+        parent::__construct($http_code);
     }
 }
