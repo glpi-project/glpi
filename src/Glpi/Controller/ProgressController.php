@@ -35,16 +35,16 @@
 namespace Glpi\Controller;
 
 use Glpi\Http\Firewall;
+use Glpi\Progress\ProgressStorage;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Glpi\Progress\ProgressManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ProgressController extends AbstractController
 {
     public function __construct(
-        private readonly ProgressManager $progressManager,
+        private readonly ProgressStorage $progress_storage,
     ) {
     }
 
@@ -52,10 +52,10 @@ class ProgressController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function check(string $key): Response
     {
-        if (!$this->progressManager->hasProgress($key)) {
+        if (!$this->progress_storage->hasProgress($key)) {
             return new JsonResponse([], 404);
         }
 
-        return new JsonResponse($this->progressManager->getCurrentProgress($key));
+        return new JsonResponse($this->progress_storage->getCurrentProgress($key));
     }
 }

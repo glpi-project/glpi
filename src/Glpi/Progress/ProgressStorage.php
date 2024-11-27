@@ -36,7 +36,7 @@ namespace Glpi\Progress;
 
 use Session;
 
-final class ProgressManager
+final class ProgressStorage
 {
     public function startProgress(string $key, int $max = 0): void
     {

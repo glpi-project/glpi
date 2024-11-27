@@ -35,8 +35,8 @@
 namespace Glpi\Controller;
 
 use Glpi\Http\Firewall;
+use Glpi\Progress\ProgressStorage;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Glpi\Progress\ProgressManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,7 +47,7 @@ class InstallController extends AbstractController
     public const PROGRESS_KEY_INIT_DATABASE = 'init_database';
 
     public function __construct(
-        private readonly ProgressManager $progressManager,
+        private readonly ProgressStorage $progress_storage,
     ) {
     }
 
@@ -55,14 +55,14 @@ class InstallController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {
-        $progressManager = $this->progressManager;
+        $progress_storage = $this->progress_storage;
 
-        $this->progressManager->startProgress(self::PROGRESS_KEY_INIT_DATABASE);
+        $this->progress_storage->startProgress(self::PROGRESS_KEY_INIT_DATABASE);
 
-        return new StreamedResponse(function () use ($progressManager) {
+        return new StreamedResponse(function () use ($progress_storage) {
             try {
-                $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progressManager) {
-                    $progress = $progressManager->getCurrentProgress(self::PROGRESS_KEY_INIT_DATABASE);
+                $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_storage) {
+                    $progress = $progress_storage->getCurrentProgress(self::PROGRESS_KEY_INIT_DATABASE);
                     $progress->setCurrent($current);
                     if ($max !== null) {
                         $progress->setMax($max);
@@ -70,16 +70,16 @@ class InstallController extends AbstractController
                     if ($data !== null) {
                         $progress->setData($data);
                     }
-                    $progressManager->save($progress);
+                    $progress_storage->save($progress);
                 };
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
             } catch (\Throwable $e) {
-                $progressManager->abortProgress(self::PROGRESS_KEY_INIT_DATABASE);
+                $progress_storage->abortProgress(self::PROGRESS_KEY_INIT_DATABASE);
                 // Try to remove the config file, to be able to restart the process.
                 @unlink(GLPI_CONFIG_DIR . '/config_db.php');
             }
 
-            $this->progressManager->endProgress(self::PROGRESS_KEY_INIT_DATABASE);
+            $this->progress_storage->endProgress(self::PROGRESS_KEY_INIT_DATABASE);
         });
     }
 }
