@@ -194,11 +194,6 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "IMAP tests"
-        if: "${{ success() || failure() }}"
-        run: |
-          .github/actions/init_initialize-imap-fixtures.sh
-          docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "PHPUnit tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -216,6 +211,11 @@ jobs:
         run: |
           .github/actions/init_initialize-ldap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-ldap.sh
+      - name: "IMAP tests"
+        if: "${{ success() || failure() }}"
+        run: |
+          .github/actions/init_initialize-imap-fixtures.sh
+          docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "WEB tests"
         if: "${{ success() || failure() }}"
         run: |
