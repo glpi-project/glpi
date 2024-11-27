@@ -36,7 +36,7 @@
 /**
  * Update from 9.4.3 to 9.4.5
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update943to945()
 {

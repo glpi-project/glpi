@@ -87,7 +87,8 @@ class Response extends \GuzzleHttp\Psr7\Response
 
         Toolbox::logDebug($message);
 
-        die($output);
+        echo($output);
+        exit(1);
     }
 
     public function sendHeaders(): Response

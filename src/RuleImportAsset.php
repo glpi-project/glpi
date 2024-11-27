@@ -446,7 +446,7 @@ class RuleImportAsset extends Rule
         $this->link_criteria_port = false;
 
         if (!$this->preComputeCriteria($input)) {
-            // logged in place, just exit
+            // logged in place, just ignore
             return false;
         }
 

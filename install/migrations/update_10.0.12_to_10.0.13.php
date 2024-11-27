@@ -36,7 +36,7 @@
 /**
  * Update from 10.0.12 to 10.0.13
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update10012to10013()
 {

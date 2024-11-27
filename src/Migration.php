@@ -680,12 +680,7 @@ class Migration
                 $newtable,
                 ($DB->tableExists($newtable) ? __('nok') : __('ok'))
             );
-            if (isCommandLine()) {
-                throw new \RuntimeException($message);
-            } else {
-                echo htmlescape($message) . "\n";
-                die(1);
-            }
+            throw new \RuntimeException($message);
         }
     }
 

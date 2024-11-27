@@ -36,7 +36,7 @@
 /**
  * Update from 9.1.1 to 9.1.3
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update911to913()
 {

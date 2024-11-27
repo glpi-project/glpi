@@ -995,7 +995,7 @@ class Session
     }
 
     /**
-     * Check the `session.cookie_secure` configuration and exit with an error message if the
+     * Check the `session.cookie_secure` configuration and throw an exception if the
      * current request context is not allowed to use session cookies.
      */
     public static function checkCookieSecureConfig(): void

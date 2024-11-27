@@ -442,7 +442,7 @@ class DBmysql
     }
 
     /**
-     * Execute a MySQL query and die
+     * Execute a MySQL query and throw an exception
      * (optionally with a message) if it fails
      *
      * @since 0.84
@@ -1593,7 +1593,7 @@ class DBmysql
     }
 
     /**
-     * Truncate table in the database or die
+     * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
      * @since 10.0.0

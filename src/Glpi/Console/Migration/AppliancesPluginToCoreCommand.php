@@ -145,7 +145,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             'skip-errors',
             's',
             InputOption::VALUE_NONE,
-            __('Do not exit on import errors')
+            __('Do not stop on import errors')
         );
     }
 
