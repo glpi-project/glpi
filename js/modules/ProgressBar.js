@@ -125,7 +125,7 @@ export class ProgressBar
 
         this.#set_bar_percentage(percentage);
 
-        if (text && text.length) {
+        if (text?.length) {
             this.#messages_container.innerHTML = _.escape(text.trim()).replace(/\n/gi, '<br>');
         }
     }
@@ -184,7 +184,7 @@ export class ProgressBar
                     const diff = now - updated_at;
                     const max_diff = 1000 * 45;// 45 seconds
                     if (diff > max_diff) {
-                        _this.#parameters?.error_callback(__('Main process timed out'));
+                        _this.#parameters?.error_callback(__('Main process seems to have timed out. It may be still running in the background though.'));
                         _this.#stop_progress_with_warning_state();
                         return;
                     }

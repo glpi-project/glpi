@@ -72,17 +72,8 @@ export async function start_database_install(dom_element, progress_key)
     }, 1500);
 
     try {
-        const res = await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
-        const text = await res.text();
-        if (text && text.trim().length) {
-            message(message_list_element, `Error:\n${text}`);
-            progress.error();
-        } else {
-            success_container.querySelector('button').removeAttribute('disabled');
-        }
+        await fetch("/install/database_setup/start_db_inserts", {method: 'POST'});
     } catch (err) {
-        message(message_list_element, `Database install error:\n${err.message||err.toString()}`);
-        progress.error();
     } finally {
         back_button_container.querySelector('input').removeAttribute('disabled');
     }
