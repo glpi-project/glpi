@@ -1116,9 +1116,6 @@ PLAINTEXT,
 
     public static function mailServerProtocolsHookProvider()
     {
-        require_once FIXTURE_DIR . '/plugintesterfakeprotocol.php';
-        require_once FIXTURE_DIR . '/plugintesterfakestorage.php';
-
         return [
             // Check that invalid hook result does not alter core protocols specs
             [
@@ -1189,14 +1186,14 @@ PLAINTEXT,
                 'hook_result'        => [
                     'custom-protocol' => [
                         'label'    => 'Custom email protocol',
-                        'protocol' => 'PluginTesterFakeProtocol',
-                        'storage'  => 'PluginTesterFakeStorage',
+                        'protocol' => \PluginTesterFakeProtocol::class,
+                        'storage'  => \PluginTesterFakeStorage::class,
                     ],
                 ],
                 'type'               => 'custom-protocol',
                 'expected_warning'   => null,
-                'expected_protocol'  => 'PluginTesterFakeProtocol',
-                'expected_storage'   => 'PluginTesterFakeStorage',
+                'expected_protocol'  => \PluginTesterFakeProtocol::class,
+                'expected_storage'   => \PluginTesterFakeStorage::class,
             ],
             // Check valid case using callback
             [
@@ -1213,8 +1210,8 @@ PLAINTEXT,
                 ],
                 'type'               => 'custom-protocol',
                 'expected_warning'   => null,
-                'expected_protocol'  => 'PluginTesterFakeProtocol',
-                'expected_storage'   => 'PluginTesterFakeStorage',
+                'expected_protocol'  => \PluginTesterFakeProtocol::class,
+                'expected_storage'   => \PluginTesterFakeStorage::class,
             ],
         ];
     }
@@ -1231,8 +1228,7 @@ PLAINTEXT,
     ) {
         global $PLUGIN_HOOKS;
 
-        require_once FIXTURE_DIR . '/plugintesterfakeprotocol.php';
-        require_once FIXTURE_DIR . '/plugintesterfakestorage.php';
+        (new \Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
 
         $hooks_backup = $PLUGIN_HOOKS;
 
@@ -1247,12 +1243,12 @@ PLAINTEXT,
         };
 
         $getProtocol();
-        /*if ($expected_warning !== null) {
+        if ($expected_warning !== null) {
             $this->hasPhpLogRecordThatContains(
                 $expected_warning,
                 LogLevel::WARNING
             );
-        }*/
+        }
 
         // Get storage
         $storage   = null;
@@ -1265,12 +1261,12 @@ PLAINTEXT,
             $storage = \Toolbox::getMailServerStorageInstance($type, $params);
         };
         $getStorage();
-        /*if ($expected_warning !== null) {
+        if ($expected_warning !== null) {
             $this->hasPhpLogRecordThatContains(
                 $expected_warning,
                 LogLevel::WARNING
             );
-        }*/
+        }
 
         $PLUGIN_HOOKS = $hooks_backup;
 
