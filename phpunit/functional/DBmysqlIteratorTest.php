@@ -1494,26 +1494,25 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
     }
 
-    /*
+
     #[DataProvider('resultProvider')]
     public function testAutoUnsanitize(array $db_data, array $result): void
     {
         //PHPUnit cannot mack native functions.
-        $this->mockGenerator->orphanize('__construct');
-        $mysqli_result = new \mock\mysqli_result();
-        $this->calling($mysqli_result)->fetch_assoc = $db_data;
-        $this->calling($mysqli_result)->data_seek   = true;
-        $this->calling($mysqli_result)->free        = true;
+        $mysqli_result = $this->createMock(\mysqli_result::class);
+        $mysqli_result->method('fetch_assoc')->willReturn($db_data);
+        $mysqli_result->method('data_seek')->willReturn(true);
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBMysql();
-        $this->calling($db)->doQuery = $mysqli_result;
-        $this->calling($db)->numrows = 1;
+        $db = $this->getMockBuilder(\DBMysql::class)
+            ->onlyMethods(['connect', 'doQuery', 'numrows'])
+            ->getMock();
+        $db->method('doQuery')->willReturn($mysqli_result);
+        $db->method('numrows')->willReturn(1);
 
         $iterator = $db->request(['FROM' => 'glpi_mocks']);
 
-        $this->array($iterator->current())->isEqualTo($result);
-    }*/
+        $this->assertEquals($result, $iterator->current());
+    }
 
     public function testRawFKeyCondition()
     {
