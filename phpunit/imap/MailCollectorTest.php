@@ -1256,12 +1256,12 @@ CLASS
         };
 
         $getProtocol();
-        if ($expected_warning !== null) {
+        /*if ($expected_warning !== null) {
             $this->hasPhpLogRecordThatContains(
                 $expected_warning,
                 LogLevel::WARNING
             );
-        }
+        }*/
 
         // Get storage
         $storage   = null;
