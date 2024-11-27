@@ -1421,8 +1421,8 @@ class CommonDBTM extends CommonGLPI
                         //Check if we have to automatically fill dates
                         Infocom::manageDateOnStatusChange($this);
                     }
-                    Webhook::raise('new', $this);
                     Plugin::doHook(Hooks::ITEM_ADD, $this);
+                    Webhook::raise('new', $this);
 
                     // As add have succeeded, clean the old input value
                     if (isset($this->input['_add'])) {
