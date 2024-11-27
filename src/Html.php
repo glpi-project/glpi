@@ -42,6 +42,7 @@ use Glpi\Console\Application;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\Http\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -430,32 +431,12 @@ class Html
      * @param string $http_response_code Forces the HTTP response code to the specified value
      *
      * @return never
+     *
+     * @TODO: check if $http_response_code is still used.
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
-
-        $toadd = '';
-
-        if (!headers_sent() && !Toolbox::isAjax()) {
-            header("Location: " . addslashes($dest), true, $http_response_code);
-            exit();
-        }
-
-        if (strpos($dest, "?") !== false) {
-            $toadd = '&tokonq=' . Toolbox::getRandomString(5);
-        } else {
-            $toadd = '?tokonq=' . Toolbox::getRandomString(5);
-        }
-
-        echo "<script type='text/javascript'>
-            NomNav = navigator.appName;
-            if (NomNav=='Konqueror') {
-               window.location=" . json_encode($dest . $toadd) . ";
-            } else {
-               window.location=" . json_encode($dest) . ";
-            }
-         </script>";
-        exit();
+        throw new RedirectException(\addslashes($dest), $http_response_code);
     }
 
     /**
