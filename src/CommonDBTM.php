@@ -1373,8 +1373,8 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    Webhook::raise('new', $this);
                     $this->post_addItem();
+                    Webhook::raise('new', $this);
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
