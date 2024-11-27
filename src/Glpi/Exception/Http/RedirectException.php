@@ -34,6 +34,7 @@
 
 namespace Glpi\Exception\Http;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException as BaseException;
 
 /**
@@ -48,6 +49,10 @@ class RedirectException extends BaseException implements HttpExceptionInterface
     public function __construct(string $url, int $http_code = 302, string $message = '')
     {
         $this->url = $url;
+
+        // Will automatically trigger an exception if the HTTP code isn't a Redirect one.
+        new RedirectResponse('', $http_code);
+
         parent::__construct($http_code, $message);
     }
 }
