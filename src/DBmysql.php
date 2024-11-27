@@ -56,7 +56,7 @@ class DBmysql
         '>'  => '&gt;',
     ];
 
-    //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
     //! Database User
     public $dbuser             = "";
