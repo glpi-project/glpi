@@ -33,10 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
@@ -557,16 +558,14 @@ class Toolbox
             if ($return_response) {
                 return new Response(403);
             }
-            echo "Security attack!!!";
-            die(1);
+            throw new AccessDeniedHttpException();
         }
 
         if (!file_exists($file)) {
             if ($return_response) {
                 return new Response(404);
             }
-            echo "Error file $file does not exist";
-            die(1);
+            throw new NotFoundHttpException();
         }
 
        // if $mime is defined, ignore mime type by extension
@@ -639,14 +638,14 @@ class Toolbox
                 return $response;
             }
             $response->send();
-            exit;
+            return;
         }
         $content = file_get_contents($file);
         if ($content === false) {
             if ($return_response) {
                 return new Response(500);
             }
-            die("Error opening file $file");
+            throw new \RuntimeException();
         }
         $response = new Response(200, $headers, $content);
         if ($return_response) {
@@ -1569,15 +1568,15 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             case "reservation":
                                 Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             default:
                                 Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");

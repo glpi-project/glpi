@@ -2484,7 +2484,7 @@ abstract class API
 TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         Html::nullFooter();
-        exit;
+        exit();
     }
 
 
@@ -3114,7 +3114,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
            // No content
             http_response_code(204);
         }
-        die;
+        exit();
     }
 
     /**

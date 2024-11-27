@@ -122,7 +122,7 @@ if (empty($crontask->find(['itemtype' => 'PendingReasonCron']))) {
     );
 
     if (!$cron_added) {
-        die("Can't add PendingReasonCron");
+        throw new \RuntimeException("Can't add PendingReasonCron");
     }
 }
 

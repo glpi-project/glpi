@@ -678,7 +678,7 @@ class DBConnection extends CommonDBTM
             echo "$en_msg\n$fr_msg\n";
         }
 
-        die(1);
+        exit(1);
     }
 
 

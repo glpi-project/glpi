@@ -108,7 +108,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 && !$skip_db_checks
             ) {
                 DBConnection::displayMySQLError();
-                die(1);
+                exit(1);
             }
 
             //Options from DB, do not touch this part.
@@ -117,7 +117,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 && !$skip_db_checks
             ) {
                 echo "Error accessing config table";
-                exit();
+                exit(1);
             }
         } elseif (!$skip_db_checks) {
             Session::loadLanguage('', false);
@@ -158,7 +158,7 @@ TWIG, $twig_params);
                 echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
                 echo "You have to either restart the install process, either restore this file.\n";
             }
-            die(1);
+            exit(1);
         }
 
         if (

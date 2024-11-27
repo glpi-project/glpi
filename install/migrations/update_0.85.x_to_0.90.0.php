@@ -36,7 +36,7 @@
 /**
  * Update from 0.85.5 to 0.90
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update085xto0900()
 {

@@ -84,10 +84,6 @@ class Update
     {
         if (Session::canWriteSessionFiles()) {
             Session::setPath();
-        } else {
-            if (isCommandLine()) {
-                die("Can't write in " . GLPI_SESSION_DIR . "\n");
-            }
         }
         Session::start();
 
@@ -203,7 +199,8 @@ class Update
         }
 
         if (version_compare($current_version, '0.85.5', 'lt')) {
-            die('Upgrade from version < 0.85.5 is not supported!');
+            echo('Upgrade from version < 0.85.5 is not supported!');
+            exit(1);
         }
 
         $DB = $this->DB;
@@ -249,10 +246,10 @@ class Update
             );
             if (isCommandLine()) {
                 echo "$message\n";
-                die(1);
+                exit(1);
             } else {
                 $this->migration->displayWarning($message, true);
-                die(1);
+                exit(1);
             }
         }
 
@@ -267,7 +264,7 @@ class Update
                     __('An error occurred during the update. The error was: %s'),
                     $e->getMessage()
                 ));
-                die(1);
+                exit(1);
             }
 
             if ($key !== array_key_last($migrations)) {

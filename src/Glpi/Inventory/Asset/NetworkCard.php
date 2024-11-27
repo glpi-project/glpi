@@ -123,7 +123,7 @@ class NetworkCard extends Device
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
                             $found_controller->macaddr = $val->macaddr;
-                            break; //found, exit loop
+                            break; //found, stop the loop
                         }
                     }
                 }
