@@ -38,7 +38,6 @@ namespace tests\units;
 use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
-use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
