@@ -62,6 +62,11 @@ function header_html($etape)
     echo "<meta charset='utf-8'>";
     echo "<title>Setup GLPI</title>";
 
+    // CSS
+    echo Html::css('lib/tabler.css');
+    echo Html::css('lib/base.css');
+    echo Html::scss("css/install", [], true);
+
    // CFG
     echo Html::getCoreVariablesForJavascript();
 
@@ -71,10 +76,6 @@ function header_html($etape)
     echo Html::script("js/common.js");
     echo Html::script("js/glpi_dialog.js");
 
-    // CSS
-    echo Html::css('lib/tabler.css');
-    echo Html::css('lib/base.css');
-    echo Html::scss("css/install", [], true);
     echo "</head>";
     echo "<body>";
     echo "<div id='principal'>";
