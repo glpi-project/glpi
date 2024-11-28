@@ -1141,6 +1141,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(TaskCategory::class, 'central'),
                             $fn_get_rights(State::class, 'central'),
                             $fn_get_rights(ITILFollowupTemplate::class, 'central'),
+                            $fn_get_rights(TaskTemplate::class, 'central'),
                             $fn_get_rights(SolutionTemplate::class, 'central'),
                             $fn_get_rights(ITILValidationTemplate::class, 'central'),
                             $fn_get_rights(Calendar::class, 'central'),
@@ -2921,6 +2922,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => DefaultFilter::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '177',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TaskTemplate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TaskTemplate::class,
+            'rightname'          => TaskTemplate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TaskTemplate::$rightname]
             ]
         ];
 
