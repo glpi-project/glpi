@@ -2063,16 +2063,24 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @param ?Closure $progressCallback
      *
      * @return void
+     *
+     * @internal
      *
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!$progressCallback) {
+            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
+            };
+        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2086,84 +2094,116 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
-            echo "Errors occurred inserting default database";
-        } else {
-           //dataset
-            Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-            $tables = require_once(__DIR__ . '/../install/empty_data.php');
-            Session::loadLanguage('', false); // Load back session language
+        $structure_queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-            foreach ($tables as $table => $data) {
-                $reference = array_replace(
-                    $data[0],
-                    array_fill_keys(
-                        array_keys($data[0]),
-                        new QueryParam()
-                    )
-                );
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
 
-                $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+        $done_steps = 0;
 
-                $types = str_repeat('s', count($data[0]));
-                foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
-                        $msg = $stmt->error;
-                        $msg .= "\nError execution statement in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    if (!isCommandLine()) {
-                         // Flush will prevent proxy to timeout as it will receive data.
-                         // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                         // will be shown as a single one on browser.
-                         echo ' ';
-                         Html::glpi_flush();
-                    }
-                }
-            }
+        $number_of_steps = \count($structure_queries);
+        foreach ($tables as $data) {
+            $number_of_steps += \count($data);
+        }
 
-            // Create default forms
-            $default_forms_manager = new DefaultDataManager();
-            $default_forms_manager->initializeData();
+        // For post install steps
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $default_lang_weight = 1;
+        $cron_config_weight = 1;
+        $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_steps += $cron_config_weight;
+        }
 
-            // Initalize rules
-            RulesManager::initializeRules();
+        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
 
-            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-            \Glpi\OAuth\Server::generateKeys();
+        foreach ($structure_queries as $query) {
+            $DB->doQuery($query);
 
-           // update default language
-            Config::setConfigurationValues(
-                'core',
-                [
-                    'language'      => $lang,
-                    'version'       => GLPI_VERSION,
-                    'dbversion'     => GLPI_SCHEMA_VERSION,
-                ]
+            $done_steps++;
+            $progressCallback($done_steps);
+        }
+
+        $progressCallback($done_steps, null, __('Adding empty data…'));
+
+        foreach ($tables as $table => $data) {
+            $reference = array_replace(
+                $data[0],
+                array_fill_keys(
+                    array_keys($data[0]),
+                    new QueryParam()
+                )
             );
 
-            if (defined('GLPI_SYSTEM_CRON')) {
-               // Downstream packages may provide a good system cron
-                $DB->update(
-                    'glpi_crontasks',
-                    [
-                        'mode'   => 2
-                    ],
-                    [
-                        'name'      => ['!=', 'watcher'],
-                        'allowmode' => ['&', 2]
-                    ]
-                );
+            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+                $res = $stmt->bind_param($types, ...array_values($row));
+                if (false === $res) {
+                    $msg = "Error binding params in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                $res = $stmt->execute();
+                if (false === $res) {
+                    $msg = $stmt->error;
+                    $msg .= "\nError execution statement in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+
+                $done_steps++;
+                $progressCallback($done_steps);
             }
         }
+
+        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $default_forms_manager = new DefaultDataManager();
+        $default_forms_manager->initializeData();
+        $done_steps += $init_form_weight;
+
+        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        RulesManager::initializeRules();
+        $done_steps += $init_rules_weight;
+
+        $progressCallback($done_steps, null, __('Generating keys…'));
+        // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+        \Glpi\OAuth\Server::generateKeys();
+        $done_steps += $generate_keys_weight;
+
+        $progressCallback($done_steps, null, __('Updating default language…'));
+        Config::setConfigurationValues(
+            'core',
+            [
+                'language'      => $lang,
+                'version'       => GLPI_VERSION,
+                'dbversion'     => GLPI_SCHEMA_VERSION,
+            ]
+        );
+        $done_steps += $default_lang_weight;
+
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
+           // Downstream packages may provide a good system cron
+            $DB->update(
+                'glpi_crontasks',
+                [
+                    'mode'   => 2
+                ],
+                [
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2]
+                ]
+            );
+            $done_steps += $cron_config_weight;
+        }
+
+        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
 

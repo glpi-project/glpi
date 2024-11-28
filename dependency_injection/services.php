@@ -58,6 +58,7 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
     $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
+    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress');
 
     /**
      * Override Symfony's logger.

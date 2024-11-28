@@ -32,26 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Controller;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Http\Firewall;
+use Glpi\Progress\ProgressStorage;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInterface
+class ProgressController extends AbstractController
 {
-    public function execute(): void
+    public function __construct(
+        private readonly ProgressStorage $progress_storage,
+    ) {
+    }
+
+    #[Route("/progress/check/{key}", methods: 'POST')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function check(string $key): Response
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
-            return;
+        if (!$this->progress_storage->hasProgress($key)) {
+            return new JsonResponse([], 404);
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapClasses();
-        DropdownDefinitionManager::getInstance()->bootstrapClasses();
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        return new JsonResponse($this->progress_storage->getCurrentProgress($key));
     }
 }

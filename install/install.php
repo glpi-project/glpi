@@ -42,11 +42,21 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 
 /**
+ * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $GLPI_CACHE;
+global $CFG_GLPI, $GLPI_CACHE;
+
+// Force `root_doc` value
+$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+$CFG_GLPI['root_doc'] = $request->getBasePath();
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+
+if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
+    $_SESSION["glpilanguage"] = $_POST["language"];
+    Session::loadLanguage(with_plugins: false);
+}
 
 Session::checkCookieSecureConfig();
 
@@ -230,6 +240,10 @@ function step3($host, $user, $password, $update)
 //Step 4 Create and fill database.
 function step4($databasename, $newdatabasename)
 {
+    /**
+     * @var array $CFG_GLPI
+     */
+    global $CFG_GLPI;
 
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -237,29 +251,30 @@ function step4($databasename, $newdatabasename)
 
    //display the form to return to the previous step.
     echo "<h3>" . __s('Initialization of the database') . "</h3>";
+    echo "<br />";
 
-    $prev_form = function ($host, $user, $password) {
-        echo "<br><form action='install.php' method='post'>";
+    $prev_form = function ($host, $user, $password, bool $disabled = false) {
+        echo "<form action='install.php' method='post' class='d-inline'>";
         echo "<input type='hidden' name='db_host' value='" . htmlescape($host) . "'>";
         echo "<input type='hidden' name='db_user' value='" . htmlescape($user) . "'>";
         echo " <input type='hidden' name='db_pass' value='" . htmlescape(rawurlencode($password)) . "'>";
         echo "<input type='hidden' name='update' value='no'>";
         echo "<input type='hidden' name='install' value='Etape_2'>";
-        echo "<p class='submit'><input type='submit' name='submit' class='submit' value='" .
-            __s('Back') . "'></p>";
+        echo "<button type='submit' name='submit' class='btn btn-warning' " . ($disabled ? 'disabled="disabled"' : '') . ">";
+        echo "<i class='fas fa-chevron-left me-1 fa-2x alert-icon'></i>";
+        echo __s("Back");
+        echo "</button>";
         Html::closeForm();
     };
 
    //Display the form to go to the next page
-    $next_form = function () {
-        (new CacheManager())->getInstallerCacheInstance();
-
-        echo "<br><form action='install.php' method='post'>";
+    $next_form = function (bool $disabled = false) {
+        echo "<form action='install.php' method='post' class='d-inline'>";
         echo "<input type='hidden' name='install' value='Etape_4'>";
-        echo "<button type='submit' name='submit' class='btn btn-primary'>
-         " . __s('Continue') . "
-         <i class='fas fa-chevron-right ms-1'></i>
-      </button>";
+        echo "<button type='submit' name='submit' class='btn btn-primary' " . ($disabled ? 'disabled="disabled"' : '') . ">";
+        echo __s('Continue');
+        echo "<i class='fas fa-chevron-right ms-1'></i>";
+        echo "</button>";
         Html::closeForm();
     };
 
@@ -300,7 +315,7 @@ function step4($databasename, $newdatabasename)
 
         if (
             !$link->select_db($databasename)
-            && !$link->query("CREATE DATABASE IF NOT EXISTS `" . $databasename . "`")
+            && !$link->query(\sprintf("CREATE DATABASE IF NOT EXISTS `%s`;", $databasename))
         ) {
             echo __s('Error in creating database!');
             echo "<br>" . sprintf(__s('The server answered: %s'), htmlescape($link->error));
@@ -332,22 +347,28 @@ function step4($databasename, $newdatabasename)
 
     if ($success) {
         echo "<p>" . __s('Initializing database tables and default data...') . "</p>";
-        try {
-            Toolbox::createSchema($_SESSION["glpilanguage"]);
-        } catch (\Throwable $e) {
-            echo "<p>"
-                . sprintf(
-                    __s('An error occurred during the database initialization. The error was: %s'),
-                    '<br />' . htmlescape($e->getMessage())
-                )
-                . "</p>";
-            @unlink(GLPI_CONFIG_DIR . '/config_db.php'); // try to remove the config file, to be able to restart the process
-            $prev_form($host, $user, $password);
-            return;
-        }
-        echo "<p>" . __s('OK - database was initialized') . "</p>";
 
-        $next_form();
+        echo '<div id="glpi_install_messages_container"></div>';
+
+        echo '<div class="text-center">';
+        echo '<div id="glpi_install_back" class="d-none">';
+        $prev_form($host, $user, $password, disabled: true);
+        echo '</div>';
+        echo '<div id="glpi_install_success" class="d-none">';
+        $next_form(disabled: true);
+        echo '</div>';
+        echo '</div>';
+
+        echo \sprintf(
+            <<<HTML
+                <script defer type="module">
+                    import { init_database } from '%s/js/modules/GlpiInstall.js';
+                    init_database("%s");
+                </script>
+            HTML,
+            $CFG_GLPI['root_doc'],
+            \Glpi\Controller\InstallController::PROGRESS_KEY_INIT_DATABASE,
+        );
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);
@@ -427,6 +448,7 @@ function step8()
 
 function update1($dbname)
 {
+    $_SESSION['is_installing'] = false;
 
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -481,11 +503,6 @@ if (is_writable(GLPI_SESSION_DIR)) {
 Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 
-if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
-    $_SESSION["glpilanguage"] = $_POST["language"];
-}
-
-Session::loadLanguage('', false);
 
 /**
  * @since 0.84.2
@@ -527,6 +544,8 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
     }
+
+    $_SESSION['is_installing'] = true;
 
     switch ($_POST["install"]) {
         case "lang_select": // lang ok, go accept licence

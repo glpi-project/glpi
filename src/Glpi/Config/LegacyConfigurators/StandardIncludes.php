@@ -66,6 +66,17 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                $GLPI_CACHE
         ;
 
+        if (isset($_SESSION['is_installing'])) {
+            // Force `root_doc` value
+            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+            $CFG_GLPI['root_doc'] = $request->getBasePath();
+
+            $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+
+            Session::loadLanguage(with_plugins: false);
+            return;
+        }
+
         Config::detectRootDoc();
 
         $skip_db_checks = false;
