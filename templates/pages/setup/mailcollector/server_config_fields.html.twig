@@ -32,7 +32,6 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {{ fields.textField(
    'mail_server',
@@ -119,9 +118,8 @@
    connection_options_fields,
    __('Connection options')
 ) }}
-{{ inputs.hidden('imap_string', host) }}
-{% if host is not empty %}
-   {{ fields.htmlField('', host, __('Connection string'), {
+{% if connect_string is not empty %}
+   {{ fields.htmlField('', connect_string, __('Connection string'), {
       add_field_class: 'fw-bold'
    }) }}
 {% endif %}
