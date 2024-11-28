@@ -75,10 +75,10 @@ class MailCollectorTest extends DbTestCase
                 'use_mail_date'        => '',
                 'date_creation'        => '',
                 'requester_field'      => '',
-                   'add_to_to_observer'   => '',
+                'add_to_to_observer'   => '',
                 'add_cc_to_observer'   => '',
                 'collect_only_unread'  => '',
-                   'create_user_from_email' => '',
+                'create_user_from_email' => '',
                 'last_collect_date'    => '',
             ],
             $instance->fields
@@ -940,7 +940,6 @@ PLAINTEXT,
             sort($names);
             sort($actor_specs['tickets_names']);
             $this->assertSame($actor_specs['tickets_names'], $names);
-
         }
 
         // Check creation of expected documents
