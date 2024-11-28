@@ -49,8 +49,8 @@ Running the test suite on developpement env
 -------------------------------------------
 
 There are multiple directories for tests:
-- `tests/functional` for unit and functional tests;
-- `tests/imap` for Mail collector tests;
+- `tests/functional` and `phpunit/functional` for unit and functional tests;
+- `phpunit/imap` for Mail collector tests;
 - `tests/LDAP` for LDAP connection tests;
 - `tests/web` for API tests.
 
