@@ -37,6 +37,7 @@ namespace Glpi\Config\LegacyConfigurators;
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
 
 final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInterface
@@ -48,7 +49,9 @@ final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInte
             return;
         }
 
+        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
         AssetDefinitionManager::getInstance()->registerAutoload();
         DropdownDefinitionManager::getInstance()->registerAutoload();
+        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
     }
 }
