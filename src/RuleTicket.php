@@ -369,6 +369,18 @@ class RuleTicket extends Rule
                         ) {
                             $output['_groups_id_requester'] = $output['_groups_id_of_item'];
                         }
+                        if (
+                            $action->fields['field'] == '_groups_id_observer'
+                            && isset($output['_groups_id_of_item'])
+                        ) {
+                            $output['_groups_id_observer'] = $output['_groups_id_of_item'];
+                        }
+                        if (
+                            $action->fields['field'] == '_groups_id_assign'
+                            && isset($output['_groups_id_of_item'])
+                        ) {
+                            $output['_groups_id_assign'] = $output['_groups_id_of_item'];
+                        }
                         break;
 
                     case 'compute':
@@ -464,6 +476,36 @@ class RuleTicket extends Rule
                                     ])
                                 ) {
                                      $output['_additional_groups_requesters'][$group->getID()] = $group->getID();
+                                }
+                            }
+                        } else if ($action->fields["field"] == "_groups_id_observer") {
+                            foreach ($this->regex_results as $regex_result) {
+                                $regexvalue          = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $regex_result
+                                );
+                                $group = new Group();
+                                if (
+                                    $group->getFromDBByCrit(["name" => $regexvalue,
+                                        "is_observer" => true
+                                    ])
+                                ) {
+                                     $output['_additional_groups_observers'][$group->getID()] = $group->getID();
+                                }
+                            }
+                        } else if ($action->fields["field"] == "_groups_id_assign") {
+                            foreach ($this->regex_results as $regex_result) {
+                                $regexvalue          = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $regex_result
+                                );
+                                $group = new Group();
+                                if (
+                                    $group->getFromDBByCrit(["name" => $regexvalue,
+                                        "is_assign" => true
+                                    ])
+                                ) {
+                                     $output['_additional_groups_assigns'][$group->getID()] = $group->getID();
                                 }
                             }
                         }
