@@ -71,6 +71,7 @@
     &.vertical {
         .nav-link {
             border-bottom: $card-border-width solid $card-border-color;
+            border-top-right-radius: 0;
 
             &.active {
                 border-left-width: 5px;
