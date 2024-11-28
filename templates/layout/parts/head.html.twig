@@ -32,9 +32,18 @@
  #}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}" {% if high_contrast %}data-high-contrast="1"{% endif %}
-      data-glpi-theme="{{ theme.getKey() }}" data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
-      {{ glpi_request_id is defined ? 'data-glpi-request-id=' ~ glpi_request_id : '' }}>
+<html lang="{{ lang }}"
+    {% if high_contrast %}
+        data-high-contrast="1"
+    {% endif %}
+    {% if theme is defined %}
+        data-glpi-theme="{{ theme.getKey() }}"
+        data-glpi-theme-dark="{{ theme.isDarkTheme() ? '1' : '0' }}"
+    {% endif %}
+    {% if glpi_request_id is defined %}
+        data-glpi-request-id="{{ glpi_request_id }}"
+    {% endif %}
+>
 <head>
    <title>{{ title }} - {{ config('app_name') }}</title>
 

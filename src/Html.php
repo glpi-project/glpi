@@ -5102,24 +5102,25 @@ HTML;
      *
      * @param string  $url      File to include (relative to GLPI_ROOT)
      * @param array   $options  Array of HTML attributes
-     * @param bool    $no_debug Ignore the debug mode of GLPI (usefull for install/update process)
      *
      * @return string CSS link tag
+     *
+     * @since 11.0.0 The `$no_debug` parameter has bbeen removed.
      **/
-    public static function scss($url, $options = [], bool $no_debug = false)
+    public static function scss($url, $options = [])
     {
         $prod_file = self::getScssCompilePath($url);
 
         if (
             file_exists($prod_file)
-            && ($no_debug || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+            && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
         ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if (!$no_debug && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
