@@ -56,26 +56,29 @@ function header_html($etape)
    // Send UTF8 Headers
     header("Content-Type: text/html; charset=UTF-8");
 
-    echo "<!DOCTYPE html'>";
-    echo "<html lang='en_GB'>";
-    echo "<head>";
-    echo "<meta charset='utf-8'>";
-    echo "<title>Setup GLPI</title>";
+    TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
+        'lang'  => $_SESSION['glpilanguage'],
+        'title' => __('GLPI setup'),
+        'css_files' => [
+            ['path' => 'lib/tabler.css'],
+            ['path' => 'lib/base.css'],
+            ['path' => 'css/install.scss'],
+        ],
+        'js_files' => [
+            ['path' => 'lib/base.js'],
+            ['path' => 'js/glpi_dialog.js'],
 
-   // CFG
+            // required for the language dropdown
+            ['path' => 'lib/fuzzy.js'],
+            ['path' => 'js/common.js'],
+        ],
+        'js_modules' => [],
+        'custom_header_tags' => [],
+    ]);
+
+    // CFG
     echo Html::getCoreVariablesForJavascript();
 
-    // LIBS
-    echo Html::script("lib/base.js");
-    echo Html::script("lib/fuzzy.js");
-    echo Html::script("js/common.js");
-    echo Html::script("js/glpi_dialog.js");
-
-    // CSS
-    echo Html::css('lib/tabler.css');
-    echo Html::css('lib/base.css');
-    echo Html::scss("css/install", [], true);
-    echo "</head>";
     echo "<body>";
     echo "<div id='principal'>";
     echo "<div id='bloc'>";
@@ -548,9 +551,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
         case "Etape_1": // check ok, go import mysql settings.
             checkConfigFile();
-           // check system ok, we can use specific parameters for debug
-            Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-
             header_html(sprintf(__('Step %d'), 1));
             step2($_POST["update"]);
             break;
