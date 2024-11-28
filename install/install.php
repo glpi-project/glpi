@@ -67,7 +67,7 @@ function header_html($etape)
    // Send UTF8 Headers
     header("Content-Type: text/html; charset=UTF-8");
 
-    echo "<!DOCTYPE html'>";
+    echo "<!DOCTYPE html>";
     echo "<html lang='fr'>";
     echo "<head>";
     echo "<meta charset='utf-8'>";
