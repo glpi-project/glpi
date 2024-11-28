@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -55,6 +56,10 @@ class InstallController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {
+        if (!isset($_SESSION['is_installing'])) {
+            throw new AccessDeniedHttpException();
+        }
+
         $progress_storage = $this->progress_storage;
 
         $this->progress_storage->startProgress(self::PROGRESS_KEY_INIT_DATABASE);
