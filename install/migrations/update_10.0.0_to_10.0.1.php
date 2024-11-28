@@ -50,8 +50,6 @@ function update1000to1001()
     $DELFROMDISPLAYPREF = [];
     $update_dir = __DIR__ . '/update_10.0.0_to_10.0.1/';
 
-    //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.1'));
     $migration->setVersion('10.0.1');
 
     $update_scripts = scandir($update_dir);

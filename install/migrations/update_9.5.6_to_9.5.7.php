@@ -52,8 +52,6 @@ function update956to957()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.7'));
     $migration->setVersion('9.5.7');
 
    /* Fix null `date` in ITIL tables */

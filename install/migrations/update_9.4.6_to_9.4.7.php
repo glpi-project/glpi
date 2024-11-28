@@ -47,8 +47,6 @@ function update946to947()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.7'));
     $migration->setVersion('9.4.7');
 
     $DB->update('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);

@@ -47,12 +47,10 @@ function update951to952()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.2'));
     $migration->setVersion('9.5.2');
 
     /* Fix document_item migration */
-    $migration->displayTitle("Building inline images data in " . Document_Item::getTable());
+    $migration->displayMessage("Building inline images data in " . Document_Item::getTable());
 
     $now = date('Y-m-d H:i:s');
 

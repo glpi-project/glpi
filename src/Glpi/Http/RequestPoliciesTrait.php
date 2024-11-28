@@ -76,6 +76,7 @@ trait RequestPoliciesTrait
         if (
             \str_starts_with($path, '/install/')
             || ($_SESSION['is_installing'] ?? false)
+            || ($_SESSION['is_updating'] ?? false)
         ) {
             // DB status should never be checked when the requested endpoint is part of the install process.
             return false;

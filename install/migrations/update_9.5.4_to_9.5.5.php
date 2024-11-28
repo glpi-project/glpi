@@ -47,8 +47,6 @@ function update954to955()
 
     $updateresult = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.5'));
     $migration->setVersion('9.5.5');
 
    /* Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */

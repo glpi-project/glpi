@@ -293,6 +293,11 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
 - `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.
 - `ITILFollowup::ADDALLTICKET` constant. Use `ITILFollowup::ADDALLITEM`.
+- `Migration::addNewMessageArea()`
+- `Migration::displayError()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
+- `Migration::setOutputHandler()`
 - `Pdu_Plug` has been deprecated and replaced by `Item_Plug`
 - `Plugin::getWebDir()`
 - `Search::joinDropdownTranslations()`

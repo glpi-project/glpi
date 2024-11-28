@@ -50,8 +50,6 @@ function update95xto1000()
     $DELFROMDISPLAYPREF = [];
     $update_dir = __DIR__ . '/update_9.5.x_to_10.0.0/';
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
     $migration->setVersion('10.0.0');
 
     $update_scripts = scandir($update_dir);
@@ -91,7 +89,7 @@ function update95xto1000()
 
     $migration->executeMigration();
 
-    $migration->displayWarning(
+    $migration->addWarningMessage(
         '"utf8mb4" support requires additional migration which can be performed via the "php bin/console migration:utf8mb4" command.'
     );
 

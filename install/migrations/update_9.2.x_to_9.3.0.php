@@ -50,8 +50,6 @@ function update92xto930()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.3'));
     $migration->setVersion('9.3');
 
    //Create solutions table
@@ -839,7 +837,7 @@ function update92xto930()
     }
 
     if (isset($configs_toadd['purge_plugins']) && count($purge_plugin_values)) {
-        $migration->displayWarning(
+        $migration->addWarningMessage(
             'There are changes on plugins logs purge between core and the old plugin. Please review your configuration.'
         );
     }

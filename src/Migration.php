@@ -34,9 +34,9 @@
  */
 
 use Glpi\DBAL\QueryExpression;
-use Glpi\Console\Application;
 use Glpi\DBAL\QueryFunction;
-use Symfony\Component\Console\Output\OutputInterface;
+use Glpi\Progress\AbstractProgressIndicator;
+use Glpi\Message\MessageType;
 
 /**
  * Migration Class
@@ -50,10 +50,8 @@ class Migration
     private $uniques   = [];
     private $search_opts = [];
     protected $version;
-    private $deb;
     private $lastMessage;
     private $log_errors = 0;
-    private $current_message_area_id;
     private $queries = [
         'pre'    => [],
         'post'   => []
@@ -74,28 +72,15 @@ class Migration
     public const PRE_QUERY = 'pre';
     public const POST_QUERY = 'post';
 
-    /**
-     * Output handler to use. If not set, output will be directly echoed on a format depending on
-     * execution context (Web VS CLI).
-     *
-     * @var OutputInterface|null
-     */
-    protected $output_handler;
+    private ?AbstractProgressIndicator $progress_indicator;
 
     /**
      * @param string $ver Version number
      **/
-    public function __construct($ver)
+    public function __construct($ver, ?AbstractProgressIndicator $progress_indicator = null)
     {
-        $this->deb = time();
         $this->version = $ver;
-
-        /** @var \Glpi\Console\Application $application */
-        global $application;
-        if ($application instanceof Application) {
-           // $application global variable will be available if Migration is called from a CLI console command
-            $this->output_handler = $application->getOutput();
-        }
+        $this->progress_indicator = $progress_indicator;
     }
 
     /**
@@ -110,7 +95,6 @@ class Migration
     public function setVersion($ver)
     {
         $this->version = $ver;
-        $this->addNewMessageArea("migration_message_$ver");
     }
 
     /**
@@ -121,15 +105,12 @@ class Migration
      * @param string $id Area ID
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public function addNewMessageArea($id)
     {
-        if (!isCommandLine() && $id != $this->current_message_area_id) {
-            $this->current_message_area_id = $id;
-            echo "<div id='" . htmlescape($this->current_message_area_id) . "'></div>";
-        }
-
-        $this->displayMessage(__('Work in progress...'));
+        Toolbox::deprecated();
     }
 
     /**
@@ -159,13 +140,11 @@ class Migration
     {
         $this->flushLogDisplayMessage();
 
-        $now = time();
-        $tps = Html::timestampToString($now - $this->deb);
+        $this->progress_indicator?->setProgressBarMessage($msg);
 
-        $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
-
-        $this->lastMessage = ['time' => time(),
-            'msg'  => $msg
+        $this->lastMessage = [
+            'time' => time(),
+            'msg'  => $msg,
         ];
     }
 
@@ -190,7 +169,7 @@ class Migration
        // Do not log if more than 3 log error
         if (
             $this->log_errors < 3
-            && !Toolbox::logInFile($log_file_name, $message . "\n", true)
+            && !Toolbox::logInFile($log_file_name, $message . "\n", true, output: false)
         ) {
             $this->log_errors++;
         }
@@ -202,12 +181,16 @@ class Migration
      * @param string $title Title to display
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public function displayTitle($title): void
     {
+        Toolbox::deprecated();
+
         $this->flushLogDisplayMessage();
 
-        $this->outputMessage($title, 'title');
+        $this->progress_indicator?->setProgressBarMessage($title);
     }
 
     /**
@@ -217,11 +200,14 @@ class Migration
      * @param boolean $red Displays with red class (false by default)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public function displayWarning($msg, $red = false): void
     {
-        $this->outputMessage($msg, $red ? 'warning' : 'strong');
-        $this->log($msg, true);
+        Toolbox::deprecated();
+
+        $this->addMessage($red ? MessageType::Warning : MessageType::Notice, (string) $msg);
     }
 
     /**
@@ -230,11 +216,65 @@ class Migration
      * @param string  $message Message to display
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public function displayError(string $message): void
     {
-        $this->outputMessage($message, 'error');
-        $this->log($message, true);
+        Toolbox::deprecated();
+
+        $this->addMessage(MessageType::Error, $message);
+    }
+
+    /**
+     * Add a message.
+     * This message will be added to the progress indicator and will be written in the logs.
+     */
+    final public function addMessage(MessageType $type, string $message): void
+    {
+        $this->progress_indicator?->addMessage($type, $message);
+
+        $this->log($message, in_array($type, [MessageType::Error, MessageType::Warning], true));
+    }
+
+    /**
+     * Add a success message.
+     */
+    final public function addSuccessMessage(string $message): void
+    {
+        $this->addMessage(MessageType::Success, $message);
+    }
+
+    /**
+     * Add an error message.
+     */
+    final public function addErrorMessage(string $message): void
+    {
+        $this->addMessage(MessageType::Error, $message);
+    }
+
+    /**
+     * Add a warning message.
+     */
+    final public function addWarningMessage(string $message): void
+    {
+        $this->addMessage(MessageType::Warning, $message);
+    }
+
+    /**
+     * Add an informative message.
+     */
+    final public function addInfoMessage(string $message): void
+    {
+        $this->addMessage(MessageType::Notice, $message);
+    }
+
+    /**
+     * Add a debug message.
+     */
+    final public function addDebugMessage(string $message): void
+    {
+        $this->addMessage(MessageType::Debug, $message);
     }
 
     /**
@@ -767,13 +807,13 @@ class Migration
 
         if (isset($this->change[$table])) {
             $query = "ALTER TABLE `$table` " . implode(" ,\n", $this->change[$table]) . " ";
-            $this->displayMessage(sprintf(__('Change of the database layout - %s'), $table));
+            $this->addDebugMessage(sprintf(__('Change of the database layout - %s'), $table));
             $DB->doQuery($query);
             unset($this->change[$table]);
         }
 
         if (isset($this->fulltexts[$table])) {
-            $this->displayMessage(sprintf(__('Adding fulltext indices - %s'), $table));
+            $this->addDebugMessage(sprintf(__('Adding fulltext indices - %s'), $table));
             foreach ($this->fulltexts[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
                 $DB->doQuery($query);
@@ -782,7 +822,7 @@ class Migration
         }
 
         if (isset($this->uniques[$table])) {
-            $this->displayMessage(sprintf(__('Adding unicity indices - %s'), $table));
+            $this->addDebugMessage(sprintf(__('Adding unicity indices - %s'), $table));
             foreach ($this->uniques[$table] as $idx) {
                 $query = "ALTER TABLE `$table` " . $idx;
                 $DB->doQuery($query);
@@ -824,7 +864,7 @@ class Migration
         $this->migrateSearchOptions();
 
        // end of global message
-        $this->displayMessage(__('Task completed.'));
+        $this->addSuccessMessage(sprintf(__('Update to %s version completed.'), $this->version));
     }
 
     /**
@@ -903,7 +943,7 @@ class Migration
         global $DB;
 
         //TRANS: %s is the table or item to migrate
-        $this->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
+        $this->addDebugMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
         foreach ($toadd as $itemtype => $searchoptions_ids) {
             $criteria = [
                 'SELECT'   => 'users_id',
@@ -1050,7 +1090,7 @@ class Migration
            // rename new tables if exists ?
             if ($DB->tableExists($table)) {
                 $this->dropTable("backup_$table");
-                $this->displayWarning(sprintf(
+                $this->addInfoMessage(sprintf(
                     __('%1$s table already exists. A backup have been done to %2$s'),
                     $table,
                     "backup_$table"
@@ -1060,7 +1100,7 @@ class Migration
             }
         }
         if ($backup_tables) {
-            $this->displayWarning("You can delete backup tables if you have no need of them.", true);
+            $this->addInfoMessage("You can delete backup tables if you have no need of them.");
         }
         return $backup_tables;
     }
@@ -1141,7 +1181,7 @@ class Migration
                 }
                 if (count($config)) {
                     Config::setConfigurationValues($context, $config);
-                    $this->displayMessage(sprintf(
+                    $this->addDebugMessage(sprintf(
                         __('Configuration values added for %1$s (%2$s).'),
                         implode(', ', array_keys($config)),
                         $context
@@ -1233,12 +1273,11 @@ class Migration
             $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
-        $this->displayWarning(
+        $this->addWarningMessage(
             sprintf(
                 'New rights has been added for %1$s, you should review ACLs after update',
                 $name
             ),
-            true
         );
     }
 
@@ -1299,12 +1338,11 @@ class Migration
             $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
-        $this->displayWarning(
+        $this->addWarningMessage(
             sprintf(
                 'Rights has been updated for %1$s, you should review ACLs after update',
                 $name
             ),
-            true
         );
     }
 
@@ -1369,12 +1407,11 @@ class Migration
             $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
-        $this->displayWarning(
+        $this->addWarningMessage(
             sprintf(
                 'Rights has been updated for %1$s, you should review ACLs after update',
                 $name
             ),
-            true
         );
     }
 
@@ -1468,12 +1505,11 @@ class Migration
 
         // Display a warning message if rights have been given
         if ($added) {
-            $this->displayWarning(
+            $this->addWarningMessage(
                 sprintf(
                     'Rights have been given for %1$s, you should review ACLs after update',
                     $name
                 ),
-                true
             );
         }
     }
@@ -1507,94 +1543,12 @@ class Migration
         );
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function setOutputHandler($output_handler): void
     {
-        $this->output_handler = $output_handler;
-    }
-
-    /**
-     * Output a message.
-     *
-     * @param string $msg       Message to output.
-     * @param ?string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
-     * @param ?string $area_id  Display area to use.
-     *
-     * @return void
-     */
-    protected function outputMessage(string $msg, ?string $style = null, ?string $area_id = null): void
-    {
-        if (isCommandLine()) {
-            $this->outputMessageToCli($msg, $style);
-        } else {
-            $this->outputMessageToHtml($msg, $style, $area_id);
-        }
-    }
-
-    /**
-     * Output a message in console output.
-     *
-     * @param string $msg    Message to output.
-     * @param ?string $style  Style to use, see {@link self::outputMessage()} for possible values.
-     *
-     * @return void
-     */
-    private function outputMessageToCli(string $msg, ?string $style = null): void
-    {
-        $msg = match ($style) {
-            'title' => str_pad(" $msg ", 100, '=', STR_PAD_BOTH),
-            'warning' => str_pad("** {$msg}", 100),
-            'error' => str_pad("!! {$msg}", 100),
-            default => str_pad($msg, 100),
-        };
-        $format = match ($style) {
-            'title' => 'info',
-            'error' => 'error',
-            default => 'comment',
-        };
-        $verbosity = match ($style) {
-            'error' => OutputInterface::VERBOSITY_QUIET,
-            'title', 'warning', 'strong' => OutputInterface::VERBOSITY_NORMAL,
-            default => OutputInterface::VERBOSITY_VERBOSE,
-        };
-
-        if ($this->output_handler instanceof OutputInterface) {
-            if (null !== $format) {
-                $msg = sprintf('<%1$s>%2$s</%1$s>', $format, $msg);
-            }
-            $this->output_handler->writeln($msg, $verbosity);
-        } else {
-            echo $msg . PHP_EOL;
-        }
-    }
-
-    /**
-     * Output a message in html page.
-     *
-     * @param string $msg       Message to output.
-     * @param ?string $style    Style to use, see self::outputMessage() for possible values.
-     * @param ?string $area_id  Display area to use.
-     *
-     * @return void
-     */
-    private function outputMessageToHtml(string $msg, ?string $style = null, ?string $area_id = null): void
-    {
-        $msg = htmlescape($msg);
-
-        $msg = match ($style) {
-            'title' => '<h3>' . $msg . '</h3>',
-            'warning', 'error' => '<div class="migred"><p>' . $msg . '</p></div>',
-            'strong' => '<p><span class="b">' . $msg . '</span></p>',
-            default => '<p class="center">' . $msg . '</p>',
-        };
-
-        if (null !== $area_id) {
-            echo "<script type='text/javascript'>
-                  document.getElementById('{$area_id}').innerHTML = '{$msg}';
-               </script>";
-            Html::glpi_flush();
-        } else {
-            echo $msg;
-        }
+        Toolbox::deprecated();
     }
 
     /**
@@ -1623,7 +1577,7 @@ class Migration
             return;
         }
 
-        $this->displayMessage(sprintf(__('Renaming "%s" itemtype to "%s"...'), $old_itemtype, $new_itemtype));
+        $this->addDebugMessage(sprintf(__('Renaming "%s" itemtype to "%s"...'), $old_itemtype, $new_itemtype));
 
         $old_table = getTableForItemType($old_itemtype);
         $new_table = getTableForItemType($new_itemtype);
@@ -1685,11 +1639,11 @@ class Migration
             }
 
             //1. Rename itemtype table
-            $this->displayMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
+            $this->addDebugMessage(sprintf(__('Renaming "%s" table to "%s"...'), $old_table, $new_table));
             $this->renameTable($old_table, $new_table);
 
             //2. Rename foreign key fields
-            $this->displayMessage(
+            $this->addDebugMessage(
                 sprintf(__('Renaming "%s" foreign keys to "%s" in all tables...'), $old_fkey, $new_fkey)
             );
             foreach ($fkey_column_array as $fkey_column) {
@@ -1712,7 +1666,7 @@ class Migration
         }
 
         //3. Update "itemtype" values in all tables
-        $this->displayMessage(
+        $this->addDebugMessage(
             sprintf(__('Renaming "%s" itemtype to "%s" in all tables...'), $old_itemtype, $new_itemtype)
         );
         $itemtype_column_iterator = $DB->request(

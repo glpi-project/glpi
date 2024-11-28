@@ -47,8 +47,6 @@ function update943to945()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.5'));
     $migration->setVersion('9.4.5');
 
     /** Add OLA TTR begin date field to Tickets */
