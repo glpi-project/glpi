@@ -47,8 +47,6 @@ function update942to943()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.3'));
     $migration->setVersion('9.4.3');
 
     /** Fix URL of images inside ITIL objects contents */

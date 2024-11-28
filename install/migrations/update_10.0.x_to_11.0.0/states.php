@@ -99,7 +99,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         }
     }
 }
-$migration->displayWarning(
+$migration->addInfoMessage(
     'States dropdown in devices items forms are now filtered, and, by default, existing states are not visible.'
 );
 

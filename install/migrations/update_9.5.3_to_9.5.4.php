@@ -47,8 +47,6 @@ function update953to954()
 
     $updateresult = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.4'));
     $migration->setVersion('9.5.4');
 
    /* Remove invalid Profile SO */

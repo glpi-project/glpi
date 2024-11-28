@@ -52,8 +52,6 @@ function update94xto950()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.0'));
     $migration->setVersion('9.5.0');
 
     /** Encrypted FS support  */
@@ -107,7 +105,7 @@ function update94xto950()
     if (!$DB->fieldExists('glpi_users', 'timezone')) {
         $migration->addField("glpi_users", "timezone", "varchar(50) DEFAULT NULL");
     }
-    $migration->displayWarning("DATETIME fields must be converted to TIMESTAMP for timezones to work. Run bin/console migration:timestamps");
+    $migration->addInfoMessage("DATETIME fields must be converted to TIMESTAMP for timezones to work. Run bin/console migration:timestamps");
 
    // Add a config entry for app timezone setting
     $migration->addConfig(['timezone' => null]);
@@ -636,7 +634,7 @@ function update94xto950()
     }
 
     /** Make software linkable to other itemtypes besides Computers */
-    $migration->displayWarning('Updating software tables. This may take several minutes.');
+    $migration->displayMessage('Updating software tables. This may take several minutes.');
     if (!$DB->tableExists('glpi_items_softwareversions')) {
         $migration->renameTable('glpi_computers_softwareversions', 'glpi_items_softwareversions');
         $migration->changeField(

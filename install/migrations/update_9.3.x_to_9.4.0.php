@@ -51,8 +51,6 @@ function update93xto940()
     $ADDTODISPLAYPREF = [];
     $config_to_drop = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.0'));
     $migration->setVersion('9.4.0');
 
     /** Add otherserial field on ConsumableItem */

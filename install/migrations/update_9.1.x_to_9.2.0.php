@@ -51,8 +51,6 @@ function update91xto920()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.2'));
     $migration->setVersion('9.2');
 
    // add business criticity
@@ -1219,7 +1217,7 @@ function update91xto920()
         $migration->addKey("glpi_logs", "id_search_option");
     } else {
        //Just display a Warning to the user.
-        $migration->displayWarning("An index must be added in the 'id_search_option' field " .
+        $migration->addWarningMessage("An index must be added in the 'id_search_option' field " .
          "of the 'glpi_logs table'; but your glpi_logs table is " .
          "too huge. You'll have to add it on your database " .
          "with the following query:\n" .
@@ -1370,9 +1368,8 @@ Regards,',
     if (!$DB->fieldExists('glpi_users', 'api_token')) {
         $migration->addField('glpi_users', 'api_token', 'string', ['after' => 'personal_token_date']);
         $migration->addField('glpi_users', 'api_token_date', 'datetime', ['after' => 'api_token']);
-        $migration->displayWarning(
-            "Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token.",
-            true
+        $migration->addWarningMessage(
+            "Api users tokens has been reset, if you use REST/XMLRPC api with personal token for authentication, please reset your user's token."
         );
     }
 

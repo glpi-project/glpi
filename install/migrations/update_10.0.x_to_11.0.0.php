@@ -51,8 +51,6 @@ function update100xto1100()
     $DELFROMDISPLAYPREF        = [];
     $update_dir                = __DIR__ . '/update_10.0.x_to_11.0.0/';
 
-    //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '11.0.0'));
     $migration->setVersion('11.0.0');
 
     $update_scripts = scandir($update_dir);

@@ -421,13 +421,14 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string $name name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
-     * @param string $text text to log
-     * @param boolean $force force log in file not seeing use_log_in_files config
+     * @param string    $name   name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string    $text   text to log
+     * @param bool      $force  force log in file not seeing use_log_in_files config
+     * @param bool      $output whether to output the message
      *
      * @return boolean
      **/
-    public static function logInFile($name, $text, $force = false)
+    public static function logInFile($name, $text, $force = false, bool $output = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -444,6 +445,10 @@ class Toolbox
             || $force
         ) {
             $ok = error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
+        }
+
+        if ($output === false) {
+            return $ok;
         }
 
         /** @var \Glpi\Console\Application $application */
@@ -2086,8 +2091,6 @@ class Toolbox
         $tables = require_once(__DIR__ . '/../install/empty_data.php');
         Session::loadLanguage('', false); // Load back session language
 
-        $done_steps = 0;
-
         $number_of_steps = \count($structure_queries);
         foreach ($tables as $data) {
             $number_of_steps += \count($data);
@@ -2109,9 +2112,7 @@ class Toolbox
 
         foreach ($structure_queries as $query) {
             $DB->doQuery($query);
-
-            $done_steps++;
-            $progress_indicator?->setCurrentStep($done_steps);
+            $progress_indicator?->advance();
         }
         $progress_indicator?->addMessage(MessageType::Success, __('Database structure created.'));
 
@@ -2144,8 +2145,7 @@ class Toolbox
                     throw new \RuntimeException($msg);
                 }
 
-                $done_steps++;
-                $progress_indicator?->setCurrentStep($done_steps);
+                $progress_indicator?->advance();
             }
         }
         $progress_indicator?->addMessage(MessageType::Success, __('Default data imported.'));
@@ -2153,21 +2153,18 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
-        $done_steps += $init_form_weight;
-        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->advance($init_form_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Default forms created.'));
 
         $progress_indicator?->setProgressBarMessage(__('Initalizing default rules…'));
         RulesManager::initializeRules();
-        $done_steps += $init_rules_weight;
-        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->advance($init_rules_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
 
         $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
-        $done_steps += $generate_keys_weight;
-        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->advance($generate_keys_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
 
         $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
@@ -2179,8 +2176,7 @@ class Toolbox
                 'dbversion'     => GLPI_SCHEMA_VERSION,
             ]
         );
-        $done_steps += $default_lang_weight;
-        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->advance($default_lang_weight);
 
         if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
@@ -2194,8 +2190,7 @@ class Toolbox
                     'allowmode' => ['&', 2]
                 ]
             );
-            $done_steps += $cron_config_weight;
-            $progress_indicator?->setCurrentStep($done_steps);
+            $progress_indicator?->advance($cron_config_weight);
         }
         $progress_indicator?->addMessage(MessageType::Success, __('Configuration defaults defined.'));
 

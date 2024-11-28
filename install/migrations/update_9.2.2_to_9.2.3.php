@@ -53,8 +53,6 @@ function update922to923()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.3'));
     $migration->setVersion('9.2.3');
 
    //add a column for the model

@@ -53,8 +53,6 @@ function update931to932()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
     $migration->setVersion('9.3.2');
 
     /** Clean rack/enclosure items corrupted relations */

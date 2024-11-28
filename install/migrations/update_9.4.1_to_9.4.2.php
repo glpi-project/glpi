@@ -49,8 +49,6 @@ function update941to942()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.2'));
     $migration->setVersion('9.4.2');
 
    /* Remove trailing slash from 'url_base' config */

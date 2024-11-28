@@ -40,6 +40,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\Toolbox\DatabaseSchema;
@@ -85,6 +86,13 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      * @var integer
      */
     const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+
+    /**
+     * Error code returned when an error occured during the update.
+     *
+     * @var integer
+     */
+    const ERROR_UPDATE_FAILED = 5;
 
     protected $requires_db_up_to_date = false;
 
@@ -217,16 +225,27 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $this->askForConfirmation();
 
-        /** @var \Migration $migration */
-        global $migration; // Migration scripts are using global `$migration`
-        $migration = new Migration(GLPI_VERSION);
-        $migration->setOutputHandler($output);
-        $update->setMigration($migration);
-        $update->doUpdates($current_version, $force);
+        $progress_indicator = new ConsoleProgressIndicator($output);
+
+        $update->setMigration(new Migration(GLPI_VERSION, $progress_indicator));
+        try {
+            $update->doUpdates(
+                current_version: $current_version,
+                force_latest: $force,
+                progress_indicator: $progress_indicator
+            );
+        } catch (\Throwable $e) {
+            $progress_indicator->fail();
+
+            $message = sprintf(
+                __('An error occurred during the database update. The error was: %s'),
+                $e->getMessage()
+            );
+            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+            return self::ERROR_UPDATE_FAILED;
+        }
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
-
-        $output->writeln('<info>' . __('Migration done.') . '</info>');
 
         $this->handTelemetryActivation($input, $output);
 
