@@ -448,8 +448,6 @@ function step8()
 
 function update1($dbname)
 {
-    $_SESSION['is_installing'] = false;
-
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
     $password = $_SESSION['db_access']['password'];
