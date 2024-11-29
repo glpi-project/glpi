@@ -161,7 +161,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'items_contract_types'
+            'itemtype_list'      => 'contract_types'
         ];
 
         return $tab;
@@ -208,13 +208,18 @@ class Contract_Item extends CommonDBRelation
                 case Contract::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
+                        $nb += Contract_User::countForContract($item->fields['id']);
                     }
                     return self::createTabEntry(_n('Affected Item', 'Affected Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
 
                 default:
                     if (
                         $_SESSION['glpishow_count_on_tabs']
-                        && in_array($item::class, $CFG_GLPI["items_contract_types"], true)
+                        && in_array(
+                            $item::class,
+                            array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
+                            true
+                        )
                     ) {
                         $nb = self::countForItem($item);
                     }
@@ -234,7 +239,13 @@ class Contract_Item extends CommonDBRelation
                 self::showForContract($item, $withtemplate);
                 break;
             default:
-                if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
+                if (
+                    in_array(
+                        $item::class,
+                        array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
+                        true
+                    )
+                ) {
                     self::showForItem($item, $withtemplate);
                 }
                 break;
@@ -394,8 +405,11 @@ TWIG, $twig_params);
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array    $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $instID = $contract->fields['id'];
 
@@ -405,7 +419,7 @@ TWIG, $twig_params);
         $canedit = $contract->can($instID, UPDATE);
         $rand    = mt_rand();
 
-        $types_iterator = self::getDistinctTypes($instID);
+        $types_iterator = iterator_to_array(self::getDistinctTypes($instID));
 
         $data    = [];
         $totalnb = 0;
@@ -487,6 +501,47 @@ TWIG, $twig_params);
             }
         }
 
+        $contract_users_table = Contract_User::getTable();
+        $users_table = User::getTable();
+        $entity_table = Entity::getTable();
+
+        // Add contract users
+        $user_params = [
+            'SELECT' => [
+                "$users_table.*",
+                "$contract_users_table.id AS linkid",
+                "$entity_table.id AS entity"
+            ],
+            'FROM'   => $contract_users_table,
+            'LEFT JOIN' => [
+                $users_table => [
+                    'FKEY' => [
+                        $contract_users_table => 'users_id',
+                        $users_table          => 'id'
+                    ]
+                ],
+                $entity_table => [
+                    'FKEY' => [
+                        $users_table => 'entities_id',
+                        $entity_table => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'  => [
+                "$contract_users_table.contracts_id" => $instID
+            ],
+            'ORDER' => "$entity_table.completename, $users_table.name"
+        ];
+
+        $user_iterator = $DB->request($user_params);
+
+        $data[Contract_User::class] = [];
+        foreach ($user_iterator as $userdata) {
+            $data[User::class][$userdata['id']] = $userdata;
+            $used[User::class][$userdata['id']] = $userdata['id'];
+            $totalnb++;
+        }
+
         if (
             $canedit
             && (((int) $contract->fields['max_links_allowed'] === 0)
@@ -495,6 +550,7 @@ TWIG, $twig_params);
         ) {
             $twig_params = [
                 'contract' => $contract,
+                'contract_types' => array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
                 'entity_restrict' => $contract->fields['is_recursive']
                     ? getSonsOf('glpi_entities', $contract->fields['entities_id'])
                     : $contract->fields['entities_id'],
@@ -510,7 +566,7 @@ TWIG, $twig_params);
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownItemsFromItemtypes('', null, {
-                                itemtypes: config('items_contract_types'),
+                                itemtypes: contract_types,
                                 entity_restrict: entity_restrict,
                                 checkright: true,
                                 used: used

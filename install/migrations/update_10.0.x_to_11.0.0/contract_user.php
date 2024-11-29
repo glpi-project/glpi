@@ -33,43 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
-
 /**
- * @since 0.84
+ * @var \Migration $migration
+ * @var array $ADDTODISPLAYPREF
+ * @var \DBmysql $DB
  */
 
-Session::checkCentralAccess();
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
 
-if (isset($_POST["add"])) {
-    if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            Contract::getTypeName(1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-        Html::back();
-    }
-
-    if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
-        $contract_item = new Contract_User();
-    } else {
-        $contract_item   = new Contract_Item();
-    }
-
-    $contract_item->check(-1, CREATE, $_POST);
-    if ($contract_item->add($_POST)) {
-        Event::log(
-            $_POST["contracts_id"],
-            "contracts",
-            4,
-            "financial",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
-        );
-    }
-    Html::back();
+if (!$DB->tableExists('glpi_contracts_users')) {
+    $query = "CREATE TABLE `glpi_contracts_users` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `contracts_id` int unsigned NOT NULL DEFAULT '0',
+        `items_id` int unsigned NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unicity` (`contracts_id`,`items_id`),
+        KEY `item` (`items_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
+    $DB->doQuery($query);
 }
-
-throw new BadRequestHttpException();
