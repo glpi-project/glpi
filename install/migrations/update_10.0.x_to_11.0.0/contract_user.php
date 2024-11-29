@@ -48,7 +48,7 @@ if (!$DB->tableExists('glpi_contracts_users')) {
         `contracts_id` int unsigned NOT NULL DEFAULT '0',
         `users_id` int unsigned NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`contracts_id`,`items_id`),
+        UNIQUE KEY `unicity` (`contracts_id`,`users_id`),
         KEY `item` (`items_id`)
       ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQuery($query);
