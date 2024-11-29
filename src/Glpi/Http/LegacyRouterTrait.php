@@ -88,8 +88,12 @@ trait LegacyRouterTrait
                 // legacy scripts located in the `/ajax`, `/front` or `/report` directory
                 $filename = $plugin_dir . $relative_path;
             } else {
-                // preprend `/public` to expose the public resources only
-                $filename = $plugin_dir . '/public' . $relative_path;
+                if (\is_file($plugin_dir . '/public' . $relative_path)) {
+                    // preprend `/public` to expose the public resources only
+                    $filename = $plugin_dir . '/public' . $relative_path;
+                } else {
+                    $filename = $plugin_dir . $relative_path;
+                }
             }
         } elseif (
             (
