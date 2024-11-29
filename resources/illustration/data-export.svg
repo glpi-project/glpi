@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" width="100%" height="100%" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.41 127.41">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #474747;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke: #474747;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-1, .cls-2, .cls-4, .cls-6 {
+        stroke-width: 2px;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        fill-rule: evenodd;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+
+      .cls-3, .cls-5 {
+        stroke-width: 2.79px;
+      }
+
+      .cls-4 {
+        fill: #bababa;
+      }
+
+      .cls-5, .cls-6 {
+        fill: #ebebeb;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <polygon class="cls-2" points="72.51 1 72.51 23.29 94.41 23.29 72.51 1"/>
+    <polyline class="cls-4" points="1 1 1 112.25 94.41 112.25 94.41 23.29 72.51 23.29 72.51 1 32.55 1"/>
+    <circle class="cls-6" cx="102.1" cy="102.09" r="24.32"/>
+    <line class="cls-5" x1="102.1" y1="87.95" x2="102.1" y2="103.64"/>
+    <polyline class="cls-3" points="117.79 104.01 117.79 112.25 87.86 112.25 87.86 104.01"/>
+    <polyline class="cls-3" points="94.41 96.7 102.09 104.39 109.79 96.69"/>
+    <rect class="cls-1" x="12.28" y="24.3" width="45.98" height="6.83"/>
+    <line class="cls-1" x1="12.28" y1="44.33" x2="87.86" y2="44.33"/>
+    <line class="cls-1" x1="12.28" y1="54.46" x2="87.86" y2="54.46"/>
+    <line class="cls-1" x1="12.28" y1="64.58" x2="87.86" y2="64.58"/>
+    <line class="cls-1" x1="12.28" y1="74.7" x2="87.86" y2="74.7"/>
+    <line class="cls-1" x1="12.28" y1="84.83" x2="84.98" y2="84.83"/>
+    <line class="cls-1" x1="12.28" y1="94.95" x2="52.81" y2="94.95"/>
+  </g>
+</svg>
