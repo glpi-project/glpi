@@ -116,8 +116,10 @@ final class IllustrationManager
             '#474747'          => "--glpi-mainmenu-bg",
             'rgb(186,186,186)' => "--glpi-helpdesk-header",
             '#BABABA'          => "--glpi-helpdesk-header",
+            '#bababa'          => "--glpi-helpdesk-header",
             'rgb(235,235,235)' => "--tblr-primary",
             '#EBEBEB'          => "--tblr-primary",
+            '#ebebeb'          => "--tblr-primary",
         ];
 
         foreach ($mapping as $color => $variable) {
