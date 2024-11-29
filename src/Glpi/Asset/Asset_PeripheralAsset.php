@@ -346,19 +346,17 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'asset' => $asset,
                 'label' => __('Connect an item'),
                 'btn_label' => _sx('button', 'Connect'),
-                'withtemplate' => $withtemplate,
+                'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
-                        <input type="hidden" name="items_id_asset" value="{{ asset.getID() }}">
-                        <input type="hidden" name="itemtype_asset" value="{{ asset.getType() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                        {% if withtemplate %}
-                            <input type="hidden" name="_no_history" value="1">
-                        {% endif %}
+                        {{ fields.hiddenField('items_id_asset', asset.getID()) }}
+                        {{ fields.hiddenField('itemtype_asset', asset.getType()) }}
+                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         {{ fields.dropdownItemTypes('itemtype_peripheral', 0, label, {
                             types: config('directconnect_types'),
                             checkright: true,
@@ -512,7 +510,6 @@ TWIG, $twig_params);
                 'items_id_name'   => 'items_id_asset',
                 'itemtype_name'   => 'itemtype_asset',
                 'itemtypes'       => $itemtypes,
-                'onlyglobal'      => $withtemplate,
                 'checkright'      => true,
                 'entity_restrict' => $entities,
                 'used'            => $used,
@@ -523,6 +520,7 @@ TWIG, $twig_params);
                 'peripheral' => $peripheral,
                 'dropdown_params' => $dropdown_params,
                 'btn_label' => _sx('button', 'Connect'),
+                'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -530,12 +528,10 @@ TWIG, $twig_params);
                 <div class="mb-3">
                     <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
                         {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
-                        <input type="hidden" name="items_id_peripheral" value="{{ peripheral.getID() }}">
-                        <input type="hidden" name="itemtype_peripheral" value="{{ peripheral.getType() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                        {% if withtemplate %}
-                            {{ fields.hidden('', '_no_history', 1) }}
-                        {% endif %}
+                        {{ fields.hiddenField('items_id_peripheral', peripheral.getID()) }}
+                        {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
+                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
                             <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
                         </div>
