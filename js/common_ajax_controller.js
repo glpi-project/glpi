@@ -91,7 +91,11 @@ class GlpiCommonAjaxController
             } else {
                 // We don't know how to handle this error
                 console.error(error);
-                this.#handleFeedbackMessages({error: __("Unexpected error")});
+                this.#handleFeedbackMessages({
+                    messages: {
+                        error: __("Unexpected error"),
+                    },
+                });
             }
         }
     }
