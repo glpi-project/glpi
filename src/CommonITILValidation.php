@@ -666,21 +666,23 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-            'FROM'   => static::getTable(),
+            'FROM'   => Ticket::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'status'             => self::WAITING,
-                'users_id_validate'  => $users_id,
+                [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => 'tickets_id',
+                        'FROM'   => self::getTable(),
+                        'WHERE'  => [
+                            'status' => self::WAITING,
+                            'users_id_validate'  => $users_id,
+                        ]
+                    ])
+                ],
                 'NOT' => [
                     'AND' => [
                         [
-                            'tickets_id' => new QuerySubQuery([
-                                'SELECT' => 'id',
-                                'FROM'   => 'glpi_tickets',
-                                'WHERE'  => [
-                                    'status' => CommonITILObject::CLOSED
-                                ]
-                            ])
+                            'status' => Ticket::getClosedStatusArray()
                         ]
                     ]
                 ]
