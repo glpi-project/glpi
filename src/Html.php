@@ -1347,7 +1347,7 @@ HTML;
         }
 
        // Add specific css for plugins
-       foreach (self::add_css_file_plugin(Hooks::ADD_CSS) as $css_file) {
+        foreach (self::add_css_file_plugin(Hooks::ADD_CSS) as $css_file) {
             $tpl_vars['css_files'][] = $css_file;
         }
 
@@ -1876,7 +1876,7 @@ HTML;
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
-        foreach(self::add_javascript_file_plugin('add_javascript') as $js_file) {
+        foreach (self::add_javascript_file_plugin('add_javascript') as $js_file) {
             $tpl_vars['js_files'][] = $js_file;
         }
 
