@@ -38,9 +38,9 @@ namespace tests\units\Glpi\Features;
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
  */
-class Clonable extends \DbTestCase
+class ClonableTest extends \DbTestCase
 {
-    public function massiveActionTargetingProvider()
+    public static function massiveActionTargetingProvider()
     {
         return [
             [\Computer::class, true],
@@ -62,6 +62,6 @@ class Clonable extends \DbTestCase
         $this->login();
         $ma_prefix = 'MassiveAction' . \MassiveAction::CLASS_ACTION_SEPARATOR;
         $actions = \MassiveAction::getAllMassiveActions($class);
-        $this->boolean(array_key_exists($ma_prefix . 'clone', $actions))->isIdenticalTo($result);
+        $this->assertSame($result, array_key_exists($ma_prefix . 'clone', $actions));
     }
 }

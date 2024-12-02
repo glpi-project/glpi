@@ -48,11 +48,11 @@ use Rack;
 use Toolbox;
 
 /**
- * Test for the {@link \Glpi\Features\Clonable} feature
+ * Test for the {@link \Glpi\Features\DCBreadcrumb} feature
  */
-class DCBreadcrumb extends DbTestCase
+class DCBreadcrumbTest extends DbTestCase
 {
-    protected function itemtypeProvider()
+    public static function itemtypeProvider()
     {
         /**
          * @var array $CFG_GLPI
@@ -78,7 +78,7 @@ class DCBreadcrumb extends DbTestCase
      */
     public function testDCBreadcrumbProvider(string $class)
     {
-        $this->boolean(Toolbox::hasTrait($class, \Glpi\Features\DCBreadcrumb::class))->isTrue;
+        $this->assertTrue(Toolbox::hasTrait($class, \Glpi\Features\DCBreadcrumb::class));
     }
 
     protected function rackableTypeDcBreadcrumbProvider(): iterable
@@ -251,12 +251,13 @@ class DCBreadcrumb extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider rackableTypeDcBreadcrumbProvider
-     */
-    public function testGetDcBreadcrumbForRackableType(CommonDBTM $item, array $breadcrumbs): void
+    public function testGetDcBreadcrumbForRackableType(): void
     {
-        $this->array($item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
+        foreach ($this->rackableTypeDcBreadcrumbProvider() as $row) {
+            $item = $row['item'];
+            $breadcrumbs = $row['breadcrumbs'];
+            $this->assertEquals($breadcrumbs, $item->getDcBreadcrumb());
+        }
     }
 
     protected function pduAsideRackDcBreadcrumbProvider(): iterable
@@ -357,12 +358,13 @@ class DCBreadcrumb extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider pduAsideRackDcBreadcrumbProvider
-     */
-    public function testGetDcBreadcrumbPduAsideRack(CommonDBTM $item, array $breadcrumbs): void
+    public function testGetDcBreadcrumbPduAsideRack(): void
     {
-        $this->array($item->getDcBreadcrumb())->isEqualTo($breadcrumbs);
+        foreach ($this->pduAsideRackDcBreadcrumbProvider() as $row) {
+            $item = $row['item'];
+            $breadcrumbs = $row['breadcrumbs'];
+            $this->assertEquals($breadcrumbs, $item->getDcBreadcrumb());
+        }
     }
 
     public function testGetDcBreadcrumbForADcRoom(): void
@@ -385,11 +387,11 @@ class DCBreadcrumb extends DbTestCase
         );
 
         // Room NOT attached to a datacenter
-        $this->array($room->getDcBreadcrumb())->isEqualTo([]);
+        $this->assertEquals([], $room->getDcBreadcrumb());
 
         // Room attached to a datacenter
         $this->updateItem(DCRoom::class, $room->getID(), ['datacenters_id' => $datacenter->getID()]);
-        $this->boolean($room->getFromDB($room->getID()))->isTrue();
-        $this->array($room->getDcBreadcrumb())->isEqualTo(["<i class='ti ti-building-warehouse'></i> Main DC"]);
+        $this->assertTrue($room->getFromDB($room->getID()));
+        $this->assertEquals(["<i class='ti ti-building-warehouse'></i> Main DC"], $room->getDcBreadcrumb());
     }
 }

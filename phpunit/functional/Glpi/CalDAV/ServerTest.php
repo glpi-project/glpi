@@ -39,7 +39,7 @@ use DbTestCase;
 
 /* Test for inc/glpi/caldav/server.class.php */
 
-class Server extends DbTestCase
+class ServerTest extends DbTestCase
 {
     protected function propfindMainEndpointsProvider()
     {
@@ -90,22 +90,23 @@ class Server extends DbTestCase
 
         ksort($users);
 
-       // Create test groups
+        // Create test groups
         foreach ($users as $user_id => $user_data) {
             foreach ($user_data['groups'] as $group_id) {
                 $group_user = new \Group_User();
-                $this->integer(
+                $this->assertGreaterThan(
+                    0,
                     (int)$group_user->add([
                         'groups_id' => $group_id,
                         'users_id'  => $user_id,
                     ])
-                )->isGreaterThan(0);
+                );
             }
         }
 
         foreach ($users as $user_data) {
-           // All users should be able to get "/", "principals/" and "calendars/" collections properties
-           // and should receive same result.
+            // All users should be able to get "/", "principals/" and "calendars/" collections properties
+            // and should receive same result.
             $dataset[] = [
                 'path' => '/',
                 'expected_results' => [
@@ -165,8 +166,8 @@ class Server extends DbTestCase
             ];
         }
 
-       // All users should be able to get "groups" principals properties
-       // but result will only contains data for user groups (or all groups if user has enough rights).
+        // All users should be able to get "groups" principals properties
+        // but result will only contain data for user groups (or all groups if user has enough rights).
         foreach ($users as $user_data) {
             $groups_expected_results = [
                 [
@@ -182,7 +183,7 @@ class Server extends DbTestCase
                     'resourcetype' => 'd:principal',
                 ];
 
-               // Group principal properties should be accessible at 'principals/groups/$group_id/'
+                // Group principal properties should be accessible at 'principals/groups/$group_id/'
                 $dataset[] = [
                     'path' => 'principals/groups/' . $group_id . '/',
                     'expected_results' => [
@@ -203,7 +204,7 @@ class Server extends DbTestCase
             ];
         }
 
-       // 'glpi' user can see all users principals
+        // 'glpi' user can see all users principals
         $expected_results = [
             [
                 'href'         => 'principals/users/',
@@ -223,7 +224,7 @@ class Server extends DbTestCase
             'pass'             => 'glpi',
         ];
 
-       // 'tech', 'normal', 'post-only' user can see only themselves in principals
+        // 'tech', 'normal', 'post-only' user can see only themselves in principals
         foreach (['tech', 'normal', 'post-only'] as $user_name) {
             $user_id   = getItemByTypeName('User', $user_name, true);
             $user_data = $users[$user_id];
@@ -245,7 +246,7 @@ class Server extends DbTestCase
             ];
         }
 
-       // 'glpi' user can see all users calendars
+        // 'glpi' user can see all users calendars
         $expected_results = [
             [
                 'href'         => 'calendars/users/',
@@ -282,7 +283,7 @@ class Server extends DbTestCase
             ];
         }
 
-       // 'tech', 'normal', 'post-only' user can see only themselves in calendars
+        // 'tech', 'normal', 'post-only' user can see only themselves in calendars
         foreach (['tech', 'normal', 'post-only'] as $user_name) {
             $user_id   = getItemByTypeName('User', $user_name, true);
             $user_data = $users[$user_id];
@@ -319,8 +320,8 @@ class Server extends DbTestCase
             ];
         }
 
-       // All users should be able to get "groups" calendars properties
-       // but result will only contains data for user groups (or all groups if user has enough rights).
+        // All users should be able to get "groups" calendars properties
+        // but result will only contain data for user groups (or all groups if user has enough rights).
         foreach ($users as $user_data) {
             $groups_expected_results = [
                 [
@@ -336,7 +337,7 @@ class Server extends DbTestCase
                     'resourcetype' => 'd:collection',
                 ];
 
-               // Group calendar list properties should be accessible at 'calendars/groups/$group_id/'
+                // Group calendar list properties should be accessible at 'calendars/groups/$group_id/'
                 $dataset[] = [
                     'path' => 'calendars/groups/' . $group_id . '/',
                     'expected_results' => [
@@ -364,52 +365,70 @@ class Server extends DbTestCase
         return $dataset;
     }
 
+    public function testPropfindOnMainEndpointsWException()
+    {
+        foreach ($this->propfindMainEndpointsProvider() as $row) {
+            $path = $row['path'];
+
+            $server = $this->getServerInstance('PROPFIND', $path);
+            $this->validateThatAuthenticationIsRequired($server);
+        }
+    }
+
     /**
      * Test PROPFIND method on main endpoints (principals, calendars collections and calendars).
      * Tests only validates that response is ok and endpoints href and resourcetypes are correctly set.
-     *
-     * @dataProvider propfindMainEndpointsProvider
      */
-    public function testPropfindOnMainEndpoints(string $path, array $expected_results, string $login, string $pass)
+    public function testPropfindOnMainEndpoints()
     {
-        $this->login($login, $pass);
+        foreach ($this->propfindMainEndpointsProvider() as $row) {
+            $path = $row['path'];
+            $expected_results = $row['expected_results'];
+            $login = $row['login'];
+            $pass = $row['pass'];
 
-        $server = $this->getServerInstance('PROPFIND', $path);
+            $this->login($login, $pass);
 
-        $this->validateThatAuthenticationIsRequired($server);
+            $server = $this->getServerInstance('PROPFIND', $path);
+            $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
-        $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
+            $response = new \Sabre\HTTP\Response();
+            $server->invokeMethod($server->httpRequest, $response, false);
 
-        $response = new \Sabre\HTTP\Response();
-        $server->invokeMethod($server->httpRequest, $response, false);
+            $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
+            $xpath = $this->getXpathFromResponse($response);
 
-        $this->validateResponseIsOk($response, 207, 'application/xml'); // 207 'Multi-Status'
-        $xpath = $this->getXpathFromResponse($response);
+            $this->assertEquals(
+                count($expected_results),
+                (int)$xpath->evaluate('count(/d:multistatus/d:response)')
+            );
 
-        $this->integer((int)$xpath->evaluate('count(/d:multistatus/d:response)'))->isEqualTo(count($expected_results));
+            $response_index = 1;
+            foreach ($expected_results as $expected_result) {
+                $result_path = '/d:multistatus/d:response[' . $response_index . ']';
 
-        $response_index = 1;
-        foreach ($expected_results as $expected_result) {
-            $result_path = '/d:multistatus/d:response[' . $response_index . ']';
+                $this->assertEquals(
+                    $expected_result['href'],
+                    $xpath->evaluate('string(' . $result_path . '/d:href)')
+                );
 
-            $this->string($xpath->evaluate('string(' . $result_path . '/d:href)'))->isEqualTo($expected_result['href']);
+                $resourcetypes = $expected_result['resourcetype'];
+                if (!is_array($resourcetypes)) {
+                    $resourcetypes = [$resourcetypes];
+                }
+                $this->assertEquals(
+                    count($resourcetypes),
+                    (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
+                );
+                foreach ($resourcetypes as $resourcetype) {
+                    $this->assertEquals(
+                        1,
+                        (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/' . $resourcetype . ')')
+                    );
+                }
 
-            $resourcetypes = $expected_result['resourcetype'];
-            if (!is_array($resourcetypes)) {
-                $resourcetypes = [$resourcetypes];
+                $response_index++;
             }
-            $this->integer(
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
-            )->isEqualTo(count($resourcetypes));
-            $child_index = 1;
-            foreach ($resourcetypes as $resourcetype) {
-                 $this->integer(
-                     (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/' . $resourcetype . ')')
-                 )->isEqualTo(1);
-                 $child_index++;
-            }
-
-            $response_index++;
         }
     }
 
@@ -417,9 +436,8 @@ class Server extends DbTestCase
      * Test PROPFIND method on calendar endpoints.
      * Tests validates that mandatory properties are correctly set.
      */
-    public function testPropfindOnPrincipalCalendar()
+    public function testPropfindOnPrincipalCalendarWException()
     {
-
         $login = 'tech';
         $pass  = 'tech';
         $user  = getItemByTypeName('User', $login);
@@ -429,16 +447,17 @@ class Server extends DbTestCase
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
-        $this->integer($group_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $group_id);
         $group->getFromDB($group_id);
 
         $group_user = new \Group_User();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
-        )->isGreaterThan(0);
+        );
 
         $this->login($login, $pass);
 
@@ -458,9 +477,55 @@ class Server extends DbTestCase
             $calendar_name = $calendar['name'];
 
             $server = $this->getServerInstance('PROPFIND', $calendar_path);
-
             $this->validateThatAuthenticationIsRequired($server);
+        }
+    }
 
+    /**
+     * Test PROPFIND method on calendar endpoints.
+     * Tests validates that mandatory properties are correctly set.
+     */
+    public function testPropfindOnPrincipalCalendar()
+    {
+        $login = 'tech';
+        $pass  = 'tech';
+        $user  = getItemByTypeName('User', $login);
+
+        $group = new \Group();
+        $group_id = (int)$group->add([
+            'name'    => 'Test group',
+            'is_task' => 1,
+        ]);
+        $this->assertGreaterThan(0, $group_id);
+        $group->getFromDB($group_id);
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int)$group_user->add([
+                'groups_id' => $group_id,
+                'users_id'  => $user->fields['id'],
+            ])
+        );
+
+        $this->login($login, $pass);
+
+        $calendars = [
+            [
+                'path' => 'calendars/users/' . $user->fields['name'] . '/calendar/',
+                'name' => $user->getFriendlyName(),
+            ],
+            [
+                'path' => 'calendars/groups/' . $group_id . '/calendar/',
+                'name' => $group->getFriendlyName(),
+            ],
+        ];
+
+        foreach ($calendars as $calendar) {
+            $calendar_path = $calendar['path'];
+            $calendar_name = $calendar['name'];
+
+            $server = $this->getServerInstance('PROPFIND', $calendar_path);
             $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
             $response = new \Sabre\HTTP\Response();
@@ -471,43 +536,50 @@ class Server extends DbTestCase
 
             $result_path = '/d:multistatus/d:response[1]';
 
-            $this->string($xpath->evaluate('string(' . $result_path . '/d:href)'))->isEqualTo($calendar_path);
+            $this->assertEquals($calendar_path, $xpath->evaluate('string(' . $result_path . '/d:href)'));
 
-            $this->integer(
+            $this->assertEquals(
+                2,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
-            )->isEqualTo(2);
-            $this->integer(
+            );
+            $this->assertEquals(
+                1,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/d:collection)')
-            )->isEqualTo(1);
-            $this->integer(
+            );
+            $this->assertEquals(
+                1,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/cal:calendar)')
-            )->isEqualTo(1);
+            );
 
-            $this->string(
+            $this->assertEquals(
+                $calendar_name,
                 $xpath->evaluate('string(' . $result_path . '/d:propstat/d:prop/d:displayname)')
-            )->isEqualTo($calendar_name);
+            );
 
-            $this->integer(
+            $this->assertEquals(
+                3,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp)')
-            )->isEqualTo(3);
-            $this->integer(
+            );
+            $this->assertEquals(
+                1,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VEVENT"])')
-            )->isEqualTo(1);
-            $this->integer(
+            );
+            $this->assertEquals(
+                1,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VJOURNAL"])')
-            )->isEqualTo(1);
-            $this->integer(
+            );
+            $this->assertEquals(
+                1,
                 (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VTODO"])')
-            )->isEqualTo(1);
+            );
         }
     }
 
     /**
      * Test ACL on main objects.
      */
-    public function testAcl()
+    public function testAclWException()
     {
-
         $user  = getItemByTypeName('User', 'tech');
 
         $group = new \Group();
@@ -515,16 +587,17 @@ class Server extends DbTestCase
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
-        $this->integer($group_id)->isGreaterThan(0);
-        $group->getFromDB($group_id);
+        $this->assertGreaterThan(0, $group_id);
+        $this->assertTrue($group->getFromDB($group_id));
 
         $group_user = new \Group_User();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
-        )->isGreaterThan(0);
+        );
 
         $objects = [
             'principals/users/' . $user->fields['name'],
@@ -543,9 +616,52 @@ class Server extends DbTestCase
 
             foreach ($objects as $path) {
                 $server = $this->getServerInstance('PROPFIND', $path);
-
                 $this->validateThatAuthenticationIsRequired($server);
+            }
+        }
+    }
 
+    /**
+     * Test ACL on main objects.
+     */
+    public function testAcl()
+    {
+        $user  = getItemByTypeName('User', 'tech');
+
+        $group = new \Group();
+        $group_id = (int)$group->add([
+            'name'    => 'Test group',
+            'is_task' => 1,
+        ]);
+        $this->assertGreaterThan(0, $group_id);
+        $this->assertTrue($group->getFromDB($group_id));
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int)$group_user->add([
+                'groups_id' => $group_id,
+                'users_id'  => $user->fields['id'],
+            ])
+        );
+
+        $objects = [
+            'principals/users/' . $user->fields['name'],
+            'calendars/users/' . $user->fields['name'] . '/calendar/',
+            'principals/groups/' . $group_id,
+            'calendars/groups/' . $group_id . '/calendar/',
+        ];
+
+        $users_access = [
+            'normal' => 'HTTP/1.1 403 Forbidden',
+            'tech'   => 'HTTP/1.1 200 OK',
+        ];
+
+        foreach ($users_access as $username => $expected_status) {
+            $this->login($username, $username);
+
+            foreach ($objects as $path) {
+                $server = $this->getServerInstance('PROPFIND', $path);
                 $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($username . ':' . $username));
 
                 $response = new \Sabre\HTTP\Response();
@@ -554,18 +670,16 @@ class Server extends DbTestCase
 
                 $xpath = $this->getXpathFromResponse($response);
                 $result_path = '/d:multistatus/d:response[1]';
-                $this->string($xpath->evaluate('string(' . $result_path . '/d:propstat/d:status)'))->isEqualTo($expected_status);
+                $this->assertEquals($expected_status, $xpath->evaluate('string(' . $result_path . '/d:propstat/d:status)'));
             }
         }
     }
 
     /**
-     * Test PROPFIND, GET, DELETE, PUT methods on calendar events.
-     * Tests validates that mandatory properties are correctly set.
+     * Test PROPFIND method on calendar events requires authentication.
      */
-    public function testMethodsCalendarEvents()
+    public function testPropfindCalendarEventsWException()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -586,16 +700,157 @@ class Server extends DbTestCase
                 'byweekday' => 'MO',
             ],
         ]);
-        $this->integer($event_id)->isGreaterThan(0);
-        $event->getFromDB($event_id);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
 
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
 
-       // Validate PROPFIND method
+        // Validate PROPFIND method
         $server = $this->getServerInstance('PROPFIND', $event_path);
+        $this->validateThatAuthenticationIsRequired($server);
+    }
+
+    /**
+     * Test GET method on calendar events requires authentication.
+     */
+    public function testGetCalendarEventsWException()
+    {
+        $login = TU_USER;
+        $pass  = TU_PASS;
+        $user  = getItemByTypeName('User', $login);
+
+        $this->login($login, $pass);
+
+        $event = new \PlanningExternalEvent();
+        $event_id = (int)$event->add([
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Evt description',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'weekly',
+                'byweekday' => 'MO',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
+
+        $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
+
+        // Validate PROPFIND method
+        $server = $this->getServerInstance('GET', $event_path);
 
         $this->validateThatAuthenticationIsRequired($server);
+    }
 
+    /**
+     * Test DELETE method on calendar events requires authentication.
+     */
+    public function testDeleteCalendarEventsWException()
+    {
+        $login = TU_USER;
+        $pass  = TU_PASS;
+        $user  = getItemByTypeName('User', $login);
+
+        $this->login($login, $pass);
+
+        $event = new \PlanningExternalEvent();
+        $event_id = (int)$event->add([
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Evt description',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'weekly',
+                'byweekday' => 'MO',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
+
+        $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
+
+        // Validate PROPFIND method
+        $server = $this->getServerInstance('DELETE', $event_path);
+
+        $this->validateThatAuthenticationIsRequired($server);
+    }
+
+    /**
+     * Test PUT method on calendar events requires authentication.
+     */
+    public function testPutCalendarEventsWException()
+    {
+        $login = TU_USER;
+        $pass  = TU_PASS;
+        $user  = getItemByTypeName('User', $login);
+
+        $this->login($login, $pass);
+
+        $event = new \PlanningExternalEvent();
+        $event_id = (int)$event->add([
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Evt description',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'weekly',
+                'byweekday' => 'MO',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
+
+        $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
+
+        // Validate PROPFIND method
+        $server = $this->getServerInstance('PUT', $event_path);
+
+        $this->validateThatAuthenticationIsRequired($server);
+    }
+
+    /**
+     * Test PROPFIND, GET, DELETE, PUT methods on calendar events.
+     * Tests validates that mandatory properties are correctly set.
+     */
+    public function testMethodsCalendarEvents()
+    {
+        $login = TU_USER;
+        $pass  = TU_PASS;
+        $user  = getItemByTypeName('User', $login);
+
+        $this->login($login, $pass);
+
+        $event = new \PlanningExternalEvent();
+        $event_id = (int)$event->add([
+            'name'        => 'Test event created in GLPI',
+            'text'        => 'Evt description',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'plan'        => [
+                'begin' => '2019-06-15 13:00:00',
+                'end'   => '2019-06-15 13:45:00'
+            ],
+            'rrule'       => [
+                'freq'      => 'weekly',
+                'byweekday' => 'MO',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
+
+        $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
+
+        // Validate PROPFIND method
+        $server = $this->getServerInstance('PROPFIND', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
         $response = new \Sabre\HTTP\Response();
@@ -606,19 +861,18 @@ class Server extends DbTestCase
 
         $result_path = '/d:multistatus/d:response[1]';
 
-        $this->string($xpath->evaluate('string(' . $result_path . '/d:href)'))->isEqualTo($event_path);
-        $this->string(
+        $this->assertEquals($event_path, $xpath->evaluate('string(' . $result_path . '/d:href)'));
+        $this->assertEquals(
+            (new \DateTime($event->fields['date_mod']))->format('D, d M Y H:i:s \G\M\T'),
             $xpath->evaluate('string(' . $result_path . '/d:propstat/d:prop/d:getlastmodified)')
-        )->isEqualTo((new \DateTime($event->fields['date_mod']))->format('D, d M Y H:i:s \G\M\T'));
-        $this->string(
+        );
+        $this->assertEquals(
+            'text/calendar; charset=utf-8',
             $xpath->evaluate('string(' . $result_path . '/d:propstat/d:prop/d:getcontenttype)')
-        )->isEqualTo('text/calendar; charset=utf-8');
+        );
 
-       // Validate GET method
+        // Validate GET method
         $server = $this->getServerInstance('GET', $event_path);
-
-        $this->validateThatAuthenticationIsRequired($server);
-
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
         $response = new \Sabre\HTTP\Response();
@@ -628,10 +882,10 @@ class Server extends DbTestCase
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VEvent::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
-       // Validate PUT method for update of an existing event
+        // Validate PUT method for update of an existing event
         $server = $this->getServerInstance('PUT', $event_path);
         $server->httpRequest->setBody(
             <<<VCALENDAR
@@ -648,37 +902,32 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $this->validateThatAuthenticationIsRequired($server);
-
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
         $updated_event = new \PlanningExternalEvent();
-        $this->boolean($updated_event->getFromDBByCrit(['uuid' => $event->fields['uuid']]))->isTrue();
-        $this->array($updated_event->fields)
-         ->string['name']->isEqualTo('Test event updated from external source')
-         ->string['begin']->isEqualTo('2019-10-10 11:30:00');
-        $this->variable($updated_event->fields['rrule'])->isNull(); // Validate that RRULE has been removed
+        $this->assertTrue($updated_event->getFromDBByCrit(['uuid' => $event->fields['uuid']]));
+        $this->assertIsArray($updated_event->fields);
+        $this->assertEquals('Test event updated from external source', $updated_event->fields['name']);
+        $this->assertEquals('2019-10-10 11:30:00', $updated_event->fields['begin']);
+        $this->assertNull($updated_event->fields['rrule']); // Validate that RRULE has been removed
 
-       // Validate DELETE method
+        // Validate DELETE method
         $server = $this->getServerInstance('DELETE', $event_path);
-
-        $this->validateThatAuthenticationIsRequired($server);
-
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($event->getFromDB($event_id))->isFalse(); // Cannot read it anymore
+        $this->assertFalse($event->getFromDB($event_id)); // Cannot read it anymore
 
-       // Validate PUT method for creation of a new event
+        // Validate PUT method for creation of a new event
         $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
@@ -701,22 +950,20 @@ END:VCALENDAR
 VCALENDAR
         );
 
-        $this->validateThatAuthenticationIsRequired($server);
-
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
         $new_event = new \PlanningExternalEvent();
-        $this->boolean($new_event->getFromDBByCrit(['uuid' => $event_uuid]))->isTrue();
-        $this->array($new_event->fields)
-         ->string['uuid']->isEqualTo($event_uuid)
-         ->string['name']->isEqualTo('Test event created from external source')
-         ->string['begin']->isEqualTo('2019-10-10 11:00:00')
-         ->string['end']->isEqualTo('2019-10-10 12:00:00');
+        $this->assertTrue($new_event->getFromDBByCrit(['uuid' => $event_uuid]));
+        $this->assertIsArray($new_event->fields);
+        $this->assertEquals($event_uuid, $new_event->fields['uuid']);
+        $this->assertEquals('Test event created from external source', $new_event->fields['name']);
+        $this->assertEquals('2019-10-10 11:00:00', $new_event->fields['begin']);
+        $this->assertEquals('2019-10-10 12:00:00', $new_event->fields['end']);
     }
 
     /**
@@ -725,7 +972,6 @@ VCALENDAR
      */
     public function testReadVEventFromPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -747,8 +993,8 @@ VCALENDAR
                 'byweekday' => 'MO,TU,WE,TH,FR',
             ],
         ]);
-        $this->integer($event_id)->isGreaterThan(0);
-        $event->getFromDB($event_id);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
 
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
 
@@ -762,16 +1008,15 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VEvent::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
         $rrule_specs = current($vcomp->RRULE->getJsonValue()); // Get first array element which actually correspond to rrule specs
-        $this->array($rrule_specs)->keys->isEqualTo(['freq', 'interval', 'byday']);
-        $this->array($rrule_specs)
-         ->string['freq']->isEqualTo('DAILY')
-         ->string['interval']->isEqualTo('3')
-         ->array['byday']->isEqualTo(['MO', 'TU', 'WE', 'TH', 'FR']);
+        $this->assertEquals(['freq', 'interval', 'byday'], array_keys($rrule_specs));
+        $this->assertEquals('DAILY', $rrule_specs['freq']);
+        $this->assertEquals(3, $rrule_specs['interval']);
+        $this->assertEquals(['MO', 'TU', 'WE', 'TH', 'FR'], $rrule_specs['byday']);
     }
 
     /**
@@ -780,7 +1025,6 @@ VCALENDAR
      */
     public function testWriteVEventToPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -815,24 +1059,26 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
         $event = new \PlanningExternalEvent();
-        $this->boolean($event->getFromDBByCrit(['uuid' => $event_uuid]))->isTrue();
-        $this->array($event->fields)
-         ->string['uuid']->isEqualTo($event_uuid)
-         ->string['date_creation']->isEqualTo('2019-10-01 08:26:36')
-         ->string['name']->isEqualTo('Test event created from external source')
-         ->string['text']->isEqualTo('Description of the event.')
-         ->integer['state']->isEqualTo(\Planning::INFO)
-         ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 11:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['rrule'];
-        $this->array(json_decode($event->fields['rrule'], true))
-         ->string['freq']->isEqualTo('WEEKLY')
-         ->string['interval']->isEqualTo('2')
-         ->string['until']->isEqualTo('2019-12-31 08:00:00')
-         ->array['byday']->isEqualTo(['MO','FR']);
+        $this->assertTrue($event->getFromDBByCrit(['uuid' => $event_uuid]));
+        $this->assertIsArray($event->fields);
+        $this->assertEquals($event_uuid, $event->fields['uuid']);
+        $this->assertEquals('2019-10-01 08:26:36', $event->fields['date_creation']);
+        $this->assertEquals('Test event created from external source', $event->fields['name']);
+        $this->assertEquals('Description of the event.', $event->fields['text']);
+        $this->assertEquals(\Planning::INFO, $event->fields['state']);
+        $this->assertEquals('2019-11-01 08:00:00', $event->fields['begin']);
+        $this->assertEquals('2019-11-01 11:00:00', $event->fields['end']);
+        $this->assertIsString($event->fields['rrule']);
+
+        $json = json_decode($event->fields['rrule'], true);
+        $this->assertIsArray($json);
+        $this->assertEquals('WEEKLY', $json['freq']);
+        $this->assertEquals(2, $json['interval']);
+        $this->assertEquals('2019-12-31 08:00:00', $json['until']);
+        $this->assertEquals(['MO', 'FR'], $json['byday']);
     }
 
     /**
@@ -841,14 +1087,13 @@ VCALENDAR
      */
     public function testReadVTodoFromPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
 
         $this->login($login, $pass);
 
-       // Not planned task
+        // Not planned task
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
             'name'        => 'Task created in GLPI',
@@ -856,7 +1101,7 @@ VCALENDAR
             'entities_id' => $_SESSION['glpiactive_entity'],
             'state'       => \Planning::DONE
         ]);
-        $this->integer($event_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $event_id);
         $event->getFromDB($event_id);
 
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
@@ -871,13 +1116,13 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VTodo::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
-        $this->variable($vcomp->DTEND)->isNull(); // Be sure that VTODO does not contains a DTEND
+        $this->assertNull($vcomp->DTEND); // Be sure that VTODO does not contains a DTEND
 
-       // Planned task
+        // Planned task
         $event = new \PlanningExternalEvent();
         $event_id = (int)$event->add([
             'name'        => 'Task created in GLPI',
@@ -892,8 +1137,8 @@ VCALENDAR
             ],
             'state'       => \Planning::TODO
         ]);
-        $this->integer($event_id)->isGreaterThan(0);
-        $event->getFromDB($event_id);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
 
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
 
@@ -907,14 +1152,12 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VTodo::class);
-
-        $this->variable($vcomp->DTEND)->isNull(); // Be sure that VTODO does not contains a DTEND
+        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
+        $this->assertNull($vcomp->DTEND); // Be sure that VTODO does not contains a DTEND
 
         $rrule_specs = current($vcomp->RRULE->getJsonValue()); // Get first array element which actually correspond to rrule specs
-        $this->array($rrule_specs)->keys->isEqualTo(['freq']);
-        $this->array($rrule_specs)
-         ->string['freq']->isEqualTo('MONTHLY');
+        $this->assertEquals(['freq'], array_keys($rrule_specs));
+        $this->assertEquals('MONTHLY', $rrule_specs['freq']);
     }
 
     /**
@@ -923,14 +1166,13 @@ VCALENDAR
      */
     public function testWriteVTodoToPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
 
         $this->login($login, $pass);
 
-       // Create planned task with TO DO state
+        // Create planned task with TO DO state
         $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
@@ -959,21 +1201,21 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
         $event = new \PlanningExternalEvent();
-        $this->boolean($event->getFromDBByCrit(['uuid' => $event_uuid]))->isTrue();
-        $this->array($event->fields)
-         ->string['uuid']->isEqualTo($event_uuid)
-         ->string['date_creation']->isEqualTo('2019-10-01 08:26:36')
-         ->string['name']->isEqualTo('Test task created from external source')
-         ->string['text']->isEqualTo('Description of the task.')
-         ->integer['state']->isEqualTo(\Planning::TODO)
-         ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
-        $this->variable($event->fields['rrule'])->isNull();
+        $this->assertTrue($event->getFromDBByCrit(['uuid' => $event_uuid]));
+        $this->assertIsArray($event->fields);
+        $this->assertEquals($event_uuid, $event->fields['uuid']);
+        $this->assertEquals('2019-10-01 08:26:36', $event->fields['date_creation']);
+        $this->assertEquals('Test task created from external source', $event->fields['name']);
+        $this->assertEquals('Description of the task.', $event->fields['text']);
+        $this->assertEquals(\Planning::TODO, $event->fields['state']);
+        $this->assertEquals('2019-11-01 08:00:00', $event->fields['begin']);
+        $this->assertEquals('2019-11-01 08:15:00', $event->fields['end']);
+        $this->assertNull($event->fields['rrule']);
 
-       // Create done and not planned task
+        // Create done and not planned task
         $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
@@ -1000,19 +1242,19 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
         $event = new \PlanningExternalEvent();
-        $this->boolean($event->getFromDBByCrit(['uuid' => $event_uuid]))->isTrue();
-        $this->array($event->fields)
-         ->string['uuid']->isEqualTo($event_uuid)
-         ->string['date_creation']->isEqualTo('2019-10-01 08:26:36')
-         ->string['name']->isEqualTo('Test task created from external source')
-         ->string['text']->isEqualTo('Description of the task.')
-         ->integer['state']->isEqualTo(\Planning::DONE)
-         ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null);
-        $this->variable($event->fields['rrule'])->isNull();
+        $this->assertTrue($event->getFromDBByCrit(['uuid' => $event_uuid]));
+        $this->assertIsArray($event->fields);
+        $this->assertEquals($event_uuid, $event->fields['uuid']);
+        $this->assertEquals('2019-10-01 08:26:36', $event->fields['date_creation']);
+        $this->assertEquals('Test task created from external source', $event->fields['name']);
+        $this->assertEquals('Description of the task.', $event->fields['text']);
+        $this->assertEquals(\Planning::DONE, $event->fields['state']);
+        $this->assertNull($event->fields['begin']);
+        $this->assertNull($event->fields['end']);
+        $this->assertNull($event->fields['rrule']);
     }
 
     /**
@@ -1021,7 +1263,6 @@ VCALENDAR
      */
     public function testReadVJournalFromPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1035,8 +1276,8 @@ VCALENDAR
             'entities_id' => $_SESSION['glpiactive_entity'],
             'state'       => \Planning::INFO
         ]);
-        $this->integer($event_id)->isGreaterThan(0);
-        $event->getFromDB($event_id);
+        $this->assertGreaterThan(0, $event_id);
+        $this->assertTrue($event->getFromDB($event_id));
 
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event->fields['uuid'] . '.ics';
 
@@ -1050,14 +1291,14 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VJournal::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VJournal::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $event->fields);
 
-       // Be sure that VJOURNAL does not contains plan information
-        $this->variable($vcomp->DTSTART)->isNull();
-        $this->variable($vcomp->DTEND)->isNull();
-        $this->variable($vcomp->DUE)->isNull();
+        // Be sure that VJOURNAL does not contains plan information
+        $this->assertNull($vcomp->DTSTART);
+        $this->assertNull($vcomp->DTEND);
+        $this->assertNull($vcomp->DUE);
     }
 
     /**
@@ -1066,7 +1307,6 @@ VCALENDAR
      */
     public function testWriteVJournalToPlanningExternalEvent()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1098,19 +1338,19 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
         $event = new \PlanningExternalEvent();
-        $this->boolean($event->getFromDBByCrit(['uuid' => $event_uuid]))->isTrue();
-        $this->array($event->fields)
-         ->string['uuid']->isEqualTo($event_uuid)
-         ->string['date_creation']->isEqualTo('2019-10-01 08:26:36')
-         ->string['name']->isEqualTo('Note created from external source')
-         ->string['text']->isEqualTo('Description of the note.')
-         ->integer['state']->isEqualTo(\Planning::INFO)
-         ->variable['begin']->isEqualTo(null)
-         ->variable['end']->isEqualTo(null);
-        $this->variable($event->fields['rrule'])->isNull();
+        $this->assertTrue($event->getFromDBByCrit(['uuid' => $event_uuid]));
+        $this->assertIsArray($event->fields);
+        $this->assertEquals($event_uuid, $event->fields['uuid']);
+        $this->assertEquals('2019-10-01 08:26:36', $event->fields['date_creation']);
+        $this->assertEquals('Note created from external source', $event->fields['name']);
+        $this->assertEquals('Description of the note.', $event->fields['text']);
+        $this->assertEquals(\Planning::INFO, $event->fields['state']);
+        $this->assertNull($event->fields['begin']);
+        $this->assertNull($event->fields['end']);
+        $this->assertNull($event->fields['rrule']);
     }
 
     /**
@@ -1119,7 +1359,6 @@ VCALENDAR
      */
     public function testReadWriteVTodoFromReminder()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1132,14 +1371,14 @@ VCALENDAR
             'text'        => 'Description of the reminder.',
             'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
-        $this->integer($reminder_id)->isGreaterThan(0);
-        $reminder->getFromDB($reminder_id);
+        $this->assertGreaterThan(0, $reminder_id);
+        $this->assertTrue($reminder->getFromDB($reminder_id));
 
         $creation_date = $reminder->fields['date_creation'];
 
         $reminder_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $reminder->fields['uuid'] . '.ics';
 
-       // Test reading VTODO object
+        // Test reading VTODO object
         $server = $this->getServerInstance('GET', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
@@ -1150,11 +1389,11 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VJournal::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VJournal::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $reminder->fields);
 
-       // Test updating VTODO object
+        // Test updating VTODO object
         $server = $this->getServerInstance('PUT', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1177,15 +1416,15 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($reminder->getFromDBByCrit(['uuid' => $reminder->fields['uuid']]))->isTrue();
-        $this->array($reminder->fields)
-         ->string['uuid']->isEqualTo($reminder->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['name']->isEqualTo('Test reminder updated from external source')
-         ->string['text']->isEqualTo('Updated description.')
-         ->integer['state']->isEqualTo(\Planning::INFO);
+        $this->assertTrue($reminder->getFromDBByCrit(['uuid' => $reminder->fields['uuid']]));
+        $this->assertIsArray($reminder->fields);
+        $this->assertEquals($reminder->fields['uuid'], $reminder->fields['uuid']);
+        $this->assertEquals($creation_date, $reminder->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Test reminder updated from external source', $reminder->fields['name']);
+        $this->assertEquals('Updated description.', $reminder->fields['text']);
+        $this->assertEquals(\Planning::INFO, $reminder->fields['state']);
     }
 
     /**
@@ -1194,7 +1433,6 @@ VCALENDAR
      */
     public function testReadWriteVJournalFromReminder()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1212,14 +1450,14 @@ VCALENDAR
             ],
             'state'       => \Planning::TODO,
         ]);
-        $this->integer($reminder_id)->isGreaterThan(0);
-        $reminder->getFromDB($reminder_id);
+        $this->assertGreaterThan(0, $reminder_id);
+        $this->assertTrue($reminder->getFromDB($reminder_id));
 
         $creation_date = $reminder->fields['date_creation'];
 
         $reminder_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $reminder->fields['uuid'] . '.ics';
 
-       // Test reading VTODO object
+        // Test reading VTODO object
         $server = $this->getServerInstance('GET', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
@@ -1230,11 +1468,11 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VTodo::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $reminder->fields);
 
-       // Test updating VTODO object
+        // Test updating VTODO object
         $server = $this->getServerInstance('PUT', $reminder_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1260,17 +1498,17 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($reminder->getFromDBByCrit(['uuid' => $reminder->fields['uuid']]))->isTrue();
-        $this->array($reminder->fields)
-         ->string['uuid']->isEqualTo($reminder->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['name']->isEqualTo('Test reminder updated from external source')
-         ->string['text']->isEqualTo('Updated description.')
-         ->integer['state']->isEqualTo(\Planning::DONE)
-         ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
+        $this->assertTrue($reminder->getFromDBByCrit(['uuid' => $reminder->fields['uuid']]));
+        $this->assertIsArray($reminder->fields);
+        $this->assertEquals($reminder->fields['uuid'], $reminder->fields['uuid']);
+        $this->assertEquals($creation_date, $reminder->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Test reminder updated from external source', $reminder->fields['name']);
+        $this->assertEquals('Updated description.', $reminder->fields['text']);
+        $this->assertEquals(\Planning::DONE, $reminder->fields['state']);
+        $this->assertEquals('2019-11-01 08:00:00', $reminder->fields['begin']);
+        $this->assertEquals('2019-11-01 08:15:00', $reminder->fields['end']);
     }
 
     /**
@@ -1279,7 +1517,6 @@ VCALENDAR
      */
     public function testReadWriteVTodoFromTicketTask()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1293,7 +1530,7 @@ VCALENDAR
             'users_id_recipient' => $user->fields['id'],
             'entities_id'        => $_SESSION['glpiactive_entity'],
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_id);
 
         $ticket_task = new \TicketTask();
         $ticket_task_id = (int)$ticket_task->add([
@@ -1301,14 +1538,14 @@ VCALENDAR
             'content'       => 'Description of the task.',
             'users_id_tech' => $user->fields['id'],
         ]);
-        $this->integer($ticket_task_id)->isGreaterThan(0);
-        $ticket_task->getFromDB($ticket_task_id);
+        $this->assertGreaterThan(0, $ticket_task_id);
+        $this->assertTrue($ticket_task->getFromDB($ticket_task_id));
 
         $creation_date = $ticket_task->fields['date_creation'];
 
         $ticket_task_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $ticket_task->fields['uuid'] . '.ics';
 
-       // Test reading VTODO object
+        // Test reading VTODO object
         $server = $this->getServerInstance('GET', $ticket_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
@@ -1319,11 +1556,11 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VTodo::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $ticket_task->fields);
 
-       // Test updating VTODO object (without plan information)
+        // Test updating VTODO object (without plan information)
         $server = $this->getServerInstance('PUT', $ticket_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1347,16 +1584,16 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($ticket_task->getFromDBByCrit(['uuid' => $ticket_task->fields['uuid']]))->isTrue();
-        $this->array($ticket_task->fields)
-         ->string['uuid']->isEqualTo($ticket_task->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['content']->isEqualTo('Updated description.')
-         ->integer['state']->isEqualTo(\Planning::TODO);
+        $this->assertTrue($ticket_task->getFromDBByCrit(['uuid' => $ticket_task->fields['uuid']]));
+        $this->assertIsArray($ticket_task->fields);
+        $this->assertEquals($ticket_task->fields['uuid'], $ticket_task->fields['uuid']);
+        $this->assertEquals($creation_date, $ticket_task->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Updated description.', $ticket_task->fields['content']);
+        $this->assertEquals(\Planning::TODO, $ticket_task->fields['state']);
 
-       // Test updating VTODO object (with plan information)
+        // Test updating VTODO object (with plan information)
         $server = $this->getServerInstance('PUT', $ticket_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1382,16 +1619,16 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($ticket_task->getFromDBByCrit(['uuid' => $ticket_task->fields['uuid']]))->isTrue();
-        $this->array($ticket_task->fields)
-         ->string['uuid']->isEqualTo($ticket_task->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['content']->isEqualTo('Updated description.')
-         ->integer['state']->isEqualTo(\Planning::DONE)
-         ->string['begin']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['end']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
+        $this->assertTrue($ticket_task->getFromDBByCrit(['uuid' => $ticket_task->fields['uuid']]));
+        $this->assertIsArray($ticket_task->fields);
+        $this->assertEquals($ticket_task->fields['uuid'], $ticket_task->fields['uuid']);
+        $this->assertEquals($creation_date, $ticket_task->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Updated description.', $ticket_task->fields['content']);
+        $this->assertEquals(\Planning::DONE, $ticket_task->fields['state']);
+        $this->assertEquals('2019-11-01 08:00:00', $ticket_task->fields['begin']);
+        $this->assertEquals('2019-11-01 08:15:00', $ticket_task->fields['end']);
     }
 
     /**
@@ -1400,7 +1637,6 @@ VCALENDAR
      */
     public function testReadWriteVTodoFromProjectTask()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1413,7 +1649,7 @@ VCALENDAR
             'content'     => 'Project content.',
             'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
-        $this->integer($project_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $project_id);
 
         $project_task = new \ProjectTask();
         $project_task_id = (int)$project_task->add([
@@ -1422,8 +1658,8 @@ VCALENDAR
             'projects_id' => $project_id,
             'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
-        $this->integer($project_task_id)->isGreaterThan(0);
-        $project_task->getFromDB($project_task_id);
+        $this->assertGreaterThan(0, $project_task_id);
+        $this->assertTrue($project_task->getFromDB($project_task_id));
 
         $project_task_team = new \ProjectTaskTeam();
         $project_task_team_id = (int)$project_task_team->add([
@@ -1431,13 +1667,13 @@ VCALENDAR
             'itemtype'        => 'User',
             'items_id'        => $user->fields['id'],
         ]);
-        $this->integer($project_task_team_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $project_task_team_id);
 
         $creation_date = $project_task->fields['date_creation'];
 
         $project_task_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $project_task->fields['uuid'] . '.ics';
 
-       // Test reading VTODO object
+        // Test reading VTODO object
         $server = $this->getServerInstance('GET', $project_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
@@ -1448,13 +1684,13 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VTodo::class);
+        $this->assertInstanceOf(\Sabre\VObject\Component\VTodo::class, $vcomp);
 
         $this->validateCommonVComponentProperties($vcomp, $project_task->fields);
-        $this->object($vcomp->{'PERCENT-COMPLETE'})->isInstanceOf(\Sabre\VObject\Property\IntegerValue::class);
-        $this->integer($vcomp->{'PERCENT-COMPLETE'}->getValue())->isEqualTo((int)$project_task->fields['percent_done']);
+        $this->assertInstanceOf(\Sabre\VObject\Property\IntegerValue::class, $vcomp->{'PERCENT-COMPLETE'});
+        $this->assertEquals((int)$project_task->fields['percent_done'], $vcomp->{'PERCENT-COMPLETE'}->getValue());
 
-       // Test updating VTODO object (without plan information)
+        // Test updating VTODO object (without plan information)
         $server = $this->getServerInstance('PUT', $project_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1479,16 +1715,16 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
-        $this->array($project_task->fields)
-         ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['content']->isEqualTo('Updated description.')
-         ->integer['percent_done']->isEqualTo(35);
+        $this->assertTrue($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]));
+        $this->assertIsArray($project_task->fields);
+        $this->assertEquals($project_task->fields['uuid'], $project_task->fields['uuid']);
+        $this->assertEquals($creation_date, $project_task->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Updated description.', $project_task->fields['content']);
+        $this->assertEquals(35, $project_task->fields['percent_done']);
 
-       // Test updating VTODO object (with plan information)
+        // Test updating VTODO object (with plan information)
         $server = $this->getServerInstance('PUT', $project_task_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1514,16 +1750,16 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(204); // 204 'No Content'
+        $this->assertEquals(204, $response->getStatus()); // 204 'No Content'
 
-        $this->boolean($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]))->isTrue();
-        $this->array($project_task->fields)
-         ->string['uuid']->isEqualTo($project_task->fields['uuid'])
-         ->string['date_creation']->isEqualTo($creation_date) // be sure that creation date is not overrided
-         ->string['content']->isEqualTo('Updated description.')
-         ->integer['percent_done']->isEqualTo(100)
-         ->string['plan_start_date']->isEqualTo('2019-11-01 08:00:00') // 1 hour offset between Europe/Paris and UTC
-         ->string['plan_end_date']->isEqualTo('2019-11-01 08:15:00'); // 1 hour offset between Europe/Paris and UTC
+        $this->assertTrue($project_task->getFromDBByCrit(['uuid' => $project_task->fields['uuid']]));
+        $this->assertIsArray($project_task->fields);
+        $this->assertEquals($project_task->fields['uuid'], $project_task->fields['uuid']);
+        $this->assertEquals($creation_date, $project_task->fields['date_creation']); // be sure that creation date is not overrided
+        $this->assertEquals('Updated description.', $project_task->fields['content']);
+        $this->assertEquals(100, $project_task->fields['percent_done']);
+        $this->assertEquals('2019-11-01 08:00:00', $project_task->fields['plan_start_date']); // 1 hour offset between Europe/Paris and UTC
+        $this->assertEquals('2019-11-01 08:15:00', $project_task->fields['plan_end_date']); // 1 hour offset between Europe/Paris and UTC
     }
 
     /**
@@ -1531,7 +1767,6 @@ VCALENDAR
      */
     public function testPersistenceOfNotHandledProps()
     {
-
         $login = TU_USER;
         $pass  = TU_PASS;
         $user  = getItemByTypeName('User', $login);
@@ -1541,7 +1776,7 @@ VCALENDAR
         $event_uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $event_path = 'calendars/users/' . $user->fields['name'] . '/calendar/' . $event_uuid . '.ics';
 
-       // Store a new object
+        // Store a new object
         $server = $this->getServerInstance('PUT', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
         $server->httpRequest->setBody(
@@ -1570,9 +1805,9 @@ VCALENDAR
         $response = new \Sabre\HTTP\Response();
         $server->invokeMethod($server->httpRequest, $response, false);
 
-        $this->integer($response->getStatus())->isEqualTo(201); // 201 'Created'
+        $this->assertEquals(201, $response->getStatus()); // 201 'Created'
 
-       // Read created object
+        // Read created object
         $server = $this->getServerInstance('GET', $event_path);
         $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));
 
@@ -1583,14 +1818,16 @@ VCALENDAR
 
         $vcalendar = \Sabre\VObject\Reader::read($response->getBodyAsString());
         $vcomp = $vcalendar->getBaseComponent();
-        $this->object($vcomp)->isInstanceOf(\Sabre\VObject\Component\VEvent::class);
-        $this->array($categories = $vcomp->select('CATEGORIES'))->hasSize(2);
-        $this->array($categories)->object[0]->isInstanceOf(\Sabre\VObject\Property\Text::class);
-        $this->string($categories[0]->getValue())->isEqualTo('First category');
-        $this->array($categories)->object[1]->isInstanceOf(\Sabre\VObject\Property\Text::class);
-        $this->string($categories[1]->getValue())->isEqualTo('Another cat');
-        $this->object($vcomp->LOCATION)->isInstanceOf(\Sabre\VObject\Property\FlatText::class);
-        $this->string($vcomp->LOCATION->getValue())->isEqualTo('Here');
+        $this->assertInstanceOf(\Sabre\VObject\Component\VEvent::class, $vcomp);
+
+        $categories = $vcomp->select('CATEGORIES');
+        $this->assertCount(2, $categories);
+        $this->assertInstanceOf(\Sabre\VObject\Property\Text::class, $categories[0]);
+        $this->assertEquals('First category', $categories[0]->getValue());
+        $this->assertInstanceOf(\Sabre\VObject\Property\Text::class, $categories[1]);
+        $this->assertEquals('Another cat', $categories[1]->getValue());
+        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->LOCATION);
+        $this->assertEquals('Here', $vcomp->LOCATION->getValue());
     }
 
     /**
@@ -1601,12 +1838,9 @@ VCALENDAR
      */
     private function validateThatAuthenticationIsRequired(\Glpi\CalDAV\Server $server)
     {
-        $this->exception(
-            function () use ($server) {
-                $response = new \Sabre\HTTP\Response();
-                $server->invokeMethod($server->httpRequest, $response, false);
-            }
-        )->isInstanceOf(\Sabre\DAV\Exception\NotAuthenticated::class);
+        $this->expectException(\Sabre\DAV\Exception\NotAuthenticated::class);
+        $response = new \Sabre\HTTP\Response();
+        $server->invokeMethod($server->httpRequest, $response, false);
     }
 
     /**
@@ -1618,12 +1852,15 @@ VCALENDAR
      */
     private function validateResponseIsOk(\Sabre\HTTP\Response $response, int $status, string $content_type)
     {
-        $this->integer($response->getStatus())->isEqualTo($status);
-        $this->string($response->getHeader('Content-Type'))->isEqualTo($content_type . '; charset=utf-8');
+        $this->assertEquals($status, $response->getStatus());
+        $this->assertEquals(
+            $content_type . '; charset=utf-8',
+            $response->getHeader('Content-Type')
+        );
         $response_body = $response->getBodyAsString();
-        $this->string($response_body)->isNotEmpty();
-       // If initial response was a stream, reading it changed stream pointer and make it hard to read again.
-       // Setting body as text makes it infinitely readable.
+        $this->assertNotEmpty($response_body);
+        // If initial response was a stream, reading it changed stream pointer and make it hard to read again.
+        // Setting body as text makes it infinitely readable.
         $response->setBody($response_body);
     }
 
@@ -1657,7 +1894,7 @@ VCALENDAR
     private function getXpathFromResponse(\Sabre\HTTP\Response $response): \DOMXPath
     {
         $xml = new \DOMDocument();
-        $this->boolean($xml->loadXML($response->getBodyAsString()))->isTrue();
+        $this->assertTrue($xml->loadXML($response->getBodyAsString()));
         return new \DOMXPath($xml);
     }
 
@@ -1669,47 +1906,46 @@ VCALENDAR
      */
     private function validateCommonVComponentProperties(\Sabre\VObject\Component $vcomp, array $fields)
     {
-
-        $this->object($vcomp->UID)->isInstanceOf(\Sabre\VObject\Property\FlatText::class);
-        $this->string($vcomp->UID->getValue())->isEqualTo($fields['uuid']);
+        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->UID);
+        $this->assertEquals($fields['uuid'], $vcomp->UID->getValue());
 
         if (array_key_exists('name', $fields)) {
-            $this->object($vcomp->SUMMARY)->isInstanceOf(\Sabre\VObject\Property\FlatText::class);
-            $this->string($vcomp->SUMMARY->getValue())->isEqualTo($fields['name']);
+            $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->SUMMARY);
+            $this->assertEquals($fields['name'], $vcomp->SUMMARY->getValue());
         }
 
         $content = array_key_exists('text', $fields) ? $fields['text'] : $fields['content'];
-        $this->object($vcomp->DESCRIPTION)->isInstanceOf(\Sabre\VObject\Property\FlatText::class);
-        $this->string($vcomp->DESCRIPTION->getValue())->isEqualTo($content);
+        $this->assertInstanceOf(\Sabre\VObject\Property\FlatText::class, $vcomp->DESCRIPTION);
+        $this->assertEquals($content, $vcomp->DESCRIPTION->getValue());
 
         $creation_date = array_key_exists('date_creation', $fields) ? $fields['date_creation'] : $fields['date'];
-        $this->object($vcomp->CREATED)->isInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class);
-        $this->string($vcomp->CREATED->getDateTime()->format('Y-m-d H:i:s'))->isEqualTo($creation_date);
+        $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->CREATED);
+        $this->assertEquals($creation_date, $vcomp->CREATED->getDateTime()->format('Y-m-d H:i:s'));
 
-        $this->object($vcomp->DTSTAMP)->isInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class);
-        $this->string($vcomp->DTSTAMP->getDateTime()->format('Y-m-d H:i:s'))->isEqualTo($fields['date_mod']);
-        $this->object($vcomp->{'LAST-MODIFIED'})->isInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class);
-        $this->string($vcomp->{'LAST-MODIFIED'}->getDateTime()->format('Y-m-d H:i:s'))->isEqualTo($fields['date_mod']);
+        $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->DTSTAMP);
+        $this->assertEquals($fields['date_mod'], $vcomp->DTSTAMP->getDateTime()->format('Y-m-d H:i:s'));
+        $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->{'LAST-MODIFIED'});
+        $this->assertEquals($fields['date_mod'], $vcomp->{'LAST-MODIFIED'}->getDateTime()->format('Y-m-d H:i:s'));
 
         if (!empty($fields['begin'])) {
-            $this->object($vcomp->DTSTART)->isInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class);
-            $this->string($vcomp->DTSTART->getDateTime()->format('Y-m-d H:i:s'))->isEqualTo($fields['begin']);
+            $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->DTSTART);
+            $this->assertEquals($fields['begin'], $vcomp->DTSTART->getDateTime()->format('Y-m-d H:i:s'));
         } else {
-            $this->variable($vcomp->DTSTART)->isNull();
+            $this->assertNull($vcomp->DTSTART);
         }
         $end_field = $vcomp instanceof \Sabre\VObject\Component\VEvent ? 'DTEND' : 'DUE';
         if (!empty($fields['end'])) {
-            $this->object($vcomp->$end_field)->isInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class);
-            $this->string($vcomp->$end_field->getDateTime()->format('Y-m-d H:i:s'))->isEqualTo($fields['end']);
+            $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\DateTime::class, $vcomp->$end_field);
+            $this->assertEquals($fields['end'], $vcomp->$end_field->getDateTime()->format('Y-m-d H:i:s'));
         } else {
-            $this->variable($vcomp->$end_field)->isNull();
+            $this->assertNull($vcomp->$end_field);
         }
 
         if (!empty($fields['rrule'])) {
-            $this->object($vcomp->RRULE)->isInstanceOf(\Sabre\VObject\Property\ICalendar\Recur::class);
-            $this->array($vcomp->RRULE->getJsonValue())->hasSize(1);
+            $this->assertInstanceOf(\Sabre\VObject\Property\ICalendar\Recur::class, $vcomp->RRULE);
+            $this->assertCount(1, $vcomp->RRULE->getJsonValue());
         } else {
-            $this->variable($vcomp->RRULE)->isNull();
+            $this->assertNull($vcomp->RRULE);
         }
     }
 }
