@@ -1081,6 +1081,72 @@ HTML;
         }
     }
 
+    public static function add_css_file_plugin($hook)
+    {
+        global $PLUGIN_HOOKS;
+
+        $newCssFile = [];
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+
+                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
+
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $file) {
+                    $newCssFile[] = [
+                        'path' => "$plugin_web_dir/$file",
+                        'options' => [
+                            'version' => $plugin_version,
+                        ]
+                    ];
+                }
+            }
+        }
+        return $newCssFile;
+    }
+
+    public static function add_javascript_file_plugin($hook)
+    {
+        global $PLUGIN_HOOKS;
+
+        $newJsFile = [];
+
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
+
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+                foreach ($files as $file) {
+                    if (file_exists($plugin_root_dir . "/{$file}")) {
+                        $newJsFile[] = [
+                            'path' => $plugin_web_dir . "/{$file}",
+                            'options' => [
+                                'version' => $plugin_version,
+                            ]
+                        ];
+                    } else {
+                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
+                    }
+                }
+            }
+        }
+        return $newJsFile;
+    }
+
 
     /**
      * Include common HTML headers
@@ -1281,29 +1347,10 @@ HTML;
         }
 
        // Add specific css for plugins
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_CSS]) && count($PLUGIN_HOOKS[Hooks::ADD_CSS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_CSS] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $file) {
-                    $tpl_vars['css_files'][] = [
-                        'path' => "$plugin_web_dir/$file",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
+       foreach (self::add_css_file_plugin(Hooks::ADD_CSS) as $css_file) {
+            $tpl_vars['css_files'][] = $css_file;
         }
+
         $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
 
         // Add specific meta tags for plugins
@@ -1829,32 +1876,10 @@ HTML;
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
-        if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_files'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
-                }
-            }
+        foreach(self::add_javascript_file_plugin('add_javascript') as $js_file) {
+            $tpl_vars['js_files'][] = $js_file;
         }
+
         if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
             foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {

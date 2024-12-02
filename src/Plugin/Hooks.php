@@ -46,6 +46,11 @@ class Hooks
     const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
     const ADD_HEADER_TAG        = 'add_header_tag';
 
+    // File hooks for not logged users
+    const ADD_CSS_NOTLOGGED        = 'add_css_notlogged';
+    const ADD_JAVASCRIPT_NOTLOGGED = 'add_javascript_notlogged';
+    const ADD_HEADER_TAG_NOTLOGGED = 'add_header_tag_notlogged';
+
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
     const CHANGE_PROFILE              = 'change_profile';
