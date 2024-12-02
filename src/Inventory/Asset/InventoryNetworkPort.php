@@ -404,11 +404,7 @@ trait InventoryNetworkPort
                 }
 
                 // force dynamic for NetworkPortAggregate because it can be added manually
-                if ($dbdata_copy['instantiation_type'] == NetworkPortAggregate::class) {
-                    $criteria['is_dynamic'] = 1;
-                }
-
-                if (count($criteria)) {
+                if (count($criteria) || $dbdata_copy['instantiation_type'] == NetworkPortAggregate::class) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
                     $networkport->update(Sanitizer::sanitize($criteria));
