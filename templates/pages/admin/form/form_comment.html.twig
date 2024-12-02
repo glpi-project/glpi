@@ -44,8 +44,8 @@
     'no_label'     : true,
 } %}
 
-<div
-    class="mb-3"
+<section
+    role="option"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').COMMENT.value }}"
@@ -54,7 +54,7 @@
     <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-comment-details
-        class="card"
+        class="card flex-grow-1"
         aria-label="{{ __("Comment details") }}"
     >
         <div
@@ -175,15 +175,22 @@
         />
         <input
             type="hidden"
-            name="rank"
-            value="{{ comment is not null ? comment.fields.rank : 0 }}"
+            name="vertical_rank"
+            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="horizontal_rank"
+            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
         />
     </section>
 
     <div data-glpi-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
-            'can_update': can_update,
-            'form': form,
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': false
         }, with_context = false) }}
     </div>
-</div>
+    <div data-glpi-form-editor-question-drag-merge></div>
+</section>

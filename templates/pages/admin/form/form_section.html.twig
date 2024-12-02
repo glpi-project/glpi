@@ -220,16 +220,26 @@
 
         <div data-glpi-form-editor-section-extra-details>
             {{ include('pages/admin/form/form_toolbar.html.twig', {
-                'can_update': can_update,
-                'form'      : form,
+                'can_update'     : can_update,
+                'form'           : form,
+                'vertical_layout': false,
             }, with_context = false) }}
         </div>
 
     </section>
 
     <div data-glpi-form-editor-section-blocks class="mt-3">
-        {% for form_block in section.getBlocks() %}
-            {{ form_block.displayBlockForEditor() }}
+        {% for form_group_blocks in section.getBlocks() %}
+            {% if form_group_blocks is iterable %}
+                {{ include('pages/admin/form/form_horizontal_block.html.twig', {
+                    'blocks'         : form_group_blocks,
+                    'can_update'     : can_update,
+                    'form'           : form,
+                }, with_context = false) }}
+            {% else %}
+                {% set form_block = form_group_blocks %}
+                {{ form_block.displayBlockForEditor() }}
+            {% endif %}
         {% endfor %}
     </div>
 

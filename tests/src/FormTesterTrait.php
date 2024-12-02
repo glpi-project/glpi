@@ -102,7 +102,7 @@ trait FormTesterTrait
                     'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
-                    'rank'              => $question_rank++,
+                    'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
                 ]);
@@ -115,7 +115,7 @@ trait FormTesterTrait
                     'forms_sections_id' => $section->getID(),
                     'name'              => $comment_data['name'],
                     'description'       => $comment_data['description'],
-                    'rank'              => $comment_rank++,
+                    'vertical_rank'     => $comment_rank++,
                 ]);
             }
         }

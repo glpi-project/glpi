@@ -307,7 +307,7 @@ final class DefaultDataManager
         $section->getFromDB($section->getID());
 
         // Set common values
-        $question_data['rank'] = count($section->getQuestions());
+        $question_data['vertical_rank'] = count($section->getQuestions());
         $question_data[Section::getForeignKeyField()] = $section->getID();
 
         // Create question

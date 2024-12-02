@@ -4387,6 +4387,8 @@ JAVASCRIPT
             unset($params["width"]);
         }
 
+        $dropdownCssClass = $params["dropdownCssClass"] ?? '';
+
         $placeholder = json_encode($params["placeholder"] ?? '');
 
         $templateresult    = $params["templateResult"] ?? "templateResult";
@@ -4397,6 +4399,7 @@ JAVASCRIPT
                 type: 'adapt',
                 field_id: '{$id}',
                 width: '{$width}',
+                dropdown_css_class: '{$dropdownCssClass}',
                 placeholder: {$placeholder},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 templateresult: {$templateresult},
