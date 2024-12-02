@@ -2178,7 +2178,11 @@ JAVASCRIPT;
                     $to_display[] = $elements[$value];
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '"';
+            if ($param['tooltip']) {
+                $output .= ' title="' . htmlspecialchars($param['tooltip'], ENT_QUOTES) . '"';
+            }
+            $output .= '>' . implode(', ', $to_display) . '</span>';
         } else {
             $output  .= "<select name='$field_name' id='$field_id'";
 

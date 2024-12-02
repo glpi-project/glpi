@@ -2765,7 +2765,12 @@ HTML;
         if (!GLPI_DEMO_MODE) {
             $activerand = mt_rand();
             echo "<td><label for='dropdown_is_active$activerand'>" . __('Active') . "</label></td><td>";
-            Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
+            $params = ['rand' => $activerand];
+            if (!$higherrights) {
+                $params['readonly'] = true;
+                $params['tooltip'] = __('Not enough rights to change this field');
+            }
+            Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, $params);
             echo "</td>";
         } else {
             echo "<td colspan='2'></td>";
