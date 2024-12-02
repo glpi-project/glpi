@@ -705,11 +705,17 @@ $RELATION = [
         "_glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
     ],
 
+    'glpi_forms_categories' => [
+        'glpi_forms_categories' => 'forms_categories_id',
+        'glpi_forms_forms' => 'forms_categories_id',
+    ],
+
     'glpi_forms_forms' => [
         "_glpi_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
         "_glpi_forms_answerssets"                       => "forms_forms_id",
         "_glpi_forms_destinations_formdestinations"     => "forms_forms_id",
         "_glpi_forms_sections"                          => "forms_forms_id",
+        "_glpi_helpdesks_tiles_formtiles"               => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [
@@ -1160,12 +1166,13 @@ $RELATION = [
     ],
 
     'glpi_profiles' => [
-        '_glpi_knowbaseitems_profiles' => 'profiles_id',
-        '_glpi_profilerights'          => 'profiles_id',
-        '_glpi_profiles_reminders'     => 'profiles_id',
-        '_glpi_profiles_rssfeeds'      => 'profiles_id',
-        '_glpi_profiles_users'         => 'profiles_id',
-        'glpi_users'                   => 'profiles_id',
+        '_glpi_helpdesks_tiles_profiles_tiles' => 'profiles_id',
+        '_glpi_knowbaseitems_profiles'         => 'profiles_id',
+        '_glpi_profilerights'                  => 'profiles_id',
+        '_glpi_profiles_reminders'             => 'profiles_id',
+        '_glpi_profiles_rssfeeds'              => 'profiles_id',
+        '_glpi_profiles_users'                 => 'profiles_id',
+        'glpi_users'                           => 'profiles_id',
     ],
 
     'glpi_projects' => [

@@ -7,8 +7,8 @@
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2023
 # Trans City, 2024
 # in dow <in_dow@hotmail.com>, 2024
-# DOMBRE Julien <moyo@indepnet.net>, 2024
 # 青海K, 2024
+# DOMBRE Julien <moyo@indepnet.net>, 2024
 # Cédric Anne, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # INOUE Daisuke, 2024
@@ -59,12 +59,12 @@ msgstr "\"session.use_trans_sid\" はオフに設定しなければなりませ�
 
 #: src/KnowbaseItem_Revision.php:208
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:76
 #, php-format
 msgid "%1$d component(s) attached to %2$d asset(s)"
-msgstr ""
+msgstr "%2$d 個の情報資産に %1$d 個の構成部品が装備済"
 
 #: src/DatabaseInstance.php:465
 #, php-format
@@ -454,12 +454,12 @@ msgstr "%1$s がバージョン %2$s を追加"
 #: src/Glpi/Asset/Capacity/HasAntivirusCapacity.php:75
 #, php-format
 msgid "%1$s antiviruses attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 本のウイルス対策が配置済"
 
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:64
 #, php-format
 msgid "%1$s appliances attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のアプライアンスが配置済み"
 
 #: src/Log.php:462
 #, php-format
@@ -469,7 +469,7 @@ msgstr "%1$s by %2$s"
 #: src/Glpi/Asset/Capacity/HasCertificatesCapacity.php:69
 #, php-format
 msgid "%1$s certificates attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件の証明書が配置済み"
 
 #: src/Central.php:543 src/Update.php:304
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:93
@@ -480,12 +480,12 @@ msgstr "廃止された datetime ストレージ フィールド型を使用し�
 #: src/Glpi/Asset/Capacity/HasContractsCapacity.php:71
 #, php-format
 msgid "%1$s contracts attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件の契約が関連済み"
 
 #: src/Glpi/Asset/Capacity/HasDatabaseInstanceCapacity.php:64
 #, php-format
 msgid "%1$s database instances attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産で %1$s 個のデータベース インスタンスが配置済み"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:89
@@ -496,12 +496,12 @@ msgstr "%1$s がライセンス %2$s を削除"
 #: src/Glpi/Asset/Capacity/HasDocumentsCapacity.php:71
 #, php-format
 msgid "%1$s documents attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 本の文書が関連済み"
 
 #: src/Glpi/Asset/Capacity/HasDomainsCapacity.php:64
 #, php-format
 msgid "%1$s domains attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のドメインが関連済み"
 
 #: front/notificationajaxsetting.form.php:48
 #, php-format
@@ -516,7 +516,7 @@ msgstr "%1$s がメール通知の設定を変更"
 #: src/Glpi/Controller/GenericFormController.php:153
 #, php-format
 msgid "%1$s executes the \"%2$s\" action on the item %3$s"
-msgstr ""
+msgstr "%1$s  %3$s アイテムで ”%2$s\" 操作を実行"
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:58
@@ -554,12 +554,12 @@ msgstr[0] "%1$s アイテムを保存していません"
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:72
 #, php-format
 msgid "%1$s knowbase items attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のナレッジベースアイテムが関連済み"
 
 #: src/Glpi/Asset/Capacity/HasLinksCapacity.php:78
 #, php-format
 msgid "%1$s links attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のリンクが関連済み"
 
 #: src/Auth.php:1140
 #, php-format
@@ -569,7 +569,7 @@ msgstr "%1$s が IP : %2$s からログイン"
 #: src/Glpi/Asset/Capacity/HasHistoryCapacity.php:70
 #, php-format
 msgid "%1$s logs attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のログが関連済み"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -594,12 +594,12 @@ msgstr "%1$s は一意でなければなりません！"
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:70
 #, php-format
 msgid "%1$s networkports attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 個のネットワークポートが装備済み"
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:82
 #, php-format
 msgid "%1$s notes attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のメモが関連済み"
 
 #: src/Item_Devices.php:894 src/Item_Devices.php:910
 #, php-format
@@ -619,12 +619,12 @@ msgstr "%1$s : %2$s（%3$s）"
 #: src/Glpi/Asset/Capacity/HasPeripheralAssetsCapacity.php:106
 #, php-format
 msgid "%1$s peripheral assets attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 個の周辺機器が装備済み"
 
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:71
 #, php-format
 msgid "%1$s plugs attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 個のプラグが装備済み"
 
 #: src/Rack.php:849
 #, php-format
@@ -657,7 +657,7 @@ msgstr "残り %1$s ページ　　　"
 #: src/Glpi/Asset/Capacity/HasRemoteManagementCapacity.php:70
 #, php-format
 msgid "%1$s remote management items attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 件のリモート管理アイテムが関連済み"
 
 #. TRANS: first parameter is the rule type name
 #: front/rule.common.php:66
@@ -689,17 +689,17 @@ msgstr "%1$sサービス Web サイトは、ネットワークまたはオフラ
 #, php-format
 msgid ""
 "%1$s services website seems to be unavailable from your network or offline!"
-msgstr ""
+msgstr "%1$s サービス Web サイトはあなたがお使いのネットワークから到達できないか、サイトがオフラインです！"
 
 #: src/Glpi/Asset/Capacity/HasSocketCapacity.php:71
 #, php-format
 msgid "%1$s sockets attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 個のソケットが装備済み"
 
 #: src/Glpi/Asset/Capacity/HasSoftwaresCapacity.php:171
 #, php-format
 msgid "%1$s software(s) attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 本のソルトウェアがインストール済み"
 
 #: src/Session.php:2081
 #, php-format
@@ -752,17 +752,17 @@ msgstr "%1$s がバージョン %2$s を更新"
 #: src/Glpi/Asset/Capacity/HasVirtualMachineCapacity.php:75
 #, php-format
 msgid "%1$s virtual machines attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 本の仮想マシンがインストール済み"
 
 #: src/Glpi/Asset/Capacity/HasVolumesCapacity.php:75
 #, php-format
 msgid "%1$s volumes attached to %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 本のディスク パーティションが装備済み"
 
 #: templates/components/itilobject/timeline/new_form.html.twig
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr "%1$s を %2$s エンティティに追加します　"
+msgstr "%1$s を %2$s エンティティーに追加します　"
 
 #: src/Html.php:327
 #, php-format
@@ -1254,7 +1254,7 @@ msgstr "%s がユーザーをグループに追加"
 #: front/profile_user.form.php:52
 #, php-format
 msgid "%s adds a user to an entity"
-msgstr "%sがエンティティへユーザーを追加"
+msgstr "%sがエンティティーへユーザーを追加"
 
 #. TRANS: %s is the user login
 #: front/itemvirtualmachine.form.php:63
@@ -1599,7 +1599,7 @@ msgstr "%s / %s"
 #: src/CommonItilObject_Item.php:703
 #, php-format
 msgid "%s on linked items"
-msgstr ""
+msgstr "リンクしたアイテムに %s"
 
 #: src/Glpi/Marketplace/View.php:1093
 #, php-format
@@ -1989,7 +1989,7 @@ msgstr "%s%%"
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s of %s"
-msgstr ""
+msgstr "%s - %s / 全 %s 件　 "
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -2038,7 +2038,7 @@ msgstr "( %1$d 件のアイテムは操作不要 )"
 #: templates/layout/parts/dcbreadcrumbs.html.twig
 #, php-format
 msgid "(U%d)"
-msgstr ""
+msgstr "(U%d)"
 
 #: templates/pages/setup/notification/translation.html.twig
 msgid "(leave the field empty for a generation from HTML)"
@@ -2314,7 +2314,7 @@ msgstr "GLPI は通常 64MB 以上のメモリが必要です"
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "A new update is available for the %s plugin."
-msgstr ""
+msgstr "%s プラグインの更新があります。"
 
 #: src/Glpi/Marketplace/View.php:811
 #, php-format
@@ -2346,7 +2346,7 @@ msgstr "ラック が必要です"
 msgid ""
 "A registration key is needed to use some advanced features (like the plugin "
 "marketplace) in GLPI"
-msgstr ""
+msgstr "GLPI の高度な機能 ( プラグイン マーケットプレースなど ) の一部は、利用にあたって登録キーが必要です。"
 
 #: src/Glpi/Marketplace/View.php:183
 msgid "A registration, at least a free one, is required to use marketplace!"
@@ -2474,7 +2474,7 @@ msgstr "受信メールの保存フォルダ (任意)"
 
 #: src/Glpi/Form/AccessControl/FormAccessControl.php:56
 msgid "Access control"
-msgstr ""
+msgstr "アクセス管理"
 
 #: ajax/timeline.php:127 ajax/viewsubitem.php:56
 #: src/Glpi/Controller/ErrorController.php:138
@@ -2483,11 +2483,11 @@ msgstr "アクセスを拒否しました"
 
 #: src/Glpi/OAuth/Server.php:173
 msgid "Access to submit inventory from an agent"
-msgstr ""
+msgstr "エージェントからのインベントリー提出へのアクセス"
 
 #: src/Glpi/OAuth/Server.php:172
 msgid "Access to the API"
-msgstr ""
+msgstr "API へのアクセス"
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:62
 #: src/Glpi/Console/Marketplace/InfoCommand.php:59
@@ -2499,15 +2499,15 @@ msgstr "GLPI の設定で、マーケットプレースに接続する CLI コ�
 
 #: src/Glpi/OAuth/Server.php:174
 msgid "Access to the status endpoint"
-msgstr ""
+msgstr "ステータス エンドポイントへのアクセス"
 
 #: src/Glpi/OAuth/Server.php:170
 msgid "Access to the user's email address"
-msgstr ""
+msgstr "ユーザーのメールアドレスへのアクセス"
 
 #: src/Glpi/OAuth/Server.php:171
 msgid "Access to the user's information"
-msgstr ""
+msgstr "ユーザー情報へのアクセス"
 
 #: src/Glpi/System/Requirement/DbTimezones.php:66
 msgid "Access to timezone database (mysql) is not allowed."
@@ -2706,19 +2706,19 @@ msgstr "追加"
 
 #: src/ITILSubItemRights.php:61
 msgid "Add (associated groups)"
-msgstr ""
+msgstr "追加（関連グループ）"
 
 #: src/ITILSubItemRights.php:70
 msgid "Add (observer)"
-msgstr ""
+msgstr "追加（関係者）"
 
 #: src/ITILSubItemRights.php:66
 msgid "Add (requester)"
-msgstr ""
+msgstr "追加（依頼者）"
 
 #: src/ITILSubItemRights.php:74
 msgid "Add (technician)"
-msgstr ""
+msgstr "追加（技術者）"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "Add API client"
@@ -2734,7 +2734,7 @@ msgstr "電源タップを追加する"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Add URI"
-msgstr ""
+msgstr "URI を追加"
 
 #: templates/components/form/link_existing_or_new.html.twig
 #, php-format
@@ -2759,7 +2759,7 @@ msgstr "休業時間の追加"
 
 #: templates/pages/tools/kb/comments.html.twig
 msgid "Add a comment"
-msgstr ""
+msgstr "コメントを追加"
 
 #: src/CartridgeItem_PrinterModel.php:122
 msgid "Add a compatible printer model"
@@ -2797,16 +2797,16 @@ msgstr "データベースを追加"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Add a description to this section..."
-msgstr ""
+msgstr "このセクションの説明を追加..."
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Add a description to your form..."
-msgstr ""
+msgstr "フォームへの説明を追加..."
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Add a description..."
-msgstr ""
+msgstr "説明を追加..."
 
 #: src/Document.php:1530 src/CommonITILObject.php:7417
 msgctxt "button"
@@ -2861,7 +2861,7 @@ msgstr "新しいアクションの追加"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a new comment"
-msgstr ""
+msgstr "新たにコメントを追加"
 
 #: src/Item_Devices.php:737
 msgid "Add a new component"
@@ -2877,7 +2877,7 @@ msgstr "新しいダッシュボートを追加"
 
 #: src/Glpi/Asset/AssetDefinition.php:209
 msgid "Add a new field"
-msgstr ""
+msgstr "新たに項目を追加"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: templates/pages/management/document_item.html.twig
@@ -2903,11 +2903,11 @@ msgstr "新たにポートを追加"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a new question"
-msgstr ""
+msgstr "新たに質問を追加"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a new section"
-msgstr ""
+msgstr "新たにセクションを追加"
 
 #: src/Problem_Ticket.php:257 src/Problem.php:422 src/Change_Ticket.php:298
 #: src/Ticket.php:2129
@@ -2921,7 +2921,7 @@ msgstr "新しい翻訳を追加する"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
-msgstr ""
+msgstr "メモを追加"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
@@ -2964,7 +2964,7 @@ msgstr "テンプレートを追加..."
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Add a title..."
-msgstr ""
+msgstr "題名を追加..."
 
 #: src/Group.php:261
 msgctxt "button"
@@ -3080,7 +3080,7 @@ msgstr "アイテムに財務情報を追加"
 
 #: src/User.php:145
 msgid "Add from an external source"
-msgstr ""
+msgstr "フォームに外部ソースを追加"
 
 #: src/Glpi/Inventory/Inventory.php:531
 msgid "Add global lock"
@@ -3088,7 +3088,7 @@ msgstr "全体ロックを追加"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Add item"
-msgstr ""
+msgstr "アイテムを追加"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
@@ -3160,19 +3160,19 @@ msgstr "アプライアンスに追加"
 
 #: src/ITILSubItemRights.php:71
 msgid "Add to items (observer)"
-msgstr ""
+msgstr "アイテム ( 関係者 ) に追加"
 
 #: src/ITILSubItemRights.php:67
 msgid "Add to items (requester)"
-msgstr ""
+msgstr "アイテム ( 依頼者 ) に追加"
 
 #: src/ITILSubItemRights.php:75
 msgid "Add to items (technician)"
-msgstr ""
+msgstr "アイテム ( 技術者 ) に追加"
 
 #: src/ITILSubItemRights.php:62
 msgid "Add to items of associated groups"
-msgstr ""
+msgstr "関連グループのアイテムに追加"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Add to schedule"
@@ -3185,7 +3185,7 @@ msgstr "転送リストへ追加"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Add translation"
-msgstr ""
+msgstr "翻訳を追加"
 
 #: src/User.php:6217
 msgid "Add users from an external source"
@@ -3486,7 +3486,7 @@ msgstr "すべて"
 #: src/Glpi/Search/Output/Spreadsheet.php:554
 #, php-format
 msgid "All %1$s"
-msgstr ""
+msgstr "すべての %1$s"
 
 #: src/Item_SoftwareVersion.php:1050
 msgid "All categories"
@@ -3507,7 +3507,7 @@ msgstr "すべてのアイテム"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
-msgstr ""
+msgstr "この定義で利用中のアイテムをすべて削除します。"
 
 #: src/Ticket.php:2908
 msgid "All linked tickets"
@@ -3519,11 +3519,11 @@ msgstr "全ページ"
 
 #: src/Dropdown.php:2780
 msgid "All pages as Office Open XML (.xlsx)"
-msgstr ""
+msgstr "すべてのページを Office Open XML (.xlsx) で"
 
 #: src/Dropdown.php:2779
 msgid "All pages as Open Document format (.ods)"
-msgstr ""
+msgstr "すべてのページを Open Document 形式 (.ods) で"
 
 #: src/Dropdown.php:2778
 msgid "All pages in CSV"
@@ -3559,11 +3559,11 @@ msgstr "すべて"
 
 #: src/AbstractRightsDropdown.php:199 src/AbstractRightsDropdown.php:271
 msgid "All users"
-msgstr ""
+msgstr "すべてのユーザー"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldStrategy.php:56
 msgid "All valid \"Item\" answers"
-msgstr ""
+msgstr "すべての有効な「アイテム」の回答"
 
 #: src/Glpi/System/Requirement/MemoryLimit.php:56
 #: src/Glpi/System/Requirement/MemoryLimit.php:78
@@ -3601,7 +3601,7 @@ msgstr "匿名のチケット作成を許可する ( ヘルプデスク・受信
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:52
 msgid "Allow direct access"
-msgstr ""
+msgstr "直接アクセスを許可"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:84
 msgid "Allow downloading the GLPI release if needed"
@@ -3609,15 +3609,15 @@ msgstr "必要に応じた GLPI リリースのダウンロードを許可"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php:266
 msgid "Allow multiple actors"
-msgstr ""
+msgstr "複数のアクターを許可"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php:165
 msgid "Allow multiple devices"
-msgstr ""
+msgstr "複数のデバイスを許可"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDropdown.php:202
 msgid "Allow multiple options"
-msgstr ""
+msgstr "複数のオプションを許可"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/Notification.php:449
@@ -3626,7 +3626,7 @@ msgstr "応答を許可する"
 
 #: src/Glpi/Form/AccessControl/ControlType/AllowList.php:56
 msgid "Allow specifics users, groups or profiles"
-msgstr ""
+msgstr "特定のユーザー、グループまたはプロファイルを許可"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Allow to login to API and get a session token with user credentials"
@@ -3641,7 +3641,7 @@ msgstr ""
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Allow unauthenticated users"
-msgstr ""
+msgstr "認証していないユーザーを許可"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:111
 msgid "Allow update to an unstable version"
@@ -3672,7 +3672,7 @@ msgstr "日付も削除しますか？"
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "Also, the value must not be one of the following reserved names: %s."
-msgstr ""
+msgstr "また、値は以下の予約済みの名前も利用できません : %s"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/assets.html.twig
@@ -3787,7 +3787,7 @@ msgstr "外装・ケースは必須です"
 
 #: src/Entity.php:193
 msgid "An entity with that name already exists at the same level."
-msgstr "その名前のエンティティが、同じレベルに既に存在します。"
+msgstr "その名前のエンティティーが、同じレベルに既に存在します。"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "An error occured"
@@ -3796,7 +3796,7 @@ msgstr "エラー発生"
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occured during the search"
-msgstr ""
+msgstr "検索でエラーが発生"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:182
 #, php-format
@@ -3811,12 +3811,12 @@ msgstr "パスワード更新でエラー"
 #, php-format
 msgid ""
 "An error occurred during the database initialization. The error was: %s"
-msgstr ""
+msgstr "データベースの初期化中にエラーが発生しました。エラー : %s"
 
 #: src/Update.php:267
 #, php-format
 msgid "An error occurred during the update. The error was: %s"
-msgstr ""
+msgstr "更新中にエラーが発生しました。エラー : %s"
 
 #: templates/pages/setup/mailcollector/folder_list.html.twig
 #: src/MailCollector.php:514
@@ -3829,7 +3829,7 @@ msgstr "リクエストの処理中にエラーが発生しました。"
 
 #: js/modules/ObjectLock.js:104
 msgid "An error occurred while sending the unlock request"
-msgstr ""
+msgstr "ロック解除要求の送信中にエラーが発生"
 
 #: src/Glpi/Inventory/Conf.php:247
 #, php-format
@@ -3870,20 +3870,20 @@ msgstr "アイテムの型は必須です"
 
 #: src/Glpi/Controller/ErrorController.php:132
 msgid "An unexpected error has occurred."
-msgstr ""
+msgstr "予期しないエラーが発生しました。"
 
 #: front/form/access_control.form.php:75
 msgid "An unexpected error occured."
-msgstr ""
+msgstr "予期しないエラーが発生しました。"
 
 #: js/modules/Forms/EditorController.js:175
 #: js/modules/Forms/EditorController.js:214
 msgid "An unexpected error occurred"
-msgstr ""
+msgstr "予期しないエラーが発生"
 
 #: src/Glpi/Controller/CommonAjaxController.php:86
 msgid "An unexpected error occurred."
-msgstr ""
+msgstr "予期しないエラーが発生しました。"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Problem.php:491
 msgid "Analysis"
@@ -3900,7 +3900,7 @@ msgstr "キーを取得して以下に貼り付けてください"
 #: js/modules/Form/WebIconSelector.js:128
 msgctxt "icons"
 msgid "Animals"
-msgstr ""
+msgstr "動物"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Anonymize support agents"
@@ -3917,47 +3917,47 @@ msgstr "回答"
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeFieldStrategy.php:53
 #: src/Glpi/Form/Destination/CommonITILField/ITILCategoryFieldStrategy.php:53
 msgid "Answer from a specific question"
-msgstr ""
+msgstr "特定の質問からの回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:51
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:56
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldStrategy.php:54
 msgid "Answer from specific questions"
-msgstr ""
+msgstr "特定の質問からの回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:57
 #, php-format
 msgid "Answer to last \"%s\" question"
-msgstr ""
+msgstr "最後の「%s」質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityFieldStrategy.php:55
 msgid "Answer to last \"Entity\" item question"
-msgstr ""
+msgstr "最後の「エンティティー」アイテムの質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILCategoryFieldStrategy.php:54
 msgid "Answer to last \"ITIL Category\" dropdown question"
-msgstr ""
+msgstr "最後の「ITIL カテゴリー」ドロップダウン質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/LocationFieldStrategy.php:55
 msgid "Answer to last \"Location\" dropdown question"
-msgstr ""
+msgstr "最後の「場所」ドロップダウン質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeFieldStrategy.php:54
 msgid "Answer to last \"Request type\" question"
-msgstr ""
+msgstr "最後の「要求型」質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/UrgencyFieldStrategy.php:54
 msgid "Answer to last \"Urgency\" question"
-msgstr ""
+msgstr "最後の「緊急度」質問への回答"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldStrategy.php:55
 msgid "Answer to last assets item question"
-msgstr ""
+msgstr "最後の情報資産アイテム質問への回答"
 
 #: src/Glpi/Form/Tag/AnswerTagProvider.php:86
 #, php-format
 msgid "Answer: %s"
-msgstr ""
+msgstr "回答 : %s"
 
 #: src/Stat.php:553 src/Glpi/Stat/Data/Sglobal/StatDataSatisfaction.php:59
 #: src/Glpi/Stat/Data/Graph/StatDataSatisfactionSurvey.php:56
@@ -4034,7 +4034,7 @@ msgstr[0] "承認"
 
 #: src/CommonITILValidation.php:1099
 msgid "Approval Comment"
-msgstr ""
+msgstr "承認コメント"
 
 #: src/CommonITILValidation.php:1176 src/CommonITILValidation.php:1285
 msgid "Approval comments"
@@ -4090,11 +4090,11 @@ msgstr "承認状況"
 
 #: src/CommonITILValidation.php:1533
 msgid "Approval status by users"
-msgstr ""
+msgstr "ユーザーによる承認状態"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approval status details"
-msgstr ""
+msgstr "承認状態の詳細"
 
 #: src/NotificationTargetTicket.php:705
 #: src/NotificationTargetCommonITILObject.php:925
@@ -4183,7 +4183,7 @@ msgstr "このユーザーの 2 要素認証を無効にします。よろしい
 msgid ""
 "Are you sure you want to enable the Legacy API? It is recommended to only "
 "use the new API when possible."
-msgstr ""
+msgstr "レガシー API を有効にしようとしていますが、よろしいですか？　できるかぎり新 API のみの利用を推奨します。"
 
 #: src/ReservationItem.php:320 src/Reservation.php:1179
 msgid "Are you sure you want to return this non-reservable item?"
@@ -4203,7 +4203,7 @@ msgstr "面"
 #: js/modules/Form/WebIconSelector.js:129
 msgctxt "icons"
 msgid "Arrows"
-msgstr ""
+msgstr "許可"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/tools/project_task.html.twig
@@ -4226,11 +4226,11 @@ msgstr "エージェントに現在の状態を問い合わせる"
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:62
 #: src/Glpi/Helpdesk/DefaultDataManager.php:153
 msgid "Ask for a service to be provided by our team."
-msgstr ""
+msgstr "私たちチームが提供しているサービスに依頼する"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:97
 msgid "Ask for support from our helpdesk team."
-msgstr ""
+msgstr "私たちのヘルプデスクチームのサポートを依頼する"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
@@ -4265,7 +4265,7 @@ msgstr[0] "情報資産"
 
 #: templates/generic_show_form.html.twig
 msgid "Asset URL"
-msgstr ""
+msgstr "情報資産 URL"
 
 #: src/Glpi/Asset/AssetDefinition.php:90
 msgid "Asset definition"
@@ -4309,19 +4309,19 @@ msgstr "正規表現から値を割り当て"
 
 #: src/RuleAsset.php:227
 msgid "Assign user from email"
-msgstr ""
+msgstr "メールアドレスでユーザーを割り当てる"
 
 #: src/RuleAsset.php:223
 msgid "Assign user from name"
-msgstr ""
+msgstr "名前でユーザーを割り当てる"
 
 #: src/RuleAsset.php:231
 msgid "Assign user from registration number"
-msgstr ""
+msgstr "登録番号でユーザーを割り当てる"
 
 #: src/RuleAsset.php:235
 msgid "Assign user from sync field"
-msgstr ""
+msgstr "同期項目でユーザーを割り当てる"
 
 #: src/RuleAction.php:395
 msgid "Assign: equipment by IP address"
@@ -4403,7 +4403,7 @@ msgstr "チケットに関連可能なアイテム"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "アイテムをチケット、変更要求と問題に割り当て可能"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4503,7 +4503,7 @@ msgstr[0] "関連アイテムの型"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "関連するアイテム"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -4658,7 +4658,7 @@ msgstr "認証がエラーで失敗 : %s"
 
 #: src/Glpi/Inventory/Conf.php:396
 msgid "Authorization header"
-msgstr ""
+msgstr "認証ヘッダ"
 
 #: src/Dropdown.php:1353 src/Profile.php:1059 src/Profile.php:2998
 #: src/RuleRightCollection.php:54
@@ -4672,7 +4672,7 @@ msgstr "貸出予約を許可"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorized redirect URIs"
-msgstr ""
+msgstr "認証リダイレクト URI"
 
 #: src/ValidatorSubstitute.php:42
 msgid "Authorized substitute"
@@ -4698,7 +4698,7 @@ msgstr "自動ログイン"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Auto config"
-msgstr ""
+msgstr "自動設定"
 
 #: src/Auth.php:696
 msgid "Auto login disabled"
@@ -4943,7 +4943,7 @@ msgstr "担当者割り当てまでの平均時間"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5004,7 +5004,7 @@ msgstr "検索条件での項目 ID が正しくありません"
 #: js/modules/Form/WebIconSelector.js:130
 msgctxt "icons"
 msgid "Badges"
-msgstr ""
+msgstr "予算"
 
 #: src/Glpi/Dashboard/Widget.php:126
 msgid "Bars"
@@ -5024,13 +5024,13 @@ msgstr "アイテム > カテゴリーの順"
 
 #: src/Glpi/Inventory/Conf.php:402
 msgid "Basic Authentication"
-msgstr ""
+msgstr "Basic 認証"
 
 #: src/Glpi/Inventory/Conf.php:1165
 msgid ""
 "Basic Authentication is active. The login and/or password fields are "
 "missing."
-msgstr ""
+msgstr "Basic 認証が有効です。ログインユーザー名・パスワードの項目のいずれかまたは両方が見つかりません。"
 
 #: src/DeviceBattery.php:42
 msgid "Battery"
@@ -5050,7 +5050,7 @@ msgstr "注意 : デフォルト値がありません"
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:5243
 msgid "Be in charge"
-msgstr ""
+msgstr "担当中"
 
 #: src/Rule.php:634
 msgid "Before"
@@ -5187,7 +5187,7 @@ msgstr "ブランド"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "ブランド"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -5196,7 +5196,7 @@ msgstr "閲覧"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:47
 msgid "Browse help articles"
-msgstr ""
+msgstr "ヘルプを表示"
 
 #: src/NotificationAjaxSetting.php:45
 msgid "Browser followups configuration"
@@ -5220,7 +5220,7 @@ msgstr "ビル番号"
 #: js/modules/Form/WebIconSelector.js:132
 msgctxt "icons"
 msgid "Buildings"
-msgstr ""
+msgstr "ビル"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
@@ -5246,7 +5246,7 @@ msgstr[0] "業務評定"
 
 #: src/RuleAsset.php:247
 msgid "Business rules (entity parent)"
-msgstr "ビジネス ルール（親エンティティ）"
+msgstr "ビジネス ルール（上位エンティティー）"
 
 #: src/RuleAsset.php:48 src/RuleAssetCollection.php:45 src/Profile.php:1088
 msgid "Business rules for assets"
@@ -5258,7 +5258,7 @@ msgstr "変更要求のビジネスルール"
 
 #: src/Profile.php:1082
 msgid "Business rules for changes (entity)"
-msgstr "変更要求のビジネスルール (エンティティ)"
+msgstr "変更要求のビジネスルール (エンティティー)"
 
 #: src/RuleProblem.php:43 src/RuleProblemCollection.php:44
 #: src/Profile.php:2955
@@ -5267,7 +5267,7 @@ msgstr "問題のビジネスルール"
 
 #: src/Profile.php:1085
 msgid "Business rules for problems (entity)"
-msgstr "問題のビジネスルール (エンティティ)"
+msgstr "問題のビジネスルール (エンティティー)"
 
 #: phpunit/functional/RuleTest.php:163 src/RuleTicket.php:43
 #: src/Profile.php:2925 src/RuleTicketCollection.php:44
@@ -5276,7 +5276,7 @@ msgstr "チケット取り扱いの業務ルール"
 
 #: src/Profile.php:1079
 msgid "Business rules for tickets (entity)"
-msgstr "チケットのビジネスルール (エンティティ)"
+msgstr "チケットのビジネスルール (エンティティー)"
 
 #: templates/components/form/reservation.html.twig
 #: templates/components/itilobject/timeline/simple_form.html.twig
@@ -5312,7 +5312,7 @@ msgstr "デフォルトでソフトウェアをチケットにリンクする"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "By entity"
-msgstr "エンティティ別"
+msgstr "エンティティー別"
 
 #: templates/pages/tools/report/network_criteria.html.twig src/Stat.php:1733
 #: src/Stat.php:1745 src/Stat.php:1758
@@ -5533,7 +5533,7 @@ msgstr "既存の期間に重なっている範囲の追加はできません"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Can't be imported"
-msgstr ""
+msgstr "インポートできません"
 
 #: src/Profile.php:449
 msgid ""
@@ -5665,7 +5665,7 @@ msgstr[0] "カートリッジ"
 #: src/Printer_CartridgeInfo.php:46
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
+msgstr[0] "カートリッジのインベントリー情報"
 
 #: templates/pages/assets/cartridge.html.twig src/CartridgeItem.php:64
 msgid "Cartridge model"
@@ -5781,7 +5781,7 @@ msgstr "%1$s 証明書の期限が %2$s に切れました"
 #: src/Certificate.php:825
 #, php-format
 msgid "Certificate alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティの証明書アラーム送信に失敗"
+msgstr "%1$s エンティティーの証明書アラーム送信に失敗"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:180
 msgid "Certificate request (CSR)"
@@ -5870,7 +5870,7 @@ msgstr "パスワードストレージキーを変更し、データベース内
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Change profile"
-msgstr ""
+msgstr "プロファイルの変更"
 
 #: src/NotificationTargetChange.php:62
 msgid "Change solved"
@@ -5909,11 +5909,11 @@ msgstr "表示・非表示の変更"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr "下位エンティティの表示・非表示の変更"
+msgstr "下位エンティティーの表示・非表示の変更"
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "変更済み"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -5960,7 +5960,7 @@ msgstr "特性"
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
 msgid "Charts"
-msgstr ""
+msgstr "グラフ"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:73
 msgid "Check GLPI source code file integrity."
@@ -6041,7 +6041,7 @@ msgstr "すべてチェック・すべてチェック解除"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:113
 msgid "Checkbox"
-msgstr ""
+msgstr "チェックボックス"
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:179
 #, php-format
@@ -6088,7 +6088,7 @@ msgstr "チェックリスト"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:84
 msgid "Checkout new data from your saved RSS feeds."
-msgstr ""
+msgstr "保存済み RSS フィードから新しいデータを取得"
 
 #: templates/pages/management/document.html.twig src/Document.php:955
 msgid "Checksum"
@@ -6107,7 +6107,7 @@ msgstr "チェックサム"
 #: src/Certificate.php:358 src/Contact.php:396 src/Notification.php:441
 #: src/CommonDBTM.php:3965 src/Domain.php:223 src/Agent.php:114
 msgid "Child entities"
-msgstr "下位エンティティ"
+msgstr "下位エンティティー"
 
 #: src/Problem.php:1374 src/Change.php:867 src/Ticket.php:4763
 #: src/Group.php:135
@@ -6180,7 +6180,7 @@ msgstr "通知キューを消去する"
 msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
-msgstr ""
+msgstr "孤立したドキュメントの整理 : アイテムと関連していないすべてのドキュメントを削除する"
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -6218,7 +6218,7 @@ msgstr "翻訳する要素のリストを初期化"
 
 #: src/Glpi/Form/Form.php:269
 msgid "Click here to download the exported forms..."
-msgstr ""
+msgstr "ここをクリックしてエクスポートしたフォームをダウンロード..."
 
 #: js/impact.js:2427
 msgid "Click on an element to remove it from the network"
@@ -6229,11 +6229,11 @@ msgstr "要素をクリックしてネットワークから削除します"
 msgid ""
 "Click on the %s icon to load the elements of the selected entity, as well as"
 " its sub-entities."
-msgstr "%s アイコンをクリックして、‎選択したエンティティとそのサブ‎‎エンティティ‎‎の要素を読み込みます。‎"
+msgstr "%s アイコンをクリックして、‎選択したエンティティーとその下位‎‎エンティティ‎‎ーの要素を読み込みます。‎"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to copy to clipboard"
-msgstr ""
+msgstr "ここをクリックしてクリップボードにコピー"
 
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6403,7 +6403,7 @@ msgstr "メニューをたたむ"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Collapse section"
-msgstr ""
+msgstr "セクションを折りたたむ"
 
 #: templates/install/step6.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:235
@@ -6445,7 +6445,7 @@ msgstr "「%s.%s」列に負の値が入っています。「%s」に更新し�
 msgid ""
 "Comma separated list of individual IPv4/IPv6 addresses or ranges in CIDR "
 "notation. An empty list indicates there are no restrictions."
-msgstr ""
+msgstr "IPv4・IPv6 の個々のアドレスをコンマ区切りで列挙するか、CIDR 形式で範囲を指定します。空にすると制限をしません。"
 
 #: src/Item_Process.php:155
 msgid "Command"
@@ -6488,16 +6488,16 @@ msgstr[0] "コメント"
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Comment description"
-msgstr ""
+msgstr "コメントの説明"
 
 #: src/Glpi/Form/Tag/CommentDescriptionTagProvider.php:79
 #, php-format
 msgid "Comment description: %s"
-msgstr ""
+msgstr "コメントの説明 : %s"
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Comment details"
-msgstr ""
+msgstr "コメントの詳細"
 
 #: src/CommonITILSatisfaction.php:188
 #, php-format
@@ -6510,12 +6510,12 @@ msgstr "スコアが満たない場合はコメント必須"
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Comment title"
-msgstr ""
+msgstr "コメントのタイトル"
 
 #: src/Glpi/Form/Tag/CommentTitleTagProvider.php:79
 #, php-format
 msgid "Comment title: %s"
-msgstr ""
+msgstr "コメントのタイトル : %s"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 #: templates/components/form/reservationitem_comment.html.twig
@@ -6594,7 +6594,7 @@ msgstr "共通"
 #: js/modules/Form/WebIconSelector.js:134
 msgctxt "icons"
 msgid "Communication"
-msgstr ""
+msgstr "コミュニケーション"
 
 #: templates/components/form/snmpcredential.html.twig
 #: src/SNMPCredential.php:80 src/SNMPCredential.php:96
@@ -6618,7 +6618,7 @@ msgstr "選択した演算子で、検索件数を指定した値と比較しま
 #: js/modules/Knowbase.js:123
 #, javascript-format
 msgid "Compare revisions %1$d and %2$d"
-msgstr ""
+msgstr "リビジョン %1$d と %2$d を比較"
 
 #: src/KnowbaseItem_Revision.php:225
 msgctxt "button"
@@ -6657,7 +6657,7 @@ msgstr[0] "コンピューター"
 
 #: src/ItemVirtualMachine.php:488
 msgid "Computer UUID"
-msgstr ""
+msgstr "コンピューターの UUID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:195
 msgid "Computer inventory"
@@ -6693,7 +6693,7 @@ msgstr "設定"
 
 #: src/Glpi/Console/Application.php:199
 msgid "Configuration directory to use. Deprecated option"
-msgstr ""
+msgstr "使用する設定ディレクトリー。 非推奨オプション"
 
 #: front/inventory.conf.php:50
 msgid "Configuration has been updated"
@@ -6716,7 +6716,7 @@ msgstr "構成"
 #: src/Link.php:566
 #, php-format
 msgid "Configure %s links"
-msgstr ""
+msgstr "%s のリンクを設定"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Configuring the satisfaction survey"
@@ -6734,7 +6734,7 @@ msgstr "確認"
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:64
 msgid "Confirm password"
-msgstr ""
+msgstr "パスワードの確認"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Confirm the deletion of planning?"
@@ -6842,7 +6842,7 @@ msgstr "接続の凡例"
 #: templates/components/search/display_data.html.twig
 msgid ""
 "Consider changing the search criteria or adjusting the displayed columns."
-msgstr ""
+msgstr "検索文字列を変更するか表示列を調整するかを検討してください。"
 
 #: ajax/getMapPoint.php:77
 msgid "Consider filling latitude and longitude on this location."
@@ -6942,7 +6942,7 @@ msgstr "で契約終了"
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1299
 #: src/Entity.php:2608
 msgid "Contract in ticket entity"
-msgstr "チケットエンティティの中の契約"
+msgstr "チケットエンティティーの中の契約"
 
 #: src/Contract.php:1319
 msgid "Contract period ended"
@@ -7028,7 +7028,7 @@ msgstr "コピー済み"
 
 #: js/common.js:1501
 msgid "Copied to clipboard"
-msgstr ""
+msgstr "クリップボードにコピー"
 
 #: src/PrinterLog.php:402
 msgid "Copies"
@@ -7186,11 +7186,11 @@ msgstr "フィルターを作成"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database:"
-msgstr ""
+msgstr "新しいデータベースを作成 : "
 
 #: src/Glpi/Console/User/CreateCommand.php:51
 msgid "Create a new local GLPI user"
-msgstr ""
+msgstr "新しい GLPI ローカルユーザーを作成"
 
 #: src/Project.php:1457
 msgid "Create a sub project from this project"
@@ -7261,7 +7261,7 @@ msgstr "指定日後に調査を作成"
 #: src/MassiveAction.php:768
 msgctxt "button"
 msgid "Create template"
-msgstr ""
+msgstr "テンプレート作成"
 
 #: src/Document.php:1279
 #, php-format
@@ -7403,7 +7403,7 @@ msgstr "Ctrl+Alt+G"
 #: js/modules/Form/WebIconSelector.js:136
 msgctxt "icons"
 msgid "Currencies"
-msgstr ""
+msgstr "通貨"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:174
 msgid "Current"
@@ -7430,11 +7430,11 @@ msgstr "現在のデータベース スキーマ"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:111
 msgid "Current date"
-msgstr ""
+msgstr "現在日付"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:113
 msgid "Current date and time"
-msgstr ""
+msgstr "現在日時"
 
 #: templates/pages/management/document.html.twig
 msgid "Current file"
@@ -7446,11 +7446,11 @@ msgstr "現在のページ"
 
 #: src/Dropdown.php:2775
 msgid "Current page as Office Open XML (.xlsx)"
-msgstr ""
+msgstr "現在のページを Office OpenXML (.xlsx) で"
 
 #: src/Dropdown.php:2774
 msgid "Current page as Open Document format (.ods)"
-msgstr ""
+msgstr "現在のページを Open Document 形式 (.ods) で"
 
 #: src/Dropdown.php:2773
 msgid "Current page in CSV"
@@ -7470,7 +7470,7 @@ msgstr "現在のパスワード"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:112
 msgid "Current time"
-msgstr ""
+msgstr "現在時刻"
 
 #: src/Glpi/Console/Rules/ReplayDictionnaryRulesCommand.php:68
 msgid "Currently only available for Software dictionary."
@@ -7483,16 +7483,16 @@ msgstr "カスタム CSS は無効"
 #: src/Profile.php:1410
 msgid "Custom asset"
 msgid_plural "Custom assets"
-msgstr[0] ""
+msgstr[0] "カスタム情報資産"
 
 #: src/Dropdown.php:1385 src/Dropdown.php:1387
 msgid "Custom dropdowns"
-msgstr ""
+msgstr "カスタムドロップダウン"
 
 #: src/Glpi/Asset/CustomFieldDefinition.php:54
 msgid "Custom field"
 msgid_plural "Custom fields"
-msgstr[0] ""
+msgstr[0] "カスタム項目"
 
 #: src/Webhook.php:760
 msgid "Custom header"
@@ -7714,7 +7714,7 @@ msgstr "データベース名:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:119
 msgid "Database password"
-msgstr ""
+msgstr "データベース パスワード"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:157
 msgid "Database password:"
@@ -7738,7 +7738,7 @@ msgstr "データベース スキーマはOK。"
 
 #: src/Glpi/System/Requirement/DatabaseTablesEngine.php:50
 msgid "Database tables engine"
-msgstr ""
+msgstr "データベース テーブルエンジン"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:177
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:133
@@ -7797,7 +7797,7 @@ msgstr[0] "日付"
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:107
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:108
 msgid "Date and time"
-msgstr ""
+msgstr "日時"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Date format"
@@ -7917,7 +7917,7 @@ msgstr "デフォルトのメール"
 #: src/Glpi/Inventory/Conf.php:657 src/User.php:3061 src/User.php:3446
 #: src/User.php:4140 src/RuleRight.php:299
 msgid "Default entity"
-msgstr "デフォルトのエンティティ"
+msgstr "標準エンティティー"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Default file size limit imported by the mails receiver"
@@ -7987,7 +7987,7 @@ msgstr "デフォルトの通知サウンド"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:288
 msgid "Default option"
-msgstr ""
+msgstr "標準の選択肢"
 
 #: src/PendingReason.php:62
 msgid "Default pending reason"
@@ -8038,7 +8038,7 @@ msgstr "デフォルトの状態"
 
 #: src/Glpi/Form/Destination/CommonITILField/TemplateFieldStrategy.php:48
 msgid "Default template"
-msgstr ""
+msgstr "標準テンプレート"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1158
 msgid "Default threshold for cartridges count"
@@ -8121,7 +8121,7 @@ msgstr "削除"
 
 #: src/Glpi/Console/User/DeleteCommand.php:47
 msgid "Delete a GLPI user"
-msgstr ""
+msgstr "GLPI ユーザーを削除"
 
 #: phpunit/functional/LogTest.php:462 src/Log.php:1223
 msgid "Delete a component"
@@ -8251,7 +8251,7 @@ msgstr "アイテム間の関係を削除する"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Delete section"
-msgstr ""
+msgstr "セクションを削除"
 
 #: src/PlanningExternalEvent.php:173
 msgid "Delete serie"
@@ -8276,7 +8276,7 @@ msgstr "このダッシュボードを削除"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Delete translation"
-msgstr ""
+msgstr "翻訳を削除"
 
 #: templates/components/form/header_content.html.twig
 #: src/NotificationTargetTicket.php:656 src/CommonGLPI.php:1123
@@ -8343,7 +8343,7 @@ msgstr "納品日"
 #: templates/components/infocom.html.twig src/Infocom.php:1482
 #: src/Infocom.php:1849
 msgid "Delivery form"
-msgstr "納品形態"
+msgstr "納品フォーム"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "Deny"
@@ -8421,7 +8421,7 @@ msgstr "詳細"
 #: js/modules/Form/WebIconSelector.js:138
 msgctxt "icons"
 msgid "Design"
-msgstr ""
+msgstr "デザイン"
 
 #: src/NotificationTargetDBConnection.php:55
 msgid "Desynchronization SQL replica"
@@ -8446,7 +8446,7 @@ msgstr "現像器"
 #: js/modules/Form/WebIconSelector.js:139
 msgctxt "icons"
 msgid "Development"
-msgstr ""
+msgstr "開発"
 
 #: templates/pages/admin/inventory/agent.html.twig src/PCIVendor.php:61
 #: src/PCIVendor.php:83 src/USBVendor.php:61 src/USBVendor.php:83
@@ -8562,7 +8562,7 @@ msgstr "デバイス ID"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "デバイス"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -8586,7 +8586,7 @@ msgstr[0] "辞書"
 #: src/Glpi/Asset/RuleDictionaryTypeCollection.php:72
 #, php-format
 msgid "Dictionary of %s"
-msgstr ""
+msgstr "%s の辞書"
 
 #: src/RuleDictionnaryComputerModelCollection.php:43
 #: src/RuleDictionnaryMonitorModelCollection.php:44
@@ -8694,7 +8694,7 @@ msgstr "直接通知  ( ロック解除依頼者が通知の送信者になり�
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Direct access URL"
-msgstr ""
+msgstr "ダイレクトアクセス URL"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Direct connections"
@@ -8735,7 +8735,7 @@ msgstr "GLPIプラグインを無効にする（コマンドでプラグイン�
 
 #: src/Glpi/Console/User/DisableCommand.php:49
 msgid "Disable a GLPI user"
-msgstr ""
+msgstr "GLPI ユーザーを無効に"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
@@ -8745,7 +8745,7 @@ msgstr "他のすべてのオブジェクトのすべての通知を完全に無
 
 #: src/Glpi/Dashboard/Grid.php:383
 msgid "Disable demonstration"
-msgstr ""
+msgstr "デモを無効に"
 
 #: src/Glpi/Console/Maintenance/DisableMaintenanceModeCommand.php:52
 msgid "Disable maintenance mode"
@@ -8963,7 +8963,7 @@ msgstr "新しいマーケットプレースによるプラグイン設定ペー
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "選択したリビジョンへ復元しますか？"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -8983,7 +8983,7 @@ msgstr "ドキュメント"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "ドキュメント"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -9106,7 +9106,7 @@ msgstr[0] "ドメインの型"
 #: src/Domain.php:764
 #, php-format
 msgid "Domains alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティのドメインアラーム送信に失敗"
+msgstr "%1$s エンティティーのドメインアラーム送信に失敗"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Domains closes expiries"
@@ -9215,11 +9215,11 @@ msgstr[0] "ドロップダウン"
 #: src/Glpi/Dropdown/DropdownDefinition.php:49
 msgid "Dropdown definition"
 msgid_plural "Dropdown definitions"
-msgstr[0] ""
+msgstr[0] "ドロップダウンの定義"
 
 #: templates/pages/setup/dropdowns_list.html.twig
 msgid "Dropdown with entity management"
-msgstr "エンティティ管理のドロップダウン"
+msgstr "エンティティー管理のドロップダウン"
 
 #: src/Profile.php:1097 src/Profile.php:1937 src/Profile.php:3068
 msgid "Dropdowns dictionary"
@@ -9248,15 +9248,15 @@ msgstr "複製"
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "Duplicate comment"
-msgstr ""
+msgstr "コメントのコピー"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Duplicate question"
-msgstr ""
+msgstr "質問のコピー"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Duplicate section"
-msgstr ""
+msgstr "セクションのコピー"
 
 #: src/Dropdown.php:2643 src/Dropdown.php:2649 src/Dropdown.php:2650
 msgid "Duplicate the element as many times as there are connections"
@@ -9310,7 +9310,7 @@ msgstr "動的分布"
 #: js/modules/Form/WebIconSelector.js:142
 msgctxt "icons"
 msgid "E-commerce"
-msgstr ""
+msgstr "電子商取引"
 
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:84
 msgid "ERROR"
@@ -9365,7 +9365,7 @@ msgstr "東"
 
 #: js/impact.js:1388
 msgid "Edge properties..."
-msgstr ""
+msgstr "エッジのプロパティー..."
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -9386,7 +9386,7 @@ msgstr "編集"
 
 #: templates/components/notepad/form.html.twig
 msgid "Edit a note"
-msgstr ""
+msgstr "メモを編集"
 
 #: js/planning.js:562
 msgid "Edit an event"
@@ -9394,7 +9394,7 @@ msgstr "イベントを編集する"
 
 #: templates/impact/edit_edge_modal.html.twig
 msgid "Edit edge"
-msgstr ""
+msgstr "エッジを編集"
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
@@ -9418,7 +9418,7 @@ msgstr "このカードを編集"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Edit translation"
-msgstr ""
+msgstr "翻訳を編集"
 
 #: src/Glpi/Dashboard/Widget.php:260
 msgid "Editable markdown"
@@ -9453,7 +9453,7 @@ msgstr "--dsn または --use-default オプションのいずれかを使用す
 #: js/modules/Form/WebIconSelector.js:143
 msgctxt "icons"
 msgid "Electrical"
-msgstr ""
+msgstr "電子的"
 
 #: ajax/getMapPoint.php:58
 msgid "Element seems not geolocalized or cannot be found"
@@ -9620,11 +9620,11 @@ msgstr "CSSのカスタマイズを有効にする"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable Legacy REST API"
-msgstr ""
+msgstr "レガシー REST API を有効に"
 
 #: src/Glpi/Console/User/EnableCommand.php:49
 msgid "Enable a GLPI user"
-msgstr ""
+msgstr "GLPI ユーザーを有効に"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
@@ -9881,11 +9881,11 @@ msgstr "Enter"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:291
 msgid "Enter an option"
-msgstr ""
+msgstr "選択肢の入力"
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:60
 msgid "Enter password"
-msgstr ""
+msgstr "パスワードの入力"
 
 #: ajax/dropdownTrackingDeviceType.php:69
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -9896,63 +9896,63 @@ msgstr "最初の文字を入力してください （ユーザー名、アイ�
 #: src/ItemVirtualMachine.php:233
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] "エンティティ"
+msgstr[0] "エンティティー"
 
 #: src/NotificationTarget.php:1098
 msgid "Entity administrator"
-msgstr "エンティティ管理者"
+msgstr "エンティティー管理者"
 
 #: src/RuleRight.php:261
 msgid "Entity based on LDAP information"
-msgstr "LDAP情報に基づくエンティティ"
+msgstr "LDAP 情報を元にしたエンティティー"
 
 #: src/RuleMailCollector.php:172
 msgid "Entity based on user's profile"
-msgstr "ユーザプロファイルに基づくエンティティ"
+msgstr "ユーザプロファイルに基づくエンティティー"
 
 #. TRANS: software in plural
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1438
 msgid "Entity for software creation"
-msgstr "ソフトウェア作成のエンティティ"
+msgstr "ソフトウェア作成のエンティティー"
 
 #: src/RuleMailCollector.php:168 src/RuleImportEntity.php:226
 #: src/RuleRight.php:266
 msgid "Entity from TAG"
-msgstr "TAGからのエンティティ"
+msgstr "TAG からのエンティティー"
 
 #: src/RuleRight.php:276
 msgid "Entity from complete name"
-msgstr "完全名からのエンティティ"
+msgstr "完全名からのエンティティー"
 
 #: src/RuleMailCollector.php:164
 msgid "Entity from domain"
-msgstr "ドメインからのエンティティ"
+msgstr "ドメインからのエンティティー"
 
 #: src/RuleRight.php:271
 msgid "Entity from mail domain"
-msgstr "メールドメインからのエンティティ"
+msgstr "メールドメインからのエンティティー"
 
 #: templates/pages/admin/rules/import_preview.html.twig
 #: src/Glpi/Console/User/GrantCommand.php:73
 msgid "Entity not found"
-msgstr "エンティティは見つかりませんでした"
+msgstr "エンティティーは見つかりませんでした"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Entity notes"
-msgstr "エンティティのメモ"
+msgstr "エンティティーのメモ"
 
 #: src/Profile.php:765
 msgid "Entity right"
-msgstr "エンティティの権限"
+msgstr "エンティティーの権限"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Entity tree"
-msgstr ""
+msgstr "エンティティー ツリー"
 
 #: templates/components/logs.html.twig
 #: templates/components/datatable.html.twig
 msgid "Entries to show:"
-msgstr ""
+msgstr "表示するエントリー : "
 
 #: src/Appliance.php:269 src/Item_Environment.php:51
 msgid "Environment"
@@ -9962,7 +9962,7 @@ msgstr[0] "環境"
 #: src/Glpi/Console/Application.php:192
 #, php-format
 msgid "Environment to use, possible values are: %s"
-msgstr ""
+msgstr "使用する環境。可能な値 : %s"
 
 #: src/NetworkPort.php:760
 msgid "Equipment in trunk or tagged mode"
@@ -10225,7 +10225,7 @@ msgstr "除外"
 #: templates/pages/setup/notification/recipients.html.twig
 msgid "Exclusion"
 msgid_plural "Exclusions"
-msgstr[0] ""
+msgstr[0] "例外"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 #: templates/pages/admin/transfer.html.twig
@@ -10253,7 +10253,7 @@ msgstr "実行エラー"
 #: src/Plugin.php:2272
 msgctxt "plugin"
 msgid "Execution suspended"
-msgstr ""
+msgstr "実行停止"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:68
 msgid ""
@@ -10335,7 +10335,7 @@ msgstr "データを CSV 出力"
 
 #: src/Glpi/Form/Form.php:257
 msgid "Export form"
-msgstr ""
+msgstr "フォームのエクスポート"
 
 #: src/Stat.php:2015 src/Stat.php:2138
 msgid "Export to CSV"
@@ -10353,7 +10353,7 @@ msgstr "拡張子"
 #: js/modules/Form/WebIconSelector.js:144
 msgctxt "icons"
 msgid "Extensions"
-msgstr ""
+msgstr "拡張機能"
 
 #: src/CronTask.php:858
 msgid "External"
@@ -10465,7 +10465,7 @@ msgstr "%s ディレクトリーの作成に失敗しました。ディレクト
 
 #: src/Glpi/Console/User/CreateCommand.php:77
 msgid "Failed to create user"
-msgstr ""
+msgstr "ユーザーの作成に失敗"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
@@ -10473,7 +10473,7 @@ msgstr "フィルターの削除に失敗"
 
 #: src/Glpi/Controller/CommonAjaxController.php:262
 msgid "Failed to delete item"
-msgstr ""
+msgstr "アイテムの削除に失敗"
 
 #: src/Document.php:1089 src/Document.php:1206
 #, php-format
@@ -10497,7 +10497,7 @@ msgstr "マニフェストの生成に失敗。エラー : %s"
 
 #: src/Glpi/Console/User/GrantCommand.php:94
 msgid "Failed to grant profile"
-msgstr ""
+msgstr "プロファイルの権限変更に失敗"
 
 #: src/Ticket.php:5770
 #, php-format
@@ -10511,7 +10511,7 @@ msgstr "チケット %d を読み込めませんでした"
 
 #: src/Glpi/Controller/CommonAjaxController.php:316
 msgid "Failed to purge item"
-msgstr ""
+msgstr "アイテムの抹消に失敗"
 
 #: src/UploadHandler.php:418
 msgid "Failed to resize image"
@@ -10519,11 +10519,11 @@ msgstr "画像のリサイズに失敗しました"
 
 #: src/Glpi/Controller/CommonAjaxController.php:289
 msgid "Failed to restore item"
-msgstr ""
+msgstr "アイテムの復元に失敗"
 
 #: src/Glpi/Controller/CommonAjaxController.php:235
 msgid "Failed to udpate item"
-msgstr ""
+msgstr "アイテムの更新に失敗"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:97
 #, php-format
@@ -10840,7 +10840,7 @@ msgstr "名, 姓"
 
 #: src/Glpi/Form/Form.php:503
 msgid "First section"
-msgstr ""
+msgstr "最初のセクション"
 
 #: ajax/dropdownShowIPNetwork.php:56
 #, php-format
@@ -10962,7 +10962,7 @@ msgstr[0] "フォローテンプレート"
 #: js/modules/Form/WebIconSelector.js:145
 msgctxt "icons"
 msgid "Food"
-msgstr ""
+msgstr "食べ物"
 
 #: templates/pages/admin/entity/survey_config.html.twig
 #, php-format
@@ -11000,7 +11000,7 @@ msgstr "検索条件に項目 ID が入っていません"
 
 #: src/Glpi/Controller/CommonAjaxController.php:71
 msgid "Forbidden itemtype"
-msgstr ""
+msgstr "禁止アイテムタイプ"
 
 #: src/Glpi/Console/Application.php:174
 msgid "Force ANSI output"
@@ -11031,7 +11031,7 @@ msgstr "スキーマを更新していない場合でも、GLPI の v-1 バー�
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Force passwords to comply with security policy"
-msgstr ""
+msgstr "セキュリティ・ポリシーに準拠したパスワードを強制する"
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:136
 #, php-format
@@ -11072,45 +11072,45 @@ msgstr "パスワードをお忘れですか ?"
 #: src/Glpi/Form/Form.php:80
 msgid "Form"
 msgid_plural "Forms"
-msgstr[0] ""
+msgstr[0] "フォーム"
 
 #: src/Glpi/Form/AnswersSet.php:62
 msgid "Form answers"
-msgstr ""
+msgstr "フォームの回答"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form description"
-msgstr ""
+msgstr "フォームの説明"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destination name"
-msgstr ""
+msgstr "フォームのあて先名"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form details"
-msgstr ""
+msgstr "フォームの詳細"
 
 #: src/Glpi/Form/Form.php:298
 msgid "Form drafts retention period (in days)"
-msgstr ""
+msgstr "フォームの下書きの保存期間 (日)"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form name"
-msgstr ""
+msgstr "フォーム名"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:73
 #, php-format
 msgid "Form name: %s"
-msgstr ""
+msgstr "フォーム名 : %s"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Form section"
-msgstr ""
+msgstr "フォームセクション"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Form submitted"
-msgstr ""
+msgstr "フォームを登録しました"
 
 #: src/Item_DeviceCamera_ImageFormat.php:48
 msgctxt "camera"
@@ -11124,7 +11124,7 @@ msgstr "前任のチケット担当技術者"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Forms"
-msgstr ""
+msgstr "フォーム"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:74
 #, php-format
@@ -11146,7 +11146,7 @@ msgstr "%s 個の符号付き整数を使用しているプライマリー・外
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:116
 #, php-format
 msgid "Found %s table(s) requiring a migration to \"ROW_FORMAT=DYNAMIC\"."
-msgstr "%s 個のテーブルは、\"ROW_FORMAT=DYNAMIC\" への移行が必要です。"
+msgstr "\"ROW_FORMAT=DYNAMIC\" への移行が必要なテーブルが %s 個あります。"
 
 #: src/Glpi/Console/Migration/Utf8mb4Command.php:157
 #, php-format
@@ -11216,7 +11216,7 @@ msgstr "From メールヘッダ"
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityFieldStrategy.php:52
 msgid "From form"
-msgstr ""
+msgstr "フォームから"
 
 #: src/Glpi/Form/Destination/CommonITILField/LocationFieldStrategy.php:52
 #: src/Glpi/Form/Destination/CommonITILField/UrgencyFieldStrategy.php:51
@@ -11225,7 +11225,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:48
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:54
 msgid "From template"
-msgstr ""
+msgstr "テンプレートから"
 
 #: src/Item_Rack.php:138 src/Item_Rack.php:297 src/Item_Rack.php:676
 #: src/Glpi/Socket.php:287
@@ -11248,11 +11248,11 @@ msgstr "フルネーム"
 
 #: src/User.php:3063 src/User.php:3447
 msgid "Full structure"
-msgstr ""
+msgstr "全構造"
 
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:67
 msgid "Full width"
-msgstr ""
+msgstr "幅いっぱい"
 
 #: src/FQDN.php:60
 msgid ""
@@ -11275,12 +11275,12 @@ msgstr "GLPI 内蔵インベントリー"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "GLPI Network"
-msgstr ""
+msgstr "GLPI Network"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:272
 msgid "GLPI Object"
 msgid_plural "GLPI Objects"
-msgstr[0] ""
+msgstr[0] "GLPI オブジェクト"
 
 #: front/config.form.php:68
 msgid "GLPI cache reset successful"
@@ -11308,7 +11308,7 @@ msgstr "GLPIが動作しているサーバーのタイムゾーン"
 
 #: install/update.php:179 install/update.php:192
 msgid "GLPI setup"
-msgstr ""
+msgstr "GLPI セットアップ"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:116
 msgid "GLPI source code integrity is not validated."
@@ -11333,7 +11333,7 @@ msgstr "GMT"
 #: js/modules/Form/WebIconSelector.js:146
 msgctxt "icons"
 msgid "Games"
-msgstr ""
+msgstr "ゲーム"
 
 #: src/IPNetwork.php:174 src/IPNetwork.php:272
 msgid "Gateway"
@@ -11351,7 +11351,7 @@ msgstr "Gbps"
 #: js/modules/Form/WebIconSelector.js:147
 msgctxt "icons"
 msgid "Gender"
-msgstr ""
+msgstr "性別"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 #: templates/pages/admin/transfer.html.twig src/CommonGLPI.php:115
@@ -11400,7 +11400,7 @@ msgstr[0] "汎用の型"
 #: js/modules/Form/WebIconSelector.js:148
 msgctxt "icons"
 msgid "Gestures"
-msgstr ""
+msgstr "手話"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgctxt "button"
@@ -11494,7 +11494,7 @@ msgstr "作成後に作成したアイテムに移動"
 
 #: src/Glpi/Console/User/GrantCommand.php:52
 msgid "Grant a profile assignment to a user"
-msgstr ""
+msgstr "プロファイル割り当ての権限をユーザーに与える"
 
 #: src/CommonITILValidation.php:584
 msgid "Granted"
@@ -11533,7 +11533,7 @@ msgstr[0] "グループ"
 
 #: src/Glpi/Dashboard/Filters/GroupRequesterFilter.php:46
 msgid "Group / Requester group"
-msgstr ""
+msgstr "グループ / 依頼グループ"
 
 #: templates/pages/admin/group_ldap.html.twig src/Group.php:366
 msgid "Group DN"
@@ -11607,7 +11607,7 @@ msgstr "管理者以外のチケット担当グループ"
 #: src/Group_Item.php:49
 msgid "Group item"
 msgid_plural "Group items"
-msgstr[0] ""
+msgstr[0] "グループ アイテム"
 
 #: src/NotificationTargetProject.php:69
 msgid "Group of project team"
@@ -11646,7 +11646,7 @@ msgstr "HDMI"
 
 #: templates/pages/setup/notification/queued_notification.html.twig
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:165
 msgid "HTML encoding has been fixed."
@@ -11684,7 +11684,7 @@ msgstr "ハードウェアの財務管理情報"
 #: src/Glpi/Dashboard/FakeProvider.php:273
 msgctxt "fake_data"
 msgid "Hardware team"
-msgstr ""
+msgstr "ハードウェア チーム"
 
 #: src/NotificationTargetReservation.php:62
 msgid "Hardware user"
@@ -11715,7 +11715,7 @@ msgstr ""
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Header"
-msgstr ""
+msgstr "ヘッダー"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: src/QueuedWebhook.php:332
@@ -11737,7 +11737,7 @@ msgstr "ヘッドフォン"
 #: js/modules/Form/WebIconSelector.js:149
 msgctxt "icons"
 msgid "Health"
-msgstr ""
+msgstr "健康"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Height"
@@ -11754,7 +11754,7 @@ msgstr "ヘルプデスク ダッシュボード"
 
 #: src/DisplayPreference.php:639
 msgid "Helpdesk View"
-msgstr ""
+msgstr "ヘルプデスク表示"
 
 #: src/Group.php:894
 msgid "Helpdesk group"
@@ -11763,7 +11763,7 @@ msgstr "ヘルプデスク グループ"
 #: src/Glpi/Dashboard/FakeProvider.php:274
 msgctxt "fake_data"
 msgid "Helpdesk team"
-msgstr ""
+msgstr "ヘルプデスク チーム"
 
 #: src/User.php:6705 src/User.php:6730
 msgid "Helpdesk user"
@@ -11861,7 +11861,7 @@ msgstr "LDAP エイリアスの取り扱い"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "How can we help you?"
-msgstr ""
+msgstr "何かお困りですか？"
 
 #: src/MassiveAction.php:1261
 msgid "How many copies do you want to create?"
@@ -11973,7 +11973,7 @@ msgstr "IPアドレス"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "IP Restrictions"
-msgstr ""
+msgstr "IP 制限"
 
 #: src/IPAddress.php:133
 msgid "IP address"
@@ -12102,15 +12102,15 @@ msgstr "設定しない場合、メイン管理者のメールを使います。
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If not set, main or entity administrator email address will be used."
-msgstr "設定しない場合、メインまたはエンティティ管理者のメールを使います。"
+msgstr "設定しない場合、メインまたはエンティティー管理者のメールを使います。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If not set, main or entity administrator email name will be used."
-msgstr "設定しない場合、メインまたはエンティティ管理者の名前を使います。"
+msgstr "設定しない場合、メインまたはエンティティー管理者の名前を使います。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "If not set, main or entity administrator name will be used."
-msgstr "設定しない場合、メインまたはエンティティの管理者名を使います。"
+msgstr "設定しない場合、メインまたはエンティティーの管理者名を使います。"
 
 #: src/Glpi/Console/Rules/ReplayDictionnaryRulesCommand.php:67
 msgid ""
@@ -12151,7 +12151,7 @@ msgstr "同期済みまたは参照アカウントの場合"
 
 #: src/Glpi/Inventory/Conf.php:1016
 msgid "If the asset status is"
-msgstr ""
+msgstr "情報資産の状態を条件に : "
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If the cartridge types are no longer used"
@@ -12163,6 +12163,8 @@ msgid ""
 "email containing the information required to reset your password. Please "
 "contact your administrator if you do not receive any email."
 msgstr ""
+"メールアドレスが GLPI "
+"に登録されたユーザーと一致していれば、パスワードのリセット方法を示したメールが届きます。メールが届かなければ、管理者に連絡してください。"
 
 #: src/Project.php:2494
 msgctxt "filters"
@@ -12241,7 +12243,7 @@ msgstr[0] "重複チェックで無視する値"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Illustration"
-msgstr ""
+msgstr "イラスト"
 
 #: src/UploadHandler.php:406
 msgid "Image exceeds maximum height"
@@ -12266,7 +12268,7 @@ msgstr "イメージは最小幅が必要です"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2650
 msgid "Immediately"
-msgstr ""
+msgstr "すぐに"
 
 #: src/Entity.php:1225 src/Entity.php:1244
 msgid "Immediatly"
@@ -12332,7 +12334,7 @@ msgstr "ユーザーのインポート"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 msgid "Import another file"
-msgstr ""
+msgstr "別のファイルをインポートする"
 
 #: src/RuleSoftwareCategory.php:89
 msgid "Import category from inventory tool"
@@ -12349,7 +12351,7 @@ msgstr "インポートを拒否 ( ログなし )"
 
 #: src/Glpi/Controller/Form/Import/Step1IndexController.php:57
 msgid "Import form"
-msgstr ""
+msgstr "フォームのインポート"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/admin/form/import/step1_index.html.twig
@@ -12357,7 +12359,7 @@ msgstr ""
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import forms"
-msgstr ""
+msgstr "フォームのインポート"
 
 #: src/User.php:4983
 msgid "Import from directories"
@@ -12403,7 +12405,7 @@ msgstr "インポートのオプション"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import preview"
-msgstr ""
+msgstr "インポートのプレビュー"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Import process is complete."
@@ -12412,7 +12414,7 @@ msgstr "インポート処理が完了しました。"
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: src/Glpi/Controller/Form/Import/Step4ExecuteController.php:71
 msgid "Import results"
-msgstr ""
+msgstr "インポート結果"
 
 #: templates/pages/admin/rules/import.html.twig
 msgid "Import rules from an XML file"
@@ -12689,7 +12691,7 @@ msgstr "システムのインストールと設定の情報"
 
 #: templates/pages/admin/entity/advanced.html.twig src/Entity.php:889
 msgid "Information in inventory tool (TAG) representing the entity"
-msgstr "エンティティを代表するインベントリーツール (TAG) の情報"
+msgstr "エンティティーを代表するインベントリーツール (TAG) の情報"
 
 #: src/WifiNetwork.php:90
 msgid "Infrastructure (with access point)"
@@ -12713,11 +12715,11 @@ msgstr "インフラストラクチャ (AP有)"
 #: src/Contract.php:1584 src/State.php:108 src/Infocom.php:833
 #: src/Alert.php:112 src/Alert.php:161 src/Alert.php:192
 msgid "Inheritance of the parent entity"
-msgstr "上位エンティティの継承"
+msgstr "上位エンティティーの継承"
 
 #: src/Entity.php:1817
 msgid "Inherits configuration from the parent entity"
-msgstr "上位エンティティから構成を継承します"
+msgstr "上位エンティティーから設定を継承します"
 
 #: templates/pages/management/contract.html.twig
 msgid "Initial contract period"
@@ -12966,7 +12968,7 @@ msgstr "無効なIPアドレス"
 
 #: src/OAuthClient.php:119 src/OAuthClient.php:143
 msgid "Invalid IP address or CIDR range"
-msgstr ""
+msgstr "IP アドレスまたは CIDR 範囲が無効"
 
 #: src/Glpi/Api/HL/Router.php:609
 msgctxt "api"
@@ -12996,7 +12998,7 @@ msgstr "無効な URL"
 
 #: src/Glpi/Controller/CommonAjaxController.php:102
 msgid "Invalid action"
-msgstr ""
+msgstr "無効な操作"
 
 #: src/MailCollector.php:1512
 msgid "Invalid attached file"
@@ -13075,7 +13077,7 @@ msgstr "ゲートウェイアドレスが無効です"
 
 #: src/Glpi/Controller/CommonAjaxController.php:65
 msgid "Invalid id"
-msgstr ""
+msgstr "無効な ID"
 
 #: src/IPNetwork.php:346
 msgid "Invalid input format for the network"
@@ -13126,11 +13128,11 @@ msgstr "実際の日付が無効なため、日付は更新しませんでした
 #: src/Glpi/Controller/ErrorController.php:142
 #: src/Glpi/Controller/ErrorController.php:151
 msgid "Invalid request"
-msgstr ""
+msgstr "無効な要求"
 
 #: src/Glpi/Controller/ErrorController.php:143
 msgid "Invalid request parameters."
-msgstr ""
+msgstr "要求のパラメーターが無効です。"
 
 #: src/IPNetwork.php:356
 msgid "Invalid subnet mask"
@@ -13414,7 +13416,7 @@ msgstr "アイテムが見つかりません"
 
 #: src/Glpi/Controller/CommonAjaxController.php:341
 msgid "Item not found."
-msgstr ""
+msgstr "アイテムが見つかりません。"
 
 #: src/CommonDBChild.php:276 src/NetworkPortInstantiation.php:326
 msgid "Item not linked to an object"
@@ -13446,7 +13448,7 @@ msgstr "アイテムを追加しましたが、重複レコードが %s にあ�
 #: js/modules/Forms/RendererController.js:124
 #, javascript-format
 msgid "Item successfully created: %s"
-msgstr ""
+msgstr "アイテムを作成しました : %s"
 
 #: src/CommonItilObject_Item.php:1545 src/CommonDBTM.php:2273
 msgid "Item successfully deleted"
@@ -13508,7 +13510,7 @@ msgstr "アイテムの表示"
 #: templates/pages/admin/form/form_destination.html.twig
 #: src/Glpi/Form/Destination/FormDestination.php:57
 msgid "Items to create"
-msgstr ""
+msgstr "作成するアイテム"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Items to transfer"
@@ -13685,7 +13687,7 @@ msgstr "認証用の LDAP ディレクトリー"
 
 #: templates/pages/admin/entity/advanced.html.twig src/Entity.php:880
 msgid "LDAP directory information attribute representing the entity"
-msgstr "エンティティを表わす LDAP ディレクトリー情報属性"
+msgstr "エンティティーを表わす LDAP ディレクトリー情報属性"
 
 #: front/ldap.group.import.php:42 front/ldap.php:40 front/ldap.group.php:42
 #: front/ldap.import.php:45 src/Group.php:151 src/Group.php:249
@@ -13695,7 +13697,7 @@ msgstr "LDAP ディレクトリーリンク"
 
 #: src/Entity.php:898
 msgid "LDAP directory of an entity"
-msgstr "エンティティの LDAP ディレクトリー"
+msgstr "エンティティーの LDAP ディレクトリー"
 
 #: templates/pages/setup/ldap/adv_info.html.twig
 msgid "LDAP directory time zone"
@@ -13707,11 +13709,11 @@ msgstr "LDAPフィルター"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "エンティティに関連付けられた LDAP フィルター (任意)"
+msgstr "エンティティーに関連付けられた LDAP フィルター (任意)"
 
 #: src/User.php:341
 msgid "LDAP information"
-msgstr ""
+msgstr "LDAP 情報"
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:448
 msgid "LDAP server"
@@ -13740,7 +13742,7 @@ msgstr "ラベル"
 
 #: templates/components/search/controls.html.twig
 msgid "Landscape PDF"
-msgstr ""
+msgstr "横向き PDF"
 
 #: front/user.form.php:45 front/user.form.php:164
 msgid "Lang has been changed!"
@@ -13829,7 +13831,7 @@ msgstr "最終編集"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Last entries to show:"
-msgstr ""
+msgstr "表示する最後のエントリー : "
 
 #: src/SavedSearch.php:268
 msgid "Last execution date"
@@ -14027,7 +14029,7 @@ msgstr "起動"
 #: js/modules/Form/WebIconSelector.js:150
 msgctxt "icons"
 msgid "Laundry"
-msgstr ""
+msgstr "洗濯機"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "Leave these parameters empty to disable API access restriction"
@@ -14054,7 +14056,7 @@ msgstr "GLPIとそのプラグインの将来のバージョンを改善する�
 #: js/modules/Form/WebIconSelector.js:151
 msgctxt "icons"
 msgid "Letters"
-msgstr ""
+msgstr "手紙"
 
 #: src/Glpi/Event.php:426
 msgid "Level"
@@ -14237,7 +14239,7 @@ msgstr "リンクの型"
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #, php-format
 msgid "Link with %1$s"
-msgstr ""
+msgstr "%1$s とリンク"
 
 #: src/Profile.php:1249 src/Profile.php:1630 src/Profile.php:3383
 msgid "Link with items for the creation of tickets"
@@ -14322,7 +14324,7 @@ msgstr "%s のリスト"
 
 #: templates/components/form/item_antivirus_item.html.twig
 msgid "List of antivirus"
-msgstr ""
+msgstr "ウイルス対策リスト"
 
 #: src/Glpi/Dashboard/Widget.php:284
 msgid "List of articles"
@@ -14342,7 +14344,7 @@ msgstr "ロックするアイテムのリスト"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "List of remote management"
-msgstr ""
+msgstr "リモート管理リスト"
 
 #: templates/components/form/item_virtualmachine.html.twig
 msgid "List of virtualized environments"
@@ -14477,7 +14479,7 @@ msgstr[0] "ロック済み項目"
 #: templates/layout/parts/objectlock_message.html.twig
 #, php-format
 msgid "Locked: %1$s by %2$s"
-msgstr ""
+msgstr "%2$s が %1$s をロック"
 
 #: src/NotificationTargetObjectLock.php:87
 msgid "Locking User"
@@ -14528,7 +14530,7 @@ msgstr "ログアウト時の転送先URL"
 #: js/modules/Form/WebIconSelector.js:152
 msgctxt "icons"
 msgid "Logic"
-msgstr ""
+msgstr "ロジック"
 
 #: templates/pages/setup/levelagreement_level.html.twig
 #: templates/pages/admin/rules/form.html.twig src/LevelAgreementLevel.php:135
@@ -14592,7 +14594,7 @@ msgstr "ログ 抹消設定"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:106
 msgid "Long answer"
-msgstr ""
+msgstr "長い回答"
 
 #: src/NotificationTargetTicket.php:619 src/NotificationTargetTicket.php:666
 #: src/Entity.php:817 src/Location.php:120 src/Location.php:252
@@ -14684,7 +14686,7 @@ msgstr "メールドメイン"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Mail domain surrogates entity"
-msgstr "メールドメイン代行エンティティ"
+msgstr "メールドメイン代行エンティティー"
 
 #: src/AuthMail.php:48
 msgid "Mail server"
@@ -14902,17 +14904,17 @@ msgstr "製造日"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:189
 msgid "Many information grouped"
-msgstr "グループ化した多くの情報"
+msgstr "多くの情報をグループに"
 
 #: js/modules/Form/WebIconSelector.js:153
 msgctxt "icons"
 msgid "Map"
-msgstr ""
+msgstr "地図"
 
 #: js/modules/Form/WebIconSelector.js:154
 msgctxt "icons"
 msgid "Maps"
-msgstr ""
+msgstr "地図"
 
 #: src/Glpi/Features/PlanningEvent.php:835 src/Toolbox.php:1996
 msgid "March"
@@ -14934,7 +14936,7 @@ msgstr "選択アイテムに「一斉操作」"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "アクセスポイント"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -14950,7 +14952,7 @@ msgstr "材料費"
 #: js/modules/Form/WebIconSelector.js:155
 msgctxt "icons"
 msgid "Math"
-msgstr ""
+msgstr "数学"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Matrix of calculus for priority"
@@ -15003,7 +15005,7 @@ msgstr "最大時間"
 
 #: src/Glpi/Asset/CustomFieldType/NumberType.php:51
 msgid "Maximum"
-msgstr ""
+msgstr "最大"
 
 #: src/QueuedNotification.php:522
 msgid "Maximum emails to send at once"
@@ -15027,7 +15029,7 @@ msgstr "結果表示の最大値"
 
 #: src/Ticket.php:4971
 msgid "Maximum number of tickets purged per entity (0 = unlimited)"
-msgstr ""
+msgstr "エンティティーごとの最大抹消チケット数 (0 = 制限なし)"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 #: src/MailCollector.php:309
@@ -15065,7 +15067,7 @@ msgstr "測定電力 (W)"
 #: js/modules/Form/WebIconSelector.js:156
 msgctxt "icons"
 msgid "Media"
-msgstr ""
+msgstr "メディア"
 
 #: src/CommonITILObject.php:3621
 msgctxt "impact"
@@ -15141,7 +15143,7 @@ msgstr "関係者をマージ"
 
 #: src/CommonDropdown.php:836 src/ITILTemplate.php:576
 msgid "Merge and assign to current entity"
-msgstr "マージして現在のエンティティに割り当てる"
+msgstr "マージして現在のエンティティーに割り当てる"
 
 #: src/Ticket.php:2109
 msgid "Merge as Followup"
@@ -15161,7 +15163,7 @@ msgstr "タスクをマージ"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Merge with previous section"
-msgstr ""
+msgstr "前のセクションにマージ"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Merged"
@@ -15329,7 +15331,7 @@ msgstr "最小時間"
 
 #: src/Glpi/Asset/CustomFieldType/NumberType.php:50
 msgid "Minimum"
-msgstr ""
+msgstr "最小"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:366 src/CommonITILValidation.php:1250
@@ -15452,7 +15454,7 @@ msgstr "モデル %s (%s) が見つかりません。"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "Model for automatic entity transfer on inventories"
-msgstr "資産管理処理の自動エンティティ転送で使用するモデル"
+msgstr "資産管理処理の自動エンティティー転送で使用するモデル"
 
 #: templates/components/form/reservationitem_comment.html.twig
 #: src/Glpi/Search/Provider/SQLProvider.php:5645
@@ -15476,7 +15478,7 @@ msgstr[0] "モニター"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "モニター"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -15513,7 +15515,7 @@ msgstr "月次TCO"
 #: js/modules/Form/WebIconSelector.js:157
 msgctxt "icons"
 msgid "Mood"
-msgstr ""
+msgstr "ムード"
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:527
 #, php-format
@@ -15544,16 +15546,16 @@ msgstr "移動"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:287
 msgid "Move option"
-msgstr ""
+msgstr "設定を移動"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Move section"
-msgstr ""
+msgstr "セクションを移動"
 
 #: js/modules/Forms/EditorController.js:1574
 #, javascript-format
 msgid "Move section: %1$d"
-msgstr ""
+msgstr "%1$d セクションを移動"
 
 #: src/User.php:3677
 msgid "Move to group"
@@ -15586,7 +15588,7 @@ msgstr "複数値"
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:53
 #: src/Glpi/Asset/AssetDefinition.php:247
 msgid "Multiple values"
-msgstr ""
+msgstr "複数値"
 
 #: src/Profile.php:3917 src/Profile.php:3924 src/CommonItilObject_Item.php:770
 #: src/CommonItilObject_Item.php:826
@@ -15768,7 +15770,7 @@ msgstr "自然順（古いものが上、新しいものが下）"
 #: js/modules/Form/WebIconSelector.js:158
 msgctxt "icons"
 msgid "Nature"
-msgstr ""
+msgstr "自然"
 
 #: templates/generic_show_form.html.twig src/NetworkEquipment.php:461
 #: src/Network.php:41 src/Printer.php:619 src/Profile.php:2199
@@ -15784,7 +15786,7 @@ msgstr[0] "ネットワークエイリアス"
 
 #: src/IPNetwork.php:391
 msgid "Network already defined in visible entities"
-msgstr "ネットワークは表示エンティティで既に定義しています"
+msgstr "ネットワークは表示エンティティーで既に定義しています"
 
 #: src/DeviceNetworkCard.php:45
 msgid "Network card"
@@ -15871,7 +15873,7 @@ msgstr "ネットワーク レポート"
 #: src/Glpi/Dashboard/FakeProvider.php:271
 msgctxt "fake_data"
 msgid "Network team"
-msgstr ""
+msgstr "ネットワーク チーム"
 
 #: src/Dropdown.php:1318 src/NetworkPort.php:1330
 msgid "Networking"
@@ -15942,7 +15944,7 @@ msgstr "新規"
 #: src/DomainRecord.php:427 src/CommonItilObject_Item.php:631
 #, php-format
 msgid "New %s for this item"
-msgstr ""
+msgstr "このアイテムの新しい%s"
 
 #: src/MassiveAction.php:1337
 msgid "New Note"
@@ -15955,7 +15957,7 @@ msgstr "新しい変更要求"
 #: src/CommonTreeDropdown.php:527
 #, php-format
 msgid "New child %s"
-msgstr ""
+msgstr "新しい下位%s"
 
 #: src/NotificationTargetCommonITILObject.php:146
 msgid "New document"
@@ -16013,7 +16015,7 @@ msgstr "新しいプロジェクトタスク"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "New question"
-msgstr ""
+msgstr "新たに質問を作成"
 
 #: src/Appliance_Item_Relation.php:230 src/Appliance_Item_Relation.php:231
 msgid "New relation"
@@ -16029,7 +16031,7 @@ msgstr "新しいサーバールームを追加"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "New section"
-msgstr ""
+msgstr "新たにセクションを作成"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:93
 msgid "New security key generated; database updated."
@@ -16050,7 +16052,7 @@ msgstr "新しいチケット"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "New translation"
-msgstr ""
+msgstr "新たに翻訳を作成"
 
 #: src/NotificationTargetCommonITILObject.php:135
 msgid "New user in assignees"
@@ -16100,7 +16102,7 @@ msgstr "来月"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
-msgstr ""
+msgstr "次回の契約更新日"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Next run"
@@ -16140,7 +16142,7 @@ msgstr "いいえ"
 #: src/CommonItilObject_Item.php:664
 #, php-format
 msgid "No %s on this item"
-msgstr ""
+msgstr "このアイテムに %s はありません"
 
 #: src/Glpi/Event.php:288
 msgid "No Event"
@@ -16148,7 +16150,7 @@ msgstr "イベント無し"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:46
 msgid "No Followup"
-msgstr ""
+msgstr "フォローなし"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig
 msgid "No LDAP directory defined in GLPI"
@@ -16156,11 +16158,11 @@ msgstr "GLPI で定義済みの LDAP ディレクトリーはありません"
 
 #: src/User.php:5949
 msgid "No LDAP information to display"
-msgstr ""
+msgstr "表示すべき LDAP 情報なし"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskFieldStrategy.php:46
 msgid "No Task"
-msgstr ""
+msgstr "タスクなし"
 
 #: src/Profile.php:3804
 msgid "No access"
@@ -16176,7 +16178,7 @@ msgstr "アクティブな LDAP サーバーが見つかりません。"
 
 #: templates/components/form/item_antivirus_item.html.twig
 msgid "No antivirus associated with the item"
-msgstr ""
+msgstr "アイテム関連のウイルス対策なし"
 
 #: templates/components/form/item_device.html.twig src/Supplier.php:425
 msgid "No associated item"
@@ -16206,7 +16208,7 @@ msgstr "変更要求はありません。"
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:2577
 #: src/Entity.php:2763
 msgid "No change of entity"
-msgstr "エンティティの変更はありません"
+msgstr "エンティティーの変更なし"
 
 #: templates/pages/setup/mailcollector/folder_list.html.twig
 #, php-format
@@ -16272,7 +16274,7 @@ msgstr "要素が見つかりません。"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "No entity found"
-msgstr "エンティティは見つかりません"
+msgstr "エンティティーは見つかりません"
 
 #: src/UploadHandler.php:376
 msgid "No file was uploaded"
@@ -16348,7 +16350,7 @@ msgstr "アイテムの仕様が見つかりません。"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "No items will be created for this form."
-msgstr ""
+msgstr "このフォームで新たなアイテムは作成されません。"
 
 #: src/Item_Line.php:431
 msgid "No line found"
@@ -16450,7 +16452,7 @@ msgstr "処理するソフトウェアはありません。"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "No specific permissions requested"
-msgstr ""
+msgstr "特定の権限は必要ありません"
 
 #: src/Stat.php:443
 msgid "No statistics are available"
@@ -16486,7 +16488,7 @@ msgstr "タイムアウトしない"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "No translation has been added yet"
-msgstr ""
+msgstr "翻訳はありません"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:83
 msgid "No unaffected device!"
@@ -16498,11 +16500,11 @@ msgstr "ユーザーが見つかりませんでした。"
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:49
 msgid "No validation"
-msgstr ""
+msgstr "検証なし"
 
 #: templates/components/form/item_virtualmachine.html.twig
 msgid "No virtualized environment associated with the item"
-msgstr ""
+msgstr "このアイテム関連の仮想化環境なし"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:982
@@ -16576,11 +16578,11 @@ msgstr "アイテムを配置するスペースがありません"
 
 #: templates/pages/admin/form/import/step4_execute.html.twig
 msgid "Not imported"
-msgstr ""
+msgstr "未インポート"
 
 #: src/MailCollector.php:153
 msgid "Not imported emails"
-msgstr ""
+msgstr "インポートしなかったメール"
 
 #: src/Plugin.php:2257 src/Plugin.php:2694
 msgctxt "plugin"
@@ -16589,7 +16591,7 @@ msgstr "未インストール"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Not planned"
-msgstr ""
+msgstr "未計画"
 
 #: src/QueuedWebhook.php:419
 msgid "Not sent/no response"
@@ -16612,7 +16614,7 @@ msgstr "承認不要"
 
 #: src/Glpi/Asset/Capacity/IsInventoriableCapacity.php:80
 msgid "Not used"
-msgstr ""
+msgstr "未使用"
 
 #: src/Auth.php:1357
 msgid "Not yet authenticated"
@@ -17062,7 +17064,7 @@ msgstr "使用中の消耗品の数"
 #: src/Group_User.php:633
 msgctxt "quantity"
 msgid "Number of users"
-msgstr ""
+msgstr "ユーザー数"
 
 #: src/CartridgeItem.php:263 src/Printer.php:604
 msgid "Number of worn cartridges"
@@ -17075,11 +17077,11 @@ msgstr "文書チケット数"
 #: js/modules/Form/WebIconSelector.js:159
 msgctxt "icons"
 msgid "Numbers"
-msgstr ""
+msgstr "数"
 
 #: src/Glpi/Inventory/Conf.php:401
 msgid "OAuth - Client credentials"
-msgstr ""
+msgstr "OAuth - クライアント認証"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
@@ -17092,7 +17094,7 @@ msgstr[0] "OAuth クライアント"
 
 #: templates/components/search/controls.html.twig
 msgid "ODS"
-msgstr ""
+msgstr "ODS"
 
 #: templates/install/choose_language.html.twig src/ITILCategory.php:491
 #: src/ITILCategory.php:499 src/ITILCategory.php:507 src/ITILCategory.php:515
@@ -17126,11 +17128,11 @@ msgstr "OLA"
 
 #: src/Glpi/Form/Destination/CommonITILField/OLATTOField.php:47
 msgid "OLA TTO"
-msgstr ""
+msgstr "OLA TTO"
 
 #: src/Glpi/Form/Destination/CommonITILField/OLATTRField.php:47
 msgid "OLA TTR"
-msgstr ""
+msgstr "OLA TTR"
 
 #: src/OlaLevel_Ticket.php:49
 msgid "OLA level for Ticket"
@@ -17180,7 +17182,7 @@ msgstr[0] "関係者"
 #: src/CommonITILObject.php:4865
 msgid "Observer category"
 msgid_plural "Observer categories"
-msgstr[0] ""
+msgstr[0] "関係者カテゴリー"
 
 #: phpunit/functional/RuleTest.php:328
 #: src/NotificationTargetCommonITILObject.php:914
@@ -17255,7 +17257,7 @@ msgstr "送信された利用統計は、集計され、幅広い GLPI 開発者
 msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
-msgstr "フォームが検証されると、必要に応じてサプライヤの認証ページにリダイレクトします。"
+msgstr "フォームを検証した後、必要に応じてサプライヤの認証ページにリダイレクトする場合があります。"
 
 #: templates/install/step7.html.twig templates/install/update.html.twig
 msgid "One last thing before starting"
@@ -17263,11 +17265,11 @@ msgstr "始める前に最後に一言"
 
 #: src/Project.php:2799
 msgid "Ongoing projects"
-msgstr ""
+msgstr "進行中プロジェクト"
 
 #: src/ProjectTask.php:1757
 msgid "Ongoing projects tasks"
-msgstr ""
+msgstr "進行中プロジェクトタスク"
 
 #: templates/impact/ongoing_modal.html.twig
 #: src/Glpi/SelfService/HomePageTabs.php:74
@@ -17280,7 +17282,7 @@ msgstr "HTTP PUT メソッドのみ許可しています"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Only applies to Authorization Code grants"
-msgstr ""
+msgstr "認証コードにのみ適用"
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:82
 msgid "Only create new users"
@@ -17469,7 +17471,7 @@ msgstr "または全件検索"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr ""
+msgstr "もしくは、既存のものを利用 : "
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1322
@@ -17510,7 +17512,7 @@ msgstr "その他"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "その他"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -17527,7 +17529,7 @@ msgstr[0] "その他構成部品モデル"
 
 #: src/Budget.php:552
 msgid "Other entities"
-msgstr "他のエンティティ"
+msgstr "他のエンティティー"
 
 #: src/NetworkPort.php:762
 msgid "Other equipments"
@@ -17615,7 +17617,7 @@ msgstr[0] "PCI ベンダー"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "PDF export font"
-msgstr "PDF出力フォント"
+msgstr "PDF 出力フォント"
 
 #: src/PDU.php:63
 msgid "PDU"
@@ -17908,7 +17910,7 @@ msgstr "そのパスワードは最近まで使用していました。"
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:69
 msgid "Passwords do not match"
-msgstr ""
+msgstr "パスワードが一致しません"
 
 #: src/Reservation.php:1131
 msgid "Past reservations"
@@ -18008,7 +18010,7 @@ msgstr "定期的な通知"
 #: src/Peripheral.php:83
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
+msgstr[0] "周辺機器"
 
 #: src/PeripheralModel.php:41 src/Rule.php:331
 msgid "Peripheral model"
@@ -18153,16 +18155,16 @@ msgstr "フォトコンダクター"
 #: js/modules/Form/WebIconSelector.js:160
 msgctxt "icons"
 msgid "Photography"
-msgstr ""
+msgstr "写真"
 
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PB"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
-msgstr ""
+msgstr "利用可能な情報資産を選択し、指定の日付で予約します。"
 
 #: templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig
@@ -18663,11 +18665,11 @@ msgstr "ポートの説明"
 #: src/RuleImportAsset.php:144
 msgid "Port number"
 msgid_plural "Port number"
-msgstr[0] ""
+msgstr[0] "ポート番号"
 
 #: templates/components/search/controls.html.twig
 msgid "Portrait PDF"
-msgstr ""
+msgstr "縦向き PDF"
 
 #: templates/pages/assets/cable.html.twig
 #: templates/pages/assets/socket.html.twig src/PDU_Rack.php:270
@@ -18807,7 +18809,7 @@ msgstr "プレビュー"
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #: src/Glpi/Controller/Form/Import/Step2PreviewController.php:84
 msgid "Preview import"
-msgstr ""
+msgstr "インポートのプレビュー"
 
 #: src/Glpi/Search/CriteriaFilter.php:116
 msgid "Preview results"
@@ -19054,11 +19056,11 @@ msgstr[0] "プロファイル"
 
 #: src/Glpi/Console/User/GrantCommand.php:91
 msgid "Profile granted"
-msgstr ""
+msgstr "プロファイルを許可しました"
 
 #: src/Glpi/Console/User/GrantCommand.php:69
 msgid "Profile not found"
-msgstr ""
+msgstr "プロファイルが見つかりません"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Profile to be used when locking items"
@@ -19088,7 +19090,7 @@ msgstr[0] "プロジェクト"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Project Task State"
-msgstr ""
+msgstr "プロジェクトタスクの状態"
 
 #: src/Item_Project.php:55
 msgid "Project item"
@@ -19107,11 +19109,11 @@ msgstr[0] "プロジェクトタスク"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "プロジェクトタスク チームグループ"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
-msgstr ""
+msgstr "プロジェクトタスク チームユーザー"
 
 #: src/ProjectTaskTemplate.php:50
 msgid "Project task template"
@@ -19218,7 +19220,7 @@ msgstr "すべての履歴を抹消"
 
 #: src/Glpi/Form/Form.php:297
 msgid "Purge old form drafts"
-msgstr ""
+msgstr "古い下書きの抹消"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Purge ticket action is disabled."
@@ -19265,36 +19267,36 @@ msgstr[0] "クエリーログ"
 #: src/Glpi/Form/Question.php:61
 msgid "Question"
 msgid_plural "Questions"
-msgstr[0] ""
+msgstr[0] "質問"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question description"
-msgstr ""
+msgstr "質問の説明"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question details"
-msgstr ""
+msgstr "質問の詳細"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question name"
-msgstr ""
+msgstr "質問名"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question sub type"
-msgstr ""
+msgstr "質問の型（サブ）"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question type"
-msgstr ""
+msgstr "質問の型"
 
 #: src/Glpi/Form/Tag/QuestionTagProvider.php:79
 #, php-format
 msgid "Question: %s"
-msgstr ""
+msgstr "質問 : %s"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Quick Access"
-msgstr ""
+msgstr "クイックアクセス"
 
 #: src/Profile_User.php:196 src/Profile_User.php:368
 #: src/CommonDBVisible.php:337 src/CommonDBVisible.php:369
@@ -19389,7 +19391,7 @@ msgstr "ラック プラグイン の\"%s\"テーブルがありません。"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:112
 msgid "Radio"
-msgstr ""
+msgstr "ラジオボタン"
 
 #: src/Rule.php:731
 msgid "Ranking"
@@ -19434,11 +19436,11 @@ msgstr "読み取りのみ"
 
 #: src/Glpi/Asset/AssetDefinition.php:241
 msgid "Read-only"
-msgstr ""
+msgstr "表示のみ"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr ""
+msgstr "表示のみモード"
 
 #: src/Glpi/Marketplace/View.php:570
 msgid "Readme"
@@ -19446,11 +19448,11 @@ msgstr "Readme"
 
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:68
 msgid "Readonly"
-msgstr ""
+msgstr "読み取り専用"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Ready to be imported"
-msgstr ""
+msgstr "インポートの準備完了"
 
 #: src/Item_DeviceBattery.php:63
 msgid "Real capacity"
@@ -19573,7 +19575,7 @@ msgstr[0] "DNSレコードタイプ"
 
 #: src/Glpi/Asset/Capacity/HasHistoryCapacity.php:58
 msgid "Records the modifications made to the asset."
-msgstr ""
+msgstr "情報資産への変更記録"
 
 #: src/PrinterLog.php:394
 msgid "Recto/Verso pages"
@@ -19612,7 +19614,7 @@ msgstr "再帰的メンバー権限"
 
 #: src/Toolbox.php:1504
 msgid "Redirection failed"
-msgstr ""
+msgstr "リダイレクト失敗"
 
 #: src/Glpi/Cache/CacheManager.php:565
 msgid "Redis (TCP)"
@@ -19783,7 +19785,7 @@ msgstr "リマインダー"
 #: templates/pages/tools/reminder.html.twig
 #, php-format
 msgid "Reminder %1$s"
-msgstr ""
+msgstr "通知 %1$s"
 
 #: src/NotificationTargetCommonITILObject.php:2146
 msgid "Reminder text"
@@ -19873,7 +19875,7 @@ msgstr "既存のコアデータを削除する"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Remove form"
-msgstr ""
+msgstr "フォームの削除"
 
 #: src/CommonDBTM.php:4212
 msgctxt "button"
@@ -19891,7 +19893,7 @@ msgstr "グループからの削除"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
-msgstr ""
+msgstr "アイテムの削除"
 
 #: src/NetworkEquipmentModelStencil.php:60
 msgid "Remove last port"
@@ -19899,7 +19901,7 @@ msgstr "最終ポートを削除"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:289
 msgid "Remove option"
-msgstr ""
+msgstr "設定の削除"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -19916,7 +19918,7 @@ msgstr "この情報資産をグループから削除する"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Remove this form from the import list"
-msgstr ""
+msgstr "インポートリストからこのフォームを削除"
 
 #: src/Migration.php:1698
 #, php-format
@@ -19954,7 +19956,7 @@ msgstr "再開"
 
 #: templates/pages/admin/form/move_section_modal.html.twig
 msgid "Reorganize sections"
-msgstr ""
+msgstr "セクションの並べ替え"
 
 #: templates/pages/assistance/planning/external_event.html.twig
 #: src/Glpi/Features/PlanningEvent.php:1010
@@ -20003,16 +20005,16 @@ msgstr "置換済"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 msgid "Replacement value"
-msgstr ""
+msgstr "値の置き換え"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #, php-format
 msgid "Replacement value for '%s'"
-msgstr ""
+msgstr "「%s」の値の置き換え"
 
 #: src/RuleDictionnarySoftwareCollection.php:71
 msgid "Replay dictionary rules for manufacturers"
-msgstr ""
+msgstr "メーカーに辞書のルールを再適用する"
 
 #: src/Glpi/Console/Rules/ReplayDictionnaryRulesCommand.php:51
 msgid "Replay dictionary rules on existing items"
@@ -20106,7 +20108,7 @@ msgstr[0] "レポート"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:96
 msgid "Report an issue"
-msgstr ""
+msgstr "問題を報告"
 
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
 #: templates/pages/admin/entity/assistance.html.twig
@@ -20119,7 +20121,7 @@ msgstr "要求"
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:61
 #: src/Glpi/Helpdesk/DefaultDataManager.php:152
 msgid "Request a service"
-msgstr ""
+msgstr "サービスを要求"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:202
@@ -20144,34 +20146,34 @@ msgstr "インベントリーを要求"
 #: js/modules/ObjectLock.js:99
 #, javascript-format
 msgid "Request sent to %s"
-msgstr ""
+msgstr "要求を %s に送信しました"
 
 #: src/RequestType.php:41
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] "要求元"
+msgstr[0] "要求ルート"
 
 #: src/Item_SoftwareVersion.php:102 src/Item_SoftwareLicense.php:109
 msgctxt "software"
 msgid "Request source"
-msgstr "要求元"
+msgstr "要求ルート"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
-msgstr "フォローに要求元を表示"
+msgstr "フォローに要求ルートを表示"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
-msgstr "チケットに要求元を表示"
+msgstr "チケットに要求ルートを表示"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Request sources by default"
-msgstr "要求元のデフォルト"
+msgstr "標準の要求ルート"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php:53
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:110
 msgid "Request type"
-msgstr ""
+msgstr "要求型"
 
 #: src/CommonITILValidation.php:1098
 msgid "Requested approver"
@@ -20230,7 +20232,7 @@ msgstr "依頼者の姓"
 #: src/CommonITILObject.php:4767
 msgid "Requester category"
 msgid_plural "Requester categories"
-msgstr[0] ""
+msgstr[0] "依頼者カテゴリー"
 
 #: phpunit/functional/RuleTest.php:323
 #: src/NotificationTargetCommonITILObject.php:911
@@ -20272,7 +20274,7 @@ msgstr "必須項目が未入力です！"
 
 #: src/Glpi/System/RequirementsManager.php:98
 msgid "Required for database access."
-msgstr ""
+msgstr "データベースアクセスに必要です。"
 
 #: src/Glpi/System/RequirementsManager.php:123
 msgid ""
@@ -20298,11 +20300,11 @@ msgstr "国際化・多言語化（internationalization）が必要です。"
 
 #: src/Glpi/System/RequirementsManager.php:118
 msgid "Required for multibyte chars support and charset conversion."
-msgstr ""
+msgstr "マルチバイト文字への対応と文字セット変換のために必要"
 
 #: src/Glpi/System/RequirementsManager.php:128
 msgid "Required for qrcode support"
-msgstr ""
+msgstr "QRコード対応のために必要"
 
 #: src/Glpi/System/RequirementsManager.php:103
 msgid ""
@@ -20380,7 +20382,7 @@ msgstr "並び順をリセット"
 
 #: src/Glpi/Console/User/ResetPasswordCommand.php:51
 msgid "Reset the password of a local GLPI user"
-msgstr ""
+msgstr "ローカル GLPI ユーザーのパスワードをリセット"
 
 #: src/DisplayPreference.php:577
 msgctxt "button"
@@ -20426,7 +20428,7 @@ msgstr "解決"
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: src/Glpi/Controller/Form/Import/Step3ResolveIssuesController.php:73
 msgid "Resolve issues"
-msgstr ""
+msgstr "問題を解決"
 
 #: src/Ticket.php:2164
 msgid "Resolve selected tickets"
@@ -20450,7 +20452,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "リストア"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -20495,7 +20497,7 @@ msgstr "プリンターの管理方式を制限する"
 
 #: src/RuleImportAsset.php:197
 msgid "Restrict search in defined entity"
-msgstr "定義したエンティティでの検索を制限する"
+msgstr "定義したエンティティでーの検索を制限する"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Result"
@@ -20568,7 +20570,7 @@ msgstr "Root ディレクトリー(任意)"
 #: install/empty_data.php:9191 install/empty_data.php:9201
 #: install/empty_data.php:9211
 msgid "Root entity"
-msgstr "ルートエンティティ"
+msgstr "ルートエンティティー"
 
 #: src/Glpi/ContentTemplates/TemplateManager.php:194
 msgid "Root variables"
@@ -20618,7 +20620,7 @@ msgstr "コンピューターに場所を割り当てるルール"
 
 #: src/Profile.php:1063 src/Profile.php:2984
 msgid "Rules for assigning a computer to an entity"
-msgstr "エンティティへのコンピューター割り当てルール"
+msgstr "エンティティーへのコンピューター割り当てルール"
 
 #: src/RuleMailCollector.php:44 src/Profile.php:1071 src/Profile.php:2970
 #: src/RuleMailCollectorCollection.php:47
@@ -20627,7 +20629,7 @@ msgstr "メール受信で作成したチケットの割り当てルール"
 
 #: src/RuleImportEntityCollection.php:52 src/RuleImportEntity.php:46
 msgid "Rules for assigning an item to an entity"
-msgstr "アイテムをエンティティに割り当てるルール"
+msgstr "アイテムをエンティティーに割り当てるルール"
 
 #: src/RuleImportAssetCollection.php:80
 msgid "Rules for import and link equipments"
@@ -20759,11 +20761,11 @@ msgstr "SLA"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLATTOField.php:47
 msgid "SLA TTO"
-msgstr ""
+msgstr "SLA TTO"
 
 #: src/Glpi/Form/Destination/CommonITILField/SLATTRField.php:47
 msgid "SLA TTR"
-msgstr ""
+msgstr "SLA TTR"
 
 #: src/SlaLevel_Ticket.php:44
 msgid "SLA level for Ticket"
@@ -20957,7 +20959,7 @@ msgstr "ナレッジベースへの追加"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Save and preview"
-msgstr ""
+msgstr "保存してプレビュー表示"
 
 #: src/SavedSearch.php:381
 msgid "Save as a new search"
@@ -20971,7 +20973,7 @@ msgstr "画像として保存"
 #: templates/pages/admin/form/access_control.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Save changes"
-msgstr ""
+msgstr "変更を保存"
 
 #: templates/pages/tools/savedsearch/save_button.html.twig
 #: js/modules/Search/GenericView.js:95
@@ -21019,7 +21021,7 @@ msgstr "設定ファイルを保存しています..."
 #: templates/generic_show_form.html.twig
 msgid ""
 "Scan this QRCode to be redirected to the asset page from your mobile device"
-msgstr ""
+msgstr "この QR コードを読み取ると、携帯端末から該当の情報資産のページに移動できます"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:391
 msgid "Scanning database for items to fix..."
@@ -21040,11 +21042,11 @@ msgstr "スコープ"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screen recording"
-msgstr ""
+msgstr "画面録画"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screenshot"
-msgstr ""
+msgstr "スクリーンショット"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Scroll to bottom"
@@ -21085,7 +21087,7 @@ msgstr "検索エンジン"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr "エンティティの検索"
+msgstr "エンティティーの検索"
 
 #: src/Entity.php:907
 msgid "Search filter (if needed)"
@@ -21097,11 +21099,11 @@ msgstr "ユーザー検索フィルター"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Search for forms..."
-msgstr ""
+msgstr "フォームの検索..."
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr ""
+msgstr "ナレッジベースの登録内容またはフォームを検索"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
@@ -21130,7 +21132,7 @@ msgstr "検索結果のユーザー表示"
 #: src/Glpi/Search/Output/Spreadsheet.php:560
 #, php-format
 msgid "Search results for %1$s"
-msgstr ""
+msgstr "%1$s の検索結果"
 
 #: templates/components/search/map.html.twig
 msgid "Search results for localized items only"
@@ -21152,7 +21154,7 @@ msgstr "２番目のアイテム"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "セカンダリ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -21165,24 +21167,24 @@ msgstr "シークレット"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Section actions"
-msgstr ""
+msgstr "セクション操作"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Section description"
-msgstr ""
+msgstr "セクションの説明"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Section details"
-msgstr ""
+msgstr "セクションの詳細"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Section name"
-msgstr ""
+msgstr "セクションの名前"
 
 #: src/Glpi/Form/Tag/SectionTagProvider.php:79
 #, php-format
 msgid "Section: %s"
-msgstr ""
+msgstr "セクション : %s"
 
 #: templates/install/blocks/requirements_table.html.twig src/Entity.php:528
 #: src/Webhook.php:758 src/Glpi/Event.php:178
@@ -21201,16 +21203,16 @@ msgstr "セキュリティキーを生成できません！"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy configuration"
-msgstr ""
+msgstr "セキュリティーポリシー設定"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy validation"
-msgstr ""
+msgstr "セキュリティーポリシー検証"
 
 #: src/Glpi/Dashboard/FakeProvider.php:270
 msgctxt "fake_data"
 msgid "Security team"
-msgstr ""
+msgstr "セキュリティーチーム"
 
 #: src/Project.php:139 src/ProjectTask.php:169
 msgid "See (actor)"
@@ -21231,7 +21233,7 @@ msgstr "すべて表示"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:48
 msgid "See all available help articles and our FAQ."
-msgstr ""
+msgstr "ヘルプの記事と FAQ をご覧ください。"
 
 #: src/Ticket.php:5229
 msgid "See all tickets"
@@ -21302,19 +21304,19 @@ msgstr "以前のバージョンの GLPI を更新する場合は、「アップ
 #: src/Glpi/Form/Destination/CommonITILField/SLMField.php:88
 #, php-format
 msgid "Select a %s..."
-msgstr ""
+msgstr "%s を選択..."
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItemDropdown.php:50
 msgid "Select a dropdown item"
-msgstr ""
+msgstr "ドロップダウンアイテムを選択"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItemDropdown.php:49
 msgid "Select a dropdown type"
-msgstr ""
+msgstr "ドロップダウンの型を選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/LocationField.php:92
 msgid "Select a location..."
-msgstr ""
+msgstr "場所を選択..."
 
 #: src/CommonDBConnexity.php:640
 #, php-format
@@ -21327,15 +21329,15 @@ msgstr "%s のピアを選択 : "
 #: src/Glpi/Form/Destination/CommonITILField/EntityField.php:99
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php:100
 msgid "Select a question..."
-msgstr ""
+msgstr "質問を選択..."
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceField.php:90
 msgid "Select a request source..."
-msgstr ""
+msgstr "要求ルートを選択..."
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php:92
 msgid "Select a request type..."
-msgstr ""
+msgstr "要求型を選択..."
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select a statistic to compare"
@@ -21343,12 +21345,12 @@ msgstr "比較する記録を選択してください"
 
 #: src/Glpi/Form/Destination/CommonITILField/TemplateField.php:100
 msgid "Select a template..."
-msgstr ""
+msgstr "テンプレートを選択..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorField.php:98
 #: src/Glpi/Form/Destination/CommonITILField/ValidationField.php:99
 msgid "Select actors..."
-msgstr ""
+msgstr "アクターを選択..."
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -21356,27 +21358,27 @@ msgstr "全選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILCategoryField.php:94
 msgid "Select an ITIL category..."
-msgstr ""
+msgstr "ITIL カテゴリーを選択..."
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php:224
 msgid "Select an actor..."
-msgstr ""
+msgstr "アクターを選択..."
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityField.php:92
 msgid "Select an entity..."
-msgstr ""
+msgstr "エンティティーを選択..."
 
 #: js/modules/Form/WebIconSelector.js:111
 msgid "Select an icon"
-msgstr ""
+msgstr "アイコンを選択"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:62
 msgid "Select an item"
-msgstr ""
+msgstr "アイテムを選択"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:61
 msgid "Select an itemtype"
-msgstr ""
+msgstr "アイテム型を選択"
 
 #: src/Unmanaged.php:303
 msgid "Select an itemtype: "
@@ -21384,11 +21386,11 @@ msgstr "アイテム型を選択 :"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Select an option to add"
-msgstr ""
+msgstr "追加する設定を選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/UrgencyField.php:98
 msgid "Select an urgency level..."
-msgstr ""
+msgstr "緊急度を選択..."
 
 #: templates/components/search/controls.html.twig
 #: templates/components/search/displaypreference_modal.html.twig
@@ -21401,16 +21403,16 @@ msgstr "デフォルトで表示するアイテムを選択"
 #: src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php:195
 msgid "Select device..."
 msgid_plural "Select devices..."
-msgstr[0] ""
+msgstr[0] "デバイスを選択.."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupField.php:90
 msgid "Select followup templates..."
-msgstr ""
+msgstr "フォローテンプレートを選択"
 
 #: templates/components/search/table.html.twig
 #: templates/components/datatable.html.twig
 msgid "Select item"
-msgstr ""
+msgstr "アイテムを選択"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
@@ -21420,7 +21422,7 @@ msgstr "比較するプリンターを選択してください"
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorField.php:106
 #: src/Glpi/Form/Destination/CommonITILField/ValidationField.php:107
 msgid "Select questions..."
-msgstr ""
+msgstr "質問を選択..."
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -21428,7 +21430,7 @@ msgstr "表示する統計を選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskField.php:90
 msgid "Select task templates..."
-msgstr ""
+msgstr "タスクテンプレートを選択"
 
 #: src/MassiveAction.php:1059
 msgid "Select the common field that you want to update"
@@ -21437,7 +21439,7 @@ msgstr "更新したい共通項目を選択"
 #: templates/layout/parts/profile_selector.html.twig
 #: templates/pages/admin/rules/import_preview.html.twig
 msgid "Select the desired entity"
-msgstr "要望のエンティティを選択"
+msgstr "必要なエンティティーを選択"
 
 #: src/MassiveAction.php:1061
 msgid "Select the field that you want to update"
@@ -21445,11 +21447,11 @@ msgstr "更新したい項目の選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:95
 msgid "Select the item to associate..."
-msgstr ""
+msgstr "関連付けるアイテムを選択"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:94
 msgid "Select the itemtype of the item to associate..."
-msgstr ""
+msgstr "関連付けるアイテムのアイテム型を選択..."
 
 #: src/Report.php:140
 msgid "Select the report you want to generate"
@@ -21461,7 +21463,7 @@ msgstr "このアクションに適用するアイテムの型を選んでくだ
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
-msgstr ""
+msgstr "ファイルを選択"
 
 #: install/install.php:520
 msgid "Select your language"
@@ -21473,7 +21475,7 @@ msgstr "すべて選択・すべて選択解除"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:290
 msgid "Selectable option"
-msgstr ""
+msgstr "選択可能な設定"
 
 #: src/Ticket.php:2408
 msgid "Selected Problem can't be loaded"
@@ -21585,7 +21587,7 @@ msgstr "財務管理情報アラームを指定日前に送信する"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Send form"
-msgstr ""
+msgstr "送信フォーム"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1078
 msgid "Send license alarms before"
@@ -21715,11 +21717,11 @@ msgstr "サービス"
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/ServiceCatalog/ServiceCatalog.php:48
 msgid "Service catalog"
-msgstr ""
+msgstr "サービスカタログ"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "サービスカタログ設定"
 
 #: templates/components/itilobject/fields_panel.html.twig src/SLM.php:58
 msgid "Service level"
@@ -21761,7 +21763,7 @@ msgstr "このグループの名前や色を設定します"
 
 #: js/impact.js:1389
 msgid "Set name for this edge"
-msgstr ""
+msgstr "このエッジに名前を設定"
 
 #: src/Problem.php:427 src/Change.php:223 src/Ticket.php:2146
 msgid "Set notifications for all actors"
@@ -21807,7 +21809,7 @@ msgstr "システム設定"
 #: js/modules/Form/WebIconSelector.js:161
 msgctxt "icons"
 msgid "Shapes"
-msgstr ""
+msgstr "形"
 
 #: src/Glpi/Dashboard/Grid.php:285 js/modules/Dashboard/Dashboard.js:219
 msgid "Share or embed this dashboard"
@@ -21815,7 +21817,7 @@ msgstr "このダッシュボードを共有または埋め込む"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:105
 msgid "Short answer"
-msgstr ""
+msgstr "短い回答"
 
 #: src/Infocom.php:1003
 msgctxt "button"
@@ -21830,7 +21832,7 @@ msgstr "%1$s"
 #: templates/pages/assets/networkport/networkname_short.html.twig
 #, php-format
 msgid "Show %s"
-msgstr ""
+msgstr "%s を表示"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show GLPI ID"
@@ -21896,7 +21898,7 @@ msgstr "新規チケットのフォームに個人情報を表示する (簡易�
 #: js/modules/Knowbase.js:59
 #, javascript-format
 msgid "Show revision %d"
-msgstr ""
+msgstr "%d リビジョンを表示"
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
@@ -21908,7 +21910,7 @@ msgstr "上の結果から検索を表示"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search pagination above results"
-msgstr ""
+msgstr "検索結果の上にページを表示"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -22056,7 +22058,7 @@ msgstr "アイテムのソフトウェア"
 #: src/Glpi/Dashboard/FakeProvider.php:272
 msgctxt "fake_data"
 msgid "Software team"
-msgstr ""
+msgstr "ソフトウェアチーム"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: src/ITILSolution.php:58
@@ -22147,7 +22149,7 @@ msgstr "いくつかのエラーは以下のプラグインに関連していま
 
 #: src/Glpi/Console/Application.php:548
 msgid "Some mandatory system requirements are missing:"
-msgstr ""
+msgstr "必須システム要求に対する不足 : "
 
 #: src/Glpi/Console/AbstractCommand.php:215
 msgid "Some optional system requirements are missing."
@@ -22165,7 +22167,7 @@ msgstr "インストールしているプラグインの更新があります！
 #: src/Group_User.php:449
 msgid ""
 "Some users are not listed as they are not visible from your current entity."
-msgstr ""
+msgstr "あなたの現在のエンティティーから表示不可になっているため、一部のユーザーはリストに表示できません。"
 
 #: src/CommonITILObject_CommonITILObject.php:398 src/Ticket.php:2220
 msgid "Son of"
@@ -22243,52 +22245,52 @@ msgstr "特別"
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:47
 #, php-format
 msgid "Specific %s"
-msgstr ""
+msgstr "特定の %s"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:47
 msgid "Specific Followup templates"
-msgstr ""
+msgstr "特定のフォローテンプレート"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILCategoryFieldStrategy.php:52
 msgid "Specific ITIL category"
-msgstr ""
+msgstr "特定の ITIL カテゴリー"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskFieldStrategy.php:47
 msgid "Specific Task templates"
-msgstr ""
+msgstr "特定のタスクテンプレート"
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:50
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:55
 msgid "Specific actors"
-msgstr ""
+msgstr "特定のアクター"
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityFieldStrategy.php:53
 msgid "Specific entity"
-msgstr ""
+msgstr "特定のエンティティー"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsFieldStrategy.php:53
 msgid "Specific items"
-msgstr ""
+msgstr "特定のアイテム"
 
 #: src/Glpi/Form/Destination/CommonITILField/LocationFieldStrategy.php:53
 msgid "Specific location"
-msgstr ""
+msgstr "特定の場所"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceFieldStrategy.php:49
 msgid "Specific request source"
-msgstr ""
+msgstr "特定の要求ルート"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeFieldStrategy.php:52
 msgid "Specific request type"
-msgstr ""
+msgstr "特定の要求型"
 
 #: src/Glpi/Form/Destination/CommonITILField/TemplateFieldStrategy.php:49
 msgid "Specific template"
-msgstr ""
+msgstr "特定のテンプレート"
 
 #: src/Glpi/Form/Destination/CommonITILField/UrgencyFieldStrategy.php:52
 msgid "Specific urgency"
-msgstr ""
+msgstr "特定の緊急度"
 
 #: src/Item_Devices.php:656
 msgid "Specificities"
@@ -22316,7 +22318,7 @@ msgstr "スプリット済"
 #: js/modules/Form/WebIconSelector.js:162
 msgctxt "icons"
 msgid "Sport"
-msgstr ""
+msgstr "スポーツ"
 
 #: src/Glpi/Dashboard/Widget.php:209
 msgid "Stacked bars"
@@ -22484,11 +22486,11 @@ msgstr[0] "アイテムの状態"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of tasks done"
-msgstr ""
+msgstr "タスクの状態は完了"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of tasks in progress"
-msgstr ""
+msgstr "タスクの状態は進行中"
 
 #: src/NotificationTargetTicket.php:688 src/NotificationTargetChange.php:309
 msgid "Status of the approval request"
@@ -22496,11 +22498,11 @@ msgstr "承認要求状態"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of unstarted tasks"
-msgstr ""
+msgstr "タスクの状態は未着手"
 
 #: src/Glpi/Inventory/Conf.php:1043
 msgid "Status to apply"
-msgstr ""
+msgstr "適用する状態"
 
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:171 src/Computer.php:311
 msgid ""
@@ -22529,12 +22531,12 @@ msgstr "ステンシル"
 #: src/Glpi/Form/Section.php:66
 msgid "Step"
 msgid_plural "Steps"
-msgstr[0] ""
+msgstr[0] "ステップ"
 
 #: js/modules/Forms/EditorController.js:1453
 #, javascript-format
 msgid "Step %1$d of %2$d"
-msgstr ""
+msgstr "%1$d / %2$d ステップ"
 
 #. TRANS %s is step number
 #: install/install.php:544 install/install.php:554 install/install.php:560
@@ -22548,7 +22550,7 @@ msgstr "ステップ %d"
 #: templates/pages/admin/form/form_section.html.twig
 #, php-format
 msgid "Step %d of %d"
-msgstr ""
+msgstr "%d / %d ステップ"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Step for the hours (minutes)"
@@ -22571,7 +22573,7 @@ msgstr "ユーザー偽装を終了"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Stop recording"
-msgstr ""
+msgstr "記録停止"
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:94
 msgid "Strict comparison of definitions"
@@ -22579,7 +22581,7 @@ msgstr "定義の厳密な比較"
 
 #: src/Glpi/Asset/CustomFieldType/StringType.php:43
 msgid "String"
-msgstr ""
+msgstr "文字列"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:383
 msgid "Sub-D"
@@ -22756,7 +22758,7 @@ msgstr "記号"
 #: js/modules/Form/WebIconSelector.js:163
 msgctxt "icons"
 msgid "Symbols"
-msgstr ""
+msgstr "シンボル"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetProblem.php:203 src/Problem.php:518
@@ -22809,7 +22811,7 @@ msgstr "システム"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "システム"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -22921,11 +22923,11 @@ msgstr "対象の認証"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Target entity"
-msgstr "対象のエンティティ"
+msgstr "対象のエンティティー"
 
 #: src/RuleImportAsset.php:87
 msgid "Target entity for the asset"
-msgstr "情報資産の対象エンティティ"
+msgstr "情報資産の対象エンティティー"
 
 #: src/NotificationTargetKnowbaseItem.php:213
 msgid "Targets"
@@ -23034,7 +23036,7 @@ msgstr "割当済み技術者"
 #: src/CommonITILObject.php:4953
 msgid "Technician category"
 msgid_plural "Technician categories"
-msgstr[0] ""
+msgstr[0] "技術者カテゴリー"
 
 #: phpunit/functional/RuleTest.php:325
 #: src/Glpi/Dashboard/Filters/GroupTechFilter.php:47
@@ -23187,7 +23189,7 @@ msgstr "テスト"
 #: templates/pages/setup/ldap/test_form.html.twig
 #, php-format
 msgid "Test LDAP server: %s"
-msgstr ""
+msgstr "LDAP サーバーのテスト : %s"
 
 #: src/AuthMail.php:242
 msgid "Test connection to email server"
@@ -23228,12 +23230,12 @@ msgstr "テスト中"
 #: src/Glpi/Asset/CustomFieldType/TextType.php:43
 #: src/Glpi/Form/QuestionType/QuestionTypeShortText.php:51
 msgid "Text"
-msgstr ""
+msgstr "テキスト"
 
 #: js/modules/Form/WebIconSelector.js:165
 msgctxt "icons"
 msgid "Text"
-msgstr ""
+msgstr "テキスト"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Text in the login box"
@@ -23287,7 +23289,7 @@ msgstr "LDAP 拡張モジュールが PHP parser に未インストール"
 msgid ""
 "The Legacy API is enabled. It is recommended to only use the new API when "
 "possible."
-msgstr ""
+msgstr "レガシー API を有効になっています。できるかぎり新 API のみの利用を推奨します。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The PHP mail function is unknown or is not activated on your system."
@@ -23364,7 +23366,7 @@ msgstr "アイテムの内容"
 msgid ""
 "The content of the notification contains sensitive information and therefore"
 " cannot be displayed."
-msgstr ""
+msgstr "通知の内容に機微な情報が含まれているため、表示できません。"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid ""
@@ -23747,7 +23749,7 @@ msgstr "これは、認証アプリを使用できない際の使い捨てコー
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
-msgstr "これらのパラメータは、エンティティを割り当てる際の一般的なルールのアクションとして使用します"
+msgstr "これらのパラメータは、エンティティーを割り当てる際の一般的なルールのアクションとして使用します"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
@@ -24453,7 +24455,7 @@ msgstr "合計"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "合計"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -24789,7 +24791,7 @@ msgstr "追加できません。そのユーザーはすでに存在します"
 
 #: src/NotImportedEmail.php:238
 msgid "Unable to affect the email to an entity"
-msgstr "エンティティへのメールに影響を与えることはできません"
+msgstr "エンティティーへのメールに影響を与えることはできません"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:85
 msgid "Unable to change security key!"
@@ -25279,7 +25281,7 @@ msgstr "アイテムをロック解除"
 #: src/Unmanaged.php:55
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
+msgstr[0] "未管理情報資産"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -26144,11 +26146,11 @@ msgstr "値/価格"
 
 #: src/Entity.php:2802
 msgid "Value inherited from a parent entity"
-msgstr "上位エンティティから継承した値"
+msgstr "上位エンティティーから継承した値"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Values for the generic rules for assignment to entities"
-msgstr "エンティティを割り当てるための一般的なルールの値"
+msgstr "エンティティーを割り当てるための一般的なルールの値"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Values used in the interface to search users from a LDAP directory"
@@ -26323,7 +26325,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "表示"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -26660,7 +26662,7 @@ msgstr ""
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "When connecting or updating the relevant field"
-msgstr ""
+msgstr "関連項目への接続または更新時"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "When disconnecting"
@@ -26924,7 +26926,7 @@ msgstr "昨日"
 #: src/Toolbox.php:832 js/common.js:658
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YB"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format
@@ -26958,7 +26960,7 @@ msgstr "%s に偽装しています。"
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "下位エンティティへの表示可否を変更することはできません。"
+msgstr "下位エンティティーへの表示可否を変更することはできません。"
 
 #: src/DomainRecord.php:321
 msgid "You are not allowed to edit this type of records"
@@ -27043,7 +27045,7 @@ msgstr "説明なしでタスクを追加することはできません。"
 
 #: src/Entity.php:335
 msgid "You can't add an entity without name"
-msgstr "名前の無いエンティティを追加できません"
+msgstr "名前の無いエンティティーを追加できません"
 
 #: src/MassiveAction.php:1523
 msgid ""
@@ -27072,7 +27074,7 @@ msgstr "このユーザーの代理を変更することはできません"
 
 #: src/Entity.php:214
 msgid "You cannot delete an entity which contains sub-entities."
-msgstr "サブエンティティ－を含むエンティティーは削除できません。"
+msgstr "サブエンティティーを含むエンティティーは削除できません。"
 
 #: front/itilsolution.form.php:52
 msgid "You cannot solve this item!"
@@ -27245,7 +27247,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "グループの作成には、いずれかの情報資産の選択が必要です"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""

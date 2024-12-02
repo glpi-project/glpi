@@ -6,8 +6,8 @@
 # Translators:
 # Minh Trí Nguyễn, 2022
 # ltkhanh <ltkhanh@bigdolphin.com.vn>, 2023
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2024\n"
+"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
 "Language-Team: Vietnamese (Viet Nam) (https://app.transifex.com/glpi/teams/1637/vi_VN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5186,7 +5186,7 @@ msgstr "Nhãn hiệu"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Nhãn hiệu"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -8567,7 +8567,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Các thiết bị"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -14945,7 +14945,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Chủ"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17521,7 +17521,7 @@ msgstr "Khác"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Khác"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20458,7 +20458,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Phục hồi"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22818,7 +22818,7 @@ msgstr "Hệ thống"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Hệ thống"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24471,7 +24471,7 @@ msgstr "Tổng"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Tổng"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017

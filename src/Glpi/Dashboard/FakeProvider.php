@@ -125,7 +125,7 @@ final class FakeProvider extends Provider
         return $values[$itemtype] ?? null;
     }
 
-    public static function bigNumberItem(CommonDBTM $item = null, array $params = []): array
+    public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
         return [
             'number' => self::getItemCount($item::class) ?? 1500,
@@ -278,7 +278,7 @@ final class FakeProvider extends Provider
         ];
     }
 
-    public static function nbItemByFk(CommonDBTM $item = null, CommonDBTM $fk_item = null, array $params = []): array
+    public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
         $number_fk = $item_counts[$fk_item::class] ?? 20;
@@ -306,7 +306,7 @@ final class FakeProvider extends Provider
         ];
     }
 
-    public static function articleListItem(CommonDBTM $item = null, array $params = []): array
+    public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $data = [];
         for ($i = 0; $i < 5; $i++) {

@@ -1455,7 +1455,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         $peers_id = static::$items_id_2;
                         break;
                     default:
-                        exit();
+                        throw new \LogicException();
                 }
                 if (
                     ($normalized_action == 'remove')

@@ -553,6 +553,10 @@ abstract class MainAsset extends InventoryAsset
                     $input['entities_id'] = $dataEntity['entities_id'];
                 }
                 $this->entities_id = $input['entities_id'];
+                if (isset($dataEntity['is_recursive'])) {
+                    $input['is_recursive'] = $dataEntity['is_recursive'];
+                    $this->setEntityRecursive($dataEntity['is_recursive']);
+                }
 
                 // get data from rules (like locations_id, states_id, groups_id_tech, etc)
                 // we don't want virtual action (prefixed by _)
@@ -974,6 +978,16 @@ abstract class MainAsset extends InventoryAsset
         return $this->entities_id;
     }
 
+    /**
+     * Retrieve computer entities is_recursive
+     *
+     * @return integer
+     */
+    public function getEntityRecursive()
+    {
+        return $this->is_recursive;
+    }
+
     public function handleAssets()
     {
         $key = $this->current_key;
@@ -997,6 +1011,7 @@ abstract class MainAsset extends InventoryAsset
         foreach ($assets_list as $assets) {
             foreach ($assets as $asset) {
                 $asset->setEntityID($this->getEntityID());
+                $asset->setEntityRecursive($this->getEntityRecursive());
                 $asset->setExtraData($this->assets);
                 foreach ($this->assets as $asset_type => $asset_list) {
                     if ($asset_type != '\\' . get_class($asset)) {
@@ -1013,6 +1028,7 @@ abstract class MainAsset extends InventoryAsset
         //do controllers
         foreach ($controllers as $asset) {
             $asset->setEntityID($this->getEntityID());
+            $asset->setEntityRecursive($this->getEntityRecursive());
             $asset->setExtraData($this->assets);
             $asset->setExtraData(['\\' . get_class($this) => $mainasset]);
             //do not handle ignored controllers

@@ -46,11 +46,13 @@ final class Profiler
 
     private $disabled = false;
 
+    public const CATEGORY_BOOT = 'boot';
     public const CATEGORY_CORE = 'core';
     public const CATEGORY_PLUGINS = 'plugins';
     public const CATEGORY_DB = 'db';
     public const CATEGORY_TWIG = 'twig';
     public const CATEGORY_SEARCH = 'search';
+    public const CATEGORY_CUSTOMOBJECTS = 'customobjects';
 
     private static $instance;
 

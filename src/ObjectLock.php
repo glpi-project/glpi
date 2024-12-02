@@ -207,7 +207,7 @@ class ObjectLock extends CommonDBTM
 
     /**
      * Switches current profile with read-only profile
-     * Registers a shutdown function to be sure that even in case of die() calls,
+     * Registers a shutdown function to be sure that even in case of a fatal error,
      * the switch back will be done: to ensure correct reset of normal profile
      **/
     public static function setReadOnlyProfile()
@@ -218,7 +218,7 @@ class ObjectLock extends CommonDBTM
         // to prevent double set ReadOnlyProfile
         if (!isset($_SESSION['glpilocksavedprofile']) && isset($CFG_GLPI['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
-                // this is a security in case of a die that can prevent correct revert of profile
+                // this is a security in case of a fatal error that can prevent correct revert of profile
                 register_shutdown_function([__CLASS__,  'revertProfile']);
                 self::$shutdownregistered = true;
             }
@@ -465,7 +465,7 @@ TWIG;
                     Log::HISTORY_UNLOCK_ITEM
                 );
             } else {
-                return -1; // error can't delete record, then exit with error
+                return -1;
             }
         }
 

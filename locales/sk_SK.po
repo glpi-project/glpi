@@ -6,8 +6,8 @@
 # Translators:
 # balucha <ondrej@odb.sk>, 2023
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # feonsu <feonsu@gmail.com>, 2024
 # Peto (wt-ts) <peter.tuharsky@gmail.com>, 2024
 # 
@@ -3035,7 +3035,7 @@ msgstr "Pridať nové náklady"
 
 #: src/Glpi/Dashboard/Grid.php:293 js/modules/Dashboard/Dashboard.js:1013
 msgid "Add a new dashboard"
-msgstr "Pridať nový dashboard"
+msgstr "Pridať nový panel"
 
 #: src/Glpi/Asset/AssetDefinition.php:209
 msgid "Add a new field"
@@ -3662,7 +3662,7 @@ msgstr "Všetky kategórie"
 
 #: src/Profile.php:1123 src/Profile.php:2738
 msgid "All dashboards"
-msgstr "Všetky dashboardy"
+msgstr "Všetky panely"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:130
@@ -4371,7 +4371,7 @@ msgstr "Naozaj chcete vyčistiť tento súbor?"
 #: js/modules/Dashboard/Dashboard.js:989
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr "Naozaj chcete zmazať dashboard %s ?"
+msgstr "Naozaj chcete zmazať panel %s ?"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -4492,7 +4492,7 @@ msgstr "Inventár"
 
 #: front/dashboard_assets.php:55
 msgid "Assets Dashboard"
-msgstr "Dashboard inventára"
+msgstr "Panel inventára"
 
 #. TRANS: short for : Assign a ticket
 #: templates/components/itilobject/service_levels.html.twig
@@ -4621,7 +4621,7 @@ msgstr "Priraditeľné položky k požiadavke"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Položky prepojiteľné na požiadavky, zmeny a problémy"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4736,7 +4736,7 @@ msgstr[3] "Typy priradených položiek"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Priradené položky"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5193,7 +5193,7 @@ msgstr "Priemerné trvanie zapísania požiadavky"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5450,7 +5450,7 @@ msgstr "Značka"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Značka"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6259,7 +6259,7 @@ msgstr "Zmeniť viditeľnosť v podriadených entitách."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Zmenené"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6628,7 +6628,7 @@ msgstr "Klonovať"
 
 #: src/Glpi/Dashboard/Grid.php:290
 msgid "Clone this dashboard"
-msgstr "Klonovať tento dashboard"
+msgstr "Klonovať tento panel"
 
 #: templates/layout/parts/user_header.html.twig
 #: templates/components/itilobject/actors/main.html.twig
@@ -8012,11 +8012,11 @@ msgstr "Tmavosivá"
 #: templates/layout/parts/menu.html.twig src/Html.php:6238 src/Central.php:79
 #: src/Config.php:661
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr "Panel"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Dashboards"
-msgstr "Dashboardy"
+msgstr "Panely"
 
 #: templates/components/dashboard/widget_form.html.twig
 #: templates/pages/management/domainrecord.html.twig
@@ -8428,7 +8428,7 @@ msgstr "Predvolené pre požiadavky"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for tickets (mini dashboard)"
-msgstr "Predvolený pre požiadavky (mini dashboard)"
+msgstr "Predvolený pre požiadavky (mini panel)"
 
 #: templates/components/user/info_card.html.twig src/User.php:3074
 #: src/RuleRight.php:309
@@ -8751,7 +8751,7 @@ msgstr "Zmazať túto kartu"
 
 #: src/Glpi/Dashboard/Grid.php:286 js/modules/Dashboard/Dashboard.js:991
 msgid "Delete this dashboard"
-msgstr "Zmazať tento dashboard"
+msgstr "Zmazať tento panel"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Delete translation"
@@ -9092,7 +9092,7 @@ msgstr "ID zariadenia"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Zariadenia"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9508,7 +9508,7 @@ msgstr "Chcete nahradiť stránku nastavenia pluginov novým obchodom?"
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Chcete obnoviť vybranú revíziu?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9531,7 +9531,7 @@ msgstr "Dokument"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Dokument"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -12476,7 +12476,7 @@ msgstr "Nápoveda"
 
 #: front/dashboard_helpdesk.php:55
 msgid "Helpdesk Dashboard"
-msgstr "Dashboard helpdesku"
+msgstr "Panel helpdesku"
 
 #: src/DisplayPreference.php:639
 msgid "Helpdesk View"
@@ -15864,7 +15864,7 @@ msgstr "Hromadné akcie"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -16261,7 +16261,7 @@ msgstr "Míľnik"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:349
 msgid "Mini tickets dashboard"
-msgstr "Mini dashboard požiadaviek"
+msgstr "Mini panel požiadaviek"
 
 #: templates/pages/setup/crontask/statistics.html.twig
 msgid "Minimal count"
@@ -17961,7 +17961,7 @@ msgstr "Počet nadradených požiadaviek"
 #: src/Peripheral.php:434
 msgctxt "quantity"
 msgid "Number of peripherals"
-msgstr "Počet periférií"
+msgstr "Počet zariadení"
 
 #: src/Phone.php:547
 msgctxt "quantity"
@@ -18565,7 +18565,7 @@ msgstr "Iné"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Iné"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -19106,10 +19106,10 @@ msgstr "Upozornenie na obnovenie"
 #: src/Peripheral.php:83
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Zariadenie"
+msgstr[1] "Zariadenia"
+msgstr[2] "Zariadení"
+msgstr[3] "Zariadenia"
 
 #: src/PeripheralModel.php:41 src/Rule.php:331
 msgid "Peripheral model"
@@ -19117,7 +19117,7 @@ msgid_plural "Peripheral models"
 msgstr[0] "Model periférie"
 msgstr[1] "Modely periférií"
 msgstr[2] "Modely periférií"
-msgstr[3] "Modely periférií"
+msgstr[3] "Modely zariadení"
 
 #: src/Rule.php:403
 msgid "Peripheral type"
@@ -19125,7 +19125,7 @@ msgid_plural "Peripheral types"
 msgstr[0] "Typ periférie"
 msgstr[1] "Typy periférií"
 msgstr[2] "Typy periférií"
-msgstr[3] "Typy periférií"
+msgstr[3] "Typy zariadení"
 
 #: src/Glpi/System/RequirementsManager.php:153
 msgid "Permissions for GLPI data directories"
@@ -19283,7 +19283,7 @@ msgstr ""
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
@@ -21764,7 +21764,7 @@ msgstr "REST API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Obnoviť"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23167,7 +23167,7 @@ msgstr ""
 
 #: src/Glpi/Dashboard/Grid.php:285 js/modules/Dashboard/Dashboard.js:219
 msgid "Share or embed this dashboard"
-msgstr "Zdieľať alebo vložiť tento dashboard"
+msgstr "Zdieľať alebo vložiť tento panel"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:105
 msgid "Short answer"
@@ -24224,7 +24224,7 @@ msgstr "Systém"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Systém"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25986,7 +25986,7 @@ msgstr "Celkom"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Celkom"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26836,10 +26836,10 @@ msgstr "Odomknutie položky"
 #: src/Unmanaged.php:55
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Nemanažované aktívum"
+msgstr[1] "Nemanažované aktíva"
+msgstr[2] "Nemanažovaných aktív"
+msgstr[3] "Nemanažované aktíva"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -27939,7 +27939,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Zobrazenie"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28581,7 +28581,7 @@ msgstr "Včera"
 #: src/Toolbox.php:832 js/common.js:658
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format

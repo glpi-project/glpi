@@ -49,12 +49,12 @@
         "league/html-to-markdown": "^5.1",
         "league/oauth2-client": "^2.7",
         "league/oauth2-google": "^4.0",
-        "league/oauth2-server": "^9.0",
+        "league/oauth2-server": "^9.1",
         "mexitek/phpcolors": "^1.0",
-        "monolog/monolog": "^3.7",
+        "monolog/monolog": "^3.8",
         "paragonie/sodium_compat": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.4",
-        "phpoffice/phpspreadsheet": "^3.3",
+        "phpoffice/phpspreadsheet": "^3.5",
         "psr/cache": "^3.0",
         "psr/container": "^1.1",
         "psr/log": "^3.0",
@@ -93,19 +93,19 @@
         "symfony/property-info": "^6.4",
         "symfony/routing": "^6.4",
         "symfony/serializer": "^7.1",
-        "tecnickcom/tc-lib-barcode": "^2.3",
+        "tecnickcom/tc-lib-barcode": "^2.4",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",
-        "twig/markdown-extra": "^3.13",
-        "twig/string-extra": "^3.13",
-        "twig/twig": "^3.8",
+        "twig/markdown-extra": "^3.16",
+        "twig/string-extra": "^3.16",
+        "twig/twig": "^3.15",
         "wapmorgan/unified-archive": "^1.2",
         "webonyx/graphql-php": "^15.18"
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "^4.2",
-        "atoum/stubs": "^2.6",
+        "atoum/atoum": "dev-main#e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
+        "atoum/stubs": "dev-master#fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
         "friendsoftwig/twigcs": "^6.4",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
@@ -188,19 +188,21 @@
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true"
+            "@patch"
         ],
         "build": [
             "bin/console dependencies install"
+        ],
+        "patch": [
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
+            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzle-http-client-restrict-http-methods.patch || true",
+            "patch -f -p1 -d vendor/apereo/phpcas/ < tools/patches/apereo-phpcas-php84.patch || true"
         ]
     }
 }

@@ -114,6 +114,16 @@
                         {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                     {% elseif type == 'textarea' %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
+                     {% elseif type == 'richtext' %}
+                        {{ fields.textareaField(
+                            field['name'],
+                            item.fields[field['name']],
+                            field['label'],
+                            fields_params|merge({
+                                'enable_richtext': true,
+                                'enable_images': false,
+                            })
+                        ) }}
                     {% elseif type == 'integer' %}
                         {% set fields_params = {
                             'value': item.fields[field['name']]

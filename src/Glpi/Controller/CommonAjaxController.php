@@ -80,10 +80,6 @@ class CommonAjaxController
             return $this->handleAction($input);
         } catch (\Glpi\Controller\RequestException $e) {
             return $this->errorReponse($e->getHttpCode(), $e->getMessage());
-        } catch (\Throwable $e) {
-            // Log error
-            trigger_error($e->getMessage(), E_USER_WARNING);
-            return $this->errorReponse(500, __('An unexpected error occurred.'));
         }
     }
 

@@ -41,16 +41,24 @@
                     {{ __("How can we help you?") }}
                 </h1>
 
+                <div id="search-overlay" class="search-overlay bg-dark"></div>
                 <div class="input-icon search-bar-container">
                     <span class="input-icon-addon">
                         <i class="ti ti-search"></i>
                     </span>
                     <input
+                        id="search-input"
                         type="text"
                         value=""
                         class="form-control home-search"
                         placeholder="{{ __("Search for knowledge base entries or forms") }}"
                     >
+                    <section
+                        id="search-results"
+                        class="position-absolute bg-white w-100 d-none"
+                        aria-label="{{ __("Search results") }}"
+                    >
+                    </section>
                 </div>
             </div>
         </div>
@@ -86,7 +94,7 @@
                         <div class="col-12 col-sm-6 col-md-4 d-flex">
                             <a
                                 class="card mx-1 my-2 flex-grow-1"
-                                href="{{ path(tile.getLink()) }}"
+                                href="{{ tile.getTileUrl() }}"
                             >
                                 <section class="card-body">
                                     <div class="d-flex">
@@ -113,4 +121,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        (async function() {
+            const module = await import(
+                "{{ js_path('js/modules/Helpdesk/IndexController.js') }}"
+            );
+            new module.GlpiHelpdeskIndexController();
+        })();
+    </script>
 {% endblock content %}

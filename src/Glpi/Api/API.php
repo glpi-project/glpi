@@ -2484,7 +2484,7 @@ abstract class API
 TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         Html::nullFooter();
-        exit;
+        exit();
     }
 
 
@@ -2949,6 +2949,15 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
                 foreach ($netp_iterator as $data) {
                     if (isset($data['netport_id'])) {
+                        // append contact
+                        $npo = new NetworkPort();
+                        $oppositecontactID = $npo->getContact($data['netport_id']) ;
+                        if ($oppositecontactID) {
+                            $data['networkports_id_opposite'] = $oppositecontactID ;
+                        } else {
+                            $data['networkports_id_opposite'] = null;
+                        }
+
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
@@ -3105,7 +3114,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
            // No content
             http_response_code(204);
         }
-        die;
+        exit();
     }
 
     /**

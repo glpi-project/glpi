@@ -51,7 +51,6 @@ if (($_REQUEST['id'] ?? 0) == 0) {
         'is_draft'    => true,
     ]);
     Html::redirect($form->getLinkURL());
-    // Code stop here due to exit() in the Html::redirect() method
 } elseif (isset($_POST['update'])) {
     $id = $_POST['id'] ?? 0;
 

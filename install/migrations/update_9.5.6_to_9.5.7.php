@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryExpression;
 /**
  * Update from 9.5.6 to 9.5.7
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update956to957()
 {

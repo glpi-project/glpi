@@ -42,6 +42,7 @@ use Glpi\Console\Application;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -433,29 +434,7 @@ class Html
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
-
-        $toadd = '';
-
-        if (!headers_sent() && !Toolbox::isAjax()) {
-            header("Location: " . addslashes($dest), true, $http_response_code);
-            exit();
-        }
-
-        if (strpos($dest, "?") !== false) {
-            $toadd = '&tokonq=' . Toolbox::getRandomString(5);
-        } else {
-            $toadd = '?tokonq=' . Toolbox::getRandomString(5);
-        }
-
-        echo "<script type='text/javascript'>
-            NomNav = navigator.appName;
-            if (NomNav=='Konqueror') {
-               window.location=" . json_encode($dest . $toadd) . ";
-            } else {
-               window.location=" . json_encode($dest) . ";
-            }
-         </script>";
-        exit();
+        throw new RedirectException($dest, $http_response_code);
     }
 
     /**
@@ -980,6 +959,33 @@ HTML;
         }
     }
 
+    /**
+     * Returns a static progress bar HTML snippet.
+     *
+     * @param float $percentage
+     * @param string $label
+     *
+     * @return string
+     */
+    public static function getProgressBar(float $percentage, ?string $label = null): string
+    {
+        if ($label === null) {
+            $label = floor($percentage) . ' %';
+        }
+
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(
+            <<<TWIG
+              <div class="progress" style="height: 15px; min-width: 50px;">
+                 <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
+                    aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
+              </div>
+TWIG,
+            [
+                'percentage' => $percentage,
+                'label'      => $label,
+            ]
+        );
+    }
 
     /**
      * Include common HTML headers
@@ -1952,7 +1958,7 @@ HTML;
             : 'helpdesk_doc_url';
         $help_url = !empty($CFG_GLPI[$help_url_key])
             ? $CFG_GLPI[$help_url_key]
-            : 'http://glpi-project.org/documentation';
+            : 'https://glpi-project.org/documentation';
 
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
@@ -5096,24 +5102,25 @@ HTML;
      *
      * @param string  $url      File to include (relative to GLPI_ROOT)
      * @param array   $options  Array of HTML attributes
-     * @param bool    $no_debug Ignore the debug mode of GLPI (usefull for install/update process)
      *
      * @return string CSS link tag
+     *
+     * @since 11.0.0 The `$no_debug` parameter has bbeen removed.
      **/
-    public static function scss($url, $options = [], bool $no_debug = false)
+    public static function scss($url, $options = [])
     {
         $prod_file = self::getScssCompilePath($url);
 
         if (
             file_exists($prod_file)
-            && ($no_debug || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+            && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
         ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if (!$no_debug && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }

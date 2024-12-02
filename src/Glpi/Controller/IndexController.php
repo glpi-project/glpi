@@ -35,6 +35,7 @@
 namespace Glpi\Controller;
 
 use Auth;
+use Glpi\Http\Firewall;
 use Html;
 use Session;
 use Toolbox;
@@ -47,10 +48,15 @@ use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
 {
+    public function __construct(private HttpKernelInterface $http_kernel)
+    {
+    }
+
     #[Route(
         [
             "base" => "/",
@@ -58,9 +64,21 @@ final class IndexController extends AbstractController
         ],
         name: "glpi_index"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
+        if (
+            $request->isMethod('POST')
+            && !$request->request->has('totp_code')
+            && $request->getContent() !== ''
+        ) {
+            // POST request from the inventory agent, forward it to the inventory controller.
+            $sub_request = $request->duplicate(
+                attributes: ['_controller' => InventoryController::class . '::index']
+            );
+            return $this->http_kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        }
+
         return new HeaderlessStreamedResponse($this->call(...));
     }
 
@@ -106,13 +124,6 @@ final class IndexController extends AbstractController
                 Html::nullFooter();
                 return;
             }
-        }
-
-        //Try to detect GLPI agent calls
-        $rawdata = file_get_contents("php://input");
-        if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            include_once(GLPI_ROOT . '/front/inventory.php');
-            return;
         }
 
         Session::checkCookieSecureConfig();

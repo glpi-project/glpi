@@ -43,6 +43,7 @@ use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
+use Glpi\Debug\Profiler;
 use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
@@ -206,7 +207,9 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         // Bootstrap capacities
         foreach ($capacities as $capacity) {
             if ($definition->hasCapacityEnabled($capacity)) {
+                Profiler::getInstance()->start('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name, Profiler::CATEGORY_CUSTOMOBJECTS);
                 $capacity->onClassBootstrap($asset_class_name);
+                Profiler::getInstance()->stop('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name);
             }
         }
 

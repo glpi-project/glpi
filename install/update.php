@@ -95,10 +95,6 @@ function doUpdateDb()
      */
     global $migration, $update;
 
-    // Init debug variable
-    // Only show errors
-    Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
-
     $currents            = $update->getCurrents();
     $current_version     = $currents['version'];
     $current_db_version  = $currents['dbversion'];
@@ -172,19 +168,27 @@ Session::loadLanguage('', false);
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
-echo "<!DOCTYPE html>";
-echo "<html lang='fr'>";
-echo "<head>";
-echo "<meta charset='utf-8'>";
-echo "<title>" . __s('GLPI setup') . "</title>";
-//JS
-echo Html::script("lib/base.js");
-echo Html::script("js/glpi_dialog.js");
-// CSS
-echo Html::css('lib/tabler.css');
-echo Html::css('lib/base.css');
-echo Html::scss("css/install", [], true);
-echo "</head>";
+TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
+    'lang'  => $_SESSION['glpilanguage'],
+    'title' => __('GLPI setup'),
+    'css_files' => [
+        ['path' => 'lib/tabler.css'],
+        ['path' => 'lib/base.css'],
+        ['path' => 'css/install.scss'],
+    ],
+    'js_files' => [
+        ['path' => 'lib/base.js'],
+        ['path' => 'lib/fuzzy.js'],
+        ['path' => 'js/common.js'],
+        ['path' => 'js/glpi_dialog.js'],
+    ],
+    'js_modules' => [],
+    'custom_header_tags' => [],
+]);
+
+// CFG
+echo Html::getCoreVariablesForJavascript();
+
 echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";

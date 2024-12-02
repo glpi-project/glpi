@@ -35,6 +35,7 @@
 namespace Glpi\Config\LegacyConfigurators;
 
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 use Session;
 
 final readonly class ConfigRest implements LegacyConfigProviderInterface
@@ -58,6 +59,7 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         $HEADER_LOADED = false;
         $FOOTER_LOADED = false;
 
+        Profiler::getInstance()->start('ConfigRest::execute', Profiler::CATEGORY_BOOT);
         // Security : check CSRF token
         if (!isAPI() && count($_POST) > 0) {
             if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
@@ -94,12 +96,15 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         // The user's current groups are stored in his session
         // If there was any change regarding groups membership and/or configuration, we
         // need to reset the data stored in his session
-        $last_group_change = $GLPI_CACHE->get('last_group_change');
         if (
             isset($_SESSION['glpigroups'])
-            && ($_SESSION['glpigroups_cache_date'] ?? "") < $last_group_change
+            && (
+                !isset($_SESSION['glpigroups_cache_date'])
+                || $_SESSION['glpigroups_cache_date'] < $GLPI_CACHE->get('last_group_change')
+            )
         ) {
             Session::loadGroups();
         }
+        Profiler::getInstance()->stop('ConfigRest::execute');
     }
 }

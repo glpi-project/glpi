@@ -50,12 +50,11 @@ trait State
         global $CFG_GLPI;
 
         if (!in_array(static::class, $CFG_GLPI['state_types'])) {
-            trigger_error(
+            throw new \LogicException(
                 sprintf(
                     'Class %s must be present in $CFG_GLPI[\'state_types\']',
                     static::class
-                ),
-                E_USER_ERROR
+                )
             );
         }
     }

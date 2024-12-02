@@ -39,11 +39,11 @@ use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use User;
-use Session;
 
 final class IndexController extends AbstractController
 {
@@ -64,12 +64,10 @@ final class IndexController extends AbstractController
     {
         $user = User::getById(Session::getLoginUserID());
 
-        // Will rename the file to "home.html.twig" later, don't want to remove
-        // the original file yet.
         return $this->render('pages/helpdesk/index.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
-            'tiles' => $this->tiles_manager->getTiles(),
+            'tiles' => $this->tiles_manager->getTiles(Session::getCurrentSessionInfo()),
             'tabs'  => new HomePageTabs(),
             'password_alert' => $user->getPasswordExpirationMessage(),
         ]);

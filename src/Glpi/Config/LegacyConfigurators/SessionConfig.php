@@ -38,6 +38,7 @@ use Glpi\Config\ConfigProviderHasRequestTrait;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profile;
+use Glpi\Debug\Profiler;
 use Glpi\Toolbox\URL;
 use Session;
 
@@ -47,6 +48,7 @@ final class SessionConfig implements LegacyConfigProviderInterface, ConfigProvid
 
     public function execute(): void
     {
+        Profiler::getInstance()->start('SessionConfig::execute', Profiler::CATEGORY_BOOT);
         if (
             isset($_SESSION['glpi_use_mode'])
             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
@@ -77,5 +79,6 @@ final class SessionConfig implements LegacyConfigProviderInterface, ConfigProvid
         if (isset($_REQUEST['glpilist_limit'])) {
             $_SESSION['glpilist_limit'] = $_REQUEST['glpilist_limit'];
         }
+        Profiler::getInstance()->stop('SessionConfig::execute');
     }
 }

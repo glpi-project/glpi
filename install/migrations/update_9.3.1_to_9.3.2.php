@@ -40,7 +40,7 @@
 /**
  * Update from 9.3.1 to 9.3.2
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update931to932()
 {

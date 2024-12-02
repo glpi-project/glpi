@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -50,7 +51,7 @@ final class WellKnownController extends AbstractController
         "/.well-known/change-password",
         name: "glpi_wellknown_change_password"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function changePassword(Request $request): Response
     {
         return new RedirectResponse(

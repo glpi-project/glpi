@@ -1153,7 +1153,7 @@ JAVASCRIPT;
         return "ti ti-calendar-event";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, ?CommonDBTM $checkitem = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

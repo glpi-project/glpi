@@ -39,7 +39,7 @@ use Glpi\Search\SearchOption;
 /**
  * Update from 0.90.5 to 9.1
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update090xto910()
 {

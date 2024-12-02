@@ -83,7 +83,7 @@ body.mce-content-body {
     }
 
     a[target="_blank"]::before {
-        font-family: tabler-icons;
+        font-family: tabler-icons, sans-serif;
         content: "\ea99";
         padding-right: 4px;
     }

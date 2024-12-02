@@ -116,12 +116,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/inventory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
@@ -2000,18 +1994,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:\\$response \\(DOMDocument\\) does not accept array\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
 	'identifier' => 'catch.neverThrown',
 	'count' => 1,
@@ -2414,12 +2396,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Application/ConfigurationConstants.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$env \\(null\\) of method Glpi\\\\Application\\\\ErrorHandler\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
@@ -2454,6 +2430,12 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'GLPI_AJAX_DASHBOARD\'\\|\'GLPI_ALLOW_IFRAME…\'\\|\'GLPI_CACHE_DIR\'\\|\'GLPI_CALDAV_IMPORT…\'\\|\'GLPI_CENTRAL…\'\\|\'GLPI_CONFIG_DIR\'\\|\'GLPI_CRON_DIR\'\\|\'GLPI_DISABLE_ONLY…\'\\|\'GLPI_DOC_DIR\'\\|\'GLPI_DOCUMENTATION…\'\\|\'GLPI_DUMP_DIR\'\\|\'GLPI_ENVIRONMENT…\'\\|\'GLPI_GRAPH_DIR\'\\|\'GLPI_INSTALL_MODE\'\\|\'GLPI_INVENTORY_DIR\'\\|\'GLPI_LOCAL_I18N_DIR\'\\|\'GLPI_LOCK_DIR\'\\|\'GLPI_LOG_DIR\'\\|\'GLPI_MARKETPLACE…\'\\|\'GLPI_MARKETPLACE_DIR\'\\|\'GLPI_NETWORK_MAIL\'\\|\'GLPI_NETWORK…\'\\|\'GLPI_PICTURE_DIR\'\\|\'GLPI_PLUGIN_DOC_DIR\'\\|\'GLPI_RSS_DIR\'\\|\'GLPI_SERVERSIDE_URL…\'\\|\'GLPI_SESSION_DIR\'\\|\'GLPI_TELEMETRY_URI\'\\|\'GLPI_TEXT_MAXSIZE\'\\|\'GLPI_THEMES_DIR\'\\|\'GLPI_TMP_DIR\'\\|\'GLPI_UPLOAD_DIR\'\\|\'GLPI_USER_AGENT…\'\\|\'GLPI_VAR_DIR\'\\|\'PLUGINS_DIRECTORIES\' on array\\{\\} on left side of \\?\\? does not exist\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
@@ -3434,12 +3416,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\}\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -3504,12 +3480,6 @@ $ignoreErrors[] = [
 	'identifier' => 'isset.property',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Request.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function in_array\\(\\) with arguments null, array\\{\'development\', \'testing\'\\} and true will always evaluate to false\\.$#',

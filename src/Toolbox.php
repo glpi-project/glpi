@@ -33,10 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
@@ -262,7 +263,7 @@ class Toolbox
      *
      * @return void
      **/
-    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
+    private static function log(?LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
     {
         static $tps = 0;
 
@@ -557,16 +558,14 @@ class Toolbox
             if ($return_response) {
                 return new Response(403);
             }
-            echo "Security attack!!!";
-            die(1);
+            throw new AccessDeniedHttpException();
         }
 
         if (!file_exists($file)) {
             if ($return_response) {
                 return new Response(404);
             }
-            echo "Error file $file does not exist";
-            die(1);
+            throw new NotFoundHttpException();
         }
 
        // if $mime is defined, ignore mime type by extension
@@ -639,14 +638,14 @@ class Toolbox
                 return $response;
             }
             $response->send();
-            exit;
+            return;
         }
         $content = file_get_contents($file);
         if ($content === false) {
             if ($return_response) {
                 return new Response(500);
             }
-            die("Error opening file $file");
+            throw new \RuntimeException();
         }
         $response = new Response(200, $headers, $content);
         if ($return_response) {
@@ -855,7 +854,7 @@ class Toolbox
     {
 
         if (file_exists($dir)) {
-            chmod($dir, 0777);
+            chmod($dir, 0755);
 
             if (is_dir($dir)) {
                 $id_dir = opendir($dir);
@@ -1569,15 +1568,15 @@ class Toolbox
                                 }
 
                                 Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             case "preference":
                                 Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             case "reservation":
                                 Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
+                                // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 
                             default:
                                 Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
@@ -2064,16 +2063,24 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @param ?Closure $progressCallback
      *
      * @return void
+     *
+     * @internal
      *
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!$progressCallback) {
+            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
+            };
+        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2087,84 +2094,116 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
-            echo "Errors occurred inserting default database";
-        } else {
-           //dataset
-            Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-            $tables = require_once(__DIR__ . '/../install/empty_data.php');
-            Session::loadLanguage('', false); // Load back session language
+        $structure_queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-            foreach ($tables as $table => $data) {
-                $reference = array_replace(
-                    $data[0],
-                    array_fill_keys(
-                        array_keys($data[0]),
-                        new QueryParam()
-                    )
-                );
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
 
-                $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+        $done_steps = 0;
 
-                $types = str_repeat('s', count($data[0]));
-                foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
-                        $msg = $stmt->error;
-                        $msg .= "\nError execution statement in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    if (!isCommandLine()) {
-                         // Flush will prevent proxy to timeout as it will receive data.
-                         // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                         // will be shown as a single one on browser.
-                         echo ' ';
-                         Html::glpi_flush();
-                    }
-                }
-            }
+        $number_of_steps = \count($structure_queries);
+        foreach ($tables as $data) {
+            $number_of_steps += \count($data);
+        }
 
-            // Create default forms
-            $default_forms_manager = new DefaultDataManager();
-            $default_forms_manager->initializeData();
+        // For post install steps
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $default_lang_weight = 1;
+        $cron_config_weight = 1;
+        $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_steps += $cron_config_weight;
+        }
 
-            // Initalize rules
-            RulesManager::initializeRules();
+        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
 
-            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-            \Glpi\OAuth\Server::generateKeys();
+        foreach ($structure_queries as $query) {
+            $DB->doQuery($query);
 
-           // update default language
-            Config::setConfigurationValues(
-                'core',
-                [
-                    'language'      => $lang,
-                    'version'       => GLPI_VERSION,
-                    'dbversion'     => GLPI_SCHEMA_VERSION,
-                ]
+            $done_steps++;
+            $progressCallback($done_steps);
+        }
+
+        $progressCallback($done_steps, null, __('Adding empty data…'));
+
+        foreach ($tables as $table => $data) {
+            $reference = array_replace(
+                $data[0],
+                array_fill_keys(
+                    array_keys($data[0]),
+                    new QueryParam()
+                )
             );
 
-            if (defined('GLPI_SYSTEM_CRON')) {
-               // Downstream packages may provide a good system cron
-                $DB->update(
-                    'glpi_crontasks',
-                    [
-                        'mode'   => 2
-                    ],
-                    [
-                        'name'      => ['!=', 'watcher'],
-                        'allowmode' => ['&', 2]
-                    ]
-                );
+            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+                $res = $stmt->bind_param($types, ...array_values($row));
+                if (false === $res) {
+                    $msg = "Error binding params in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                $res = $stmt->execute();
+                if (false === $res) {
+                    $msg = $stmt->error;
+                    $msg .= "\nError execution statement in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+
+                $done_steps++;
+                $progressCallback($done_steps);
             }
         }
+
+        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $default_forms_manager = new DefaultDataManager();
+        $default_forms_manager->initializeData();
+        $done_steps += $init_form_weight;
+
+        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        RulesManager::initializeRules();
+        $done_steps += $init_rules_weight;
+
+        $progressCallback($done_steps, null, __('Generating keys…'));
+        // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+        \Glpi\OAuth\Server::generateKeys();
+        $done_steps += $generate_keys_weight;
+
+        $progressCallback($done_steps, null, __('Updating default language…'));
+        Config::setConfigurationValues(
+            'core',
+            [
+                'language'      => $lang,
+                'version'       => GLPI_VERSION,
+                'dbversion'     => GLPI_SCHEMA_VERSION,
+            ]
+        );
+        $done_steps += $default_lang_weight;
+
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
+           // Downstream packages may provide a good system cron
+            $DB->update(
+                'glpi_crontasks',
+                [
+                    'mode'   => 2
+                ],
+                [
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2]
+                ]
+            );
+            $done_steps += $cron_config_weight;
+        }
+
+        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
 
@@ -3064,13 +3103,31 @@ HTML;
      */
     public static function isValidWebUrl($url): bool
     {
-       // Verify absence of known disallowed characters.
-       // It is still possible to have false positives, but a fireproof check would be too complex
-       // (or would require usage of a dedicated lib).
-        return (preg_match(
-            "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            $url
-        ) === 1);
+        // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
+        $pattern = '~^
+            (https?)://                                 # protocol
+            (((?:[\_\.\pL\pN-]|%%[0-9A-Fa-f]{2})+:)?((?:[\_\.\pL\pN-]|%%[0-9A-Fa-f]{2})+)@)?  # basic auth
+            (
+                (?:
+                    (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++            # a domain name using punycode
+                        |
+                    (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++          # a multi-level domain name
+                        |
+                    [a-z0-9\-\_]++                                    # a single-level domain name
+                )\.?
+                    |                                                 # or
+                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                    # an IP address
+                    |                                                 # or
+                \[
+                    (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
+                \]  # an IPv6 address
+            )
+            (:[0-9]+)?                              # a port (optional)
+            (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%%[0-9A-Fa-f]{2})* )*    # a path
+            (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?   # a query (optional)
+            (?:\# (?:[\pL\pN\-._\~!$&\'()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?       # a fragment (optional)
+        $~ixuD';
+        return preg_match($pattern, $url) === 1;
     }
 
     /**

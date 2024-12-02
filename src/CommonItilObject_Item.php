@@ -624,58 +624,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))
         ) {
-            echo "<div class='firstbloc'>";
-            Html::showSimpleForm(
-                static::$itemtype_1::getFormURL(),
-                '_add_fromitem',
-                sprintf(__("New %s for this item"), static::$itemtype_1::getTypeName(0)),
-                [
-                    'itemtype' => $item->getType(),
-                    'items_id' => $item->getID()
-                ]
-            );
-            echo "</div>";
+            $linknewitil = true;
         }
 
-        echo "<div>";
-
         if ($number > 0) {
-            echo "<table class='tab_cadre_fixehov'>";
             if (Session::haveRight(static::$itemtype_1::$rightname, static::$itemtype_1::READALL)) {
-                Session::initNavigateListItems(
-                    static::$itemtype_1,
-                    //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                    sprintf(__('%1$s = %2$s'), $item->getTypeName(1), $item->getName())
-                );
-                echo "<tr class='noHover'><th colspan='$colspan'>";
-                $title = htmlescape(sprintf(__('%d linked %s'), $number, static::$itemtype_1::getTypeName($number)));
-                $link = "<a href='" . static::$itemtype_1::getSearchURL() . "?" .
-                        Toolbox::append_params($params, '&amp;') . "'>" . __s('Show all') . "</a>";
-                $title = sprintf(__s('%1$s (%2$s)'), $title, $link);
-                echo $title;
-                echo "</th></tr>";
-            } else {
-                echo "<tr><th colspan='$colspan'>" . static::$itemtype_1::getTypeName(1) . ": " .
-                    __s("You don't have right to see all") . "</th></tr>";
+                $readall = true;
             }
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlescape(sprintf(__('No %s on this item'), static::$itemtype_1::getTypeName($number)));
         }
-
-        // object list
-        if ($number > 0) {
-            static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems(static::$itemtype_1, $data["id"]);
-                static::$itemtype_1::showShort($data["id"]);
-            }
-            static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-        }
-
-        echo "</table></div>";
 
         // Object for linked items
         $linkeditems = $item->getLinkedItems();
@@ -695,25 +651,25 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $criteria = static::$itemtype_1::getCommonCriteria();
             $criteria['WHERE'] = ['OR' => $restrict]
                 + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
-            $iterator = $DB->request($criteria);
-            $number = count($iterator);
-
-            echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-            echo "<tr class='noHover'><th colspan='$colspan'>";
-            echo htmlescape(sprintf(__('%s on linked items'), static::$itemtype_1::getTypeName($number)));
-            echo "</th></tr>";
-            if ($number > 0) {
-                static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-                foreach ($iterator as $data) {
-                    Session::addToNavigateListItems(static::$itemtype_1, $data["id"]);
-                    static::$itemtype_1::showShort($data["id"]);
-                }
-                static::$itemtype_1::commonListHeader(Search::HTML_OUTPUT);
-            } else {
-                echo "<tr><td>" . __s('None found.') . "</td></tr>";
-            }
-            echo "</table></div>";
+            $iterator2 = $DB->request($criteria);
+            $number2 = count($iterator2);
+            $showform = true;
         } // Subquery for linked item
+
+        TemplateRenderer::getInstance()->display('components/form/item_itilobject_item_list.html.twig', [
+            'item'               => $item,
+            'linknewitil'        => $linknewitil ?? false,
+            'itemtype_1'         => static::$itemtype_1,
+            'colspan'            => $colspan,
+            'number'             => $number,
+            'number2'            => $number2 ?? 0,
+            'showform'           => $showform ?? false,
+            'readall'            => $readall ?? false,
+            'params'             => $params,
+            'html_output'        => Search::HTML_OUTPUT,
+            'iterator'           => $iterator,
+            'iterator2'          => $iterator2 ?? [],
+        ]);
     }
 
     /**

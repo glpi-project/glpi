@@ -139,13 +139,12 @@ if (array_key_exists('config-dir', $options)) {
    $config_dir = $options['config-dir'];
 
    if (false === $config_dir || !@is_dir($config_dir)) {
-      die(
-         sprintf(
-            '--config-dir "%s" does not exists in "%s".' . "\n",
-            $config_dir,
-            getcwd()
-         )
+      echo sprintf(
+         '--config-dir "%s" does not exists in "%s".' . "\n",
+         $config_dir,
+         getcwd()
       );
+      exit(1);
    }
 
    define('GLPI_CONFIG_DIR', realpath($config_dir));

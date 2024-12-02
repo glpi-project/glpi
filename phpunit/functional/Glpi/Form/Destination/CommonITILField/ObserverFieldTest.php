@@ -43,6 +43,7 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -341,7 +342,7 @@ final class ObserverFieldTest extends DbTestCase
             "Observer 2",
             QuestionTypeObserver::class,
             '',
-            json_encode(['is_multiple_actors' => '1'])
+            json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
         $builder->addDestination(
             FormDestinationTicket::class,

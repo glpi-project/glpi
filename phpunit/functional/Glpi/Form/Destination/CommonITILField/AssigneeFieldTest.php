@@ -43,6 +43,7 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -205,8 +206,15 @@ final class AssigneeFieldTest extends DbTestCase
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $user1 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User']);
-        $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2']);
+        $technician_profiles_id = getItemByTypeName('Profile', 'Technician', true);
+        $user1 = $this->createItem(User::class, [
+            'name' => 'testLocationFromSpecificQuestions User',
+            '_profiles_id' => $technician_profiles_id
+        ]);
+        $user2 = $this->createItem(User::class, [
+            'name' => 'testLocationFromSpecificQuestions User 2',
+            '_profiles_id' => $technician_profiles_id
+        ]);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testLocationFromSpecificQuestions Supplier',
@@ -267,8 +275,14 @@ final class AssigneeFieldTest extends DbTestCase
             ITILActorFieldStrategy::LAST_VALID_ANSWER
         );
 
-        $user1 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User']);
-        $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2']);
+        $technician_profiles_id = getItemByTypeName('Profile', 'Technician', true);
+        $user1 = $this->createItem(User::class, [
+            'name' => 'testLocationFromSpecificQuestions User',
+            '_profiles_id' => $technician_profiles_id
+        ]);
+        $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2',
+            '_profiles_id' => $technician_profiles_id
+        ]);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testLocationFromSpecificQuestions Supplier',
@@ -396,7 +410,7 @@ final class AssigneeFieldTest extends DbTestCase
             "Assignee 2",
             QuestionTypeAssignee::class,
             '',
-            json_encode(['is_multiple_actors' => '1'])
+            json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
         $builder->addDestination(
             FormDestinationTicket::class,

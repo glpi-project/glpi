@@ -1028,7 +1028,6 @@ HTML;
             ['https://localhost', true],
             ['https;//localhost', false],
             ['https://glpi-project.org', true],
-            ['https://glpi+project-org', false],
             [' http://my.host.com', false],
             ['http://my.host.com', true],
             ['http://my.host.com/', true],
@@ -1048,14 +1047,15 @@ HTML;
             ['http://127.0.0.1:8080/', true],
             ['http://127.0.0.1 :8080/', false],
             ['http://127.0.0.1 :8080 /', false],
-            ['http://::1', true],
-            ['http://::1/glpi', true],
-            ['http://::1:8080/', true],
-            ['http://::1:8080/', true],
-            ['HTTPS://::1:8080/', true],
+            ['http://::1', false], // IPv6 addresses must be in square brackets
+            ['http://[::1]', true],
+            ['http://[::1]/glpi', true],
+            ['http://[::1]:8080/', true],
+            ['http://[::1]:8080/', true],
+            ['HTTPS://[::1]:8080/', true],
             ['www.my.host.com', false],
             ['127.0.0.1', false],
-            ['::1', false],
+            ['[::1]', false],
             ['http://my.host.com/subdir/glpi/', true],
             ['http://my.host.com/~subdir/glpi/', true],
             ['https://localhost<', false],
@@ -1064,6 +1064,7 @@ HTML;
             ['https://localhost?test=true', true],
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
+            ['https://localhost/this+is+a+test', true] // + to denote a space allowed
         ];
     }
 
@@ -1079,7 +1080,10 @@ HTML;
 
     public function testDeprecated()
     {
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1089,7 +1093,10 @@ HTML;
     public function testDeprecatedPast()
     {
         // Test planned deprecation in the past
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1099,7 +1106,10 @@ HTML;
     public function testDeprecatedCurrent()
     {
         // Test planned deprecation in current version
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1109,7 +1119,10 @@ HTML;
     public function testFutureDeprecated()
     {
         // Test planned deprecation in the future does NOT throw an error
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '99.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->assertTrue(true); //non empty test
     }
 

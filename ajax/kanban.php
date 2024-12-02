@@ -65,7 +65,11 @@ if (isset($_REQUEST['itemtype'])) {
     }
     /** @var CommonDBTM $item */
     $itemtype = $_REQUEST['itemtype'];
-    $item = new $itemtype();
+    $item = getItemForItemtype($itemtype);
+}
+
+if (isset($_REQUEST['items_id'])) {
+    $_REQUEST['items_id'] = (int)$_REQUEST['items_id'];
 }
 
 // Rights Checks
@@ -126,7 +130,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['column_field', 'column_value']);
    // Update project or task based on changes made in the Kanban
     $item->update([
-        'id'                   => $_POST['items_id'],
+        'id'                   => (int)$_POST['items_id'],
         $_POST['column_field'] => $_POST['column_value']
     ]);
 } else if (($_POST['action'] ?? null) === 'add_item') {

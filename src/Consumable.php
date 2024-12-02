@@ -197,7 +197,7 @@ class Consumable extends CommonDBChild
         array &$actions,
         $itemtype,
         $is_deleted = 0,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         // Special actions only for self
         if ($itemtype !== static::class) {

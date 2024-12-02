@@ -37,6 +37,7 @@ namespace test\units\Glpi\UI;
 use Glpi\UI\IllustrationManager;
 use GLPITestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class IllustrationManagerTest extends GLPITestCase
 {
@@ -65,65 +66,59 @@ final class IllustrationManagerTest extends GLPITestCase
         }
     }
 
-    public function testIllustrationsUseThemeColors(): void
+    public static function getAllRenderedIllustrations(): array
     {
-        // Arrange: list all icons
-        $manager = $this->getDefaultManager();
+        // List all icons
+        $manager = new IllustrationManager();
         $icons = $manager->getAllIllustrationsNames();
 
         // Act: render all icons
         $rendered_icons = array_map(
-            fn($filename) => $manager->render($filename),
+            fn($filename) => [
+                'filename' => $filename,
+                'rendered_icon' => $manager->render($filename, 75),
+            ],
             $icons
         );
 
-        // Assert: renderered content should not contain harcoded references to
-        // colors
-        $this->assertNotEmpty($rendered_icons);
-        foreach ($rendered_icons as $i => $rendered_icon) {
-            $failed_message = "Failed for $icons[$i]";
-            $this->assertStringNotContainsString(
-                "rgb(",
-                $rendered_icon,
-                $failed_message
-            );
-            $this->assertStringContainsString(
-                "var(--tblr-primary)",
-                $rendered_icon,
-                $failed_message
-            );
-            $this->assertStringContainsString(
-                "var(--glpi-mainmenu-bg)",
-                $rendered_icon,
-                $failed_message
-            );
-            $this->assertStringContainsString(
-                "var(--glpi-helpdesk-header)",
-                $rendered_icon,
-                $failed_message
-            );
+        return $rendered_icons;
+    }
+
+    #[DataProvider('getAllRenderedIllustrations')]
+    public function testIllustrationsUseThemeColors(
+        string $filename,
+        string $rendered_icon,
+    ): void {
+        $errors = [];
+
+        // Don't use assertStringNotContainsString and assertStringContainsString
+        // here because the content is very long and printing its content on failure
+        // would make the tests results hard to read.
+        if (str_contains($rendered_icon, 'rgb(')) {
+            $errors[] = "The '$filename' illustration still contains raw rbg() references.";
+        }
+        if (!str_contains($rendered_icon, 'var(--tblr-primary)')) {
+            $errors[] = "The '$filename' illustration is missing the primary color.";
+        }
+        if (!str_contains($rendered_icon, 'var(--glpi-mainmenu-bg)')) {
+            $errors[] = "The '$filename' illustration is missing the main menu color.";
+        }
+
+        if (count($errors)) {
+            $this->fail(implode('' . PHP_EOL, $errors));
         }
     }
 
-    public function testIllustrationUseTheSpecifiedSize(): void
-    {
-        // Arrange: list all icons
-        $manager = $this->getDefaultManager();
-        $icons = $manager->getAllIllustrationsNames();
-
-        // Act: render all icons
-        $rendered_icons = array_map(
-            fn($filename) => $manager->render($filename, 75),
-            $icons
-        );
-
-        // Assert: the icon should have the given size
-        $this->assertNotEmpty($rendered_icons);
-        foreach ($rendered_icons as $rendered_icon) {
-            $this->assertStringContainsString('width="75px"', $rendered_icon);
-            $this->assertStringNotContainsString('width="100%"', $rendered_icon);
-            $this->assertStringContainsString('height="75px"', $rendered_icon);
-            $this->assertStringNotContainsString('height="100%"', $rendered_icon);
+    #[DataProvider('getAllRenderedIllustrations')]
+    public function testIllustrationUseTheSpecifiedSize(
+        string $filename,
+        string $rendered_icon,
+    ): void {
+        if (
+            !str_contains($rendered_icon, 'width="75px"')
+            || !str_contains($rendered_icon, 'height="75px"')
+        ) {
+            $this->fail("Failed to resize the '$filename' illustration.");
         }
     }
 

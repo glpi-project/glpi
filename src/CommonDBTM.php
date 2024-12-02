@@ -2846,7 +2846,7 @@ class CommonDBTM extends CommonGLPI
      * @param array   $options Array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return integer|void value of withtemplate option (exit of no right)
+     * @return integer|void value of withtemplate option (throw an exception if not enough rights)
      **/
     public function initForm($ID, array $options = [])
     {
@@ -3139,6 +3139,35 @@ class CommonDBTM extends CommonGLPI
                 throw new AccessDeniedHttpException($info);
             }
         }
+    }
+
+    /** @param int[] $entities_ids */
+    public function isAccessibleFromEntities(array $entities_ids): bool
+    {
+        if (!$this->isEntityAssign()) {
+            // Item does not have any entity so it is always visible.
+            return true;
+        }
+
+        // Check if the item entity is in the list of given entities.
+        if (in_array($this->getEntityID(), $entities_ids)) {
+            return true;
+        }
+
+        // If the item is recursive, we also check if it is accessible from any
+        // of the ancestors of the given entities.
+        if (
+            $this->maybeRecursive()
+            && $this->fields['is_recursive']
+            && in_array(
+                $this->getEntityID(),
+                getAncestorsOf("glpi_entities", $entities_ids),
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

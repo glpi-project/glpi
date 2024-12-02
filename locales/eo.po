@@ -2677,7 +2677,7 @@ msgstr ""
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -5255,7 +5255,7 @@ msgstr "Торговая марка"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Торговая марка"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -8705,7 +8705,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Aparatoj"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -15195,7 +15195,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Мастер"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17805,7 +17805,7 @@ msgstr "другое"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "другое"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20814,7 +20814,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restarigi"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21522,7 +21522,7 @@ msgstr "Второй объект"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Вторичный"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23199,7 +23199,7 @@ msgstr "Система"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -23417,7 +23417,7 @@ msgstr[1] ""
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Team members"
-msgstr ""
+msgstr "Teamanoj"
 
 #: phpunit/functional/RuleTest.php:324 front/stat.graph.php:94
 #: src/CommonITILTask.php:976 src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -24870,7 +24870,7 @@ msgstr "Всего"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Всего"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017

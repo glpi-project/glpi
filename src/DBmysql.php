@@ -56,7 +56,7 @@ class DBmysql
         '>'  => '&gt;',
     ];
 
-    //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
     //! Database User
     public $dbuser             = "";
@@ -442,7 +442,7 @@ class DBmysql
     }
 
     /**
-     * Execute a MySQL query and die
+     * Execute a MySQL query and throw an exception
      * (optionally with a message) if it fails
      *
      * @since 0.84
@@ -1013,35 +1013,35 @@ class DBmysql
      */
     public function runFile($path)
     {
-        $script = fopen($path, 'r');
-        if (!$script) {
-            return false;
-        }
-        $sql_query = @fread(
-            $script,
-            @filesize($path)
-        ) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
-
-        $sql_query = $this->removeSqlRemarks($sql_query);
-        $queries = preg_split('/;\s*$/m', $sql_query);
+        $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = trim($query);
-            if ($query != '') {
-                $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                $this->doQuery($query);
-                if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
-                    echo ' ';
-                    Html::glpi_flush();
-                }
-            }
+            $this->doQuery($query);
         }
 
         return true;
+    }
+
+    /**
+     * @internal
+     *
+     * @return array<string>
+     */
+    public function getQueriesFromFile(string $path): array
+    {
+        $script = fopen($path, 'r');
+        if (!$script) {
+            return [];
+        }
+        $sql_query = @fread($script, @filesize($path)) . "\n";
+
+        $sql_query = $this->removeSqlRemarks($sql_query);
+
+        $queries = preg_split('/;\s*$/m', $sql_query);
+
+        $queries = array_filter($queries, static fn ($query) => \trim($query) !== '');
+
+        return $queries;
     }
 
     /**
@@ -1593,7 +1593,7 @@ class DBmysql
     }
 
     /**
-     * Truncate table in the database or die
+     * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
      * @since 10.0.0

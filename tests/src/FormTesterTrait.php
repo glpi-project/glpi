@@ -38,6 +38,7 @@ namespace Glpi\Tests;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -75,6 +76,7 @@ trait FormTesterTrait
             'is_active'             => $builder->getIsActive(),
             'header'                => $builder->getHeader(),
             'is_draft'              => $builder->getIsDraft(),
+            'forms_categories_id'   => $builder->getCategory(),
             '_do_not_init_sections' => true, // We will handle sections ourselves
         ]);
 
@@ -159,7 +161,7 @@ trait FormTesterTrait
     protected function getQuestionId(
         Form $form,
         string $question_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());
@@ -237,7 +239,7 @@ trait FormTesterTrait
     protected function getCommentId(
         Form $form,
         string $comment_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());
@@ -348,10 +350,10 @@ trait FormTesterTrait
         return $comment;
     }
 
-    protected function sendFormAndGetCreatedTicket(
-        Form $form, // We assume $form has a single "Ticket" destination
+    protected function sendFormAndGetAnswerSet(
+        Form $form,
         array $answers = [],
-    ): Ticket {
+    ): AnswersSet {
         // The provider use a simplified answer format to be more readable.
         // Rewrite answers into expected format.
         $formatted_answers = [];
@@ -366,11 +368,18 @@ trait FormTesterTrait
 
         // Submit form
         $answers_handler = AnswersHandler::getInstance();
-        $answers = $answers_handler->saveAnswers(
+        return $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
             getItemByTypeName(User::class, TU_USER, true)
         );
+    }
+
+    protected function sendFormAndGetCreatedTicket(
+        Form $form, // We assume $form has a single "Ticket" destination
+        array $answers = [],
+    ): Ticket {
+        $answers = $this->sendFormAndGetAnswerSet($form, $answers);
 
         // Get created ticket
         $created_items = $answers->getCreatedItems();

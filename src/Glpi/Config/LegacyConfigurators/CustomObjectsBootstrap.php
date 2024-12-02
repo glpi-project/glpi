@@ -37,18 +37,21 @@ namespace Glpi\Config\LegacyConfigurators;
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
 
 final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInterface
 {
     public function execute(): void
     {
-        if (!DBConnection::isDbAvailable()) {
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
             // Requires the database to be available.
             return;
         }
 
+        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
         AssetDefinitionManager::getInstance()->bootstrapClasses();
         DropdownDefinitionManager::getInstance()->bootstrapClasses();
+        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }

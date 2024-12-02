@@ -187,7 +187,7 @@ body.horizontal-layout {
 
         &:hover::before {
             content: "\ec01";
-            font-family: tabler-icons;
+            font-family: tabler-icons, sans-serif;
             font-weight: 900;
             color: var(--tblr-secondary);
             margin-left: -1rem;

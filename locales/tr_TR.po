@@ -4,9 +4,9 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
-# Cédric Anne, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
+# Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Kaya Zeren <kayazeren@gmail.com>, 2024
 # 
 #, fuzzy
@@ -4496,7 +4496,7 @@ msgstr "Destek kaydı ile ilişkilendirilebilecek ögeler"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Destek kayıtlarına, değişikliklere ve sorunlara atanabilecek ögeler"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -5049,7 +5049,7 @@ msgstr "Hesaba katılacak ortalama zaman"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5300,7 +5300,7 @@ msgstr "Marka"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Marka"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6068,7 +6068,7 @@ msgstr "Alt birimlerin görünürlüğünü değiştir."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Değiştirilmiş"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8808,7 +8808,7 @@ msgstr "Aygıt_kimliği"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Aygıtlar"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9223,7 +9223,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Seçilmiş sürümü geri yüklemek ister misiniz?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9244,7 +9244,7 @@ msgstr "Belge"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Belge"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15385,7 +15385,7 @@ msgstr "Toplu işlemler"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Birincil"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -18017,7 +18017,7 @@ msgstr "Diğer"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Diğer"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -18691,7 +18691,7 @@ msgstr ""
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
@@ -21077,7 +21077,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Geri yükle"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23479,7 +23479,7 @@ msgstr "Sistem"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25204,7 +25204,7 @@ msgstr "Toplam"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Toplam"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017

@@ -928,7 +928,7 @@ JAVASCRIPT;
                     echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
                 }
 
-                echo "<td>{$data['item_type']}</td>";
+                echo "<td>" . htmlescape($data['item_type']) . "</td>";
                 $itemname = $data['itemname'];
                 if (empty($itemname) || $_SESSION['glpiis_ids_visible']) {
                     $itemname = sprintf(__('%1$s (%2$s)'), $itemname, $data['iID']);
@@ -942,19 +942,23 @@ JAVASCRIPT;
                 }
 
                 if ($showEntity) {
-                    echo "<td>" . $data['entity'] . "</td>";
+                    echo "<td>" . htmlescape($data['entity']) . "</td>";
                 }
                 echo "<td>" . htmlescape($data['serial']) . "</td>";
                 echo "<td>" . htmlescape($data['otherserial']) . "</td>";
                 echo "<td>" . htmlescape($data['location']) . "</td>";
                 echo "<td>" . htmlescape($data['state']) . "</td>";
                 echo "<td>" . htmlescape($data['groupe']) . "</td>";
-                echo "<td>" . formatUserLink(
-                    $data['userid'] ?? 0,
-                    $data['username'],
-                    $data['userrealname'],
-                    $data['userfirstname'],
-                ) . "</td>";
+                if ($data['userid'] !== null) {
+                    echo "<td>" . formatUserLink(
+                        $data['userid'],
+                        $data['username'],
+                        $data['userrealname'],
+                        $data['userfirstname'],
+                    ) . "</td>";
+                } else {
+                    echo "<td></td>";
+                }
                 echo "</tr>\n";
 
                 $iterator->next();

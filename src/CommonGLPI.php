@@ -1179,10 +1179,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $name = '';
         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-            $name = $this->getName();
-            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
-            }
+            $name = sprintf(__('%1$s - ID %2$d'), $this->getName(), $this->fields['id']);
         }
 
         return $name;

@@ -671,7 +671,7 @@ class Auth extends CommonGLPI
                 }
                 break;
             case self::COOKIE:
-                $cookie_name   = Session::buildSessionName() . '_rememberme';
+                $cookie_name   = session_name() . '_rememberme';
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     $data = null;
@@ -1506,7 +1506,7 @@ class Auth extends CommonGLPI
             }
         }
 
-        $cookie_name = Session::buildSessionName() . '_rememberme';
+        $cookie_name = session_name() . '_rememberme';
         if ($CFG_GLPI["login_remember_time"] && isset($_COOKIE[$cookie_name])) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
@@ -1737,12 +1737,11 @@ class Auth extends CommonGLPI
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $cookie_name     = Session::buildSessionName() . '_rememberme';
+        $cookie_name     = session_name() . '_rememberme';
         $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $cookie_httponly = filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
 
         if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
@@ -1757,7 +1756,7 @@ class Auth extends CommonGLPI
                 'path'     => $cookie_path,
                 'domain'   => $cookie_domain,
                 'secure'   => $cookie_secure,
-                'httponly' => $cookie_httponly,
+                'httponly' => true,
                 'samesite' => $cookie_samesite,
             ]
         );

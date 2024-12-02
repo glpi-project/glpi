@@ -56,7 +56,8 @@ $kernel = new Kernel('testing');
 $kernel->loadCommonGlobalConfig();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-    die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
+    echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
+    exit(1);
 }
 
 //init cache

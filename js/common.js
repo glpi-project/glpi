@@ -1444,10 +1444,6 @@ window.validateFormWithBootstrap = function (event) {
 
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
-        if (!window.validateFormWithBootstrap(e)) {
-            return false;
-        }
-
         const form = $(e.target).closest('form');
         if (form.attr('data-submitted') === 'true') {
             e.preventDefault();
@@ -1456,6 +1452,9 @@ $(() => {
             let submitter = null;
             if (e.originalEvent && e.originalEvent.submitter) {
                 submitter = $(e.originalEvent.submitter);
+            }
+            if ((submitter === null || submitter.attr('formnovalidate') === undefined) && !window.validateFormWithBootstrap(e)) {
+                return false;
             }
             if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
                 // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it

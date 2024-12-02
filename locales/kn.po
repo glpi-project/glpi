@@ -4560,7 +4560,7 @@ msgstr[1] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "ಸಂಯೋಜಿತ ಐಟಂಗಳು"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -8710,7 +8710,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "ಸಾಧನಗಳು"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9135,7 +9135,7 @@ msgstr "ದಾಖಲೆಗಳು"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "ದಾಖಲೆಗಳು"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15186,7 +15186,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "ಮಾಸ್ಟರ್"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15734,7 +15734,7 @@ msgstr[1] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "ಮಾನಿಟರ್ಸ್"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -17798,7 +17798,7 @@ msgstr "ಇತರೆ"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "ಇತರೆ"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20807,7 +20807,7 @@ msgstr "ಉಳಿದ API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "ಮರುಸ್ಥಾಪಿಸಿ"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21515,7 +21515,7 @@ msgstr "ಎರಡನೇ ಐಟಂ"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "ದ್ವಿತೀಯ"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -24857,7 +24857,7 @@ msgstr "ಸ೦ಪೂರ್ಣ"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "ಸ೦ಪೂರ್ಣ"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26745,7 +26745,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "ಅಭಿಪ್ರಾಯ"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

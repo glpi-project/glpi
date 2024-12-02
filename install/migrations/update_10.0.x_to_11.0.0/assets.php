@@ -206,12 +206,15 @@ if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
           `field_options` json,
           `itemtype` VARCHAR(255) NULL DEFAULT NULL,
           `default_value` text,
+          `translations` JSON NOT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
           KEY `name` (`name`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQuery($query);
+} else {
+    $migration->addField('glpi_assets_customfielddefinitions', 'translations', 'JSON NOT NULL', ['update' => "'[]'"]);
 }
 
 // Dev migration

@@ -637,7 +637,7 @@ class APIRest extends API
         } else {
             echo $json;
         }
-        exit;
+        exit();
     }
 
 
@@ -656,6 +656,6 @@ class APIRest extends API
         } else if ($this->format == "json") {
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
-        exit;
+        exit();
     }
 }
