@@ -40,7 +40,8 @@ final class QuestionContentSpecification implements ContentSpecificationInterfac
     public string $name;
     public string $type;
     public bool $is_mandatory;
-    public int $rank;
+    public int $vertical_rank;
+    public ?int $horizontal_rank;
     public ?string $description;
     public ?string $default_value;
     public ?string $extra_data;

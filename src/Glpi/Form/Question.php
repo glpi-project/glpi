@@ -142,9 +142,10 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
     public function getUniqueIDInForm(): string
     {
         return sprintf(
-            "%s-%s",
+            "%s-%s-%s",
             $this->getItem()->fields['rank'],
-            $this->fields['rank']
+            $this->fields['vertical_rank'],
+            $this->fields['horizontal_rank']
         );
     }
 
