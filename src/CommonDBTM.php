@@ -1143,7 +1143,7 @@ class CommonDBTM extends CommonGLPI
             Item_Problem::class            => $CFG_GLPI['ticket_types'],
             Item_Project::class            => $CFG_GLPI['project_asset_types'],
             Item_Rack::class               => $CFG_GLPI['rackable_types'],
-            Item_SoftwareLicense::class    => $CFG_GLPI['license_types'],
+            Item_SoftwareLicense::class    => $CFG_GLPI['software_types'],
             Item_SoftwareVersion::class    => $CFG_GLPI['software_types'],
             // specific case, see above Item_Ticket::class             => $CFG_GLPI['ticket_types'],
             KnowbaseItem_Item::class       => $CFG_GLPI['kb_types'],

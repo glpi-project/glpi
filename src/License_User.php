@@ -33,40 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
+/**
+ * License_User Class
+ *
+ * Relation between SoftwareLicense and Users
+ **/
+class License_User extends CommonDBRelation
+{
+    // From CommonDBRelation
+    public static $itemtype_1 = 'User';
+    public static $items_id_1 = 'users_id';
 
-Session::checkRight("software", UPDATE);
+    public static $itemtype_2 = 'SoftwareLicense';
+    public static $items_id_2 = 'softwarelicenses_id';
 
-if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
-    $isl = new License_User();
-    $_POST['users_id'] = $_POST['items_id'];
-} else {
-    $isl   = new Item_SoftwareLicense();
-}
-
-if (isset($_POST["add"])) {
-    if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || $_POST['items_id'] <= 0) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Item', 'Items', 1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-        Html::back();
+    public static function getTypeName($nb = 0)
+    {
+        return User::getTypeName($nb);
     }
-    if ($_POST['softwarelicenses_id'] > 0) {
-        if ($isl->add($_POST)) {
-            Event::log(
-                $_POST['softwarelicenses_id'],
-                "softwarelicense",
-                4,
-                "inventory",
-                //TRANS: %s is the user login
-                sprintf(__('%s associates an item and a license'), $_SESSION["glpiname"])
-            );
-        }
-    }
-    Html::back();
-}
 
-throw new BadRequestHttpException();
+    public static function countForLicense($softwarelicenses_id)
+    {
+        return countElementsInTable(static::getTable(), ['softwarelicenses_id' => $softwarelicenses_id]);
+    }
+}

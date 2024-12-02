@@ -146,9 +146,13 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
                 echo "<td>";
-                $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI['license_types'], [
-                    'width'                 => 'unset'
-                ]);
+                $rand = Dropdown::showItemTypes(
+                    'itemtype',
+                    array_merge($CFG_GLPI['software_types'], [User::class]),
+                    [
+                        'width'                 => 'unset'
+                    ]
+                );
 
                 $p = ['idtable'            => '__VALUE__',
                     'rand'                  => $rand,
@@ -540,6 +544,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
        //SoftwareLicense ID
         $number = self::countForLicense($searchID);
+        $number += License_User::countForLicense($searchID);
 
         echo "<div class='center'>";
 
@@ -563,12 +568,16 @@ class Item_SoftwareLicense extends CommonDBRelation
                     ? getSonsOf('glpi_entities', $license->fields['entities_id'])
                     : $license->fields['entities_id'];
 
-            Dropdown::showItemTypes('itemtype', $CFG_GLPI['license_types'], [
-                'value'                 => 'Computer',
-                'rand'                  => $rand,
-                'width'                 => 'unset',
-                'display_emptychoice'   => false,
-            ]);
+            Dropdown::showItemTypes(
+                'itemtype',
+                array_merge($CFG_GLPI['software_types'], [User::class]),
+                [
+                    'value'                 => 'Computer',
+                    'rand'                  => $rand,
+                    'width'                 => 'unset',
+                    'display_emptychoice'   => false,
+                ]
+            );
 
             $p = ['idtable'            => '__VALUE__',
                 'rand'                  => $rand,
@@ -631,7 +640,7 @@ JAVASCRIPT;
         Html::printAjaxPager(__('Affected items'), $start, $number);
 
         $queries = [];
-        foreach ($CFG_GLPI['license_types'] as $itemtype) {
+        foreach ($CFG_GLPI['software_types'] as $itemtype) {
             $canshowitems[$itemtype] = $itemtype::canView();
             $itemtable = $itemtype::getTable();
             $query = [
@@ -657,11 +666,10 @@ JAVASCRIPT;
                     $itemtable => [
                         'FKEY'   => [
                             $item_license_table     => 'items_id',
-                            $itemtable        => 'id', [
-                                'AND' => [
-                                    $item_license_table . '.itemtype'  => $itemtype
-                                ]
-                            ]
+                            $itemtable              => 'id'
+                        ],
+                        'AND' => [
+                            $item_license_table . '.itemtype'  => $itemtype
                         ]
                     ]
                 ],
@@ -670,53 +678,32 @@ JAVASCRIPT;
                     'glpi_items_softwarelicenses.is_deleted'     => 0
                 ]
             ];
-            if ($itemtype == 'User') {
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "serial");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "otherserial");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "username");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(-1), "userid");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "userrealname");
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), "userfirstname");
+            if ($DB->fieldExists($itemtable, 'serial')) {
+                $query['SELECT'][] = $itemtable . '.serial';
             } else {
-                if ($DB->fieldExists($itemtable, 'serial')) {
-                    $query['SELECT'][] = $itemtable . '.serial';
-                } else {
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".serial")
-                    );
-                }
-                if ($DB->fieldExists($itemtable, 'otherserial')) {
-                    $query['SELECT'][] = $itemtable . '.otherserial';
-                } else {
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".otherserial")
-                    );
-                }
-                if ($DB->fieldExists($itemtable, 'users_id')) {
-                    $query['SELECT'][] = 'glpi_users.name AS username';
-                    $query['SELECT'][] = new QueryExpression('Coalesce(glpi_users.id, -1)', 'userid');
-                    $query['SELECT'][] = 'glpi_users.realname AS userrealname';
-                    $query['SELECT'][] = 'glpi_users.firstname AS userfirstname';
-                    $query['LEFT JOIN']['glpi_users'] = [
-                        'FKEY'   => [
-                            $itemtable     => 'users_id',
-                            'glpi_users'   => 'id'
-                        ]
-                    ];
-                } else {
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".username")
-                    );
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue(-1) . " AS " . $DB->quoteName($itemtable . ".userid")
-                    );
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userrealname")
-                    );
-                    $query['SELECT'][] = new QueryExpression(
-                        $DB->quoteValue('') . " AS " . $DB->quoteName($itemtable . ".userfirstname")
-                    );
-                }
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".serial");
+            }
+            if ($DB->fieldExists($itemtable, 'otherserial')) {
+                $query['SELECT'][] = $itemtable . '.otherserial';
+            } else {
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".otherserial");
+            }
+            if ($DB->fieldExists($itemtable, 'users_id')) {
+                $query['SELECT'][] = 'glpi_users.name AS username';
+                $query['SELECT'][] = 'glpi_users.id AS userid';
+                $query['SELECT'][] = 'glpi_users.realname AS userrealname';
+                $query['SELECT'][] = 'glpi_users.firstname AS userfirstname';
+                $query['LEFT JOIN']['glpi_users'] = [
+                    'FKEY'   => [
+                        $itemtable     => 'users_id',
+                        'glpi_users'   => 'id'
+                    ]
+                ];
+            } else {
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".username");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userid");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userrealname");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".userfirstname");
             }
             $entity_fkey  = Entity::getForeignKeyField();
             $entity_table = Entity::getTable();
@@ -779,15 +766,80 @@ JAVASCRIPT;
             }
             $queries[] = $query;
         }
+
+        // Add License_User
+        $license_users_table = License_User::getTable();
+        $users_table = User::getTable();
+        $entity_table = Entity::getTable();
+
+        $user_query = [
+            'SELECT' => [
+                "$license_users_table.id",
+                "$license_users_table.users_id AS items_id",
+                new QueryExpression($DB::quoteValue(User::class), 'itemtype'),
+                "$license_users_table.softwarelicenses_id",
+                new QueryExpression($DB::quoteValue(0), 'id_deleted'),
+                new QueryExpression($DB::quoteValue(1), 'is_dynamic'),
+                'glpi_softwarelicenses.name AS license',
+                'glpi_softwarelicenses.id AS vID',
+                'glpi_softwarelicenses.softwares_id AS softid',
+                "$users_table.name AS itemname",
+                "$users_table.id AS iID",
+                new QueryExpression($DB::quoteValue(User::class), 'item_type'),
+                new QueryExpression($DB::quoteValue(''), "serial"),
+                new QueryExpression($DB::quoteValue(''), "otherserial"),
+                new QueryExpression($DB::quoteValue(''), "username"),
+                new QueryExpression($DB::quoteValue(-1), "userid"),
+                new QueryExpression($DB::quoteValue(''), "userrealname"),
+                new QueryExpression($DB::quoteValue(''), "userfirstname"),
+                new QueryExpression($DB::quoteValue(''), "location"),
+                new QueryExpression($DB::quoteValue(''), "state"),
+                new QueryExpression($DB::quoteValue(''), "group"),
+                "$entity_table.completename AS entity"
+            ],
+            'FROM' => $users_table,
+            'LEFT JOIN' => [
+                $license_users_table => [
+                    'FKEY' => [
+                        $users_table         => 'id',
+                        $license_users_table => 'users_id'
+                    ]
+                ],
+                $entity_table => [
+                    'FKEY' => [
+                        $users_table  => 'entities_id',
+                        $entity_table => 'id'
+                    ]
+                ]
+            ],
+            'INNER JOIN' => [
+                'glpi_softwarelicenses' => [
+                    'FKEY' => [
+                        $license_users_table     => 'softwarelicenses_id',
+                        'glpi_softwarelicenses' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_softwarelicenses.id' => $searchID,
+                'glpi_users.is_deleted'    => 0
+            ],
+            'ORDER' => "$entity_table.completename, $users_table.name"
+        ];
+
+        $queries[] = $user_query;
+
         $union = new QueryUnion($queries, true);
         $criteria = [
             'SELECT' => [],
             'FROM'   => $union,
-            'ORDER'        => "$sort $order",
-            'LIMIT'        => $_SESSION['glpilist_limit'],
-            'START'        => $start
+            'ORDER'  => "$sort $order",
+            'LIMIT'  => $_SESSION['glpilist_limit'],
+            'START'  => $start
         ];
         $iterator = $DB->request($criteria);
+
+        $canshowitems[User::class] = User::canView();
 
         $rand = mt_rand();
 
@@ -898,7 +950,7 @@ JAVASCRIPT;
                 echo "<td>" . htmlescape($data['state']) . "</td>";
                 echo "<td>" . htmlescape($data['groupe']) . "</td>";
                 echo "<td>" . formatUserLink(
-                    $data['userid'],
+                    $data['userid'] ?? 0,
                     $data['username'],
                     $data['userrealname'],
                     $data['userfirstname'],
@@ -1007,10 +1059,11 @@ JAVASCRIPT;
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
+                        $nb += License_User::countForLicense($item->getID());
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
-                            _n('Affected Item', 'Affected Items', Session::getPluralNumber()),
+                            _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
                             'ti ti-package'

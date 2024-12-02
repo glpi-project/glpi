@@ -466,8 +466,6 @@ $CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment',
 
 $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 
-$CFG_GLPI['license_types'] = array_merge($CFG_GLPI['software_types'], ['User']);
-
 $CFG_GLPI['disk_types'] = ['Computer', 'NetworkEquipment', 'Phone', 'Printer'];
 
 $CFG_GLPI['kanban_types']        = ['Project'];
