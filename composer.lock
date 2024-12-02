@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "866b3412c84650f80a8fb9c62d6e312f",
+    "content-hash": "f879a138212417a701150103005d386e",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -8235,16 +8235,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.3.2",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "e6ba1a00575c949faf8d56cdd7d71c39b3397b92"
+                "reference": "bac7e86fb22c22dc69ae121337b77e4a7354793d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/e6ba1a00575c949faf8d56cdd7d71c39b3397b92",
-                "reference": "e6ba1a00575c949faf8d56cdd7d71c39b3397b92",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/bac7e86fb22c22dc69ae121337b77e4a7354793d",
+                "reference": "bac7e86fb22c22dc69ae121337b77e4a7354793d",
                 "shasum": ""
             },
             "require": {
@@ -8323,7 +8323,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.3.2"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.0"
             },
             "funding": [
                 {
@@ -8331,20 +8331,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-10-26T12:35:31+00:00"
+            "time": "2024-11-22T20:25:11+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.2.4",
+            "version": "2.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "37e63eaf78e288569f43640d858808015deacc0a"
+                "reference": "bddf746992e46026ac7387d56042ba6d9d14573d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/37e63eaf78e288569f43640d858808015deacc0a",
-                "reference": "37e63eaf78e288569f43640d858808015deacc0a",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/bddf746992e46026ac7387d56042ba6d9d14573d",
+                "reference": "bddf746992e46026ac7387d56042ba6d9d14573d",
                 "shasum": ""
             },
             "require": {
@@ -8392,7 +8392,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.4"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.5"
             },
             "funding": [
                 {
@@ -8400,7 +8400,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-10-26T12:33:55+00:00"
+            "time": "2024-11-22T20:23:21+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",

@@ -93,7 +93,7 @@
         "symfony/property-info": "^6.4",
         "symfony/routing": "^6.4",
         "symfony/serializer": "^7.1",
-        "tecnickcom/tc-lib-barcode": "^2.3",
+        "tecnickcom/tc-lib-barcode": "^2.4",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.16",
