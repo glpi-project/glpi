@@ -79,12 +79,6 @@ final class AssetDefinition extends AbstractDefinition
         return sprintf('asset_%s', strtolower($this->fields['system_name']));
     }
 
-    /**
-     * @var CustomFieldDefinition[]|null
-     * @see self::getCustomFieldDefinitions()
-     */
-    private ?array $custom_field_definitions = null;
-
     public static function getTypeName($nb = 0)
     {
         return _n('Asset definition', 'Asset definitions', $nb);

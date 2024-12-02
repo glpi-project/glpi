@@ -148,7 +148,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return true;
     }
 
-    private function prepareInputForAddAndUpdate(array $input): array
+    private function prepareInputForAddAndUpdate(array $input): array|false
     {
         // Ensure we have a field instance with the updated type and field options
         $field_for_validation = new self();
@@ -166,6 +166,23 @@ final class CustomFieldDefinition extends CommonDBChild
         }
 
         $input['field_options'] = json_encode($input['field_options'] ?? []);
+
+        if (array_key_exists('translations', $input)) {
+            if (!$this->validateTranslationsArray($input['translations'])) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('The following field has an incorrect value: "%s".'),
+                        _n('Translation', 'Translations', Session::getPluralNumber())
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            } else {
+                $input['translations'] = json_encode($input['translations']);
+            }
+        }
+
         return $input;
     }
 
@@ -175,6 +192,12 @@ final class CustomFieldDefinition extends CommonDBChild
             return false;
         }
         $input = $this->prepareInputForAddAndUpdate($input);
+        if ($input === false) {
+            return false;
+        }
+        if (!array_key_exists('translations', $input)) {
+            $input['translations'] = '[]';
+        }
         return parent::prepareInputForAdd($input);
     }
 
@@ -183,6 +206,9 @@ final class CustomFieldDefinition extends CommonDBChild
         // Cannot change type or name of existing field
         unset($input['type'], $input['name']);
         $input = $this->prepareInputForAddAndUpdate($input);
+        if ($input === false) {
+            return false;
+        }
         return parent::prepareInputForUpdate($input);
     }
 
@@ -200,7 +226,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function computeFriendlyName(): string
     {
-        return $this->fields['label'];
+        return $this->getDecodedTranslationsField()[Session::getLanguage()] ?? $this->fields['label'];
     }
 
     public function getSearchOptionID(): int
@@ -215,5 +241,90 @@ final class CustomFieldDefinition extends CommonDBChild
             return new $this->fields['type']($this);
         }
         throw new \RuntimeException('Invalid field type: ' . $this->fields['type']);
+    }
+
+    /**
+     * Return the decoded value of the `translations` field.
+     *
+     * @return array{language: string, translation: string}[]
+     */
+    public function getDecodedTranslationsField(): array
+    {
+        $translations = json_decode($this->fields['translations'] ?? [], associative: true) ?? [];
+        if (!$this->validateTranslationsArray($translations)) {
+            trigger_error(
+                sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
+                E_USER_WARNING
+            );
+            $this->fields['translations'] = '[]'; // prevent warning to be triggered on each method call
+            $translations = [];
+        }
+        return $translations;
+    }
+
+    /**
+     * Validate that the given translations array contains valid values.
+     *
+     * @param mixed $translations
+     * @return bool
+     */
+    protected function validateTranslationsArray(mixed $translations): bool
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!is_array($translations)) {
+            return false;
+        }
+
+        $is_valid = true;
+
+        // Array keys must be valid language codes
+        foreach (array_keys($translations) as $language) {
+            if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+                $is_valid = false;
+                break;
+            }
+        }
+
+        // Array values must be strings
+        foreach ($translations as $translation) {
+            if (!is_string($translation)) {
+                $is_valid = false;
+                break;
+            }
+        }
+
+        return $is_valid;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        if ($field === 'translations') {
+            $translations = json_decode($values[$field], associative: true);
+            $twig_params = ['translations' => $translations];
+            // language=Twig
+            return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% if translations is not empty %}
+                    <ul>
+                        {% for language, translation in translations %}
+                            <li>
+                                {{ config('languages')[language][0] }}:
+                                {% include "pages/admin/customobjects/plurals.html.twig" with {
+                                    'plurals': {
+                                        'one': translation
+                                    },
+                                } only %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+TWIG, $twig_params);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 }
