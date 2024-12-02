@@ -96,8 +96,8 @@
         "tecnickcom/tc-lib-barcode": "^2.3",
         "tecnickcom/tcpdf": "^6.7",
         "thenetworg/oauth2-azure": "^2.2",
-        "twig/markdown-extra": "^3.13",
-        "twig/string-extra": "^3.13",
+        "twig/markdown-extra": "^3.16",
+        "twig/string-extra": "^3.16",
         "twig/twig": "^3.15",
         "wapmorgan/unified-archive": "^1.2",
         "webonyx/graphql-php": "^15.18"
