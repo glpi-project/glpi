@@ -345,14 +345,13 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
                 'items_id'     => $this->items_id,
                 'itemtype'     => $this->itemtype,
-                'is_dynamic'   => 1
             ]
         ]);
         foreach ($iterator as $row) {
@@ -404,7 +403,8 @@ trait InventoryNetworkPort
                     }
                 }
 
-                if (count($criteria)) {
+                // force dynamic for manually added NetworkPort
+                if (count($criteria) || !$dbdata_copy['is_dynamic']) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
                     $networkport->update(Sanitizer::sanitize($criteria));
