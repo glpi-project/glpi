@@ -860,21 +860,13 @@ class Change extends CommonITILObject
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-                    echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
-                    echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups') . "&nbsp;";
-                    Dropdown::showYesNo(
-                        'tree',
-                        $tree,
-                        -1,
-                        ['on_change' => 'reloadTab("start=0&tree="+this.value)']
-                    );
+                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                        'tree' => $tree
+                    ]);
                 } else {
                     $tree = 0;
                 }
-                echo "</td></tr></table>";
                 break;
         }
         Change_Item::showListForItem($item, $withtemplate, $options);
@@ -902,8 +894,8 @@ class Change extends CommonITILObject
                 } else {
                     $tree = 0;
                 }
-                $restrict['glpi_groups_changes.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_groups_changes.type'] = CommonITILActor::REQUESTER;
+                $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+                $restrict['glpi_changes_groups.type'] = CommonITILActor::REQUESTER;
                 /** @var CommonDBTM $item */
                 break;
 
@@ -922,7 +914,7 @@ class Change extends CommonITILObject
                         ]
                     ];
                     if (count($_SESSION['glpigroups'])) {
-                        $or['glpi_groups_changes.groups_id'] = $_SESSION['glpigroups'];
+                        $or['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
                     }
                     $restrict[] = ['OR' => $or];
                 }
