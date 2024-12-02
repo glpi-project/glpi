@@ -35,46 +35,50 @@
 
 namespace tests\units;
 
+use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
 /* Test for inc/dbmysql.class.php */
 
-class DB extends \GLPITestCase
+class DBTest extends \GLPITestCase
 {
     public function testTableExist()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->boolean($this->testedInstance->tableExists('glpi_configs'))->isTrue()
-            ->boolean($this->testedInstance->tableExists('fakeTable'))->isFalse();
+        $instance = new \DB();
+        $this->assertTrue($instance->tableExists('glpi_configs'));
+        $this->assertFalse($instance->tableExists('fakeTable'));
     }
 
     public function testFieldExists()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'id'))->isTrue()
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'ID'))->isFalse()
-            ->boolean($this->testedInstance->fieldExists('glpi_configs', 'fakeField'))->isFalse()
-            ->when(
-                function () {
-                    $this->boolean($this->testedInstance->fieldExists('fakeTable', 'id'))->isFalse();
-                }
-            )->error
-               ->withType(E_USER_WARNING)
-               ->exists()
-            ->when(
-                function () {
-                    $this->boolean($this->testedInstance->fieldExists('fakeTable', 'fakeField'))->isFalse();
-                }
-            )->error
-               ->withType(E_USER_WARNING)
-               ->exists();
+        $instance = new \DB();
+        $this->assertTrue($instance->fieldExists('glpi_configs', 'id'));
+        $this->assertFalse($instance->fieldExists('glpi_configs', 'ID'));
+        $this->assertFalse($instance->fieldExists('glpi_configs', 'fakeField'));
     }
 
-    protected function dataName()
+    public function testFieldExistsNoTable()
+    {
+        $instance = new \DB();
+        $this->assertFalse($instance->fieldExists('fakeTable', 'id'));
+        $this->hasPhpLogRecordThatContains(
+            'Table fakeTable does not exist',
+            LogLevel::WARNING
+        );
+    }
+
+    public function testFieldExistsNoTableNoField()
+    {
+        $instance = new \DB();
+        $this->assertFalse($instance->fieldExists('fakeTable', 'fakeField'));
+        $this->hasPhpLogRecordThatContains(
+            'Table fakeTable does not exist',
+            LogLevel::WARNING
+        );
+    }
+
+    public static function nameProvider()
     {
         return [
             ['field', '`field`'],
@@ -88,15 +92,13 @@ class DB extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dataName
-     */
+    #[DataProvider('nameProvider')]
     public function testQuoteName($raw, $quoted)
     {
-        $this->string(\DBmysql::quoteName($raw))->isIdenticalTo($quoted);
+        $this->assertSame($quoted, \DBmysql::quoteName($raw));
     }
 
-    protected function dataValue()
+    public static function dataValue()
     {
         return [
             ['foo', "'foo'"],
@@ -114,16 +116,14 @@ class DB extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dataValue
-     */
+    #[DataProvider('dataValue')]
     public function testQuoteValue($raw, $expected)
     {
-        $this->string(\DBmysql::quoteValue($raw))->isIdenticalTo($expected);
+        $this->assertSame($expected, \DBmysql::quoteValue($raw));
     }
 
 
-    protected function dataInsert()
+    public static function dataInsert()
     {
         return [
             [
@@ -161,18 +161,14 @@ class DB extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dataInsert
-     */
+    #[DataProvider('dataInsert')]
     public function testBuildInsert($table, $values, $expected)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildInsert($table, $values))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->buildInsert($table, $values));
     }
 
-    protected function dataUpdate()
+    public static function dataUpdate()
     {
         return [
             [
@@ -262,30 +258,21 @@ class DB extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dataUpdate
-     */
+    #[DataProvider('dataUpdate')]
     public function testBuildUpdate($table, $values, $where, array $joins, $expected)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildUpdate($table, $values, $where, $joins))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->buildUpdate($table, $values, $where, $joins));
     }
 
     public function testBuildUpdateWException()
     {
-        $this->exception(
-            function () {
-                $this
-                  ->if($this->newTestedInstance)
-                  ->then
-                  ->string($this->testedInstance->buildUpdate('table', ['a' => 'b'], []))->isIdenticalTo('');
-            }
-        )->hasMessage('Cannot run an UPDATE query without WHERE clause!');
+        $instance = new \DB();
+        $this->expectExceptionMessage('Cannot run an UPDATE query without WHERE clause!');
+        $instance->buildUpdate('table', ['a' => 'b'], []);
     }
 
-    protected function dataDelete()
+    public static function dataDelete()
     {
         return [
             [
@@ -346,52 +333,38 @@ class DB extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dataDelete
-     */
+    #[DataProvider('dataDelete')]
     public function testBuildDelete($table, $where, array $joins, $expected)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->buildDelete($table, $where, $joins))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->buildDelete($table, $where, $joins));
     }
 
     public function testBuildDeleteWException()
     {
-        $this->exception(
-            function () {
-                $this
-                  ->if($this->newTestedInstance)
-                  ->then
-                  ->string($this->testedInstance->buildDelete('table', []))->isIdenticalTo('');
-            }
-        )->hasMessage('Cannot run an DELETE query without WHERE clause!');
+        $instance = new \DB();
+        $this->expectExceptionMessage('Cannot run an DELETE query without WHERE clause!');
+        $instance->buildDelete('table', []);
     }
 
     public function testListTables()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->given($tables = $this->testedInstance->listTables())
-            ->object($tables)
-               ->isInstanceOf(\DBmysqlIterator::class)
-            ->integer(count($tables))
-               ->isGreaterThan(100)
-            ->given($tables = $this->testedInstance->listTables('glpi_configs'))
-            ->object($tables)
-               ->isInstanceOf(\DBmysqlIterator::class)
-               ->hasSize(1);
+        $instance = new \DB();
+        $tables = $instance->listTables();
+        $this->assertInstanceOf(\DBmysqlIterator::class, $tables);
+        $this->assertGreaterThan(100, count($tables));
+        $tables = $instance->listTables('glpi_configs');
+        $this->assertInstanceOf(\DBmysqlIterator::class, $tables);
+        $this->assertCount(1, $tables);
     }
 
     public function testTablesHasItemtype()
     {
         $dbu = new \DbUtils();
-        $this->newTestedInstance();
-        $list = $this->testedInstance->listTables();
-        $this->object($list)->isInstanceOf(\DBmysqlIterator::class);
-        $this->integer(count($list))->isGreaterThan(200);
+        $instance = new \DB();
+        $list = $instance->listTables();
+        $this->assertInstanceOf(\DBmysqlIterator::class, $list);
+        $this->assertGreaterThan(200, count($list));
 
         // Tables that don't have an itemtype on purpose
         $excluded_tables = [
@@ -400,38 +373,34 @@ class DB extends \GLPITestCase
             'glpi_oauth_refresh_tokens', 'glpi_stencils',
         ];
 
-       //check if each table has a corresponding itemtype
+        //check if each table has a corresponding itemtype
         foreach ($list as $line) {
-            $this->array($line)
-            ->hasSize(1);
+            $this->assertCount(1, $line);
             $table = $line['TABLE_NAME'];
             if (in_array($table, $excluded_tables, true)) {
                 //FIXME temporary hack for unit tests
                 continue;
             }
             $type = $dbu->getItemTypeForTable($table);
-            $this->string($type)->isNotEqualTo('UNKNOWN', "$table does not have corresponding item");
-
-            $this->string($type)->isNotEqualTo('UNKNOWN', 'Cannot find type for table ' . $table);
-            $this->object($item = $dbu->getItemForItemtype($type))->isInstanceOf('CommonDBTM', $table);
-            $this->string(get_class($item))->isIdenticalTo($type);
-            $this->string($dbu->getTableForItemType($type))->isIdenticalTo($table);
+            $this->assertNotEquals('UNKNOWN', $type, 'Cannot find type for table ' . $table);
+            $item = $dbu->getItemForItemtype($type);
+            $this->assertInstanceOf(\CommonDBTM::class, $item, get_class($item));
+            $this->assertEquals($type, get_class($item));
+            $this->assertEquals($table, $dbu->getTableForItemType($type));
         }
     }
 
     public function testEscape()
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->escape('nothing to do'))->isIdenticalTo('nothing to do')
-            ->string($this->testedInstance->escape("shoul'be escaped"))->isIdenticalTo("shoul\\'be escaped")
-            ->string($this->testedInstance->escape("First\nSecond"))->isIdenticalTo("First\\nSecond")
-            ->string($this->testedInstance->escape("First\rSecond"))->isIdenticalTo("First\\rSecond")
-            ->string($this->testedInstance->escape('Hi, "you"'))->isIdenticalTo('Hi, \\"you\\"');
+        $instance = new \DB();
+        $this->assertSame('nothing to do', $instance->escape('nothing to do'));
+        $this->assertSame("shoul\\'be escaped", $instance->escape("shoul'be escaped"));
+        $this->assertSame("First\\nSecond", $instance->escape("First\nSecond"));
+        $this->assertSame("First\\rSecond", $instance->escape("First\rSecond"));
+        $this->assertSame('Hi, \\"you\\"', $instance->escape('Hi, "you"'));
     }
 
-    protected function commentsProvider()
+    public static function commentsProvider()
     {
         return [
             [
@@ -446,42 +415,34 @@ OTHER EXPRESSION;"
         ];
     }
 
-    /**
-     * @dataProvider commentsProvider
-     */
+    #[DataProvider('commentsProvider')]
     public function testRemoveSqlComments($sql, $expected)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->removeSqlComments($sql))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->removeSqlComments($sql));
     }
 
     /**
      * Sql expressions provider
      */
-    protected function sqlProvider()
+    public static function sqlProvider()
     {
         return array_merge([
             [
                 'sql'       => "SQL;\n-- comment;\n\nSQL2;",
                 'expected'  => "SQL;\n\nSQL2;"
             ]
-        ], $this->commentsProvider());
+        ], self::commentsProvider());
     }
 
-    /**
-     * @dataProvider sqlProvider
-     */
+    #[DataProvider('sqlProvider')]
     public function testRemoveSqlRemarks($sql, $expected)
     {
-        $this
-         ->if($this->newTestedInstance)
-         ->then
-            ->string($this->testedInstance->removeSqlRemarks($sql))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->removeSqlRemarks($sql));
     }
 
-    protected function tableOptionProvider(): iterable
+    public static function tableOptionProvider(): iterable
     {
         yield [
             'sql' => <<<SQL
@@ -666,15 +627,13 @@ SQL,
         }
     }
 
-    /**
-     * @dataProvider tableOptionProvider
-     */
+    #[DataProvider('tableOptionProvider')]
     public function testAlterOrCreateTableWarnings(
         string $sql,
         array $db_properties,
         ?string $warning = null
     ) {
-        $db = new \mock\DB();
+        $db = new \DB();
 
         $create_query_template = $sql;
         $drop_query_template = 'DROP TABLE `%s`';
@@ -687,15 +646,15 @@ SQL,
         $asserter = $warning === null ? 'notExists' : 'exists';
 
         $table = sprintf('glpitests_%s', uniqid());
-        $this->when(
-            function () use ($db, $create_query_template, $drop_query_template, $table) {
-                $db->doQuery(sprintf($create_query_template, $table));
-                $db->doQuery(sprintf($drop_query_template, $table));
-            }
-        )->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage(str_replace(['{$table}'], [$table], $warning ?? ''))
-            ->$asserter();
+        $db->doQuery(sprintf($create_query_template, $table));
+        $db->doQuery(sprintf($drop_query_template, $table));
+
+        if ($warning !== null) {
+            $this->hasPhpLogRecordThatContains(
+                str_replace(['{$table}'], [$table], $warning),
+                LogLevel::WARNING
+            );
+        }
     }
 
     public function testSavepoints()
@@ -710,44 +669,45 @@ SQL,
             'name'        => 'computer0',
             'entities_id' => 0
         ]);
-        $this->integer($computers_id_0)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computers_id_0);
         $DB->setSavepoint('save1', false);
         $computers_id_1 = $computer->add([
             'name'        => 'computer1',
             'entities_id' => 0
         ]);
-        $this->integer($computers_id_1)->isGreaterThan(0);
-        $this->boolean($computer->getFromDB($computers_id_1))->isTrue();
+        $this->assertGreaterThan(0, $computers_id_1);
+        $this->assertTrue($computer->getFromDB($computers_id_1));
 
         $DB->rollBack('save1');
-        $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
-        $this->boolean($computer->getFromDB($computers_id_0))->isTrue();
+        $this->assertFalse($computer->getFromDB($computers_id_1));
+        $this->assertTrue($computer->getFromDB($computers_id_0));
 
         $DB->rollBack('save0');
-        $this->boolean($computer->getFromDB($computers_id_1))->isFalse();
-        $this->boolean($computer->getFromDB($computers_id_0))->isFalse();
+        $this->assertFalse($computer->getFromDB($computers_id_1));
+        $this->assertFalse($computer->getFromDB($computers_id_0));
 
         $DB->rollBack();
     }
 
     public function testGetLastQueryWarnings()
     {
-        $db = new \mock\DB();
+        $db = new \DB();
 
         $db->doQuery('SELECT 1/0');
-        $this->array($db->getLastQueryWarnings())->isEqualTo(
+        $this->assertEquals(
             [
                 [
                     'Level'   => 'Warning',
                     'Code'    => 1365,
                     'Message' => 'Division by 0',
                 ]
-            ]
+            ],
+            $db->getLastQueryWarnings()
         );
         $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
         $db->doQuery('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
-        $this->array($db->getLastQueryWarnings())->isEqualTo(
+        $this->assertEquals(
             [
                 [
                     'Level'   => 'Warning',
@@ -759,7 +719,8 @@ SQL,
                     'Code'    => 1292,
                     'Message' => 'Truncated incorrect INTEGER value: \'123b\'',
                 ]
-            ]
+            ],
+            $db->getLastQueryWarnings()
         );
         $this->hasSqlLogRecordThatContains(
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
@@ -767,7 +728,7 @@ SQL,
         );
     }
 
-    protected function fetchResultProvider(): iterable
+    public static function fetchResultProvider(): iterable
     {
         foreach (['fetchArray', 'fetchRow', 'fetchAssoc', 'fetchObject'] as $method) {
             // No more results => null.
@@ -831,9 +792,7 @@ SQL,
         }
     }
 
-    /**
-     * @dataProvider fetchResultProvider
-     */
+    #[DataProvider('fetchResultProvider')]
     public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
     {
         if ($method === 'fetchObject') {
@@ -841,16 +800,15 @@ SQL,
             $expected = is_array($expected) ? (object)$expected : $expected;
         }
 
-        $this->mockGenerator->orphanize('__construct');
-        $mysqli_result = new \mock\mysqli_result();
+        $mysqli_result = $this->createMock(\mysqli_result::class);
         $mysqli_method = strtolower(preg_replace('/[A-Z]/', '_$0', $method)); // e.g. fetchArray -> fetch_array
-        $this->calling($mysqli_result)->{$mysqli_method} = $row;
+        $mysqli_result->method($mysqli_method)->willReturn($row);
 
-        $this->newTestedInstance();
-        $this->variable($this->testedInstance->{$method}($mysqli_result))->isEqualTo($expected);
+        $instance = new \DB();
+        $this->assertEquals($expected, $instance->{$method}($mysqli_result));
     }
 
-    protected function dataDrop()
+    public static function dataDrop()
     {
         return [
             [
@@ -877,26 +835,17 @@ SQL,
         ];
     }
 
-    /**
-     * @dataProvider dataDrop
-     */
+    #[DataProvider('dataDrop')]
     public function testBuildDrop($name, $type, $exists, $expected)
     {
-        $this
-            ->if($this->newTestedInstance)
-            ->then
-            ->string($this->testedInstance->buildDrop($name, $type, $exists))->isIdenticalTo($expected);
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->buildDrop($name, $type, $exists));
     }
 
     public function testBuildDropWException()
     {
-        $this->exception(
-            function () {
-                $this
-                    ->if($this->newTestedInstance)
-                    ->then
-                    ->string($this->testedInstance->buildDrop('aname', 'UNKNOWN'))->isIdenticalTo('');
-            }
-        )->hasMessage('Unknown type to drop: UNKNOWN');
+        $instance = new \DB();
+        $this->expectExceptionMessage('Unknown type to drop: UNKNOWN');
+        $this->assertSame('', $instance->buildDrop('aname', 'UNKNOWN'));
     }
 }

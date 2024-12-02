@@ -36,12 +36,13 @@
 namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/dbconnection.class.php */
 
-class DBConnection extends \GLPITestCase
+class DBConnectionTest extends \GLPITestCase
 {
-    protected function setConnectionCharsetProvider()
+    public static function setConnectionCharsetProvider()
     {
         return [
             [
@@ -57,26 +58,27 @@ class DBConnection extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider setConnectionCharsetProvider
-     */
+    #[DataProvider('setConnectionCharsetProvider')]
     public function testSetConnectionCharset(bool $utf8mb4, string $expected_charset, string $expected_query)
     {
-        $this->mockGenerator->orphanize('__construct');
-        $dbh = new \mock\mysqli();
+        $dbh = $this->createMock(\mysqli::class);
+        $dbh->method('set_charset')->willReturn(true);
         $queries = [];
-        $this->calling($dbh)->set_charset = true;
-        $this->calling($dbh)->query = function ($query) use (&$queries) {
-            $queries[] = $query;
-            return true;
-        };
+        $dbh->expects($this->once())
+            ->method('query')
+            ->willReturnCallback(
+                function ($query) use (&$queries) {
+                    $queries[] = $query;
+                    return true;
+                }
+            );
 
         \DBConnection::setConnectionCharset($dbh, $utf8mb4);
-        $this->mock($dbh)->call('set_charset')->withArguments($expected_charset)->once();
-        $this->array($queries)->isIdenticalTo([$expected_query]);
+
+        $this->assertSame([$expected_query], $queries);
     }
 
-    protected function mainConfigPropertiesProvider()
+    public static function mainConfigPropertiesProvider()
     {
         return [
             [
@@ -150,9 +152,7 @@ PHP
         ];
     }
 
-    /**
-     * @dataProvider mainConfigPropertiesProvider
-     */
+    #[DataProvider('mainConfigPropertiesProvider')]
     public function testCreateMainConfig(
         string $host,
         string $user,
@@ -179,14 +179,14 @@ PHP
             $allow_signed_keys,
             vfsStream::url('config-dir')
         );
-        $this->boolean($result)->isTrue();
+        $this->assertTrue($result);
 
         $path = vfsStream::url('config-dir/config_db.php');
-        $this->boolean(file_exists($path))->isTrue();
-        $this->string(file_get_contents($path))->isEqualTo($expected);
+        $this->assertTrue(file_exists($path));
+        $this->assertEquals($expected, file_get_contents($path));
     }
 
-    protected function slaveConfigPropertiesProvider()
+    public static function slaveConfigPropertiesProvider()
     {
         return [
             [
@@ -267,9 +267,7 @@ PHP
         ];
     }
 
-    /**
-     * @dataProvider slaveConfigPropertiesProvider
-     */
+    #[DataProvider('slaveConfigPropertiesProvider')]
     public function testCreateSlaveConnectionFile(
         string $host,
         string $user,
@@ -296,14 +294,14 @@ PHP
             $allow_signed_keys,
             vfsStream::url('config-dir')
         );
-        $this->boolean($result)->isTrue();
+        $this->assertTrue($result);
 
         $path = vfsStream::url('config-dir/config_db_slave.php');
-        $this->boolean(file_exists($path))->isTrue();
-        $this->string(file_get_contents($path))->isEqualTo($expected, file_get_contents($path));
+        $this->assertTrue(file_exists($path));
+        $this->assertEquals($expected, file_get_contents($path), file_get_contents($path));
     }
 
-    protected function updatePropertiesProvider()
+    public static function updatePropertiesProvider()
     {
         return [
             [
@@ -474,9 +472,7 @@ PHP
         ];
     }
 
-    /**
-     * @dataProvider updatePropertiesProvider
-     */
+    #[DataProvider('updatePropertiesProvider')]
     public function testUpdateConfigProperty(
         array $init_config_files,
         array $properties,
@@ -488,19 +484,17 @@ PHP
 
         foreach ($properties as $name => $new_value) {
             $result = \DBConnection::updateConfigProperty($name, $new_value, $update_slave, vfsStream::url('config-dir'));
-            $this->boolean($result)->isEqualTo($expected_result);
+            $this->assertEquals($expected_result, $result);
         }
 
         foreach ($expected_config_files as $filename => $contents) {
             $path = vfsStream::url('config-dir/' . $filename);
-            $this->boolean(file_exists($path))->isTrue();
-            $this->string(file_get_contents($path))->isEqualTo($contents);
+            $this->assertTrue(file_exists($path));
+            $this->assertEquals($contents, file_get_contents($path));
         }
     }
 
-    /**
-     * @dataProvider updatePropertiesProvider
-     */
+    #[DataProvider('updatePropertiesProvider')]
     public function testUpdateConfigProperties(
         array $init_config_files,
         array $properties,
@@ -511,12 +505,12 @@ PHP
         vfsStream::setup('config-dir', null, $init_config_files);
 
         $result = \DBConnection::updateConfigProperties($properties, $update_slave, vfsStream::url('config-dir'));
-        $this->boolean($result)->isEqualTo($expected_result);
+        $this->assertEquals($expected_result, $result);
 
         foreach ($expected_config_files as $filename => $contents) {
             $path = vfsStream::url('config-dir/' . $filename);
-            $this->boolean(file_exists($path))->isTrue();
-            $this->string(file_get_contents($path))->isEqualTo($contents);
+            $this->assertTrue(file_exists($path));
+            $this->assertEquals($contents, file_get_contents($path));
         }
     }
 }
