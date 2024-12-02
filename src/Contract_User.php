@@ -77,12 +77,6 @@ class Contract_User extends CommonDBRelation
         return parent::canCreateItem();
     }
 
-    public function addNeededInfoToInput($input)
-    {
-        $input[static::$items_id_2] = $input['items_id'];
-        return $input;
-    }
-
     public static function getTypeName($nb = 0)
     {
         return User::getTypeName($nb);

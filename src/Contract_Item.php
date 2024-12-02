@@ -210,14 +210,14 @@ class Contract_Item extends CommonDBRelation
                         $nb = self::countForMainItem($item);
                         $nb += Contract_User::countForContract($item->fields['id']);
                     }
-                    return self::createTabEntry(_n('Affected Item', 'Affected Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
+                    return self::createTabEntry(_n('Affected item', 'Affected items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
 
                 default:
                     if (
                         $_SESSION['glpishow_count_on_tabs']
                         && in_array(
                             $item::class,
-                            array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
+                            array_merge($CFG_GLPI["contract_types"], [User::class]),
                             true
                         )
                     ) {
@@ -242,7 +242,7 @@ class Contract_Item extends CommonDBRelation
                 if (
                     in_array(
                         $item::class,
-                        array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
+                        array_merge($CFG_GLPI["contract_types"], [User::class]),
                         true
                     )
                 ) {
@@ -503,14 +503,12 @@ TWIG, $twig_params);
 
         $contract_users_table = Contract_User::getTable();
         $users_table = User::getTable();
-        $entity_table = Entity::getTable();
 
         // Add contract users
         $user_params = [
             'SELECT' => [
                 "$users_table.*",
                 "$contract_users_table.id AS linkid",
-                "$entity_table.id AS entity"
             ],
             'FROM'   => $contract_users_table,
             'LEFT JOIN' => [
@@ -520,22 +518,16 @@ TWIG, $twig_params);
                         $users_table          => 'id'
                     ]
                 ],
-                $entity_table => [
-                    'FKEY' => [
-                        $users_table => 'entities_id',
-                        $entity_table => 'id'
-                    ]
-                ]
             ],
             'WHERE'  => [
                 "$contract_users_table.contracts_id" => $instID
             ],
-            'ORDER' => "$entity_table.completename, $users_table.name"
+            'ORDER' => "$users_table.name"
         ];
 
         $user_iterator = $DB->request($user_params);
 
-        $data[Contract_User::class] = [];
+        $data[User::class] = [];
         foreach ($user_iterator as $userdata) {
             $data[User::class][$userdata['id']] = $userdata;
             $used[User::class][$userdata['id']] = $userdata['id'];
@@ -550,7 +542,7 @@ TWIG, $twig_params);
         ) {
             $twig_params = [
                 'contract' => $contract,
-                'contract_types' => array_merge($CFG_GLPI["contract_types"], [Contract_User::$itemtype_2]),
+                'contract_types' => array_merge($CFG_GLPI["contract_types"], [User::class]),
                 'entity_restrict' => $contract->fields['is_recursive']
                     ? getSonsOf('glpi_entities', $contract->fields['entities_id'])
                     : $contract->fields['entities_id'],
@@ -597,13 +589,15 @@ TWIG, $twig_params);
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
 
-                if (!isset($entity_cache[$objdata['entity']])) {
-                    $entity_cache[$objdata['entity']] = Dropdown::getDropdownName(
-                        "glpi_entities",
-                        $objdata['entity']
-                    );
+                if (isset($objdata['entity'])) {
+                    if (!isset($entity_cache[$objdata['entity']])) {
+                        $entity_cache[$objdata['entity']] = Dropdown::getDropdownName(
+                            "glpi_entities",
+                            $objdata['entity']
+                        );
+                    }
+                    $entry['entity'] = $entity_cache[$objdata['entity']];
                 }
-                $entry['entity'] = $entity_cache[$objdata['entity']];
                 $entry['serial'] = $objdata['serial'] ?? '-';
                 $entry['otherserial'] = $objdata['otherserial'] ?? '-';
 
