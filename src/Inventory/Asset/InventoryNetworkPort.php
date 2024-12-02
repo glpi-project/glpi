@@ -403,6 +403,7 @@ trait InventoryNetworkPort
                     }
                 }
 
+                // force dynamic for NetworkPortAggregate because it can be added manually
                 if ($dbdata_copy['instantiation_type'] == NetworkPortAggregate::class) {
                     $criteria['is_dynamic'] = 1;
                 }
