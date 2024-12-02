@@ -35,6 +35,8 @@
 namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\MaintenanceException;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -158,6 +160,14 @@ class ErrorController extends AbstractController
             ) {
                 $message = $custom_message;
             }
+        }
+
+        switch (true) {
+            case $exception instanceof MaintenanceException:
+                return new Response(TemplateRenderer::getInstance()->render('maintenance.html.twig', [
+                    'title'            => "MAINTENANCE MODE",
+                    'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
+                ]));
         }
 
         $trace = null;

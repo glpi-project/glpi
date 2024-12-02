@@ -34,6 +34,7 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
+use Glpi\Exception\MaintenanceException;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Session;
 use Auth;
@@ -219,17 +220,7 @@ TWIG, $twig_params);
             }
 
             if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-                Session::loadLanguage('', false);
-                if (isCommandLine()) {
-                    echo __('Service is down for maintenance. It will be back shortly.');
-                    echo "\n";
-                } else {
-                    TemplateRenderer::getInstance()->display('maintenance.html.twig', [
-                        'title'            => "MAINTENANCE MODE",
-                        'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-                    ]);
-                }
-                exit();
+                throw new MaintenanceException();
             }
         }
 
@@ -244,9 +235,7 @@ TWIG, $twig_params);
             Session::loadLanguage('', false);
 
             if (isCommandLine()) {
-                echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
-                echo "\n";
-                exit();
+                throw new \RuntimeException(__('The GLPI codebase has been updated. The update of the GLPI database is necessary.'));
             }
 
             /** @var \DBmysql $DB */
