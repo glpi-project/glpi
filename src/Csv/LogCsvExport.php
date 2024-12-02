@@ -54,7 +54,7 @@ class LogCsvExport implements ExportToCsvInterface
         $this->filter = $filter;
     }
 
-    public function getFileName(): string
+    public function getFileName(): ?string
     {
         $name = $this->item->getFriendlyName();
         $date = date('Y_m_d', time());
