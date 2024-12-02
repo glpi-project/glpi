@@ -352,7 +352,6 @@ trait InventoryNetworkPort
             'WHERE'  => [
                 'items_id'     => $this->items_id,
                 'itemtype'     => $this->itemtype,
-                'is_dynamic'   => 1
             ]
         ]);
         foreach ($iterator as $row) {
@@ -402,6 +401,10 @@ trait InventoryNetworkPort
                     if (property_exists($data, $k) && $data->$k != $dbdata_copy[$k]) {
                         $criteria[$k] = $data->$k;
                     }
+                }
+
+                if ($dbdata_copy['instantiation_type'] == NetworkPortAggregate::class) {
+                    $criteria['is_dynamic'] = 1;
                 }
 
                 if (count($criteria)) {
