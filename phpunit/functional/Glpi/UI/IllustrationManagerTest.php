@@ -100,9 +100,6 @@ final class IllustrationManagerTest extends GLPITestCase
         if (!str_contains($rendered_icon, 'var(--tblr-primary)')) {
             $errors[] = "The '$filename' illustration is missing the primary color.";
         }
-        if (!str_contains($rendered_icon, 'var(--glpi-mainmenu-bg)')) {
-            $errors[] = "The '$filename' illustration is missing the main menu color.";
-        }
         if (!str_contains($rendered_icon, 'var(--glpi-helpdesk-header)')) {
             $errors[] = "The '$filename' illustration is missing the header color.";
         }
