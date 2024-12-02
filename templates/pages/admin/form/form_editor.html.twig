@@ -74,7 +74,7 @@
 
                 {# We expect to use the right side to display some extra info later so keep some available space for now #}
                 <div
-                    class="col-7"
+                    class="col-12 col-xl-7"
                     data-glpi-form-editor-form
                     data-glpi-form-editor-active-form
                 >
@@ -157,8 +157,9 @@
 
                     <div data-glpi-form-editor-form-extra-details>
                         {{ include('pages/admin/form/form_toolbar.html.twig', {
-                            'can_update': item.canUpdate(),
-                            'form'      : item,
+                            'can_update'     : item.canUpdate(),
+                            'form'           : item,
+                            'vertical_layout': false,
                         }, with_context = false) }}
                     </div>
                 </div>
@@ -345,6 +346,23 @@
                 'can_update'         : true,
                 'show_section_form'  : true,
                 'number_of_sections' : 0,
+            }, with_context = false) }}
+        </div>
+
+        {# Load new horizontal block template #}
+        <div data-glpi-form-editor-horizontal-block-template>
+            {{ include('pages/admin/form/form_horizontal_block.html.twig', {
+                'blocks' : null,
+                'can_update' : true,
+                'form' : item,
+            }, with_context = false) }}
+        </div>
+
+        {# Load new horizontal block placeholder template #}
+        <div data-glpi-form-editor-horizontal-block-placeholder-template>
+            {{ include ('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                'can_update': true,
+                'form'      : item,
             }, with_context = false) }}
         </div>
 

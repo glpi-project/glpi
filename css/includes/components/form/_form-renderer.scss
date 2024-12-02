@@ -59,4 +59,24 @@
             }
         }
     }
+
+    [data-glpi-form-renderer-horizontal-blocks] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 0.5rem;
+
+        &:not(:last-of-type) {
+            margin-bottom: 1rem;
+        }
+
+        &:has(> :nth-child(2)) {
+            &> section {
+                margin-bottom: 0 !important;
+
+                .col-12.col-sm-6 {
+                    width: 100%;
+                }
+            }
+        }
+    }
 }
