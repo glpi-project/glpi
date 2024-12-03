@@ -1083,6 +1083,7 @@ HTML;
 
     public static function add_css_file_plugin($hook)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $newCssFile = [];
@@ -1114,6 +1115,7 @@ HTML;
 
     public static function add_javascript_file_plugin($hook)
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $newJsFile = [];
