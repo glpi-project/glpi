@@ -372,7 +372,7 @@ final class FormSerializer extends AbstractFormSerializer
         Form $form,
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
-        foreach ($form->getComments() as $comment) {
+        foreach ($form->getFormComments() as $comment) {
             $comment_spec = new CommentContentSpecification();
             $comment_spec->name = $comment->fields['name'];
             $comment_spec->rank = $comment->fields['rank'];

@@ -52,7 +52,7 @@ final class CommentDescriptionTagProvider implements TagProviderInterface
     public function getTags(Form $form): array
     {
         $tags = [];
-        foreach ($form->getComments() as $comment) {
+        foreach ($form->getFormComments() as $comment) {
             $tags[] = $this->getDescriptionTagForComment($comment);
         }
 

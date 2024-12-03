@@ -167,14 +167,14 @@ class FormTest extends DbTestCase
         );
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Delete content
         foreach ($form->getSections() as $section) {
             foreach ($section->getQuestions() as $question) {
                 $this->deleteItem(Question::class, $question->getID());
             }
-            foreach ($section->getComments() as $comment) {
+            foreach ($section->getFormComments() as $comment) {
                 $this->deleteItem(Comment::class, $comment->getID());
             }
             $this->deleteItem(Section::class, $section->getID());
@@ -184,13 +184,13 @@ class FormTest extends DbTestCase
         // shouldn't change
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Reload form
         $form->getFromDB($form->getID());
         $this->assertCount(0, $form->getSections());
         $this->assertCount(0, $form->getQuestions());
-        $this->assertCount(0, $form->getComments());
+        $this->assertCount(0, $form->getFormComments());
     }
 
     /**
@@ -269,7 +269,7 @@ class FormTest extends DbTestCase
             ],
         ]);
         $this->assertCount(1, $form->getQuestions());
-        $this->assertCount(1, $form->getComments());
+        $this->assertCount(1, $form->getFormComments());
 
         $id = $form->getID();
         $this->hasSessionMessages(INFO, ['Item successfully updated: <a href="/glpi/front/form/form.form.php?id=' . $id . '" title="Form with first section">Form with first section</a>']);
@@ -360,7 +360,7 @@ class FormTest extends DbTestCase
         array $expected_comment_names,
         array $expected_comment_descriptions
     ): void {
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
         $names = array_map(fn($comment) => $comment->getName(), $comments);
         $names = array_values($names); // Strip keys
         $this->assertEquals($expected_comment_names, $names);
