@@ -56,7 +56,6 @@ class Hooks
     const CHANGE_ENTITY               = 'change_entity';
     const CHANGE_PROFILE              = 'change_profile';
     const DISPLAY_LOGIN               = 'display_login';
-    const DISPLAY_LOGIN_ERROR         = 'display_login_error';
     const DISPLAY_CENTRAL             = 'display_central';
     const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
     const INIT_SESSION                = 'init_session';
@@ -182,7 +181,6 @@ class Hooks
             self::CONFIG_PAGE,
             self::DISPLAY_LOCKED_FIELDS,
             self::DISPLAY_LOGIN,
-            self::DISPLAY_LOGIN_ERROR,
             self::DISPLAY_CENTRAL,
             self::INIT_SESSION,
             self::MIGRATE_TYPES,
