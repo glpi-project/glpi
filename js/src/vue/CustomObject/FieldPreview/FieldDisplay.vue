@@ -217,7 +217,7 @@
         create_edit_field_modal.on('glpi:submit:success', 'form', (e, data) => {
             const btn_submit = data.submitter;
             const form_data = new FormData(e.target);
-            const field_key = `custom_${form_data.get('name')}`;
+            const field_key = `custom_${form_data.get('system_name')}`;
 
             if (btn_submit.attr('name') === 'add') {
                 new_field_dropdown.data('select2').dataAdapter.query('', (data) => {

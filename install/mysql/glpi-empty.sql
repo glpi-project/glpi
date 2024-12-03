@@ -9894,6 +9894,7 @@ DROP TABLE IF EXISTS `glpi_assets_assetdefinitions`;
 CREATE TABLE `glpi_assets_assetdefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
@@ -10018,6 +10019,7 @@ DROP TABLE IF EXISTS `glpi_dropdowns_dropdowndefinitions`;
 CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
@@ -10062,7 +10064,7 @@ DROP TABLE IF EXISTS `glpi_assets_customfielddefinitions`;
 CREATE TABLE `glpi_assets_customfielddefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `assets_assetdefinitions_id` int unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `system_name` varchar(255) NOT NULL,
   `label` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `field_options` json,
@@ -10070,8 +10072,8 @@ CREATE TABLE `glpi_assets_customfielddefinitions` (
   `default_value` text,
   `translations` JSON NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
-  KEY `name` (`name`)
+  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
+  KEY `system_name` (`system_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

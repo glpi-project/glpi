@@ -686,7 +686,7 @@ TWIG, $twig_params);
         ];
 
         foreach ($this->getCustomFieldDefinitions() as $custom_field_def) {
-            $fields['custom_' . $custom_field_def->fields['name']] = [
+            $fields['custom_' . $custom_field_def->fields['system_name']] = [
                 'customfields_id'    => $custom_field_def->getID(),
                 'text' => $custom_field_def->computeFriendlyName(),
                 'type' => $custom_field_def->fields['type'],

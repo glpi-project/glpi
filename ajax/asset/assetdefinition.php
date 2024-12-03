@@ -73,7 +73,7 @@ if ($_REQUEST['action'] === 'get_all_fields') {
                 throw new NotFoundHttpException();
             }
         } else {
-            $custom_field->fields['name'] = '';
+            $custom_field->fields['system_name'] = '';
             $custom_field->fields['label'] = $field['label'];
             $custom_field->fields['type'] = $field['type'];
             $custom_field->fields['itemtype'] = 'Computer'; // Doesn't matter what it is as long as it's not empty

@@ -89,7 +89,7 @@ final class CustomFieldDefinition extends CommonDBChild
         $fields_display = json_decode($it->current()['fields_display'] ?? '[]', true) ?? [];
         $order = 0;
         foreach ($fields_display as $k => $field) {
-            if ($field['key'] === 'custom_' . $this->fields['name']) {
+            if ($field['key'] === 'custom_' . $this->fields['system_name']) {
                 $order = $field['order'];
                 unset($fields_display[$k]);
                 break;
@@ -158,10 +158,10 @@ final class CustomFieldDefinition extends CommonDBChild
         global $DB;
 
         // Spaces are replaced with underscores and the name is made lowercase. Only lowercase letters and underscores are kept.
-        $input['name'] = preg_replace('/[^a-z_]/', '', strtolower(str_replace(' ', '_', $input['name'])));
+        $input['system_name'] = preg_replace('/[^a-z_]/', '', strtolower(str_replace(' ', '_', $input['system_name'])));
         // The name cannot start with an underscore
-        $input['name'] = ltrim($input['name'], '_');
-        if ($input['name'] === '') {
+        $input['system_name'] = ltrim($input['system_name'], '_');
+        if ($input['system_name'] === '') {
             Session::addMessageAfterRedirect(__s('The system name must not be empty'), false, ERROR);
             return false;
         }
@@ -171,7 +171,7 @@ final class CustomFieldDefinition extends CommonDBChild
             'COUNT' => 'cpt',
             'FROM' => self::getTable(),
             'WHERE' => [
-                'name' => $input['name'],
+                'system_name' => $input['system_name'],
                 AssetDefinition::getForeignKeyField() => $input[self::$items_id],
             ],
         ]);
@@ -237,8 +237,8 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        // Cannot change type or name of existing field
-        unset($input['type'], $input['name']);
+        // Cannot change type or system_name of existing field
+        unset($input['type'], $input['system_name']);
         $input = $this->prepareInputForAddAndUpdate($input);
         if ($input === false) {
             return false;

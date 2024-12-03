@@ -185,6 +185,33 @@ class DropdownDefinition extends DbTestCase
             ],
         ];
 
+        yield [
+            'input'    => [
+                'system_name' => 'testsystemname',
+                'label'       => 'Test Label',
+            ],
+            'output'   => [
+                'system_name'  => 'testsystemname',
+                'label'        => 'Test Label',
+                'profiles'     => '[]',
+                'translations' => '[]',
+            ],
+            'messages' => [],
+        ];
+
+        yield [
+            'input'    => [
+                'system_name' => 'testsystemname',
+                'label'       => 'Test Label',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The system name must be unique.'
+                ]
+            ],
+        ];
+
         // start at 32 to ignore control chars
         // stop at 8096, no need to test the whole UTF-8 charset
         for ($i = 32; $i < 8096; $i++) {
@@ -204,6 +231,7 @@ class DropdownDefinition extends DbTestCase
                     ],
                     'output'   => [
                         'system_name'  => $system_name,
+                        'label'        => $system_name,
                         'profiles'     => '[]',
                         'translations' => '[]',
                     ],
@@ -244,6 +272,7 @@ class DropdownDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => 'My' . $system_name,
+                    'label'        => 'My' . $system_name,
                     'profiles'     => '[]',
                     'translations' => '[]',
                 ],
@@ -256,6 +285,7 @@ class DropdownDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => $system_name . 'NG',
+                    'label'        => $system_name . 'NG',
                     'profiles'     => '[]',
                     'translations' => '[]',
                 ],
@@ -282,6 +312,7 @@ class DropdownDefinition extends DbTestCase
             ],
             'output'   => [
                 'system_name'  => 'TestDropdownModeling',
+                'label'        => 'TestDropdownModeling',
                 'profiles'     => '[]',
                 'translations' => '[]',
             ],
@@ -307,6 +338,7 @@ class DropdownDefinition extends DbTestCase
             ],
             'output'   => [
                 'system_name'  => 'TestDropdownTyped',
+                'label'        => 'TestDropdownTyped',
                 'profiles'     => '[]',
                 'translations' => '[]',
             ],
@@ -319,6 +351,7 @@ class DropdownDefinition extends DbTestCase
                 $data['input']['system_name'] = __FUNCTION__;
                 if (is_array($data['output'])) {
                     $data['output']['system_name'] = __FUNCTION__;
+                    $data['output']['label'] = __FUNCTION__;
                 }
             }
             if (is_array($data['output']) && !array_key_exists('profiles', $data['output'])) {
