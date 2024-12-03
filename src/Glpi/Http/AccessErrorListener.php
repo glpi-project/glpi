@@ -84,8 +84,6 @@ final class AccessErrorListener implements EventSubscriberInterface
                     \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
                 )
             );
-        } elseif ($throwable instanceof RedirectException) {
-            $response = $throwable->getResponse();
         } elseif (
             $throwable instanceof AccessDeniedHttpException
             && ($_SESSION['_redirected_from_profile_selector'] ?? false)
