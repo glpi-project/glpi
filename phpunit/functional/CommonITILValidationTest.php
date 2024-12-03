@@ -466,14 +466,10 @@ class CommonITILValidationTest extends DbTestCase
         /** Create a ticket, approval requested */
         $ticket = $this->createItem('Ticket', $input);
 
-        $this->assertTrue($ticket->getID() > 0 );
-
         $validation_item = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
             'users_id_validate' => $user_id,
         ]);
-
-        $this->assertTrue($validation_item->getID() > 0 );
 
         $this->assertEquals($expected, \TicketValidation::getNumberToValidate($user_id));
     }
