@@ -34,11 +34,11 @@
  */
 
 /**
- * License_User Class
+ * SoftwareLicense_User Class
  *
  * Relation between SoftwareLicense and Users
  **/
-class License_User extends CommonDBRelation
+class SoftwareLicense_User extends CommonDBRelation
 {
     // From CommonDBRelation
     public static $itemtype_1 = 'User';

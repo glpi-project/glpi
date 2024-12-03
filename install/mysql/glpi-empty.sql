@@ -10075,8 +10075,8 @@ CREATE TABLE `glpi_assets_customfielddefinitions` (
 
 SET FOREIGN_KEY_CHECKS=1;
 
-DROP TABLE IF EXISTS `glpi_licenses_users`;
-CREATE TABLE `glpi_licenses_users` (
+DROP TABLE IF EXISTS `glpi_softwarelicenses_users`;
+CREATE TABLE `glpi_softwarelicenses_users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',

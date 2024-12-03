@@ -544,7 +544,7 @@ class Item_SoftwareLicense extends CommonDBRelation
 
        //SoftwareLicense ID
         $number = self::countForLicense($searchID);
-        $number += License_User::countForLicense($searchID);
+        $number += SoftwareLicense_User::countForLicense($searchID);
 
         echo "<div class='center'>";
 
@@ -767,8 +767,8 @@ JAVASCRIPT;
             $queries[] = $query;
         }
 
-        // Add License_User
-        $license_users_table = License_User::getTable();
+        // Add LicensSoftwareLicense_Usere_User
+        $license_users_table = SoftwareLicense_User::getTable();
         $users_table = User::getTable();
         $entity_table = Entity::getTable();
 
@@ -1063,7 +1063,7 @@ JAVASCRIPT;
                 if (!$withtemplate) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
-                        $nb += License_User::countForLicense($item->getID());
+                        $nb += SoftwareLicense_User::countForLicense($item->getID());
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
