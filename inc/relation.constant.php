@@ -272,6 +272,7 @@ $RELATION = [
         '_glpi_contracts_suppliers' => 'contracts_id',
         'glpi_entities'             => 'contracts_id_default',
         '_glpi_tickets_contracts'   => 'contracts_id',
+        '_glpi_contracts_users'    => 'contracts_id',
     ],
 
     'glpi_contracttypes' => [
@@ -1656,6 +1657,7 @@ $RELATION = [
             'users_id',
             'users_id_substitute',
         ],
+        '_glpi_contracts_users'         => 'users_id',
     ],
 
     'glpi_usertitles' => [
