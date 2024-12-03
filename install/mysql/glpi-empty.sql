@@ -6736,7 +6736,7 @@ CREATE TABLE `glpi_softwarecategories` (
 DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `softwares_id` int unsigned,
   `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
