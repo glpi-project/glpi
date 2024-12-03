@@ -306,7 +306,7 @@ final class FormSerializerTest extends \DbTestCase
         $form_copy = $this->exportAndImportForm($form);
 
         // Assert: validate comments fields
-        $comments = array_values($form_copy->getComments());
+        $comments = array_values($form_copy->getFormComments());
         $comments_data = array_map(function (Comment $comment) {
             return [
                 'name'              => $comment->fields['name'],

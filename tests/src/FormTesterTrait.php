@@ -245,7 +245,7 @@ trait FormTesterTrait
         $form->getFromDB($form->getID());
 
         // Get comments
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
 
         if ($section_name === null) {
             // Search by name

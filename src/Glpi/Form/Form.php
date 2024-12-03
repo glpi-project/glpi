@@ -369,13 +369,13 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
      *
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getFormComments(): array
     {
         $comments = [];
         foreach ($this->getSections() as $section) {
             // Its important to use the "+" operator here and not array_merge
             // because the keys must be preserved
-            $comments = $comments + $section->getComments();
+            $comments = $comments + $section->getFormComments();
         }
         return $comments;
     }
