@@ -49,13 +49,14 @@
    <meta name="robots" content="noindex, nofollow" />
 
     {# Custom header tags for plugins #}
-    {% for header_tag in custom_header_tags %}
+
+    {% for header_tag in add_header_tag_plugin(false) %}
         <{{ header_tag.tag }} {% for key, value in header_tag.properties %}{{ key }}="{{ value }}" {% endfor %}/>
     {% endfor %}
 
    <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
 
-   {% for css_file in css_files %}
+   {% for css_file in css_files|merge(add_css_file_plugin(false)) %}
       <link rel="stylesheet" type="text/css" href="{{ css_path(css_file.path, css_file.options ?? []) }}" />
    {% endfor %}
 
@@ -63,11 +64,11 @@
 
    <link rel="shortcut icon" type="images/x-icon" href="{{ asset_path('/pics/favicon.ico') }}" />
 
-   {% for js_file in js_files %}
+   {% for js_file in js_files|merge(add_javascript_file_plugin(false)) %}
       <script type="text/javascript" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}
 
-   {% for js_file in js_modules %}
+   {% for js_file in js_modules|merge(add_javascript_module_plugin(false)) %}
       <script type="module" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}
 

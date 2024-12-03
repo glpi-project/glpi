@@ -1081,75 +1081,6 @@ HTML;
         }
     }
 
-    public static function add_css_file_plugin($hook)
-    {
-        /** @var array $PLUGIN_HOOKS */
-        global $PLUGIN_HOOKS;
-
-        $newCssFile = [];
-        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
-            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $file) {
-                    $newCssFile[] = [
-                        'path' => "$plugin_web_dir/$file",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
-        }
-        return $newCssFile;
-    }
-
-    public static function add_javascript_file_plugin($hook)
-    {
-        /** @var array $PLUGIN_HOOKS */
-        global $PLUGIN_HOOKS;
-
-        $newJsFile = [];
-
-        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
-            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $newJsFile[] = [
-                            'path' => $plugin_web_dir . "/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
-                }
-            }
-        }
-        return $newJsFile;
-    }
-
-
     /**
      * Include common HTML headers
      *
@@ -1171,9 +1102,8 @@ HTML;
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_GLPI;
 
         // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
@@ -1348,25 +1278,7 @@ HTML;
             $tpl_vars['high_contrast'] = true;
         }
 
-       // Add specific css for plugins
-        foreach (self::add_css_file_plugin(Hooks::ADD_CSS) as $css_file) {
-            $tpl_vars['css_files'][] = $css_file;
-        }
-
         $tpl_vars['css_files'][] = ['path' => 'css/palettes/' . $theme . '.scss'];
-
-        // Add specific meta tags for plugins
-        $custom_header_tags = [];
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG]) && count($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG] as $plugin => $plugin_header_tags) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                array_push($custom_header_tags, ...$plugin_header_tags);
-            }
-        }
-        $tpl_vars['custom_header_tags'] = $custom_header_tags;
-
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
@@ -1818,9 +1730,8 @@ HTML;
         /**
          * @var array $CFG_GLPI
          * @var bool $FOOTER_LOADED
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $FOOTER_LOADED, $PLUGIN_HOOKS;
+        global $CFG_GLPI, $FOOTER_LOADED;
 
        // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1877,37 +1788,6 @@ HTML;
         }
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
-
-        foreach (self::add_javascript_file_plugin('add_javascript') as $js_file) {
-            $tpl_vars['js_files'][] = $js_file;
-        }
-
-        if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_modules'][] = [
-                            'path' => $plugin_web_dir . "/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
-                }
-            }
-        }
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
 

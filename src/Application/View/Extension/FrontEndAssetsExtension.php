@@ -43,6 +43,7 @@ use Plugin;
 use Session;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Glpi\Plugin\Hooks;
 
 /**
  * @since 10.0.0
@@ -68,6 +69,10 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('js_path', [$this, 'jsPath']),
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+            new TwigFunction('add_css_file_plugin', [$this, 'add_css_file_plugin']),
+            new TwigFunction('add_javascript_file_plugin', [$this, 'add_javascript_file_plugin']),
+            new TwigFunction('add_javascript_module_plugin', [$this, 'add_javascript_module_plugin']),
+            new TwigFunction('add_header_tag_plugin', [$this, 'add_header_tag_plugin']),
         ];
     }
 
@@ -242,5 +247,131 @@ JAVASCRIPT;
         }
 
         return Html::scriptBlock($script);
+    }
+
+    public function add_css_file_plugin(bool $is_anonymous_page)
+    {
+        /** @var array $PLUGIN_HOOKS */
+        global $PLUGIN_HOOKS;
+
+        $hook = $is_anonymous_page ? Hooks::ADD_CSS_ANONYMOUS_PAGE : Hooks::ADD_CSS;
+
+        $newCssFile = [];
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+
+                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
+
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $file) {
+                    $newCssFile[] = [
+                        'path' => "$plugin_web_dir/$file",
+                        'options' => [
+                            'version' => $plugin_version,
+                        ]
+                    ];
+                }
+            }
+        }
+        return $newCssFile;
+    }
+
+    public function add_javascript_file_plugin(bool $is_anonymous_page)
+    {
+        /** @var array $PLUGIN_HOOKS */
+        global $PLUGIN_HOOKS;
+
+        $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT;
+
+        $newJsFile = [];
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
+
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+                foreach ($files as $file) {
+                    if (file_exists($plugin_root_dir . "/{$file}")) {
+                        $newJsFile[] = [
+                            'path' => $plugin_web_dir . "/{$file}",
+                            'options' => [
+                                'version' => $plugin_version,
+                            ]
+                        ];
+                    } else {
+                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
+                    }
+                }
+            }
+        }
+        return $newJsFile;
+    }
+
+    public function add_javascript_module_plugin(bool $is_anonymous_page)
+    {
+        /** @var array $PLUGIN_HOOKS */
+        global $PLUGIN_HOOKS;
+
+        $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT_MODULE;
+
+        $newJsModule = [];
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
+                $plugin_web_dir  = Plugin::getWebDir($plugin, false);
+                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
+
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+                foreach ($files as $file) {
+                    if (file_exists($plugin_root_dir . "/{$file}")) {
+                        $newJsModule[] = [
+                            'path' => $plugin_web_dir . "/{$file}",
+                            'options' => [
+                                'version' => $plugin_version,
+                            ]
+                        ];
+                    } else {
+                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
+                    }
+                }
+            }
+        }
+        return $newJsModule;
+    }
+    public function add_header_tag_plugin(bool $is_anonymous_page)
+    {
+        /** @var array $PLUGIN_HOOKS */
+        global $PLUGIN_HOOKS;
+
+        $hook = $is_anonymous_page ? Hooks::ADD_HEADER_TAG_ANONYMOUS_PAGE : Hooks::ADD_HEADER_TAG;
+
+        $newHeaderTag = [];
+        if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
+            foreach ($PLUGIN_HOOKS[$hook] as $plugin => $plugin_header_tags) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                array_push($newHeaderTag, ...$plugin_header_tags);
+            }
+        }
+        return $newHeaderTag;
     }
 }

@@ -33,7 +33,7 @@
 
 {% set theme = config('palette') %}
 {% if css_files is not defined %}
-   {% set not_logged_css_files = call('Html::add_css_file_plugin', ['add_css_notlogged']) %}
+   {% set not_logged_css_files = add_css_file_plugin(true) %}
 
    {% set css_files = not_logged_css_files|merge([
       {'path': 'public/lib/base.css'},
@@ -42,13 +42,21 @@
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
-   {% set not_logged_javascript_files = call('Html::add_javascript_file_plugin', ['add_javascript_notlogged']) %}
+   {% set not_logged_javascript_files = add_javascript_file_plugin(true) %}
 
    {% set js_files = not_logged_javascript_files|merge([
        {'path': 'public/lib/base.js'},
        {'path': 'js/common.js'},
        {'path': 'public/lib/fuzzy.js'}
    ]) %}
+{% endif %}
+
+{% if js_modules is not defined %}
+   {% set js_modules = add_javascript_module_plugin(true) %}
+{% endif %}
+
+{% if custom_header_tags is not defined %}
+   {% set custom_header_tags = add_header_tag_plugin(true) %}
 {% endif %}
 
 {{ include('layout/parts/head.html.twig') }}
