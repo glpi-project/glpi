@@ -41,9 +41,10 @@ class Hooks
     const CSRF_COMPLIANT = 'csrf_compliant';
 
    // File hooks
-    const ADD_CSS        = 'add_css';
-    const ADD_JAVASCRIPT = 'add_javascript';
-    const ADD_HEADER_TAG = 'add_header_tag';
+    const ADD_CSS               = 'add_css';
+    const ADD_JAVASCRIPT        = 'add_javascript';
+    const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
+    const ADD_HEADER_TAG        = 'add_header_tag';
 
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
