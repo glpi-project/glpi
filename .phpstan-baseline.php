@@ -2474,12 +2474,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2504,22 +2498,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns Glpi\\\\Asset\\\\AssetModel\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
@@ -2544,30 +2526,6 @@ $ignoreErrors[] = [
 	'identifier' => 'parameter.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/CapacityInterface.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryModelCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryType.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryTypeCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
@@ -2952,12 +2910,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Debug/ProfilerSection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Dropdown\\\\DropdownDefinition and Glpi\\\\Dropdown\\\\DropdownDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dropdown\\\\Dropdown\\:\\:getById\\(\\) should return static\\(Glpi\\\\Dropdown\\\\Dropdown\\)\\|false but returns object\\.$#',

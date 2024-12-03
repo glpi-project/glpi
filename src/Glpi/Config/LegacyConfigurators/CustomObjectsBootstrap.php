@@ -50,8 +50,8 @@ final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInter
         }
 
         Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapClasses();
-        DropdownDefinitionManager::getInstance()->bootstrapClasses();
+        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
         Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }

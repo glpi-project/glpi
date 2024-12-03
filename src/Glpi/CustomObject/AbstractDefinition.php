@@ -490,6 +490,13 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_addItem()
     {
+        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
+        // will not use an outdated definition list.
+        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
+
+        // Bootstrap the definition to make it usable right now.
+        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+
         if ($this->isActive()) {
             $this->syncProfilesRights();
             unset($_SESSION['menu']);
@@ -498,6 +505,13 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
+        // Clear the definitions cache to ensure that the code triggerred by the capacities hooks
+        // will not use an outdated definition list.
+        static::getDefinitionManagerClass()::getInstance()->clearDefinitionsCache();
+
+        // Bootstrap the definition to make it usable right now.
+        static::getDefinitionManagerClass()::getInstance()->bootstrapDefinition($this);
+
         if (in_array('is_active', $this->updates, true)) {
             // Force menu refresh when active state change
             unset($_SESSION['menu']);

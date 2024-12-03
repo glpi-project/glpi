@@ -100,7 +100,10 @@ class IsInventoriableCapacity extends AbstractCapacity
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+    }
 
+    public function onCapacityEnabled(string $classname): void
+    {
         //create rules
         $rules = new \RuleImportAsset();
         $rules->initRules(true, $classname);

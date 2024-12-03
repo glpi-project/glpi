@@ -110,6 +110,14 @@ interface CapacityInterface
     public function onClassBootstrap(string $classname): void;
 
     /**
+     * Method executed when capacity is enabled on given asset class.
+     *
+     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @return void
+     */
+    public function onCapacityEnabled(string $classname): void;
+
+    /**
      * Method executed when capacity is disabled on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
