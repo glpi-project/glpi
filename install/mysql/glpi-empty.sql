@@ -9499,19 +9499,23 @@ CREATE TABLE `glpi_forms_forms` (
 DROP TABLE IF EXISTS `glpi_forms_sections`;
 CREATE TABLE `glpi_forms_sections` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
     `rank` int NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
+    KEY `uuid` (`uuid`),
     KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_questions`;
 CREATE TABLE `glpi_forms_questions` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `type` varchar(255) NOT NULL DEFAULT '',
     `is_mandatory` tinyint NOT NULL DEFAULT '0',
@@ -9521,19 +9525,25 @@ CREATE TABLE `glpi_forms_questions` (
     `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `uuid` (`uuid`),
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_comments`;
 CREATE TABLE `glpi_forms_comments` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
     `rank` int NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `uuid` (`uuid`),
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_answerssets`;

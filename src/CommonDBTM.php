@@ -6830,4 +6830,20 @@ TWIG, $twig_params);
             default => null,
         };
     }
+
+    public static function findByUuid(string $uuid): ?self
+    {
+        $search_by_uuid = (new static())->find(['uuid' => $uuid]);
+        if (count($search_by_uuid) == 0) {
+            return null;
+        } elseif (count($search_by_uuid) == 1) {
+            $row = array_pop($search_by_uuid);
+            $comment = new static();
+            $comment->getFromResultSet($row);
+            $comment->post_getFromDB();
+            return $comment;
+        } else {
+            throw new RuntimeException("Duplicated UUID: $uuid");
+        }
+    }
 }

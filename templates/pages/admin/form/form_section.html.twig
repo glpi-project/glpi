@@ -182,13 +182,8 @@
 
                 <input
                     type="hidden"
-                    name="_use_uuid"
-                    value="{{ section is not null ? 0 : 1 }}"
-                />
-                <input
-                    type="hidden"
-                    name="id"
-                    value="{{ section is not null ? section.fields.id : 0 }}"
+                    name="uuid"
+                    value="{{ section is not null ? section.fields.uuid : '' }}"
                 />
                 <input
                     type="hidden"

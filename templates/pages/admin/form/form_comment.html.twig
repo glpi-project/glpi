@@ -136,23 +136,13 @@
         {# Common hidden data #}
         <input
             type="hidden"
-            name="_use_uuid"
-            value="{{ comment is not null ? 0 : 1 }}"
+            name="uuid"
+            value="{{ comment is not null ? comment.fields.uuid : '' }}"
         />
         <input
             type="hidden"
-            name="id"
-            value="{{ comment is not null ? comment.fields.id : 0 }}"
-        />
-        <input
-            type="hidden"
-            name="_use_uuid_for_sections_id"
-            value="{{ section is not null ? 0 : 1 }}"
-        />
-        <input
-            type="hidden"
-            name="forms_sections_id"
-            value="{{ section is not null ? section.fields.id : 0 }}"
+            name="forms_sections_uuid"
+            value="{{ section is not null ? section.fields.uuid : '' }}"
         />
         <input
             type="hidden"

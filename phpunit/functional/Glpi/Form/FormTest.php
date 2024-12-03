@@ -54,6 +54,7 @@ use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Log;
+use Ramsey\Uuid\Uuid;
 
 class FormTest extends DbTestCase
 {
@@ -249,22 +250,18 @@ class FormTest extends DbTestCase
             '_update' => true, // Needed to get confirmation message
             '_questions' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Question name',
-                    'type'                      => QuestionTypeShortText::class,
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Question name',
+                    'type'                => QuestionTypeShortText::class,
                 ],
             ],
             '_comments' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Comment name',
-                    'description'               => 'Comment description',
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Comment name',
+                    'description'         => 'Comment description',
                 ],
             ],
         ]);

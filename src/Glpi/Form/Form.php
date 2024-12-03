@@ -53,6 +53,7 @@ use Log;
 use MassiveAction;
 use Override;
 use ReflectionClass;
+use RuntimeException;
 use Session;
 
 /**
@@ -521,34 +522,30 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
 
         // Parse each submitted section
         foreach ($sections as $form_data) {
-            $section = new Section();
-
-            // Newly created section, may need to be updated using temporary UUID instead of ID
-            if ($form_data['_use_uuid']) {
-                $uuid = $form_data['id'];
-                $form_data['id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            // Read UUID
+            $uuid = $form_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_encode($form_data)
+                );
             }
 
-            if ($form_data['id'] == 0) {
+            $section = Section::findByUuid($uuid);
+            if ($section === null) {
                 // Add new section
-                unset($form_data['id']);
+                $section = new Section();
                 $id = $section->add($form_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add section");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_sections_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add section");
                 }
             } else {
                 // Update existing section
+                $form_data['id'] = $section->getID();
+
                 $success = $section->update($form_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update section");
+                    throw new RuntimeException("Failed to update section");
                 }
                 $id = $section->getID();
             }
@@ -625,39 +622,43 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         foreach ($questions as $question_data) {
             $question = new Question();
 
-            if ($question_data["_use_uuid_for_sections_id"]) {
-                // This question was added to a newly created section
-                // We need to find the correct section id using the temporary UUID
-                $uuid = $question_data['forms_sections_id'];
-                $question_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            // Read uuids
+            $uuid = $question_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_encode($question_data)
+                );
+            }
+            $section_uuid = $question_data['forms_sections_uuid'] ?? '';
+            if (empty($section_uuid)) {
+                throw new RuntimeException(
+                    "Parent section UUID is missing: " . json_encode($question_data)
+                );
             }
 
-            // Newly created question, may need to be updated using temporary UUID instead of ID
-            if ($question_data['_use_uuid']) {
-                $uuid = $question_data['id'];
-                $question_data['id'] = $_SESSION['form_editor_questions_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            // Get parent id
+            $section = Section::findByUuid($section_uuid);
+            if ($section === null) {
+                throw new RuntimeException("Parent section not found: $section_uuid");
             }
+            $question_data['forms_sections_id'] = $section->getID();
 
-            if ($question_data['id'] == 0) {
+            $question = Question::findByUuid($uuid);
+            if ($question === null) {
                 // Add new question
-                unset($question_data['id']);
+                $question = new Question();
                 $id = $question->add($question_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add question");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_questions_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add question");
                 }
             } else {
-                // Update existing section
+                // Update existing question
+                $question_data['id'] = $question->getID();
+
                 $success = $question->update($question_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update question");
+                    throw new RuntimeException("Failed to update question");
                 }
                 $id = $question->getID();
             }
@@ -739,43 +740,47 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         foreach ($comments as $comment_data) {
             $comment = new Comment();
 
-            if ($comment_data["_use_uuid_for_sections_id"]) {
-                // This question was added to a newly created section
-                // We need to find the correct section id using the temporary UUID
-                $uuid = $comment_data['forms_sections_id'];
-                $comment_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            // Read uuids
+            $uuid = $comment_data['uuid'] ?? '';
+            if (empty($uuid)) {
+                throw new RuntimeException(
+                    "UUID is missing: " . json_decode($comment_data)
+                );
             }
 
-            // Newly created comment, may need to be updated using temporary UUID instead of ID
-            if ($comment_data['_use_uuid']) {
-                $uuid = $comment_data['id'];
-                $comment_data['id'] = $_SESSION['form_editor_comments_uuid'][$uuid] ?? 0;
-            } else {
-                $uuid = null;
+            $section_uuid = $comment_data['forms_sections_uuid'] ?? '';
+            if (empty($section_uuid)) {
+                throw new RuntimeException(
+                    "Parent section UUID is missing: " . json_decode($comment_data)
+                );
             }
 
-            if ($comment_data['id'] == 0) {
-                // Add new comment
-                unset($comment_data['id']);
+            // Get parent id
+            $section = Section::findByUuid($section_uuid);
+            if ($section === null) {
+                throw new RuntimeException("Parent section not found: $section_uuid");
+            }
+            $comment_data['forms_sections_id'] = $section->getID();
+
+            $comment = Comment::findByUuid($uuid);
+            if ($comment === null) {
+                // Add new question
+                $comment = new Comment();
                 $id = $comment->add($comment_data);
 
                 if (!$id) {
-                    throw new \RuntimeException("Failed to add comment");
-                }
-
-                // Store temporary UUID -> ID mapping in session
-                if ($uuid !== null) {
-                    $_SESSION['form_editor_comments_uuid'][$uuid] = $id;
+                    throw new RuntimeException("Failed to add comment");
                 }
             } else {
                 // Update existing comment
+                $comment_data['id'] = $comment->getID();
+
                 $success = $comment->update($comment_data);
                 if (!$success) {
-                    throw new \RuntimeException("Failed to update comment");
+                    throw new RuntimeException("Failed to update comment");
                 }
                 $id = $comment->getID();
             }
-
             // Keep track of its id
             $found_comments[] = $id;
         }
