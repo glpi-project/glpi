@@ -42,35 +42,44 @@ use User;
 
 /* Test for inc/dashboard/provider.class.php */
 
-class Provider extends DbTestCase
+class ProviderTest extends DbTestCase
 {
     public function testNbTicketsByAgreementStatusAndTechnician()
     {
         global $DB;
 
-       // Prepare context
+        // Prepare context
         $slm = new \Slm();
-        $slm->add([
-            'name' => 'SLM',
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slm->add([
+                'name' => 'SLM',
+            ])
+        );
 
         $slaTto = new \SLA();
-        $slaTto->add([
-            'name' => 'sla tto',
-            'type' => '1', // TTO
-            'number_time' => 4,
-            'definition_time' => 'hour',
-            'slms_id' => $slm->getID(),
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slaTto->add([
+                'name' => 'sla tto',
+                'type' => '1', // TTO
+                'number_time' => 4,
+                'definition_time' => 'hour',
+                'slms_id' => $slm->getID(),
+            ])
+        );
 
         $slaTtr = new \SLA();
-        $slaTtr->add([
-            'name' => 'sla ttr',
-            'type' => '0', // TTR
-            'number_time' => 4,
-            'definition_time' => 'hour',
-            'slms_id' => $slm->getID(),
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slaTtr->add([
+                'name' => 'sla ttr',
+                'type' => '0', // TTR
+                'number_time' => 4,
+                'definition_time' => 'hour',
+                'slms_id' => $slm->getID(),
+            ])
+        );
 
         $ticket = new \Ticket();
         $ticket->add([
@@ -81,7 +90,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertFalse($ticket->isNewItem());
 
         $ticket2 = new \Ticket();
         $ticket2->add([
@@ -92,7 +101,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
-        $this->boolean($ticket2->isNewItem())->isFalse();
+        $this->assertFalse($ticket2->isNewItem());
 
         $ticket3 = new \Ticket();
         $ticket3->add([
@@ -103,7 +112,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
-        $this->boolean($ticket3->isNewItem())->isFalse();
+        $this->assertFalse($ticket3->isNewItem());
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
@@ -131,32 +140,36 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
@@ -184,36 +197,40 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 60,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 60,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 60,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 60,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
@@ -240,50 +257,56 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket3::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket3->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket3::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket3->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
-        $ticket3->getFromDB($ticket3->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
+        $this->assertTrue($ticket3->getFromDB($ticket3->getID()));
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnician();
         $expected = [
             'label' => "Tickets by SLA status and by technician",
@@ -310,7 +333,7 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
     }
 
 
@@ -318,29 +341,38 @@ class Provider extends DbTestCase
     {
         global $DB;
 
-       // Prepare context
+        // Prepare context
         $slm = new \Slm();
-        $slm->add([
-            'name' => 'SLM',
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slm->add([
+                'name' => 'SLM',
+            ])
+        );
 
         $slaTto = new \SLA();
-        $slaTto->add([
-            'name' => 'sla tto',
-            'type' => '1', // TTO
-            'number_time' => 4,
-            'definition_time' => 'hour',
-            'slms_id' => $slm->getID(),
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slaTto->add([
+                'name' => 'sla tto',
+                'type' => '1', // TTO
+                'number_time' => 4,
+                'definition_time' => 'hour',
+                'slms_id' => $slm->getID(),
+            ])
+        );
 
         $slaTtr = new \SLA();
-        $slaTtr->add([
-            'name' => 'sla ttr',
-            'type' => '0', // TTR
-            'number_time' => 4,
-            'definition_time' => 'hour',
-            'slms_id' => $slm->getID(),
-        ]);
+        $this->assertGreaterThan(
+            0,
+            $slaTtr->add([
+                'name' => 'sla ttr',
+                'type' => '0', // TTR
+                'number_time' => 4,
+                'definition_time' => 'hour',
+                'slms_id' => $slm->getID(),
+            ])
+        );
 
         $group = new \Group();
         $group->add([
@@ -349,7 +381,7 @@ class Provider extends DbTestCase
             'level'       => 1,
             'groups_id'   => 0,
         ]);
-        $this->boolean($group->isNewItem())->isFalse();
+        $this->assertFalse($group->isNewItem());
 
         $group2 = new \Group();
         $group2->add([
@@ -358,7 +390,7 @@ class Provider extends DbTestCase
             'level'       => 1,
             'groups_id'   => 0,
         ]);
-        $this->boolean($group2->isNewItem())->isFalse();
+        $this->assertFalse($group2->isNewItem());
 
         $ticket = new \Ticket();
         $ticket->add([
@@ -369,7 +401,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertFalse($ticket->isNewItem());
 
         $ticket2 = new \Ticket();
         $ticket2->add([
@@ -380,7 +412,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
-        $this->boolean($ticket2->isNewItem())->isFalse();
+        $this->assertFalse($ticket2->isNewItem());
 
         $ticket3 = new \Ticket();
         $ticket3->add([
@@ -391,6 +423,7 @@ class Provider extends DbTestCase
             'sla_id_ttr'       => $slaTtr->getID(),
             'status'           => \Ticket::ASSIGNED,
         ]);
+        $this->assertFalse($ticket3->isNewItem());
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
@@ -418,32 +451,36 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
 
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
@@ -471,36 +508,40 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 60,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 60,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 60,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 60,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
@@ -527,50 +568,56 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
 
-        $DB->update(
-            $ticket::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket2::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket2->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket2::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket2->getID()
+                ]
+            )
         );
-        $DB->update(
-            $ticket3::getTable(),
-            [
-                'date'                       => '2021-01-01 00:00',
-                'time_to_own'                => '2021-01-01 01:00',
-                'takeintoaccount_delay_stat' => 50000,
-                'solvedate'                  => '2021-02-01 00:00',
-                'time_to_resolve'            => '2021-01-02 00:00'
-            ],
-            [
-                'id' => $ticket3->getID()
-            ]
+        $this->assertTrue(
+            $DB->update(
+                $ticket3::getTable(),
+                [
+                    'date'                       => '2021-01-01 00:00',
+                    'time_to_own'                => '2021-01-01 01:00',
+                    'takeintoaccount_delay_stat' => 50000,
+                    'solvedate'                  => '2021-02-01 00:00',
+                    'time_to_resolve'            => '2021-01-02 00:00'
+                ],
+                [
+                    'id' => $ticket3->getID()
+                ]
+            )
         );
-        $ticket->getFromDB($ticket->getID());
-        $ticket2->getFromDB($ticket2->getID());
-        $ticket3->getFromDB($ticket3->getID());
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertTrue($ticket2->getFromDB($ticket2->getID()));
+        $this->assertTrue($ticket3->getFromDB($ticket3->getID()));
         $output = \Glpi\Dashboard\Provider::nbTicketsByAgreementStatusAndTechnicianGroup();
         $expected = [
             'label' => "Tickets by SLA status and by technician group",
@@ -597,9 +644,9 @@ class Provider extends DbTestCase
             ],
             'icon' => 'fas fa-stopwatch'
         ];
-        $this->array($output)->isEqualTo($expected);
+        $this->assertEquals($expected, $output);
     }
-    public function itemProvider()
+    public static function itemProvider()
     {
         return [
             ['item' => new \Computer()],
@@ -622,30 +669,27 @@ class Provider extends DbTestCase
         ];
 
         foreach ($data as $result) {
-            $this->array($result)
-            ->hasKeys([
-                'number',
-                'url',
-                'label',
-                'icon',
-            ]);
+            $this->assertArrayHasKey('number', $result);
+            $this->assertArrayHasKey('url', $result);
+            $this->assertArrayHasKey('label', $result);
+            $this->assertArrayHasKey('icon', $result);
             if ($item::getType() !== 'Item_DeviceSimcard') {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
-                $this->integer($result['number'])->isGreaterThan(0);
+                $this->assertGreaterThan(0, $result['number']);
             }
-            $this->string($result['url'])->contains($item::getSearchURL());
+            $this->assertStringContainsString($item::getSearchURL(), $result['url']);
             //Verify URL doesn't have two query param joiners next to each other
-            $this->string($result['url'])->notContains('&&');
-            $this->string($result['url'])->notContains('?&');
+            $this->assertStringNotContainsString('&&', $result['url']);
+            $this->assertStringNotContainsString('?&', $result['url']);
             //Verify URL only has one ? joiner
-            $this->integer(substr_count($result['url'], '?'))->isLessThanOrEqualTo(1);
-            $this->string($result['label'])->isNotEmpty();
-            $this->string($result['icon'])->isEqualTo($item::getIcon());
+            $this->assertLessThanOrEqual(1, substr_count($result['url'], '?'));
+            $this->assertNotEmpty($result['label']);
+            $this->assertEquals($item::getIcon(), $result['icon']);
         }
     }
 
 
-    public function ticketsCaseProvider()
+    public static function ticketsCaseProvider()
     {
         return [
             ['case' => 'notold'],
@@ -669,25 +713,22 @@ class Provider extends DbTestCase
     {
         $result = \Glpi\Dashboard\Provider::nbTicketsGeneric($case);
 
-        $this->array($result)
-         ->hasKeys([
-             'number',
-             'url',
-             'label',
-             'icon',
-             's_criteria',
-             'itemtype',
-         ]);
-        $this->integer($result['number']);
-        $this->string($result['url'])->contains(\Ticket::getSearchURL());
-        $this->string($result['icon']);
-        $this->string($result['label']);
-        $this->array($result['s_criteria'])->size->isGreaterThan(0);
-        $this->string($result['itemtype'])->isEqualTo('Ticket');
+        $this->assertArrayHasKey('number', $result);
+        $this->assertArrayHasKey('url', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+        $this->assertArrayHasKey('s_criteria', $result);
+        $this->assertArrayHasKey('itemtype', $result);
+        $this->assertIsInt($result['number']);
+        $this->assertStringContainsString(\Ticket::getSearchURL(), $result['url']);
+        $this->assertIsString($result['icon']);
+        $this->assertIsString($result['label']);
+        $this->assertGreaterThan(0, count($result['s_criteria']));
+        $this->assertEquals(\Ticket::class, $result['itemtype']);
     }
 
 
-    public function itemFKProvider()
+    public static function itemFKProvider()
     {
         return [
             ['item' => new \Computer(), 'fk_item' => new \Entity()],
@@ -704,24 +745,18 @@ class Provider extends DbTestCase
         $this->login();
 
         $result = \Glpi\Dashboard\Provider::nbItemByFk($item, $fk_item);
-        $this->array($result)
-         ->hasKeys([
-             'data',
-             'label',
-             'icon',
-         ]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
 
         foreach ($result['data'] as $data) {
-            $this->array($data)
-            ->hasKeys([
-                'number',
-                'label',
-                'url',
-            ]);
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
 
-            $this->integer($data['number'])->isGreaterThan(0);
-            $this->string($data['label']);
-            $this->string($data['url'])->contains($item::getSearchURL());
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString($item::getSearchURL(), $data['url']);
         }
     }
 
@@ -729,29 +764,23 @@ class Provider extends DbTestCase
     public function testTicketsOpened()
     {
         $result = \Glpi\Dashboard\Provider::ticketsOpened();
-        $this->array($result)
-         ->hasKeys([
-             'data',
-             'distributed',
-             'label',
-             'icon',
-         ]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('distributed', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
 
-        $this->boolean($result['distributed'])->isFalse();
-        $this->string($result['icon']);
-        $this->string($result['label']);
+        $this->assertFalse($result['distributed']);
+        $this->assertIsString($result['icon']);
+        $this->assertIsString($result['label']);
 
         foreach ($result['data'] as $data) {
-            $this->array($data)
-            ->hasKeys([
-                'number',
-                'label',
-                'url',
-            ]);
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
 
-            $this->integer($data['number'])->isGreaterThan(0);
-            $this->string($data['label']);
-            $this->string($data['url'])->contains(\Ticket::getSearchURL());
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
         }
     }
 
@@ -759,27 +788,25 @@ class Provider extends DbTestCase
     public function testGetTicketsEvolution()
     {
         $result = \Glpi\Dashboard\Provider::getTicketsEvolution();
-        $this->array($result)
-         ->hasKeys([
-             'data',
-             'label',
-             'icon',
-         ]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
 
-        $this->string($result['icon']);
-        $this->string($result['label']);
-        $this->array($result['data'])->hasKeys(['labels', 'series']);
-        $this->array($result['data']['labels'])->isNotEmpty();
-        $this->array($result['data']['series'])->isNotEmpty();
+        $this->assertIsString($result['icon']);
+        $this->assertIsString($result['label']);
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+        $this->assertNotEmpty($result['data']['labels']);
+        $this->assertNotEmpty($result['data']['series']);
 
         $nb_labels = count($result['data']['labels']);
         foreach ($result['data']['series'] as $serie) {
-            $this->array($serie)->hasKey('data');
-            $this->integer(count($serie['data']))->isEqualTo($nb_labels);
+            $this->assertArrayHasKey('data', $serie);
+            $this->assertCount($nb_labels, $serie['data']);
 
             foreach ($serie['data'] as $serie_data) {
-                $this->integer($serie_data['value']);
-                $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
+                $this->assertIsInt($serie_data['value']);
+                $this->assertStringContainsString(\Ticket::getSearchURL(), $serie_data['url']);
             }
         }
     }
@@ -790,27 +817,25 @@ class Provider extends DbTestCase
         $this->login();
 
         $result = \Glpi\Dashboard\Provider::getTicketsStatus();
-        $this->array($result)
-         ->hasKeys([
-             'data',
-             'label',
-             'icon',
-         ]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
 
-        $this->string($result['icon']);
-        $this->string($result['label']);
-        $this->array($result['data'])->hasKeys(['labels', 'series']);
-        $this->array($result['data']['labels'])->isNotEmpty();
-        $this->array($result['data']['series'])->isNotEmpty();
+        $this->assertIsString($result['icon']);
+        $this->assertIsString($result['label']);
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+        $this->assertNotEmpty($result['data']['labels']);
+        $this->assertNotEmpty($result['data']['series']);
 
         $nb_labels = count($result['data']['labels']);
         foreach ($result['data']['series'] as $serie) {
-            $this->array($serie)->hasKey('data');
-            $this->integer(count($serie['data']))->isEqualTo($nb_labels);
+            $this->assertArrayHasKey('data', $serie);
+            $this->assertCount($nb_labels, $serie['data']);
 
             foreach ($serie['data'] as $serie_data) {
-                $this->integer($serie_data['value']);
-                $this->string($serie_data['url'])->contains(\Ticket::getSearchURL());
+                $this->assertIsInt($serie_data['value']);
+                $this->assertStringContainsString(\Ticket::getSearchURL(), $serie_data['url']);
             }
         }
     }
@@ -821,31 +846,25 @@ class Provider extends DbTestCase
         $this->login();
 
         $result = \Glpi\Dashboard\Provider::multipleNumberTicketByITILCategory();
-        $this->array($result)
-         ->hasKeys([
-             'data',
-             'label',
-             'icon',
-         ]);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
 
-        $this->string($result['icon']);
-        $this->string($result['label']);
+        $this->assertIsString($result['icon']);
+        $this->assertIsString($result['label']);
 
         foreach ($result['data'] as $data) {
-            $this->array($data)
-            ->hasKeys([
-                'number',
-                'label',
-                'url',
-            ]);
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
 
-            $this->integer($data['number'])->isGreaterThan(0);
-            $this->string($data['label']);
-            $this->string($data['url'])->contains(\Ticket::getSearchURL());
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
         }
     }
 
-    public function monthYearProvider()
+    public static function monthYearProvider()
     {
         return [
             [
@@ -870,8 +889,10 @@ class Provider extends DbTestCase
      */
     public function testFormatMonthyearDates(string $monthyear, array $expected)
     {
-        $this->array(\Glpi\Dashboard\Provider::formatMonthyearDates($monthyear))
-         ->isEqualTo($expected);
+        $this->assertEquals(
+            $expected,
+            \Glpi\Dashboard\Provider::formatMonthyearDates($monthyear)
+        );
     }
 
     protected function testGetArticleListReminderProvider(): iterable
@@ -898,12 +919,13 @@ class Provider extends DbTestCase
         yield ['expected' => 1];
     }
 
-    /**
-     * @dataProvider testGetArticleListReminderProvider
-     */
-    public function testGetArticleListReminder(int $expected): void
+    public function testGetArticleListReminder(): void
     {
-        $results = \Glpi\Dashboard\Provider::getArticleListReminder();
-        $this->integer($results['number'])->isEqualTo($expected);
+        foreach ($this->testGetArticleListReminderProvider() as $row) {
+            $expected = $row['expected'];
+
+            $results = \Glpi\Dashboard\Provider::getArticleListReminder();
+            $this->assertEquals($expected, $results['number']);
+        }
     }
 }
