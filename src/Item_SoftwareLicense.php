@@ -925,7 +925,12 @@ JAVASCRIPT;
 
                 echo "<tr class='tab_bg_2'>";
                 if ($canedit) {
-                    echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
+                    if ($data['itemtype'] == 'User') {
+                        $class = SoftwareLicense_User::class;
+                    } else {
+                        $class = __CLASS__;
+                    }
+                    echo "<td>" . Html::getMassiveActionCheckBox($class, $data["id"]) . "</td>";
                 }
 
                 echo "<td>" . htmlescape($data['item_type']) . "</td>";
