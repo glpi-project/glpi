@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -306,6 +305,14 @@ TWIG, $twig_params);
 
     public function post_addItem()
     {
+        parent::post_addItem();
+
+        // Trigger the `onCapacityEnabled` hooks.
+        $added_capacities = @json_decode($this->fields['capacities']);
+        foreach ($added_capacities as $capacity_classname) {
+            $this->onCapacityEnabled($capacity_classname);
+        }
+
         // Add default display preferences for the new asset definition
         $prefs = [
             4, // Name
@@ -324,14 +331,13 @@ TWIG, $twig_params);
                 'users_id' => 0,
             ]);
         }
-
-        parent::post_addItem();
     }
 
     public function post_updateItem($history = true)
     {
+        parent::post_updateItem();
+
         if (in_array('capacities', $this->updates)) {
-            // When capabilities are removed, trigger the cleaning of data related to this capacity.
             $new_capacities = @json_decode($this->fields['capacities']);
             $old_capacities = @json_decode($this->oldvalues['capacities']);
 
@@ -352,28 +358,25 @@ TWIG, $twig_params);
                 return;
             }
 
-            $removed_capacities = array_diff($old_capacities, $new_capacities);
-            $rights_to_remove = [];
-            foreach ($removed_capacities as $capacity_classname) {
-                $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-                if ($capacity === null) {
-                    // can be null if provided by a plugin that is no longer active
-                    continue;
-                }
-                $capacity->onCapacityDisabled($this->getAssetClassName());
-                array_push($rights_to_remove, ...$capacity->getSpecificRights());
+            $added_capacities = array_diff($new_capacities, $old_capacities);
+            foreach ($added_capacities as $capacity_classname) {
+                $this->onCapacityEnabled($capacity_classname);
             }
 
-            if (count($rights_to_remove) > 0) {
-                $this->cleanRights($rights_to_remove);
+            $removed_capacities = array_diff($old_capacities, $new_capacities);
+            foreach ($removed_capacities as $capacity_classname) {
+                $this->onCapacityDisabled($capacity_classname);
             }
         }
-
-        parent::post_updateItem();
     }
 
     public function cleanDBonPurge()
     {
+        $capacities = $this->getDecodedCapacitiesField();
+        foreach ($capacities as $capacity_classname) {
+            $this->onCapacityDisabled($capacity_classname);
+        }
+
         $related_classes = [
             $this->getAssetClassName(),
             $this->getAssetModelClassName(),
@@ -386,6 +389,41 @@ TWIG, $twig_params);
                 history: false
             );
             (new \DisplayPreference())->deleteByCriteria(['itemtype' => $classname]);
+        }
+    }
+
+    /**
+     * Handle the activation of a capacity.
+     *
+     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
+     */
+    private function onCapacityEnabled(string $capacity_classname): void
+    {
+        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
+        if ($capacity === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $capacity->onCapacityEnabled($this->getAssetClassName());
+    }
+
+    /**
+     * Handle the deactivation of a capacity.
+     *
+     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
+     */
+    private function onCapacityDisabled(string $capacity_classname): void
+    {
+        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
+        if ($capacity === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $capacity->onCapacityDisabled($this->getAssetClassName());
+
+        $rights_to_remove = $capacity->getSpecificRights();
+        if (count($rights_to_remove) > 0) {
+            $this->cleanRights($rights_to_remove);
         }
     }
 

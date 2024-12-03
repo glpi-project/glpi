@@ -368,7 +368,6 @@ class DropdownDefinition extends DbTestCase
     {
         /** @var \Glpi\Dropdown\DropdownDefinition $definition */
         $definition = $this->initDropdownDefinition('test');
-        \Glpi\Dropdown\DropdownDefinitionManager::getInstance()->bootstrapClasses();
 
         $this->createItem(
             $definition->getDropdownClassName(),
