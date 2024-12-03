@@ -41,27 +41,32 @@ use Glpi\Csv\CsvResponse as Core_CsvResponse;
 use Glpi\Csv\LogCsvExport as CsvLogCsvExport;
 use League\Csv\Reader;
 
-class CsvResponse extends DbTestCase
+class CsvResponseTest extends DbTestCase
 {
     public function testCsvResponse()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
 
-       // Create a dummy computer
+        // Create a dummy computer
         $computer = new Computer();
         $id = $computer->add([
             'name'        => 'testExportToCsv 1',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
 
-        $this->integer($id)->isGreaterThan(0);
-        $this->boolean($computer->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($computer->getFromDB($id));
 
-       // Output CSV
+        // Output CSV
         ob_start();
-        Core_CsvResponse::output(new CsvLogCsvExport($computer, []));
+        $mock_logexport = $this->getMockBuilder(CsvLogCsvExport::class)
+            ->setConstructorArgs([$computer, []])
+            ->onlyMethods(['getFileName'])
+            ->getMock();
+        $mock_logexport->method('getFileName')->willReturn(null);
+        Core_CsvResponse::output($mock_logexport);
 
-       // Parse CSV
+        // Parse CSV
         $csv = Reader::createFromString(ob_get_clean());
         $csv->setHeaderOffset(0);
         $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
@@ -69,11 +74,11 @@ class CsvResponse extends DbTestCase
         $header = $csv->getHeader();
         $records = iterator_to_array($csv->getRecords());
 
-       // Check if content is OK
-        $this->array($header)->hasSize(5);
-        $this->array($records)->hasSize(1);
+        // Check if content is OK
+        $this->assertCount(5, $header);
+        $this->assertCount(1, $records);
         $record = array_pop($records);
-        $this->string($record['User'])->isEqualTo($_SESSION['glpicronuserrunning']);
-        $this->string($record['Update'])->isEqualTo("Add the item");
+        $this->assertEquals($_SESSION['glpicronuserrunning'], $record['User']);
+        $this->assertEquals("Add the item", $record['Update']);
     }
 }

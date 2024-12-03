@@ -36,24 +36,26 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/dashboard/widget.class.php */
 
-class Widget extends DbTestCase
+class WidgetTest extends DbTestCase
 {
     public function testGetAllTypes()
     {
         $types = \Glpi\Dashboard\Widget::getAllTypes();
 
-        $this->array($types)->isNotEmpty();
+        $this->assertNotEmpty($types);
         foreach ($types as $specs) {
-            $this->array($specs)
-            ->hasKeys(['label', 'function', 'image']);
+            $this->assertArrayHasKey('label', $specs);
+            $this->assertArrayHasKey('function', $specs);
+            $this->assertArrayHasKey('image', $specs);
         }
     }
 
 
-    protected function palettes()
+    public static function palettes()
     {
         return [
             [
@@ -96,16 +98,16 @@ class Widget extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider palettes
-     */
+    #[DataProvider('palettes')]
     public function testGetGradientPalette(
         string $bg_color,
         int $nb_series,
         bool $revert,
         array $expected
     ) {
-        $this->array(\Glpi\Dashboard\Widget::getGradientPalette($bg_color, $nb_series, $revert))
-           ->isEqualTo($expected);
+        $this->assertEquals(
+            $expected,
+            \Glpi\Dashboard\Widget::getGradientPalette($bg_color, $nb_series, $revert)
+        );
     }
 }

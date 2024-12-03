@@ -66,48 +66,48 @@ abstract class CsvTestCase extends DbTestCase
         return $this->getTestData();
     }
 
-    /**
-     * @dataProvider csvTestProvider
-     */
-    public function testGetFileName(
-        ExportToCsvInterface $export,
-        array $expected
-    ): void {
-        $filename = $export->getFileName();
-        $this->string($filename)->isEqualTo($expected['filename']);
-    }
+    public function testGetFileName(): void
+    {
+        foreach ($this->csvTestProvider() as $row) {
+            $export = $row['export'];
+            $expected = $row['expected'];
 
-    /**
-     * @dataProvider csvTestProvider
-     */
-    public function testGetFileHeader(
-        ExportToCsvInterface $export,
-        array $expected
-    ): void {
-        $header = $export->getFileHeader();
-        $this->array($header)->hasSize($expected['cols']);
-
-        if (isset($expected['header'])) {
-            $this->array($header)->isEqualTo($expected['header']);
+            $filename = $export->getFileName();
+            $this->assertEquals($expected['filename'], $filename);
         }
     }
 
-    /**
-     * @dataProvider csvTestProvider
-     */
-    public function testGetFileContent(
-        ExportToCsvInterface $export,
-        array $expected
-    ): void {
-        $content = $export->getFileContent();
-        $this->array($content)->hasSize($expected['rows']);
+    public function testGetFileHeader(): void
+    {
+        foreach ($this->csvTestProvider() as $row) {
+            $export = $row['export'];
+            $expected = $row['expected'];
 
-        foreach ($content as $content_row) {
-            $this->array($content_row)->hasSize($expected['cols']);
+            $header = $export->getFileHeader();
+            $this->assertCount($expected['cols'], $header);
+
+            if (isset($expected['header'])) {
+                $this->assertEquals($expected['header'], $header);
+            }
         }
+    }
 
-        if (isset($expected['content'])) {
-            $this->array($content)->isEqualTo($expected['content']);
+    public function testGetFileContent(): void
+    {
+        foreach ($this->csvTestProvider() as $row) {
+            $export = $row['export'];
+            $expected = $row['expected'];
+
+            $content = $export->getFileContent();
+            $this->assertCount($expected['rows'], $content);
+
+            foreach ($content as $content_row) {
+                $this->assertCount($expected['cols'], $content_row);
+            }
+
+            if (isset($expected['content'])) {
+                $this->assertEquals($expected['content'], $content);
+            }
         }
     }
 }
