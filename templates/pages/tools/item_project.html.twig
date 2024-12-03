@@ -1,0 +1,17 @@
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<form method="post" action="{{ 'Item_Project'|itemtype_form_path }}" class="mb-2">
+    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+    {{ inputs.hidden('items_id', item.getID()) }}
+    {{ inputs.hidden('itemtype', get_class(item)) }}
+    <div class="d-flex">
+        {{ 'Project'|itemtype_dropdown({
+            'entity': item.getEntity(),
+            'used': used,
+        }) }}
+    </div>
+    <div class="d-flex flex-row-reverse pe-2">
+        {{ inputs.submit('add', _x('button', 'Add'), 1) }}
+    </div>
+</form>
