@@ -680,7 +680,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     ])
                 ],
                 'NOT' => [
-                    'status' => Ticket::getClosedStatusArray(),
+                    'status' => static::$itemtype::getClosedStatusArray(),
                 ],
             ]
         ])->current();
