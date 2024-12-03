@@ -1757,23 +1757,18 @@ TWIG,
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_files'][] = [
-                            'path' => "/plugins/{$plugin}/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
+                    $tpl_vars['js_files'][] = [
+                        'path' => "/plugins/{$plugin}/{$file}",
+                        'options' => [
+                            'version' => $plugin_version,
+                        ]
+                    ];
                 }
             }
         }
@@ -1782,23 +1777,18 @@ TWIG,
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $plugin_version  = Plugin::getPluginFilesVersion($plugin);
 
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_modules'][] = [
-                            'path' => "/plugins/{$plugin}/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
+                    $tpl_vars['js_modules'][] = [
+                        'path' => "/plugins/{$plugin}/{$file}",
+                        'options' => [
+                            'version' => $plugin_version,
+                        ]
+                    ];
                 }
             }
         }
@@ -6070,20 +6060,15 @@ HTML;
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo Html::script("/plugins/{$plugin}/{$file}", [
-                            'version'   => $version,
-                            'type'      => 'text/javascript'
-                        ]);
-                    } else {
-                        trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
-                    }
+                    echo Html::script("/plugins/{$plugin}/{$file}", [
+                        'version'   => $version,
+                        'type'      => 'text/javascript'
+                    ]);
                 }
             }
         }
@@ -6093,20 +6078,15 @@ HTML;
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo self::script("/plugins/{$plugin}/{$file}", [
-                            'version'   => $version,
-                            'type'      => 'module'
-                        ]);
-                    } else {
-                        trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
-                    }
+                    echo self::script("/plugins/{$plugin}/{$file}", [
+                        'version'   => $version,
+                        'type'      => 'module'
+                    ]);
                 }
             }
         }
