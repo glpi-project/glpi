@@ -666,12 +666,12 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-            'FROM'   => Ticket::getTable(),
+            'FROM'   => static::$itemtype::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 [
                     'id' => new QuerySubQuery([
-                        'SELECT' => 'tickets_id',
+                        'SELECT' => static::$items_id,
                         'FROM'   => self::getTable(),
                         'WHERE'  => [
                             'status' => self::WAITING,
@@ -680,12 +680,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     ])
                 ],
                 'NOT' => [
-                    'AND' => [
-                        [
-                            'status' => Ticket::getClosedStatusArray()
-                        ]
-                    ]
-                ]
+                    'status' => Ticket::getClosedStatusArray(),
+                ],
             ]
         ])->current();
 
