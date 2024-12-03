@@ -35,6 +35,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
 
 /* Test for inc/commonitilvalidation.class.php */
@@ -427,5 +428,49 @@ class CommonITILValidationTest extends DbTestCase
         );
 
         $this->assertEquals($result, $test_result);
+    }
+
+    public static function testgetNumberToValidateProvider(): array
+    {
+        return [
+            [
+                'input'     => [
+                    'name'      => 'Ticket_Closed_With_Validation_Request',
+                    'content'   => 'Ticket_Closed_With_Validation_Request',
+                ],
+                'expected'  => 1,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+            [
+                'input'     => [
+                    'name' => 'Ticket_With_Validation_Request',
+                    'content' => 'Ticket_With_Validation_Request',
+                    'status' =>  CommonITILObject::CLOSED
+                ],
+                'expected'  => 0,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider testgetNumberToValidateProvider
+     */
+    public function testgetNumberToValidate(
+        array $input,
+        int $expected,
+        int $user_id
+    ): void {
+        $this->login();
+
+        /** Create a ticket, approval requested */
+        $ticket = $this->createItem('Ticket', $input);
+
+        $validation_item = $this->createItem('TicketValidation', [
+            'tickets_id'        => $ticket->getID(),
+            'users_id_validate' => $user_id,
+        ]);
+
+        $this->assertEquals($expected, \TicketValidation::getNumberToValidate($user_id));
     }
 }
