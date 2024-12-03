@@ -10084,4 +10084,3 @@ CREATE TABLE `glpi_softwarelicenses_users` (
   KEY `item` (`users_id`),
   KEY `softwarelicenses_id` (`softwarelicenses_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-

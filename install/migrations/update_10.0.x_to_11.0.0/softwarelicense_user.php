@@ -42,8 +42,8 @@
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 
-if (!$DB->tableExists('glpi_licenses_users')) {
-    $query = "CREATE TABLE `glpi_licenses_users` (
+if (!$DB->tableExists('glpi_softwarelicenses_users')) {
+    $query = "CREATE TABLE `glpi_softwarelicenses_users` (
         `id` int unsigned NOT NULL AUTO_INCREMENT,
         `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
         `users_id` int unsigned NOT NULL DEFAULT '0',
