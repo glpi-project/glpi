@@ -585,6 +585,9 @@ TWIG, $twig_params);
                     'row_class' => isset($objdata['is_deleted']) && $objdata['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype::getTypeName(1),
                 ];
+                if ($itemtype === User::class) {
+                    $entry['itemtype'] = Contract_User::class;
+                }
                 $item = new $itemtype();
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
