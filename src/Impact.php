@@ -471,7 +471,7 @@ JS);
                 $(document).on("impactUpdated", () => {
                     $.ajax({
                         type: "GET",
-                        url: "{{ path('ajax/impact.php') }}',
+                        url: "{{ path('ajax/impact.php') }}",
                         data: {
                             itemtype: "{{ itemtype|e('js') }}",
                             items_id: {{ items_id }},
