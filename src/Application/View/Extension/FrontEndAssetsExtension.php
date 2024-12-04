@@ -249,14 +249,19 @@ JAVASCRIPT;
         return Html::scriptBlock($script);
     }
 
-    public function getPluginsCssFiles(bool $is_anonymous_page)
+    /**
+     * Returns the list of active plugins CSS files.
+     *
+     * @phpstan-return array<int, array{path: string, options: array{version: string}}>
+     */
+    public function getPluginsCssFiles(bool $is_anonymous_page): array
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_CSS_ANONYMOUS_PAGE : Hooks::ADD_CSS;
 
-        $newCssFile = [];
+        $css_files = [];
         if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
             foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {
@@ -271,7 +276,7 @@ JAVASCRIPT;
                 }
 
                 foreach ($files as $file) {
-                    $newCssFile[] = [
+                    $css_files[] = [
                         'path' => "$plugin_web_dir/$file",
                         'options' => [
                             'version' => $plugin_version,
@@ -280,17 +285,22 @@ JAVASCRIPT;
                 }
             }
         }
-        return $newCssFile;
+        return $css_files;
     }
 
-    public function getPluginsJsScriptsFiles(bool $is_anonymous_page)
+    /**
+     * Returns the list of active plugins JS scripts files.
+     *
+     * @phpstan-return array<int, array{path: string, options: array{version: string}}>
+     */
+    public function getPluginsJsScriptsFiles(bool $is_anonymous_page): array
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT;
 
-        $newJsFile = [];
+        $js_files = [];
         if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
             foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {
@@ -305,7 +315,7 @@ JAVASCRIPT;
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $newJsFile[] = [
+                        $js_files[] = [
                             'path' => $plugin_web_dir . "/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
@@ -317,17 +327,22 @@ JAVASCRIPT;
                 }
             }
         }
-        return $newJsFile;
+        return $js_files;
     }
 
-    public function getPluginsJsModulesFiles(bool $is_anonymous_page)
+    /**
+     * Returns the list of active plugins JS modules files.
+     *
+     * @phpstan-return array<int, array{path: string, options: array{version: string}}>
+     */
+    public function getPluginsJsModulesFiles(bool $is_anonymous_page): array
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT_MODULE;
 
-        $newJsModule = [];
+        $js_modules = [];
         if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
             foreach ($PLUGIN_HOOKS[$hook] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {
@@ -342,7 +357,7 @@ JAVASCRIPT;
                 }
                 foreach ($files as $file) {
                     if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $newJsModule[] = [
+                        $js_modules[] = [
                             'path' => $plugin_web_dir . "/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
@@ -354,25 +369,30 @@ JAVASCRIPT;
                 }
             }
         }
-        return $newJsModule;
+        return $js_modules;
     }
 
-    public function getPluginsHeaderTags(bool $is_anonymous_page)
+    /**
+     * Returns the list of active plugins header tags.
+     *
+     * @phpstan-return array<int, array{tag: string, properties: array<string, string>}>
+     */
+    public function getPluginsHeaderTags(bool $is_anonymous_page): array
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_HEADER_TAG_ANONYMOUS_PAGE : Hooks::ADD_HEADER_TAG;
 
-        $newHeaderTag = [];
+        $header_tags = [];
         if (isset($PLUGIN_HOOKS[$hook]) && count($PLUGIN_HOOKS[$hook])) {
             foreach ($PLUGIN_HOOKS[$hook] as $plugin => $plugin_header_tags) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                array_push($newHeaderTag, ...$plugin_header_tags);
+                array_push($header_tags, ...$plugin_header_tags);
             }
         }
-        return $newHeaderTag;
+        return $header_tags;
     }
 }
