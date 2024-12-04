@@ -34,7 +34,6 @@
  */
 
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -88,9 +87,6 @@ class GLPITestCase extends TestCase
         $SQLLOGGER->setHandlers([$this->sql_log_handler]);
 
         vfsStreamWrapper::register();
-
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
     }
 
     public function tearDown(): void
