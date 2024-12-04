@@ -222,42 +222,12 @@ class Item_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if (!$withtemplate) {
+        if (!$withtemplate && $item::class === Project::class) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Project':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForMainItem($item);
-                    }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-
-                default:
-                   // Not used now
-                    if (
-                        Session::haveRight("project", Project::READALL)
-                        && ($item instanceof CommonDBTM)
-                    ) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
-                                    foreach ($tab as $ID) {
-                                        $typeitem->getFromDB($ID);
-                                        $nb += self::countForItem($typeitem);
-                                    }
-                                }
-                            }
-                        }
-                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
-                    }
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForMainItem($item);
             }
+            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
         }
         return '';
     }
@@ -265,15 +235,8 @@ class Item_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'Project':
-                self::showForProject($item);
-                break;
-
-            default:
-               // Not defined and used now
-               // Project::showListForItem($item);
+        if (!$withtemplate && $item::class === Project::class) {
+            self::showForProject($item);
         }
         return true;
     }
