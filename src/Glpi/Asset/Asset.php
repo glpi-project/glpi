@@ -39,6 +39,7 @@ use CommonDBTM;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\CustomObject\CustomObjectTrait;
 use Group;
 use Group_Item;
