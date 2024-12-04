@@ -1710,7 +1710,7 @@ var GLPIImpact = {
             gridSpacing: 12,
             drawGrid: true,
             panGrid: true,
-            gridColor: getComputedStyle(document.documentElement).getPropertyValue('--card-border-color'),
+            gridColor: getComputedStyle(document.documentElement).getPropertyValue('--tblr-border-color'),
         });
 
         // Disable box selection as we don't need it
