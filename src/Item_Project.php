@@ -329,7 +329,7 @@ class Item_Project extends CommonDBRelation
                 "name" => __('Name'),
                 "priority" => __('Priority'),
                 "code" => __('Code'),
-                "projectstates_id" => __('State'),
+                "projectstates_id" => _n('State', 'States', 1),
                 "percent_done" => __('Percent done'),
                 "creation_date" => __('Creation date'),
                 "content" => __('Description'),
