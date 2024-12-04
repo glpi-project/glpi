@@ -103,6 +103,10 @@ class GLPIDashboard {
         this.filters = "{}";
         this.filters_selector = "";
 
+        GridStack.renderCB = (el, w) => {
+            el.innerHTML = w.content;
+        };
+
         // get passed options and merge it with default ones
         let options = (typeof params !== 'undefined') ? params: {};
         /** @type {GLPIDashboardParams} */
@@ -636,13 +640,14 @@ class GLPIDashboard {
       </div>';
 
         // add the widget to the grid
-        const widget = this.grid.addWidget(html, {
+        const widget = this.grid.addWidget({
             'x': x,
             'y': y,
             'w': width,
             'h': height,
             'autoPosition': x < 0 || y < 0,
             'id': gridstack_id,
+            'content': html
         });
 
         // append options

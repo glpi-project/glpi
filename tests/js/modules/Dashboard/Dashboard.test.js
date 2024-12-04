@@ -392,15 +392,16 @@ describe('Dashboard', () => {
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(widget_info.content);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: 1, y: 2, w: 3, h: 4, autoPosition: false, id: 'mycard_12345678-1234-1234-1234-123456789012'}
         );
     });
 
@@ -416,15 +417,16 @@ describe('Dashboard', () => {
         dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(widget_info.content);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === -1 && widget_info.y === -1 && widget_info.w === 2 && widget_info.h === 2
+                    && widget_info.autoPosition === true && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: -1, y: -1, w: 2, h: 2, autoPosition: true, id: 'mycard_12345678-1234-1234-1234-123456789012',}
         );
     });
 
@@ -448,15 +450,16 @@ describe('Dashboard', () => {
         const created_widget = dashboard.addWidget(widget_params);
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
-            expect.toSatisfy((html) => {
-                const html_el = $(html);
+            expect.toSatisfy((widget_info) => {
+                const html_el = $(widget_info.content);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
                 const has_content = html_el.find('div.grid-stack-item-content').length === 1;
-                return has_refresh && has_edit && has_delete && has_content;
+                return widget_info.x === 1 && widget_info.y === 2 && widget_info.w === 3 && widget_info.h === 4
+                    && widget_info.autoPosition === false && widget_info.id === 'mycard_12345678-1234-1234-1234-123456789012'
+                    && has_refresh && has_edit && has_delete && has_content;
             }),
-            {x: 1, y: 2, w: 3, h: 4, autoPosition: false, id: 'mycard_12345678-1234-1234-1234-123456789012'}
         );
 
         expect(created_widget.attr('data-card-options')).toBe(JSON.stringify(widget_params.card_options));
