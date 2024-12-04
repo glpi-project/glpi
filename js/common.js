@@ -758,10 +758,10 @@ var showMapForLocation = function(elt) {
     glpi_html_dialog({
         title: __("Display on map"),
         body: "<div id='location_map_dialog'/>",
-        dialogclass: "modal-lg",
+        dialogclass: "modal-xl",
         show: function() {
             //add map, set a default arbitrary location
-            var map_elt = initMap($('#location_map_dialog'), 'location_map');
+            var map_elt = initMap($('#location_map_dialog'), 'location_map', '500px');
             map_elt.spin(true);
 
             $.ajax({
