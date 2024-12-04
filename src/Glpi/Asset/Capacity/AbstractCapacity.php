@@ -99,9 +99,10 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<\CommonDBTM> $asset_classname
      * @param class-string<\CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -124,7 +125,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $distinct_field,
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
@@ -137,7 +138,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $relation_classname::getTable(),
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
@@ -151,9 +152,10 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<\CommonDBTM> $asset_classname
      * @param class-string<\CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    final protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
         // We assume that asset type/id are always store in `itemtype`/`items_id` fields.
         return countDistinctElementsInTable(
@@ -161,7 +163,7 @@ abstract class AbstractCapacity implements CapacityInterface
             'items_id',
             [
                 'itemtype' => $asset_classname,
-            ]
+            ] + $specific_criteria
         );
     }
 

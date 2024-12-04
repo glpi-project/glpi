@@ -38,7 +38,7 @@ use CommonDBTM;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\CustomObjectTrait;
 use Group;
 use Group_Item;
@@ -55,6 +55,7 @@ abstract class Asset extends CommonDBTM
     use \Glpi\Features\AssignableItem {
         getEmpty as getEmptyFromAssignableItem;
         post_getFromDB as post_getFromDBFromAssignableItem;
+        post_addItem as post_addItemFromAssignableItem;
         post_updateItem as post_updateItemFromAssignableItem;
     }
     use \Glpi\Features\Clonable;
@@ -461,6 +462,13 @@ abstract class Asset extends CommonDBTM
         }
     }
 
+    public function post_addItem()
+    {
+        $this->post_addItemFromAssignableItem();
+
+        $this->addFilesFromRichTextCustomFields();
+    }
+
     public function post_updateItem($history = true)
     {
         $this->post_updateItemFromAssignableItem($history);
@@ -485,6 +493,44 @@ abstract class Asset extends CommonDBTM
                     ]);
                 }
             }
+        }
+        $this->addFilesFromRichTextCustomFields();
+    }
+
+    /**
+     * Add files from rich text custom fields.
+     */
+    private function addFilesFromRichTextCustomFields(): void
+    {
+        $update_input = [];
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            if (
+                $custom_field->fields['type'] !== TextType::class
+                || ($custom_field->fields['field_options']['enable_richtext'] ?? false) === false
+                || ($custom_field->fields['field_options']['enable_images'] ?? false) === false
+            ) {
+                continue;
+            }
+
+            $custom_field_name = sprintf('custom_%s', $custom_field->fields['system_name']);
+            $current_value     = $this->input[$custom_field_name];
+
+            $result_input = $this->addFiles(
+                $this->input,
+                [
+                    'force_update'  => false,
+                    'name'          => $custom_field_name,
+                    'content_field' => $custom_field_name,
+                ]
+            );
+
+            if ($result_input[$custom_field_name] !== $current_value) {
+                $update_input[$custom_field_name] = $result_input[$custom_field_name];
+            }
+        }
+
+        if (count($update_input) > 0) {
+            (new static())->update(['id' => $this->fields['id']] + $update_input, history: false);
         }
     }
 
