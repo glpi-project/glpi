@@ -38,26 +38,32 @@
  *
  * @param string $classname : class to load
  *
- * @return void|boolean
+ * @return void
  */
 function glpi_autoload($classname)
 {
-    $plug = isPluginItemType($classname);
-    if (!$plug) {
-        // PSR-4 styled autoloading for classes without namespace
-        $path = sprintf('%s/src/%s.php', dirname(__FILE__, 3), $classname);
-        if (strpos($classname, NS_GLPI) !== 0 && file_exists($path)) {
-            include_once($path);
-        }
+    if (str_starts_with($classname, NS_GLPI) || str_starts_with($classname, NS_PLUG)) {
+        // Namespaced GLPI and plugin classes are loaded using the Composer PSR4 autoloader.
         return;
     }
 
-    $plugin_name  = $plug['plugin'];
-    $plugin_key   = strtolower($plugin_name);
+    // PSR-4 styled autoloading for GLPI classes without namespace
+    $path = sprintf('%s/src/%s.php', dirname(__FILE__, 3), $classname);
+    if (file_exists($path)) {
+        include_once($path);
+        return;
+    }
+
+    $plug = isPluginItemType($classname);
+    if (!$plug) {
+        return;
+    }
+
+    $plugin_key   = strtolower($plug['plugin']);
     $plugin_class = $plug['class'];
 
     if (!Plugin::isPluginLoaded($plugin_key)) {
-        return false;
+        return;
     }
 
     $plugin_path = null;
@@ -70,12 +76,12 @@ function glpi_autoload($classname)
     }
 
     // Legacy class path, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/inc/foo.class.php`
-    $legacy_path          = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
+    $legacy_path      = sprintf('%s/inc/%s.class.php', $plugin_path, str_replace('\\', '/', strtolower($plugin_class)));
     // PSR-4 styled path for class without namespace, e.g. `PluginMyPluginFoo` -> `plugins/myplugin/src/PluginMyPluginFoo.php`
-    $psr4_styled_path     = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
+    $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
     if (file_exists($legacy_path)) {
         include_once($legacy_path);
-    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
+    } else if (file_exists($psr4_styled_path)) {
         include_once($psr4_styled_path);
     }
 }
