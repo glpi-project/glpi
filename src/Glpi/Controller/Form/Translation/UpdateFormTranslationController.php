@@ -48,21 +48,23 @@ final class UpdateFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_translation_id}", name: "glpi_update_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_translation_id): Response
     {
-        // Right check
-        if (!FormTranslation::canUpdate()) {
-            throw new AccessDeniedHttpException();
-        }
+        $input = $request->request->all();
 
         $formTranslation = new FormTranslation();
         if (!$formTranslation->getFromDB($form_translation_id)) {
             throw new BadRequestHttpException("Form translation not found");
         }
 
+        // Right check
+        if (!$formTranslation->can($form_translation_id, UPDATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
         // Update form translation
         $formTranslation->update(
             [
                 FormTranslation::getIndexName() => $form_translation_id,
-            ] + $request->request->all()
+            ] + $input
         );
 
         return new RedirectResponse($request->getBasePath() . '/Form/Translation/' . $form_translation_id);

@@ -48,8 +48,10 @@ final class ShowFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_translation_id}", name: "glpi_show_form_translation", methods: "GET")]
     public function __invoke(Request $request, int $form_translation_id): Response
     {
+        $formTranslation = new FormTranslation();
+
         // Right check
-        if (!FormTranslation::canView()) {
+        if (!$formTranslation->can($form_translation_id, READ)) {
             throw new AccessDeniedHttpException();
         }
 

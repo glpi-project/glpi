@@ -48,26 +48,28 @@ final class DeleteFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_translation_id}/Delete", name: "glpi_delete_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_translation_id): Response
     {
-        // Right check
-        if (!FormTranslation::canUpdate()) {
-            throw new AccessDeniedHttpException();
-        }
-
         $formTranslation = new FormTranslation();
         if (!$formTranslation->getFromDB($form_translation_id)) {
             throw new BadRequestHttpException("Form translation not found");
         }
 
-        // Delete the form translation
-        $formTranslation->delete([
-            'id' => $form_translation_id,
-            'purge' => true,
-        ]);
-
         $form = $formTranslation->getItem();
         if ($form === false) {
             throw new BadRequestHttpException("Form not found");
         }
+
+        $input = [
+            'id' => $form->getID(),
+            'purge' => true,
+        ];
+
+        // Right check
+        if (!$formTranslation->can($form->getID(), PURGE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        // Delete the form translation
+        $formTranslation->delete($input);
 
         return new RedirectResponse($form->getLinkURL());
     }

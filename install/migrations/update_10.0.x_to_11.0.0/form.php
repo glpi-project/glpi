@@ -213,7 +213,8 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
             KEY `is_active` (`is_active`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
-}if (!$DB->tableExists('glpi_forms_translations_formtranslations')) {
+}
+if (!$DB->tableExists('glpi_forms_translations_formtranslations')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_translations_formtranslations` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,

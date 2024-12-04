@@ -48,20 +48,22 @@ final class AddNewFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_id}/Add", name: "glpi_add_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id): Response
     {
-        // Right check
-        if (!FormTranslation::canView()) {
-            throw new AccessDeniedHttpException();
-        }
-
         // Retrieve the language code from the request
         $language = $request->request->get('language');
 
         // Create a new form translation
         $formTranslation = new FormTranslation();
-        $formTranslation->add([
+        $input = [
             Form::getForeignKeyField() => $form_id,
             'language'                 => $language,
-        ]);
+        ];
+
+        // Right check
+        if (!$formTranslation->can($form_id, CREATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $formTranslation->add($input);
 
         // Redirect to the form translation list
         return new RedirectResponse(Form::getFormURLWithID($form_id));
