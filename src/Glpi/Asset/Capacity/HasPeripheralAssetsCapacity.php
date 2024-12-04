@@ -70,7 +70,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         return Asset_PeripheralAsset::rawSearchOptionsToAdd();
     }
 
-    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    private function countAssetsLinkedToPeripherals(string $asset_classname, string $relation_classname): int
     {
         return countDistinctElementsInTable(
             $relation_classname::getTable(),
@@ -81,7 +81,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         );
     }
 
-    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    private function countPeripheralItemsUsage(string $asset_classname, string $relation_classname): int
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -104,15 +104,15 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Asset_PeripheralAsset::class) > 0;
+            && $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class) > 0;
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
             __('%1$s peripheral assets attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Asset_PeripheralAsset::class),
-            $this->countAssetsLinkedToPeerItem($classname, Asset_PeripheralAsset::class)
+            $this->countPeripheralItemsUsage($classname, Asset_PeripheralAsset::class),
+            $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class)
         );
     }
 
