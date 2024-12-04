@@ -248,19 +248,6 @@ class AssetDefinition extends DbTestCase
             'messages' => [],
         ];
 
-        yield [
-            'input'    => [
-                'system_name' => 'TestAsset',
-                'label'       => 'Test Asset',
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must be unique.'
-                ]
-            ],
-        ];
-
         // start at 32 to ignore control chars
         // stop at 8096, no need to test the whole UTF-8 charset
         for ($i = 32; $i < 8096; $i++) {
@@ -444,6 +431,20 @@ class AssetDefinition extends DbTestCase
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
         }
+    }
+
+    public function testUniqueSystemName(): void
+    {
+        $definition = $this->newTestedInstance();
+        $this->integer($definition->add([
+            'system_name' => 'test',
+            'label' => 'Test',
+        ]))->isGreaterThan(0);
+        $this->boolean($definition->add([
+            'system_name' => 'test',
+            'label' => 'Test',
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, ['The system name must be unique.']);
     }
 
     public function testSystemNameUpdate(): void
