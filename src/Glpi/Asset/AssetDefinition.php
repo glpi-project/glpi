@@ -564,13 +564,13 @@ TWIG, $twig_params);
     /**
      * Indicates whether the given capacity is enabled.
      *
-     * @param CapacityInterface $capacity
+     * @param CapacityInterface|class-string<CapacityInterface> $capacity
      * @return bool
      */
-    public function hasCapacityEnabled(CapacityInterface $capacity): bool
+    public function hasCapacityEnabled(CapacityInterface|string $capacity): bool
     {
         $enabled_capacities = $this->getDecodedCapacitiesField();
-        return in_array($capacity::class, $enabled_capacities);
+        return in_array(is_string($capacity) ? $capacity : $capacity::class, $enabled_capacities);
     }
 
     /**

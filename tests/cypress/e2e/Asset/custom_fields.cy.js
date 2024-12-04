@@ -197,6 +197,9 @@ describe("Custom Assets - Custom Fields", () => {
             createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
             createField('Test URL', 'URL');
             createField('Test YesNo', 'Yes/No');
+            createField('Test RichText', 'Text', new Map([['enable_richtext', true], ['enable_images', true]]));
+
+            cy.findByLabelText('Test RichText').awaitTinyMCE();
 
             // Intercept form submission to check the form display values sent
             cy.intercept('POST', '/front/asset/assetdefinition.form.php').as('saveFieldsDisplay');
