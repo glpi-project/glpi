@@ -69,10 +69,10 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('js_path', [$this, 'jsPath']),
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
-            new TwigFunction('add_css_file_plugin', [$this, 'add_css_file_plugin']),
-            new TwigFunction('add_javascript_file_plugin', [$this, 'add_javascript_file_plugin']),
-            new TwigFunction('add_javascript_module_plugin', [$this, 'add_javascript_module_plugin']),
-            new TwigFunction('add_header_tag_plugin', [$this, 'add_header_tag_plugin']),
+            new TwigFunction('get_plugins_css_files', [$this, 'getPluginsCssFiles']),
+            new TwigFunction('get_plugins_js_scripts_files', [$this, 'getPluginsJsScriptsFiles']),
+            new TwigFunction('get_plugins_js_modules_files', [$this, 'getPluginsJsModulesFiles']),
+            new TwigFunction('get_plugins_header_tags', [$this, 'getPluginsHeaderTags']),
         ];
     }
 
@@ -249,7 +249,7 @@ JAVASCRIPT;
         return Html::scriptBlock($script);
     }
 
-    public function add_css_file_plugin(bool $is_anonymous_page)
+    public function getPluginsCssFiles(bool $is_anonymous_page)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
@@ -283,7 +283,7 @@ JAVASCRIPT;
         return $newCssFile;
     }
 
-    public function add_javascript_file_plugin(bool $is_anonymous_page)
+    public function getPluginsJsScriptsFiles(bool $is_anonymous_page)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
@@ -320,7 +320,7 @@ JAVASCRIPT;
         return $newJsFile;
     }
 
-    public function add_javascript_module_plugin(bool $is_anonymous_page)
+    public function getPluginsJsModulesFiles(bool $is_anonymous_page)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
@@ -356,7 +356,8 @@ JAVASCRIPT;
         }
         return $newJsModule;
     }
-    public function add_header_tag_plugin(bool $is_anonymous_page)
+
+    public function getPluginsHeaderTags(bool $is_anonymous_page)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
