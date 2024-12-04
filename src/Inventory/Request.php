@@ -319,6 +319,19 @@ class Request extends AbstractRequest
         //For the moment it's the Agent who informs us about the active tasks
         $raw_data = $this->inventory->getRawData();
         if ($raw_data !== null && property_exists($raw_data, 'enabled-tasks')) {
+            $taskneededinv = [
+                'esx',
+                'netdiscovery',
+                'netinventory',
+                'remoteinventory'
+            ];
+            if (
+                !empty(array_intersect($raw_data->{'enabled-tasks'}, $taskneededinv)) &&
+                !in_array('inventory', $raw_data->{'enabled-tasks'})
+            ) {
+                $handle = $this->handleTask('inventory');
+                $response['tasks']['inventory'] = $handle;
+            }
             foreach ($raw_data->{'enabled-tasks'} as $task) {
                 $handle = $this->handleTask($task);
                 if (is_array($handle) && count($handle)) {
