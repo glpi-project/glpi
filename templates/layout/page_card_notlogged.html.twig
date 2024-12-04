@@ -33,31 +33,31 @@
 
 {% set theme = config('palette') %}
 {% if css_files is not defined %}
-   {% set not_logged_css_files = get_plugins_css_files(true) %}
-
-   {% set css_files = not_logged_css_files|merge([
-      {'path': 'public/lib/base.css'},
-      {'path': 'css/palettes/' ~ theme ~ '.scss'}
-   ]) %}
+   {% set css_files = [
+       {'path': 'public/lib/base.css'},
+       {'path': 'css/palettes/' ~ theme ~ '.scss'}
+   ] %}
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
-   {% set not_logged_javascript_files = get_plugins_js_scripts_files(true) %}
-
-   {% set js_files = not_logged_javascript_files|merge([
+   {% set js_files = [
        {'path': 'public/lib/base.js'},
        {'path': 'js/common.js'},
        {'path': 'public/lib/fuzzy.js'}
-   ]) %}
+   ] %}
 {% endif %}
-
 {% if js_modules is not defined %}
-   {% set js_modules = get_plugins_js_modules_files(true) %}
+   {% set js_modules = [] %}
+{% endif %}
+{% if custom_header_tags is not defined %}
+   {% set custom_header_tags = [] %}
 {% endif %}
 
-{% if custom_header_tags is not defined %}
-   {% set custom_header_tags = add_header_tag_plugin(true) %}
-{% endif %}
+{# JS scripts / modules are loaded in the header in anonymous pages #}
+{% set js_files = js_files|merge(get_plugins_js_scripts_files(true)) %}
+{% set js_modules = js_modules|merge(get_plugins_js_modules_files(true)) %}
+
+{% set is_anonymous_page = true %}
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">

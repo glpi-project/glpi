@@ -1124,11 +1124,13 @@ HTML;
         $theme = $_SESSION['glpipalette'] ?? 'auror';
 
         $tpl_vars = [
-            'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title'     => $title,
-            'theme'     => $theme,
-            'css_files' => [],
-            'js_files'  => [],
+            'lang'               => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'              => $title,
+            'theme'              => $theme,
+            'is_anonymous_page'  => false,
+            'css_files'          => [],
+            'js_files'           => [],
+            'custom_header_tags' => [],
         ];
 
         $tpl_vars['css_files'][] = ['path' => 'public/lib/base.css'];
@@ -1762,6 +1764,7 @@ HTML;
 
         $tpl_vars = [
             'js_files' => [],
+            'js_modules' => [],
         ];
 
        // On demand scripts
