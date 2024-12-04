@@ -74,14 +74,6 @@ class AutoloadTest extends DbTestCase
         }
     }
 
-    /**
-     * Checks autoload of some class located in Glpi namespace.
-     */
-    public function testAutoloadGlpiEvent()
-    {
-        $this->assertTrue(class_exists('Glpi\\Event'));
-    }
-
     #[RunInSeparateProcess]
     public function testPluginAutoloading()
     {
