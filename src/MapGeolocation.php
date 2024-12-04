@@ -143,7 +143,7 @@ trait MapGeolocation
 
          // Geolocation may be disabled in the browser (e.g. geo.enabled = false in firefox)
          if (!navigator.geolocation) {
-            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '200px');
+            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '400px');
             finalizeMap();
             return;
          }
@@ -164,13 +164,13 @@ trait MapGeolocation
                 // High accuracy
                 var zoom = 20;
             }
-            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '200px', {
+            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '400px', {
                 position: [pos.coords.latitude, pos.coords.longitude],
                 zoom: zoom
             });
             finalizeMap();
          }, function() {
-            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '200px');
+            map_elt = initMap($('#setlocation_container_{$rand}'), 'setlocation_{$rand}', '400px');
             finalizeMap();
          }, {enableHighAccuracy: true});
 
