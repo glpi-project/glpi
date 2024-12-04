@@ -39,9 +39,8 @@ use CommonGLPI;
 use Project;
 use Item_Project;
 
-class HasProjectsCapacity extends AbstractCapacity
+class IsProjectAssetCapacity extends AbstractCapacity
 {
-    // #Override
     public function getLabel(): string
     {
         return Project::getTypeName();
@@ -68,31 +67,22 @@ class HasProjectsCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$s projects attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Item_Project::class),
-            $this->countAssetsLinkedToPeerItem($classname, Item_Project::class)
+            __('%1$s assets used in %2$s projects'),
+            $this->countAssetsLinkedToPeerItem($classname, Item_Project::class),
+            $this->countPeerItemsUsage($classname, Item_Project::class)
         );
     }
 
-    // #Override
     public function onClassBootstrap(string $classname): void
     {
         // Allow our item to be linked to projects
         $this->registerToTypeConfig('project_asset_types', $classname);
-
-        // Register the projects tab into our item
-        CommonGLPI::registerStandardTab(
-            $classname,
-            Item_Project::class,
-            20 // Tab shouldn't be too far from the top
-        );
     }
 
-    // #Override
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from contracts types
-        $this->unregisterFromTypeConfig('contract_types', $classname);
+        // Unregister from project assets types
+        $this->unregisterFromTypeConfig('project_asset_types', $classname);
 
         // Delete related project data
         $project_item = new Item_Project();
@@ -103,12 +93,12 @@ class HasProjectsCapacity extends AbstractCapacity
         );
 
         // Clean history related to projects (both sides of the relation)
-        $this->deleteRelationLogs($classname, Project::getType());
+        $this->deleteRelationLogs($classname, Project::class);
 
         // Clean display preferences
         $this->deleteDisplayPreferences(
             $classname,
-            Project::rawSearchOptionsToAdd()
+            Project::rawSearchOptionsToAdd($classname)
         );
     }
 }
