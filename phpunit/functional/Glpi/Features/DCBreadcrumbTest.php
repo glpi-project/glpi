@@ -37,14 +37,15 @@ namespace tests\units\Glpi\Features;
 
 use DCRoom;
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rack;
 
 /**
- * Test for the {@link \Glpi\Features\Clonable} feature
+ * Test for the {@link \Glpi\Features\DCBreadcrumb} feature
  */
-class DCBreadcrumb extends DbTestCase
+class DCBreadcrumbTest extends DbTestCase
 {
-    protected function itemtypeProvider()
+    public static function itemtypeProvider()
     {
         /**
          * @var array $CFG_GLPI
@@ -52,24 +53,22 @@ class DCBreadcrumb extends DbTestCase
         global $CFG_GLPI;
 
         foreach ($CFG_GLPI["rackable_types"] as $itemtype) {
-            yield[
+            yield [
                 'class' => $itemtype,
             ];
         }
 
-        yield[
+        yield [
             'class' => Rack::class,
         ];
-        yield[
+        yield [
             'class' => DCRoom::class,
         ];
     }
 
-    /**
-     * @dataProvider itemtypeProvider
-     */
+    #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait($class)
     {
-        $this->boolean(in_array(\Glpi\Features\DCBreadcrumb::class, class_uses($class, true)));
+        $this->assertTrue(in_array(\Glpi\Features\DCBreadcrumb::class, class_uses($class, true)));
     }
 }

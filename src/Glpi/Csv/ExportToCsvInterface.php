@@ -42,7 +42,7 @@ interface ExportToCsvInterface
      *
      * @return string
      */
-    public function getFileName(): string;
+    public function getFileName(): ?string;
 
     /**
      * Get header of the csv file
