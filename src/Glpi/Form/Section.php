@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Override;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
@@ -82,6 +83,16 @@ final class Section extends CommonDBChild
                 Comment::class,
             ]
         );
+    }
+
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        return parent::prepareInputForUpdate($input);
     }
 
     /**

@@ -98,11 +98,13 @@ if (!$DB->tableExists('glpi_forms_sections')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_sections` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `rank` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
             KEY `forms_forms_id` (`forms_forms_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
@@ -112,7 +114,9 @@ if (!$DB->tableExists('glpi_forms_questions')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_questions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
             `name` varchar(255) NOT NULL DEFAULT '',
             `type` varchar(255) NOT NULL DEFAULT '',
             `is_mandatory` tinyint NOT NULL DEFAULT '0',
@@ -121,8 +125,10 @@ if (!$DB->tableExists('glpi_forms_questions')) {
             `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
             `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
             PRIMARY KEY (`id`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
-            KEY `forms_sections_id` (`forms_sections_id`)
+            KEY `forms_sections_id` (`forms_sections_id`),
+            KEY `forms_sections_uuid` (`forms_sections_uuid`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
@@ -130,13 +136,17 @@ if (!$DB->tableExists('glpi_forms_comments')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_comments` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `uuid` varchar(255) NOT NULL DEFAULT '',
             `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `rank` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
-            KEY `forms_sections_id` (`forms_sections_id`)
+            KEY `forms_sections_id` (`forms_sections_id`),
+            KEY `forms_sections_uuid` (`forms_sections_uuid`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
@@ -306,6 +316,19 @@ if (GLPI_VERSION == "11.0.0-dev") {
 
     $migration->addField("glpi_forms_forms", "forms_categories_id", "fkey");
     $migration->addKey("glpi_forms_forms", "forms_categories_id");
+
+    $migration->addField("glpi_forms_sections", "uuid", "string");
+    $migration->addKey("glpi_forms_sections", "uuid", type: 'UNIQUE');
+
+    $migration->addField("glpi_forms_questions", "uuid", "string");
+    $migration->addField("glpi_forms_questions", "forms_sections_uuid", "string");
+    $migration->addKey("glpi_forms_questions", "uuid", type: 'UNIQUE');
+    $migration->addKey("glpi_forms_questions", "forms_sections_uuid");
+
+    $migration->addField("glpi_forms_comments", "uuid", "string");
+    $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
+    $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
+    $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
