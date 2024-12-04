@@ -333,7 +333,7 @@ abstract class Asset extends CommonDBTM
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
-        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['name'], $custom_fields), $custom_fields);
+        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
