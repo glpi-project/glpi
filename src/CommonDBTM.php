@@ -6831,19 +6831,13 @@ TWIG, $twig_params);
         };
     }
 
-    public static function findByUuid(string $uuid): ?self
+    public static function getByUuid(string $uuid): ?self
     {
-        $search_by_uuid = (new static())->find(['uuid' => $uuid]);
-        if (count($search_by_uuid) == 0) {
-            return null;
-        } elseif (count($search_by_uuid) == 1) {
-            $row = array_pop($search_by_uuid);
-            $comment = new static();
-            $comment->getFromResultSet($row);
-            $comment->post_getFromDB();
-            return $comment;
-        } else {
-            throw new RuntimeException("Duplicated UUID: $uuid");
+        $item = new static();
+        if ($item->getFromDBByCrit(['uuid' => $uuid])) {
+            return $item;
         }
+
+        return null;
     }
 }

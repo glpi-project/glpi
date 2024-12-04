@@ -530,7 +530,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
                 );
             }
 
-            $section = Section::findByUuid($uuid);
+            $section = Section::getByUuid($uuid);
             if ($section === null) {
                 // Add new section
                 $section = new Section();
@@ -637,13 +637,13 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             }
 
             // Get parent id
-            $section = Section::findByUuid($section_uuid);
+            $section = Section::getByUuid($section_uuid);
             if ($section === null) {
                 throw new RuntimeException("Parent section not found: $section_uuid");
             }
             $question_data['forms_sections_id'] = $section->getID();
 
-            $question = Question::findByUuid($uuid);
+            $question = Question::getByUuid($uuid);
             if ($question === null) {
                 // Add new question
                 $question = new Question();
@@ -756,13 +756,13 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             }
 
             // Get parent id
-            $section = Section::findByUuid($section_uuid);
+            $section = Section::getByUuid($section_uuid);
             if ($section === null) {
                 throw new RuntimeException("Parent section not found: $section_uuid");
             }
             $comment_data['forms_sections_id'] = $section->getID();
 
-            $comment = Comment::findByUuid($uuid);
+            $comment = Comment::getByUuid($uuid);
             if ($comment === null) {
                 // Add new question
                 $comment = new Comment();

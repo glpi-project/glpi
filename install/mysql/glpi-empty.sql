@@ -9506,7 +9506,7 @@ CREATE TABLE `glpi_forms_sections` (
     `rank` int NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
-    KEY `uuid` (`uuid`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -9525,7 +9525,7 @@ CREATE TABLE `glpi_forms_questions` (
     `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
-    KEY `uuid` (`uuid`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `forms_sections_id` (`forms_sections_id`),
     KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -9541,7 +9541,7 @@ CREATE TABLE `glpi_forms_comments` (
     `rank` int NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
-    KEY `uuid` (`uuid`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `forms_sections_id` (`forms_sections_id`),
     KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

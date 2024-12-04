@@ -105,7 +105,7 @@ if (!$DB->tableExists('glpi_forms_sections')) {
             `rank` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
-            KEY `uuid` (`uuid`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `forms_forms_id` (`forms_forms_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
@@ -126,7 +126,7 @@ if (!$DB->tableExists('glpi_forms_questions')) {
             `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
-            KEY `uuid` (`uuid`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `forms_sections_id` (`forms_sections_id`),
             KEY `forms_sections_uuid` (`forms_sections_uuid`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
@@ -144,6 +144,7 @@ if (!$DB->tableExists('glpi_forms_comments')) {
             `rank` int NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `forms_sections_id` (`forms_sections_id`),
             KEY `forms_sections_uuid` (`forms_sections_uuid`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
@@ -317,16 +318,16 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addKey("glpi_forms_forms", "forms_categories_id");
 
     $migration->addField("glpi_forms_sections", "uuid", "string");
-    $migration->addKey("glpi_forms_sections", "uuid");
+    $migration->addKey("glpi_forms_sections", "uuid", type: 'UNIQUE');
 
     $migration->addField("glpi_forms_questions", "uuid", "string");
     $migration->addField("glpi_forms_questions", "forms_sections_uuid", "string");
-    $migration->addKey("glpi_forms_questions", "uuid");
+    $migration->addKey("glpi_forms_questions", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_questions", "forms_sections_uuid");
 
     $migration->addField("glpi_forms_comments", "uuid", "string");
     $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
-    $migration->addKey("glpi_forms_comments", "uuid");
+    $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
 }
 
