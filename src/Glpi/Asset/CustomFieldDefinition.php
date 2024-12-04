@@ -157,12 +157,15 @@ final class CustomFieldDefinition extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        // Spaces are replaced with underscores and the name is made lowercase. Only lowercase letters and underscores are kept.
-        $input['system_name'] = preg_replace('/[^a-z_]/', '', strtolower(str_replace(' ', '_', $input['system_name'])));
-        // The name cannot start with an underscore
-        $input['system_name'] = ltrim($input['system_name'], '_');
-        if ($input['system_name'] === '') {
-            Session::addMessageAfterRedirect(__s('The system name must not be empty'), false, ERROR);
+        if (!is_string($input['system_name']) || preg_match('/^[A-Za-z_]+$/i', $input['system_name']) !== 1) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('System name')
+                )),
+                false,
+                ERROR
+            );
             return false;
         }
 

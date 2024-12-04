@@ -54,7 +54,7 @@
         item.fields['system_name'],
         __('System name'),
         {
-            readonly: not item.isNewItem(),
+            disabled: not item.isNewItem(),
             'helper': helper
         }
     ) }}
@@ -143,12 +143,12 @@
             const existing_names = {{ existing_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
             // label is made lowercase and spaces are replaced with underscores. All other characters are removed
             $('#mainformtable input[name="system_name"]')
-                .val($('#mainformtable input[name="label"]').val().normalize('NFD').toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
-            const system_name = $('#mainformtable input[name="system_name"]').val();
+                .val($('#mainformtable input[name="label"]').val().normalize('NFD').replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+            const system_name = $('#mainformtable input[name="system_name"]').val().toLowerCase();
             if (reserved_names.includes(system_name) || system_name.endsWith('type') || system_name.endsWith('model')) {
-                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity('{{ __('The system name is a reserved name. Please enter a different label or manually change the system name.') }}');
+                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is a reserved name. Please enter a different label or manually change the system name.'));
             } else if (existing_names.includes(system_name)) {
-                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity('{{ __('The system name is already in use. Please enter a different label or manually change the system name.') }}');
+                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is already in use. Please enter a different label or manually change the system name.'));
             } else {
                 $('#mainformtable input[name="system_name"]').get(0).setCustomValidity('');
             }
