@@ -248,6 +248,11 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     public function autoloadClass(string $classname): void
     {
         $ns = self::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+
+        if (!\str_starts_with($classname, $ns)) {
+            return;
+        }
+
         $patterns = [
             '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
             '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',

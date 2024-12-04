@@ -40,6 +40,12 @@ use Glpi\Asset\AssetDefinitionManager;
 
 class DbTestCase extends \GLPITestCase
 {
+    /**
+     * Indicates whether the custom assets autoloader is registered.
+     * @var boolean
+     */
+    private $is_asset_autoloader_registered = false;
+
     public function setUp(): void
     {
         global $DB;
@@ -358,6 +364,17 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Register the custom asset autoloader. This autoloader is not available by default in the testing context.
+     */
+    protected function registerAssetsAutoloader(): void
+    {
+        if (!$this->is_asset_autoloader_registered) {
+            AssetDefinitionManager::getInstance()->registerAutoload();
+            $this->is_asset_autoloader_registered = true;
+        }
+    }
+
+    /**
      * Initialize a definition.
      *
      * @param string $system_name
@@ -370,6 +387,8 @@ class DbTestCase extends \GLPITestCase
         array $capacities = [],
         ?array $profiles = null,
     ): AssetDefinition {
+        $this->registerAssetsAutoloader();
+
         if ($profiles === null) {
             // Initialize with all standard rights for super admin profile
             $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
