@@ -329,8 +329,7 @@ class Request extends AbstractRequest
                 !empty(array_intersect($raw_data->{'enabled-tasks'}, $taskneededinv)) &&
                 !in_array('inventory', $raw_data->{'enabled-tasks'})
             ) {
-                $handle = $this->handleTask('inventory');
-                $response['tasks']['inventory'] = $handle;
+                $response['tasks']['inventory'] = $this->handleTask('inventory');
             }
             foreach ($raw_data->{'enabled-tasks'} as $task) {
                 $handle = $this->handleTask($task);
