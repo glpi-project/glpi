@@ -45,7 +45,7 @@
 
     {% set helper %}
         {{ __('The system name field corresponds to what will be used when development is involved. Examples: API calls, webhooks, etc.') }}
-        {{  _('It can be personalized, but some words are reserved such as classes from GLPI like Computer, Monitor, etc.') }}
+        {{ __('It can be personalized, but some words are reserved such as classes from GLPI like Computer, Monitor, etc.') }}
         {{ __('Items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
     {% endset %}
     {{ fields.textField('label', item.fields['label'], __('Label')) }}
