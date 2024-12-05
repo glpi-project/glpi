@@ -48,8 +48,8 @@ if (PHP_SAPI === 'cli') {
     try {
         $kernel->loadCommonGlobalConfig();
     } catch (MaintenanceException $e) {
-        echo $e->getMessage();
-        exit;
+        echo $e->getMessage() . PHP_EOL;
+        exit(1);
     }
 }
 

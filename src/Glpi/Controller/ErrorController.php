@@ -162,14 +162,6 @@ class ErrorController extends AbstractController
             }
         }
 
-        switch (true) {
-            case $exception instanceof MaintenanceException:
-                return new Response(TemplateRenderer::getInstance()->render('maintenance.html.twig', [
-                    'title'            => "MAINTENANCE MODE",
-                    'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-                ]));
-        }
-
         $trace = null;
         if (
             (
