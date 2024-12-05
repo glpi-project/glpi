@@ -224,6 +224,8 @@ class Item_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         if (!$withtemplate) {
             $nb = 0;
@@ -238,7 +240,7 @@ class Item_Project extends CommonDBRelation
                    // Not used now
                     if (
                         Session::haveRight("project", Project::READALL)
-                        && ($item instanceof CommonDBTM)
+                        && ($item instanceof CommonDBTM || in_array($item->getType(), $CFG_GLPI["project_asset_types"]))
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
@@ -300,28 +302,37 @@ class Item_Project extends CommonDBRelation
             $project = new Project();
             $project->getFromDB($value['projects_id']);
 
+            if ($project === false) {
+                continue;
+            }
+
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
-            if (!empty($project->fields)) {
-                $data = [
-                    'name' => $project->getLink(),
-                    'projectstates_id' => $state !== false
-                            ? sprintf(
-                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
-                                htmlescape($state->fields['color']),
-                                htmlescape($state->fields['color']),
-                                htmlescape($state->fields['name']),
-                            )
-                            : '',
-                    'priority' => sprintf(
-                        '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
-                        htmlescape($priority)
-                    ),
-                    'percent_done' => $project->fields['percent_done'] . '%',
-                ];
-                $entries[] = array_merge($project->fields, $data);
-            }
+            $data = [
+                'name' => $project->getLink(),
+                'projectstates_id' => $state !== false
+                        ? sprintf(
+                            '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                            htmlescape($state->fields['color']),
+                            htmlescape($state->fields['color']),
+                            htmlescape($state->fields['name']),
+                        )
+                        : '',
+                'priority' => sprintf(
+                    '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
+                    htmlescape($priority)
+                ),
+                'percent_done' => '<div class="progress bg-light border border-secondary-subtle" style="height: 22px">
+                        <div class="progress-bar progress-bar-striped text-body" role="progressbar"
+                            style="width: ' . $project->fields['percent_done'] . '%; background-color: primary;"
+                            aria-valuenow="' . $project->fields['percent_done'] . '"
+                            aria-valuemin="0" aria-valuemax="100">
+                        ' . $project->fields['percent_done'] . '%
+                        </div>
+                    </div>'
+            ];
+            $entries[] = array_merge($project->fields, $data);
         }
 
         $cols = [
@@ -338,8 +349,8 @@ class Item_Project extends CommonDBRelation
                 'name' => 'raw_html',
                 'priority' => 'raw_html',
                 'projectstates_id' => 'raw_html',
-                'creation_date' => 'date',
                 'percent_done' => 'raw_html',
+                'creation_date' => 'date',
             ]
         ];
 
