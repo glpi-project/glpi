@@ -43,6 +43,7 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Features\AssetImage;
 use Glpi\Search\SearchOption;
 use Group;
 use Location;
@@ -55,6 +56,8 @@ use User;
  */
 final class AssetDefinition extends AbstractDefinition
 {
+    use AssetImage;
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
@@ -264,7 +267,14 @@ TWIG, $twig_params);
                 $input[$json_field] = [];
             }
         }
+        $input = $this->managePictures($input);
         return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->managePictures($input);
+        return parent::prepareInputForUpdate($input);
     }
 
     protected function prepareInput(array $input): array|bool
