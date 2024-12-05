@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\MaintenanceException;
+
 if (PHP_SAPI === 'cli') {
     // Check the resources state before trying to instanciate the Kernel.
     // It must be done here as this check must be done even when the Kernel
@@ -43,7 +45,12 @@ if (PHP_SAPI === 'cli') {
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
     $kernel = new \Glpi\Kernel\Kernel();
-    $kernel->loadCommonGlobalConfig();
+    try {
+        $kernel->loadCommonGlobalConfig();
+    } catch (MaintenanceException $e) {
+        echo $e->getMessage();
+        exit;
+    }
 }
 
 /**
