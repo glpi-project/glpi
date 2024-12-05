@@ -1038,8 +1038,6 @@ JS);
                 continue;
             }
 
-            $icon = self::checkIcon($icon);
-
             echo '<div class="impact-side-filter-itemtypes-item">';
             echo '<h4><img class="impact-side-icon" src="' . htmlescape($CFG_GLPI['root_doc']) . '/' . htmlescape($icon) . '" title="' . htmlescape($itemtype::getTypeName()) . '" data-itemtype="' . htmlescape($itemtype) . '">';
             echo "<span>" . htmlescape($itemtype::getTypeName()) . "</span></h4>";
@@ -1270,29 +1268,6 @@ JS);
     }
 
     /**
-     * Check if the icon path is valid, if not return a fallback path
-     *
-     * @param string $icon_path
-     * @return string
-     */
-    private static function checkIcon(string $icon_path): string
-    {
-        // Special case for images returned dynamicly
-        if (str_contains($icon_path, ".php")) {
-            return $icon_path;
-        }
-
-        // Check if icon exist on the filesystem
-        $file_path = GLPI_ROOT . "/$icon_path";
-        if (file_exists($file_path) && is_file($file_path)) {
-            return $icon_path;
-        }
-
-        // Fallback "default" icon
-        return "pics/impact/default.png";
-    }
-
-    /**
      * Add a node to the node list if missing
      *
      * @param array      $nodes  Nodes of the graph
@@ -1314,7 +1289,7 @@ JS);
         }
 
         // Get web path to the image matching the itemtype from config
-        $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "";
+        $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "pics/impact/default.png";
 
         $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
             'itemtype' => get_class($item),
@@ -1323,8 +1298,6 @@ JS);
         if ($plugin_icon && is_string($plugin_icon)) {
             $image_name = ltrim($plugin_icon, '/');
         }
-
-        $image_name = self::checkIcon($image_name);
 
         // Define basic data of the new node
         $new_node = [
