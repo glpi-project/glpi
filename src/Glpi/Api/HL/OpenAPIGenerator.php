@@ -168,7 +168,7 @@ EOT;
                     if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
                         /** @var class-string<CommonGLPI> $itemtype */
                         $itemtype = $known_schema['x-itemtype'];
-                        $known_schema['description'] = method_exists($itemtype, 'getTypeName') ? $itemtype::getTypeName(1) : 'No description available';
+                        $known_schema['description'] = $itemtype::getTypeName(1);
                     }
                     $schemas[$calculated_name] = $known_schema;
                     $schemas[$calculated_name]['x-controller'] = $controller::class;
