@@ -300,9 +300,9 @@ class Item_Project extends CommonDBRelation
         foreach ($item_projects as $value) {
             $used[] = $value['projects_id'];
             $project = new Project();
-            $project->getFromDB($value['projects_id']);
+            $result = $project->getFromDB($value['projects_id']);
 
-            if ($project === false) {
+            if ($result === false) {
                 continue;
             }
 
