@@ -240,7 +240,7 @@ class Item_Project extends CommonDBRelation
                    // Not used now
                     if (
                         Session::haveRight("project", Project::READALL)
-                        && ($item instanceof CommonDBTM || in_array($item->getType(), $CFG_GLPI["project_asset_types"]))
+                        && ($item instanceof CommonDBTM)
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
