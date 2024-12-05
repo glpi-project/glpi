@@ -57,6 +57,11 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         return _n('Link Problem/Change', 'Links Problem/Change', $nb);
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'maintain';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView()) {

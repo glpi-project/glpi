@@ -60,6 +60,11 @@ class Lockedfield extends CommonDBTM
         return ['admin', Inventory::class, self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
     public static function canView(): bool
     {
         return self::canUpdate();

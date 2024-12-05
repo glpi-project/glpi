@@ -69,7 +69,7 @@ class GenericFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $form_action = $this->getFormAction($request, $class);
+        $form_action = $this->getFormAction($request);
 
         if (!$form_action) {
             throw new BadRequestHttpException();
@@ -167,10 +167,7 @@ class GenericFormController extends AbstractController
         };
     }
 
-    /**
-     * @param class-string<CommonDBTM> $class
-     */
-    private function getFormAction(Request $request, string $class): ?string
+    private function getFormAction(Request $request): ?string
     {
         if ($request->getMethod() === 'POST') {
             foreach (self::SUPPORTED_ACTIONS as $action) {
