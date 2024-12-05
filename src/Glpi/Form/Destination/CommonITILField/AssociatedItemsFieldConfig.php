@@ -95,12 +95,12 @@ final class AssociatedItemsFieldConfig implements JsonFieldInterface, ConfigWith
         return $this->strategy;
     }
 
-    public function getSpecificQuestionIds(): ?array
+    public function getSpecificQuestionIds(): array
     {
         return $this->specific_question_ids;
     }
 
-    public function getSpecificAssociatedItems(): ?array
+    public function getSpecificAssociatedItems(): array
     {
         return $this->specific_associated_items;
     }

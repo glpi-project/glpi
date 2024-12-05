@@ -59,10 +59,10 @@ enum ValidationFieldStrategy: string
         return match ($this) {
             self::NO_VALIDATION    => null,
             self::SPECIFIC_ACTORS  => $this->getActorsFromSpecificActors(
-                $config->getSpecificActors() ?? []
+                $config->getSpecificActors()
             ),
             self::SPECIFIC_ANSWERS => $this->getActorsForSpecificAnswers(
-                $config->getSpecificQuestionIds() ?? [],
+                $config->getSpecificQuestionIds(),
                 $answers_set
             ),
         };

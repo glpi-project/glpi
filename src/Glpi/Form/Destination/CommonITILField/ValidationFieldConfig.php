@@ -95,12 +95,12 @@ final class ValidationFieldConfig implements JsonFieldInterface, ConfigWithForei
         return $this->strategy;
     }
 
-    public function getSpecificQuestionIds(): ?array
+    public function getSpecificQuestionIds(): array
     {
         return $this->specific_question_ids;
     }
 
-    public function getSpecificActors(): ?array
+    public function getSpecificActors(): array
     {
         return $this->specific_actors;
     }

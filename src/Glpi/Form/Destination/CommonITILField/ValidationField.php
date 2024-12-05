@@ -77,7 +77,7 @@ class ValidationField extends AbstractConfigField
         // Specific actors are stored as an array of itemtype => items_ids to be generic.
         // We need to convert keys to foreign keys to be able to use them with the actors component.
         $specific_actors = [];
-        foreach ($config->getSpecificActors() ?? [] as $itemtype => $items_ids) {
+        foreach ($config->getSpecificActors() as $itemtype => $items_ids) {
             $specific_actors[getForeignKeyFieldForItemType($itemtype)] = $items_ids;
         }
 
@@ -108,7 +108,7 @@ class ValidationField extends AbstractConfigField
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
             'specific_answers_extra_field' => [
-                'values'          => $config->getSpecificQuestionIds() ?? [],
+                'values'          => $config->getSpecificQuestionIds(),
                 'input_name'      => $input_name . "[" . ValidationFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getActorsQuestionsValuesForDropdown($form),
                 'aria_label'      => __("Select questions..."),
