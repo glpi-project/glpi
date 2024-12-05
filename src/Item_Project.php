@@ -284,7 +284,7 @@ class Item_Project extends CommonDBRelation
         return true;
     }
 
-    public static function showForAsset(CommonDBTM $item)
+    private static function showForAsset(CommonDBTM $item): void
     {
 
         $item_project = new self();
