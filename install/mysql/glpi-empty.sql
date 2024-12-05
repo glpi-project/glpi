@@ -10086,8 +10086,6 @@ CREATE TABLE `glpi_assets_customfielddefinitions` (
   KEY `system_name` (`system_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-SET FOREIGN_KEY_CHECKS=1;
-
 DROP TABLE IF EXISTS `glpi_contracts_users`;
 CREATE TABLE `glpi_contracts_users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -10097,3 +10095,5 @@ CREATE TABLE `glpi_contracts_users` (
   UNIQUE KEY `unicity` (`contracts_id`, `users_id`),
   KEY `item` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+SET FOREIGN_KEY_CHECKS=1;

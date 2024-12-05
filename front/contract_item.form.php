@@ -54,7 +54,9 @@ if (isset($_POST["add"])) {
 
     if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
         $contract_item = new Contract_User();
+        // convert form data to match the Contract_User case
         $_POST['users_id'] = $_POST['items_id'];
+        unset($_POST['itemtype'], $_POST['items_id']);
     } else {
         $contract_item   = new Contract_Item();
     }

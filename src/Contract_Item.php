@@ -208,19 +208,12 @@ class Contract_Item extends CommonDBRelation
                 case Contract::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
-                        $nb += Contract_User::countForContract($item->fields['id']);
+                        $nb += countElementsInTable(static::getTable(), ['contracts_id' => $item->fields['id']]);
                     }
                     return self::createTabEntry(_n('Affected item', 'Affected items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
 
                 default:
-                    if (
-                        $_SESSION['glpishow_count_on_tabs']
-                        && in_array(
-                            $item::class,
-                            array_merge($CFG_GLPI["contract_types"], [User::class]),
-                            true
-                        )
-                    ) {
+                    if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -239,13 +232,7 @@ class Contract_Item extends CommonDBRelation
                 self::showForContract($item, $withtemplate);
                 break;
             default:
-                if (
-                    in_array(
-                        $item::class,
-                        array_merge($CFG_GLPI["contract_types"], [User::class]),
-                        true
-                    )
-                ) {
+                if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
                     self::showForItem($item, $withtemplate);
                 }
                 break;
@@ -419,7 +406,7 @@ TWIG, $twig_params);
         $canedit = $contract->can($instID, UPDATE);
         $rand    = mt_rand();
 
-        $types_iterator = iterator_to_array(self::getDistinctTypes($instID));
+        $types_iterator = self::getDistinctTypes($instID);
 
         $data    = [];
         $totalnb = 0;
@@ -501,10 +488,9 @@ TWIG, $twig_params);
             }
         }
 
+        // Add contract users
         $contract_users_table = Contract_User::getTable();
         $users_table = User::getTable();
-
-        // Add contract users
         $user_params = [
             'SELECT' => [
                 "$users_table.*",
@@ -580,14 +566,11 @@ TWIG, $twig_params);
         foreach ($data as $itemtype => $datas) {
             foreach ($datas as $objdata) {
                 $entry = [
-                    'itemtype' => self::class,
+                    'itemtype' => $itemtype === User::class ? Contract_User::class : self::class,
                     'id'       => $objdata['linkid'],
                     'row_class' => isset($objdata['is_deleted']) && $objdata['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype::getTypeName(1),
                 ];
-                if ($itemtype === User::class) {
-                    $entry['itemtype'] = Contract_User::class;
-                }
                 $item = new $itemtype();
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
@@ -600,6 +583,8 @@ TWIG, $twig_params);
                         );
                     }
                     $entry['entity'] = $entity_cache[$objdata['entity']];
+                } else {
+                    $entry['entity'] = '-';
                 }
                 $entry['serial'] = $objdata['serial'] ?? '-';
                 $entry['otherserial'] = $objdata['otherserial'] ?? '-';
@@ -613,7 +598,7 @@ TWIG, $twig_params);
                     }
                     $entry['status'] = $state_cache[$objdata['states_id']];
                 } else {
-                    $entry['status'] = '';
+                    $entry['status'] = '-';
                 }
                 $entries[] = $entry;
             }

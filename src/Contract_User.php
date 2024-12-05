@@ -47,6 +47,8 @@ class Contract_User extends CommonDBRelation
     public static $itemtype_2 = 'User';
     public static $items_id_2 = 'users_id';
 
+    public static $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here
+
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -80,10 +82,5 @@ class Contract_User extends CommonDBRelation
     public static function getTypeName($nb = 0)
     {
         return User::getTypeName($nb);
-    }
-
-    public static function countForContract($contracts_id)
-    {
-        return countElementsInTable(static::getTable(), ['contracts_id' => $contracts_id]);
     }
 }
