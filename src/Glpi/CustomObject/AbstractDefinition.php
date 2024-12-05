@@ -200,6 +200,10 @@ abstract class AbstractDefinition extends CommonDBTM
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
                 'reserved_system_names' => $definition_manager->getReservedSystemNames(),
+                'existing_system_names' => array_values(array_filter(array_map(
+                    static fn (self $definition) => $definition->fields['system_name'],
+                    $definition_manager->getDefinitions()
+                ), fn ($name) => $name !== $this->fields['system_name'])),
                 'item_count'            => $item_count,
             ]
         );
@@ -304,11 +308,11 @@ abstract class AbstractDefinition extends CommonDBTM
         $custom_fields = [];
         $custom_field_definitions = $this->getCustomFieldDefinitions();
         foreach ($custom_field_definitions as $custom_field) {
-            $custom_fields[$custom_field->getID()] = $custom_field->fields['name'];
+            $custom_fields[$custom_field->getID()] = $custom_field->fields['system_name'];
             foreach ($custom_field->getDecodedTranslationsField() as $language => $translation) {
                 $translations[] = [
                     'id' => $custom_field->getID(),
-                    'name' => $custom_field->fields['name'],
+                    'name' => $custom_field->fields['system_name'],
                     'language' => $language,
                     'translation' => ['one' => $translation],
                 ];
@@ -354,6 +358,9 @@ abstract class AbstractDefinition extends CommonDBTM
                 ERROR
             );
             return false;
+        }
+        if (empty($input['label'])) {
+            $input['label'] = $input['system_name'];
         }
         return $this->prepareInput($input);
     }
@@ -450,6 +457,19 @@ abstract class AbstractDefinition extends CommonDBTM
                     ERROR
                 );
                 $has_errors = true;
+            } else {
+                $existing_system_names = array_map(static fn ($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
+                if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
+                    Session::addMessageAfterRedirect(
+                        htmlescape(sprintf(
+                            __('The system name must be unique.'),
+                            $input['system_name']
+                        )),
+                        false,
+                        ERROR
+                    );
+                    $has_errors = true;
+                }
             }
         }
 
@@ -627,7 +647,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $language = Session::getLanguage();
         $current_translation = $translations[$language] ?? null;
         if ($current_translation === null) {
-            return $this->fields['system_name'];
+            return $this->fields['label'];
         }
 
         // retrieve the formulas associated to the language
@@ -641,7 +661,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
         $category_index_string = $found_category->id;
 
-        return $current_translation[$category_index_string] ?? $this->fields['system_name'];
+        return $current_translation[$category_index_string] ?? $this->fields['label'];
     }
 
     public function rawSearchOptions()
@@ -653,6 +673,15 @@ abstract class AbstractDefinition extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'system_name',
             'name'          => __('System name'),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+        ];
+
+        $search_options[] = [
+            'id'            => 2,
+            'table'         => self::getTable(),
+            'field'         => 'label',
+            'name'          => __('Label'),
             'datatype'      => 'itemlink',
             'massiveaction' => false,
         ];

@@ -64,7 +64,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -72,7 +72,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_2 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_text',
+            'system_name' => 'test_text',
             'label' => 'Test text',
             'type' => TextType::class,
             'default_value' => 'default text',
@@ -282,7 +282,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -296,7 +296,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_2 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_text',
+            'system_name' => 'test_text',
             'label' => 'Test text',
             'type' => TextType::class,
             'default_value' => 'default text',
@@ -311,7 +311,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_4 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_number',
+            'system_name' => 'test_number',
             'label' => 'Test number',
             'type' => NumberType::class,
             'default_value' => 420,
@@ -325,7 +325,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_5 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_date',
+            'system_name' => 'test_date',
             'label' => 'Test date',
             'type' => DateType::class,
             'default_value' => '2021-01-01',
@@ -339,7 +339,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_6 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_datetime',
+            'system_name' => 'test_datetime',
             'label' => 'Test datetime',
             'type' => DateTimeType::class,
             'default_value' => '2021-01-01 03:25:15',
@@ -353,7 +353,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_7 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_dropdown',
+            'system_name' => 'test_dropdown',
             'label' => 'Test dropdown',
             'type' => DropdownType::class,
             'itemtype' => \Computer::class,
@@ -366,7 +366,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_8 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_url',
+            'system_name' => 'test_url',
             'label' => 'Test url',
             'type' => URLType::class,
             'default_value' => 'https://glpi-project.org',
@@ -380,7 +380,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $custom_field_definition_9 = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_bool',
+            'system_name' => 'test_bool',
             'label' => 'Test bool',
             'type' => BooleanType::class,
             'default_value' => '1',
@@ -401,7 +401,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test',
+            'system_name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -409,7 +409,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $this->assertFalse($field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test',
+            'system_name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -437,7 +437,7 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $fields_id = $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_datetime',
+            'system_name' => 'test_datetime',
             'label' => 'Test datetime',
             'type' => DateTimeType::class,
             'default_value' => '2021-01-01 03:25:15',
@@ -494,14 +494,14 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $field_1->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test',
+            'system_name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'default_value' => 'default',
         ]);
         $field_2->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_two',
+            'system_name' => 'test_two',
             'label' => 'Test2',
             'type' => DropdownType::class,
             'itemtype' => \Computer::class,
@@ -542,7 +542,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $field = new \Glpi\Asset\CustomFieldDefinition();
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test',
+            'system_name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
             'translations' => [
@@ -559,7 +559,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $field = new \Glpi\Asset\CustomFieldDefinition();
         $this->assertGreaterThan(0, $field->add([
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test',
+            'system_name' => 'test',
             'label' => 'Test',
             'type' => StringType::class,
         ]));

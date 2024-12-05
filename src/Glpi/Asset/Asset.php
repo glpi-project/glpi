@@ -333,7 +333,7 @@ abstract class Asset extends CommonDBTM
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
-        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['name'], $custom_fields), $custom_fields);
+        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
@@ -377,7 +377,7 @@ abstract class Asset extends CommonDBTM
         $custom_fields = $this->getDecodedCustomFields();
 
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             if (!isset($input[$custom_field_name])) {
                 continue;
             }
@@ -406,7 +406,7 @@ abstract class Asset extends CommonDBTM
         }
 
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-            $f_name = 'custom_' . $custom_field->fields['name'];
+            $f_name = 'custom_' . $custom_field->fields['system_name'];
             $this->fields[$f_name] = $custom_field->fields['default_value'];
         }
         return true;
@@ -422,7 +422,7 @@ abstract class Asset extends CommonDBTM
         $custom_field_values = $this->getDecodedCustomFields();
 
         foreach ($custom_field_definitions as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             $value = $custom_field_values[$custom_field->getID()] ?? $custom_field->fields['default_value'];
 
             $this->fields[$custom_field_name] = $custom_field->getFieldType()->formatValueFromDB($value);
@@ -435,7 +435,7 @@ abstract class Asset extends CommonDBTM
         // Fill old values for custom fields
         $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_field_definitions as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             $this->oldvalues[$custom_field_name] = $this->fields[$custom_field_name];
         }
     }
@@ -445,7 +445,7 @@ abstract class Asset extends CommonDBTM
         $this->post_updateItemFromAssignableItem($history);
         if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {
             foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-                $custom_field_name = 'custom_' . $custom_field->fields['name'];
+                $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
                 $field_type = $custom_field->getFieldType();
                 $old_value = $field_type->formatValueFromDB($this->oldvalues[$custom_field_name] ?? $field_type->getDefaultValue());
                 $current_value = $field_type->formatValueFromDB($this->fields[$custom_field_name] ?? null);
@@ -470,7 +470,7 @@ abstract class Asset extends CommonDBTM
     public function getNonLoggedFields(): array
     {
         $ignored_fields = array_map(
-            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['name'],
+            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
             static::getDefinition()->getCustomFieldDefinitions()
         );
         $ignored_fields[] = 'custom_fields';
