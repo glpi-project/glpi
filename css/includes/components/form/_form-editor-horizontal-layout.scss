@@ -102,7 +102,14 @@
                 }
 
                 [data-glpi-form-editor-horizontal-block-placeholder] {
+                    min-width: 1.5rem !important;
                     max-width: 1.5rem !important;
+                }
+
+                [data-glpi-form-editor-horizontal-block-toolbar] {
+                    @include media-breakpoint-down(sm) {
+                        display: none !important;
+                    }
                 }
             }
         }
@@ -144,7 +151,7 @@
             }
         }
 
-        &:has(> [data-glpi-form-editor-block]:nth-of-type(4)) {
+        &:has(> section:nth-of-type(4)) {
             [data-glpi-form-editor-horizontal-block-toolbar],
             [data-glpi-form-editor-on-click="duplicate-question"],
             [data-glpi-form-editor-on-click="duplicate-comment"] {

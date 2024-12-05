@@ -793,7 +793,6 @@ export class GlpiFormEditorController
 
             item_container.addClass("active");
 
-            // Scroll to the active item
             const horizontal_blocks = item_container.closest("section[data-glpi-form-editor-horizontal-blocks]");
             if (horizontal_blocks.length > 0) {
                 // Set active the horizontal container

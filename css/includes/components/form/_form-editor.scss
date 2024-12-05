@@ -371,6 +371,16 @@
     }
 
     @include media-breakpoint-down(sm) {
+        width: 100%;
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection__rendered > span {
+            margin-right: auto;
+        }
+
         &:not(:has(> :nth-child(2).d-none)) {
             > div:not(:only-child) {
                 &:first-child {
@@ -387,14 +397,6 @@
                         border-top-left-radius: 0;
                         border-top-right-radius: 0;
                     }
-                }
-
-                .select2-container {
-                    width: 100% !important;
-                }
-
-                .select2-selection__rendered > span {
-                    margin-right: auto;
                 }
             }
         }

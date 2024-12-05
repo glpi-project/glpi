@@ -208,30 +208,18 @@
                     {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
                 </div>
 
-                <div class="ms-auto d-flex gap-1">
-                    {% set rand = random() %}
-                    <input type="hidden" name="is_mandatory" value="0">
-                    <input
-                        type="checkbox"
-                        name="is_mandatory"
-                        class="btn-check"
-                        id="is_mandatory_{{ rand }}"
-                        autocomplete="off"
-                        value="1"
-                        {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
-                        data-glpi-form-editor-on-change="toggle-mandatory-question"
-                    >
-                    <label
-                        class="btn btn-icon btn-ghost-secondary px-2 d-flex align-items-center gap-1"
-                        for="is_mandatory_{{ rand }}"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="{{ __('Mark as mandatory') }}"
-                    >
-                        <i class="ti ti-asterisk"></i>
-                        <span class="d-none d-md-inline">
-                            {{ __("Mandatory") }}
-                        </span>
+                <div class="ms-auto d-flex align-items-center gap-1">
+                    <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
+                        <input type="hidden" value="0" name="is_mandatory">
+                        <input
+                            class="form-check-input"
+                            name="is_mandatory"
+                            type="checkbox"
+                            value="1"
+                            {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
+                            data-glpi-form-editor-on-change="toggle-mandatory-question"
+                        >
+                        <span class="form-check-label">{{ __("Mandatory") }}</span>
                     </label>
 
                     <button
