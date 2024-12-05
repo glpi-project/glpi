@@ -61,7 +61,7 @@
         {% endfor %}
 
         {% if blocks|length == 0 %}
-            {{ include ('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
                 'can_update'     : can_update,
                 'form'           : form,
             }, with_context = false) }}
@@ -71,7 +71,7 @@
             'form'                         : form,
         }, with_context = false) }}
         {% if blocks|length == 0 %}
-            {{ include ('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
                 'can_update'     : can_update,
                 'form'           : form,
             }, with_context = false) }}
