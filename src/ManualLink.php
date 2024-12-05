@@ -53,6 +53,11 @@ class ManualLink extends CommonDBChild
         return _n('Manual link', 'Manual links', $nb);
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'tools';
+    }
+
     public function getLogTypeID()
     {
         return [$this->fields['itemtype'], $this->fields['items_id']];
