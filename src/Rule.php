@@ -2468,7 +2468,7 @@ JS
                     break;
 
                 case "dropdown_inventory_itemtype":
-                    $types = $CFG_GLPI['rule_types'];
+                    $types = $CFG_GLPI['ruleimportasset_types'];
                     $types[''] = __('No item type defined');
                     Dropdown::showItemTypes($name, $types, ['value' => $value]);
                     $display = true;

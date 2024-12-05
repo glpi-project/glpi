@@ -130,7 +130,7 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
     'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
 ];
 
-$CFG_GLPI["rule_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["ruleimportasset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
     'Certificate', 'Enclosure', 'PDU', 'Line',
     'Rack', 'SoftwareVersion', 'Cluster', 'Contract',

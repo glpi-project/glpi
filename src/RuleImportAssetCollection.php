@@ -62,7 +62,7 @@ class RuleImportAssetCollection extends RuleCollection
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    $types = $CFG_GLPI['rule_types'];
+                    $types = $CFG_GLPI['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
                             $ong[$type] = $type::getTypeName();
