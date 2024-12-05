@@ -1057,7 +1057,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get itemtypes have state_type and unmanaged devices
+     * Get itemtypes
      *
      * @global array $CFG_GLPI
      * @return array
@@ -1068,7 +1068,7 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         $types = [];
-        foreach ($CFG_GLPI["state_types"] as $itemtype) {
+        foreach ($CFG_GLPI["rule_types"] as $itemtype) {
             if (class_exists($itemtype)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();
