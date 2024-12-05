@@ -44,9 +44,9 @@
     {% endif %}
 
     {% set helper %}
-        {{ __('The system name corresponds to the customizable part of the item class which will correspond to the current definition. For example, items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
-        {{ __('The value must contains only letters and must not end with "Model" or "Type".') }}
-        {{ __('Also, the value must not be one of the reserved names.') }}
+        {{ __('The system name field corresponds to what will be used when development is involved. Examples: API calls, webhooks, etc.') }}
+        {{  _('It can be personalized, but some words are reserved such as classes from GLPI like Computer, Monitor, etc.') }}
+        {{ __('Items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
     {% endset %}
     {{ fields.textField('label', item.fields['label'], __('Label')) }}
     {{ fields.textField(
@@ -143,7 +143,7 @@
             const existing_names = {{ existing_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
             // label is made lowercase and spaces are replaced with underscores. All other characters are removed
             $('#mainformtable input[name="system_name"]')
-                .val($('#mainformtable input[name="label"]').val().normalize('NFD').replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+                .val($('#mainformtable input[name="label"]').val().normalize('NFD').replace(/ /g, '_').replace(/[^a-z_]/gi, ''));
             const system_name = $('#mainformtable input[name="system_name"]').val().toLowerCase();
             if (reserved_names.includes(system_name) || system_name.endsWith('type') || system_name.endsWith('model')) {
                 $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is a reserved name. Please enter a different label or manually change the system name.'));
