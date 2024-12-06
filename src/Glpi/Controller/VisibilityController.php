@@ -32,38 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+namespace Glpi\Controller;
 
-use Glpi\Controller\VisibilityController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Glpi\Controller\GenericFormController;
+use Glpi\Event;
 use Html;
-use SavedSearch;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SavedSearchFormController extends VisibilityController
+class VisibilityController extends GenericFormController
 {
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
     public function __invoke(Request $request): Response
     {
-        $request->attributes->set('class', SavedSearch::class);
-
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
+        if ($request->request->has('addvisibility')) {
+            return $this->addVisibility($request);
         }
 
         return parent::__invoke($request);
     }
 
-    public function createNotif(): RedirectResponse
+    public function addVisibility(Request $request): RedirectResponse
     {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
+        $class = $request->attributes->get('class');
+        $item = new $class();
+        $item->addVisibility($request->request->all());
         return new RedirectResponse(Html::getBackUrl());
     }
 }
