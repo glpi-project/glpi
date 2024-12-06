@@ -173,7 +173,7 @@ final class SearchEngine
     private static function getMetaParentItemtypesForTypesConfig(string $config_key): array
     {
         $matches = [];
-        if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+        if (str_contains($config_key, 'rule') || preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
             return [];
         }
 
