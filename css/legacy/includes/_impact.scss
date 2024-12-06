@@ -606,3 +606,24 @@ i.fa-impact-manipulation {
 #impact_settings {
    display: none;
 }
+
+.target-popper {
+   display: none;
+   padding: 1rem;
+   text-align: left;
+   border-radius: 0;
+   border: 1px solid var(--tblr-border-color);
+   background: var(--tblr-bg-surface);
+   z-index: 99;
+   padding: 20px;
+   &.active {
+      display: block;
+   }
+
+   tr {
+      > td:first-child {
+         font-weight: bold;
+         padding-right: 10px;
+      }
+   }
+}
