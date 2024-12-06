@@ -560,12 +560,23 @@
             </div> {# .row #}
          </div> {# .flex-row #}
       </div>
-
       <div class="col-12 col-xxl-3 flex-column">
          <div class="flex-row asset-pictures">
-            {{ call('BarcodeManager::renderQRCode', [
-               item
-            ])|raw }}
+            <div class="d-flex flex-column card">
+               <div class="card-body">
+                  <h3 class="mb-3">
+                     {{ __('Asset URL') }}
+                     <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true" data-bs-content="{{  __('Scan this QRCode to be redirected to the asset page from your mobile device') }}">
+                        ?
+                     </span>
+                  </h3>
+                  <div class="d-flex">
+                     {{ call('BarcodeManager::renderQRCode', [
+                        item
+                     ])|raw }}
+                  </div>
+               </div>
+            </div>
             {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
          </div>
       </div>
