@@ -44,6 +44,13 @@ if (PHP_SAPI === 'cli') {
 
     $kernel = new \Glpi\Kernel\Kernel();
     $kernel->loadCommonGlobalConfig();
+    /** @var ?\DBmysql $DB */
+    global $DB;
+    if (!$DB instanceof \DBmysql) {
+        echo "GLPI seems to not be configured properly.\n" .
+            sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n" .
+            "You have to either restart the install process, either restore this file.\n";
+    }
 }
 
 /**

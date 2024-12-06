@@ -35,6 +35,7 @@
 namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Exception\ExceptionWithResponseInterface;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -125,6 +126,10 @@ class ErrorController extends AbstractController
 
     private function getErrorResponse(\Throwable $exception, Request $request): Response
     {
+        if ($exception instanceof ExceptionWithResponseInterface) {
+            return $exception->getResponse();
+        }
+
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         $title = _n('Error', 'Errors', 1);

@@ -39,6 +39,9 @@ use Glpi\Config\LegacyConfigProviderListener;
 final class ListenersPriority
 {
     public const LEGACY_LISTENERS_PRIORITIES = [
+        // Config file check doesn't need any other listener to work
+        CheckGlpiConfigListener::class => 600,
+
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
         LegacyAssetsListener::class         => 500,
