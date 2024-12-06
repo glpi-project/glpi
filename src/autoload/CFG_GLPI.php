@@ -534,7 +534,7 @@ $CFG_GLPI['javascript'] = [
         ],
     ],
     'config' => [
-        'assetdefinition'  => ['sortable', 'tinymce'],
+        'glpi\asset\assetdefinition'  => ['sortable', 'tinymce'],
         'commondropdown'  => [
             'ITILFollowupTemplate'   => ['tinymce'],
             'ProjectTaskTemplate'    => ['tinymce'],
