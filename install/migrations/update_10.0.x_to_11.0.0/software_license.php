@@ -33,40 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
+/**
+ * @var \Migration $migration
+ * @var \DBmysql $DB
+ */
 
-Session::checkRight("software", UPDATE);
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
-    $isl = new SoftwareLicense_User();
-    $_POST['users_id'] = $_POST['items_id'];
-} else {
-    $isl   = new Item_SoftwareLicense();
+if ($DB->fieldExists(SoftwareLicense::getTable(), 'softwares_id')) {
+    $migration->changeField(
+        SoftwareLicense::getTable(),
+        'softwares_id',
+        'softwares_id',
+        "int {$default_key_sign}",
+        [
+            'null' => true
+        ]
+    );
+    $migration->migrationOneTable(SoftwareLicense::getTable());
 }
-
-if (isset($_POST["add"])) {
-    if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || $_POST['items_id'] <= 0) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Item', 'Items', 1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-        Html::back();
-    }
-    if ($_POST['softwarelicenses_id'] > 0) {
-        if ($isl->add($_POST)) {
-            Event::log(
-                $_POST['softwarelicenses_id'],
-                "softwarelicense",
-                4,
-                "inventory",
-                //TRANS: %s is the user login
-                sprintf(__('%s associates an item and a license'), $_SESSION["glpiname"])
-            );
-        }
-    }
-    Html::back();
-}
-
-throw new BadRequestHttpException();
