@@ -33,46 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedForConditionInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
-
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedForConditionInterface
+enum ValueOperator: string
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'text';
-    }
+    case EQUALS = 'equals';
+    case NOT_EQUALS = 'not_equals';
+    case CONTAINS = 'contains';
+    case NOT_CONTAINS = 'not_contains';
 
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
+    // Not yet implemented:
+    // case GREATER_THAN = 'greater_than';
+    // case GREATER_THAN_OR_EQUALS = 'greater_than_or_equals';
+    // case LESS_THAN = 'less_than';
+    // case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
 
-    #[Override]
-    public function getIcon(): string
+    public function getLabel(): string
     {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
+        return match ($this) {
+            self::EQUALS       => __("Is equal to"),
+            self::NOT_EQUALS   => __("Is not equal to"),
+            self::CONTAINS     => __("Contains"),
+            self::NOT_CONTAINS => __("Do not contains"),
+        };
     }
 }

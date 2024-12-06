@@ -33,46 +33,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form;
 
-use Glpi\Form\ConditionalVisiblity\UsedForConditionInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
-
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedForConditionInterface
+enum QuestionVisibilityStrategy: string
 {
-    #[Override]
-    public function getInputType(): string
+    case ALWAYS_VISIBLE = 'always_visible';
+    case VISIBLE_IF = 'visible_if';
+    case HIDDEN_IF = 'hidden_if';
+
+    public function getLabel(): string
     {
-        return 'text';
+        return match ($this) {
+            self::ALWAYS_VISIBLE => __('Always visible'),
+            self::VISIBLE_IF     => __('Visible if...'),
+            self::HIDDEN_IF      => __("Hidden if..."),
+        };
     }
 
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
-
-    #[Override]
     public function getIcon(): string
     {
-        return 'ti ti-text-size';
+        return match ($this) {
+            self::ALWAYS_VISIBLE => 'ti ti-eye',
+            self::VISIBLE_IF     => 'ti ti-eye-cog',
+            self::HIDDEN_IF      => 'ti ti-eye-off',
+        };
     }
 
-    #[Override]
-    public function getWeight(): int
+    public function showEditor(): bool
     {
-        return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
+        return match ($this) {
+            self::ALWAYS_VISIBLE => false,
+            self::VISIBLE_IF     => true,
+            self::HIDDEN_IF      => true,
+        };
     }
 }
