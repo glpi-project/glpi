@@ -58,7 +58,7 @@
     {% set field_order = field_order|default(item.getFormFields()) %}
 
    <div class="card-body d-flex flex-wrap">
-      <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+      <div class="col-12 col-xxl-9 flex-column">
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
@@ -553,23 +553,6 @@
                           {% endif %}
                       {% endfor %}
 
-                     {% if item_type in config("asset_types") %}
-                        {% set barcode %}
-                           {{ call('BarcodeManager::renderQRCode', [
-                              item
-                           ])|raw }}
-                        {% endset %}
-
-                        {{ fields.htmlField(
-                           'qrcode',
-                           barcode,
-                           __('Asset URL'),
-                           {
-                              'helper': __('Scan this QRCode to be redirected to the asset page from your mobile device')
-                           }
-                        ) }}
-                     {% endif %}
-
                      {% block more_fields %}
                      {% endblock %}
                   {% endblock %}
@@ -577,13 +560,16 @@
             </div> {# .row #}
          </div> {# .flex-row #}
       </div>
-      {% if item_has_pictures %}
-         <div class="col-12 col-xxl-3 flex-column">
-            <div class="flex-row asset-pictures">
-               {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
-            </div>
+
+      <div class="col-12 col-xxl-3 flex-column">
+         <div class="flex-row asset-pictures">
+            {{ call('BarcodeManager::renderQRCode', [
+               item
+            ])|raw }}
+            {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
          </div>
-      {% endif %}
+      </div>
+
    </div> {# .card-body #}
 
    {% if item_type == 'Contract' %}
