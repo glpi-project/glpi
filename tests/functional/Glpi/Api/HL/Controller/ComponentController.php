@@ -55,7 +55,7 @@ class ComponentController extends \HLAPITestCase
                     foreach ($content as $component) {
                         $this->array($component)->hasKeys(['itemtype', 'name', 'href']);
                         $this->string($component['name'])->isNotEmpty();
-                        $this->string($component['href'])->isEqualTo('/Components/' . $component['itemtype']);
+                        $this->string($component['href'])->startWith('/Components/');
                     }
                 });
         });

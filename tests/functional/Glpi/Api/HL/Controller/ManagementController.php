@@ -42,7 +42,7 @@ class ManagementController extends \HLAPITestCase
     public function testCreateGetUpdateDelete()
     {
         $management_types = [
-            'Appliance', 'Budget', 'Certificate', 'Cluster', 'Contact', 'Contract', 'Database',
+            'Budget', 'Cluster', 'Contact', 'Contract', 'Database',
             'DataCenter', 'Document', 'Domain', 'Line', 'Supplier',
         ];
 

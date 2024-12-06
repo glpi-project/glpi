@@ -45,7 +45,19 @@ use Project;
 use Glpi\Api\HL\Doc as Doc;
 use ProjectTask;
 
-#[Route(path: '/Project', tags: ['Project'])]
+#[Route(path: '/Project', tags: ['Project'], requirements: [
+    'project_id' => '\d+'
+])]
+#[Doc\Route(
+    parameters: [
+        [
+            'name' => 'project_id',
+            'description' => 'Project ID',
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_STRING]
+        ]
+    ]
+)]
 final class ProjectController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array

@@ -1680,6 +1680,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1694,7 +1695,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'], requirements: [
+        'cartridgeitems_id' => '\d+'
+    ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cartridge',
@@ -1712,6 +1715,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1731,6 +1735,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1820,6 +1825,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1834,7 +1840,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: [
+        'consumableitems_id' => '\d+'
+    ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a consumable',
@@ -1852,6 +1860,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1871,6 +1880,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -2546,6 +2556,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -2590,6 +2601,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -2609,6 +2621,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]

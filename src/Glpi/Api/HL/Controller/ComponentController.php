@@ -35,9 +35,11 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDevice;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
@@ -636,6 +638,18 @@ class ComponentController extends AbstractController
         ];
     }
 
+    public static function getComponentTypes(): array
+    {
+        $schemas = self::getKnownSchemas(Router::API_VERSION);
+        $component_types = [];
+        foreach ($schemas as $name => $data) {
+            if (is_subclass_of($data['x-itemtype'], CommonDevice::class)) {
+                $component_types[] = $name;
+            }
+        }
+        return $component_types;
+    }
+
     #[Route(path: '/Components', methods: ['GET'], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -660,30 +674,23 @@ class ComponentController extends AbstractController
     )]
     public function index(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $supported_types = [];
         $schemas = self::getRawKnownSchemas();
 
-        foreach ($CFG_GLPI['device_types'] as $device_type) {
-            $is_supported = count(array_filter($schemas, static function ($schema) use ($device_type) {
-                return $schema['x-itemtype'] === $device_type;
-            })) === 1;
-            if ($is_supported) {
-                $supported_types[] = [
-                    'itemtype' => $device_type,
-                    'name' => $device_type::getTypeName(1),
-                    'href' => self::getAPIPathForRouteFunction(self::class, 'getComponentTypes', ['component_type' => $device_type]),
-                ];
-            }
+        foreach (self::getComponentTypes() as $device_type) {
+            $device_class = $schemas[$device_type]['x-itemtype'];
+            $supported_types[] = [
+                'itemtype' => $device_class,
+                'name' => $device_class::getTypeName(1),
+                'href' => self::getAPIPathForRouteFunction(self::class, 'listComponentTypes', ['component_type' => $device_type]),
+            ];
         }
 
         return new JSONResponse($supported_types);
     }
 
     #[Route(path: '/Components/{component_type}', methods: ['GET'], requirements: [
-        'component_type' => '\w*'
+        'component_type' => [self::class, 'getComponentTypes']
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -693,14 +700,14 @@ class ComponentController extends AbstractController
             ['schema' => '{component_type}']
         ]
     )]
-    public function getComponentTypes(Request $request): Response
+    public function listComponentTypes(Request $request): Response
     {
         $component_type = $request->getAttribute('component_type');
         return Search::searchBySchema($this->getKnownSchema($component_type, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['GET'], requirements: [
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -717,7 +724,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components/{component_type}', methods: ['POST'], requirements: [
-        'component_type' => '\w*'
+        'component_type' => [self::class, 'getComponentTypes']
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -739,7 +746,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components/{component_type}/{id}/Items', methods: ['GET'], requirements: [
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -775,7 +782,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['PATCH'], requirements: [
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
@@ -796,7 +803,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components/{component_type}/{id}', methods: ['DELETE'], requirements: [
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Components'])]
     #[RouteVersion(introduced: '2.0')]
@@ -810,7 +817,7 @@ class ComponentController extends AbstractController
     }
 
     #[Route(path: '/Components/{component_type}/Items/{id}', methods: ['GET'], requirements: [
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -830,7 +837,7 @@ class ComponentController extends AbstractController
 
     #[Route(path: '/Assets/{itemtype}/{id}/Component/{component_type}', methods: ['GET'], requirements: [
         'itemtype' => [AssetController::class, 'getAssetTypes'],
-        'component_type' => '\w*',
+        'component_type' => [self::class, 'getComponentTypes'],
         'id' => '\d+'
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
