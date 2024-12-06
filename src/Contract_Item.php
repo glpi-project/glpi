@@ -208,10 +208,12 @@ class Contract_Item extends CommonDBRelation
                 case Contract::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
-                        $nb += countElementsInTable(static::getTable(), ['contracts_id' => $item->fields['id']]);
+                        $nb += countElementsInTable(Contract_User::getTable(), ['contracts_id' => $item->fields['id']]);
                     }
                     return self::createTabEntry(_n('Affected item', 'Affected items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
-
+                case User::class:
+                    $nb = countElementsInTable(Contract_User::getTable(), ['users_id' => $item->fields['id']]);
+                    return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 default:
                     if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
                         $nb = self::countForItem($item);
@@ -230,6 +232,9 @@ class Contract_Item extends CommonDBRelation
         switch ($item::class) {
             case Contract::class:
                 self::showForContract($item, $withtemplate);
+                break;
+            case User::class:
+                Contract_User::showForUser($item, $withtemplate);
                 break;
             default:
                 if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
