@@ -35,6 +35,8 @@
 namespace Glpi\Controller;
 
 use Glpi\Application\ErrorHandler;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\MaintenanceException;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
