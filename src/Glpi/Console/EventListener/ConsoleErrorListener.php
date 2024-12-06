@@ -32,24 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception;
+namespace Glpi\Console\EventListener;
 
-use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * @internal Not to be used unless you absolutely know what you are doing.
- *           This will be removed in the future when all the code is under Dependency Injection and proper HTTP routing.
- */
-class RedirectException extends Exception implements ExceptionWithResponseInterface
+class ConsoleErrorListener implements EventSubscriberInterface
 {
-    public function __construct(private readonly string $url, private readonly int $http_code = 302)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct('', $http_code);
+        return [
+            ConsoleEvents::ERROR => 'onConsoleError',
+        ];
     }
 
-    public function getResponse(): RedirectResponse
+    public function onConsoleError(ConsoleErrorEvent $event): void
     {
-        return new RedirectResponse($this->url, $this->http_code);
     }
 }

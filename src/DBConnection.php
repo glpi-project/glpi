@@ -654,6 +654,13 @@ class DBConnection extends CommonDBTM
      **/
     public static function displayMySQLError()
     {
+        echo self::getLastDatabaseError();
+
+        exit(1);
+    }
+
+    public static function getLastDatabaseError(): string
+    {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -671,14 +678,15 @@ class DBConnection extends CommonDBTM
         }
 
         if (!isCommandLine()) {
+            ob_start();
             Html::nullHeader("Mysql Error", '');
             echo "<div class='center'><p class ='b'>$en_msg</p><p class='b'>$fr_msg</p></div>";
             Html::nullFooter();
-        } else {
-            echo "$en_msg\n$fr_msg\n";
+
+            return ob_get_clean();
         }
 
-        exit(1);
+        return "$en_msg\n$fr_msg\n";
     }
 
 

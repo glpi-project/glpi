@@ -34,7 +34,8 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\System\Requirement\DatabaseTablesEngine;
+use Glpi\Console\Exception\GlpiMisconfiguredException;
+use Glpi\Exception\NeedsGlpiUpdateException;
 use Session;
 use Auth;
 use DBConnection;
@@ -44,18 +45,10 @@ use Toolbox;
 use Update;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
-use Glpi\System\RequirementsManager;
-use Glpi\Toolbox\VersionParser;
 use Glpi\Config\LegacyConfigProviderInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final readonly class StandardIncludes implements LegacyConfigProviderInterface
 {
-    public function __construct(
-        #[Autowire('%kernel.project_dir%')] private string $projectDir,
-    ) {
-    }
-
     public function execute(): void
     {
         /**
@@ -118,8 +111,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 !DBConnection::establishDBConnection(false, false, false)
                 && !$skip_db_checks
             ) {
-                DBConnection::displayMySQLError();
-                exit(1);
+                throw new \RuntimeException(DBConnection::getLastDatabaseError());
             }
 
             //Options from DB, do not touch this part.
@@ -127,49 +119,12 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 !Config::loadLegacyConfiguration()
                 && !$skip_db_checks
             ) {
-                echo "Error accessing config table";
-                exit(1);
+                throw new \RuntimeException('Error accessing config table');
             }
         } elseif (!$skip_db_checks) {
             Session::loadLanguage('', false);
 
-            if (!isCommandLine()) {
-                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                $debug_mode = $_SESSION['glpi_use_mode'];
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-                Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
-                $twig_params = [
-                    'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
-                    'install_exists' => file_exists($this->projectDir . '/install/install.php'),
-                ];
-                // language=Twig
-                echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                    <div class="container-fluid mb-4">
-                        <div class="row justify-content-center">
-                            <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
-                                <h2>GLPI seems to not be configured properly.</h2>
-                                <p class="mt-2 mb-n2 alert alert-warning">
-                                    Database configuration file "{{ config_db }}" is missing or is corrupted.
-                                    You have to either restart the install process, either restore this file.
-                                    <br />
-                                    <br />
-                                    {% if install_exists %}
-                                        <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-TWIG, $twig_params);
-                Html::nullFooter();
-                $_SESSION['glpi_use_mode'] = $debug_mode;
-            } else {
-                echo "GLPI seems to not be configured properly.\n";
-                echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
-                echo "You have to either restart the install process, either restore this file.\n";
-            }
-            exit(1);
+            throw new GlpiMisconfiguredException();
         }
 
         if (
@@ -237,82 +192,7 @@ TWIG, $twig_params);
         if (!$skip_db_checks && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             Session::checkCookieSecureConfig();
 
-            // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
-            $debug_mode = $_SESSION['glpi_use_mode'];
-            Toolbox::setDebugMode(Session::NORMAL_MODE);
-
-            Session::loadLanguage('', false);
-
-            if (isCommandLine()) {
-                echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
-                echo "\n";
-                exit();
-            }
-
-            /** @var \DBmysql $DB */
-            global $DB;
-
-            $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
-            $requirements->add(new DatabaseTablesEngine($DB));
-
-            $twig_params = [
-                'core_requirements' => $requirements,
-                'try_again'         => __('Try again'),
-                'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
-                'upgrade'           => _sx('button', 'Upgrade'),
-                'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
-                'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
-                'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
-                'outdated'          => version_compare(
-                    VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
-                    VersionParser::getNormalizedVersion(GLPI_VERSION),
-                    '>'
-                )
-            ];
-
-            Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="container-fluid mb-4">
-                <div class="row justify-content-evenly">
-                    <div class="col-12 col-xxl-6">
-                        <div class="card text-center mb-4">
-                            {% include 'install/blocks/requirements_table.html.twig' with {'requirements': core_requirements} %}
-                            {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
-                                <form action="{{ path('index.php') }}" method="post">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-redo"></i>{{ try_again }}
-                                    </button>
-                                </form>
-                            {% endif %}
-                            {% if not core_requirements.hasMissingMandatoryRequirements() %}
-                                {% if not outdated %}
-                                    <form method="post" action="{{ path('install/update.php') }}">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                                        {% if not stable_release %}
-                                            {{ agree_unstable|raw }}
-                                        {% endif %}
-                                        <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                                            {{ update_needed }}
-                                        </p>
-                                        <button type="submit" name="from_update" class="btn btn-primary">
-                                            <i class="fas fa-check"></i>{{ upgrade }}
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                                        {{ outdated_files }}
-                                    </p>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-TWIG, $twig_params);
-            Html::nullFooter();
-            $_SESSION['glpi_use_mode'] = $debug_mode;
-            exit();
+            throw new NeedsGlpiUpdateException();
         }
 
         // First call to `Config::detectRootDoc()` cannot compute the value
