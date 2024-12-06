@@ -32,37 +32,56 @@
  #}
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if preferences|length > 0 %}
-    <div class="my-3">
-        {% if massiveactionparams['specific_actions']|length > 0 %}
-        <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
-              data-search-itemtype="DisplayPreference" data-submit-once>
-            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+    {{ fields.largeTitle(__('Search result display'), 'ti ti-columns-3') }}
+
+    <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
+        data-search-itemtype="DisplayPreference" data-submit-once>
+            {% if massiveactionparams['specific_actions']|length > 0 %}
+                {% do call('Html::showMassiveActions', [massiveactionparams]) %}
             {% endif %}
             {{ inputs.hidden('users_id', users_id, {
                 'data-glpicore-ma-tags': 'common'
             }) }}
-            <ul class="list-group display-prefs-list my-2">
-                {% for pref in preferences %}
-                    {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
-                    <li class="list-group-item">
-                        {% if massiveactionparams['specific_actions']|length > 0 %}
-                            <span class="me-2">
-                        {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
-                     </span>
-                        {% endif %}
-                        <button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button>
-                    </li>
-                {% endfor %}
-            </ul>
-            {% if massiveactionparams['specific_actions']|length > 0 %}
-            {% do call('Html::showMassiveActions', [massiveactionparams|merge({
-                'ontop': false
-            })]) %}
-        </form>
-        {% endif %}
-    </div>
+            <a role="button" title='{{ __('Select all') }}' class="btn btn-sm btn-outline me-2" onclick="$('input.form-check-input.massive_action_checkbox[type=checkbox]').prop('checked', true); return false;">
+                <span>{{ __('Select all') }}</span>
+            </a>
+            <a role="button" title='{{ __('Unselect all') }}' class="btn btn-sm btn-outline me-2" onclick="$('input.form-check-input.massive_action_checkbox[type=checkbox]').prop('checked', false); return false;">
+                <span>{{ __('Unselect all') }}</span>
+            </a>
+        <div class="row row-cards display-prefs-list pt-2">
+        {% for pref in preferences %}
+            {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
+            {% set icon = pref['itemtype']|itemtype_icon %}
+            <div class="col-md-6 col-xl-3">
+                <div class="card card-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="col-auto">
+                                    <span class="avatar me-2"><i class="{{ icon }}"></i></span>
+                                </div>
+                                <div>
+                                    <div class="font-weight-medium">
+                                        <button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button>
+                                    </div>
+                                    <div class="text-secondary">{{ pref['nb'] }} {{ __('columns') }}</div>
+                                </div>
+                            </div>
+                            {% if massiveactionparams['specific_actions']|length > 0 %}
+                                <div>
+                                    {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </form>
     <template id="displaypreference_modal_template{{ rand }}">
         {{ include('components/search/displaypreference_modal.html.twig', {
             rand: rand,
@@ -71,7 +90,7 @@
     </template>
     <script>
         $(() => {
-            $('ul.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
+            $('div.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
                 const itemtype = $(e.currentTarget).attr('data-itemtype');
                 const itemtype_name = $(e.currentTarget).text();
                 $('#displayprefence_modal{{ rand }}').remove();
