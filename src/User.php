@@ -1076,8 +1076,27 @@ class User extends CommonDBTM
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
                 && !$this->currentUserHaveMoreRightThan($input['id'])
             ) {
+                $ignored_fields = [];
                 foreach ($protected_input_keys as $input_key) {
+                    if (
+                        isset($input[$input_key])
+                        && $input_key != '_useremails' // Always in $input
+                        && $input[$input_key] != $this->getField($input_key)
+                    ) {
+                        $ignored_fields[] = $input_key;
+                    }
                     unset($input[$input_key]);
+                }
+                if (!empty($ignored_fields)) {
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('You are not allowed to update the following fields: %s'),
+                            implode(', ', $ignored_fields)
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
                 }
             }
         }
