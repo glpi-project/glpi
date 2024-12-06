@@ -63,4 +63,16 @@ describe("Custom Assets - Definitions", () => {
             });
         });
     });
+
+    it('Profiles tab', () => {
+        const system_name = `test${Math.random().toString(36).replace(/[^a-z]+/g, '')}`;
+        cy.createWithAPI('Glpi\\Asset\\AssetDefinition', {
+            system_name: system_name,
+            is_active: true,
+        }).then((definition_id) => {
+            cy.visit(`front/asset/assetdefinition.form.php?id=${definition_id}`);
+            cy.findByRole('tab', { name: 'Profiles' }).click();
+            cy.findAllByLabelText(`Profiles that can associate ${system_name} with tickets, problems or changes`).should('be.visible');
+        });
+    });
 });
