@@ -1816,6 +1816,8 @@ class Search
 
         Session::initNavigateListItems($data['itemtype'], '', $href);
 
+        $count = $data['data']['totalcount'] ?? 0;
+
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'data'                => $data,
             'union_search_type'   => $CFG_GLPI["union_search_type"],
@@ -1825,7 +1827,7 @@ class Search
             'sort'                => $search['sort'] ?? [],
             'start'               => $search['start'] ?? 0,
             'limit'               => $_SESSION['glpilist_limit'],
-            'count'               => $data['data']['totalcount'] ?? 0,
+            'count'               => $count,
             'item'                => $item,
             'itemtype'            => $itemtype,
             'href'                => $href,
@@ -1837,8 +1839,9 @@ class Search
                                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                                   ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
-                'is_deleted' => $is_deleted,
-                'container'  => "massform$itemtype",
+                'num_displayed' => min($_SESSION['glpilist_limit'], $count),
+                'is_deleted'    => $is_deleted,
+                'container'     => "massform$itemtype",
             ],
             'can_config'          => Session::haveRightsOr('search_config', [
                 DisplayPreference::PERSONAL,
