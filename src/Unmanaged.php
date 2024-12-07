@@ -323,7 +323,7 @@ class Unmanaged extends CommonDBTM
                     $itemtype = $_POST['itemtype'];
                     $new_asset_id = $unmanaged->convert($id, $itemtype);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                    if (count($ids) === 1) {
+                    if ($ma->isFromSingleItem()) {
                         $ma->setRedirect($itemtype::getFormURLWithID($new_asset_id));
                     } else {
                         $ma->setRedirect($item::getSearchURL());
