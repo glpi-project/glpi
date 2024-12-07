@@ -873,11 +873,11 @@ final class QueryBuilder implements SearchInputInterface
                 // In the criteria array, the search options are from the metatype POV (Agent Name for example is ID 1 in criteria array, but 900 from the POV of Computer)
                 $valid_meta_opts = SearchOption::getOptionsForItemtype($criterion['itemtype']);
                 if (!isset($valid_meta_opts[(int) $criterion['field']])) {
-                    $invalid_criteria[] = $k;
+                    $invalid_criteria[] = (int) $criterion['field'];
                     unset($params['criteria'][$k]);
                 }
             } else if (!isset($valid_main_opts[(int) $criterion['field']])) {
-                $invalid_criteria[] = $k;
+                $invalid_criteria[] = (int) $criterion['field'];
                 unset($params['criteria'][$k]);
             }
         }
