@@ -1042,6 +1042,12 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
+        $params = array_replace([
+            'contains' => '',
+            'knowbaseitemcategories_id' => KnowbaseItemCategory::SEEALL,
+            'faq' => false,
+        ], $params);
+
         $criteria = [
             'SELECT' => [
                 'glpi_knowbaseitems.*',
@@ -1367,15 +1373,15 @@ TWIG, $twig_params);
         $DBread = DBConnection::getReadConnection();
 
         // Default values of parameters
-        $params['faq']                       = !Session::haveRight(self::$rightname, READ);
-        $params["start"]                     = "0";
-        $params["knowbaseitemcategories_id"] = null;
-        $params["contains"]                  = "";
+        $params = [
+            'faq' => !Session::haveRight(self::$rightname, READ),
+            'start' => 0,
+            'knowbaseitemcategories_id' => null,
+            'contains' => '',
+        ];
 
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
+        if (is_array($options)) {
+            $params = array_replace($params, $options);
         }
         $ki = new self();
         switch ($type) {
@@ -1399,24 +1405,26 @@ TWIG, $twig_params);
             $params["start"] = 0;
         }
 
-        $criteria = self::getListRequest($params, $type);
+        $criteria = self::getListRequest($params, in_array($type, ['search', 'solution'], true) ? 'search' : $type);
 
         $main_iterator = $DBread->request($criteria);
         $rows = count($main_iterator);
         $numrows = $rows;
 
-        // Get it from database
-        $KbCategory = new KnowbaseItemCategory();
-        $title      = "";
-        if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-            $title = (empty($KbCategory->fields['name']) ? "(" . $params['knowbaseitemcategories_id'] . ")"
-                : $KbCategory->fields['name']);
-            $title = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $title);
-        }
+        if ($type !== 'solution') {
+            // Get it from database
+            $KbCategory = new KnowbaseItemCategory();
+            $title      = "";
+            if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
+                $title = (empty($KbCategory->fields['name']) ? "(" . $params['knowbaseitemcategories_id'] . ")"
+                    : $KbCategory->fields['name']);
+                $title = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $title);
+            }
 
-        Session::initNavigateListItems('KnowbaseItem', $title);
-        // force using getSearchUrl on list icon (when viewing a single article)
-        $_SESSION['glpilisturl']['KnowbaseItem'] = '';
+            Session::initNavigateListItems('KnowbaseItem', $title);
+            // force using getSearchUrl on list icon (when viewing a single article)
+            $_SESSION['glpilisturl']['KnowbaseItem'] = '';
+        }
 
         $list_limit = $_SESSION['glpilist_limit'];
 
@@ -1614,12 +1622,8 @@ TWIG, $twig_params);
                 }
 
                 if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                    $forcetab = $options['item_itemtype'] . '$main';
-                    $item_itemtype = $options['item_itemtype'];
-                    $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
-                        "&amp;load_kb_sol=" . $data['id'] .
-                        "&amp;forcetab=" . $forcetab . "'>" .
-                        __s('Use as a solution') . "</a>";
+                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>" .
+                        __s('Use as a solution') . "</button>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
 

@@ -74,6 +74,7 @@ The present file will list all changes made to the project; according to the
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
 - Notifications can now specify exclusions for recipients.
 - Warranty expiration alerts no longer trigger for deleted items.
+- New UI for searching for Ticket/Change/Problem solutions from the Knowledgebase.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
