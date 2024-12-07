@@ -35,71 +35,32 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Override;
+use SLA;
 
-final class TemplateFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+class SLATTOFieldConfig extends SLMFieldConfig
 {
-    // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY = 'strategy';
-    public const TEMPLATE_ID = 'template_id';
-
-    public function __construct(
-        private TemplateFieldStrategy $strategy,
-        private ?int $specific_template_id = null,
-    ) {
-    }
-
     #[Override]
     public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
-        if (!($content_spec instanceof DestinationContentSpecification)) {
-            throw new \InvalidArgumentException(
-                "Content specification must be an instance of " . DestinationContentSpecification::class
-            );
-        }
-
-        $destination_itemtype = $content_spec->itemtype;
-        $destination_target = new ($destination_itemtype::getTargetItemtype())();
         return [
-            new ForeignKeyHandler(self::TEMPLATE_ID, $destination_target->getTemplateClass())
+            new ForeignKeyHandler(key: self::SLM_ID, itemtype: SLA::class)
         ];
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategy = TemplateFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        $strategy = SLMFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {
-            $strategy = TemplateFieldStrategy::DEFAULT_TEMPLATE;
+            $strategy = SLMFieldStrategy::FROM_TEMPLATE;
         }
 
         return new self(
             strategy: $strategy,
-            specific_template_id: $data[self::TEMPLATE_ID] ?? null
+            specific_slm_id: $data[self::SLM_ID] ?? null,
         );
-    }
-
-    #[Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            self::STRATEGY => $this->strategy->value,
-            self::TEMPLATE_ID => $this->specific_template_id,
-        ];
-    }
-
-    public function getStrategy(): TemplateFieldStrategy
-    {
-        return $this->strategy;
-    }
-
-    public function getSpecificTemplateID(): ?int
-    {
-        return $this->specific_template_id;
     }
 }

@@ -64,4 +64,10 @@ final class OLATTRField extends SLMField
     {
         return SLM::TTR;
     }
+
+    #[Override]
+    public function getConfigClass(): string
+    {
+        return OLATTRFieldConfig::class;
+    }
 }

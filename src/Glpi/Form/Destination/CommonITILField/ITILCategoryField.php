@@ -40,9 +40,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
-use Glpi\Form\QuestionType\QuestionTypeITILCategory;
 use InvalidArgumentException;
 use ITILCategory;
 use Override;
@@ -93,14 +91,14 @@ class ITILCategoryField extends AbstractConfigField
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select an ITIL category..."),
                 'value'           => $config->getSpecificITILCategoryID() ?? 0,
-                'input_name'      => $input_name . "[" . ITILCategoryFieldConfig::ITILCATEGORY_ID . "]",
+                'input_name'      => $input_name . "[" . ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . ITILCategoryFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getITILCategoryQuestionsValuesForDropdown($form),
             ],
         ]);

@@ -40,7 +40,6 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use InvalidArgumentException;
 use Override;
 
@@ -48,12 +47,6 @@ abstract class ITILActorField extends AbstractConfigField
 {
     abstract public function getAllowedQuestionType(): string;
     abstract public function getActorType(): string;
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return ITILActorFieldConfig::class;
-    }
 
     public function getAllowedActorTypes(): array
     {
@@ -97,7 +90,7 @@ abstract class ITILActorField extends AbstractConfigField
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select actors..."),
                 'values'          => $specific_actors,
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::ITILACTORS_IDS . "]",
+                'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS . "]",
                 'allowed_types'   => $this->getAllowedActorTypes(),
             ],
 
@@ -105,7 +98,7 @@ abstract class ITILActorField extends AbstractConfigField
             'specific_answer_extra_field' => [
                 'aria_label'      => __("Select questions..."),
                 'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::QUESTION_IDS . "]",
+                'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getITILActorQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -143,24 +136,16 @@ abstract class ITILActorField extends AbstractConfigField
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): ITILActorFieldConfig
-    {
-        return new ITILActorFieldConfig(
-            ITILActorFieldStrategy::FROM_TEMPLATE,
-        );
-    }
-
-    #[Override]
     public function prepareInput(array $input): array
     {
         $input = parent::prepareInput($input);
 
         // Ensure that itilactors_ids is an array
-        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS]);
+        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] ?? null)) {
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = null;
         } else {
-            $input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS] = array_reduce(
-                $input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS],
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = array_reduce(
+                $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
                 function ($carry, $value) {
                     $parts = explode("-", $value);
                     $carry[getItemtypeForForeignKeyField($parts[0])][] = (int) $parts[1];
@@ -171,8 +156,8 @@ abstract class ITILActorField extends AbstractConfigField
         }
 
         // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILActorFieldConfig::QUESTION_IDS]);
+        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_QUESTION_IDS] = null;
         }
 
         return $input;

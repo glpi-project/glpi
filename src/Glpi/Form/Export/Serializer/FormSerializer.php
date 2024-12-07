@@ -39,8 +39,10 @@ use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
@@ -48,6 +50,7 @@ use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
+use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Export\Specification\QuestionContentSpecification;
@@ -213,6 +216,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
+        $form_spec = $this->exportDestinations($form, $form_spec);
 
         return $form_spec;
     }
@@ -247,6 +251,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importComments($form, $form_spec);
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
+        $form = $this->importDestinations($form, $form_spec, $mapper);
 
         return $form;
     }
@@ -508,9 +513,16 @@ final class FormSerializer extends AbstractFormSerializer
                 'forms_sections_id' => $section->fields['id'],
             ]);
 
-            if (!$id) {
+            if (!$id || $question->getFromDB($id) === false) {
                 throw new RuntimeException("Failed to create question");
             }
+
+            // Questions can be required for other items, so we need to map them
+            $mapper->addMappedItem(
+                Question::class,
+                $question->getUniqueIDInForm(),
+                $id
+            );
         }
 
         // Reload form to clear lazy loaded data
@@ -591,6 +603,88 @@ final class FormSerializer extends AbstractFormSerializer
 
             if (!$id) {
                 throw new RuntimeException("Failed to create access control");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    private function exportDestinations(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getDestinations() as $destination) {
+            $destination_spec           = new DestinationContentSpecification();
+            $destination_spec->itemtype = $destination->fields['itemtype'];
+            $destination_spec->name     = $destination->fields['name'];
+            $destination_spec->config   = $destination->getConfig();
+
+            $config = $destination->getConfig();
+            foreach ($config as $field_key => $field_config_data) {
+                $field = (new $destination->fields['itemtype']())->getConfigurableFieldByKey($field_key);
+                if ($field === null) {
+                    continue;
+                }
+
+                $field_config_class = $field->getConfigClass();
+                $field_config = $field_config_class::jsonDeserialize($field_config_data);
+                if ($field_config instanceof ConfigWithForeignKeysInterface) {
+                    $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                        $field_config::listForeignKeysHandlers($destination_spec),
+                        $field_config_data
+                    );
+                    array_push($form_spec->data_requirements, ...$requirements);
+
+                    $destination_spec->config[$field_key] = $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                        $field_config::listForeignKeysHandlers($destination_spec),
+                        $field_config_data
+                    );
+                }
+            }
+
+            $form_spec->destinations[] = $destination_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importDestinations(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($form_spec->destinations as $destination_spec) {
+            $config = $destination_spec->config;
+            foreach ($config as $field_key => $field_config_data) {
+                $field = (new $destination_spec->itemtype())->getConfigurableFieldByKey($field_key);
+                if ($field === null) {
+                    continue;
+                }
+
+                $field_config_class = $field->getConfigClass();
+                if (is_a($field_config_class, ConfigWithForeignKeysInterface::class, true)) {
+                    $field_config_data = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                        $field_config_class::listForeignKeysHandlers($destination_spec),
+                        $field_config_data,
+                        $mapper
+                    );
+                    $config[$field_key] = $field_config_data;
+                }
+            }
+
+            $destination = new FormDestination();
+            $id = $destination->add([
+                '_from_import'             => true,
+                'itemtype'                 => $destination_spec->itemtype,
+                'name'                     => $destination_spec->name,
+                'config'                   => $config,
+                Form::getForeignKeyField() => $form->getID(),
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create destination");
             }
         }
 

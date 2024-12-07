@@ -44,13 +44,10 @@ use Glpi\Form\Export\Specification\DataRequirementSpecification;
  * a special 'all' value), you can ignore these values using the $ignored_values
  * parameter of the constructor.
  */
-final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterface
+final class ForeignKeyItemsArrayHandler implements JsonConfigForeignKeyHandlerInterface
 {
-    /** @param class-string<\CommonDBTM> $itemtype */
     public function __construct(
         private string $key,
-        private string $itemtype,
-        private array $ignored_values = [],
     ) {
     }
 
@@ -61,21 +58,18 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
         }
 
         $requirements = [];
-        $foreign_keys = $serialized_data[$this->key];
+        $items = $serialized_data[$this->key];
 
-        // Create a data requirement for each foreign key
-        foreach ($foreign_keys as $foreign_key) {
-            if ($this->isIgnoredValue($foreign_key)) {
-                continue;
-            }
-
-            // Load item
-            $item = new $this->itemtype();
-            if ($item->getFromDB($foreign_key)) {
-                $requirements[] = new DataRequirementSpecification(
-                    $this->itemtype,
-                    $item->getName(),
-                );
+        // Create a data requirement for each item
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $item_id) {
+                $item = new $itemtype();
+                if ($item->getFromDB($item_id)) {
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                };
             }
         }
 
@@ -91,20 +85,19 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
         }
 
         $data_with_names = [];
-        $foreign_keys = $serialized_data[$this->key];
+        $items = $serialized_data[$this->key];
 
-        // Replace each foreign key by the name of the item it references
-        foreach ($foreign_keys as $foreign_key) {
-            if ($this->isIgnoredValue($foreign_key)) {
-                // Value isn't a fkey, keep it as it is
-                $data_with_names[] = $foreign_key;
-                continue;
+        // Replace each item id by its name
+        foreach ($items as $itemtype => $items_ids) {
+            $items_names = [];
+            foreach ($items_ids as $item_id) {
+                $item = new $itemtype();
+                if ($item->getFromDB($item_id)) {
+                    $items_names[] = $item->getName();
+                }
             }
-
-            // Load item
-            $item = new $this->itemtype();
-            if ($item->getFromDB($foreign_key)) {
-                $data_with_names[] = $item->getName();
+            if (!empty($items_names)) {
+                $data_with_names[$itemtype] = $items_names;
             }
         }
 
@@ -126,20 +119,15 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
         }
 
         $data_with_fkeys = [];
-        $names = $serialized_data[$this->key];
+        $items = $serialized_data[$this->key];
 
-        // Replace names by its database id
-        foreach ($names as $name) {
-            if ($this->isIgnoredValue($name)) {
-                // Value isn't a name, keep it as it is
-                $data_with_fkeys[] = $name;
-                continue;
+        // Replace each item name by its id
+        foreach ($items as $itemtype => $items_names) {
+            $items_ids = [];
+            foreach ($items_names as $item_name) {
+                $items_ids[] = $mapper->getItemId($itemtype, $item_name);
             }
-
-            $data_with_fkeys[] = $mapper->getItemId(
-                $this->itemtype,
-                $name
-            );
+            $data_with_fkeys[$itemtype] = $items_ids;
         }
 
         $serialized_data[$this->key] = $data_with_fkeys;
@@ -149,10 +137,5 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
     private function keyExistInSerializedData(array $serialized_data): bool
     {
         return isset($serialized_data[$this->key]);
-    }
-
-    private function isIgnoredValue(mixed $value): bool
-    {
-        return in_array($value, $this->ignored_values);
     }
 }

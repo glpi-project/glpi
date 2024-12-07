@@ -37,6 +37,7 @@ namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Question;
 use InvalidArgumentException;
 
 final class DatabaseMapper
@@ -134,6 +135,10 @@ final class DatabaseMapper
 
     private function contextExist(string $itemtype, string $name): bool
     {
+        if ($itemtype === Question::class) {
+            return true;
+        }
+
         return isset($this->values[$itemtype][$name]);
     }
 

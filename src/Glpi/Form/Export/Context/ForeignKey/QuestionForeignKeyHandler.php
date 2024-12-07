@@ -37,16 +37,15 @@ namespace Glpi\Form\Export\Context\ForeignKey;
 
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Question;
 
 /**
  * Handle a foreign keys.
  */
-final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
+final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
 {
-    /** @param class-string<\CommonDBTM> $itemtype */
     public function __construct(
-        private string $key,
-        private string $itemtype,
+        private string $key
     ) {
     }
 
@@ -60,11 +59,11 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
         $foreign_key = $serialized_data[$this->key];
 
         // Create a data requirement for the foreign key and load item
-        $item = new $this->itemtype();
+        $item = new Question();
         if ($item->getFromDB($foreign_key)) {
             $requirements[] = new DataRequirementSpecification(
-                $this->itemtype,
-                $item->getName(),
+                Question::class,
+                $item->getUniqueIDInForm()
             );
         }
 
@@ -80,9 +79,9 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
         $foreign_key = $serialized_data[$this->key];
 
         // Replace the foreign key by the name of the item it references and load item
-        $item = new $this->itemtype();
+        $item = new Question();
         if ($item->getFromDB($foreign_key)) {
-            $serialized_data[$this->key] = $item->getName();
+            $serialized_data[$this->key] = $item->getUniqueIDInForm();
         } else {
             unset($serialized_data[$this->key]);
         }
@@ -100,7 +99,7 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
 
         // Replace name by its database id
         $serialized_data[$this->key] = $mapper->getItemId(
-            $this->itemtype,
+            Question::class,
             $serialized_data[$this->key]
         );
 

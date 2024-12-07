@@ -55,6 +55,9 @@ final class FormContentSpecification
     /** @var AccesControlPolicyContentSpecification[] $policies */
     public array $policies = [];
 
+    /** @var DestinationContentSpecification[] $destinations */
+    public array $destinations = [];
+
     /** @var DataRequirementSpecification[] $data_requirements */
     public array $data_requirements = [];
 

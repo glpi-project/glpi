@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\OLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
@@ -80,7 +80,7 @@ final class OLATTOFieldTest extends DbTestCase
 
         $this->checkOLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new OLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_olas_tto_id: $created_ola_tto->getID()
@@ -102,7 +102,7 @@ final class OLATTOFieldTest extends DbTestCase
 
         $this->checkOLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new OLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_ola_tto->getID()
             ),
@@ -146,7 +146,7 @@ final class OLATTOFieldTest extends DbTestCase
 
         $this->checkOLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new OLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_ola_tto->getID()
             ),
@@ -156,7 +156,7 @@ final class OLATTOFieldTest extends DbTestCase
 
     private function checkOLATTOFieldConfiguration(
         Form $form,
-        SLMFieldConfig $config,
+        OLATTOFieldConfig $config,
         int $expected_olas_tto_id
     ): Ticket {
         // Insert config

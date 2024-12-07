@@ -240,6 +240,10 @@ final class FormDestination extends CommonDBChild
             $destination_item = $this->getConcreteDestinationItem();
             if ($destination_item instanceof AbstractCommonITILFormDestination) {
                 foreach ($destination_item->getConfigurableFields() as $field) {
+                    if ($input['_from_import'] ?? false) {
+                        continue;
+                    }
+
                     $input['config'] = $field->prepareInput($input['config']);
                 }
             }

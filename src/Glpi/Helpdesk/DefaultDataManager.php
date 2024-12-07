@@ -46,6 +46,7 @@ use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
+use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
@@ -202,7 +203,7 @@ final class DefaultDataManager
             ))->jsonSerialize(),
 
             // Set last valid answer as observer
-            ObserverField::getKey() => (new ITILActorFieldConfig(
+            ObserverField::getKey() => (new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
             ))->jsonSerialize(),
         ];
@@ -265,7 +266,7 @@ final class DefaultDataManager
             ))->jsonSerialize(),
 
             // Set last valid answer as observer
-            ObserverField::getKey() => (new ITILActorFieldConfig(
+            ObserverField::getKey() => (new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
             ))->jsonSerialize(),
         ];

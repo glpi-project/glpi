@@ -35,46 +35,34 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-abstract class ITILActorFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class RequesterFieldConfig extends ITILActorFieldConfig
 {
-    // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY                = 'strategy';
-    public const SPECIFIC_ITILACTORS_IDS = 'specific_itilactors_ids';
-    public const SPECIFIC_QUESTION_IDS   = 'specific_question_ids';
-
-    public function __construct(
-        private ITILActorFieldStrategy $strategy,
-        private array $specific_itilactors_ids = [],
-        private array $specific_question_ids = [],
-    ) {
-    }
-
     #[Override]
-    public function jsonSerialize(): array
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
         return [
-            self::STRATEGY => $this->strategy->value,
-            self::SPECIFIC_ITILACTORS_IDS => $this->specific_itilactors_ids,
-            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
+            new ForeignKeyItemsArrayHandler(self::SPECIFIC_ITILACTORS_IDS),
+            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
         ];
     }
 
-    public function getStrategy(): ITILActorFieldStrategy
+    #[Override]
+    public static function jsonDeserialize(array $data): self
     {
-        return $this->strategy;
-    }
+        $strategy = ITILActorFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        if ($strategy === null) {
+            $strategy = ITILActorFieldStrategy::FROM_TEMPLATE;
+        }
 
-    public function getSpecificITILActorsIds(): ?array
-    {
-        return $this->specific_itilactors_ids;
-    }
-
-    public function getSpecificQuestionIds(): ?array
-    {
-        return $this->specific_question_ids;
+        return new self(
+            strategy: $strategy,
+            specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
+            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
+        );
     }
 }

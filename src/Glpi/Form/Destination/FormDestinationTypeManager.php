@@ -72,7 +72,7 @@ final class FormDestinationTypeManager
     public function getDestinationTypes(): array
     {
         // TODO: support plugin types
-        return  [
+        return [
             new FormDestinationTicket(),
             new FormDestinationProblem(),
             new FormDestinationChange(),

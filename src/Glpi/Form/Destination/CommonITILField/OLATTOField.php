@@ -64,4 +64,10 @@ final class OLATTOField extends SLMField
     {
         return SLM::TTO;
     }
+
+    #[Override]
+    public function getConfigClass(): string
+    {
+        return OLATTOFieldConfig::class;
+    }
 }

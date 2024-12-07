@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use CommonITILActor;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -60,7 +60,7 @@ final class RequesterFieldTest extends DbTestCase
     public function testRequesterFromTemplate(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $from_template_config = new ITILActorFieldConfig(
+        $from_template_config = new RequesterFieldConfig(
             ITILActorFieldStrategy::FROM_TEMPLATE
         );
 
@@ -105,7 +105,7 @@ final class RequesterFieldTest extends DbTestCase
     public function testRequesterFormFiller(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $form_filler_config = new ITILActorFieldConfig(
+        $form_filler_config = new RequesterFieldConfig(
             ITILActorFieldStrategy::FORM_FILLER
         );
 
@@ -139,7 +139,7 @@ final class RequesterFieldTest extends DbTestCase
         // Specific value: User
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new RequesterFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID()
@@ -152,7 +152,7 @@ final class RequesterFieldTest extends DbTestCase
         // Specific value: User and Group
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new RequesterFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
@@ -175,7 +175,7 @@ final class RequesterFieldTest extends DbTestCase
         // Using answer from first question
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new RequesterFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
                 specific_question_ids: [$this->getQuestionId($form, "Requester 1")]
             ),
@@ -194,7 +194,7 @@ final class RequesterFieldTest extends DbTestCase
         // Using answer from first and second question
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new RequesterFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
                 specific_question_ids: [
                     $this->getQuestionId($form, "Requester 1"),
@@ -217,7 +217,7 @@ final class RequesterFieldTest extends DbTestCase
     public function testActorsFromLastValidQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $last_valid_answer_config = new ITILActorFieldConfig(
+        $last_valid_answer_config = new RequesterFieldConfig(
             ITILActorFieldStrategy::LAST_VALID_ANSWER
         );
 
@@ -290,7 +290,7 @@ final class RequesterFieldTest extends DbTestCase
 
     private function sendFormAndAssertTicketActors(
         Form $form,
-        ITILActorFieldConfig $config,
+        RequesterFieldConfig $config,
         array $answers,
         array $expected_actors_ids,
     ): void {

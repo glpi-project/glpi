@@ -45,7 +45,6 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
-use Ticket;
 
 class AssociatedItemsField extends AbstractConfigField
 {
@@ -93,7 +92,7 @@ class AssociatedItemsField extends AbstractConfigField
             'specific_values_extra_field' => [
                 'itemtype_aria_label' => __("Select the itemtype of the item to associate..."),
                 'items_id_aria_label' => __("Select the item to associate..."),
-                'input_name'          => $input_name . "[" . AssociatedItemsFieldConfig::ASSOCIATED_ITEMS . "]",
+                'input_name'          => $input_name . "[" . AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS . "]",
                 'itemtypes'           => array_keys(CommonITILObject::getAllTypesForHelpdesk()),
                 'associated_items'    => $config->getSpecificAssociatedItems(),
             ],
@@ -102,7 +101,7 @@ class AssociatedItemsField extends AbstractConfigField
             'specific_answer_extra_field' => [
                 'aria_label'      => __("Select questions..."),
                 'values'          => $config->getSpecificQuestionIds(),
-                'input_name'      => $input_name . "[" . AssociatedItemsFieldConfig::QUESTION_IDS . "]",
+                'input_name'      => $input_name . "[" . AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getAssociatedItemsQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -208,18 +207,18 @@ class AssociatedItemsField extends AbstractConfigField
         $input = parent::prepareInput($input);
 
         // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][AssociatedItemsFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][AssociatedItemsFieldConfig::QUESTION_IDS]);
+        if (!is_array($input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
+            $input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] = null;
         }
 
         // Compute associated_items as an array of itemtype => [item_id, ...]
         if (
-            isset($input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS])
-            && isset($input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS]['itemtype'])
-            && isset($input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS]['items_id'])
+            isset($input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS])
+            && isset($input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS]['itemtype'])
+            && isset($input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS]['items_id'])
         ) {
-            $itemtypes = $input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS]['itemtype'];
-            $items_ids = $input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS]['items_id'];
+            $itemtypes = $input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS]['itemtype'];
+            $items_ids = $input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS]['items_id'];
 
             $result = [];
 
@@ -233,7 +232,7 @@ class AssociatedItemsField extends AbstractConfigField
                 $result[$itemtype][] = $item_id;
             }
 
-            $input[$this->getKey()][AssociatedItemsFieldConfig::ASSOCIATED_ITEMS] = $result;
+            $input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $result;
         }
 
         return $input;

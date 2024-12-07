@@ -47,12 +47,8 @@ abstract class SLMField extends AbstractConfigField
 {
     abstract public function getSLMClass(): string;
     abstract public function getType(): int;
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return SLMFieldConfig::class;
-    }
+    /** @return class-string<SLMFieldConfig> */
+    abstract public function getConfigClass(): string;
 
     #[Override]
     public function renderConfigForm(
@@ -120,7 +116,7 @@ abstract class SLMField extends AbstractConfigField
     #[Override]
     public function getDefaultConfig(Form $form): SLMFieldConfig
     {
-        return new SLMFieldConfig(
+        return new ($this->getConfigClass())(
             SLMFieldStrategy::FROM_TEMPLATE
         );
     }

@@ -62,6 +62,12 @@ final class Question extends CommonDBChild implements BlockInterface
     }
 
     #[Override]
+    public function isEntityAssign()
+    {
+        return false;
+    }
+
+    #[Override]
     public function post_addItem()
     {
         // Report logs to the parent form
@@ -127,6 +133,15 @@ final class Question extends CommonDBChild implements BlockInterface
     public function getEndUserInputName(): string
     {
         return (new EndUserInputNameProvider())->getEndUserInputName($this);
+    }
+
+    public function getUniqueIDInForm(): string
+    {
+        return sprintf(
+            "%s-%s",
+            $this->getItem()->fields['rank'],
+            $this->fields['rank']
+        );
     }
 
     #[Override]

@@ -36,20 +36,33 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class AssociatedItemsFieldConfig implements JsonFieldInterface
+final class AssociatedItemsFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_IDS = 'question_ids';
-    public const ASSOCIATED_ITEMS = 'associated_items';
+    public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
+    public const SPECIFIC_ASSOCIATED_ITEMS = 'specific_associated_items';
 
     public function __construct(
         private AssociatedItemsFieldStrategy $strategy,
-        private ?array $specific_question_ids = null,
-        private ?array $specific_associated_items = null,
+        private array $specific_question_ids = [],
+        private array $specific_associated_items = [],
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyItemsArrayHandler(self::SPECIFIC_ASSOCIATED_ITEMS),
+            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
+        ];
     }
 
     #[Override]
@@ -62,8 +75,8 @@ final class AssociatedItemsFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_ids: $data[self::QUESTION_IDS] ?? null,
-            specific_associated_items: $data[self::ASSOCIATED_ITEMS] ?? null,
+            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
+            specific_associated_items: $data[self::SPECIFIC_ASSOCIATED_ITEMS] ?? [],
         );
     }
 
@@ -72,8 +85,8 @@ final class AssociatedItemsFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_IDS => $this->specific_question_ids,
-            self::ASSOCIATED_ITEMS => $this->specific_associated_items,
+            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
+            self::SPECIFIC_ASSOCIATED_ITEMS => $this->specific_associated_items,
         ];
     }
 
@@ -82,12 +95,12 @@ final class AssociatedItemsFieldConfig implements JsonFieldInterface
         return $this->strategy;
     }
 
-    public function getSpecificQuestionIds(): ?array
+    public function getSpecificQuestionIds(): array
     {
         return $this->specific_question_ids;
     }
 
-    public function getSpecificAssociatedItems(): ?array
+    public function getSpecificAssociatedItems(): array
     {
         return $this->specific_associated_items;
     }

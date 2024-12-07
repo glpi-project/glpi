@@ -91,7 +91,7 @@ class RequestTypeField extends AbstractConfigField
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select a request type..."),
                 'value'           => $config->getSpecificRequestType(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::REQUEST_TYPE . "]",
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::SPECIFIC_REQUEST_TYPE . "]",
                 'possible_values' => Ticket::getTypes(),
             ],
 
@@ -99,7 +99,7 @@ class RequestTypeField extends AbstractConfigField
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . RequestTypeFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getRequestTypeQuestionsValuesForDropdown($form),
             ],
         ]);

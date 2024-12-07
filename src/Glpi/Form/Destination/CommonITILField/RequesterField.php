@@ -61,9 +61,15 @@ class RequesterField extends ITILActorField
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): ITILActorFieldConfig
+    public function getConfigClass(): string
     {
-        return new ITILActorFieldConfig(
+        return RequesterFieldConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultConfig(Form $form): RequesterFieldConfig
+    {
+        return new RequesterFieldConfig(
             ITILActorFieldStrategy::FORM_FILLER,
         );
     }

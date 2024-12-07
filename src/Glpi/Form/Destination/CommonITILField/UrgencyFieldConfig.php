@@ -36,9 +36,12 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class UrgencyFieldConfig implements JsonFieldInterface
+final class UrgencyFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -53,6 +56,14 @@ final class UrgencyFieldConfig implements JsonFieldInterface
     }
 
     #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
+    }
+
+    #[Override]
     public static function jsonDeserialize(array $data): self
     {
         $strategy = UrgencyFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
@@ -62,8 +73,8 @@ final class UrgencyFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::SPECIFIC_QUESTION_ID],
-            specific_urgency_value: $data[self::SPECIFIC_URGENCY_VALUE],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_urgency_value: $data[self::SPECIFIC_URGENCY_VALUE] ?? null,
         );
     }
 

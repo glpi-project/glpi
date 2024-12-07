@@ -33,41 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Form\Export\Specification;
 
-use Override;
-use SLA;
-use SLM;
-
-final class SLATTRField extends SLMField
+final class DestinationContentSpecification implements ContentSpecificationInterface
 {
-    #[Override]
-    public function getLabel(): string
-    {
-        return __("SLA TTR");
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 40;
-    }
-
-    #[Override]
-    public function getSLMClass(): string
-    {
-        return SLA::class;
-    }
-
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTR;
-    }
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return SLATTRFieldConfig::class;
-    }
+    public string $itemtype;
+    public string $name;
+    public array $config;
 }
