@@ -126,12 +126,10 @@
                      {% if candedit %}
                         {% if can_read_kb and not nokb %}
                            {% set search_solution_button %}
-                              <a href="{{ path('/front/knowbaseitem.php?item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID() ~ '&forcetab=Knowbase$1') }}"
-                                 class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
-                                 title="{{ __('Search a solution') }}"
-                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                                 <i class="fas fa-search"></i>
-                              </a>
+                               <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="search_solution"
+                                       title="{{ __('Search a solution') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                                   <i class="ti ti-search"></i>
+                               </button>
                            {% endset %}
                            {{ fields.field(
                               '',
@@ -281,6 +279,27 @@
                $("#dropdown_solutiontypes_id{{ rand }}").append(newOption).trigger('change');
             });
          }
+         $('button[name="search_solution"]').on('click', () => {
+            window.glpi_ajax_dialog({
+                id: 'modal_searchSolution',
+                modalclass: 'modal-lg',
+                title: '{{ __('Search a solution') }}',
+                url: '{{ path('/ajax/common.tabs.php') ~ ('?_glpi_tab=Knowbase$1&_target=/front/knowbaseitem.php&_itemtype=Knowbase&item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID())|e('js') }}'
+            });
+            $(document).off('click', '#modal_searchSolution button.use_solution').on('click', '#modal_searchSolution button.use_solution', (e) => {
+                const solutions_id = $(e.target).attr('data-solution-id');
+                $('#modal_searchSolution').modal('hide');
+                if (solutions_id) {
+                    $.ajax({
+                        url: `{{ path('/Knowbase/KnowbaseItem/') }}${solutions_id}/Content`
+                    }).then((data) => {
+                        if (data) {
+                            setRichTextEditorContent("content_{{ rand }}", data);
+                        }
+                    });
+                }
+            })
+         });
       </script>
    {% endif %}
 {% endblock %}
