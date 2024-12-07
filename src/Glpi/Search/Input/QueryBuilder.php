@@ -900,7 +900,7 @@ final class QueryBuilder implements SearchInputInterface
             $params['order'] = ['ASC'];
         }
 
-        if (count($invalid_criteria) > 0) {
+        if (!($params['silent_validation'] ?? false) && count($invalid_criteria) > 0) {
             // There is probably no need to show more information about the invalid criteria
             Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
             if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
