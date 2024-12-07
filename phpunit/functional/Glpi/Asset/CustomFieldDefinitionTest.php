@@ -230,6 +230,12 @@ class CustomFieldDefinitionTest extends DbTestCase
                 'is_valid' => false,
             ],
             [
+                'field_params' => ['type' => DateType::class],
+                'given_value' => '',
+                'expected_value' => null,
+                'is_valid' => true,
+            ],
+            [
                 'field_params' => ['type' => DateTimeType::class],
                 'given_value' => '2021-01-01 00:00:00',
                 'expected_value' => '2021-01-01 00:00:00',
@@ -246,6 +252,12 @@ class CustomFieldDefinitionTest extends DbTestCase
                 'given_value' => 'test',
                 'expected_value' => 'test',
                 'is_valid' => false,
+            ],
+            [
+                'field_params' => ['type' => DateTimeType::class],
+                'given_value' => '',
+                'expected_value' => null,
+                'is_valid' => true,
             ],
         ];
     }
