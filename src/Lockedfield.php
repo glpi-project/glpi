@@ -68,6 +68,34 @@ class Lockedfield extends CommonDBTM
         return Session::haveRight(self::$rightname, UPDATE);
     }
 
+    public function canPurgeItem()
+    {
+        $item = new $this->fields['itemtype']();
+        if (
+            $item->getFromDB($this->fields['items_id']) //not a global lock
+            && $item->isEntityAssign()
+            && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        $lock = new self();
+        $lock->getFromDB($items_id);
+        $item = new $lock->fields['itemtype']();
+        if (
+            $item->getFromDB($lock->fields['items_id']) //not a global lock
+            && $item->isEntityAssign()
+            && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
+        ) {
+            return false;
+        }
+        return true;
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
