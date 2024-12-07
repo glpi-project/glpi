@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 if (PHP_SAPI === 'cli') {
     // Check the resources state before trying to instanciate the Kernel.
     // It must be done here as this check must be done even when the Kernel
@@ -71,20 +73,39 @@ if (!is_writable(GLPI_LOCK_DIR)) {
 }
 
 if (!isCommandLine()) {
-   //The advantage of using background-image is that cron is called in a separate
-   //request and thus does not slow down output of the main page as it would if called
-   //from there.
+    // The advantage of using background-image is that cron is called in a separate
+    // request and thus does not slow down output of the main page as it would if called
+    // from there.
     $image = pack("H*", "47494638396118001800800000ffffff00000021f90401000000002c0000000" .
                        "018001800000216848fa9cbed0fa39cb4da8bb3debcfb0f86e248965301003b");
-    header("Content-Type: image/gif");
-    header("Content-Length: " . strlen($image));
-    header("Cache-Control: no-cache,no-store");
-    header("Pragma: no-cache");
-    header("Connection: close");
-    echo $image;
-    flush();
 
-    CronTask::launch(CronTask::MODE_INTERNAL);
+    // Be sure to remove any unexpected header value.
+    header_remove();
+
+    return new StreamedResponse(
+        function () use ($image) {
+            // Be sure to disable the output buffering.
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            echo $image;
+
+            // Send headers and image content.
+            // The browser will consider that the response is complete due to the `Connection: close` header
+            // and will not have to wait for the cron tasks to be processed to consider the request as ended.
+            flush();
+
+            CronTask::launch(CronTask::MODE_INTERNAL);
+        },
+        headers: [
+            'Content-Type'   => 'image/gif',
+            'Content-Length' => strlen($image),
+            'Cache-Control'  => 'no-cache,no-store',
+            'Pragma'         => 'no-cache',
+            'Connection'     => 'close',
+        ]
+    );
 } else if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
    // Parse command line options
 

@@ -592,21 +592,6 @@ class Toolbox
         $etag = md5_file($file);
         $lastModified = filemtime($file);
 
-        // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
-        // If there is any extra data, the sent file will be corrupted.
-        // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
-        $ob_config = ini_get('output_buffering');
-        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
-            ? 1
-            : 0;
-        while (ob_get_level() > $max_buffering_level) {
-            ob_end_clean();
-        }
-        // 2. Clean any buffered output in remaining level (output_buffering="on" case).
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
-
         $headers = [
             'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
             'Etag'          => $etag,

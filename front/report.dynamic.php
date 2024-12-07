@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
@@ -53,6 +54,11 @@ if (isset($_GET["display_type"])) {
     if ($_GET["display_type"] < 0) {
         $_GET["display_type"] = -$_GET["display_type"];
         $_GET["export_all"]   = 1;
+    }
+
+    if (!in_array($_GET["display_type"], [Search::HTML_OUTPUT, Search::GLOBAL_SEARCH])) {
+        // Prevent errors to breaks the output
+        ErrorHandler::getInstance()->disableOutput();
     }
 
     switch ($itemtype) {

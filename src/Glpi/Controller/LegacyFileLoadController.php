@@ -55,11 +55,58 @@ final class LegacyFileLoadController implements PublicService
             throw new \RuntimeException('Cannot load legacy controller without specifying a file to load.');
         }
 
-        $callback = function () use ($target_file) {
-            require $target_file;
-        };
+        \ob_start();
+        $response = require($target_file);
+        $content = ob_get_clean();
 
-        return new HeaderlessStreamedResponse($callback->bindTo($this, self::class));
+        if ($response instanceof Response) {
+            // The legacy file contains a return value that corresponds to a valid Symfony response.
+            // This response is returned and any output is discarded.
+
+            if ($content !== '') {
+                \trigger_error(
+                    sprintf('Unexpected output detected in `%s`.', $target_file),
+                    E_USER_WARNING
+                );
+            }
+
+            return $response;
+        }
+
+        if (\headers_sent()) {
+            // Headers are already sent, so we have to use a streamed response without headers.
+            // This may happen when `flush()`/`ob_flush()`/`ob_clean()`/`ob_end_clean()` functions are used
+            // in the legacy script.
+
+            \trigger_error(
+                sprintf('Unexpected output detected in `%s`.', $target_file),
+                E_USER_WARNING
+            );
+
+            return new HeaderlessStreamedResponse(function () use ($content) {
+                echo $content;
+            });
+        }
+
+        // Extract already defined headers to set them in the Symfony response.
+        // This is required as Symfony will set default values for some of them if we do not provide them.
+        // see `Symfony\Component\HttpFoundation\ResponseHeaderBag`
+        $headers = [];
+        foreach (\headers_list() as $header_line) {
+            [$header_name, $header_value] = \explode(':', $header_line, 2);
+
+            $header_name = \trim($header_name);
+            $header_value = \trim($header_value);
+
+            if (!\array_key_exists($header_name, $headers)) {
+                $headers[$header_name] = [];
+            }
+
+            $headers[$header_name][] = $header_value;
+        }
+        \header_remove();
+
+        return new Response($content, status: \http_response_code(), headers: $headers);
     }
 
     protected function setAjax(): void
