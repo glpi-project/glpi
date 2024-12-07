@@ -869,7 +869,7 @@ final class QueryBuilder implements SearchInputInterface
             if (!array_key_exists('field', $criterion) || !is_numeric($criterion['field'])) {
                 continue;
             }
-            if (isset($criterion['itemtype'])) {
+            if (isset($criterion['itemtype']) && $criterion['itemtype'] !== $params['itemtype']) {
                 // In the criteria array, the search options are from the metatype POV (Agent Name for example is ID 1 in criteria array, but 900 from the POV of Computer)
                 $valid_meta_opts = SearchOption::getOptionsForItemtype($criterion['itemtype']);
                 if (!isset($valid_meta_opts[(int) $criterion['field']])) {
@@ -903,7 +903,7 @@ final class QueryBuilder implements SearchInputInterface
         if (count($invalid_criteria) > 0) {
             // There is probably no need to show more information about the invalid criteria
             Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
-            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT) {
+            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 trigger_error(
                     'Attempted to use invalid search options from itemtype: "' . $params['itemtype'] . '" with IDs ' . implode(', ', $invalid_criteria),
                     E_USER_WARNING
