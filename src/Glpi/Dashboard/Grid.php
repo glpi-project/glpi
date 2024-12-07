@@ -1567,8 +1567,7 @@ HTML;
         return "";
     }
 
-
-    public static function dropdownDashboard(string $name = "", array $params = [], bool $disabled_option = false): string
+    public static function getDashboardDropdownOptions(array $params = [], bool $disabled_option = false): array
     {
         $to_show = Dashboard::getAll(false, true, $params['context'] ?? 'core');
         $can_view_all = $params['can_view_all'] ?? false;
@@ -1584,6 +1583,11 @@ HTML;
             $options_dashboards = ['disabled' => __('Disabled')] + $options_dashboards;
         }
 
-        return Dropdown::showFromArray($name, $options_dashboards, $params);
+        return $options_dashboards;
+    }
+
+    public static function dropdownDashboard(string $name = "", array $params = [], bool $disabled_option = false): string
+    {
+        return Dropdown::showFromArray($name, self::getDashboardDropdownOptions($params, $disabled_option), $params);
     }
 }
