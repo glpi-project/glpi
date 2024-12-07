@@ -35,18 +35,12 @@
 
 namespace Glpi\Dashboard;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\MarkdownRenderer;
-use Html;
-use Laminas\Json\Expr as Json_Expr;
-use Laminas\Json\Json;
 use Mexitek\PHPColors\Color;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\MarkdownConverter;
-use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use Plugin;
 use Symfony\Component\DomCrawler\Crawler;
 use Search;
@@ -744,39 +738,34 @@ HTML;
             ];
         }
 
-        $options_json = Json::encode(
-            $options,
-            false,
-            ['enableJsonExprFinder' => true]
-        );
+        $twig_params = [
+            'chart_id' => $chart_id,
+            'options' => $options,
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script type="module">
+                const target = GLPI.Dashboard.getActiveDashboard() ?
+                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                    : $('#{{ chart_id }} .chart');
+                const myChart = echarts.init(target[0]);
+                myChart.setOption({{ options|json_encode|raw }});
+                myChart
+                    .on('click', function (params) {
+                        const data_url = _.get(params, 'data.url', '');
+                        if (data_url.length > 0) {
+                            window.location.href = data_url;
+                        }
+                    });
 
-        $js = <<<JAVASCRIPT
-        $(function () {
-            if (GLPI.Dashboard.getActiveDashboard()) {
-                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
-            } else {
-                var target = $('#$chart_id .chart');
-            }
-            var myChart = echarts.init(target[0]);
-            myChart.setOption($options_json);
-            myChart
-                .on('click', function (params) {
-                    const data_url = _.get(params, 'data.url', '');
-                    if (data_url.length > 0) {
-                        window.location.href = data_url;
-                    }
-                });
-
-            target
-                .on('mouseover', function (params) {
+                target.on('mouseover', () => {
                     myChart.setOption({'toolbox': {'show': true}});
-                })
-                .on('mouseout', function (params) {
+                }).on('mouseout', () => {
                     myChart.setOption({'toolbox': {'show': false}});
                 });
-        });
-JAVASCRIPT;
-        $js = \Html::scriptBlock($js);
+            </script>
+TWIG, $twig_params);
+
 
         return $html . $js;
     }
@@ -1061,15 +1050,6 @@ JAVASCRIPT;
                 'legendHoverLink' => true,
             ];
 
-            if ($p['distributed']) {
-                $serie['itemStyle']['color'] = new Json_Expr(<<<JAVASCRIPT
-                    function(param) {
-                        return {$palette_json}[param.dataIndex];
-                    }
-JAVASCRIPT
-                );
-            }
-
             if ($p['stacked']) {
                 $serie['stack'] = 'total';
             }
@@ -1078,12 +1058,6 @@ JAVASCRIPT
                 $serie['label'] = [
                     'show'      => true,
                     'overflow'  => 'truncate',
-                    'formatter' => new Json_Expr(<<<JAVASCRIPT
-                        function(param) {
-                            return param.data.value == 0 ? '': param.data.value;
-                        }
-JAVASCRIPT
-                    ),
                     'color'    => $p['stacked'] ? '#000' : 'inherit',
                     'position' => $p['horizontal']
                         ? 'right'
@@ -1190,20 +1164,6 @@ HTML;
         if ($p['horizontal']) {
             $options['xAxis'] = array_merge($options['xAxis'], [
                 'type' => 'value',
-                'axisLabel' => [
-                    'formatter' => new Json_Expr(<<<JAVASCRIPT
-                        function (value) {
-                            if (value < 1e3) {
-                                return value;
-                            } else if (value < 1e6) {
-                                return value / 1e3 + "K";
-                            } else {
-                                return value / 1e6 + "M";
-                            }
-                        }
-JAVASCRIPT
-                    ),
-                ]
             ]);
             $options['yAxis'] = array_merge($options['yAxis'], [
                 'type' => 'category',
@@ -1223,40 +1183,67 @@ JAVASCRIPT
             ];
         }
 
-        $options_json = Json::encode(
-            $options,
-            false,
-            ['enableJsonExprFinder' => true]
-        );
-
-        $js = <<<JAVASCRIPT
-        $(function () {
-            if (GLPI.Dashboard.getActiveDashboard()) {
-                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
-            } else {
-                var target = $('#$chart_id .chart');
-            }
-            var myChart = echarts.init(target[0]);
-            myChart.setOption($options_json);
-
-            myChart
-                .on('click', function (params) {
-                    const data_url = _.get(params, 'data.url', '');
-                    if (data_url.length > 0) {
-                        window.location.href = data_url;
+        $twig_params = [
+            'chart_id' => $chart_id,
+            'options' => $options,
+            'palette' => $palette,
+            'distributed' => $p['distributed'],
+            'horizontal' => $p['horizontal'],
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script type="module">
+                const target = GLPI.Dashboard.getActiveDashboard() ?
+                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                    : $('#{{ chart_id }} .chart');
+                const chart_options = {{ options|json_encode|raw }};
+                const palette = {{ palette|json_encode|raw }};
+                $.each(chart_options.series, function (index, serie) {
+                    if ({{ distributed ? 'true' : 'false' }}) {
+                        serie['itemStyle'] = {
+                            ...serie['itemStyle'],
+                            'color': (param) => palette[param.dataIndex]
+                        }
                     }
+                    serie['label'] = {
+                        ...serie['label'],
+                        'formatter': (param) => param.data.value == 0 ? '' : param.data.value
+                    };
                 });
+                if ({{ horizontal ? 'true' : 'false' }}) {
+                    chart_options['yAxis'] = {
+                        ...chart_options['yAxis'],
+                        'axisLabel': {
+                            'formatter': (value) => {
+                                if (value < 1e3) {
+                                    return value;
+                                } else if (value < 1e6) {
+                                    return value / 1e3 + "K";
+                                } else {
+                                    return value / 1e6 + "M";
+                                }
+                            }
+                        }
+                    };
+                }
 
-            target
-                .on('mouseover', function (params) {
+                const myChart = echarts.init(target[0]);
+                myChart.setOption(chart_options);
+                myChart
+                    .on('click', function (params) {
+                        const data_url = _.get(params, 'data.url', '');
+                        if (data_url.length > 0) {
+                            window.location.href = data_url;
+                        }
+                    });
+
+                target.on('mouseover', () => {
                     myChart.setOption({'toolbox': {'show': true}});
-                })
-                .on('mouseout', function (params) {
+                }).on('mouseout', () => {
                     myChart.setOption({'toolbox': {'show': false}});
                 });
-        });
-JAVASCRIPT;
-        $js = \Html::scriptBlock($js);
+            </script>
+TWIG, $twig_params);
 
         return $html . $js;
     }
@@ -1443,12 +1430,6 @@ JAVASCRIPT;
             }
 
             if ($p['show_points']) {
-                $echart_serie['symbol'] = new Json_Expr(<<<JAVASCRIPT
-                    function(value) {
-                        return value > 0 ? 'circle': 'none';
-                    }
-JAVASCRIPT
-                );
                 $echart_serie['symbolSize'] = 8;
             }
 
@@ -1457,12 +1438,6 @@ JAVASCRIPT
                     'show'      => true,
                     'distance'  => 1,
                     'color'     => 'inherit',
-                    'formatter' => new Json_Expr(<<<JAVASCRIPT
-                        function(param) {
-                            return param.data.value == 0 ? '': param.data.value;
-                        }
-JAVASCRIPT
-                    ),
                 ];
             }
 
@@ -1543,39 +1518,44 @@ HTML;
             ];
         }
 
-        $options_json = Json::encode(
-            $options,
-            false,
-            ['enableJsonExprFinder' => true]
-        );
-
-        $js = <<<JAVASCRIPT
-        $(function () {
-            if (GLPI.Dashboard.getActiveDashboard()) {
-                var target = GLPI.Dashboard.getActiveDashboard().element.find('#{$chart_id} .chart');
-            } else {
-                var target = $('#$chart_id .chart');
-            }
-            var myChart = echarts.init(target[0]);
-            myChart.setOption($options_json);
-            myChart
-                .on('click', function (params) {
-                    const data_url = _.get(params, 'data.url', '');
-                    if (data_url.length > 0) {
-                        window.location.href = data_url;
+        $twig_params = [
+            'chart_id' => $chart_id,
+            'options' => $options,
+            'show_points' => $p['show_points'],
+            'point_labels' => $p['point_labels'],
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script type="module">
+                const target = GLPI.Dashboard.getActiveDashboard() ?
+                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                    : $('#{{ chart_id }} .chart');
+                const chart_options = {{ options|json_encode|raw }};
+                
+                $.each(chart_options.series, function (index, serie) {
+                    if ({{ show_points ? 'true' : 'false' }}) {
+                        serie['label']['symbol'] = (param) => param.data.value > 0 ? 'circle': 'none';
                     }
+                    serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
                 });
 
-            target
-                .on('mouseover', function (params) {
+                const myChart = echarts.init(target[0]);
+                myChart.setOption(chart_options);
+                myChart
+                    .on('click', function (params) {
+                        const data_url = _.get(params, 'data.url', '');
+                        if (data_url.length > 0) {
+                            window.location.href = data_url;
+                        }
+                    });
+
+                target.on('mouseover', () => {
                     myChart.setOption({'toolbox': {'show': true}});
-                })
-                .on('mouseout', function (params) {
+                }).on('mouseout', () => {
                     myChart.setOption({'toolbox': {'show': false}});
                 });
-        });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
+            </script>
+TWIG, $twig_params);
 
         return $html . $js;
     }

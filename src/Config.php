@@ -901,9 +901,6 @@ class Config extends CommonDBTM
             [ 'name'    => 'laminas/laminas-i18n',
                 'check'   => 'Laminas\\I18n\\Module'
             ],
-            [ 'name'    => 'laminas/laminas-json',
-                'check'   => 'Laminas\Json\Json'
-            ],
             [ 'name'    => 'monolog/monolog',
                 'check'   => 'Monolog\\Logger'
             ],
