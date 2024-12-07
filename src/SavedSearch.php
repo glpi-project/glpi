@@ -1318,16 +1318,20 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         ) {
             $search = new Search();
            //Do the same as self::getParameters() but getFromDB is useless
-            $query_tab = [];
-            parse_str($this->getField('query'), $query_tab);
 
             $params = null;
             if (class_exists($this->getField('itemtype'))) {
-                $params = $this->prepareQueryToUse(
-                    $this->getField('type'),
-                    $query_tab,
-                    $enable_partial_warnings
-                );
+                $query_tab = null;
+                $save_search_params = $this->getParameters($this->getID());
+                if (isset($save_search_params['criteria'])) {
+                    $query_tab = $save_search_params['criteria'];
+                }
+                $params = Search::manageParams($this->getField('itemtype'), [
+                    'is_deleted'    => 0,
+                    'savedsearches_id' => $this->getID(),
+                    'itemtype'      => $this->getField('itemtype'),
+                    'criteria'      => $query_tab
+                ], false);
             }
 
             if (!$params) {
