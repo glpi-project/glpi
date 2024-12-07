@@ -470,6 +470,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $query_tab = [];
         parse_str($this->fields["query"], $query_tab);
         $query_tab['savedsearches_id'] = $ID;
+        $query_tab['reset'] = 'reset';
         return $query_tab;
     }
 
