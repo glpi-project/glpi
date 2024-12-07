@@ -37,7 +37,6 @@ namespace Glpi\Config;
 
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
-use Glpi\Config\Option as Option;
 
 final class CoreConfigProvider implements ConfigProviderInterface
 {
@@ -97,8 +96,8 @@ final class CoreConfigProvider implements ConfigProviderInterface
         $scopes_userpref = [ConfigScope::GLOBAL, ConfigScope::USER];
 
         $options = [
-            new Option\TextOption($scopes_global, $general, 'url_base', __('URL of the application')),
-            new Option\TextOption(
+            new \Glpi\Config\Option\TextOption($scopes_global, $general, 'url_base', __('URL of the application')),
+            new \Glpi\Config\Option\TextOption(
                 scopes: $scopes_global,
                 section: $general,
                 name: 'text_login',
@@ -107,9 +106,9 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 enable_richtext: true,
                 enable_images: false,
             ),
-            new Option\TextOption($scopes_global, $general, 'helpdesk_doc_url', __('Simplified interface help link')),
-            new Option\TextOption($scopes_global, $general, 'central_doc_url', __('Standard interface help link')),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\TextOption($scopes_global, $general, 'helpdesk_doc_url', __('Simplified interface help link')),
+            new \Glpi\Config\Option\TextOption($scopes_global, $general, 'central_doc_url', __('Standard interface help link')),
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_global,
                 section: $general,
                 name: 'decimal_number',
@@ -118,9 +117,9 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 min: 1,
                 max: 4
             ),
-            new Option\BooleanOption($scopes_global, $general, 'use_public_faq', __('Allow FAQ anonymous access')),
-            new Option\NumberOption($scopes_global, $dynamic_ui, 'dropdown_max', __('Page size for dropdown (paging using scroll)')),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_global, $general, 'use_public_faq', __('Allow FAQ anonymous access')),
+            new \Glpi\Config\Option\NumberOption($scopes_global, $dynamic_ui, 'dropdown_max', __('Page size for dropdown (paging using scroll)')),
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_global,
                 section: $dynamic_ui,
                 name: 'ajax_limit_count',
@@ -130,7 +129,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 max: 200,
                 toadd: ['0' => __('Never')],
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_global,
                 section: $search,
                 name: 'allow_search_view',
@@ -141,8 +140,8 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion'))
                 ]
             ),
-            new Option\BooleanOption($scopes_global, $search, 'allow_search_global', __('Global search'), InputType::DROPDOWN_YES_NO),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_global, $search, 'allow_search_global', __('Global search'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_global,
                 section: $search,
                 name: 'allow_search_all',
@@ -152,7 +151,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
                 ]
             ),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_global,
                 section: $search,
                 name: 'list_limit_max',
@@ -162,7 +161,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 max: 200,
                 step: 5
             ),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_global,
                 section: $search,
                 name: 'cut',
@@ -171,7 +170,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 max: 250,
                 step: 50
             ),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_global,
                 section: $search,
                 name: 'url_maxlength',
@@ -181,15 +180,15 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 max: 80,
                 step: 5
             ),
-            new Option\BooleanOption($scopes_global, $item_locks, 'lock_use_lock_item', __('Use locks'), InputType::CHECKBOX),
-            new Option\ItemOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_global, $item_locks, 'lock_use_lock_item', __('Use locks'), InputType::CHECKBOX),
+            new \Glpi\Config\Option\ItemOption(
                 scopes: $scopes_global,
                 section: $item_locks,
                 name: 'lock_lockprofile_id',
                 label: __('Profile to be used when locking items'),
                 itemtype: \Profile::class
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_global,
                 section: $item_locks,
                 name: 'lock_item_list',
@@ -197,7 +196,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 elements: \ObjectLock::getLockableObjects(),
                 multiple: true,
             ),
-            new Option\TimestampOption(
+            new \Glpi\Config\Option\TimestampOption(
                 scopes: $scopes_global,
                 section: $auto_login,
                 name: 'login_remember_time',
@@ -208,32 +207,32 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 toadd: [HOUR_TIMESTAMP, HOUR_TIMESTAMP * 2, HOUR_TIMESTAMP * 6, HOUR_TIMESTAMP * 12],
                 emptylabel: __('Disabled')
             ),
-            new Option\BooleanOption($scopes_global, $auto_login, 'login_remember_default', __('Default state of checkbox'), InputType::CHECKBOX),
-            new Option\BooleanOption($scopes_global, $auto_login, 'display_login_source', __('Display source dropdown on login page'), InputType::CHECKBOX),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_global, $auto_login, 'login_remember_default', __('Default state of checkbox'), InputType::CHECKBOX),
+            new \Glpi\Config\Option\BooleanOption($scopes_global, $auto_login, 'display_login_source', __('Display source dropdown on login page'), InputType::CHECKBOX),
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'language',
                 label: __('Language'),
                 elements: \Dropdown::getLanguages()
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'date_format',
                 label: __('Date format'),
                 elements: \Toolbox::phpDateFormats()
             ),
-            new Option\ArrayOption($scopes_userpref, $personalize, 'names_format', __('Display order of surnames firstnames'), [
+            new \Glpi\Config\Option\ArrayOption($scopes_userpref, $personalize, 'names_format', __('Display order of surnames firstnames'), [
                 'elements' => [
                     \User::REALNAME_BEFORE => __('Surname, First name'),
                     \User::FIRSTNAME_BEFORE => __('First name, Surname'),
                 ]
             ]),
-            new Option\ArrayOption($scopes_userpref, $personalize, 'number_format', __('Number format'), [
+            new \Glpi\Config\Option\ArrayOption($scopes_userpref, $personalize, 'number_format', __('Number format'), [
                 'elements' => ['1 234.56', '1,234.56', '1 234,56', '1234.56', '1234,56']
             ]),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'list_limit',
@@ -242,22 +241,22 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 min: 5,
                 step: 5,
             ),
-            new Option\BooleanOption($scopes_userpref, $personalize, 'backcreated', __('Go to created item after creation'), InputType::DROPDOWN_YES_NO),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize, 'backcreated', __('Go to created item after creation'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'use_flat_dropdowntree',
                 label: __('Display the tree dropdown complete name in dropdown inputs'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'use_flat_dropdowntree_on_search_result',
                 label: __('Display the complete name of tree dropdown in search results'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'show_count_on_tabs',
@@ -268,10 +267,10 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     1 => __('Yes'),
                 ]
             ),
-            new Option\BooleanOption($scopes_userpref, $personalize, 'is_ids_visible', __('Show GLPI ID'), InputType::DROPDOWN_YES_NO),
-            new Option\BooleanOption($scopes_userpref, $personalize, 'keep_devices_when_purging_item', __('Keep devices when purging an item'), InputType::DROPDOWN_YES_NO),
-            new Option\BooleanOption($scopes_userpref, $personalize, 'notification_to_myself', __('Notifications for my changes'), InputType::DROPDOWN_YES_NO),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize, 'is_ids_visible', __('Show GLPI ID'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize, 'keep_devices_when_purging_item', __('Keep devices when purging an item'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize, 'notification_to_myself', __('Notifications for my changes'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'display_count_on_home',
@@ -280,14 +279,14 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 min: 0,
                 max: 30
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'pdffont',
                 label: __('PDF export font'),
                 elements: \GLPIPDF::getFontList()
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'csv_delimiter',
@@ -297,7 +296,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     ',' => ',',
                 ]
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'palette',
@@ -305,7 +304,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 elements: (new \Config())->getPalettes(),
                 escapeMarkup: 'function(m) { return m; }'
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'page_layout',
@@ -315,7 +314,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     'vertical' => __('Vertical (menu in sidebar)')
                 ]
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'richtext_layout',
@@ -325,8 +324,8 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     'classic' => __('Classic (toolbar on top)')
                 ]
             ),
-            new Option\BooleanOption($scopes_userpref, $personalize, 'highcontrast_css', __('Enable high contrast'), InputType::DROPDOWN_YES_NO),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize, 'highcontrast_css', __('Enable high contrast'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'timezone',
@@ -335,14 +334,14 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 emptylabel: __('Use server configuration'),
                 display_emptychoice: true
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'default_central_tab',
                 label: __('Default central tab'),
                 elements: $central->getTabNameForItem($central),
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize,
                 name: 'timeline_order',
@@ -352,10 +351,10 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     \CommonITILObject::TIMELINE_ORDER_REVERSE => __('Reverse order (old items on bottom, recent on top)'),
                 ],
             ),
-            new Option\BooleanOption($scopes_userpref, $personalize_assistance, 'followup_private', __('Private followups by default'), InputType::DROPDOWN_YES_NO),
-            new Option\BooleanOption($scopes_userpref, $personalize_assistance, 'show_jobs_at_login', __('Show new tickets on the home page'), InputType::DROPDOWN_YES_NO),
-            new Option\BooleanOption($scopes_userpref, $personalize_assistance, 'task_private', __('Private tasks by default'), InputType::DROPDOWN_YES_NO),
-            new Option\ItemOption(
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize_assistance, 'followup_private', __('Private followups by default'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize_assistance, 'show_jobs_at_login', __('Show new tickets on the home page'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize_assistance, 'task_private', __('Private tasks by default'), InputType::DROPDOWN_YES_NO),
+            new \Glpi\Config\Option\ItemOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'default_requesttypes_id',
@@ -363,7 +362,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 itemtype: \RequestType::class,
                 condition: ['is_active' => 1, 'is_ticketheader' => 1]
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'task_state',
@@ -374,7 +373,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     \Planning::DONE => __('Done')
                 ],
             ),
-            new Option\NumberOption(
+            new \Glpi\Config\Option\NumberOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'refresh_views',
@@ -384,35 +383,35 @@ final class CoreConfigProvider implements ConfigProviderInterface
                 max: 30,
                 toadd: [0 => __('Never')]
             ),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'set_default_tech',
                 label: __('Pre-select me as a technician when creating a ticket'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'set_default_requester',
                 label: __('Pre-select me as a requester when creating a ticket'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'set_followup_tech',
                 label: __('Add me as a technician when adding a ticket follow-up'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\BooleanOption(
+            new \Glpi\Config\Option\BooleanOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'set_solution_tech',
                 label: __('Add me as a technician when adding a ticket solution'),
                 input_type: InputType::DROPDOWN_YES_NO
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'timeline_action_btn_layout',
@@ -422,7 +421,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     \Config::TIMELINE_ACTION_BTN_SPLITTED => __('Splitted'),
                 ],
             ),
-            new Option\ArrayOption(
+            new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'timeline_date_format',
@@ -435,7 +434,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
         ];
 
         for ($i = 1; $i <= 6; $i++) {
-            $options[] = new Option\ColorOption(
+            $options[] = new \Glpi\Config\Option\ColorOption(
                 scopes: $scopes_userpref,
                 section: $personalize_assistance,
                 name: 'priority_' . $i,
@@ -443,12 +442,12 @@ final class CoreConfigProvider implements ConfigProviderInterface
             );
         }
 
-        $options[] = new Option\ColorOption($scopes_userpref, $personalize_sla, 'duedateok_color', __('OK state color'));
+        $options[] = new \Glpi\Config\Option\ColorOption($scopes_userpref, $personalize_sla, 'duedateok_color', __('OK state color'));
         $sla_states = ['warning' => 'Warning', 'critical' => 'Critical'];
 
         foreach ($sla_states as $state => $label) {
-            $options[] = new Option\ColorOption($scopes_userpref, $personalize_sla, "duedate{$state}_color", __("{$label} state color"));
-            $options[] = new Option\ArrayOption(
+            $options[] = new \Glpi\Config\Option\ColorOption($scopes_userpref, $personalize_sla, "duedate{$state}_color", __("{$label} state color"));
+            $options[] = new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize_sla,
                 name: "duedate{$state}_unit",
@@ -459,13 +458,13 @@ final class CoreConfigProvider implements ConfigProviderInterface
                     'days' => _n('Day', 'Days', \Session::getPluralNumber()),
                 ]
             );
-            $options[] = new Option\NumberOption($scopes_userpref, $personalize_sla, "duedate{$state}_less", __("{$label} state threshold"), InputType::DROPDOWN_NUMBER);
+            $options[] = new \Glpi\Config\Option\NumberOption($scopes_userpref, $personalize_sla, "duedate{$state}_less", __("{$label} state threshold"), InputType::DROPDOWN_NUMBER);
         }
         $options = [
             ...$options,
             ...[
-                new Option\BooleanOption($scopes_userpref, $personalize_assistance, 'lock_autolock_mode', __('Auto-lock Mode'), InputType::DROPDOWN_YES_NO),
-                new Option\BooleanOption(
+                new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize_assistance, 'lock_autolock_mode', __('Auto-lock Mode'), InputType::DROPDOWN_YES_NO),
+                new \Glpi\Config\Option\BooleanOption(
                     scopes: $scopes_userpref,
                     section: $personalize_assistance,
                     name: 'lock_directunlock_notification',
@@ -477,7 +476,7 @@ final class CoreConfigProvider implements ConfigProviderInterface
 
         $dashboards = ['central' => 'Central', 'assets' => 'Assets', 'helpdesk' => 'Assistance', 'mini_ticket' => 'Tickets (mini dashboard)'];
         foreach ($dashboards as $dashboard => $label) {
-            $options[] = new Option\ArrayOption(
+            $options[] = new \Glpi\Config\Option\ArrayOption(
                 scopes: $scopes_userpref,
                 section: $personalize_dashboards,
                 name: "default_dashboard_{$dashboard}",
@@ -489,8 +488,8 @@ final class CoreConfigProvider implements ConfigProviderInterface
         $options = [
             ...$options,
             ...[
-                new Option\BooleanOption($scopes_userpref, $personalize_notifications, 'is_notif_enable_default', __('Enable notifications'), InputType::DROPDOWN_YES_NO),
-                new Option\ArrayOption(
+                new \Glpi\Config\Option\BooleanOption($scopes_userpref, $personalize_notifications, 'is_notif_enable_default', __('Enable notifications'), InputType::DROPDOWN_YES_NO),
+                new \Glpi\Config\Option\ArrayOption(
                     scopes: $scopes_userpref,
                     section: $personalize_notifications,
                     name: 'toast_location',

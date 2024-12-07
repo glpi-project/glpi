@@ -36,11 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\ConfigManager;
-use Glpi\Config\ConfigOption;
 use Glpi\Config\ConfigScope;
-use Glpi\Config\ConfigSection;
-use Glpi\Config\InputType;
-use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
