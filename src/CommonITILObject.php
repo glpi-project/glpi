@@ -7934,9 +7934,12 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Returns criteria that can be used to get documents related to current instance.
      *
+     * @param integer $email
+     * @param bool $bypass_rights
+     *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false, $email = false): array
     {
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
@@ -7949,8 +7952,7 @@ abstract class CommonITILObject extends CommonDBTM
                 Document_Item::getTableField('items_id') => $this->getID(),
             ],
         ];
-
-       // documents associated to followups
+        // documents associated to followups
         if ($bypass_rights || ITILFollowup::canView()) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
@@ -7960,6 +7962,19 @@ abstract class CommonITILObject extends CommonDBTM
                 $fup_crits[] = [
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
+            } else if ($email) {
+                // Won't send documents associated with private followups unless the user has necessary rights.
+                $send_private_followups = false;
+                $user_id = User::getUsersIdByEmails($email);
+
+                if (count($user_id) > 0) {
+                    $send_private_followups = User::hasRightById($user_id[0], ITILFollowup::SEEPRIVATE);
+                }
+                if (!$send_private_followups) {
+                    $fup_crits[] = [
+                        'AND' => ['is_private' => 0],
+                    ];
+                }
             }
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
