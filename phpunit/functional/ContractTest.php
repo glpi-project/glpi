@@ -188,4 +188,38 @@ class ContractTest extends DbTestCase
         $contract = new \Contract();
         $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
     }
+
+    public function testLinkUser()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $contract = new \Contract();
+        $input = [
+            'name' => 'A test contract',
+            'entities_id'  => 0
+        ];
+        $cid = $contract->add($input);
+        $this->assertGreaterThan(0, $cid);
+
+        $user = new \User();
+        $uid = $user->add([
+            'name' => 'Test User',
+            'firstname' => 'Test',
+            'realname' => 'User',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $uid);
+
+        $link_user = new \Contract_User();
+        $link_id = $link_user->add([
+            'users_id' => $uid,
+            'contracts_id' => $cid
+        ]);
+        $this->assertGreaterThan(0, $link_id);
+
+        $this->assertTrue($link_user->getFromDB($link_id));
+        $relation_items = $link_user->getItemsAssociatedTo($contract->getType(), $cid);
+        $this->assertCount(1, $relation_items, 'Original Contract_User not found!');
+    }
 }
