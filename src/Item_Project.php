@@ -307,30 +307,16 @@ class Item_Project extends CommonDBRelation
             }
 
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
             $data = [
                 'name' => $project->getLink(),
                 'projectstates_id' => $state !== false
-                        ? sprintf(
-                            '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
-                            htmlescape($state->fields['color']),
-                            htmlescape($state->fields['color']),
-                            htmlescape($state->fields['name']),
-                        )
-                        : '',
-                'priority' => sprintf(
-                    '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
-                    htmlescape($priority)
-                ),
-                'percent_done' => '<div class="progress bg-light border border-secondary-subtle" style="height: 22px">
-                        <div class="progress-bar progress-bar-striped text-body" role="progressbar"
-                            style="width: ' . $project->fields['percent_done'] . '%; background-color: primary;"
-                            aria-valuenow="' . $project->fields['percent_done'] . '"
-                            aria-valuemin="0" aria-valuemax="100">
-                        ' . $project->fields['percent_done'] . '%
-                        </div>
-                    </div>'
+                    ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
+                    : '',
+                'priority' => Html::getBadgeBlock($priority, $prioritycolor),
+                'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
             ];
             $entries[] = array_merge($project->fields, $data);
         }
