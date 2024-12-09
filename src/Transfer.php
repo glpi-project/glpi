@@ -4182,6 +4182,17 @@ class Transfer extends CommonDBTM
                     }
                     $table = $itemtype::getTable();
 
+                    if (!$DB->fieldExists($table, 'name')) {
+                        \Toolbox::logInfo(
+                            sprintf(
+                                'There is no field "%1$s" in table "%2$s"',
+                                'name',
+                                $table
+                            )
+                        );
+                        continue;
+                    }
+
                     $iterator = $DB->request([
                         'SELECT'    => [
                             "$table.id",
