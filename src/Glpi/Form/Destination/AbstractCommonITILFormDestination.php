@@ -199,6 +199,23 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         ];
     }
 
+    /**
+     * Get a configurable field by its key.
+     *
+     * @param string $key
+     * @return \Glpi\Form\Destination\AbstractConfigField|null
+     */
+    public function getConfigurableFieldByKey(string $key): ?AbstractConfigField
+    {
+        foreach ($this->getConfigurableFields() as $field) {
+            if ($field::getKey() === $key) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
     final public function formatConfigInputName(string $field_key): string
     {
         // Handle array fields

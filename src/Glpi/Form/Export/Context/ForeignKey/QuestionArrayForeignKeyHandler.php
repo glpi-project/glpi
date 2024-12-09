@@ -37,19 +37,15 @@ namespace Glpi\Form\Export\Context\ForeignKey;
 
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Question;
 
 /**
- * Handle an array of foreign keys.
- * If the array contains some mixed values that are not 100% foreign keys (e.g.
- * a special 'all' value), you can ignore these values using the $ignored_values
- * parameter of the constructor.
+ * Handle an array of foreign keys for Question items.
  */
-final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterface
+final class QuestionArrayForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
 {
-    /** @param class-string<\CommonDBTM> $itemtype */
     public function __construct(
         private string $key,
-        private string $itemtype,
         private array $ignored_values = [],
     ) {
     }
@@ -70,11 +66,11 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
             }
 
             // Load item
-            $item = new $this->itemtype();
+            $item = new Question();
             if ($item->getFromDB($foreign_key)) {
                 $requirements[] = new DataRequirementSpecification(
-                    $this->itemtype,
-                    $item->getName(),
+                    Question::class,
+                    $item->getUniqueIDInForm(),
                 );
             }
         }
@@ -102,9 +98,9 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
             }
 
             // Load item
-            $item = new $this->itemtype();
+            $item = new Question();
             if ($item->getFromDB($foreign_key)) {
-                $data_with_names[] = $item->getName();
+                $data_with_names[] = $item->getUniqueIDInForm();
             }
         }
 
@@ -137,7 +133,7 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
             }
 
             $data_with_fkeys[] = $mapper->getItemId(
-                $this->itemtype,
+                Question::class,
                 $name
             );
         }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,64 +34,32 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use ITILFollowupTemplate;
+use OLA;
 use Override;
 
-final class ITILFollowupFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+class OLATTRFieldConfig extends SLMFieldConfig
 {
-    // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY = 'strategy';
-    public const ITILFOLLOWUPTEMPLATE_IDS = 'itilfollowuptemplate_ids';
-
-    public function __construct(
-        private ITILFollowupFieldStrategy $strategy,
-        private ?array $specific_itilfollowuptemplates_ids = null,
-    ) {
-    }
-
     #[Override]
     public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
-
         return [
-            new ForeignKeyArrayHandler(key: self::ITILFOLLOWUPTEMPLATE_IDS, itemtype: ITILFollowupTemplate::class)
+            new ForeignKeyHandler(key: self::SLM_ID, itemtype: OLA::class)
         ];
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategy = ITILFollowupFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        $strategy = SLMFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
         if ($strategy === null) {
-            $strategy = ITILFollowupFieldStrategy::NO_FOLLOWUP;
+            $strategy = SLMFieldStrategy::FROM_TEMPLATE;
         }
 
         return new self(
             strategy: $strategy,
-            specific_itilfollowuptemplates_ids: $data[self::ITILFOLLOWUPTEMPLATE_IDS] ?? [],
+            specific_slm_id: $data[self::SLM_ID] ?? null
         );
-    }
-
-    #[Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            self::STRATEGY => $this->strategy->value,
-            self::ITILFOLLOWUPTEMPLATE_IDS => $this->specific_itilfollowuptemplates_ids,
-        ];
-    }
-
-    public function getStrategy(): ITILFollowupFieldStrategy
-    {
-        return $this->strategy;
-    }
-
-    public function getSpecificITILFollowupTemplatesIds(): ?array
-    {
-        return $this->specific_itilfollowuptemplates_ids;
     }
 }

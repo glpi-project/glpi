@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use CommonITILActor;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -60,7 +60,7 @@ final class ObserverFieldTest extends DbTestCase
     public function testObserverFromTemplate(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $from_template_config = new ITILActorFieldConfig(
+        $from_template_config = new ObserverFieldConfig(
             ITILActorFieldStrategy::FROM_TEMPLATE
         );
 
@@ -105,7 +105,7 @@ final class ObserverFieldTest extends DbTestCase
     public function testObserverFormFiller(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $form_filler_config = new ITILActorFieldConfig(
+        $form_filler_config = new ObserverFieldConfig(
             ITILActorFieldStrategy::FORM_FILLER
         );
 
@@ -139,7 +139,7 @@ final class ObserverFieldTest extends DbTestCase
         // Specific value: User
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID()
@@ -152,7 +152,7 @@ final class ObserverFieldTest extends DbTestCase
         // Specific value: User and Group
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
@@ -175,7 +175,7 @@ final class ObserverFieldTest extends DbTestCase
         // Using answer from first question
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
                 specific_question_ids: [$this->getQuestionId($form, "Observer 1")]
             ),
@@ -194,7 +194,7 @@ final class ObserverFieldTest extends DbTestCase
         // Using answer from first and second question
         $this->sendFormAndAssertTicketActors(
             form: $form,
-            config: new ITILActorFieldConfig(
+            config: new ObserverFieldConfig(
                 strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
                 specific_question_ids: [
                     $this->getQuestionId($form, "Observer 1"),
@@ -217,7 +217,7 @@ final class ObserverFieldTest extends DbTestCase
     public function testActorsFromLastValidQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $last_valid_answer_config = new ITILActorFieldConfig(
+        $last_valid_answer_config = new ObserverFieldConfig(
             ITILActorFieldStrategy::LAST_VALID_ANSWER
         );
 
@@ -290,7 +290,7 @@ final class ObserverFieldTest extends DbTestCase
 
     private function sendFormAndAssertTicketActors(
         Form $form,
-        ITILActorFieldConfig $config,
+        ObserverFieldConfig $config,
         array $answers,
         array $expected_actors_ids,
     ): void {
