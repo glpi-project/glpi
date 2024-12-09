@@ -477,11 +477,12 @@ class DBConnection extends CommonDBTM
      * @param boolean $use_slave try to connect to slave server first not to main server
      * @param boolean $required  connection to the specified server is required
      *                           (if connection failed, do not try to connect to the other server)
-     * @param boolean $display   display error message (true by default)
      *
      * @return boolean True if successfull, false otherwise
-     **/
-    public static function establishDBConnection($use_slave, $required, $display = true)
+     *
+     * @since 11.0.0 The `$display` parameter has been removed.
+     */
+    public static function establishDBConnection($use_slave, $required)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -524,10 +525,6 @@ class DBConnection extends CommonDBTM
             }
         }
 
-       // Display error if needed
-        if (!$res && $display) {
-            self::displayMySQLError();
-        }
         return $res;
     }
 
