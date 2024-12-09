@@ -1080,7 +1080,7 @@ class User extends CommonDBTM
                 foreach ($protected_input_keys as $input_key) {
                     if (
                         isset($input[$input_key])
-                        && $input_key != '_useremails' // Always in $input
+                        && !str_starts_with($input_key, '_') // virtual field
                         && $input[$input_key] != $this->getField($input_key)
                     ) {
                         $ignored_fields[] = $input_key;
