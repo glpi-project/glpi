@@ -34,22 +34,9 @@
 
 namespace Glpi\Exception;
 
-use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @internal Not to be used unless you absolutely know what you are doing.
- *           This will be removed in the future when all the code is under Dependency Injection and proper HTTP routing.
- */
-class RedirectException extends Exception implements ExceptionWithResponseInterface
+interface ExceptionWithResponseInterface
 {
-    public function __construct(private readonly string $url, private readonly int $http_code = 302)
-    {
-        parent::__construct('', $http_code);
-    }
-
-    public function getResponse(): RedirectResponse
-    {
-        return new RedirectResponse($this->url, $this->http_code);
-    }
+    public function getResponse(): Response;
 }
