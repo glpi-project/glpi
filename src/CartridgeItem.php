@@ -64,6 +64,16 @@ class CartridgeItem extends CommonDBTM
         return _n('Cartridge model', 'Cartridge models', $nb);
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
     public static function getMenuName()
     {
         return Cartridge::getTypeName(Session::getPluralNumber());
