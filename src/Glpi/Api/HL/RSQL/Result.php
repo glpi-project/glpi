@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,41 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL;
+namespace Glpi\Api\HL\RSQL;
 
-use Throwable;
+use Glpi\DBAL\QueryExpression;
 
-/**
- * An exception thrown by the API.
- * A user message can be provided to be displayed to the user.
- * Otherwise, only a generic message will be displayed to the user.
- */
-class APIException extends \Exception
+class Result
 {
-    private string $user_message;
-
-    private string|array|null $details;
-
-    public function __construct(string $message = '', string $user_message = '', string|array|null $details = null, int $code = 0, ?Throwable $previous = null)
-    {
-        if ($user_message === '') {
-            $user_message = __('An error occurred while processing your request.');
-        }
-        if ($message === '') {
-            $message = $user_message;
-        }
-        $this->user_message = $user_message;
-        $this->details = $details;
-        parent::__construct($message, $code, $previous);
+    /**
+     * @param QueryExpression $sql_criteria
+     * @param array<string, Error> $invalid_filters
+     */
+    public function __construct(
+        private QueryExpression $sql_criteria,
+        private array $invalid_filters = []
+    ) {
     }
 
-    public function getUserMessage(): string
+    public function getSQLCriteria(): QueryExpression
     {
-        return $this->user_message;
+        return $this->sql_criteria;
     }
 
-    public function getDetails(): string|array|null
+    public function getInvalidFilters(): array
     {
-        return $this->details;
+        return $this->invalid_filters;
     }
 }
