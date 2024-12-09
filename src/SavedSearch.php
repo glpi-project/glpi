@@ -421,110 +421,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
-     * Prepare query to use depending of the type
-     *
-     * @param integer $type      Saved search type (see SavedSearch constants)
-     * @param array   $query_tab Parameters array
-     * @param bool    $enable_partial_warnings display warning messages about partial loading
-     *
-     * @return array prepared query array
-     **/
-    public function prepareQueryToUse($type, $query_tab, $enable_partial_warnings = true)
-    {
-        switch ($type) {
-            case self::SEARCH:
-            case self::ALERT:
-                // Check if all data are valid
-                $query_tab_save = $query_tab;
-                $partial_load   = false;
-                // Standard search
-                if (isset($query_tab_save['criteria']) && count($query_tab_save['criteria'])) {
-                    unset($query_tab['criteria']);
-
-                    $itemtype_so = [
-                        $this->fields['itemtype'] => Search::getCleanedOptions($this->fields['itemtype'])
-                    ];
-                    $available_meta = Search::getMetaItemtypeAvailable($this->fields['itemtype']);
-
-                    $new_key = 0;
-                    foreach ($query_tab_save['criteria'] as $val) {
-                        // Get itemtype search options for current criterion
-                        $opt = [];
-                        if (!isset($val['meta'])) {
-                            $opt = $itemtype_so[$this->fields['itemtype']];
-                        } elseif (isset($val['itemtype'])) {
-                            if (!array_key_exists($val['itemtype'], $itemtype_so)) {
-                                $itemtype_so[$val['itemtype']] = Search::getCleanedOptions($val['itemtype']);
-                            }
-                            $opt = $itemtype_so[$val['itemtype']];
-                        }
-
-                        if (
-                            (
-                                // Check if search option is still available
-                                isset($val['field'])
-                                && $val['field'] != 'view'
-                                && $val['field'] != 'all'
-                                && (
-                                    !isset($opt[$val['field']])
-                                    || (isset($opt[$val['field']]['nosearch']) && $opt[$val['field']]['nosearch'])
-                                )
-                            )
-                            || (
-                                // Check if meta itemtype is still available
-                                isset($val['meta'])
-                                && (!isset($val['itemtype']) || !in_array($val['itemtype'], $available_meta))
-                            )
-                        ) {
-                            $partial_load = true;
-                        } else {
-                            $query_tab['criteria'][$new_key] = $val;
-                            $new_key++;
-                        }
-                    }
-                }
-                // Meta search
-                if (isset($query_tab_save['metacriteria']) && count($query_tab_save['metacriteria'])) {
-                    $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
-                    unset($query_tab['metacriteria']);
-                    $new_key = 0;
-                    foreach ($query_tab_save['metacriteria'] as $val) {
-                        $opt = [];
-                        if (isset($val['itemtype'])) {
-                             $opt = Search::getCleanedOptions($val['itemtype']);
-                        }
-                       // Use if meta type is valid and option available
-                        if (
-                            !isset($val['itemtype']) || !in_array($val['itemtype'], $meta_ok)
-                            || !isset($opt[$val['field']])
-                        ) {
-                            $partial_load = true;
-                        } else {
-                            $query_tab['metacriteria'][$new_key] = $val;
-                            $new_key++;
-                        }
-                    }
-                }
-               // Display message
-                if (
-                    $enable_partial_warnings
-                    && $partial_load
-                    && Session::getCurrentInterface() != "helpdesk"
-                ) {
-                    Session::addMessageAfterRedirect(
-                        htmlescape(sprintf(__('Partial load of the saved search: %s'), $this->getName())),
-                        false,
-                        ERROR
-                    );
-                }
-               // add reset value
-                $query_tab['reset'] = 'reset';
-                break;
-        }
-        return $query_tab;
-    }
-
-    /**
      * Load a saved search
      *
      * @param integer $ID ID of the saved search
@@ -574,7 +470,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $query_tab = [];
         parse_str($this->fields["query"], $query_tab);
         $query_tab['savedsearches_id'] = $ID;
-        return $this->prepareQueryToUse($this->fields["type"], $query_tab);
+        $query_tab['reset'] = 'reset';
+        return $query_tab;
     }
 
     /**
@@ -686,11 +583,10 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param string $itemtype if given filter saved search by only this one
      * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
-     * @param bool   $enable_partial_warnings display warning messages about partial loading
      *
      * @return array
      */
-    public function getMine(?string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true): array
+    public function getMine(?string $itemtype = null, bool $inverse = false): array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -742,7 +638,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 $count = null;
                 $search_data = null;
                 try {
-                    $search_data = $this->execute(false, $enable_partial_warnings);
+                    $search_data = $this->execute();
                 } catch (\Throwable $e) {
                     ErrorHandler::getInstance()->handleException($e, false);
                     $error = true;
@@ -805,17 +701,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * return Html list of saved searches for a given itemtype
      *
-     * @param string $itemtype
+     * @param string|null $itemtype
      * @param bool   $inverse
-     * @param bool   $enable_partial_warnings display warning messages about partial loading
      *
      * @return void
      */
-    public function displayMine(?string $itemtype = null, bool $inverse = false, bool $enable_partial_warnings = true)
+    public function displayMine(?string $itemtype = null, bool $inverse = false)
     {
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
             'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
-            'saved_searches' => $this->getMine($itemtype, $inverse, $enable_partial_warnings),
+            'saved_searches' => $this->getMine($itemtype, $inverse),
         ]);
     }
 
@@ -1122,13 +1017,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param boolean $force Force query execution even if it should not be executed
      *                       (default false)
-     * @param boolean $enable_partial_warnings display warning messages about partial loading
      *
      * @throws RuntimeException
      *
      * @return array|null
      **/
-    public function execute($force = false, bool $enable_partial_warnings = true)
+    public function execute($force = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1145,18 +1039,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $query_tab = [];
             parse_str($this->getField('query'), $query_tab);
 
-            $params = null;
-            if (class_exists($this->getField('itemtype'))) {
-                $params = $this->prepareQueryToUse(
-                    $this->getField('type'),
-                    $query_tab,
-                    $enable_partial_warnings
-                );
-            }
+            $params = class_exists($this->getField('itemtype')) ? $query_tab : null;
 
             if (!$params) {
                 throw new \RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
             } else {
+                $params['silent_validation'] = true;
                 $data                   = $search->prepareDatasForSearch(
                     $this->getField('itemtype'),
                     $params

@@ -85,10 +85,12 @@ class SavedSearch_UserTest extends DbTestCase
                 'sort'             => '2',
                 'order'            => 'DESC',
                 'savedsearches_id' => $bk_id,
-                'criteria'         => [0 => ['field' => '5',
-                    'searchtype' => 'equals',
-                    'value' => $uid
-                ]
+                'criteria'         => [
+                    0 => [
+                        'field' => '5',
+                        'searchtype' => 'equals',
+                        'value' => $uid
+                    ]
                 ],
                 'reset'            => 'reset',
             ],

@@ -83,8 +83,7 @@ if ($action == 'display_mine') {
     header("Content-Type: text/html; charset=UTF-8");
     $savedsearch->displayMine(
         $_GET["itemtype"],
-        (bool) ($_GET["inverse"] ?? false),
-        false
+        (bool) ($_GET["inverse"] ?? false)
     );
 }
 

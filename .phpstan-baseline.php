@@ -2738,6 +2738,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
 ];
 $ignoreErrors[] = [
+    // identifier: identical.alwaysFalse
+    'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+    'count' => 1,
+    'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	// identifier: identical.alwaysFalse
 	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
