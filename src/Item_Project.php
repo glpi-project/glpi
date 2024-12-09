@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Item_Project Class
  *
@@ -222,6 +224,8 @@ class Item_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         if (!$withtemplate) {
             $nb = 0;
@@ -265,6 +269,8 @@ class Item_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         switch ($item->getType()) {
             case 'Project':
@@ -272,9 +278,83 @@ class Item_Project extends CommonDBRelation
                 break;
 
             default:
-               // Not defined and used now
-               // Project::showListForItem($item);
+                if (in_array($item->getType(), $CFG_GLPI["project_asset_types"])) {
+                    self::showForAsset($item);
+                }
+                break;
         }
         return true;
+    }
+
+    private static function showForAsset(CommonDBTM $item): void
+    {
+
+        $item_project = new self();
+        $item_projects = $item_project->find([
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID()
+        ]);
+
+        $used = $entries = [];
+
+        foreach ($item_projects as $value) {
+            $used[] = $value['projects_id'];
+            $project = new Project();
+            $result = $project->getFromDB($value['projects_id']);
+
+            if ($result === false) {
+                continue;
+            }
+
+            $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
+            $state = ProjectState::getById($project->fields['projectstates_id']);
+
+            $data = [
+                'name' => $project->getLink(),
+                'projectstates_id' => $state !== false
+                    ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
+                    : '',
+                'priority' => Html::getBadgeBlock($priority, $prioritycolor),
+                'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
+            ];
+            $entries[] = array_merge($project->fields, $data);
+        }
+
+        $cols = [
+            'columns' => [
+                "name" => __('Name'),
+                "priority" => __('Priority'),
+                "code" => __('Code'),
+                "projectstates_id" => _n('State', 'States', 1),
+                "percent_done" => __('Percent done'),
+                "creation_date" => __('Creation date'),
+                "content" => __('Description'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'priority' => 'raw_html',
+                'projectstates_id' => 'raw_html',
+                'percent_done' => 'raw_html',
+                'creation_date' => 'date',
+            ]
+        ];
+
+        TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
+            'item' => $item,
+            'used' => $used
+        ]);
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $cols['columns'],
+            'formatters' => $cols['formatters'],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+        ]);
     }
 }

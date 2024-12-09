@@ -2831,6 +2831,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
             $project = self::getById($raw_project['id']);
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
             $twig_params['rows'][] = [
@@ -2840,22 +2841,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     ],
                     [
                         'content' => $state !== false
-                            ? sprintf(
-                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
-                                htmlescape($state->fields['color']),
-                                htmlescape($state->fields['color']),
-                                htmlescape($state->fields['name']),
-                            )
+                            ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
                             : '',
                     ],
                     [
-                        'content' => sprintf(
-                            '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
-                            htmlescape($priority)
-                        ),
+                        'content' => Html::getBadgeBlock($priority, $prioritycolor),
                     ],
                     [
-                        'content' => $project->fields['percent_done'] . '%',
+                        'content' => Html::getProgressBar((float)$project->fields['percent_done'])
                     ]
                 ]
             ];
