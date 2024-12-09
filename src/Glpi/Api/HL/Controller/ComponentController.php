@@ -615,6 +615,7 @@ class ComponentController extends AbstractController
                     'msin' => ['type' => Doc\Schema::TYPE_STRING],
                     'line' => self::getDropdownTypeSchema(class: \Line::class, full_schema: 'Line'),
                     'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: \User::class, field: 'users_id_tech', full_schema: 'User'),
                     'group' => self::getDropdownTypeSchema(class: \Group::class, full_schema: 'Group'),
                 ]
             ],

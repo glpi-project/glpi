@@ -564,6 +564,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'printer_models' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of printer models that can use this cartridge',
@@ -671,6 +673,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'consumables' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of consumables',

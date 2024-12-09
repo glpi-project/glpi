@@ -380,7 +380,7 @@ final class Search
             if (!empty($filter_result->getInvalidFilters())) {
                 throw new RSQLException(
                     message: 'RSQL query has invalid filters',
-                    details: array_map(static fn ($rsql_error) => $rsql_error->getMessage(),$filter_result->getInvalidFilters())
+                    details: array_map(static fn ($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
                 );
             }
             $criteria['WHERE'] = [$filter_result->getSQLCriteria()];
