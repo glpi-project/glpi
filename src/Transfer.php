@@ -4182,7 +4182,7 @@ class Transfer extends CommonDBTM
                     }
                     $table = $itemtype::getTable();
                     $name_field = $item->getNameField();
-                    $table_name_field = sprintf('%1$s.%2$s', $table, $item->getNameField());
+                    $table_name_field = sprintf('%1$s.%2$s', $table, $name_field);
                     $iterator = $DB->request([
                         'SELECT'    => [
                             "$table.id",
