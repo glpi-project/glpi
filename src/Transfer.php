@@ -4181,11 +4181,12 @@ class Transfer extends CommonDBTM
                         continue;
                     }
                     $table = $itemtype::getTable();
-
+                    $name_field = $item->getNameField();
+                    $table_name_field = sprintf('%1$s.%2$s', $table, $name_field);
                     $iterator = $DB->request([
                         'SELECT'    => [
                             "$table.id",
-                            "$table.name",
+                            $table_name_field,
                             'entities.completename AS locname',
                             'entities.id AS entID'
                         ],
@@ -4199,7 +4200,7 @@ class Transfer extends CommonDBTM
                             ]
                         ],
                         'WHERE'     => ["$table.id" => $tab],
-                        'ORDERBY'   => ['locname', "$table.name"]
+                        'ORDERBY'   => ['locname', $table_name_field]
                     ]);
                     $entID = -1;
 
@@ -4213,7 +4214,7 @@ class Transfer extends CommonDBTM
                                 $entID = $data['entID'];
                                 echo "<span class='b spaced'>" . $data['locname'] . "</span><br>";
                             }
-                                echo ($data['name'] ? $data['name'] : "(" . $data['id'] . ")") . "<br>";
+                                echo ($data[$name_field] ? $data[$name_field] : "(" . $data['id'] . ")") . "<br>";
                         }
                     }
                 }
