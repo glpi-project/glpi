@@ -834,4 +834,29 @@ class TransferTest extends DbTestCase
         $this->assertTrue($ticket_task->getFromDB($task_id));
         $this->assertEquals($task_cat['id'], $ticket_task->fields['taskcategories_id']);
     }
+
+    public function testGenericAssetTransfer(): void
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        //create Smartphone generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'Smartphone' . $this->getUniqueString()
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $item = new $classname();
+        $item_id = $item->add([
+            'name' => 'To transfer Smartphone',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $item_id);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems([$classname => [$item_id]], $destination_entity, []);
+        $this->assertTrue($item->getFromDB($item_id));
+        $this->assertEquals($destination_entity, $item->fields['entities_id']);
+    }
 }
