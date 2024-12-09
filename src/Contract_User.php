@@ -35,11 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/**
- * Contract_User Class
- *
- * Relation between Contracts and Users
- **/
 class Contract_User extends CommonDBRelation
 {
     // From CommonDBRelation
@@ -86,9 +81,29 @@ class Contract_User extends CommonDBRelation
         return User::getTypeName($nb);
     }
 
-    public static function showForUser(User $user, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $ID       = $user->fields['id'];
+        if (Contract::canView() && $item::class === User::class) {
+            $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = countElementsInTable(Contract_User::getTable(), ['users_id' => $item->fields['id']]);
+            }
+            return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
+        }
+
+        return '';
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if (Contract::canView() && $item::class === User::class) {
+            self::showForUser($item, $withtemplate);
+        }
+    }
+
+    private static function showForUser(User $user, $withtemplate = 0): void
+    {
+        $ID = $user->fields['id'];
 
         if (
             !Contract::canView()
@@ -142,47 +157,51 @@ TWIG, $twig_params);
         $type_cache = [];
         foreach ($contracts as $data) {
             $entry = [
-                'itemtype' => self::class,
-                'id'       => $data['linkid'],
+                'itemtype'  => self::class,
+                'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'num'      => $data['num']
+                'num'       => $data['num']
             ];
-            $con         = new Contract();
-            $con->getFromResultSet($data);
-            $entry['name'] = $con->getLink();
-            if (!isset($entity_cache[$con->fields["entities_id"]])) {
-                $entity_cache[$con->fields["entities_id"]] = Dropdown::getDropdownName(
-                    "glpi_entities",
-                    $con->fields["entities_id"]
-                );
-            }
-            $entry['entity'] = $entity_cache[$con->fields["entities_id"]];
+            $contract = new Contract();
+            $contract->getFromResultSet($data);
 
-            if (!isset($type_cache[$con->fields["contracttypes_id"]])) {
-                $type_cache[$con->fields["contracttypes_id"]] = Dropdown::getDropdownName(
-                    "glpi_contracttypes",
-                    $con->fields["contracttypes_id"]
+            $entry['name'] = $contract->getLink();
+
+            if (!isset($entity_cache[$contract->fields["entities_id"]])) {
+                $entity_cache[$contract->fields["entities_id"]] = Dropdown::getDropdownName(
+                    "glpi_entities",
+                    $contract->fields["entities_id"]
                 );
             }
-            $entry['type'] = $type_cache[$con->fields["contracttypes_id"]];
-            $entry['supplier'] = $con->getSuppliersNames();
-            $entry['begin_date'] = $con->fields["begin_date"];
+            $entry['entity'] = $entity_cache[$contract->fields["entities_id"]];
+
+            if (!isset($type_cache[$contract->fields["contracttypes_id"]])) {
+                $type_cache[$contract->fields["contracttypes_id"]] = Dropdown::getDropdownName(
+                    "glpi_contracttypes",
+                    $contract->fields["contracttypes_id"]
+                );
+            }
+            $entry['type'] = $type_cache[$contract->fields["contracttypes_id"]];
+
+            $entry['supplier'] = $contract->getSuppliersNames();
+            $entry['begin_date'] = $contract->fields["begin_date"];
 
             $duration = sprintf(
                 __('%1$s %2$s'),
-                $con->fields["duration"],
-                _n('month', 'months', $con->fields["duration"])
+                $contract->fields["duration"],
+                _n('month', 'months', $contract->fields["duration"])
             );
 
-            if (!empty($con->fields["begin_date"])) {
+            if (!empty($contract->fields["begin_date"])) {
                 $duration .= ' -> ' . Infocom::getWarrantyExpir(
-                    $con->fields["begin_date"],
-                    $con->fields["duration"],
+                    $contract->fields["begin_date"],
+                    $contract->fields["duration"],
                     0,
                     true
                 );
             }
             $entry['duration'] = $duration;
+
             $entries[] = $entry;
         }
 
