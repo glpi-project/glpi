@@ -393,7 +393,7 @@ describe('Dashboard', () => {
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
             expect.toSatisfy((widget_info) => {
-                const html_el = $(widget_info.content);
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
@@ -418,7 +418,7 @@ describe('Dashboard', () => {
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
             expect.toSatisfy((widget_info) => {
-                const html_el = $(widget_info.content);
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;
@@ -451,7 +451,7 @@ describe('Dashboard', () => {
 
         expect(dashboard.grid.addWidget).toHaveBeenCalledWith(
             expect.toSatisfy((widget_info) => {
-                const html_el = $(widget_info.content);
+                const html_el = $(`<div>${widget_info.content}</div>`);
                 const has_refresh = html_el.find('.controls i.refresh-item').length === 1;
                 const has_edit = html_el.find('.controls i.edit-item').length === 1;
                 const has_delete = html_el.find('.controls i.delete-item').length === 1;

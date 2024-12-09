@@ -104,7 +104,7 @@ class GLPIDashboard {
         this.filters_selector = "";
 
         GridStack.renderCB = (el, w) => {
-            el.innerHTML = w.content;
+            el.parentElement.innerHTML = w.content;
         };
 
         // get passed options and merge it with default ones
@@ -628,16 +628,13 @@ class GLPIDashboard {
         const height       = parseInt(p.height || 2);
         const options      = p.card_options || {};
 
-        const html = ' \
-      <div class="grid-stack-item"> \
-         <span class="controls"> \
-            <i class="refresh-item ti ti-refresh" title="'+__("Refresh this card")+'"></i> \
-            <i class="edit-item ti ti-edit" title="'+__("Edit this card")+'"></i> \
-            <i class="delete-item ti ti-x" title="'+__("Delete this card")+'"></i> \
-         </span> \
-         <div class="grid-stack-item-content"> \
-         </div> \
-      </div>';
+        const html = `
+            <span class="controls">
+                <i class="refresh-item ti ti-refresh" title="${__("Refresh this card")}"></i>
+                <i class="edit-item ti ti-edit" title="${__("Edit this card")}"></i>
+                <i class="delete-item ti ti-x" title="${__("Delete this card")}"></i>
+            </span>
+            <div class="grid-stack-item-content"></div>`;
 
         // add the widget to the grid
         const widget = this.grid.addWidget({
