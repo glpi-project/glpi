@@ -197,7 +197,7 @@ class ITILSolution extends CommonDBChild
 
         // Check ticket mandatory fields
         $ticket = $this->item;
-        $tt = $ticket->getITILTemplateToUse(0, $ticket->fields['type'], $ticket->fields['itilcategories_id'], $ticket->fields['entities_id']);
+        $tt = $ticket->getITILTemplateToUse(0, $ticket->fields['type'] ?? '', $ticket->fields['itilcategories_id'] ?? '', $ticket->fields['entities_id'] ?? '');
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
