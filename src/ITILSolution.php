@@ -195,6 +195,32 @@ class ITILSolution extends CommonDBChild
             $this->item->getFromDB($input['items_id']);
         }
 
+        // Check ticket mandatory fields
+        $ticket = $this->item;
+        $tt = $ticket->getITILTemplateToUse(0, $ticket->fields['type'] ?? '', $ticket->fields['itilcategories_id'] ?? '', $ticket->fields['entities_id'] ?? '');
+        if (count($tt->mandatory)) {
+            $mandatory_missing = [];
+            $fieldsname        = $tt->getAllowedFieldsNames(true);
+            foreach ($tt->mandatory as $key => $val) {
+                if (
+                    (isset($ticket->fields[$key])
+                    && (empty($ticket->fields[$key]) || ($ticket->fields[$key] == 'NULL'))
+                    )
+                ) {
+                    $mandatory_missing[$key] = $fieldsname[$val];
+                }
+            }
+            if (count($mandatory_missing)) {
+               //TRANS: %s are the fields concerned
+                $message = sprintf(
+                    __('Mandatory fields are not filled. Please correct: %s'),
+                    implode(", ", $mandatory_missing)
+                );
+                Session::addMessageAfterRedirect($message, false, ERROR);
+                return false;
+            }
+        }
+
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();

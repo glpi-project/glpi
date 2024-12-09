@@ -81,7 +81,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
-                'content'            => '',
+                'content'            => 'a content',
                 '_users_id_assign'   => $uid
             ])
         );
@@ -468,7 +468,11 @@ HTML
     {
         $this->login();
 
-        $ticket = $this->getNewITILObject('Ticket', true);
+        $ticket = $this->createItem('Ticket', [
+            'name'               => 'test ticket',
+            'content'            => 'test ticket',
+        ]);
+
         $template = new \SolutionTemplate();
         $templates_id = $template->add([
             'name'               => 'test template',
@@ -507,7 +511,10 @@ HTML
     {
         $this->login();
         // Create new ticket
-        $ticket = $this->getNewITILObject('Ticket', true);
+        $ticket = $this->createItem('Ticket', [
+            'name'               => 'test ticket',
+            'content'            => 'test ticket',
+        ]);
         // Close ticket
         $this->assertTrue(
             $ticket->update([
@@ -541,7 +548,7 @@ HTML
         $ticket_id = (int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
-            'content'            => '',
+            'content'            => 'a content',
             '_users_id_requester' => $postonly_id,
             '_users_id_assign'    => $tech_id,
         ]);
@@ -632,6 +639,45 @@ HTML
             'items_id'           => $ticket->getID(),
             'content'            => '',
         ]);
+        $this->assertGreaterThan(0, $solution_id);
+    }
+
+    public function testSendSolutionWithMandatoryFields()
+    {
+        $this->login();
+
+        $tt = new \TicketTemplate();
+        $tt->getFromDB(1);
+        $this->assertGreaterThan(0, $tt->getID());
+
+        $ttmf = new \TicketTemplateMandatoryField();
+        $ttmf_id = $ttmf->add([
+            'tickettemplates_id' => $tt->getID(),
+            'num'                => 7, // category
+        ]);
+        $this->assertGreaterThan(0, $ttmf_id);
+
+        $category = new \ITILCategory();
+        $category_id = $category->add([
+            'name' => 'Category Mandatory Fields',
+        ]);
+        $this->assertGreaterThan(0, $category_id);
+
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'                  => 'Ticket Mandatory Fields',
+            'content'               => 'Ticket Mandatory Fields description',
+            'itilcategories_id'     => $category_id
+        ]);
+
+        $solution = new \ITILSolution();
+        $solution_id = $solution->add([
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => 'Ticket Mandatory Fields solution',
+        ]);
+
         $this->assertGreaterThan(0, $solution_id);
     }
 }
