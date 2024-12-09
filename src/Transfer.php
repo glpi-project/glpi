@@ -242,40 +242,7 @@ final class Transfer extends CommonDBTM
             // Simulate transfers To know which items need to be transfer
             $this->simulateTransfer($items);
 
-            // Inventory Items : MONITOR....
-            $INVENTORY_TYPES = [
-                'Software', // Software first (to avoid copy during computer transfer)
-                'Computer', // Computer before all other items
-            ];
-
-            $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
-            foreach ($definitions as $definition) {
-                $INVENTORY_TYPES[] = $definition->getAssetClassName();
-            }
-
-            $INVENTORY_TYPES = array_merge(
-                $INVENTORY_TYPES,
-                [
-                    'CartridgeItem',
-                    'ConsumableItem',
-                    'Monitor',
-                    'NetworkEquipment',
-                    'Peripheral',
-                    'Phone',
-                    'Printer',
-                    'SoftwareLicense',
-                    'Certificate',
-                    'Contact',
-                    'Contract',
-                    'Document',
-                    'Supplier',
-                    'Group',
-                    'Link',
-                    'Ticket',
-                    'Problem',
-                    'Change'
-                ]
-            );
+            $INVENTORY_TYPES = $this->getItemtypes();
 
             foreach ($INVENTORY_TYPES as $itemtype) {
                 if (isset($items[$itemtype]) && count($items[$itemtype])) {
@@ -1152,35 +1119,10 @@ final class Transfer extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Init types :
-        $types = [
-            'Computer',
-            'CartridgeItem',
-            'Change',
-            'ConsumableItem',
-            'Certificate',
-            'Contact',
-            'Contract',
-            'Document',
-            'Link',
-            'Monitor',
-            'NetworkEquipment',
-            'Peripheral',
-            'Phone',
-            'Printer',
-            'Problem',
-            'Software',
-            'SoftwareLicense',
-            'SoftwareVersion',
-            'Supplier',
-            'Ticket'
-        ];
+        // Init types :
+        $types = $this->getItemtypes();
 
-        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
-        foreach ($definitions as $definition) {
-            $types[] = $definition->getAssetClassName();
-        }
-
+        //FIXME: should be in getItemtypes?
         $types = array_merge($types, $CFG_GLPI['device_types']);
         $types = array_merge($types, Item_Devices::getDeviceTypes());
 
@@ -3926,5 +3868,44 @@ final class Transfer extends CommonDBTM
     public static function getIcon()
     {
         return "fas fa-level-up-alt";
+    }
+
+    public function getItemtypes(): array
+    {
+        $itemtypes = [
+            'Software', // Software first (to avoid copy during computer transfer)
+            'Computer', // Computer before all other items
+        ];
+
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($definitions as $definition) {
+            $itemtypes[] = $definition->getAssetClassName();
+        }
+
+        $itemtypes = array_merge(
+            $itemtypes,
+            [
+                'CartridgeItem',
+                'ConsumableItem',
+                'Monitor',
+                'NetworkEquipment',
+                'Peripheral',
+                'Phone',
+                'Printer',
+                'SoftwareLicense',
+                'Certificate',
+                'Contact',
+                'Contract',
+                'Document',
+                'Supplier',
+                'Group',
+                'Link',
+                'Ticket',
+                'Problem',
+                'Change'
+            ]
+        );
+
+        return $itemtypes;
     }
 }
