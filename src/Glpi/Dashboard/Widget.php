@@ -1535,7 +1535,9 @@ HTML;
                     if ({{ show_points ? 'true' : 'false' }}) {
                         serie['symbol'] = (value) => value > 0 ? 'circle': 'none';
                     }
-                    serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
+                    if ({{ point_labels ? 'true' : 'false' }}) {
+                        serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
+                    }
                 });
 
                 const myChart = echarts.init(target[0]);
