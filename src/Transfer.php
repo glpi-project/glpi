@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 use Glpi\Toolbox\URL;
@@ -245,25 +246,36 @@ final class Transfer extends CommonDBTM
             $INVENTORY_TYPES = [
                 'Software', // Software first (to avoid copy during computer transfer)
                 'Computer', // Computer before all other items
-                'CartridgeItem',
-                'ConsumableItem',
-                'Monitor',
-                'NetworkEquipment',
-                'Peripheral',
-                'Phone',
-                'Printer',
-                'SoftwareLicense',
-                'Certificate',
-                'Contact',
-                'Contract',
-                'Document',
-                'Supplier',
-                'Group',
-                'Link',
-                'Ticket',
-                'Problem',
-                'Change'
             ];
+
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+            foreach ($definitions as $definition) {
+                $INVENTORY_TYPES[] = $definition->getAssetClassName();
+            }
+
+            $INVENTORY_TYPES = array_merge(
+                $INVENTORY_TYPES,
+                [
+                    'CartridgeItem',
+                    'ConsumableItem',
+                    'Monitor',
+                    'NetworkEquipment',
+                    'Peripheral',
+                    'Phone',
+                    'Printer',
+                    'SoftwareLicense',
+                    'Certificate',
+                    'Contact',
+                    'Contract',
+                    'Document',
+                    'Supplier',
+                    'Group',
+                    'Link',
+                    'Ticket',
+                    'Problem',
+                    'Change'
+                ]
+            );
 
             foreach ($INVENTORY_TYPES as $itemtype) {
                 if (isset($items[$itemtype]) && count($items[$itemtype])) {
@@ -1141,11 +1153,34 @@ final class Transfer extends CommonDBTM
         global $CFG_GLPI;
 
        // Init types :
-        $types = ['Computer', 'CartridgeItem', 'Change', 'ConsumableItem', 'Certificate', 'Contact',
-            'Contract', 'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral',
-            'Phone', 'Printer', 'Problem', 'Software', 'SoftwareLicense',
-            'SoftwareVersion', 'Supplier', 'Ticket'
+        $types = [
+            'Computer',
+            'CartridgeItem',
+            'Change',
+            'ConsumableItem',
+            'Certificate',
+            'Contact',
+            'Contract',
+            'Document',
+            'Link',
+            'Monitor',
+            'NetworkEquipment',
+            'Peripheral',
+            'Phone',
+            'Printer',
+            'Problem',
+            'Software',
+            'SoftwareLicense',
+            'SoftwareVersion',
+            'Supplier',
+            'Ticket'
         ];
+
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($definitions as $definition) {
+            $types[] = $definition->getAssetClassName();
+        }
+
         $types = array_merge($types, $CFG_GLPI['device_types']);
         $types = array_merge($types, Item_Devices::getDeviceTypes());
 
