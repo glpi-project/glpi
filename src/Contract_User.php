@@ -99,6 +99,8 @@ class Contract_User extends CommonDBRelation
         if (Contract::canView() && $item::class === User::class) {
             self::showForUser($item, $withtemplate);
         }
+
+        return true;
     }
 
     private static function showForUser(User $user, $withtemplate = 0): void
