@@ -33,14 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Form\Translation\Context;
 
-use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
+use CommonDBTM;
 
-interface BlockInterface extends ProvideFormTranslationsInterface
+/**
+ * Must be implemented by classes that provide form translations.
+ */
+interface ProvideFormTranslationsInterface
 {
-    public const KEY_PREFIX_NAME = 'block_name';
-    public const KEY_PREFIX_DESCRIPTION = 'block_description';
-
-    public function displayBlockForEditor(): void;
+    /**
+     * Returns the list of form translations handlers.
+     *
+     * @param CommonDBTM|null $item
+     * @return array<FormTranslationHandler>|array<string, array<FormTranslationHandler>>
+     */
+    public function listFormTranslationsHandlers(CommonDBTM $item = null): array;
 }

@@ -33,14 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Application\View\Extension;
 
-use Glpi\Form\Translation\Context\ProvideFormTranslationsInterface;
+use Glpi\Form\Translation\FormTranslation;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-interface BlockInterface extends ProvideFormTranslationsInterface
+/**
+ * @since 10.0.0
+ */
+class FormExtension extends AbstractExtension
 {
-    public const KEY_PREFIX_NAME = 'block_name';
-    public const KEY_PREFIX_DESCRIPTION = 'block_description';
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('form_localized_translation', [$this, 'form_localized_translation']),
+        ];
+    }
 
-    public function displayBlockForEditor(): void;
+    /**
+     * Return the localized translation for the key.
+     *
+     * @param int $form_id
+     * @param string $key
+     * @return string|null
+     */
+    public function form_localized_translation(int $form_id, string $key): ?string
+    {
+        return FormTranslation::getLocalizedTranslationForKey($form_id, $key);
+    }
 }
