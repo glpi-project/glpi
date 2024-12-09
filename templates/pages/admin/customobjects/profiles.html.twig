@@ -31,8 +31,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
-
 {% set params = {} %}
 {# do not display delete button #}
 {% set params = params|merge({'candel': false}) %}
@@ -41,10 +39,6 @@
 
 <div class="p-2">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
-        {% if not item.fields['is_active'] %}
-            {{ alerts.alert_warning(__('Some fields may not be available because the asset definition is inactive.')) }}
-        {% endif %}
-
         {{ include('components/checkbox_matrix.html.twig', {
             'title': '',
             'param': {
@@ -57,7 +51,9 @@
             'nb_cb_per_col': nb_cb_per_col,
             'nb_cb_per_row': nb_cb_per_row,
         }, with_context = false) }}
+
         {{ extra_fields|raw }}
+
         {{ include('components/form/buttons.html.twig') }}
     </form>
 </div>

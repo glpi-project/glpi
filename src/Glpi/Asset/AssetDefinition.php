@@ -804,11 +804,8 @@ TWIG, $twig_params);
         return $this->custom_field_definitions;
     }
 
-    protected function getExtraProfileFields(array $profile_data): string
+    protected function getExtraProfilesFields(array $profile_data): string
     {
-        if (!$this->fields['is_active']) {
-            return '';
-        }
         $enabled_profiles = [];
         foreach ($profile_data as $data) {
             $helpdesk_item_types = json_decode($data['helpdesk_item_type'], associative: true) ?? [];
@@ -827,7 +824,7 @@ TWIG, $twig_params);
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {{ fields.dropdownField('Profile', 'profiles_extra[helpdesk_item_type]', enabled_profiles, label, {
+            {{ fields.dropdownField('Profile', '_profiles_extra[helpdesk_item_type]', enabled_profiles, label, {
                 multiple: true
             }) }}
 TWIG, $twig_params);
@@ -837,13 +834,17 @@ TWIG, $twig_params);
     {
         /** @var \DBmysql $DB */
         global $DB;
+
         parent::syncProfilesRights();
 
-        if (empty($this->input['profiles_extra'])) {
+        if (
+            !array_key_exists('_profiles_extra', $this->input)
+            || !array_key_exists('helpdesk_item_type', $this->input['_profiles_extra'])
+        ) {
             return;
         }
 
-        $extra_profile_data = $this->input['profiles_extra'];
+        $extra_profile_data = $this->input['_profiles_extra'];
         $old_values = [];
 
         $it = $DB->request([
@@ -859,7 +860,8 @@ TWIG, $twig_params);
 
         $helpdesk_item_type = $extra_profile_data['helpdesk_item_type'];
         if (!is_array($helpdesk_item_type)) {
-            $helpdesk_item_type = [$helpdesk_item_type];
+            // `helpdesk_item_type` will be an empty string if no value is selected
+            $helpdesk_item_type = [];
         }
 
         foreach ($old_values as $profile_id => $itemtype_allowed) {
@@ -872,12 +874,8 @@ TWIG, $twig_params);
                 $changes['helpdesk_item_type'] = array_diff($itemtype_allowed, [$this->getCustomObjectClassName()]);
             }
             if (count($changes) > 0) {
-                $changes = array_map(static fn ($v) => json_encode($v), $changes);
-                $DB->update(
-                    Profile::getTable(),
-                    $changes,
-                    ['id' => $profile_id]
-                );
+                $profile = new Profile();
+                $profile->update(['id' => $profile_id] + $changes);
             }
         }
     }

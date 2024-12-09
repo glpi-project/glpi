@@ -699,7 +699,7 @@ class AssetDefinition extends DbTestCase
 
         $this->boolean($definition->update([
             'id' => $definition->getID(),
-            'profiles_extra' => [
+            '_profiles_extra' => [
                 'helpdesk_item_type' => [
                     getItemByTypeName('Profile', 'Super-Admin', true),
                     getItemByTypeName('Profile', 'Technician', true),
@@ -719,7 +719,7 @@ class AssetDefinition extends DbTestCase
 
         $this->boolean($definition->update([
             'id' => $definition->getID(),
-            'profiles_extra' => [
+            '_profiles_extra' => [
                 'helpdesk_item_type' => [
                     getItemByTypeName('Profile', 'Super-Admin', true),
                 ]
