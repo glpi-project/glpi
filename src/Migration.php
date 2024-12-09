@@ -365,6 +365,10 @@ class Migration
                 $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL DEFAULT 0";
                 break;
 
+            case 'json':
+                $format = "JSON NOT NULL";
+                break;
+
             default:
                 $format = $type;
                 break;
