@@ -3950,12 +3950,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type TKey of int\\|string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Impact.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Right side of \\|\\| is always true\\.$#',
 	'identifier' => 'booleanOr.rightAlwaysTrue',
 	'count' => 1,
