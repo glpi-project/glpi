@@ -41,6 +41,7 @@ Session::checkRight("software", UPDATE);
 if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
     $isl = new SoftwareLicense_User();
     $_POST['users_id'] = $_POST['items_id'];
+    unset($_POST['itemtype'], $_POST['items_id']);
 } else {
     $isl   = new Item_SoftwareLicense();
 }

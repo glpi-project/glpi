@@ -10073,8 +10073,6 @@ CREATE TABLE `glpi_assets_customfielddefinitions` (
   KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-SET FOREIGN_KEY_CHECKS=1;
-
 DROP TABLE IF EXISTS `glpi_softwarelicenses_users`;
 CREATE TABLE `glpi_softwarelicenses_users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -10084,3 +10082,5 @@ CREATE TABLE `glpi_softwarelicenses_users` (
   KEY `item` (`users_id`),
   KEY `softwarelicenses_id` (`softwarelicenses_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+SET FOREIGN_KEY_CHECKS=1;

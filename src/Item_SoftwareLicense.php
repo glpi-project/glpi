@@ -767,7 +767,7 @@ JAVASCRIPT;
             $queries[] = $query;
         }
 
-        // Add LicensSoftwareLicense_Usere_User
+        // Add SoftwareLicense_User
         $license_users_table = SoftwareLicense_User::getTable();
         $users_table = User::getTable();
         $entity_table = Entity::getTable();
@@ -779,7 +779,7 @@ JAVASCRIPT;
                 new QueryExpression($DB::quoteValue(User::class), 'itemtype'),
                 "$license_users_table.softwarelicenses_id",
                 new QueryExpression($DB::quoteValue(0), 'id_deleted'),
-                new QueryExpression($DB::quoteValue(1), 'is_dynamic'),
+                new QueryExpression($DB::quoteValue(0), 'is_dynamic'),
                 'glpi_softwarelicenses.name AS license',
                 'glpi_softwarelicenses.id AS vID',
                 'glpi_softwarelicenses.softwares_id AS softid',
