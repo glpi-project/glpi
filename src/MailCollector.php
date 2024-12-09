@@ -117,6 +117,11 @@ class MailCollector extends CommonDBTM
         return ['config', self::class];
     }
 
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
     public static function canCreate(): bool
     {
         return static::canUpdate();
