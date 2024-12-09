@@ -35,12 +35,21 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CustomFieldOption\BooleanOption;
 
 class TextType extends AbstractType
 {
     public static function getName(): string
     {
         return __('Text');
+    }
+
+    public function getOptions(): array
+    {
+        $opts = parent::getOptions();
+        $opts[] = new BooleanOption($this->custom_field, 'enable_richtext', __('Rich text'), true, false);
+        $opts[] = new BooleanOption($this->custom_field, 'enable_images', __('Allow images'), true, false);
+        return $opts;
     }
 
     public function getFormInput(string $name, mixed $value, ?string $label = null, bool $for_default = false): string
