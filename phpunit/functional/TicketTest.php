@@ -45,6 +45,7 @@ use Entity;
 use Glpi\Team\Team;
 use Group;
 use Group_Ticket;
+use Group_User;
 use ITILCategory;
 use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -6953,9 +6954,42 @@ HTML
     {
         $now = time();
 
-        $postonly_user_id = getItemByTypeName(\User::class, 'post-only', true);
-        $normal_user_id   = getItemByTypeName(\User::class, 'normal', true);
-        $tech_user_id     = getItemByTypeName(\User::class, 'tech', true);
+        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+        $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
+        $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
+
+        $profile = getItemByTypeName(\Profile::class, 'Observer');
+
+        $profile_right = new \ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $profile->getID(),
+            'name'        => 'task',
+        ]);
+
+        $this->updateItem(
+            \ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPRIVATEGROUPS + \CommonITILTask::SEEPUBLIC,
+            ]
+        );
+
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => 'Test_Group_Task',
+            ]
+        );
+
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $normal_user_id,
+            ]
+        );
+
+        $seegroup_id = $group->getID();
 
         $this->login();
 
@@ -6967,6 +7001,7 @@ HTML
                 '_users_id_requester' => $postonly_user_id,
                 '_users_id_observer'  => $normal_user_id,
                 '_users_id_assign'    => $tech_user_id,
+                '_groups_id_assign'   => $seegroup_id,
             ]
         );
 
@@ -7042,7 +7077,18 @@ HTML
                 'content'       => 'private task assigned to normal user',
                 'is_private'    => 1,
                 'users_id_tech' => $normal_user_id,
-                'date_creation' => date('Y-m-d H:i:s', strtotime('+30s', $now)), // to ensure result order is correct
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+40s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'        => $ticket->getID(),
+                'content'           => 'private task assigned to see group',
+                'is_private'        => 1,
+                'groups_id_tech'    => $seegroup_id,
+                'date_creation'     => date('Y-m-d H:i:s', strtotime('+50s', $now)), // to ensure result order is correct
             ]
         );
 
@@ -7058,8 +7104,9 @@ HTML
                 'public followup',
             ],
             'expected_tasks'     => [
-                'private task of normal user',
+                'private task assigned to see group',
                 'private task assigned to normal user',
+                'private task of normal user',
                 'private task of tech user',
                 'public task',
             ],
@@ -7076,8 +7123,9 @@ HTML
                 'public followup',
             ],
             'expected_tasks'     => [
-                'private task of normal user',
+                'private task assigned to see group',
                 'private task assigned to normal user',
+                'private task of normal user',
                 'public task',
             ],
         ];
@@ -7112,8 +7160,9 @@ HTML
                     'public followup',
                 ],
                 'expected_tasks'     => [
-                    'private task of normal user',
+                    'private task assigned to see group',
                     'private task assigned to normal user',
+                    'private task of normal user',
                     'private task of tech user',
                     'public task',
                 ],
