@@ -936,7 +936,7 @@ $empty_data_builder = new class
             ]
         ];
 
-        $dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
+        $dashboards_data = include __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
         $tables['glpi_dashboards_dashboards'] = [];
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
