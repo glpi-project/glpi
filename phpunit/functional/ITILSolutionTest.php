@@ -81,7 +81,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
-                'content'            => '',
+                'content'            => 'a content',
                 '_users_id_assign'   => $uid
             ])
         );
@@ -468,7 +468,11 @@ HTML
     {
         $this->login();
 
-        $ticket = $this->getNewITILObject('Ticket', true);
+        $ticket = $this->createItem('Ticket', [
+            'name'               => 'test ticket',
+            'content'            => 'test ticket',
+        ]);
+
         $template = new \SolutionTemplate();
         $templates_id = $template->add([
             'name'               => 'test template',
@@ -507,7 +511,10 @@ HTML
     {
         $this->login();
         // Create new ticket
-        $ticket = $this->getNewITILObject('Ticket', true);
+        $ticket = $this->createItem('Ticket', [
+            'name'               => 'test ticket',
+            'content'            => 'test ticket',
+        ]);
         // Close ticket
         $this->assertTrue(
             $ticket->update([
@@ -541,7 +548,7 @@ HTML
         $ticket_id = (int)$ticket->add([
             'name'               => 'ticket title',
             'description'        => 'a description',
-            'content'            => '',
+            'content'            => 'a content',
             '_users_id_requester' => $postonly_id,
             '_users_id_assign'    => $tech_id,
         ]);
