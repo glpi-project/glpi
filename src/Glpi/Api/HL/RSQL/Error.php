@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,41 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL;
+namespace Glpi\Api\HL\RSQL;
 
-use Throwable;
-
-/**
- * An exception thrown by the API.
- * A user message can be provided to be displayed to the user.
- * Otherwise, only a generic message will be displayed to the user.
- */
-class APIException extends \Exception
+enum Error: int
 {
-    private string $user_message;
+    case UNKNOWN_PROPERTY = 1;
+    case UNKNOWN_OPERATOR = 2;
+    case MAPPED_PROPERTY = 3;
 
-    private string|array|null $details;
-
-    public function __construct(string $message = '', string $user_message = '', string|array|null $details = null, int $code = 0, ?Throwable $previous = null)
+    public function getMessage(): string
     {
-        if ($user_message === '') {
-            $user_message = __('An error occurred while processing your request.');
-        }
-        if ($message === '') {
-            $message = $user_message;
-        }
-        $this->user_message = $user_message;
-        $this->details = $details;
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function getUserMessage(): string
-    {
-        return $this->user_message;
-    }
-
-    public function getDetails(): string|array|null
-    {
-        return $this->details;
+        return match ($this) {
+            self::UNKNOWN_PROPERTY => 'Unknown property',
+            self::UNKNOWN_OPERATOR => 'Unknown operator',
+            self::MAPPED_PROPERTY => 'Mapped properties cannot be used in RSQL',
+        };
     }
 }

@@ -375,7 +375,15 @@ final class Search
 
         // Handle RSQL filter
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
-            $criteria['WHERE'] = [$this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']))];
+            $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']));
+            // Fail the request if any of the filters are invalid
+            if (!empty($filter_result->getInvalidFilters())) {
+                throw new RSQLException(
+                    message: 'RSQL query has invalid filters',
+                    details: array_map(static fn ($rsql_error) => $rsql_error->getMessage(),$filter_result->getInvalidFilters())
+                );
+            }
+            $criteria['WHERE'] = [$filter_result->getSQLCriteria()];
         }
 
         // Handle entity and other visibility restrictions
@@ -1176,9 +1184,9 @@ final class Search
         try {
             $results = self::getSearchResultsBySchema($schema, $request_params);
         } catch (RSQLException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
