@@ -1122,7 +1122,6 @@ final class Transfer extends CommonDBTM
         // Init types :
         $types = $this->getItemtypes();
 
-        //FIXME: should be in getItemtypes?
         $types = array_merge($types, $CFG_GLPI['device_types']);
         $types = array_merge($types, Item_Devices::getDeviceTypes());
 
