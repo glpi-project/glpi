@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,38 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ * @var array $DELFROMDISPLAYPREF
+ */
 
-use Glpi\Controller\VisibilityController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Html;
-use SavedSearch;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+$table = SavedSearch::getTable();
+$field = 'is_private';
+if ($DB->fieldExists($table, $field)) {
+    $query = 'INSERT INTO glpi_entities_savedsearches (savedsearches_id, entities_id, is_recursive)
+SELECT id, entities_id, is_recursive
+FROM glpi_savedsearches WHERE is_private = 0;';
+    $DB->doQuery($query);
 
-class SavedSearchFormController extends VisibilityController
-{
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
-    public function __invoke(Request $request): Response
-    {
-        $request->attributes->set('class', SavedSearch::class);
+    $migration->dropField($table, $field);
 
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
-        }
-
-        return parent::__invoke($request);
-    }
-
-    public function createNotif(): RedirectResponse
-    {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
-        return new RedirectResponse(Html::getBackUrl());
-    }
+    $DELFROMDISPLAYPREF['SavedSearch'] = 4;
 }
