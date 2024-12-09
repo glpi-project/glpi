@@ -1037,7 +1037,6 @@ TWIG, $twig_params);
                 $nb_colors
             )['colors'];
         }
-        $palette_json = json_encode($palette);
 
         $echarts_series = [];
         $serie_i = 0;
@@ -1211,8 +1210,8 @@ HTML;
                     };
                 });
                 if ({{ horizontal ? 'true' : 'false' }}) {
-                    chart_options['yAxis'] = {
-                        ...chart_options['yAxis'],
+                    chart_options['xAxis'] = {
+                        ...chart_options['xAxis'],
                         'axisLabel': {
                             'formatter': (value) => {
                                 if (value < 1e3) {
