@@ -206,7 +206,7 @@ final class StatusChecker
             }
 
            // Check main server connection
-            if (!@DBConnection::establishDBConnection(false, true, false)) {
+            if (!@DBConnection::establishDBConnection(false, true)) {
                 $status['main'] = [
                     'status' => self::STATUS_PROBLEM,
                     'status_msg' => _x('glpi_status', 'Unable to connect to the main database')
