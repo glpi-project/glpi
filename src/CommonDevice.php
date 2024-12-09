@@ -624,4 +624,12 @@ abstract class CommonDevice extends CommonDropdown
     {
         return "ti ti-components";
     }
+
+    public function getForbiddenStandardMassiveAction()
+    {
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'add_transfer_list';
+
+        return $forbidden;
+    }
 }
