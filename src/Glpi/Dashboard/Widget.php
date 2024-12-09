@@ -1533,7 +1533,7 @@ HTML;
                 
                 $.each(chart_options.series, function (index, serie) {
                     if ({{ show_points ? 'true' : 'false' }}) {
-                        serie['label']['symbol'] = (param) => param.data.value > 0 ? 'circle': 'none';
+                        serie['symbol'] = (param) => param > 0 ? 'circle': 'none';
                     }
                     serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
                 });
