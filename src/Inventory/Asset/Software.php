@@ -525,7 +525,7 @@ class Software extends InventoryAsset
             'name'             => mb_strtolower($val->name),
             'version'          => $with_version ? mb_strtolower($val->version ?? '') : '',
             'arch'             => mb_strtolower($val->arch ?? ''),
-            'manufacturers_id' => mb_strtolower(transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $val->manufacturers_id)),
+            'manufacturers_id' => mb_strtolower(transliterator_transliterate("Any-Latin; Latin-ASCII; [^a-zA-Z0-9\.\ -_] Remove;", $val->manufacturers_id ?? '')),
             'entities_id'      => (int)$val->entities_id,
             'is_recursive'     => $val->is_recursive,
             'os'               => $this->getOsForKey($val),
