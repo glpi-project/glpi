@@ -659,14 +659,12 @@ HTML
             'name'                  => 'Ticket Mandatory Fields',
             'content'               => 'Ticket Mandatory Fields description',
         ]);
-        $this->assertGreaterThan(0, $ticket->getID());
 
         // Add a mandatory field (category) to the default template ticket
         $ttmf = $this->createItem('TicketTemplateMandatoryField', [
             'tickettemplates_id' => $tt->getID(),
             'num'                => 7, // category
         ]);
-        $this->assertGreaterThan(0, $ttmf->getID());
 
         // Failed solution addition because ticket category is not filled
         $solution = new \ITILSolution();
