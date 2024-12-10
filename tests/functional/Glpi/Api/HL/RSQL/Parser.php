@@ -130,7 +130,7 @@ class Parser extends GLPITestCase
         $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
         $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
         $parser = new \Glpi\Api\HL\RSQL\Parser($search);
-        $this->string((string)$parser->parse($tokens))->isEqualTo($expected);
+        $this->string((string)$parser->parse($tokens)->getSQLCriteria())->isEqualTo($expected);
     }
 
     /**
@@ -143,6 +143,11 @@ class Parser extends GLPITestCase
             'properties' => [
                 'id' => ['type' => 'integer'],
                 'name' => ['type' => 'string'],
+                'mapped' => [
+                    'type' => 'string',
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static fn () => 'mapped'
+                ]
             ]
         ];
 
@@ -152,8 +157,23 @@ class Parser extends GLPITestCase
         $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
         $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
         $parser = new \Glpi\Api\HL\RSQL\Parser($search);
-        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test']]))->isEqualTo('1');
+
+        $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test']]);
+        $this->string((string)$result->getSQLCriteria())->isEqualTo('1');
+        $this->variable($result->getInvalidFilters()['test'])->isIdenticalTo(\Glpi\Api\HL\RSQL\Error::UNKNOWN_PROPERTY);
         // Test an invalid filter with a valid one
-        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]))->isEqualTo("(`_`.`name` = 'test')");
+        $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]);
+        $this->string((string)$result->getSQLCriteria())->isEqualTo("(`_`.`name` = 'test')");
+        $this->variable($result->getInvalidFilters()['test'])->isIdenticalTo(\Glpi\Api\HL\RSQL\Error::UNKNOWN_PROPERTY);
+
+        // Test invalid operator
+        $result = $parser->parse([[5, 'name'], [6, '=f='], [7, 'test']]);
+        $this->string((string)$result->getSQLCriteria())->isEqualTo('1');
+        $this->variable($result->getInvalidFilters()['name'])->isIdenticalTo(\Glpi\Api\HL\RSQL\Error::UNKNOWN_OPERATOR);
+
+        // Mapped properties should be ignored
+        $result = $parser->parse([[5, 'mapped'], [6, '=='], [7, 'test']]);
+        $this->string((string)$result->getSQLCriteria())->isEqualTo('1');
+        $this->variable($result->getInvalidFilters()['mapped'])->isIdenticalTo(\Glpi\Api\HL\RSQL\Error::MAPPED_PROPERTY);
     }
 }

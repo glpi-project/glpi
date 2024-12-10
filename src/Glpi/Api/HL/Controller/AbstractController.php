@@ -226,12 +226,12 @@ abstract class AbstractController
      * @param string $status
      * @phpstan-param self::ERROR_* $status
      * @param string $title
-     * @param ?string $detail
+     * @param string|array|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
      * @return array
      * @phpstan-return ErrorResponseBody
      */
-    public static function getErrorResponseBody(string $status, string $title, ?string $detail = null, array $additionalMessages = []): array
+    public static function getErrorResponseBody(string $status, string $title, string|array|null $detail = null, array $additionalMessages = []): array
     {
         $body = [
             'status' => $status,
