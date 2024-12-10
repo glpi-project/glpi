@@ -1573,7 +1573,7 @@ class Session
         if (!isset($_SESSION['glpicsrftokens'])) {
             $_SESSION['glpicsrftokens'] = [];
         }
-        $_SESSION['glpicsrftokens'][$token] = time() + GLPI_CSRF_EXPIRES;
+        $_SESSION['glpicsrftokens'][$token] = time() + (int) GLPI_CSRF_EXPIRES;
 
         if (!$standalone) {
             $CURRENTCSRFTOKEN = $token;
@@ -1601,7 +1601,7 @@ class Session
                         unset($_SESSION['glpicsrftokens'][$token]);
                     }
                 }
-                $overflow = count($_SESSION['glpicsrftokens']) - GLPI_CSRF_MAX_TOKENS;
+                $overflow = count($_SESSION['glpicsrftokens']) - (int) GLPI_CSRF_MAX_TOKENS;
                 if ($overflow > 0) {
                     $_SESSION['glpicsrftokens'] = array_slice(
                         $_SESSION['glpicsrftokens'],
@@ -1718,7 +1718,7 @@ class Session
         }
 
         $_SESSION['glpiidortokens'][$token] = [
-            'expires'  => time() + GLPI_IDOR_EXPIRES
+            'expires'  => time() + (int) GLPI_IDOR_EXPIRES
         ] + ($itemtype !== "" ? ['itemtype' => $itemtype] : [])
         + $add_params;
 

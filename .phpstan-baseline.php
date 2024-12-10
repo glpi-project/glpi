@@ -182,12 +182,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.infocom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/user.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
 	'count' => 1,
@@ -216,12 +210,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/inc/db.function.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/includes.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
@@ -752,12 +740,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
 	'identifier' => 'equal.alwaysTrue',
 	'count' => 1,
@@ -1122,12 +1104,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CartridgeItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Central\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
@@ -1784,18 +1760,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always true\\.$#',
-	'identifier' => 'booleanOr.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -1973,12 +1937,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method DBConnection\\:\\:getReadConnection\\(\\) should return DBmysql but returns DBSlave\\.$#',
 	'identifier' => 'return.type',
 	'count' => 5,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/config/config_db_slave\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 4,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
@@ -2624,18 +2582,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIKey.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot cast list\\<string\\>\\|null to string\\.$#',
-	'identifier' => 'cast.string',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Expression in empty\\(\\) is always falsy\\.$#',
-	'identifier' => 'empty.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
@@ -2726,12 +2672,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instanceof between Glpi\\\\Console\\\\Application and Glpi\\\\Console\\\\Application will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
@@ -2782,7 +2722,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -3746,12 +3686,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ManualLink.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between int and false will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
@@ -3760,18 +3694,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Marketplace\\\\View\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between \'GIT\' and \'CLOUD\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Marketplace/View.php',
 ];
@@ -5084,12 +5006,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Session\\:\\:loadLanguage\\(\\) with return type void returns mixed but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -5396,12 +5312,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'function\' on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: \'\\-\\>\'\\|\'\\:\\:\', args\\?\\: array\\<mixed\\>, object\\?\\: object\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -5512,7 +5422,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 5,
+	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
@@ -5524,12 +5434,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Result of && is always false\\.$#',
 	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
