@@ -389,7 +389,7 @@ class Inventory
                     $extra = rtrim($extra, ', ') . "\n";
                 }
                 $this->addBench($this->item->getType(), 'full', $main_start, $extra);
-                $this->printBenchResults();
+                //$this->printBenchResults();
             }
         }
 
