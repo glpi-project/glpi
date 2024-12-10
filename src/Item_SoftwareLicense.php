@@ -1080,21 +1080,39 @@ JAVASCRIPT;
                     ];
                 }
                 break;
+            case User::class:
+                if (!$withtemplate) {
+                    $nb = countElementsInTable(SoftwareLicense_User::getTable(), ['users_id' => $item->getID()]);
+                    return [
+                        1 => self::createTabEntry(
+                            SoftwareLicense::getTypeName(Session::getPluralNumber()),
+                            $nb,
+                            $item::class,
+                            'ti ti-package'
+                        )
+                    ];
+                }
+                break;
         }
         return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === SoftwareLicense::class) {
-            switch ($tabnum) {
-                case 1:
-                    self::showForLicenseByEntity($item);
-                    break;
-                case 2:
-                    self::showForLicense($item);
-                    break;
-            }
+        switch ($item::class) {
+            case SoftwareLicense::class:
+                switch ($tabnum) {
+                    case 1:
+                        self::showForLicenseByEntity($item);
+                        break;
+                    case 2:
+                        self::showForLicense($item);
+                        break;
+                }
+                break;
+            case User::class:
+                SoftwareLicense_User::showForUser($item);
+                break;
         }
         return true;
     }

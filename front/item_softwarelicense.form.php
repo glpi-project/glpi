@@ -48,12 +48,14 @@ if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
 
 if (isset($_POST["add"])) {
     if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || $_POST['items_id'] <= 0) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Item', 'Items', 1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-        Html::back();
+        if (!isset($_POST['users_id'])) {
+            $message = sprintf(
+                __('Mandatory fields are not filled. Please correct: %s'),
+                _n('Item', 'Items', 1)
+            );
+            Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+            Html::back();
+        }
     }
     if ($_POST['softwarelicenses_id'] > 0) {
         if ($isl->add($_POST)) {
