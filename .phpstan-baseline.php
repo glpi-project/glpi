@@ -1456,7 +1456,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [

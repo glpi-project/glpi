@@ -71,9 +71,6 @@ class DBmysql
      */
     protected $dbh;
 
-    //! Database Error
-    public $error              = 0;
-
     // Slave management
     public $slave              = false;
     private $in_transaction;
@@ -269,13 +266,7 @@ class DBmysql
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
-        if ($this->dbh->connect_error) {
-            $this->connected = false;
-            $this->error     = 1;
-        } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
-            $this->connected = false;
-            $this->error     = 2;
-        } else {
+        if (!$this->dbh->connect_error) {
             $this->setConnectionCharset();
 
             // force mysqlnd to return int and float types correctly (not as strings)

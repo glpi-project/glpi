@@ -364,6 +364,7 @@ The present file will list all changes made to the project; according to the
 - `Contract::showShort()`
 - `DbUtils::closeDBConnections()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `DBmysql::error` property.
 - `Document::getImage()`
 - `Document::showUploadedFilesDropdown()`
 - `Document::uploadDocument()`
