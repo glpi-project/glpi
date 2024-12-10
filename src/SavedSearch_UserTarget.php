@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,38 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
-
-use Glpi\Controller\VisibilityController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Html;
-use SavedSearch;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-class SavedSearchFormController extends VisibilityController
+class SavedSearch_UserTarget extends CommonDBRelation
 {
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
-    public function __invoke(Request $request): Response
-    {
-        $request->attributes->set('class', SavedSearch::class);
+    public $auto_message_on_action = false;
 
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
+    public static $itemtype_1          = 'SavedSearch';
+    public static $items_id_1          = 'savedsearches_id';
+
+    public static $itemtype_2          = 'User';
+    public static $items_id_2          = 'users_id';
+
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
+
+    /**
+     * Get users for a saved search
+     *
+     * @param SavedSearch $savedSearch SavedSearch instance
+     *
+     * @return array of users linked to a saved search
+     **/
+    public static function getUsers(SavedSearch $savedSearch)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $results   = [];
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                self::$items_id_1 => $savedSearch->getID()
+            ]
+        ]);
+
+        foreach ($iterator as $data) {
+            $results[$data[self::$items_id_2]][] = $data;
         }
-
-        return parent::__invoke($request);
-    }
-
-    public function createNotif(): RedirectResponse
-    {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
-        return new RedirectResponse(Html::getBackUrl());
+        return $results;
     }
 }

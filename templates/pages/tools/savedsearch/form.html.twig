@@ -60,15 +60,18 @@
          (constant('SavedSearch::COUNT_YES')): __('Yes'),
          (constant('SavedSearch::COUNT_NO')): __('No')
       }, __('Do count')) }}
-      {% if can_create %}
-         {{ fields.dropdownArrayField('is_private', item.fields['is_private'], {
-            1: __('Private'),
-            0: __('Public')
-         }, __('Visibility')) }}
+      {% if can_create and item.isNewItem() %}
+         {% if can_create_public %}
+            {{ fields.dropdownArrayField('is_private', item.fields['is_private'], {
+               1: __('Private'),
+               0: __('Public')
+            }, __('Visibility')) }}
+         {% endif %}
          {{ fields.dropdownField('Entity', 'entities_id', item.fields['entities_id'], 'Entity'|itemtype_name(1)) }}
          {{ fields.dropdownYesNo('is_recursive', item.fields['is_recursive'], __('Child entities')) }}
-      {% else %}
-         {{ fields.htmlField('', item.fields['is_private']|default(1) ? __('Private') : __('Public'), __('Visibility')) }}
+         {% if not can_create_public %}
+            {{ fields.hiddenField('is_private', 1) }}
+         {% endif %}
       {% endif %}
    {% endblock %}
 {% endblock %}
