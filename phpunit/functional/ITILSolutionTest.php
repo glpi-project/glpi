@@ -655,18 +655,21 @@ HTML
         ]);
         $this->assertGreaterThan(0, $category->getID());
 
+        // Create a ticket without category
         $ticket = $this->createItem('Ticket', [
             'name'                  => 'Ticket Mandatory Fields',
             'content'               => 'Ticket Mandatory Fields description',
         ]);
         $this->assertGreaterThan(0, $ticket->getID());
 
+        // Add a mandatory field (category) to the default template ticket
         $ttmf = $this->createItem('TicketTemplateMandatoryField', [
             'tickettemplates_id' => $tt->getID(),
             'num'                => 7, // category
         ]);
         $this->assertGreaterThan(0, $ttmf->getID());
 
+        // Failed solution addition because ticket category is not filled
         $solution = new \ITILSolution();
         $solution->add([
             'itemtype'           => $ticket::getType(),
@@ -676,10 +679,12 @@ HTML
 
         $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Category']);
 
+        // Add a category to the ticket
         $this->updateItem('Ticket', $ticket->getID(), [
             'itilcategories_id' => $category->getID(),
         ]);
 
+        // Successful solution addition because ticket category is filled
         $this->createItem('ITILSolution', [
             'itemtype'           => $ticket::getType(),
             'items_id'           => $ticket->getID(),
