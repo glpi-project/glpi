@@ -100,14 +100,45 @@ final class Section extends CommonDBChild
      * Block can be a question or a comment
      * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return (BlockInterface & CommonDBChild)[]
+     * @return array<int, (BlockInterface & CommonDBChild)[]>
      */
     public function getBlocks(): array
     {
         $blocks = array_merge($this->getQuestions(), $this->getFormComments());
-        usort($blocks, fn($a, $b) => $a->fields['rank'] <=> $b->fields['rank']);
+        $groupedBlocks = [];
 
-        return $blocks;
+        // Sort blocks by their vertical rank
+        usort($blocks, function ($a, $b) {
+            return $a->fields['vertical_rank'] <=> $b->fields['vertical_rank'];
+        });
+
+        // Group blocks by their vertical rank
+        foreach ($blocks as $block) {
+            $verticalRank = $block->fields['vertical_rank'];
+            $horizontalRank = $block->fields['horizontal_rank'];
+
+            if ($horizontalRank !== null) {
+                if (!isset($groupedBlocks[$verticalRank])) {
+                    $groupedBlocks[$verticalRank] = [];
+                }
+                $groupedBlocks[$verticalRank][] = $block;
+            } else {
+                $groupedBlocks[] = $block;
+            }
+        }
+
+        // Sort blocks in a horizontal block by their horizontal rank
+        foreach ($groupedBlocks as &$group) {
+            if (!is_array($group)) {
+                continue;
+            }
+
+            usort($group, function ($a, $b) {
+                return $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank'];
+            });
+        }
+
+        return $groupedBlocks;
     }
 
     /**
@@ -124,7 +155,7 @@ final class Section extends CommonDBChild
             // Read from database
             $questions_data = (new Question())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'rank ASC',
+                'vertical_rank ASC, horizontal_rank ASC',
             );
             foreach ($questions_data as $row) {
                 $question = new Question();
@@ -157,7 +188,7 @@ final class Section extends CommonDBChild
             // Read from database
             $comments_data = (new Comment())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'rank ASC',
+                'vertical_rank ASC, horizontal_rank ASC',
             );
             foreach ($comments_data as $row) {
                 $comment = new Comment();
