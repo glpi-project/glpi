@@ -39,86 +39,88 @@ use DbTestCase;
 
 /* Test for inc/dashboard/dashboard.class.php */
 
-class Dashboard extends DbTestCase
+class DashboardTest extends DbTestCase
 {
     private $dashboard = null;
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
         $this->dashboard = new \Glpi\Dashboard\Dashboard('test_dashboard');
-
-        parent::beforeTestMethod($method);
+        parent::setUp();
     }
 
     public function testLoad()
     {
         $d_key = $this->dashboard->load(true);
-        $this->integer($d_key)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $d_key);
 
         $items = $this->getPrivateProperty('items');
-        $this->array($items)->hasSize(3);
+        $this->assertCount(3, $items);
 
         $rights = $this->getPrivateProperty('rights');
-        $this->array($rights)->hasSize(2);
+        $this->assertCount(2, $rights);
     }
 
 
     public function testGetFromDB()
     {
        // we need to test we get the dashboard by it's key and not it's id
-        $this->boolean($this->dashboard->getFromDB(1))->isFalse();
-        $this->boolean($this->dashboard->getFromDB('test_dashboard'))->isTrue();
-        $this->string($this->getPrivateProperty('key'))->isEqualTo('test_dashboard');
-        $this->array($this->getPrivateProperty('fields'))->isNotEmpty();
+        $this->assertFalse($this->dashboard->getFromDB(1));
+        $this->assertTrue($this->dashboard->getFromDB('test_dashboard'));
+        $this->assertEquals('test_dashboard', $this->getPrivateProperty('key'));
+        $this->assertNotEmpty($this->getPrivateProperty('fields'));
     }
 
 
     public function testGetTitle()
     {
-        $this->string($this->dashboard->getTitle())->isEqualTo("Test_Dashboard");
+        $this->assertEquals("Test_Dashboard", $this->dashboard->getTitle());
     }
 
 
     public function testSaveNew()
     {
-        $this->string($this->dashboard->saveNew(
-            "New Dashboard",
-            'my_context',
-            [
+        $this->assertEquals(
+            "new-dashboard",
+            $this->dashboard->saveNew(
+                "New Dashboard",
+                'my_context',
                 [
-                    'gridstack_id' => 'bn_count_Computer_4',
-                    'card_id'      => 'bn_count_Computer',
-                    'x'            => 0,
-                    'y'            => 0,
-                    'width'        => 2,
-                    'height'       => 2,
-                    'card_options' => [
-                        'color' => '#FFFFFF',
-                    ]
-                ], [
-                    'gridstack_id' => 'bn_count_Computer_5',
-                    'card_id'      => 'bn_count_Computer',
-                    'x'            => 2,
-                    'y'            => 0,
-                    'width'        => 2,
-                    'height'       => 2,
-                    'card_options' => [
-                        'color' => '#FFFFFF',
-                    ]
+                    [
+                        'gridstack_id' => 'bn_count_Computer_4',
+                        'card_id'      => 'bn_count_Computer',
+                        'x'            => 0,
+                        'y'            => 0,
+                        'width'        => 2,
+                        'height'       => 2,
+                        'card_options' => [
+                            'color' => '#FFFFFF',
+                        ]
+                    ], [
+                        'gridstack_id' => 'bn_count_Computer_5',
+                        'card_id'      => 'bn_count_Computer',
+                        'x'            => 2,
+                        'y'            => 0,
+                        'width'        => 2,
+                        'height'       => 2,
+                        'card_options' => [
+                            'color' => '#FFFFFF',
+                        ]
+                    ],
                 ],
-            ],
-            [
                 [
-                    'entities_id' => 0,
+                    [
+                        'entities_id' => 0,
+                    ]
                 ]
-            ]
-        ))->isEqualTo("new-dashboard");
+            )
+        );
 
         $items = $this->getPrivateProperty('items');
-        $this->array($items)->hasSize(2);
+        $this->assertCount(2, $items);
 
         $rights = $this->getPrivateProperty('rights');
-        $this->array($rights)->hasSize(1);
+        $this->assertCount(1, $rights);
     }
 
 
@@ -126,10 +128,10 @@ class Dashboard extends DbTestCase
     {
         $new_title = "new Title";
         $this->dashboard->saveTitle($new_title);
-        $this->string($this->dashboard->getTitle())->isEqualTo($new_title);
+        $this->assertEquals($new_title, $this->dashboard->getTitle());
 
-       // key of dashboard should not have changed
-        $this->string($this->getPrivateProperty('key'))->isEqualTo('test_dashboard');
+        // key of dashboard should not have changed
+        $this->assertEquals('test_dashboard', $this->getPrivateProperty('key'));
     }
 
 
@@ -137,23 +139,26 @@ class Dashboard extends DbTestCase
     {
         $clone_name = sprintf(__('Copy of %s'), "Test_Dashboard");
         $clone_key  = \Toolbox::slugify($clone_name);
-        $this->array($this->dashboard->cloneCurrent())->isEqualTo([
-            'title' => $clone_name,
-            'key'   => $clone_key
-        ]);
+        $this->assertEquals(
+            [
+                'title' => $clone_name,
+                'key'   => $clone_key
+            ],
+            $this->dashboard->cloneCurrent()
+        );
 
-        $this->boolean($this->dashboard->getFromDB($clone_key))->isTrue();
-        $this->string($this->dashboard->fields['context'])->isEqualTo('core');
+        $this->assertTrue($this->dashboard->getFromDB($clone_key));
+        $this->assertEquals('core', $this->dashboard->fields['context']);
 
-        $this->string($this->getPrivateProperty('key'))->isEqualTo($clone_key);
-        $this->string($this->getPrivateProperty('key'))->isEqualTo($clone_key);
+        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
+        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
         $items = $this->getPrivateProperty('items');
-        $this->array($items)->hasSize(3);
-        $this->array($this->getPrivateProperty('rights'))->hasSize(4);
+        $this->assertCount(3, $items);
+        $this->assertCount(4, $this->getPrivateProperty('rights'));
 
         foreach ($items as $item) {
-            $this->array($item)->hasKey('card_options');
-            $this->array($item['card_options'])->hasSize(1);
+            $this->assertArrayHasKey('card_options', $item);
+            $this->assertCount(1, $item['card_options']);
         }
     }
 
@@ -162,26 +167,23 @@ class Dashboard extends DbTestCase
     {
        // get "core" dashboards
         $dasboards = $this->dashboard::getAll(true, false);
-        $this->array($dasboards)
-         ->hasSize(5)
-         ->hasKey('test_dashboard')
-         ->hasKey('test_dashboard2');
+        $this->assertCount(5, $dasboards);
+        $this->assertArrayHasKey('test_dashboard', $dasboards);
+        $this->assertArrayHasKey('test_dashboard2', $dasboards);
 
-        $this->array($dasboards['test_dashboard'])
-         ->hasKey('items')
-         ->hasKey('rights');
-        $this->array($dasboards['test_dashboard2'])
-         ->hasKey('items')
-         ->hasKey('rights');
+        $this->assertArrayHasKey('items', $dasboards['test_dashboard']);
+        $this->assertArrayHasKey('rights', $dasboards['test_dashboard']);
 
-        $this->array($dasboards['test_dashboard']['items'])->hasSize(3);
-        $this->array($dasboards['test_dashboard']['rights'])->hasSize(4);
-        $this->array($dasboards['test_dashboard2']['items'])->hasSize(0);
-        $this->array($dasboards['test_dashboard2']['rights'])->hasSize(4);
+        $this->assertArrayHasKey('items', $dasboards['test_dashboard2']);
+        $this->assertArrayHasKey('rights', $dasboards['test_dashboard2']);
+
+        $this->assertCount(3, $dasboards['test_dashboard']['items']);
+        $this->assertCount(4, $dasboards['test_dashboard']['rights']);
+        $this->assertCount(0, $dasboards['test_dashboard2']['items']);
+        $this->assertCount(4, $dasboards['test_dashboard2']['rights']);
 
         $dasboards = $this->dashboard::getAll(true, false, "inexistent_context");
-        $this->array($dasboards)
-         ->hasSize(0);
+        $this->assertCount(0, $dasboards);
     }
 
 
@@ -189,12 +191,12 @@ class Dashboard extends DbTestCase
     {
         global $DB;
 
-        $this->dashboard->getFromDB('test_dashboard');
+        $this->assertTrue($this->dashboard->getFromDB('test_dashboard'));
         $dashboards_id = $this->dashboard->fields['id'];
 
-        $this->boolean($this->dashboard->delete([
+        $this->assertTrue($this->dashboard->delete([
             'key' => 'test_dashboard'
-        ]))->isTrue();
+        ]));
 
         $items = iterator_to_array($DB->request([
             'FROM' => \Glpi\Dashboard\Item::getTable(),
@@ -202,14 +204,14 @@ class Dashboard extends DbTestCase
                 'dashboards_dashboards_id' => $dashboards_id
             ]
         ]));
-        $this->array($items)->isEmpty();
+        $this->assertEmpty($items);
         $rights     = iterator_to_array($DB->request([
             'FROM' => \Glpi\Dashboard\Right::getTable(),
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id
             ]
         ]));
-        $this->array($rights)->isEmpty();
+        $this->assertEmpty($rights);
     }
 
 
@@ -258,12 +260,12 @@ class Dashboard extends DbTestCase
             ]
         ];
 
-        $this->boolean(\Glpi\Dashboard\Dashboard::importFromJson($import))->isTrue();
-        $this->boolean($this->dashboard->getFromDB($key))->isTrue();
-        $this->string($this->dashboard->getTitle())->isEqualTo($title);
-        $this->string($this->getPrivateProperty('key'))->isEqualTo($key);
-        $this->array($this->getPrivateProperty('items'))->hasSize(2);
-        $this->array($this->getPrivateProperty('rights'))->hasSize(1);
+        $this->assertTrue(\Glpi\Dashboard\Dashboard::importFromJson($import));
+        $this->assertTrue($this->dashboard->getFromDB($key));
+        $this->assertEquals($title, $this->dashboard->getTitle());
+        $this->assertEquals($key, $this->getPrivateProperty('key'));
+        $this->assertCount(2, $this->getPrivateProperty('items'));
+        $this->assertCount(1, $this->getPrivateProperty('rights'));
     }
 
     public function testConvertRights()
@@ -284,12 +286,15 @@ class Dashboard extends DbTestCase
             ]
         ];
 
-        $this->array(\Glpi\Dashboard\Dashboard::convertRights($raw))->isEqualTo([
-            'entities_id' => [0],
-            'profiles_id' => [3, 4],
-            'users_id'    => [2],
-            'groups_id'   => [],
-        ]);
+        $this->assertEquals(
+            [
+                'entities_id' => [0],
+                'profiles_id' => [3, 4],
+                'users_id'    => [2],
+                'groups_id'   => [],
+            ],
+            \Glpi\Dashboard\Dashboard::convertRights($raw)
+        );
     }
 
 
@@ -307,24 +312,24 @@ class Dashboard extends DbTestCase
         $_SESSION['glpigroups'] = [];
         $_SESSION['glpiID'] = 1;
 
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isFalse();
+        $this->assertFalse(\Glpi\Dashboard\Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveentities'] = [0];
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveentities'] = [];
         $_SESSION['glpiactiveprofile'] = ['id' => 3];
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
 
         $_SESSION['glpiactiveprofile'] = ['id' => 1];
         $_SESSION['glpiID'] = 2;
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
 
         $_SESSION['glpiID'] = 1;
         $_SESSION['glpigroups'] = [3];
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isTrue();
+        $this->assertTrue(\Glpi\Dashboard\Dashboard::checkRights($rights));
 
         $_SESSION['glpigroups'] = [];
-        $this->boolean(\Glpi\Dashboard\Dashboard::checkRights($rights))->isFalse();
+        $this->assertFalse(\Glpi\Dashboard\Dashboard::checkRights($rights));
     }
 }

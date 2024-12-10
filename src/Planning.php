@@ -1645,7 +1645,7 @@ TWIG, $twig_params);
             $begin = $event['begin'];
             $end   = $event['end'];
 
-            // retreive all day events
+            // retrieve all day events
             if (
                 strpos($event['begin'], "00:00:00")
                 && (strtotime($event['end']) - strtotime($event['begin'])) % DAY_TIMESTAMP === 0

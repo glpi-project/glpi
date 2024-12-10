@@ -39,13 +39,13 @@ use CsvTestCase;
 
 /* Test for inc/planningcsv.class.php */
 
-class PlanningCsv extends CsvTestCase
+class PlanningCsvTest extends CsvTestCase
 {
     public function getTestData(): array
     {
         $this->login();
 
-       //create calendar entryies
+        //create calendar entries
         $reminder = new \Reminder();
         $begin = new \DateTime();
         $begin->sub(new \DateInterval('P10D'));
@@ -63,7 +63,7 @@ class PlanningCsv extends CsvTestCase
                 'end'             => $fend
             ]
         ]);
-        $this->integer($rid)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $rid);
 
         $ticket = new \Ticket();
         $tid = (int)$ticket->add([
@@ -72,8 +72,8 @@ class PlanningCsv extends CsvTestCase
             'content'      => '',
             'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
         ]);
-        $this->integer($tid)->isGreaterThan(0);
-        $this->boolean($ticket->isNewItem())->isFalse();
+        $this->assertGreaterThan(0, $tid);
+        $this->assertFalse($ticket->isNewItem());
 
         $task = new \TicketTask();
         $tasksstates = [
@@ -97,8 +97,8 @@ class PlanningCsv extends CsvTestCase
                 'actiontime'      => 172800
             ];
             $ttid = (int)$task->add($input);
-            $this->integer($ttid)->isGreaterThan(0);
-            $this->boolean($task->getFromDB($ttid))->isTrue();
+            $this->assertGreaterThan(0, $ttid);
+            $this->assertTrue($task->getFromDB($ttid));
             $input['id'] = $task->fields['id'];
             if ($taskstate !== \Planning::INFO) {
                //INFO are not present in planning
@@ -108,7 +108,7 @@ class PlanningCsv extends CsvTestCase
         }
 
         $user = new \User();
-        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->assertTrue($user->getFromDB(\Session::getLoginUserID()));
 
         $expected_header = [
             'Actor',

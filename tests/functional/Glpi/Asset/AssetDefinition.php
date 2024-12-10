@@ -232,6 +232,22 @@ class AssetDefinition extends DbTestCase
             ],
         ];
 
+        yield [
+            'input'    => [
+                'system_name' => 'TestAsset',
+                'label'       => 'Test Asset',
+            ],
+            'output'   => [
+                'system_name'  => 'TestAsset',
+                'label'        => 'Test Asset',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
+                'fields_display' => '[]',
+            ],
+            'messages' => [],
+        ];
+
         // start at 32 to ignore control chars
         // stop at 8096, no need to test the whole UTF-8 charset
         for ($i = 32; $i < 8096; $i++) {
@@ -251,9 +267,11 @@ class AssetDefinition extends DbTestCase
                     ],
                     'output'   => [
                         'system_name'  => $system_name,
+                        'label'        => $system_name,
                         'capacities'   => '[]',
                         'profiles'     => '[]',
                         'translations' => '[]',
+                        'fields_display' => '[]',
                     ],
                     'messages' => [],
                 ];
@@ -292,9 +310,11 @@ class AssetDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => 'My' . $system_name,
+                    'label'        => 'My' . $system_name,
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    'fields_display' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -305,9 +325,11 @@ class AssetDefinition extends DbTestCase
                 ],
                 'output'   => [
                     'system_name'  => $system_name . 'NG',
+                    'label'        => $system_name . 'NG',
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    'fields_display' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -332,9 +354,11 @@ class AssetDefinition extends DbTestCase
             ],
             'output'   => [
                 'system_name'  => 'TestAssetModeling',
+                'label'        => 'TestAssetModeling',
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                'fields_display' => '[]',
             ],
             'messages' => [],
         ];
@@ -358,9 +382,11 @@ class AssetDefinition extends DbTestCase
             ],
             'output'   => [
                 'system_name'  => 'TestAssetTyped',
+                'label'        => 'TestAssetTyped',
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                'fields_display' => '[]',
             ],
             'messages' => [],
         ];
@@ -371,6 +397,7 @@ class AssetDefinition extends DbTestCase
                 $data['input']['system_name'] = __FUNCTION__;
                 if (is_array($data['output'])) {
                     $data['output']['system_name'] = __FUNCTION__;
+                    $data['output']['label'] = __FUNCTION__;
                 }
             }
             if (is_array($data['output']) && !array_key_exists('capacities', $data['output'])) {
@@ -384,6 +411,9 @@ class AssetDefinition extends DbTestCase
             if (is_array($data['output']) && !array_key_exists('translations', $data['output'])) {
                 // default value for `translations`
                 $data['output']['translations'] = '[]';
+            }
+            if (is_array($data['output']) && !array_key_exists('fields_display', $data['output'])) {
+                $data['output']['fields_display'] = '[]';
             }
             yield $data;
         }
@@ -401,6 +431,20 @@ class AssetDefinition extends DbTestCase
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
         }
+    }
+
+    public function testUniqueSystemName(): void
+    {
+        $definition = $this->newTestedInstance();
+        $this->integer($definition->add([
+            'system_name' => 'test',
+            'label' => 'Test',
+        ]))->isGreaterThan(0);
+        $this->boolean($definition->add([
+            'system_name' => 'test',
+            'label' => 'Test',
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, ['The system name must be unique.']);
     }
 
     public function testSystemNameUpdate(): void
@@ -424,7 +468,6 @@ class AssetDefinition extends DbTestCase
     {
         /** @var \Glpi\Asset\AssetDefinition $definition */
         $definition = $this->initAssetDefinition('test');
-        \Glpi\Asset\AssetDefinitionManager::getInstance()->bootstrapClasses();
 
         $this->createItem(
             $definition->getAssetClassName(),
@@ -598,6 +641,7 @@ class AssetDefinition extends DbTestCase
             \Glpi\Asset\AssetDefinition::class,
             [
                 'system_name' => 'test',
+                'label' => 'Test',
                 'translations' => [
                     'en_US' => [
                         'one' => 'Test',
@@ -622,8 +666,8 @@ class AssetDefinition extends DbTestCase
 
         // untranslated language
         $_SESSION['glpilanguage'] = 'es_ES';
-        $this->string($definition->getTranslatedName(1))->isEqualTo("test");
-        $this->string($definition->getTranslatedName(10))->isEqualTo('test');
+        $this->string($definition->getTranslatedName(1))->isEqualTo("Test");
+        $this->string($definition->getTranslatedName(10))->isEqualTo('Test');
     }
 
     protected function pluralFormProvider(): iterable

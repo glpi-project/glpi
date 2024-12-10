@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
 use Glpi\Dropdown\Dropdown;
-use Glpi\Dropdown\DropdownDefinition;
 
 class DropdownDefinitionManager extends DbTestCase
 {
@@ -52,7 +51,7 @@ class DropdownDefinitionManager extends DbTestCase
 
         foreach ($mapping as $expected_classname => $definition) {
             $this->boolean(class_exists($expected_classname))->isTrue();
-            $this->object($expected_classname::getDefinition())->isEqualTo($definition);
+            $this->array($expected_classname::getDefinition()->fields)->isEqualTo($definition->fields);
         }
     }
 

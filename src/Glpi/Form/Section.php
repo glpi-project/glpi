@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Override;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
@@ -55,7 +56,7 @@ final class Section extends CommonDBChild
 
     /**
      * Lazy loaded array of comments
-     * Should always be accessed through getComments()
+     * Should always be accessed through getFormComments()
      * @var Comment[]|null
      */
     protected ?array $comments = null;
@@ -84,6 +85,16 @@ final class Section extends CommonDBChild
         );
     }
 
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
     /**
      * Get blocks of this section
      * Block can be a question or a comment
@@ -93,7 +104,7 @@ final class Section extends CommonDBChild
      */
     public function getBlocks(): array
     {
-        $blocks = array_merge($this->getQuestions(), $this->getComments());
+        $blocks = array_merge($this->getQuestions(), $this->getFormComments());
         usort($blocks, fn($a, $b) => $a->fields['rank'] <=> $b->fields['rank']);
 
         return $blocks;
@@ -137,11 +148,8 @@ final class Section extends CommonDBChild
      *
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getFormComments(): array
     {
-        // TODO: getComments is already a method part of the CommonDBTM interface.
-        // We need another name for this.
-
         // Lazy loading
         if ($this->comments === null) {
             $this->comments = [];

@@ -127,7 +127,7 @@ abstract class AbstractController
     }
 
     /**
-     * @return array<string, Doc\Schema>
+     * @return array<string, array>
      */
     protected static function getRawKnownSchemas(): array
     {
@@ -138,7 +138,7 @@ abstract class AbstractController
      * Get all known schemas for this controller for the requested API version
      * @param ?string $api_version The API version or null if all versions should be returned
      * @return array
-     * @phpstan-return array<string, Doc\Schema>
+     * @phpstan-return array<string, array>
      */
     final public static function getKnownSchemas(?string $api_version): array
     {

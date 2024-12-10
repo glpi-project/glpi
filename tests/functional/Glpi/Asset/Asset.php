@@ -162,7 +162,7 @@ class Asset extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
         $string_field = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -183,7 +183,7 @@ class Asset extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
         $string_field = $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -204,7 +204,7 @@ class Asset extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
         $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
@@ -220,21 +220,21 @@ class Asset extends DbTestCase
         $asset_definition = $this->initAssetDefinition();
         $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string',
+            'system_name' => 'test_string',
             'label' => 'Test string',
             'type' => StringType::class,
             'default_value' => 'default',
         ]);
         $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_string_two',
+            'system_name' => 'test_string_two',
             'label' => 'Test string 2',
             'type' => StringType::class,
             'default_value' => 'default2',
         ]);
         $this->createItem(\Glpi\Asset\CustomFieldDefinition::class, [
             'assets_assetdefinitions_id' => $asset_definition->getID(),
-            'name' => 'test_dropdown',
+            'system_name' => 'test_dropdown',
             'label' => 'Test dropdown',
             'type' => DropdownType::class,
             'itemtype' => \Computer::class,

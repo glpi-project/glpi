@@ -165,7 +165,8 @@
             "src/autoload/misc-functions.php"
         ],
         "psr-4": {
-            "Glpi\\": "src/Glpi/"
+            "Glpi\\": "src/Glpi/",
+            "": "src/"
         }
     },
     "autoload-dev": {

@@ -2102,31 +2102,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/TicketFollowup.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getKnownSchema\\(\\) should return array\\|null but returns Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\|\\(Closure\\)\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ComponentController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:authorize\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\<string, array\\<string, array\\<string, string\\>\\|string\\>\\|string\\>\\>\\|string\\>\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
@@ -2142,18 +2118,6 @@ $ignoreErrors[] = [
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\DropdownController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<int\\|string, array\\|\\(Closure\\)\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemLinkFields\\(\\) is unused\\.$#',
@@ -2210,12 +2174,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ManagementController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<int\\|string, array\\<string, mixed\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'label\' does not exist on string\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -2234,34 +2192,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ProjectController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\|\\(Closure\\)\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ReportController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\<string, array\\<string, array\\|string\\>\\|string\\>\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\RuleController\\:\\:getRawKnownSchemas\\(\\) should return array\\<string, Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\> but returns array\\<string, array\\<string, array\\<string, array\\>\\|string\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'fields\' on string on left side of \\?\\? does not exist\\.$#',
 	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function array_key_exists\\(\\) with \'x\\-itemtype\' and Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchema\\(\\) should return array\\{x\\-subtypes\\: array\\{schema_name\\: string, itemtype\\: string\\}, type\\: \'object\', properties\\: array\\} but returns array\\{x\\-subtypes\\: non\\-empty\\-list\\<array\\{schema_name\\: string, itemtype\\: mixed\\}\\>, type\\: \'object\', properties\\: mixed\\}\\.$#',
@@ -2278,12 +2212,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type string is not subtype of native type bool\\.$#',
 	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
@@ -2306,12 +2234,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugRequestMiddleware.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'parameters\' on array\\{tags\\: array\\<string\\>, responses\\: array, description\\?\\: string, parameters\\: non\\-empty\\-array\\<string, array\\{name\\: \'Accept\\-Language\', in\\: \'header\', description\\: \'The language to use…\', schema\\: array\\{type\\: \'string\'\\}, examples\\: array\\{English_GB\\: array\\{value\\: \'en_GB\', summary\\: \'English \\(United…\'\\}, French_FR\\: array\\{value\\: \'fr_FR\', summary\\: \'French \\(France\\)\'\\}, Portuguese_BR\\: array\\{value\\: \'pt_BR\', summary\\: \'Portuguese \\(Brazil\\)\'\\}\\}\\}\\|array\\{name\\: string, in\\: string, description\\: string, required\\?\\: \'true\'\\|bool, schema\\?\\: mixed\\}\\>, requestBody\\?\\: array\\{content\\: array\\{application/json\\: array\\{schema\\: array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\}\\}\\}\\}, security\\: array\\<array\\<string, array\\<string, mixed\\>\\>\\>\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\} is not subtype of native type array\\{type\\: \'integer\', pattern\\: \'\\\\\\\\d\\+\'\\}\\|array\\{type\\: \'string\', pattern\\: mixed\\}\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -2322,18 +2244,6 @@ $ignoreErrors[] = [
 	'identifier' => 'smaller.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Lexer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-type RoutePathCacheHint has invalid value\\: Unexpected token "\\{", expected type at offset 40 on line 2$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return with type mixed is not subtype of native type array\\.$#',
-	'identifier' => 'return.phpDocType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between Glpi\\\\Api\\\\HL\\\\Doc\\\\Route and null will always evaluate to true\\.$#',
@@ -2474,12 +2384,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2504,22 +2408,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns Glpi\\\\Asset\\\\AssetModel\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
@@ -2544,30 +2436,6 @@ $ignoreErrors[] = [
 	'identifier' => 'parameter.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/CapacityInterface.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryModel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryModelCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryType.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Asset\\\\AssetDefinition and Glpi\\\\Asset\\\\AssetDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/RuleDictionaryTypeCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
@@ -2954,12 +2822,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Debug/ProfilerSection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Dropdown\\\\DropdownDefinition and Glpi\\\\Dropdown\\\\DropdownDefinition will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dropdown\\\\Dropdown\\:\\:getById\\(\\) should return static\\(Glpi\\\\Dropdown\\\\Dropdown\\)\\|false but returns object\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3056,12 +2918,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(array\\<Glpi\\\\Form\\\\Comment\\>\\) of method Glpi\\\\Form\\\\Form\\:\\:getComments\\(\\) should be compatible with return type \\(string\\) of method CommonDBTM\\:\\:getComments\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -3108,12 +2964,6 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypesManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(array\\<Glpi\\\\Form\\\\Comment\\>\\) of method Glpi\\\\Form\\\\Section\\:\\:getComments\\(\\) should be compatible with return type \\(string\\) of method CommonDBTM\\:\\:getComments\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalog\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',

@@ -49,6 +49,7 @@ use Glpi\Form\Tag\Tag;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Profile;
+use Session;
 use Ticket;
 use User;
 
@@ -245,7 +246,7 @@ trait FormTesterTrait
         $form->getFromDB($form->getID());
 
         // Get comments
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
 
         if ($section_name === null) {
             // Search by name
@@ -429,11 +430,12 @@ trait FormTesterTrait
     {
         // Export and import process
         $json = $this->exportForm($form);
-        $form_copy = $this->importForm(
-            $json,
-            new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
-            [],
-        );
+        $active_entities = Session::getActiveEntities();
+        $mapper = !empty($active_entities)
+            ? new DatabaseMapper($active_entities)
+            : new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+
+        $form_copy = $this->importForm($json, $mapper, []);
 
         // Make sure it was not the same form object that was returned.
         $this->assertNotEquals($form_copy->getId(), $form->getId());

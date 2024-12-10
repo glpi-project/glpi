@@ -35,12 +35,14 @@
 
 namespace tests\units\Glpi\Features;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
  */
-class Clonable extends \DbTestCase
+class ClonableTest extends \DbTestCase
 {
-    public function massiveActionTargetingProvider()
+    public static function massiveActionTargetingProvider()
     {
         return [
             [\Computer::class, true],
@@ -52,19 +54,15 @@ class Clonable extends \DbTestCase
         ];
     }
 
-    /**
-     * @param $class
-     * @param $result
-     * @dataProvider massiveActionTargetingProvider
-     */
+    #[DataProvider('massiveActionTargetingProvider')]
     public function testMassiveActionTargeting($class, $result)
     {
         $this->login();
         $ma_prefix = 'MassiveAction' . \MassiveAction::CLASS_ACTION_SEPARATOR;
         $actions = \MassiveAction::getAllMassiveActions($class);
-        $this->boolean(array_key_exists($ma_prefix . 'clone', $actions))->isIdenticalTo($result);
+        $this->assertSame($result, array_key_exists($ma_prefix . 'clone', $actions));
         // Create template option never should exist when not targetting a single item
-        $this->boolean(array_key_exists($ma_prefix . 'create_template', $actions))->isIdenticalTo(false);
+        $this->assertFalse(array_key_exists($ma_prefix . 'create_template', $actions));
 
         if ($result === true) {
             $item = $this->createItem($class, [
@@ -74,7 +72,7 @@ class Clonable extends \DbTestCase
             ], ['content']);
             if ($item->maybeTemplate()) {
                 $specific_actions = \MassiveAction::getAllMassiveActions($class, false, $item, $item->getID());
-                $this->boolean(array_key_exists($ma_prefix . 'create_template', $specific_actions))->isIdenticalTo(true);
+                $this->assertTrue(array_key_exists($ma_prefix . 'create_template', $specific_actions));
             }
         }
     }

@@ -35,8 +35,19 @@
 
 namespace tests\units\Glpi\Form;
 
+use Computer;
 use Entity;
 use Glpi\Form\Comment;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
+use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
@@ -54,7 +65,9 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use ITILCategory;
 use Location;
+use Monitor;
 use Session;
 
 final class FormSerializerTest extends \DbTestCase
@@ -306,7 +319,7 @@ final class FormSerializerTest extends \DbTestCase
         $form_copy = $this->exportAndImportForm($form);
 
         // Assert: validate comments fields
-        $comments = array_values($form_copy->getComments());
+        $comments = array_values($form_copy->getFormComments());
         $comments_data = array_map(function (Comment $comment) {
             return [
                 'name'              => $comment->fields['name'],
@@ -454,11 +467,115 @@ final class FormSerializerTest extends \DbTestCase
                 'is_mandatory'      => (int) false,
                 'rank'              => 1,
                 'description'       => '',
-                'default_value'     => json_encode($actors_default_value_config->jsonSerialize()),
+                'default_value'     => json_encode(array_intersect_key(
+                    $actors_default_value_config->jsonSerialize(),
+                    ['users_ids' => '']
+                )),
                 'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ]
         ], $questions_data);
+    }
+
+    public function testExportAndImportDestinations(): void
+    {
+        $this->login();
+
+        // Create an ITIL category
+        $itil_category = $this->createItem('ITILCategory', ['name' => 'My ITIL Category']);
+
+        // Create a Computer
+        $computer = $this->createItem('Computer', [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true)
+        ]);
+
+        // Create a monitor
+        $monitor = $this->createItem('Monitor', [
+            'name' => 'My monitor',
+            'entities_id' => $this->getTestRootEntity(only_id: true)
+        ]);
+
+        $form = $this->createForm((new FormBuilder())->addQuestion(
+            "My ITIL Category question",
+            QuestionTypeItemDropdown::class,
+            json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))->jsonSerialize()),
+            json_encode((new QuestionTypeItemExtraDataConfig(ITILCategory::class))->jsonSerialize()),
+        )->addDestination(FormDestinationTicket::class, 'My ticket destination'));
+
+        $title_field_config = new SimpleValueConfig("My ticket title");
+        $itil_category_field_config = new ITILCategoryFieldConfig(
+            ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
+            specific_question_id: $this->getQuestionId($form, "My ITIL Category question")
+        );
+        $associated_items_config = new AssociatedItemsFieldConfig(
+            AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
+            specific_associated_items: [
+                Computer::class => [
+                    $computer->getID()
+                ],
+                Monitor::class => [
+                    $monitor->getID()
+                ]
+            ]
+        );
+
+        // Insert config
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    TitleField::getKey() => $title_field_config->jsonSerialize(),
+                    ITILCategoryField::getKey() => $itil_category_field_config->jsonSerialize(),
+                    AssociatedItemsField::getKey() => $associated_items_config->jsonSerialize()
+                ]
+            ],
+            ["config"],
+        );
+
+        // Export and import process
+        $imported_form = $this->exportAndImportForm($form);
+        $imported_destinations = $imported_form->getDestinations();
+        $imported_configs = current($imported_destinations)->getConfig();
+
+        $this->assertCount(1, $imported_destinations);
+
+        // Check that the imported form has the same destination
+        $this->assertEquals($title_field_config->jsonSerialize(), $imported_configs[TitleField::getKey()]);
+        $this->assertEquals(
+            array_diff_key(
+                $itil_category_field_config->jsonSerialize(),
+                ['specific_question_id' => '']
+            ),
+            array_diff_key(
+                $imported_configs[ITILCategoryField::getKey()],
+                ['specific_question_id' => '']
+            )
+        );
+        $this->assertEquals(
+            array_diff_key(
+                $associated_items_config->jsonSerialize(),
+                ['specific_question_ids' => '']
+            ),
+            array_diff_key(
+                $imported_configs[AssociatedItemsField::getKey()],
+                ['specific_question_ids' => '']
+            )
+        );
+
+        // Extra check to ensure that the specific_question_id is the same
+        $this->assertNotEquals(
+            $itil_category_field_config->getSpecificQuestionId(),
+            $imported_configs[ITILCategoryField::getKey()][ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID]
+        );
+
+        $this->assertEquals(
+            $this->getQuestionId($imported_form, "My ITIL Category question"),
+            $imported_configs[ITILCategoryField::getKey()][ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID]
+        );
     }
 
     public function testPreviewImportWithValidForm(): void

@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Csv;
 use Computer;
 use Glpi\Csv\LogCsvExport as Core_LogCsvExport;
 
-class LogCsvExport extends \CsvTestCase
+class LogCsvExportTest extends \CsvTestCase
 {
     protected function getTestData(): array
     {
@@ -50,41 +50,41 @@ class LogCsvExport extends \CsvTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
 
-        $this->integer($id)->isGreaterThan(0);
-        $this->boolean($computer->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($computer->getFromDB($id));
 
-       // Multiple updates
-        $this->boolean(
+        // Multiple updates
+        $this->assertTrue(
             $computer->update([
                 'id'   => $id,
                 'name' => 'testExportToCsv 2'
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $computer->update([
                 'id'   => $id,
                 'name' => 'testExportToCsv 3'
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $computer->update([
                 'id'   => $id,
                 'name' => 'testExportToCsv 4'
             ])
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             $computer->update([
                 'id'   => $id,
                 'name' => 'testExportToCsv 5'
             ])
-        )->isTrue();
+        );
 
-        $this->boolean($computer->getFromDb($id))->isTrue();
+        $this->assertTrue($computer->getFromDb($id));
 
-       // Data that will be constant for all tests
+        // Data that will be constant for all tests
         $filename = "testexporttocsv-5_$date.csv";
         $cols     = 5;
 

@@ -296,7 +296,15 @@ class Schema implements \ArrayAccess
                 $prop = $prop['items'];
             }
             if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT) {
-                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
+                $is_mapped_obj = isset($prop['x-mapped-from']);
+                $new_props = self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
+                if ($is_mapped_obj) {
+                    foreach ($new_props as &$new_prop_data) {
+                        $new_prop_data['x-mapped-property'] = true;
+                    }
+                    unset($new_prop_data);
+                }
+                $flattened += $new_props;
             } else {
                 $flattened[$prefix . $name] = [
                     ...$prop,

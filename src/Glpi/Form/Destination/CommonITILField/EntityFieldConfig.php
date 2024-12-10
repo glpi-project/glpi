@@ -35,21 +35,35 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Entity;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class EntityFieldConfig implements JsonFieldInterface
+final class EntityFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_ID = 'question_id';
-    public const ENTITY_ID = 'entity_id';
+    public const SPECIFIC_QUESTION_ID = 'specific_question_id';
+    public const SPECIFIC_ENTITY_ID = 'specific_entity_id';
 
     public function __construct(
         private EntityFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_entity_id = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyHandler(self::SPECIFIC_ENTITY_ID, Entity::class),
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
     }
 
     #[Override]
@@ -62,8 +76,8 @@ final class EntityFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::QUESTION_ID],
-            specific_entity_id: $data[self::ENTITY_ID],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_entity_id: $data[self::SPECIFIC_ENTITY_ID] ?? null,
         );
     }
 
@@ -72,8 +86,8 @@ final class EntityFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_ID => $this->specific_question_id,
-            self::ENTITY_ID => $this->specific_entity_id,
+            self::SPECIFIC_QUESTION_ID => $this->specific_question_id,
+            self::SPECIFIC_ENTITY_ID => $this->specific_entity_id,
         ];
     }
 

@@ -186,6 +186,10 @@ abstract class AbstractCapacity implements CapacityInterface
     {
     }
 
+    public function onCapacityEnabled(string $classname): void
+    {
+    }
+
     public function onCapacityDisabled(string $classname): void
     {
     }

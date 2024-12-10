@@ -43,7 +43,7 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
 use ReflectionClass;
-use Session;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Question of a given helpdesk form's section
@@ -59,6 +59,12 @@ final class Question extends CommonDBChild implements BlockInterface
     public static function getTypeName($nb = 0)
     {
         return _n('Question', 'Questions', $nb);
+    }
+
+    #[Override]
+    public function isEntityAssign()
+    {
+        return false;
     }
 
     #[Override]
@@ -129,24 +135,48 @@ final class Question extends CommonDBChild implements BlockInterface
         return (new EndUserInputNameProvider())->getEndUserInputName($this);
     }
 
+    public function getUniqueIDInForm(): string
+    {
+        return sprintf(
+            "%s-%s",
+            $this->getItem()->fields['rank'],
+            $this->fields['rank']
+        );
+    }
+
+    #[Override]
     public function prepareInputForAdd($input)
     {
-        $this->prepareInput($input);
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
-        $this->prepareInput($input);
+        $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
     }
 
-    private function prepareInput(&$input)
+    private function prepareInput($input): array
     {
+        // Set parent UUID
+        if (
+            isset($input['forms_sections_id'])
+            && !isset($input['forms_sections_uuid'])
+        ) {
+            $section = Section::getById($input['forms_sections_id']);
+            $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
         // If the question is being imported, we don't need to format the input
         // because it is already formatted. So we skip this step.
         if ($input['_from_import'] ?? false) {
-            return;
+            return $input;
         }
 
         $question_type = $this->getQuestionType();
@@ -189,6 +219,8 @@ final class Question extends CommonDBChild implements BlockInterface
                 $input['extra_data'] = json_encode($extra_data);
             }
         }
+
+        return $input;
     }
 
     /**

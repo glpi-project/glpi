@@ -36,9 +36,13 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Override;
 
-final class TemplateFieldConfig implements JsonFieldInterface
+final class TemplateFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -51,6 +55,22 @@ final class TemplateFieldConfig implements JsonFieldInterface
     }
 
     #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        if (!($content_spec instanceof DestinationContentSpecification)) {
+            throw new \InvalidArgumentException(
+                "Content specification must be an instance of " . DestinationContentSpecification::class
+            );
+        }
+
+        $destination_itemtype = $content_spec->itemtype;
+        $destination_target = new ($destination_itemtype::getTargetItemtype())();
+        return [
+            new ForeignKeyHandler(self::TEMPLATE_ID, $destination_target->getTemplateClass())
+        ];
+    }
+
+    #[Override]
     public static function jsonDeserialize(array $data): self
     {
         $strategy = TemplateFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
@@ -60,7 +80,7 @@ final class TemplateFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_template_id: $data[self::TEMPLATE_ID],
+            specific_template_id: $data[self::TEMPLATE_ID] ?? null
         );
     }
 

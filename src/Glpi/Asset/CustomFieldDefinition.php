@@ -79,6 +79,35 @@ final class CustomFieldDefinition extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
+        $it = $DB->request([
+            'SELECT' => ['fields_display'],
+            'FROM' => AssetDefinition::getTable(),
+            'WHERE' => [
+                'id' => $this->fields[self::$items_id],
+            ],
+        ]);
+        $fields_display = json_decode($it->current()['fields_display'] ?? '[]', true) ?? [];
+        $order = 0;
+        foreach ($fields_display as $k => $field) {
+            if ($field['key'] === 'custom_' . $this->fields['system_name']) {
+                $order = $field['order'];
+                unset($fields_display[$k]);
+                break;
+            }
+        }
+        if ($order > 0) {
+            foreach ($fields_display as $k => $field) {
+                if ($field['order'] > $order) {
+                    $fields_display[$k]['order']--;
+                }
+            }
+        }
+        $DB->update(AssetDefinition::getTable(), [
+            'fields_display' => json_encode(array_values($fields_display)),
+        ], [
+            'id' => $this->fields[self::$items_id],
+        ]);
+
         $DB->update('glpi_assets_assets', [
             'custom_fields' => QueryFunction::jsonRemove([
                 'custom_fields',
@@ -107,6 +136,9 @@ final class CustomFieldDefinition extends CommonDBChild
             'assetdefinitions_id' => $options[self::$items_id],
             'allowed_dropdown_itemtypes' => $adm->getAllowedDropdownItemtypes(),
             'field_types' => $field_types,
+            'params' => [
+                'formfooter' => false
+            ]
         ]);
         return true;
     }
@@ -125,10 +157,15 @@ final class CustomFieldDefinition extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        // Spaces are replaced with underscores and the name is made lowercase. Only lowercase letters and underscores are kept.
-        $input['name'] = preg_replace('/[^a-z_]/', '', strtolower(str_replace(' ', '_', $input['name'])));
-        if ($input['name'] === '') {
-            Session::addMessageAfterRedirect(__s('The system name must not be empty'), false, ERROR);
+        if (!is_string($input['system_name']) || preg_match('/^[a-z_]+$/', $input['system_name']) !== 1) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('System name')
+                )),
+                false,
+                ERROR
+            );
             return false;
         }
 
@@ -137,7 +174,7 @@ final class CustomFieldDefinition extends CommonDBChild
             'COUNT' => 'cpt',
             'FROM' => self::getTable(),
             'WHERE' => [
-                'name' => $input['name'],
+                'system_name' => $input['system_name'],
                 AssetDefinition::getForeignKeyField() => $input[self::$items_id],
             ],
         ]);
@@ -203,8 +240,8 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        // Cannot change type or name of existing field
-        unset($input['type'], $input['name']);
+        // Cannot change type or system_name of existing field
+        unset($input['type'], $input['system_name']);
         $input = $this->prepareInputForAddAndUpdate($input);
         if ($input === false) {
             return false;
@@ -250,7 +287,7 @@ final class CustomFieldDefinition extends CommonDBChild
      */
     public function getDecodedTranslationsField(): array
     {
-        $translations = json_decode($this->fields['translations'] ?? [], associative: true) ?? [];
+        $translations = json_decode($this->fields['translations'] ?? '[]', associative: true) ?? [];
         if (!$this->validateTranslationsArray($translations)) {
             trigger_error(
                 sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),

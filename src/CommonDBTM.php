@@ -495,6 +495,23 @@ class CommonDBTM extends CommonGLPI
     {
     }
 
+    public function getFormFields(): array
+    {
+        // NOTE: Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5
+        $fields = [
+            'name', 'firstname', 'template_name', '_template_is_active', 'states_id', static::getForeignKeyField(), 'is_helpdesk_visible',
+            '_dc_breadcrumbs', 'locations_id', 'item_type', 'itemtype', 'date_domaincreation', $this->getTypeForeignKeyField(),
+            'usertitles_id', 'registration_number', 'phone', 'phone2', 'phonenumber', 'mobile', 'fax', 'website', 'email',
+            'address', 'postalcode', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
+            'manufacturers_id', 'groups_id_tech', $this->getModelForeignKeyField(), 'contact_num', 'serial', 'contact', 'otherserial',
+            'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
+            'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
+        ];
+        return array_filter($fields, function ($f) {
+            return $f !== null && (str_starts_with($f, '_') || $this->isField($f));
+        });
+    }
+
     /**
      * Print the item generic form
      * Use a twig template to detect automatically fields and display them in a two column layout
@@ -522,6 +539,7 @@ class CommonDBTM extends CommonGLPI
             'params' => $options,
             'no_header' => !$new_item && !$in_modal,
             'cluster' => $cluster,
+            'field_order' => $this->getFormFields()
         ]);
         return true;
     }
@@ -1373,7 +1391,6 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    Webhook::raise('new', $this);
                     $this->post_addItem();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
@@ -1423,6 +1440,7 @@ class CommonDBTM extends CommonGLPI
                         Infocom::manageDateOnStatusChange($this);
                     }
                     Plugin::doHook(Hooks::ITEM_ADD, $this);
+                    Webhook::raise('new', $this);
 
                     // As add have succeeded, clean the old input value
                     if (isset($this->input['_add'])) {
@@ -6829,5 +6847,15 @@ TWIG, $twig_params);
             'unglobalize' => 'form',
             default => null,
         };
+    }
+
+    public static function getByUuid(string $uuid): ?self
+    {
+        $item = new static();
+        if ($item->getFromDBByCrit(['uuid' => $uuid])) {
+            return $item;
+        }
+
+        return null;
     }
 }

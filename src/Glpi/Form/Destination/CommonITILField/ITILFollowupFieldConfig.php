@@ -36,9 +36,13 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use ITILFollowupTemplate;
 use Override;
 
-final class ITILFollowupFieldConfig implements JsonFieldInterface
+final class ITILFollowupFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -48,6 +52,15 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface
         private ITILFollowupFieldStrategy $strategy,
         private ?array $specific_itilfollowuptemplates_ids = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+
+        return [
+            new ForeignKeyArrayHandler(key: self::ITILFOLLOWUPTEMPLATE_IDS, itemtype: ITILFollowupTemplate::class)
+        ];
     }
 
     #[Override]

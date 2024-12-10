@@ -40,6 +40,7 @@ use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Storage;
+use Laminas\Mail\Storage\Folder;
 use Laminas\Mail\Storage\Message;
 use LitEmoji\LitEmoji;
 
@@ -115,6 +116,11 @@ class MailCollector extends CommonDBTM
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
     }
 
     public static function canCreate(): bool
@@ -246,7 +252,9 @@ class MailCollector extends CommonDBTM
         try {
             $this->connect();
             $connected = true;
-            $folders = $this->storage->getFolders();
+            foreach ($this->storage->getFolders() as $folder) {
+                $folders[] = $this->extractFolderData($folder);
+            }
         } catch (\Throwable $e) {
             ErrorHandler::getInstance()->handleException($e, false);
         }
@@ -256,6 +264,26 @@ class MailCollector extends CommonDBTM
             'folders' => $folders,
             'input_id' => $input_id
         ]);
+    }
+
+    /**
+     * Extract an IMAP folder data to be used in Twig context.
+     * @param Folder $folder
+     * @return array
+     */
+    private function extractFolderData(Folder $folder): array
+    {
+        $data = [
+            'global_name' => mb_convert_encoding($folder->getGlobalName(), 'UTF-8', 'UTF7-IMAP'),
+            'local_name'  => mb_convert_encoding($folder->getLocalName(), 'UTF-8', 'UTF7-IMAP'),
+            'children'    => [],
+        ];
+
+        foreach ($folder as $child) {
+            $data['children'][] = $this->extractFolderData($child);
+        }
+
+        return $data;
     }
 
     public function rawSearchOptions()

@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Attribute;
+use Glpi\Api\HL\Middleware\AbstractMiddleware;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class Route
@@ -62,6 +63,7 @@ class Route
         public int $security_level = self::SECURITY_AUTHENTICATED,
         /** @var string[] */
         public array $tags = [],
+        /** @var class-string<AbstractMiddleware>[] */
         public array $middlewares = [],
     ) {
     }

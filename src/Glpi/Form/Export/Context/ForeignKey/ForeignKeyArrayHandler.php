@@ -85,7 +85,9 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
     public function replaceForeignKeysByNames(array $serialized_data): array
     {
         if (!$this->keyExistInSerializedData($serialized_data)) {
-            return [];
+            // Key can be exist but defined as null, so we need to unset it
+            unset($serialized_data[$this->key]);
+            return $serialized_data;
         }
 
         $data_with_names = [];
@@ -106,7 +108,12 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
             }
         }
 
-        $serialized_data[$this->key] = $data_with_names;
+        if (!empty($data_with_names)) {
+            $serialized_data[$this->key] = $data_with_names;
+        } else {
+            unset($serialized_data[$this->key]);
+        }
+
         return $serialized_data;
     }
 
@@ -115,7 +122,7 @@ final class ForeignKeyArrayHandler implements JsonConfigForeignKeyHandlerInterfa
         DatabaseMapper $mapper,
     ): array {
         if (!$this->keyExistInSerializedData($serialized_data)) {
-            return [];
+            return $serialized_data;
         }
 
         $data_with_fkeys = [];

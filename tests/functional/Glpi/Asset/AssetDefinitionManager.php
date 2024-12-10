@@ -56,7 +56,7 @@ class AssetDefinitionManager extends DbTestCase
 
         foreach ($mapping as $expected_classname => $definition) {
             $this->boolean(class_exists($expected_classname))->isTrue();
-            $this->object($expected_classname::getDefinition())->isEqualTo($definition);
+            $this->array($expected_classname::getDefinition()->fields)->isEqualTo($definition->fields);
         }
     }
 
@@ -196,15 +196,6 @@ class AssetDefinitionManager extends DbTestCase
         Asset $asset,
         array $expected_tabs
     ): void {
-        // Force the boostrap process to be recomputed (it is only computed once
-        // per execution in normal circumstances)
-        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod(
-            $manager,
-            'boostrapConcreteClass',
-            $definition
-        );
-
         // Get all tabs
         $tabs = $asset->defineAllTabs();
 

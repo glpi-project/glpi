@@ -178,7 +178,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         return $names;
     }
 
-    protected function boostrapConcreteClass(AbstractDefinition $definition): void
+    public function bootstrapDefinition(AbstractDefinition $definition): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -197,12 +197,18 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'unicity_types'
         ];
         foreach ($config_keys as $config_key) {
-            $CFG_GLPI[$config_key][] = $asset_class_name;
+            if (!in_array($asset_class_name, $CFG_GLPI[$config_key], true)) {
+                $CFG_GLPI[$config_key][] = $asset_class_name;
+            }
         }
 
         // Add type and model to dictionnary config entry
-        $CFG_GLPI['dictionnary_types'][] = $definition->getAssetTypeClassName();
-        $CFG_GLPI['dictionnary_types'][] = $definition->getAssetModelClassName();
+        if (!in_array($definition->getAssetTypeClassName(), $CFG_GLPI['dictionnary_types'], true)) {
+            $CFG_GLPI['dictionnary_types'][] = $definition->getAssetTypeClassName();
+        }
+        if (!in_array($definition->getAssetModelClassName(), $CFG_GLPI['dictionnary_types'], true)) {
+            $CFG_GLPI['dictionnary_types'][] = $definition->getAssetModelClassName();
+        }
 
         // Bootstrap capacities
         foreach ($capacities as $capacity) {
@@ -242,6 +248,11 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     public function autoloadClass(string $classname): void
     {
         $ns = self::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+
+        if (!\str_starts_with($classname, $ns)) {
+            return;
+        }
+
         $patterns = [
             '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
             '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
@@ -378,20 +389,13 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
 namespace Glpi\\CustomAsset;
 
 use Glpi\\Asset\\Asset;
-use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetClassName(false)} extends Asset {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
     public static \$rightname = '{$rightname}';
 }
 PHP
         );
-
-        // Set the definition of the concrete class using reflection API.
-        // It permits to directly store a pointer to the definition on the object without having
-        // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getAssetClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     /**
@@ -407,16 +411,12 @@ PHP
 namespace Glpi\\CustomAsset;
 
 use Glpi\\Asset\\AssetModel;
-use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetModelClassName(false)} extends AssetModel {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetModelClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     /**
@@ -432,16 +432,12 @@ PHP
 namespace Glpi\\CustomAsset;
 
 use Glpi\\Asset\\AssetType;
-use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetTypeClassName(false)} extends AssetType {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetTypeClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteModelDictionaryClass(AssetDefinition $definition): void
@@ -449,18 +445,14 @@ PHP
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use Glpi\\Asset\\AssetDefinition;
 use Glpi\\Asset\\RuleDictionaryModel;
 
 final class {$definition->getAssetModelDictionaryClassName(false)} extends RuleDictionaryModel
 {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteTypeDictionaryClass(AssetDefinition $definition): void
@@ -468,18 +460,14 @@ PHP
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use Glpi\\Asset\\AssetDefinition;
 use Glpi\\Asset\\RuleDictionaryType;
 
 final class {$definition->getAssetTypeDictionaryClassName(false)} extends RuleDictionaryType
 {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteModelDictionaryCollectionClass(AssetDefinition $definition): void
@@ -487,18 +475,14 @@ PHP
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use Glpi\\Asset\\AssetDefinition;
 use Glpi\\Asset\\RuleDictionaryModelCollection;
 
 final class {$definition->getAssetModelDictionaryCollectionClassName(false)} extends RuleDictionaryModelCollection
 {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetModelDictionaryCollectionClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
     private function loadConcreteTypeDictionaryCollectionClass(AssetDefinition $definition): void
@@ -506,17 +490,13 @@ PHP
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
-use Glpi\\Asset\\AssetDefinition;
 use Glpi\\Asset\\RuleDictionaryTypeCollection;
 
 final class {$definition->getAssetTypeDictionaryCollectionClassName(false)} extends RuleDictionaryTypeCollection
 {
-    protected static AssetDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
 }
 PHP
         );
-
-        $reflected_class = new ReflectionClass($definition->getAssetTypeDictionaryCollectionClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

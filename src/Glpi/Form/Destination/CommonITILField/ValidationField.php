@@ -74,6 +74,13 @@ class ValidationField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Specific actors are stored as an array of itemtype => items_ids to be generic.
+        // We need to convert keys to foreign keys to be able to use them with the actors component.
+        $specific_actors = [];
+        foreach ($config->getSpecificActors() as $itemtype => $items_ids) {
+            $specific_actors[getForeignKeyFieldForItemType($itemtype)] = $items_ids;
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/validation.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
@@ -93,7 +100,7 @@ class ValidationField extends AbstractConfigField
 
             // Specific additional config for SPECIFIC_ACTORS strategy
             'specific_values_extra_field' => [
-                'values'        => $config->getSpecificActors() ?? [],
+                'values'        => $specific_actors,
                 'input_name'    => $input_name . "[" . ValidationFieldConfig::SPECIFIC_ACTORS . "]",
                 'allowed_types' => [User::class, Group::class],
                 'aria_label'    => __("Select actors..."),
@@ -101,8 +108,8 @@ class ValidationField extends AbstractConfigField
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
             'specific_answers_extra_field' => [
-                'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ValidationFieldConfig::QUESTION_IDS . "]",
+                'values'          => $config->getSpecificQuestionIds(),
+                'input_name'      => $input_name . "[" . ValidationFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getActorsQuestionsValuesForDropdown($form),
                 'aria_label'      => __("Select questions..."),
             ],
@@ -193,13 +200,13 @@ class ValidationField extends AbstractConfigField
         $input = parent::prepareInput($input);
 
         // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ValidationFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ValidationFieldConfig::QUESTION_IDS]);
+        if (!is_array($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
+            $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] = null;
         }
 
         // Ensure that specific_actors is an array
         if (!is_array($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] ?? null)) {
-            unset($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS]);
+            $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] = null;
         }
 
         // Format specific_actors
@@ -223,11 +230,8 @@ class ValidationField extends AbstractConfigField
                     continue;
                 }
 
-                if (!isset($actors[$actor_parts[0]])) {
-                    $actors[$actor_parts[0]] = [];
-                }
-
-                $actors[$actor_parts[0]][] = $actor_parts[1];
+                $itemtype = array_search($actor_parts[0], $available_actor_types);
+                $actors[$itemtype][] = $actor_parts[1];
             }
 
             $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] = $actors;

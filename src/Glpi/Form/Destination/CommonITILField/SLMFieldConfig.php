@@ -36,9 +36,10 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Override;
 
-final class SLMFieldConfig implements JsonFieldInterface
+abstract class SLMFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -48,20 +49,6 @@ final class SLMFieldConfig implements JsonFieldInterface
         private SLMFieldStrategy $strategy,
         private ?int $specific_slm_id = null,
     ) {
-    }
-
-    #[Override]
-    public static function jsonDeserialize(array $data): self
-    {
-        $strategy = SLMFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = SLMFieldStrategy::FROM_TEMPLATE;
-        }
-
-        return new self(
-            strategy: $strategy,
-            specific_slm_id: $data[self::SLM_ID],
-        );
     }
 
     #[Override]

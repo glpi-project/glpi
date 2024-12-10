@@ -438,7 +438,7 @@ export class GlpiFormEditorController
                 s_index
             );
             this.#setItemRank($(section), s_index);
-            this.#remplaceEmptyIdByUuid($(section));
+            this.#setUuid($(section));
 
             // Find all items for this section (both questions and comments)
             const items = $(section).find("[data-glpi-form-editor-question], [data-glpi-form-editor-comment]");
@@ -454,7 +454,7 @@ export class GlpiFormEditorController
                     global_block_indices[itemType]
                 );
                 this.#setItemRank($(item), index);
-                this.#remplaceEmptyIdByUuid($(item));
+                this.#setUuid($(item));
                 this.#setParentSection($(item), $(section));
 
                 // Increment the index for this item type
@@ -562,13 +562,12 @@ export class GlpiFormEditorController
      *
      * @param {jQuery} item Section or question
      */
-    #remplaceEmptyIdByUuid(item) {
-        const id = this.#getItemInput(item, "id");
+    #setUuid(item) {
+        const uuid = this.#getItemInput(item, "uuid");
 
-        if (id == 0) {
+        if (uuid == '') {
             // Replace by UUID
-            this.#setItemInput(item, "id", getUUID());
-            this.#setItemInput(item, "_use_uuid", 1);
+            this.#setItemInput(item, "uuid", getUUID());
         }
     }
 
@@ -582,15 +581,8 @@ export class GlpiFormEditorController
      *
      */
     #setParentSection(question, section) {
-        const id = this.#getItemInput(section, "id");
-        this.#setItemInput(question, "forms_sections_id", id);
-
-        // If parent is using a UUID, we need to indicate it in the question too
-        this.#setItemInput(
-            question,
-            "_use_uuid_for_sections_id",
-            this.#getItemInput(section, "_use_uuid")
-        );
+        const uuid = this.#getItemInput(section, "uuid");
+        this.#setItemInput(question, "forms_sections_uuid", uuid);
     }
 
     /**
@@ -1687,11 +1679,11 @@ export class GlpiFormEditorController
         const new_section = this.#copy_template(section, section, "after", true);
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_section, "id", 0);
+        this.#setItemInput(new_section, "uuid", '');
         new_section
             .find("[data-glpi-form-editor-question]")
             .each((index, question) => {
-                this.#setItemInput($(question), "id", 0);
+                this.#setItemInput($(question), "uuid", '');
             })
         ;
 
@@ -1709,7 +1701,7 @@ export class GlpiFormEditorController
         const new_question = this.#copy_template(question, question, "after", true);
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_question, "id", 0);
+        this.#setItemInput(new_question, "uuid", '');
         this.#setActiveItem(new_question);
 
         $(document).trigger('glpi-form-editor-question-duplicated', [question, new_question]);
@@ -1725,7 +1717,7 @@ export class GlpiFormEditorController
         const new_comment = this.#copy_template(comment, comment, "after");
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_comment, "id", 0);
+        this.#setItemInput(new_comment, "uuid", '');
         this.#setActiveItem(new_comment);
     }
 

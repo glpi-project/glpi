@@ -36,20 +36,34 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use ITILCategory;
 use Override;
 
-final class ITILCategoryFieldConfig implements JsonFieldInterface
+final class ITILCategoryFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_ID = 'question_id';
-    public const ITILCATEGORY_ID = 'itilcategory_id';
+    public const SPECIFIC_QUESTION_ID = 'specific_question_id';
+    public const SPECIFIC_ITILCATEGORY_ID = 'specific_itilcategory_id';
 
     public function __construct(
         private ITILCategoryFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_itilcategory_id = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyHandler(self::SPECIFIC_ITILCATEGORY_ID, ITILCategory::class),
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
     }
 
     #[Override]
@@ -62,8 +76,8 @@ final class ITILCategoryFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::QUESTION_ID],
-            specific_itilcategory_id: $data[self::ITILCATEGORY_ID],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_itilcategory_id: $data[self::SPECIFIC_ITILCATEGORY_ID] ?? null
         );
     }
 
@@ -72,8 +86,8 @@ final class ITILCategoryFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_ID => $this->specific_question_id,
-            self::ITILCATEGORY_ID => $this->specific_itilcategory_id,
+            self::SPECIFIC_QUESTION_ID => $this->specific_question_id,
+            self::SPECIFIC_ITILCATEGORY_ID => $this->specific_itilcategory_id,
         ];
     }
 

@@ -130,6 +130,14 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
     'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
 ];
 
+$CFG_GLPI["ruleimportasset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
+    'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+    'Certificate', 'Enclosure', 'PDU', 'Line',
+    'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
+    'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
+];
+
+
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
     'Certificate', 'Unmanaged', 'Appliance'
@@ -533,6 +541,7 @@ $CFG_GLPI['javascript'] = [
         ],
     ],
     'config' => [
+        'assetdefinition'  => ['sortable'],
         'commondropdown'  => [
             'ITILFollowupTemplate'   => ['tinymce'],
             'ProjectTaskTemplate'    => ['tinymce'],

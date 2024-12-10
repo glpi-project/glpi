@@ -39,6 +39,7 @@ use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Log;
 use Override;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Comment of a given helpdesk form's section
@@ -75,6 +76,38 @@ final class Comment extends CommonDBChild implements BlockInterface
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
+    }
+
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        // Set parent UUID
+        if (
+            isset($input['forms_sections_id'])
+            && !isset($input['forms_sections_uuid'])
+        ) {
+            $section = Section::getById($input['forms_sections_id']);
+            $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
+        return $input;
     }
 
     public function displayBlockForEditor(): void

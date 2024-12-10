@@ -91,14 +91,14 @@ class LocationField extends AbstractConfigField
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select a location..."),
                 'value'           => $config->getSpecificLocationID(),
-                'input_name'      => $input_name . "[" . LocationFieldConfig::LOCATION_ID . "]",
+                'input_name'      => $input_name . "[" . LocationFieldConfig::SPECIFIC_LOCATION_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . LocationFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . LocationFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getLocationQuestionsValuesForDropdown($form),
             ],
         ]);

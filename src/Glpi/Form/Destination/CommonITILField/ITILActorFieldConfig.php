@@ -36,35 +36,21 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Override;
 
-final class ITILActorFieldConfig implements JsonFieldInterface
+abstract class ITILActorFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY       = 'strategy';
-    public const ITILACTORS_IDS = 'itilactors_ids';
-    public const QUESTION_IDS   = 'question_ids';
+    public const STRATEGY                = 'strategy';
+    public const SPECIFIC_ITILACTORS_IDS = 'specific_itilactors_ids';
+    public const SPECIFIC_QUESTION_IDS   = 'specific_question_ids';
 
     public function __construct(
         private ITILActorFieldStrategy $strategy,
-        private ?array $specific_itilactors_ids = null,
-        private ?array $specific_question_ids = null,
+        private array $specific_itilactors_ids = [],
+        private array $specific_question_ids = [],
     ) {
-    }
-
-    #[Override]
-    public static function jsonDeserialize(array $data): self
-    {
-        $strategy = ITILActorFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = ITILActorFieldStrategy::FROM_TEMPLATE;
-        }
-
-        return new self(
-            strategy: $strategy,
-            specific_itilactors_ids: $data[self::ITILACTORS_IDS] ?? [],
-            specific_question_ids: $data[self::QUESTION_IDS] ?? [],
-        );
     }
 
     #[Override]
@@ -72,8 +58,8 @@ final class ITILActorFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::ITILACTORS_IDS => $this->specific_itilactors_ids,
-            self::QUESTION_IDS => $this->specific_question_ids,
+            self::SPECIFIC_ITILACTORS_IDS => $this->specific_itilactors_ids,
+            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
         ];
     }
 

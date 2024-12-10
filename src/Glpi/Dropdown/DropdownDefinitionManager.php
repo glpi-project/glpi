@@ -96,6 +96,11 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
     public function autoloadClass(string $classname): void
     {
         $ns = static::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+
+        if (!\str_starts_with($classname, $ns)) {
+            return;
+        }
+
         $pattern = '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/';
 
         if (preg_match($pattern, $classname) === 1) {
@@ -120,19 +125,12 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
 namespace Glpi\\CustomDropdown;
 
 use Glpi\\Dropdown\\Dropdown;
-use Glpi\\Dropdown\\DropdownDefinition;
 
 final class {$definition->getDropdownClassName(false)} extends Dropdown {
-    protected static DropdownDefinition \$definition;
+    protected static string \$definition_system_name = '{$definition->fields['system_name']}';
     public static \$rightname = '{$rightname}';
 }
 PHP
         );
-
-        // Set the definition of the concrete class using reflection API.
-        // It permits to directly store a pointer to the definition on the object without having
-        // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getDropdownClassName());
-        $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

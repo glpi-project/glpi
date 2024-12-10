@@ -115,7 +115,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         if (!$missing_db_config) {
             //Database connection
             if (
-                !DBConnection::establishDBConnection(false, false, false)
+                !DBConnection::establishDBConnection(false, false)
                 && !$skip_db_checks
             ) {
                 DBConnection::displayMySQLError();

@@ -33,43 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Features;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use DCRoom;
-use DbTestCase;
-use Rack;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Override;
 
-/**
- * Test for the {@link \Glpi\Features\Clonable} feature
- */
-class DCBreadcrumb extends DbTestCase
+final class AssigneeFieldConfig extends ITILActorFieldConfig
 {
-    protected function itemtypeProvider()
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
     {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
-
-        foreach ($CFG_GLPI["rackable_types"] as $itemtype) {
-            yield[
-                'class' => $itemtype,
-            ];
-        }
-
-        yield[
-            'class' => Rack::class,
-        ];
-        yield[
-            'class' => DCRoom::class,
+        return [
+            new ForeignKeyItemsArrayHandler(self::SPECIFIC_ITILACTORS_IDS),
+            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
         ];
     }
 
-    /**
-     * @dataProvider itemtypeProvider
-     */
-    public function testClassUsesTrait($class)
+    #[Override]
+    public static function jsonDeserialize(array $data): self
     {
-        $this->boolean(in_array(\Glpi\Features\DCBreadcrumb::class, class_uses($class, true)));
+        $strategy = ITILActorFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
+        if ($strategy === null) {
+            $strategy = ITILActorFieldStrategy::FROM_TEMPLATE;
+        }
+
+        return new self(
+            strategy: $strategy,
+            specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
+            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
+        );
     }
 }
