@@ -67,9 +67,6 @@ class DirectoryWriteAccess extends AbstractRequirement
             case realpath(GLPI_DOC_DIR):
                 $title = __('Permissions for document files');
                 break;
-            case realpath(GLPI_DUMP_DIR):
-                $title = __('Permissions for dump files');
-                break;
             case realpath(GLPI_GRAPH_DIR):
                 $title = __('Permissions for graphic files');
                 break;

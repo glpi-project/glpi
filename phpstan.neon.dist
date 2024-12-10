@@ -24,7 +24,6 @@ parameters:
         - GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE
         - GLPI_DOC_DIR
         - GLPI_DOCUMENTATION_ROOT_URL
-        - GLPI_DUMP_DIR
         - GLPI_FORCE_MAIL
         - GLPI_GRAPH_DIR
         - GLPI_INSTALL_MODE
