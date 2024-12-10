@@ -240,7 +240,7 @@ class Item_Project extends CommonDBRelation
                    // Not used now
                     if (
                         Session::haveRight("project", Project::READALL)
-                        && ($item instanceof CommonDBTM)
+                        && ($item instanceof CommonDBTM && in_array($item->getType(), $CFG_GLPI["project_asset_types"]))
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
@@ -313,9 +313,14 @@ class Item_Project extends CommonDBRelation
             $data = [
                 'name' => $project->getLink(),
                 'projectstates_id' => $state !== false
-                    ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
-                    : '',
-                'priority' => Html::getBadgeBlock($priority, $prioritycolor),
+                    ? [
+                        'content' => $state->fields['name'],
+                        'color' => $state->fields['color']
+                    ] : '',
+                'priority' => [
+                    'content' => $priority,
+                    'color' => $prioritycolor
+                ],
                 'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
             ];
             $entries[] = array_merge($project->fields, $data);
@@ -333,8 +338,8 @@ class Item_Project extends CommonDBRelation
             ],
             'formatters' => [
                 'name' => 'raw_html',
-                'priority' => 'raw_html',
-                'projectstates_id' => 'raw_html',
+                'priority' => 'badge',
+                'projectstates_id' => 'badge',
                 'percent_done' => 'raw_html',
                 'creation_date' => 'date',
             ]

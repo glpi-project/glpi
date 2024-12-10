@@ -2841,11 +2841,19 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     ],
                     [
                         'content' => $state !== false
-                            ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
+                            ? sprintf(
+                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['name']),
+                            )
                             : '',
                     ],
                     [
-                        'content' => Html::getBadgeBlock($priority, $prioritycolor),
+                        'content' => sprintf(
+                            '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
+                            htmlescape($priority)
+                        ),
                     ],
                     [
                         'content' => Html::getProgressBar((float)$project->fields['percent_done'])

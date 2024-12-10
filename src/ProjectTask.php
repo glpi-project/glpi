@@ -1805,7 +1805,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     ],
                     [
                         'content' => $state !== false
-                            ? Html::getBadgeBlock($state->fields['name'], $state->fields['color'])
+                            ? sprintf(
+                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['color']),
+                                htmlescape($state->fields['name']),
+                            )
                             : '',
                     ],
                     [

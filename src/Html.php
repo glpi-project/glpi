@@ -1008,19 +1008,6 @@ TWIG,
         );
     }
 
-    public static function getBadgeBlock(string $text, ?string $color = '#000000'): string
-    {
-        return TemplateRenderer::getInstance()->renderFromStringTemplate(
-            <<<TWIG
-              <div class="badge_block" style="border-color: {{ color }}"><span class="me-1" style="background: {{ color }}"></span>{{ text }}
-TWIG,
-            [
-                'text' => $text,
-                'color'      => $color,
-            ]
-        );
-    }
-
     /**
      * Include common HTML headers
      *
