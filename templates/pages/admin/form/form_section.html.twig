@@ -50,6 +50,7 @@
 
 <section
     data-glpi-form-editor-section
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').SECTION.value }}"
     class="mt-4"
     aria-label="{{ __("Form section") }}"
 >
@@ -77,7 +78,7 @@
             ></div>
             <div class="card-body">
                 {# Header #}
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
                     {# Section's name #}
                     <input
                         title="{{ __("Section name") }}"
@@ -87,12 +88,19 @@
                         value="{{ section is not null ? section.fields.name : '' }}"
                         placeholder="{{ __("New section") }}"
                         data-glpi-form-editor-section-details-name
-                    >
+                        data-glpi-form-editor-dynamic-input
+                        data-glpi-form-editor-on-input="compute-dynamic-input"
+                    />
+
+                    {# Visibility dropdown #}
+                    {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                        'item': section,
+                    }, with_context = false) }}
 
                     {# Collapse section #}
                     <i
                         role="button"
-                        class="ti ti-selector ms-3 me-3 cursor-pointer"
+                        class="ti ti-selector ms-3 cursor-pointer"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="{{ __("Collapse section") }}"
@@ -100,7 +108,7 @@
                     ></i>
 
                     {# Extra actions #}
-                    <div class="dropdown ms-auto cursor-pointer">
+                    <div class="dropdown ms-1 cursor-pointer d-flex align-items-center">
                         <i
                             class="ti ti-dots-vertical show"
                             data-bs-toggle="dropdown"
