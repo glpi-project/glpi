@@ -3595,7 +3595,7 @@ JS;
                 'cache_suffix' => $cache_suffix,
                 'invalid_elements' => $invalid_elements,
                 'height' => $editor_height,
-                'add_body_class' => $add_body_classes,
+                'add_body_class' => implode(' ', $add_body_classes),
                 'toolbar_location' => $toolbar_location,
                 'placeholder' => $placeholder,
                 'show_toolbar' => $toolbar,
