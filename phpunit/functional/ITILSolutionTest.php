@@ -650,34 +650,40 @@ HTML
         $tt->getFromDB(1);
         $this->assertGreaterThan(0, $tt->getID());
 
-        $ttmf = new \TicketTemplateMandatoryField();
-        $ttmf_id = $ttmf->add([
+        $category = $this->createItem('ITILCategory', [
+            'name' => 'Category Mandatory Fields',
+        ]);
+        $this->assertGreaterThan(0, $category->getID());
+
+        $ticket = $this->createItem('Ticket', [
+            'name'                  => 'Ticket Mandatory Fields',
+            'content'               => 'Ticket Mandatory Fields description',
+        ]);
+        $this->assertGreaterThan(0, $ticket->getID());
+
+        $ttmf = $this->createItem('TicketTemplateMandatoryField', [
             'tickettemplates_id' => $tt->getID(),
             'num'                => 7, // category
         ]);
-        $this->assertGreaterThan(0, $ttmf_id);
-
-        $category = new \ITILCategory();
-        $category_id = $category->add([
-            'name' => 'Category Mandatory Fields',
-        ]);
-        $this->assertGreaterThan(0, $category_id);
-
-
-        $ticket = new Ticket();
-        $ticket_id = $ticket->add([
-            'name'                  => 'Ticket Mandatory Fields',
-            'content'               => 'Ticket Mandatory Fields description',
-            'itilcategories_id'     => $category_id
-        ]);
+        $this->assertGreaterThan(0, $ttmf->getID());
 
         $solution = new \ITILSolution();
-        $solution_id = $solution->add([
+        $solution->add([
             'itemtype'           => $ticket::getType(),
             'items_id'           => $ticket->getID(),
             'content'            => 'Ticket Mandatory Fields solution',
         ]);
 
-        $this->assertGreaterThan(0, $solution_id);
+        $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Category']);
+
+        $this->updateItem('Ticket', $ticket->getID(), [
+            'itilcategories_id' => $category->getID(),
+        ]);
+
+        $this->createItem('ITILSolution', [
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => 'Ticket Mandatory Fields solution',
+        ]);
     }
 }
