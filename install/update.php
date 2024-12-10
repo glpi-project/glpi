@@ -72,20 +72,6 @@ if (isset($_POST['update_end'])) {
 }
 
 
-//test la connection a la base de donn???.
-function test_connect()
-{
-    /** @var \DBmysql $DB */
-    global $DB;
-
-    if ($DB->error == 0) {
-        return true;
-    }
-    return false;
-}
-
-
-
 //update database
 function doUpdateDb()
 {
@@ -224,7 +210,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
     }
 } else {
    // Step 2
-    if (test_connect()) {
+    if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
         $result = Config::displayCheckDbEngine(true);
