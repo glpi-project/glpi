@@ -32,8 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Controller\Knowbase;
 
+use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem;
@@ -41,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class KBController extends AbstractController
+final class KnowbaseItemController extends AbstractController
 {
     #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Content",
@@ -50,7 +51,7 @@ final class KBController extends AbstractController
             'knowbaseitems_id' => '\d+',
         ]
     )]
-    public function getArticleContent(Request $request): Response
+    public function content(Request $request): Response
     {
         $id = $request->get('knowbaseitems_id');
         if (!KnowbaseItem::canView()) {
