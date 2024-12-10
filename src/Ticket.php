@@ -4320,13 +4320,13 @@ JAVASCRIPT;
                                 'link'     => 'AND',
                                 'criteria' => [
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'morethan',
                                         'value'       => 'NOW',
                                         'link'        => 'OR'
                                     ],
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'empty',
                                         'value'       => 'NULL',
                                         'link'        => 'OR'
@@ -4656,6 +4656,11 @@ JAVASCRIPT;
             $opt['criteria'][1]['criteria'][3]['value']      = 'myself'; // Resolved as groups the current user belongs to
             $opt['criteria'][1]['criteria'][3]['link']       = 'OR';
             $opt['criteria'][1]['link']       = 'AND';
+
+            $opt['criteria'][2]['field']      = 12; // ticket status
+            $opt['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][2]['value']      = Ticket::CLOSED;
+            $opt['criteria'][2]['link']       = 'AND NOT';
 
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),

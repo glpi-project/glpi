@@ -106,11 +106,6 @@ class Location extends CommonTreeDropdown
                 'type'  => 'text',
                 'list'  => true
             ], [
-                'name'   => 'setlocation',
-                'type'   => 'setlocation',
-                'label'  => __('Location on map'),
-                'list'   => false
-            ], [
                 'name'  => 'latitude',
                 'label' => __('Latitude'),
                 'type'  => 'text',
@@ -125,6 +120,17 @@ class Location extends CommonTreeDropdown
                 'label' => __('Altitude'),
                 'type'  => 'text',
                 'list'  => true
+            ], [
+                'name'   => 'setlocation',
+                'type'   => 'setlocation',
+                'label'  => __('Location on map'),
+                'list'   => false,
+                'form_params' => [
+                    'full_width' => true,
+                    'full_width_adapt_column' => false,
+                    'label_class' => 'col-xxl-2',
+                    'input_class' => 'col-xxl-10',
+                ]
             ]
         ];
     }

@@ -4681,6 +4681,21 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => ITILSolution::getTable(),
+            'field'              => 'date_creation',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+            ],
+            'computation'        => QueryFunction::max('TABLE.date_creation'),
+            'nometa'             => true // cannot GROUP_CONCAT a MAX
+        ];
+
         return $tab;
     }
 
@@ -7715,8 +7730,9 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation->post_getFromDB();
 
                 $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = ($validation_obj->canValidate($this->getID())
-                              && $validation_row['status'] == CommonITILValidation::WAITING);
+                $cananswer = $validation_obj->canValidate($this->getID())
+                    && $validation_row['status'] == CommonITILValidation::WAITING
+                    && !in_array($this->fields['status'], $this->getClosedStatusArray());
                 $user = new User();
                 $user->getFromDB($validation_row['users_id_validate']);
 

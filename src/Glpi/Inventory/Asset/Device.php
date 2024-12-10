@@ -101,6 +101,12 @@ abstract class Device extends InventoryAsset
 
                 //create device or get existing device ID
                 $device_input = $this->handleInput($val, $device);
+                $device_criteria = $device->getImportCriteria();
+                foreach (array_keys($device_criteria) as $device_criterion) {
+                    if (!isset($device_input[$device_criterion]) && \isForeignKeyField($device_criterion)) {
+                        $device_input[$device_criterion] = 0;
+                    }
+                }
                 $device_id = $device->import($device_input + ['with_history' => false]);
 
                 $i_criteria = $itemdevice->getImportCriteria();

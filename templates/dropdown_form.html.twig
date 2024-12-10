@@ -64,7 +64,7 @@
 
             {# Dynamically show additional fields unique to certain dropdowns #}
             {% for field in additional_fields %}
-                {% set fields_params = base_fields_params|merge(field['params'] ?? []) %}
+                {% set fields_params = base_fields_params|merge(field['form_params'] ?? []) %}
                 {% set type = field['type']|default('') %}
                 {% set show_field = true %}
                 {% if field['name'] == 'entities_id' and (type != 'parent' or item.fields['id'] == 0) %}
@@ -206,7 +206,7 @@
                         {% set field_value %}
                             {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
                         {% endset %}
-                        {{ fields.field(field['name'], field_value, field['label']) }}
+                        {{ fields.field(field['name'], field_value, field['label'], fields_params) }}
                     {% endif %}
                 {% elseif field['name'] in picture_fields %}
                     {% set has_picture_field = true %}

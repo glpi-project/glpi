@@ -4974,7 +4974,7 @@ class SearchTest extends DbTestCase
                     'value' => __FUNCTION__,
                 ],
                 [
-                    'field' => 72, // satisfaction end date
+                    'field' => 75, // satisfaction end date
                     'searchtype' => 'contains',
                     'value' => '',
                 ],
@@ -4988,7 +4988,7 @@ class SearchTest extends DbTestCase
         foreach ($data['data']['rows'] as $row) {
             $items[] = [
                 $row['raw']['ITEM_Ticket_2'],
-                $row['raw']['ITEM_Ticket_72'],
+                $row['raw']['ITEM_Ticket_75'],
             ];
         }
         $expected = [

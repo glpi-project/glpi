@@ -1463,7 +1463,9 @@ class InventoryTest extends InventoryTestCase
         //check memory
         $this->assertCount(2, $components['Item_DeviceMemory']);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component1);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component2);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
         $expected_mem_component = [
             'items_id' => $mem_component1['items_id'],
@@ -1480,11 +1482,14 @@ class InventoryTest extends InventoryTestCase
             'locations_id' => 0,
             'states_id' => 0
         ];
-        $this->assertIsArray($mem_component1);
+
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
-        $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1626,12 +1631,10 @@ class InventoryTest extends InventoryTestCase
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
-        $expected_mem_component['busID'] = "2";
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1820,9 +1823,13 @@ class InventoryTest extends InventoryTestCase
         ];
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();

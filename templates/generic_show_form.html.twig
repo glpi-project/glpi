@@ -385,7 +385,7 @@
                                   specific_field_options
                               ) }}
                           {% elseif field is same as 'sysdescr' %}
-                              {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr')) }}
+                              {{ fields.textareaField('sysdescr', item.fields['sysdescr'], __('Sysdescr'), specific_field_options) }}
                           {% elseif field is same as 'snmpcredentials_id' %}
                               {{ fields.dropdownField(
                                   'SNMPCredential',

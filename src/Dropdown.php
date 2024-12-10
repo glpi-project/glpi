@@ -2335,7 +2335,11 @@ JAVASCRIPT;
                     $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' .  htmlescape($param["width"]) . '"';
+            if ($param['tooltip']) {
+                $output .= ' title="' . htmlescape($param['tooltip']) . '"';
+            }
+            $output .= '>' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected

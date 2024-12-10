@@ -712,11 +712,22 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-            'FROM'   => static::getTable(),
+            'FROM'   => static::$itemtype::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'status' => self::WAITING,
-                static::getTargetCriteriaForUser($users_id)
+                [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => static::$items_id,
+                        'FROM'   => static::getTable(),
+                        'WHERE'  => [
+                            'status' => self::WAITING,
+                            static::getTargetCriteriaForUser($users_id),
+                        ]
+                    ])
+                ],
+                'NOT' => [
+                    'status' => static::$itemtype::getClosedStatusArray(),
+                ],
             ]
         ])->current();
 

@@ -49,7 +49,7 @@ class GeolocationField {
     #init() {
         // Geolocation may be disabled in the browser (e.g. geo.enabled = false in firefox)
         if (!navigator.geolocation) {
-            this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '200px');
+            this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '400px');
             this.#finalizeMap();
         } else {
             navigator.geolocation.getCurrentPosition((pos) => {
@@ -69,13 +69,13 @@ class GeolocationField {
                     // High accuracy
                     zoom = 20;
                 }
-                this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '200px', {
+                this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '400px', {
                     position: [pos.coords.latitude, pos.coords.longitude],
                     zoom: zoom
                 });
                 this.#finalizeMap();
             }, () => {
-                this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '200px');
+                this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '400px');
                 this.#finalizeMap();
             }, {enableHighAccuracy: true});
         }

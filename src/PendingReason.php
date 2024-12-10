@@ -66,7 +66,7 @@ class PendingReason extends CommonDropdown
                 'name' => 'is_pending_per_default',
                 'label' => __('Pending per default'),
                 'type' => 'bool',
-                'params' => [
+                'form_params' => [
                     'disabled' => !$this->fields['is_default'],
                 ],
             ],

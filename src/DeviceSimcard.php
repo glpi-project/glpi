@@ -105,7 +105,7 @@ class DeviceSimcard extends CommonDevice
         return [
             'designation'             => 'equal',
             'manufacturers_id'        => 'equal',
-            'devicesensortypes_id'    => 'equal',
+            'devicesimcardtypes_id'   => 'equal',
         ];
     }
 

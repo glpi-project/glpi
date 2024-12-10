@@ -541,6 +541,119 @@ class TicketTest extends DbTestCase
         $this->checkActors($ticket, $expected_actors);
     }
 
+    public function testSearchOptions()
+    {
+        $this->login();
+
+        $last_followup_date = '2016-01-01 00:00:00';
+        $last_task_date = '2017-01-01 00:00:00';
+        $last_solution_date = '2018-01-01 00:00:00';
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id' => $ticket_id,
+            'content'    => 'followup content',
+            'date'       => '2015-01-01 00:00:00',
+        ]);
+
+        $followup->add([
+            'itemtype'  => $ticket::getType(),
+            'items_id' => $ticket_id,
+            'content'    => 'followup content',
+            'date'       => '2015-02-01 00:00:00',
+        ]);
+
+        $task = new \TicketTask();
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => '2015-01-01 00:00:00',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => $last_task_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'tickets_id'   => $ticket_id,
+                'content'      => 'A simple Task',
+                'date'         => '2016-01-01 00:00:00',
+            ])
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $ticket::getType(),
+                'items_id' => $ticket_id,
+                'content'    => 'solution content',
+                'date_creation' => '2017-01-01 00:00:00',
+                'status' => 2,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$followup->add([
+                'itemtype'  => $ticket::getType(),
+                'items_id'  => $ticket_id,
+                'add_reopen'   => '1',
+                'content'      => 'This is required',
+                'date'         => $last_followup_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $ticket::getType(),
+                'items_id' => $ticket_id,
+                'content'    => 'solution content',
+                'date_creation' => $last_solution_date,
+            ])
+        );
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'field' => 2,
+                'searchtype' => 'contains',
+                'value' => $ticket_id,
+            ]
+        ];
+        $data   = \Search::getDatas($ticket->getType(), ["criteria" => $criteria], [72,73,74]);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $ticket_with_so = $data['data']['rows'][0]['raw'];
+        $this->assertEquals($ticket_id, $ticket_with_so['id']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_72', $ticket_with_so));
+        $this->assertEquals($last_followup_date, $ticket_with_so['ITEM_Ticket_72']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_73', $ticket_with_so));
+        $this->assertEquals($last_task_date, $ticket_with_so['ITEM_Ticket_73']);
+        $this->assertTrue(array_key_exists('ITEM_Ticket_74', $ticket_with_so));
+        $this->assertEquals($last_solution_date, $ticket_with_so['ITEM_Ticket_74']);
+    }
+
 
     public static function updateActorsProvider(): iterable
     {

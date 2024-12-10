@@ -631,7 +631,18 @@ class UserTest extends \DbTestCase
 
                 foreach ($inputs as $key => $value) {
                     $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
-                    $this->assertEquals($can, \array_key_exists($key, $output));
+                    if (is_array($output)) {
+                        $this->assertEquals($can, \array_key_exists($key, $output));
+                    } else {
+                        $this->assertFalse($can);
+                        $this->assertFalse($output);
+                        $this->hasSessionMessages(ERROR, [
+                            sprintf(
+                                __('You are not allowed to update the following fields: %s'),
+                                $key
+                            )
+                        ]);
+                    }
                 }
             }
         }

@@ -306,11 +306,13 @@
                var newOption = new Option(data.requesttypes_name, requesttypes_id, true, true);
                $("#dropdown_requesttypes_id{{ rand }}").append(newOption).trigger('change');
 
-               // set is_private
-               $("#is_private_{{ rand }}")
-                  .prop("checked", data.is_private == "0"
-                     ? false
-                     : true);
+               if (data.is_private !== undefined) {
+                   // set is_private
+                   $("#is_private_{{ rand }}")
+                       .prop("checked", data.is_private == "0"
+                         ? false
+                         : true);
+               }
 
                // set predefined pending reason
                $("#enable-pending-reasons-{{ rand }}")

@@ -752,11 +752,11 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
 
     //add map, set a default arbitrary location
     parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
-    var map = L.map(map_id, {fullscreenControl: true}).setView(initial_view.position, initial_view.zoom);
+    var map = L.map(map_id, {fullscreenControl: true, minZoom: 2}).setView(initial_view.position, initial_view.zoom);
 
     //setup tiles and © messages
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors',
     }).addTo(map);
     return map;
 };
@@ -772,10 +772,10 @@ var showMapForLocation = function(elt) {
     glpi_html_dialog({
         title: __("Display on map"),
         body: "<div id='location_map_dialog'/>",
-        dialogclass: "modal-lg",
+        dialogclass: "modal-xl",
         show: function() {
             //add map, set a default arbitrary location
-            var map_elt = initMap($('#location_map_dialog'), 'location_map');
+            var map_elt = initMap($('#location_map_dialog'), 'location_map', '500px');
             map_elt.spin(true);
 
             $.ajax({

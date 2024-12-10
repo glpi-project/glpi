@@ -3830,11 +3830,12 @@ final class Transfer extends CommonDBTM
             foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
                 if (!empty($tab)) {
                     $table = $itemtype::getTable();
-
+                    $name_field = $itemtype::getNameField();
+                    $table_name_field = sprintf('%1$s.%2$s', $table, $name_field);
                     $iterator = $DB->request([
                         'SELECT' => [
                             "$table.id",
-                            "$table.name",
+                            $table_name_field,
                             'entities.completename AS entname',
                             'entities.id AS entID'
                         ],
@@ -3848,7 +3849,7 @@ final class Transfer extends CommonDBTM
                             ]
                         ],
                         'WHERE' => ["$table.id" => $tab],
-                        'ORDERBY' => ['entname', "$table.name"]
+                        'ORDERBY' => ['entname', $table_name_field]
                     ]);
 
                     foreach ($iterator as $data) {

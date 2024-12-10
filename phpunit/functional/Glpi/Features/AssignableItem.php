@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Features;
 
 use Group_Item;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssignableItem extends \DbTestCase
 {
@@ -53,9 +54,7 @@ class AssignableItem extends \DbTestCase
         }
     }
 
-    /**
-     * @dataProvider itemtypeProvider
-     */
+    #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait(string $class): void
     {
         $this->boolean(in_array(\Glpi\Features\AssignableItem::class, class_uses($class), true))->isTrue();
@@ -64,9 +63,8 @@ class AssignableItem extends \DbTestCase
     /**
      * Test adding an item with the groups_id/groups_id_tech field as an array and null.
      * Test updating an item with the groups_id/groups_id_tech field as an array and null.
-     *
-     * @dataProvider itemtypeProvider
      */
+    #[DataProvider('itemtypeProvider')]
     public function testAddAndUpdateMultipleGroups(string $class): void
     {
         $this->login(); // login to bypass some rights checks (e.g. on domain records)
@@ -116,9 +114,8 @@ class AssignableItem extends \DbTestCase
     /**
      * Test the loading item which still have integer values for groups_id/groups_id_tech (0 for no group).
      * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
-     *
-     * @dataProvider itemtypeProvider
      */
+    #[DataProvider('itemtypeProvider')]
     public function testLoadGroupsFromDb(string $class): void
     {
         /** @var \DBmysql $DB */
@@ -183,9 +180,8 @@ class AssignableItem extends \DbTestCase
 
     /**
      * An empty item should have the groups_id/groups_id_tech fields initialized as an empty array.
-     *
-     * @dataProvider itemtypeProvider
      */
+    #[DataProvider('itemtypeProvider')]
     public function testGetEmpty(string $class): void
     {
         $item = new $class();
@@ -196,9 +192,8 @@ class AssignableItem extends \DbTestCase
 
     /**
      * Check that adding and updating an item with groups_id/groups_id_tech as an integer still works (minor BC, mainly for API scripts).
-     *
-     * @dataProvider itemtypeProvider
      */
+    #[DataProvider('itemtypeProvider')]
     public function testAddUpdateWithIntGroups(string $class): void
     {
         $this->login(); // login to bypass some rights checks (e.g. on domain records)
