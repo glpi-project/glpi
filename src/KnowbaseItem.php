@@ -1615,12 +1615,8 @@ TWIG, $twig_params);
                 }
 
                 if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                    $forcetab = $options['item_itemtype'] . '$main';
-                    $item_itemtype = $options['item_itemtype'];
-                    $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
-                        "&amp;load_kb_sol=" . $data['id'] .
-                        "&amp;forcetab=" . $forcetab . "'>" .
-                        __s('Use as a solution') . "</a>";
+                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>" .
+                        __s('Use as a solution') . "</button>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
 
