@@ -47,6 +47,7 @@ use Glpi\Search\SearchOption;
 use Group;
 use Location;
 use Manufacturer;
+use Profile;
 use Session;
 use User;
 
@@ -801,5 +802,81 @@ TWIG, $twig_params);
         }
 
         return $this->custom_field_definitions;
+    }
+
+    protected function getExtraProfilesFields(array $profile_data): string
+    {
+        $enabled_profiles = [];
+        foreach ($profile_data as $data) {
+            $helpdesk_item_types = json_decode($data['helpdesk_item_type'], associative: true) ?? [];
+            if (!is_array($helpdesk_item_types)) {
+                $helpdesk_item_types = [];
+            }
+            if (in_array($this->getCustomObjectClassName(), $helpdesk_item_types, true)) {
+                $enabled_profiles[] = $data['id'];
+            }
+        }
+
+        $twig_params = [
+            'enabled_profiles' => $enabled_profiles,
+            'label' => sprintf(__('Profiles that can associate %s with tickets, problems or changes'), $this->getTranslatedName(\Session::getPluralNumber())),
+        ];
+        // language=Twig
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.dropdownField('Profile', '_profiles_extra[helpdesk_item_type]', enabled_profiles, label, {
+                multiple: true
+            }) }}
+TWIG, $twig_params);
+    }
+
+    protected function syncProfilesRights(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        parent::syncProfilesRights();
+
+        if (
+            !array_key_exists('_profiles_extra', $this->input)
+            || !array_key_exists('helpdesk_item_type', $this->input['_profiles_extra'])
+        ) {
+            return;
+        }
+
+        $extra_profile_data = $this->input['_profiles_extra'];
+        $old_values = [];
+
+        $it = $DB->request([
+            'SELECT' => ['id', 'helpdesk_item_type'],
+            'FROM' => Profile::getTable(),
+        ]);
+        foreach ($it as $data) {
+            $old_values[$data['id']] = json_decode($data['helpdesk_item_type'], associative: true);
+            if (!is_array($old_values[$data['id']])) {
+                $old_values[$data['id']] = [];
+            }
+        }
+
+        $helpdesk_item_type = $extra_profile_data['helpdesk_item_type'];
+        if (!is_array($helpdesk_item_type)) {
+            // `helpdesk_item_type` will be an empty string if no value is selected
+            $helpdesk_item_type = [];
+        }
+
+        foreach ($old_values as $profile_id => $itemtype_allowed) {
+            $changes = [];
+
+            $current_allowed = in_array($profile_id, $helpdesk_item_type, false);
+            if ($current_allowed && !in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
+                $changes['helpdesk_item_type'] = [...$itemtype_allowed, $this->getCustomObjectClassName()];
+            } else if (!$current_allowed && in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
+                $changes['helpdesk_item_type'] = array_diff($itemtype_allowed, [$this->getCustomObjectClassName()]);
+            }
+            if (count($changes) > 0) {
+                $profile = new Profile();
+                $profile->update(['id' => $profile_id] + $changes);
+            }
+        }
     }
 }

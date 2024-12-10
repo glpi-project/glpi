@@ -40,6 +40,7 @@ use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\CustomFieldDefinition;
 use Profile;
 use ProfileRight;
@@ -224,25 +225,27 @@ abstract class AbstractDefinition extends CommonDBTM
 
         $profiles_data = iterator_to_array(
             $DB->request([
-                'SELECT' => ['id', 'name'],
-                'FROM'   => Profile::getTable(),
-                'WHERE'  => [
-                    ['NOT' => ['interface' => 'helpdesk']],
-                ]
+                'FROM'  => Profile::getTable(),
+                'ORDER' => 'name ASC',
             ])
+        );
+
+        $central_profiles = \array_filter(
+            $profiles_data,
+            static fn (array $profile) => $profile['interface'] !== 'heldesk'
         );
 
         $nb_cb_per_col = array_fill_keys(
             array_keys($possible_rights),
             [
                 'checked' => 0,
-                'total' => count($profiles_data),
+                'total' => count($central_profiles),
             ]
         );
         $nb_cb_per_row = [];
 
         $matrix_rows = [];
-        foreach ($profiles_data as $profile_data) {
+        foreach ($central_profiles as $profile_data) {
             $profile_id = $profile_data['id'];
             $profile_rights = $this->getRightsForProfile($profile_id);
 
@@ -279,6 +282,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'matrix_rows'    => $matrix_rows,
                 'nb_cb_per_col'  => $nb_cb_per_col,
                 'nb_cb_per_row'  => $nb_cb_per_row,
+                'extra_fields'   => $this->getExtraProfilesFields($profiles_data)
             ]
         );
     }
@@ -537,7 +541,11 @@ abstract class AbstractDefinition extends CommonDBTM
             unset($_SESSION['menu']);
         }
 
-        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
+        if (
+            in_array('is_active', $this->updates, true)
+            || in_array('profiles', $this->updates, true)
+            || array_key_exists('_profiles_extra', $this->input)
+        ) {
             $this->syncProfilesRights();
         }
     }
@@ -804,6 +812,17 @@ TWIG, ['name' => $name, 'value' => $value]);
     {
         $profiles_entries = $this->getDecodedProfilesField();
         return $profiles_entries[$profile_id] ?? 0;
+    }
+
+    /**
+     * Return extra fields to append to the profiles configuration form.
+     *
+     * @param array[] $profile_data
+     * @return string HTML string to append to the profiles configuration form.
+     */
+    protected function getExtraProfilesFields(array $profile_data): string
+    {
+        return '';
     }
 
     /**
