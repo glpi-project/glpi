@@ -104,7 +104,14 @@ class Domain_Item extends CommonDBRelation
             'glpi_domains_items',
             [
                 "domains_id"   => $item->getID(),
-                "itemtype"     => $types
+                "itemtype"     => $types,
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
             ]
         );
     }
@@ -113,11 +120,27 @@ class Domain_Item extends CommonDBRelation
     {
         $criteria = [];
         if ($item instanceof DomainRelation) {
-            $criteria = ['domainrelations_id' => $item->fields['id']];
+            $criteria = [
+                'domainrelations_id' => $item->fields['id'],
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
+            ];
         } else {
             $criteria = [
                 'itemtype'  => $item->getType(),
-                'items_id'  => $item->fields['id']
+                'items_id'  => $item->fields['id'],
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
             ];
         }
 
@@ -132,11 +155,27 @@ class Domain_Item extends CommonDBRelation
         $criteria = ['domains_id' => $domains_id];
         $item = new $itemtype();
         if ($item instanceof DomainRelation) {
-            $criteria += ['domainrelations_id' => $items_id];
+            $criteria += [
+                'domainrelations_id' => $items_id,
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
+            ];
         } else {
             $criteria += [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
             ];
         }
 
@@ -183,7 +222,16 @@ class Domain_Item extends CommonDBRelation
             'SELECT'    => 'itemtype',
             'DISTINCT'  => true,
             'FROM'      => self::getTable(),
-            'WHERE'     => ['domains_id' => $instID],
+            'WHERE'     => [
+                'domains_id' => $instID,
+                'OR'  => [
+                    'AND' => [
+                        'is_deleted' => 0,
+                        'is_dynamic' => 1
+                    ],
+                    'is_dynamic' => 0
+                ]
+            ],
             'ORDER'     => 'itemtype',
             'LIMIT'     => count(Domain::getTypes(true))
         ]);
@@ -290,7 +338,14 @@ class Domain_Item extends CommonDBRelation
                     ],
                     'WHERE'        => [
                         self::getTable() . '.itemtype'   => $itemtype,
-                        self::getTable() . '.domains_id' => $instID
+                        self::getTable() . '.domains_id' => $instID,
+                        'OR'  => [
+                            'AND' => [
+                                self::getTable() . '.is_deleted' => 0,
+                                self::getTable() . '.is_dynamic' => 1
+                            ],
+                            self::getTable() . '.is_dynamic' => 0
+                        ]
                     ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive())
                 ];
 
