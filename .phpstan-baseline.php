@@ -2579,7 +2579,7 @@ $ignoreErrors[] = [
 	'message' => '#^Path in include_once\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
 	'identifier' => 'includeOnce.fileNotFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Config/LegacyConfigurators/StandardIncludes.php',
+	'path' => __DIR__ . '/src/Glpi/Config/LegacyConfigurators/InitializeDbConnection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
@@ -2620,7 +2620,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
 ];
 $ignoreErrors[] = [
@@ -2738,13 +2738,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
 ];
 $ignoreErrors[] = [
-    // identifier: identical.alwaysFalse
-    'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
-    'count' => 1,
-    'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
-	// identifier: identical.alwaysFalse
 	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -3438,6 +3431,12 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
