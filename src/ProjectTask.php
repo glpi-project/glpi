@@ -1817,7 +1817,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'content' => $project->getLink(),
                     ],
                     [
-                        'content' => $projecttask->fields['percent_done'] . '%'
+                        'content' => Html::getProgressBar((float)$projecttask->fields['percent_done'])
                     ]
                 ]
             ];
