@@ -39,7 +39,9 @@ use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
 use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;
 use Glpi\Config\LegacyConfigurators\CustomObjectsBootstrap;
+use Glpi\Config\LegacyConfigurators\InitializeDbConnection;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
+use Glpi\Config\LegacyConfigurators\LoadLegacyConfiguration;
 use Glpi\Config\LegacyConfigurators\ProfilerStart;
 use Glpi\Config\LegacyConfigurators\SessionConfig;
 use Glpi\Config\LegacyConfigurators\SessionStart;
@@ -63,7 +65,9 @@ return static function (ContainerConfigurator $container): void {
      * ⚠ Here, ORDER of definition matters!
      */
 
-    $services->set(ProfilerStart::class)->tag($tagName, ['priority' => 180]);
+    $services->set(ProfilerStart::class)->tag($tagName, ['priority' => 200]);
+    $services->set(InitializeDbConnection::class)->tag($tagName, ['priority' => 190]);
+    $services->set(LoadLegacyConfiguration::class)->tag($tagName, ['priority' => 180]);
     $services->set(SessionStart::class)->tag($tagName, ['priority' => 170]);
     $services->set(StandardIncludes::class)->tag($tagName, ['priority' => 160]);
     $services->set(CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);

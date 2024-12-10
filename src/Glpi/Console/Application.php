@@ -434,15 +434,6 @@ class Application extends BaseApplication
         $this->config = &$CFG_GLPI;
 
         Config::detectRootDoc();
-
-        if (
-            !($this->db instanceof DBmysql)
-            || !$this->db->connected
-            || !$this->db->tableExists('glpi_configs')
-        ) {
-            return;
-        }
-
         Config::loadLegacyConfiguration();
     }
 

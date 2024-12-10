@@ -81,6 +81,12 @@ class Config extends CommonDBTM
     ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
+    /**
+     * Indicates whether the GLPI configuration has been loaded.
+     * @var boolean
+     */
+    private static $loaded = false;
+
     public static function getTypeName($nb = 0)
     {
         return __('Setup');
@@ -1652,12 +1658,19 @@ class Config extends CommonDBTM
      */
     public static function loadLegacyConfiguration()
     {
-
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var \DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
+
+        if (
+            !($DB instanceof DBmysql)
+            || !$DB->connected
+            || !$DB->tableExists('glpi_configs')
+        ) {
+            return false;
+        }
 
         $iterator = $DB->request(['FROM' => 'glpi_configs']);
 
@@ -1704,7 +1717,17 @@ class Config extends CommonDBTM
             $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
         }
 
+        self::$loaded = true;
+
         return true;
+    }
+
+    /**
+     * Indicates whether the legacy configuration has been correctly loaded.
+     */
+    public static function isLegacyConfigurationLoaded(): bool
+    {
+        return self::$loaded;
     }
 
 
