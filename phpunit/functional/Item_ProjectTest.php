@@ -51,6 +51,8 @@ class Item_ProjectTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $this->login();
+
         foreach ($CFG_GLPI["project_asset_types"] as $itemtype) {
             $item = new $itemtype();
             $item_id = $item->add(
@@ -63,10 +65,7 @@ class Item_ProjectTest extends DbTestCase
 
             $item->getFromDB($item_id);
             $tabs = $item->defineTabs();
-            if (!in_array("Item_Project", $tabs)) {
-                var_dump($tabs);
-                $this->fail("Item_Project tab not found in $itemtype");
-            }
+            $this->assertArrayHasKey('Item_Project$1', $tabs);
         }
     }
 }
