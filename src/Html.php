@@ -1795,6 +1795,7 @@ TWIG,
 
         $tpl_vars['debug_info'] = null;
 
+        self::displayMessageAfterRedirect();
         \Glpi\Debug\Profiler::getInstance()->stopAll();
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
             $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
@@ -2037,7 +2038,6 @@ TWIG,
 
         self::includeHeader($title, $sector, $item, $option); // Body
         echo "<body class='" . ($in_modal ? "in_modal" : "") . "'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
     }
 
@@ -2071,7 +2071,6 @@ TWIG,
 
         self::includeHeader($title, $sector, $item, $option, true, true);
         echo "<body class='iframed'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>";
     }
 
@@ -2091,6 +2090,7 @@ TWIG,
 
        // Print foot
         self::loadJavascript();
+        self::displayMessageAfterRedirect();
         echo "</body></html>";
     }
 

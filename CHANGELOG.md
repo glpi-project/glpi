@@ -175,6 +175,9 @@ The present file will list all changes made to the project; according to the
 - `CartridgeItem::addCompatibleType()` method is now static.
 - `Rule::initRule()` has been made final and non static and its signature changed.
 - `Clonable::clone()` and `Clonable::cloneMultiple()` methods now accept a `$clone_as_template` parameter to allow creating templates.
+- `enable_partial_warnings` option removed from `SavedSearch::displayMine()`.
+- `enable_partial_warnings` option removed from `SavedSearch::execute()`.
+- `enable_partial_warnings` option removed from `SavedSearch::getMine()`.
 - `Transfer` class is now final.
 - `Transfer::addNotToBeTransfer()` method is now private.
 - `Transfer::addToAlreadyTransfer()` method is now private.
@@ -496,6 +499,7 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputerCollection` class.
 - `RuleMatchedLog::showFormAgent()`.
 - `RuleMatchedLog::showItemForm()`.
+- `SavedSearch::prepareQueryToUse()`
 - `Search::SYLK_OUTPUT` constant.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
