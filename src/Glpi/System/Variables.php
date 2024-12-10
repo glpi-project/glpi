@@ -51,7 +51,6 @@ class Variables
             'GLPI_CACHE_DIR',
             'GLPI_CRON_DIR',
             'GLPI_DOC_DIR',
-            'GLPI_DUMP_DIR',
             'GLPI_GRAPH_DIR',
             'GLPI_LOCK_DIR',
             'GLPI_LOG_DIR',
