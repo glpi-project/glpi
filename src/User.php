@@ -149,6 +149,8 @@ class User extends CommonDBTM
                 $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "front/ldap.php";
             }
         }
+        $adv_config_title = __('Advanced configuration');
+        $links['<i class="ti ti-adjustments pointer" title="' . $adv_config_title . '"></i><span class="d-none d-xxl-block">' . $adv_config_title . '</span>'] = 'front/advconfig.php';
         return $links;
     }
 

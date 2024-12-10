@@ -1,0 +1,259 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+{% set scope_params = _get['scope_params']|default({}) %}
+{% set scope_params = scope_params|merge({
+    entities_id: scope_params['entities_id']|default(session('glpiactive_entity')),
+    users_id: scope_params['users_id']|default(session('glpiID')),
+}) %}
+
+<div class="card">
+    <div id="adv-config-toolbar" class="card-header">
+        <div class="flex-grow-1">
+            <input type="text" class="form-control" id="adv-config-search" placeholder="{{ __('Search') }}" value="{{ _get['filter']|default('') }}">
+        </div>
+        <div class="d-flex card-actions">
+            <div class="d-flex me-3">
+                <label for="adv-config-scope" class="col-auto col-form-label">{{ 'Entity'|itemtype_name(1) }}</label>
+                <div class="ms-2 field-container">
+                    {{ 'Entity'|itemtype_dropdown({
+                        'name': 'entities_id',
+                        'value': scope_params['entities_id'],
+                        'rand': rand,
+                        'addicon': false,
+                        'comments': false
+                    }) }}
+                </div>
+            </div>
+            <div class="d-flex me-3">
+                <label for="adv-config-scope" class="col-auto col-form-label">{{ 'User'|itemtype_name(1) }}</label>
+                <div class="ms-2 field-container">
+                    {{ 'User'|itemtype_dropdown({
+                        'name': 'users_id',
+                        'value': scope_params['users_id'],
+                        'rand': rand,
+                        'right': 'all',
+                        'addicon': false,
+                        'comments': false
+                    }) }}
+                </div>
+            </div>
+            <div class="vr mx-3"></div>
+            <div class="d-flex me-3 align-items-center">
+                <label for="adv-config-raw-values" class="col-auto col-form-label">{{ __('Show raw values') }}</label>
+                <div class="ms-2 field-container">
+                    <input id="adv-config-raw-values" type="checkbox" class="form-check-input" name="raw_values">
+                </div>
+            </div>
+        </div>
+    </div>
+    <table id="adv-config-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>{{ __('Key') }}</th>
+                <th>{{ __('Value: %s')|format(constant('Glpi\\Config\\ConfigScope::GLOBAL').getLabel()) }}</th>
+                <th>{{ __('Value: %s')|format(constant('Glpi\\Config\\ConfigScope::ENTITY').getLabel()) }}</th>
+                <th>{{ __('Value: %s')|format(constant('Glpi\\Config\\ConfigScope::USER').getLabel()) }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for opt in options %}
+                <tr data-context="{{ opt.getContext() }}" data-name="{{ opt.getName() }}">
+                    <td>
+                        <div class="d-flex flex-column align-items-start">
+                            <span class="badge bg-blue-lt">{{ opt.getFullName() }}</span>
+                            <small class="text-secondary ms-1">{{ opt.getLabel() }}</small>
+                        </div>
+                    </td>
+                    {% macro render_value_td(opt, scope, scope_params) %}
+                        {% if scope in opt.getScopes() %}
+                            {% set value = opt.getValue(scope, null, scope_params) %}
+                            {% set display_value = opt.getDisplayValue(value) %}
+                            {% set value = value is array ? value|json_encode : value %}
+                            {% set display_value = display_value is array ? display_value|json_encode : display_value %}
+                            {% set display_value = display_value|replace({
+                            '&nbsp;': ''
+                            }) %}
+                            {% set prepend_html %}
+                                {% if opt.getType() == constant('Glpi\\Config\\InputType::COLOR') %}
+                                    <span class="badge" style="background-color: {{ value }}">&nbsp;</span>
+                                {% endif %}
+                            {% endset %}
+                            <td data-scope="{{ scope.getKey() }}" data-value-raw="{{ value }}" data-value-display="{{ display_value }}">
+                                <span class="prepend-value">{{ prepend_html|raw }}</span>
+                                <span class="value">{{ display_value }}</span>
+                                <button type="button" name="edit" class="btn btn-sm btn-ghost-secondary">
+                                    <i class="ti ti-edit" data-bs-toggle="tooltip" title="{{ __('Edit') }}"></i>
+                                </button>
+                            </td>
+                        {% else %}
+                            <td><i class="ti ti-forbid" data-bs-toggle="tooltip" title="{{ __('Not supported') }}" style="cursor: not-allowed"></i></td>
+                        {% endif %}
+                    {% endmacro %}
+
+                    {{ _self.render_value_td(opt, constant('Glpi\\Config\\ConfigScope::GLOBAL'), scope_params) }}
+                    {{ _self.render_value_td(opt, constant('Glpi\\Config\\ConfigScope::ENTITY'), scope_params) }}
+                    {{ _self.render_value_td(opt, constant('Glpi\\Config\\ConfigScope::USER'), scope_params) }}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+   #adv-config-table tbody td button[name="edit"] {
+      display: none;
+   }
+   #adv-config-table tbody td:hover button[name="edit"] {
+       display: inline-block;
+   }
+   #adv-config-table tbody td i.ti-forbid {
+      display: none;
+   }
+   #adv-config-table tbody td:hover i.ti-forbid {
+      display: block;
+   }
+</style>
+<script>
+    $(() => {
+        initSortableTable('adv-config-table');
+        $(`#adv-config-table thead tr th:nth-child(1)`).click();
+
+        function filterResults() {
+            const value = $('#adv-config-search').val().toLowerCase();
+            $('#adv-config-table tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        }
+        $('#adv-config-search').keyup(() => filterResults());
+        // Filter immediately in case the page was reloaded with a filter
+        filterResults();
+
+        function reloadConfigPage(reset = false) {
+            if (reset) {
+                window.location.search = '';
+                return;
+            }
+            const entity = $('#adv-config-toolbar select[name="entities_id"]').val();
+            const user = $('#adv-config-toolbar select[name="users_id"]').val();
+            const scope_params = {
+                'entities_id': entity,
+                'users_id': user,
+            };
+            window.location.search = $.param({
+                'scope_params': scope_params,
+                'filter': $('#adv-config-search').val()
+            });
+        }
+
+        $('#adv-config-toolbar select[name="entities_id"]').change(() => reloadConfigPage());
+        $('#adv-config-toolbar select[name="users_id"]').change(() => reloadConfigPage());
+        $('#adv-config-toolbar button[name="reset"]').click(() => reloadConfigPage(true));
+
+        $('#adv-config-toolbar input[name="raw_values"]').change(function() {
+            const checked = $(this).is(':checked');
+            $('#adv-config-table tbody tr').each(function() {
+                $(this).find('td[data-value-raw]').each(function() {
+                    const raw = $(this).attr('data-value-raw');
+                    const display = $(this).attr('data-value-display');
+                    if (checked) {
+                        $(this).find('.value').text(raw);
+                    } else {
+                        $(this).find('.value').text(display);
+                    }
+                });
+            });
+        });
+
+        $(`#adv-config-table td[data-value-raw] button[name="edit"]`).on('click', (e) => {
+            const td = $(e.currentTarget).closest('td');
+            const row = td.closest('tr');
+            const scope = td.attr('data-scope');
+            const modal = $('#edit_config_{{ rand }}');
+            const selection_data = {
+                'context': row.attr('data-context'),
+                'name': row.attr('data-name'),
+                'scope': scope,
+                'scope_params': {
+                    'entities_id': $('#adv-config-toolbar select[name="entities_id"]').val(),
+                    'users_id': $('#adv-config-toolbar select[name="users_id"]').val(),
+                }
+            };
+            modal.find('.modal-body').load('{{ path('ajax/config.php') }}', Object.assign({
+                'action': 'get_edit_form',
+
+            }, selection_data), () => {
+                modal.data('selection', selection_data);
+                modal.modal('show');
+            });
+        });
+
+        $(`#edit_config_{{ rand }} button[name="save"]`).on('click', (e) => {
+            const data = $('#edit_config_{{ rand }}').data('selection');
+            const form_data = $(`#edit_config_{{ rand }} form`).serializeArray();
+            if (form_data.length >= 0) {
+                data['value'] = form_data[0]['value'];
+                $.ajax({
+                    url: '{{ path('ajax/config.php') }}',
+                    method: 'POST',
+                    data: Object.assign({
+                        'action': 'set_option_value',
+                    }, data),
+                }).then(() => {
+                    reloadConfigPage();
+                });
+            } else {
+                reloadConfigPage();
+            }
+        });
+    });
+</script>
+
+<div class="modal fade" id="edit_config_{{ rand }}" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ __('Edit configuration option') }}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" name="save" class="btn btn-primary">
+                    <i class="far fa-save"></i>
+                    <span>{{ _x('button', 'Save') }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
