@@ -1316,6 +1316,7 @@ $RELATION = [
     'glpi_softwarelicenses' => [
         '_glpi_items_softwarelicenses'     => 'softwarelicenses_id',
         '_glpi_softwarelicenses'           => 'softwarelicenses_id',
+        '_glpi_softwarelicenses_users'             => 'softwarelicenses_id',
     ],
 
     'glpi_softwarelicensetypes' => [
@@ -1657,9 +1658,9 @@ $RELATION = [
             'users_id',
             'users_id_substitute',
         ],
+        '_glpi_softwarelicenses_users'          => 'users_id',
         '_glpi_contracts_users'         => 'users_id',
     ],
-
     'glpi_usertitles' => [
         'glpi_contacts' => 'usertitles_id',
         'glpi_users'    => 'usertitles_id',
