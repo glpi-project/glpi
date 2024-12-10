@@ -653,7 +653,6 @@ HTML
         $category = $this->createItem('ITILCategory', [
             'name' => 'Category Mandatory Fields',
         ]);
-        $this->assertGreaterThan(0, $category->getID());
 
         // Create a ticket without category
         $ticket = $this->createItem('Ticket', [
