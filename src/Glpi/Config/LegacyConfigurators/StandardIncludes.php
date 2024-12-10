@@ -34,20 +34,21 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\System\Requirement\DatabaseTablesEngine;
-use Session;
 use Auth;
 use DBConnection;
+use DBmysql;
 use Config;
-use Html;
-use Toolbox;
-use Update;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Html;
+use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Toolbox;
+use Update;
 
 final readonly class StandardIncludes implements LegacyConfigProviderInterface
 {
@@ -59,10 +60,12 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
     public function execute(): void
     {
         /**
+         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $CFG_GLPI,
+        global $DB,
+               $CFG_GLPI,
                $GLPI_CACHE
         ;
 
@@ -106,70 +109,60 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
         // Check if the DB is configured properly
-        if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-            $missing_db_config = true;
-        } else {
-            include_once(GLPI_CONFIG_DIR . "/config_db.php");
-            $missing_db_config = !class_exists('DB', false);
-        }
-        if (!$missing_db_config) {
-            //Database connection
-            if (
-                !DBConnection::establishDBConnection(false, false)
-                && !$skip_db_checks
-            ) {
-                DBConnection::displayMySQLError();
-                exit(1);
-            }
+        if (!$skip_db_checks) {
+            if ($DB instanceof DBmysql) {
+                //Database connection
+                if (!$DB->connected) {
+                    DBConnection::displayMySQLError();
+                    exit(1);
+                }
 
-            //Options from DB, do not touch this part.
-            if (
-                !Config::loadLegacyConfiguration()
-                && !$skip_db_checks
-            ) {
-                echo "Error accessing config table";
-                exit(1);
-            }
-        } elseif (!$skip_db_checks) {
-            Session::loadLanguage('', false);
+                //Options from DB, do not touch this part.
+                if (!Config::isLegacyConfigurationLoaded()) {
+                    echo "Error accessing config table";
+                    exit(1);
+                }
+            } else {
+                Session::loadLanguage('', false);
 
-            if (!isCommandLine()) {
-                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                $debug_mode = $_SESSION['glpi_use_mode'];
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+                if (!isCommandLine()) {
+                    // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
+                    $debug_mode = $_SESSION['glpi_use_mode'];
+                    $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
-                Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
-                $twig_params = [
-                    'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
-                    'install_exists' => file_exists($this->projectDir . '/install/install.php'),
-                ];
-                // language=Twig
-                echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                    <div class="container-fluid mb-4">
-                        <div class="row justify-content-center">
-                            <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
-                                <h2>GLPI seems to not be configured properly.</h2>
-                                <p class="mt-2 mb-n2 alert alert-warning">
-                                    Database configuration file "{{ config_db }}" is missing or is corrupted.
-                                    You have to either restart the install process, either restore this file.
-                                    <br />
-                                    <br />
-                                    {% if install_exists %}
-                                        <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
-                                    {% endif %}
-                                </p>
+                    Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
+                    $twig_params = [
+                        'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
+                        'install_exists' => file_exists($this->projectDir . '/install/install.php'),
+                    ];
+                    // language=Twig
+                    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                        <div class="container-fluid mb-4">
+                            <div class="row justify-content-center">
+                                <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
+                                    <h2>GLPI seems to not be configured properly.</h2>
+                                    <p class="mt-2 mb-n2 alert alert-warning">
+                                        Database configuration file "{{ config_db }}" is missing or is corrupted.
+                                        You have to either restart the install process, either restore this file.
+                                        <br />
+                                        <br />
+                                        {% if install_exists %}
+                                            <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
+                                        {% endif %}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-TWIG, $twig_params);
-                Html::nullFooter();
-                $_SESSION['glpi_use_mode'] = $debug_mode;
-            } else {
-                echo "GLPI seems to not be configured properly.\n";
-                echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
-                echo "You have to either restart the install process, either restore this file.\n";
+    TWIG, $twig_params);
+                    Html::nullFooter();
+                    $_SESSION['glpi_use_mode'] = $debug_mode;
+                } else {
+                    echo "GLPI seems to not be configured properly.\n";
+                    echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
+                    echo "You have to either restart the install process, either restore this file.\n";
+                }
+                exit(1);
             }
-            exit(1);
         }
 
         if (
