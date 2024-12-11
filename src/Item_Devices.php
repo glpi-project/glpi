@@ -170,6 +170,8 @@ class Item_Devices extends CommonDBRelation
             ]
         ];
 
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
+
         $tab[] = [
             'id'                 => '5',
             'table'              => $this->getTable(),
