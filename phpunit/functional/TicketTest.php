@@ -7693,9 +7693,7 @@ HTML
 
         $this->assertEquals(0, $ticket->fields['takeintoaccount_delay_stat']);
 
-        $this->createItem('TicketTask',
-            array_merge($input, ['tickets_id' => $ticket->getID()])
-        );
+        $this->createItem('TicketTask', array_merge($input, ['tickets_id' => $ticket->getID()]));
 
         $t = new Ticket();
         $t->getFromDB($ticket->getID());
