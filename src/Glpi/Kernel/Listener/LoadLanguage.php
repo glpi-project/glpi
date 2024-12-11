@@ -32,19 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
-use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profiler;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Session;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class ProfilerStart implements LegacyConfigProviderInterface
+final readonly class LoadLanguage implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
     {
-        if (isCommandLine()) {
-            Profiler::getInstance()->disable();
-        } else {
-            Profiler::getInstance()->start('php_request');
-        }
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        Profiler::getInstance()->start('LoadLanguage::execute', Profiler::CATEGORY_BOOT);
+
+        Session::loadLanguage();
+
+        Profiler::getInstance()->stop('LoadLanguage::execute');
     }
 }

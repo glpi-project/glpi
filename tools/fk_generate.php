@@ -41,7 +41,7 @@ if (PHP_SAPI != 'cli') {
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel();
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 $DB->query("SET FOREIGN_KEY_CHECKS = '0';");
 $result = $DB->list_tables();

@@ -32,40 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config;
+namespace Glpi\Http\Listener;
 
-use Glpi\Http\ListenersPriority;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Http\RequestPoliciesTrait;
+use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class LegacyConfigProviderListener implements EventSubscriberInterface
+class SessionCheckCookieListener implements EventSubscriberInterface
 {
-    public function __construct(
-        private LegacyConfigProviders $legacyConfigProviders,
-    ) {
-    }
+    use RequestPoliciesTrait;
 
     public static function getSubscribedEvents(): array
     {
         return [
-            // Has to be executed before anything else!
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
-            // Don't execute config providers in sub-requests: they already have been.
             return;
         }
 
-        foreach ($this->legacyConfigProviders->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderWithRequestInterface) {
-                $provider->setRequest($event->getRequest());
-            }
-            $provider->execute();
+        if ($this->isFrontEndAssetEndpoint($event->getRequest())) {
+            return;
+        }
+
+        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
+        // throw an exception
+        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
+        if ($event->getRequest()->isSecure() === false && $cookie_secure === true) {
+            $exception = new BadRequestHttpException();
+            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
+            throw $exception;
         }
     }
 }

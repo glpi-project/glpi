@@ -85,45 +85,10 @@ final class IndexController extends AbstractController
     private function call(): void
     {
         /**
-         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var array $PLUGIN_HOOKS
          */
-        global $DB, $CFG_GLPI, $PLUGIN_HOOKS;
-
-        // If config_db doesn't exist -> start installation
-        if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php") || !class_exists('DB', false)) {
-            if (file_exists(GLPI_ROOT . '/install/install.php')) {
-                Html::redirect("install/install.php");
-            } else {
-                Session::loadLanguage('', false);
-                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-                // no translation
-                $title_text        = 'GLPI seems to not be configured properly.';
-                $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
-                $hint_text         = 'You have to either restart the install process, either restore this file.';
-
-                Html::nullHeader('Missing configuration');
-                echo '<div class="container-fluid mb-4">';
-                echo '<div class="row justify-content-center">';
-                echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
-                echo '<h2>' . $title_text . '</h2>';
-                echo '<p class="mt-2 mb-n2 alert alert-warning">';
-                echo $missing_conf_text;
-                echo ' ';
-                echo $hint_text;
-                echo '</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-                Html::nullFooter();
-                return;
-            }
-        }
-
-        Session::checkCookieSecureConfig();
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $_SESSION["glpicookietest"] = 'testcookie';
 

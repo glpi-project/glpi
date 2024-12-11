@@ -36,9 +36,6 @@ namespace Glpi\Kernel;
 
 use GLPI;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviders;
 use Glpi\Http\Listener\PluginsRouterListener;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -111,30 +108,14 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
-    public function loadCommonGlobalConfig(): void
+    public function boot(): void
     {
-        $this->boot();
+        $dispatch_postboot = !$this->booted;
 
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderWithRequestInterface) {
-                continue;
-            }
-            $provider->execute();
-        }
-    }
+        parent::boot();
 
-    public function loadCliConsoleOnlyConfig(): void
-    {
-        $this->boot();
-
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
-                $provider->execute();
-            }
+        if ($dispatch_postboot) {
+            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
     }
 

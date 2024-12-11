@@ -37,7 +37,6 @@ namespace Glpi\Config\LegacyConfigurators;
 use Glpi\Config\ConfigProviderHasRequestTrait;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Debug\Profiler;
 
 final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
 {
@@ -45,12 +44,10 @@ final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigPr
 
     public function execute(): void
     {
-        Profiler::getInstance()->start('CleanPHPSelfParam::execute', Profiler::CATEGORY_BOOT);
         // Security of PHP_SELF
         $self = \Html::cleanParametersURL($this->getRequest()->server->get('PHP_SELF'));
 
         $_SERVER['PHP_SELF'] = $self;
         $this->getRequest()->server->set('PHP_SELF', $self);
-        Profiler::getInstance()->stop('CleanPHPSelfParam::execute');
     }
 }

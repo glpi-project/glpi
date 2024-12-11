@@ -39,7 +39,6 @@ use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\System\Requirement\DatabaseTablesEngine;
@@ -55,7 +54,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Update;
 
-class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface, ForceNoPluginsOptionCommandInterface
+class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     use TelemetryActivationTrait;
 
@@ -264,12 +263,6 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         }
 
         return 0; // Success
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-
-        return true;
     }
 
     /**

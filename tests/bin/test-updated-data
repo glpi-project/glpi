@@ -37,7 +37,7 @@
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel('testing');
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 
