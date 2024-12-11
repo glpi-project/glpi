@@ -5210,6 +5210,11 @@ abstract class CommonITILObject extends CommonDBTM
                 $update['users_id_lastupdater'] = $users_id_lastupdater;
             }
 
+            // set take into account delay stat
+            if ($no_stat_computation) {
+                $update['takeintoaccount_delay_stat'] = 0;
+            }
+
             $DB->update(
                 $this->getTable(),
                 $update,
