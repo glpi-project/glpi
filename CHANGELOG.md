@@ -544,6 +544,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Transfer::manageConnectionComputer()`
+- `Update::initSession()`
 - `User::getDelegateGroupsForUser()`
 - `User::showDebug()`
 - `User::title()`

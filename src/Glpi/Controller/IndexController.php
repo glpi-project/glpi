@@ -96,9 +96,6 @@ final class IndexController extends AbstractController
             if (file_exists(GLPI_ROOT . '/install/install.php')) {
                 Html::redirect("install/install.php");
             } else {
-                // Init session (required by header display logic)
-                Session::setPath();
-                Session::start();
                 Session::loadLanguage('', false);
                 // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
                 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;

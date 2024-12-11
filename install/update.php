@@ -62,7 +62,6 @@ $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old 
 Config::loadLegacyConfiguration();
 
 $update = new Update($DB);
-$update->initSession();
 
 if (isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
