@@ -40,7 +40,6 @@ use Glpi\RichText\RichText;
 use Glpi\Toolbox\Sanitizer;
 use Sabre\VObject\Component\VCalendar;
 
-
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItemInterface
 {

@@ -5211,7 +5211,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
 
             // set take into account delay stat
-            if ($no_stat_computation) {
+            if ($no_stat_computation && $this->getType() == 'Ticket') {
                 $update['takeintoaccount_delay_stat'] = 0;
             }
 
