@@ -2350,7 +2350,7 @@ class TicketTest extends DbTestCase
         );
 
         $this->assertCount(
-            8,
+            9,
             $clonedTicket->getTimelineItems(['with_logs' => true])
         );
         //User: Add a link with an item: 5 times
@@ -7655,7 +7655,34 @@ HTML
         $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
     }
 
-    public function testDoNotComputeTakeIntoAccount(): void
+    public static function doNotComputeTakeIntoAccountProvider(): array
+    {
+
+        return [
+            [
+                'input' => [
+                    'is_private' => true,
+                    'state'      => \Planning::INFO,
+                    'content'    => 'Do Not Compute Take Into Account Task 1',
+                    '_do_not_compute_takeintoaccount' => true
+                ],
+                'expected' => 0,
+            ],
+            [
+                'input' => [
+                    'is_private' => true,
+                    'state'      => \Planning::INFO,
+                    'content'    => 'Do Not Compute Take Into Account Task 2',
+                ],
+                'expected' => 1,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider doNotComputeTakeIntoAccountProvider
+     */
+    public function testDoNotComputeTakeIntoAccount(array $input, int $expected): void
     {
         $this->login();
 
@@ -7666,17 +7693,12 @@ HTML
 
         $this->assertEquals(0, $ticket->fields['takeintoaccount_delay_stat']);
 
-        $task = new \TicketTask();
-        $task->add([
-            'tickets_id' => $ticket->getID(),
-            'is_private' => true,
-            'state'      => \Planning::INFO,
-            'content'    => 'Do Not Compute Take Into Account Task',
-            '_do_not_compute_takeintoaccount' => true
-        ]);
+        $this->createItem('TicketTask',
+            array_merge($input, ['tickets_id' => $ticket->getID()])
+        );
 
         $t = new Ticket();
         $t->getFromDB($ticket->getID());
-        $this->assertEquals(0, $t->fields['takeintoaccount_delay_stat']);
+        $this->assertEquals($expected, $t->fields['takeintoaccount_delay_stat']);
     }
 }
