@@ -34,56 +34,58 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Glpi\Config\ConfigProviderHasRequestTrait;
 use Session;
-use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
-final class SessionStart implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
+final class SessionStart implements LegacyConfigProviderInterface
 {
-    use ConfigProviderHasRequestTrait;
-
-    /**
-     * An array of regular expressions of the paths that disable the Session.
-     */
-    private const NO_COOKIE_PATHS = [
-        '/api(rest)?\.php.*',
-        '/caldav\.php.*',
-        '/front/cron\.php.*',
-    ];
-
-    private const NO_SESSION_PATHS = [
-        '/api(rest)?\.php.*',
-    ];
-
     public function execute(): void
     {
-        $path = $this->getRequest()->getRequestUri();
-        $path = '/' . ltrim($path, '/');
+        // The session must be started even in CLI context.
+        // The GLPI code refers to the session in many places
+        // and we cannot safely remove its initialization in the CLI context.
+        $start_session = true;
 
-        $noCookiePaths = '~^' . implode('|', \array_map(static fn ($regex) => '(?:' . $regex . ')', self::NO_COOKIE_PATHS)) . '$~sUu';
+        if (isset($_SERVER['REQUEST_URI'])) {
+            // Specific configuration related to web context
 
-        Session::setPath();
+            $request = Request::createFromGlobals();
+            $path = $request->getPathInfo();
 
-        if (
-            \preg_match($noCookiePaths, $path)
-            || (\preg_match('~^/front/planning\.php~Uu', $path) && $this->getRequest()->query->has('genical'))
-        ) {
-            // Disable session cookie for these paths
-            ini_set('session.use_cookies', 0);
+            $use_cookies = true;
+            if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
+                // API clients must not use cookies, as the session token is expected to be passed in headers.
+                $use_cookies = false;
+                // The API endpoint is strating the session manually.
+                $start_session = false;
+            } elseif (\str_starts_with($path, '/caldav.php')) {
+                // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.
+                $use_cookies = false;
+            } elseif (\str_starts_with($path, '/front/cron.php')) {
+                // The cron endpoint is not expected to use the authenticated user session.
+                $use_cookies = false;
+            } elseif (\str_starts_with($path, '/front/planning.php') && $request->query->has('genical')) {
+                // The `genical` endpoint must not use cookies, as the authentication is expected to be passed in the query parameters.
+                $use_cookies = false;
+            }
+
+            if (!$use_cookies) {
+                ini_set('session.use_cookies', 0);
+            }
         }
 
-        $noSessionPaths = '~^' . implode('|', \array_map(static fn ($regex) => '(?:' . $regex . ')', self::NO_SESSION_PATHS)) . '$~sUu';
-        if (
-            !\preg_match($noSessionPaths, $path)
-        ) {
-            // Disable session cookie for these paths
+        if ($start_session) {
+            if (Session::canWriteSessionFiles()) {
+                Session::setPath();
+            } else {
+                \trigger_error(
+                    sprintf('Unable to write session files on `%s`.', GLPI_SESSION_DIR),
+                    E_USER_WARNING
+                );
+            }
+
             Session::start();
-        }
-
-        // Default Use mode
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         }
     }
 }
