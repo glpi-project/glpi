@@ -57,6 +57,7 @@ use Ticket_User;
 use TicketValidation;
 use User;
 use Session;
+use Ticket;
 
 /* Test for inc/ticket.class.php */
 
@@ -7651,7 +7652,31 @@ HTML
             'status'  => \CommonITILValidation::REFUSED,
         ]);
 
-
         $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
+    }
+
+    public function testDoNotComputeTakeIntoAccount(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Do Not Compute Take Into Account Ticket',
+            'content' => 'Do Not Compute Take Into Account Ticket',
+        ]);
+
+        $this->assertEquals(0, $ticket->fields['takeintoaccount_delay_stat']);
+
+        $task = new \TicketTask();
+        $task->add([
+            'tickets_id' => $ticket->getID(),
+            'is_private' => true,
+            'state'      => \Planning::INFO,
+            'content'    => 'Do Not Compute Take Into Account Task',
+            '_do_not_compute_takeintoaccount' => true
+        ]);
+
+        $t = new Ticket();
+        $t->getFromDB($ticket->getID());
+        $this->assertEquals(0, $t->fields['takeintoaccount_delay_stat']);
     }
 }
