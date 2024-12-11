@@ -35,19 +35,15 @@
 
 namespace Glpi\Console;
 
-use Config;
-use DB;
 use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
-use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
-use Plugin;
 use Session;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -92,44 +88,35 @@ class Application extends BaseApplication
      */
     private $config;
 
-    /**
-     * @var ErrorHandler
-     */
-    private $error_handler;
-
-    /**
-     * @var DBmysql|null
-     */
-    private $db;
+    private ?DBmysql $db = null;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    public function __construct()
+    public function __construct(private Kernel $kernel)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
-        $this->initApplication();
-        $this->initCache();
-        $this->initDb();
-        $this->initSession();
-        $this->initConfig();
+        $this->kernel->boot();
+
+        $this->db = $DB;
+        $this->config = &$CFG_GLPI;
+
+        // Force the current "username"
+        $_SESSION['glpiname'] = 'cli';
 
         $this->computeAndLoadOutputLang();
 
-       // Load core commands only to check if called command prevent or not usage of plugins
-       // Plugin commands will be loaded later
-        $loader = new CommandLoader(false);
+        $loader = new CommandLoader(include_plugins: $this->db instanceof DBmysql && $this->db->connected);
         $this->setCommandLoader($loader);
-
-        if ($this->usePlugins()) {
-            $plugin = new Plugin();
-            $plugin->init(true);
-            $loader->setIncludePlugins(true);
-        }
     }
 
     protected function getDefaultInputDefinition(): InputDefinition
@@ -198,12 +185,6 @@ class Application extends BaseApplication
                     null,
                     InputOption::VALUE_OPTIONAL,
                     __('Configuration directory to use. Deprecated option')
-                ),
-                new InputOption(
-                    '--no-plugins',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Disable GLPI plugins (unless commands forces plugins loading)')
                 ),
                 new InputOption(
                     '--lang',
@@ -337,106 +318,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * Initalize GLPI.
-     *
-     * @return void
-     */
-    private function initApplication()
-    {
-    }
-
-    /**
-     * Initialize database connection.
-     *
-     * @global DBmysql $DB
-     *
-     * @return void
-     *
-     * @throws RuntimeException
-     */
-    private function initDb()
-    {
-
-        if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
-            return;
-        }
-
-        /** @var \DBmysql $DB */
-        global $DB;
-        $DB = @new DB();
-        $this->db = $DB;
-
-        if (!$this->db->connected) {
-            return;
-        }
-
-        ob_start();
-        $checkdb = Config::displayCheckDbEngine();
-        $message = ob_get_clean();
-        if ($checkdb > 0) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException($message);
-        }
-    }
-
-    /**
-     * Initialize GLPI session.
-     * This is mandatory to init cache and load languages.
-     *
-     * @TODO Do not use session for console.
-     *
-     * @return void
-     */
-    private function initSession()
-    {
-
-        if (!Session::canWriteSessionFiles()) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(
-                sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
-            );
-        }
-
-        Session::setPath();
-        Session::start();
-
-       // Default value for use mode
-        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-        $_SESSION['glpiname'] = 'cli';
-    }
-
-    /**
-     * Initialize GLPI cache.
-     *
-     * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-     *
-     * @return void
-     */
-    private function initCache()
-    {
-
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $cache_manager = new CacheManager();
-        $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-    }
-
-    /**
-     * Initialize GLPI configuration.
-     *
-     * @global array $CFG_GLPI
-     *
-     * @return void
-     */
-    private function initConfig()
-    {
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-        $this->config = &$CFG_GLPI;
-
-        Config::loadLegacyConfiguration();
-    }
-
-    /**
      * Compute and load output language.
      *
      * @return void
@@ -468,9 +349,11 @@ class Application extends BaseApplication
             $lang = 'en_GB';
         }
 
-        $_SESSION['glpilanguage'] = $lang;
+        if ($lang !== $_SESSION['glpilanguage']) {
+            $_SESSION['glpilanguage'] = $lang;
 
-        Session::loadLanguage('', $this->usePlugins());
+            Session::loadLanguage();
+        }
     }
 
     /**
@@ -488,32 +371,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * Whether or not plugins have to be used.
-     *
-     * @return boolean
-     */
-    private function usePlugins()
-    {
-        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
-            return false;
-        }
-
-        $input = new ArgvInput();
-
-        try {
-            $command = $this->find($this->getCommandName($input) ?? '');
-            if ($command instanceof ForceNoPluginsOptionCommandInterface) {
-                return !$command->getNoPluginsOptionValue();
-            }
-        } catch (\Symfony\Component\Console\Exception\CommandNotFoundException $e) {
-           // Command will not be found at this point if it is a plugin command
-            $command = null; // Say hello to CS checker
-        }
-
-        return !$input->hasParameterOption('--no-plugins', true);
-    }
-
-    /**
      * Check if core mandatory requirements are OK.
      *
      * @param RequirementInterface[] $command_specific_requirements
@@ -523,11 +380,9 @@ class Application extends BaseApplication
     private function checkCoreMandatoryRequirements(
         array $command_specific_requirements
     ): bool {
-        $db = property_exists($this, 'db') ? $this->db : null;
-
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof DBmysql && $db->connected ? $db : null
+            $this->db instanceof DBmysql && $this->db->connected ? $this->db : null
         );
 
         // Some commands might specify some extra requirements
@@ -614,13 +469,11 @@ class Application extends BaseApplication
      * Gets the Kernel associated with this Console.
      *
      * This method is required by most of the commands provided by the `symfony/framework-bundle`.
+     *
      * @see \Symfony\Bundle\FrameworkBundle\Console\Application::getKernel()
      */
-    public function getKernel(): ?KernelInterface
+    public function getKernel(): KernelInterface
     {
-        /** @var KernelInterface|null $kernel */
-        global $kernel;
-
-        return $kernel;
+        return $this->kernel;
     }
 }

@@ -34,6 +34,8 @@
 
 namespace Glpi\Controller;
 
+use Config;
+use DBConnection;
 use Glpi\Application\ErrorHandler;
 use Html;
 use Session;
@@ -127,8 +129,10 @@ class ErrorController extends AbstractController
     {
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
-        $title = _n('Error', 'Errors', 1);
-        $message = __('An unexpected error has occurred.');
+        $title      = _n('Error', 'Errors', 1);
+        $message    = __('An unexpected error has occurred.');
+        $link_text  = null;
+        $link_url   = null;
 
         if ($exception instanceof HttpExceptionInterface) {
             // Default messages.
@@ -157,6 +161,10 @@ class ErrorController extends AbstractController
                 && ($custom_message = $exception->getMessageToDisplay()) !== null
             ) {
                 $message = $custom_message;
+            }
+            if ($exception instanceof \Glpi\Exception\Http\HttpExceptionInterface) {
+                $link_text = $exception->getLinktext();
+                $link_url  = $exception->getLinkUrl();
             }
         }
 
@@ -210,6 +218,11 @@ class ErrorController extends AbstractController
         $header_method = match (true) {
             // A minimal page is displayed as we do not have enough memory available to display the full page.
             $exception instanceof OutOfMemoryError => 'simpleHeader',
+
+            // Only the error message should be shown if the DB is ot available or the config not loaded.
+            // Trying to display a full header is not possible.
+            !DBConnection::isDbAvailable() || !Config::isLegacyConfigurationLoaded() => 'nullHeader',
+
             Session::getCurrentInterface() === 'central' => 'header',
             Session::getCurrentInterface() === 'helpdesk' => 'helpHeader',
             default => 'nullHeader',
@@ -220,8 +233,8 @@ class ErrorController extends AbstractController
             [
                 'header_method' => $header_method,
                 'page_title'    => $title,
-                'link_url'      => Html::getBackUrl(),
-                'link_text'     => __('Return to previous page'),
+                'link_url'      => $link_url ?? Html::getBackUrl(),
+                'link_text'     => $link_text ?? __('Return to previous page'),
             ] + $error_block_params,
             new Response(status: $status_code)
         );

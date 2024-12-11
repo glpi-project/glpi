@@ -37,8 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
 /**
  * @var \DBmysql|null $DB
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
@@ -46,20 +44,13 @@ include_once(GLPI_CONFIG_DIR . "/config_db.php");
  * @var bool $HEADER_LOADED
  */
 global $DB,
-    $GLPI_CACHE,
-    $update,
-    $HEADER_LOADED;
+       $GLPI_CACHE,
+       $update,
+       $HEADER_LOADED;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
-Session::checkCookieSecureConfig();
-
-if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
-    $DB = new DB();
-}
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
-
-Config::loadLegacyConfiguration();
 
 $update = new Update($DB);
 
@@ -146,10 +137,6 @@ function showSecurityKeyCheckForm()
 //Debut du script
 $HEADER_LOADED = true;
 
-Session::start();
-
-Session::loadLanguage('', false);
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
@@ -228,6 +215,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             echo "<div class='text-center'>";
             doUpdateDb();
             echo "</div>";
+
+            Session::destroy(); // Remove session data set by web installation
 
             $_SESSION['telemetry_from_install'] = true;
 

@@ -41,7 +41,7 @@ if (PHP_SAPI != 'cli') {
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel();
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();

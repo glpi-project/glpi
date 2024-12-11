@@ -32,26 +32,44 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
 use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\DependencyInjection\PluginContainer;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Plugin;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Update;
 
-final readonly class CustomObjectsBootstrap implements LegacyConfigProviderInterface
+final readonly class InitializePlugins implements EventSubscriberInterface
 {
-    public function execute(): void
+    public function __construct(private PluginContainer $pluginContainer)
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             // Requires the database to be available.
             return;
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
+
+        $plugin = new Plugin();
+        $plugin->init(true);
+
+        $this->pluginContainer->initializeContainer();
+
+        Profiler::getInstance()->stop('InitializePlugins::execute');
     }
 }

@@ -39,7 +39,7 @@ use Glpi\Kernel\Kernel;
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('testing');
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 $conf = new Conf();
 if ($conf->enabled_inventory != 1) {

@@ -56,7 +56,7 @@ class InstallController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function start_inserts(): Response
     {
-        if (!isset($_SESSION['is_installing'])) {
+        if (!isset($_SESSION['can_process_install'])) {
             throw new AccessDeniedHttpException();
         }
 

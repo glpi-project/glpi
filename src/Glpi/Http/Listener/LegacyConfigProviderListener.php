@@ -34,21 +34,24 @@
 
 namespace Glpi\Http\Listener;
 
+use Glpi\Config\ConfigProviderWithRequestInterface;
+use Glpi\Config\LegacyConfigProviders;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class RedirectLegacyRouteListener implements EventSubscriberInterface
+final readonly class LegacyConfigProviderListener implements EventSubscriberInterface
 {
-    private const URLS_MAPPING = [
-        '/front/helpdesk.public.php' => '/Helpdesk',
-    ];
+    public function __construct(
+        private LegacyConfigProviders $legacyConfigProviders,
+    ) {
+    }
 
     public static function getSubscribedEvents(): array
     {
         return [
+            // Has to be executed before anything else!
             KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
         ];
     }
@@ -56,12 +59,15 @@ final readonly class RedirectLegacyRouteListener implements EventSubscriberInter
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
+            // Don't execute config providers in sub-requests: they already have been.
             return;
         }
-        $request = $event->getRequest();
 
-        if (\array_key_exists($request->getPathInfo(), self::URLS_MAPPING)) {
-            $event->setResponse(new RedirectResponse($request->getBasePath() . self::URLS_MAPPING[$request->getPathInfo()]));
+        foreach ($this->legacyConfigProviders->getProviders() as $provider) {
+            if ($provider instanceof ConfigProviderWithRequestInterface) {
+                $provider->setRequest($event->getRequest());
+            }
+            $provider->execute();
         }
     }
 }

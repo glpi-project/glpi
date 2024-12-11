@@ -45,12 +45,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class AccessErrorListener implements EventSubscriberInterface
+final readonly class AccessErrorListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            // priority = 1 to be executed before the default Symfony listeners
             KernelEvents::EXCEPTION => ['onKernelException', 1],
         ];
     }

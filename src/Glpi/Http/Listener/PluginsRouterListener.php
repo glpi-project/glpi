@@ -37,7 +37,7 @@ namespace Glpi\Http\Listener;
 use Glpi\Controller\AbstractController;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -46,19 +46,19 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Router;
 
-class PluginsRouterListener implements EventSubscriberInterface
+final readonly class PluginsRouterListener implements EventSubscriberInterface
 {
     public const ROUTE_NAME = 'glpi_plugin';
 
     public function __construct(
-        private readonly PluginContainer $plugin_container,
+        private PluginContainer $plugin_container,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 

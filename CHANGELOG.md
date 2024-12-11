@@ -370,6 +370,7 @@ The present file will list all changes made to the project; according to the
 - `Contract::showShort()`
 - `DbUtils::closeDBConnections()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `DBConnection::displayMySQLError()`
 - `DBmysql::error` property.
 - `Document::getImage()`
 - `Document::showUploadedFilesDropdown()`
@@ -388,6 +389,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Application\ErrorHandler::handleSqlError()`
+- `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
 - `Glpi\Dashboard\Filter::itilcategory()`

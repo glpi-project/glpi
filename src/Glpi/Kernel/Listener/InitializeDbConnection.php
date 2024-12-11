@@ -32,27 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
-use Config;
-use Glpi\Config\LegacyConfigProviderInterface;
+use DBConnection;
+use Glpi\Debug\Profiler;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class LoadLegacyConfiguration implements LegacyConfigProviderInterface
+final readonly class InitializeDbConnection implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
 
-        if (isset($_SESSION['is_installing'])) {
-            // Force `root_doc` value
-            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-            $CFG_GLPI['root_doc'] = $request->getBasePath();
-            return;
+    public function onPostBoot(): void
+    {
+        Profiler::getInstance()->start('InitializeDbConnection::execute', Profiler::CATEGORY_BOOT);
+
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+            include_once(GLPI_CONFIG_DIR . '/config_db.php');
+
+            if (\class_exists('DB', false)) {
+                DBConnection::establishDBConnection(false, false);
+            }
         }
 
-        Config::loadLegacyConfiguration();
+        Profiler::getInstance()->stop('InitializeDbConnection::execute');
     }
 }
