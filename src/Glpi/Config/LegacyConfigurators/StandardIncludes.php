@@ -178,7 +178,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 $_SERVER['argc']--;
             }
         }
-        Toolbox::setDebugMode();
 
         if (!isset($_SESSION["glpilanguage"])) {
             $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
