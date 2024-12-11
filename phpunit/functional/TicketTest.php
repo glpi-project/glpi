@@ -7672,7 +7672,7 @@ HTML
                 'input' => [
                     'is_private' => true,
                     'state'      => \Planning::INFO,
-                    'content'    => 'Do Not Compute Take Into Account Task 2',
+                    'content'    => 'Compute Take Into Account Task 2',
                 ],
                 'expected' => 1,
             ],
