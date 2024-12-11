@@ -988,3 +988,55 @@
         });
     </script>
 {% endmacro %}
+
+{% macro illustrationField(name, value, label = '', options = {}) %}
+    {% set field %}
+        {% set container_id = "container-" ~ random() %}
+
+        <div id="{{ container_id }}">
+            <input
+                name="{{ name }}"
+                type="hidden"
+                value="{{ value }}"
+                data-glpi-icon-picker-value
+            >
+
+            {# Display the illustration, trigger the modal on click #}
+            {% set modal_id = "illustration-modal-" ~ random() %}
+            <div
+                class="illustration-selector d-flex align-items-center card border-1"
+                role="button"
+                aria-label="{{ __("Select an illustration") }}"
+                data-bs-toggle="modal"
+                data-bs-target="#{{ modal_id }}"
+                data-glpi-icon-picker-value-preview
+            >
+                <div class="card-body">
+                    {{ render_illustration(value, 100) }}
+                </div>
+            </div>
+
+            {# Render the modal content #}
+            {{ include('components/illustration/icon_picker_modal.html.twig', {
+                'id': modal_id,
+            }, with_context: false) }}
+
+            {# Start js controller #}
+            <script defer type="module">
+                (async () => {
+                    const module = await import(
+                        "{{ js_path('js/modules/IllustrationPicker/Controller.js') }}"
+                    );
+                    new module.GlpiIllustrationPickerController(
+                        document.getElementById('{{ container_id }}'),
+                    );
+                })();
+            </script>
+        </div>
+    {% endset %}
+
+    {% set options = {
+        'id': '%id%',
+    }|merge(options) %}
+    {{ _self.field(name, field, label, options) }}
+{% endmacro %}

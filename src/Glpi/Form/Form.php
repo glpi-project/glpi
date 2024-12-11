@@ -879,7 +879,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'] ?? "";
+        return $this->fields['illustration'] ?: 'request-service';
     }
 
     #[Override]

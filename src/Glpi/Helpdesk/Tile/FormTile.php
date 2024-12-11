@@ -89,7 +89,7 @@ final class FormTile extends CommonDBChild implements TileInterface
         if ($this->form === null) {
             return "";
         }
-        return $this->form->fields['illustration'];
+        return $this->form->getServiceCatalogItemIllustration();
     }
 
     #[Override]

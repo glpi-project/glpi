@@ -54,9 +54,10 @@ body.mce-content-body {
     justify-content: flex-end;
 }
 
-.tox.tox-tinymce {
-    border: var(--tblr-border-width) solid var(--tblr-border-color);
+.tox.tox-tinymce:not(.content-editable-tinymce .tox.tox-tinymce) {
+    border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
     border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow-input) !important;
 }
 
 .rich_text_container {
