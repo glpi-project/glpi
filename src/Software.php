@@ -273,11 +273,80 @@ class Software extends CommonDBTM
               __('Replay the dictionary rules');
         }
 
+        if (Session::haveRightsOr(static::$rightname, [CREATE, UPDATE])) {
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge']
+            = "<i class='fa-fw ti ti-git-merge'></i>" .
+              __('Merge');
+        }
+
         if ($isadmin) {
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
 
         return $actions;
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+
+        global $CFG_GLPI, $DB;
+
+        switch ($ma->getAction()) {
+            case 'merge':
+                $soft_ids = [];
+                $items = $ma->getItems();
+
+                foreach ($items[$ma->getProcessor()] as $item) {
+                    $soft_ids[] = $item;
+                }
+
+                if (count($soft_ids) < 1) {
+                    echo "<div class='center'>";
+                    echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
+                        __s('Warning') . "'><br><br>";
+                    echo __('Select at least 1 software to merge');
+                    echo "<br><br></div>";
+                    return false;
+                } else if (count($soft_ids) == 1) {
+                    echo __("Select the software to merge");
+                    echo "<br><br>";
+                    self::dropdown(
+                        [
+                            'name' => 'software_to_merge',
+                            'used' => [$soft_ids[0]],
+                            'displaywith'  => ['id'],
+                        ]
+                    );
+                    echo "<br><br>";
+                    echo Html::hidden('item_items_id', ['value' => $soft_ids[0]]);
+                    return false;
+                }
+
+                echo __("Select the software to keep");
+                echo "<br><br>";
+                echo self::dropdown(
+                    [
+                        'name' => 'item_items_id',
+                        'condition' => ['id' => $soft_ids],
+                        'displaywith'  => ['id'],
+                        'display'   => false,
+                    ]
+                );
+                echo "<br><br>";
+                echo Html::hidden('software_to_keep', ['value' => true]);
+
+                echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Post') . "</span>", [
+                    'name'  => 'massiveaction',
+                    'class' => 'btn btn-sm btn-primary',
+                ]);
+
+                return true;
+        }
+        return false;
     }
 
 
@@ -298,14 +367,23 @@ class Software extends CommonDBTM
                 if (isset($input['item_items_id'])) {
                     $items = [];
                     foreach ($ids as $id) {
-                        $items[$id] = 1;
+                        if ($id != $input['item_items_id']) {
+                            $items[$id] = 1;
+                        }
                     }
                     if ($item->can($input['item_items_id'], UPDATE)) {
+                        $item->fields['id'] = $input['item_items_id'];
+                        if (isset($input['software_to_keep'])) {
+                            unset($items[$input['item_items_id']]);
+                        }
+                        if (isset($input['software_to_merge'])) {
+                            $items[$input['software_to_merge']] = 1;
+                        }
                         if ($item->merge($items)) {
-                             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                         } else {
-                             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
                         $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
