@@ -32,35 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class RedirectLegacyRouteListener implements EventSubscriberInterface
+class LegacyPostRequestActionsListener implements EventSubscriberInterface
 {
-    private const URLS_MAPPING = [
-        '/front/helpdesk.public.php' => '/Helpdesk',
-    ];
-
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+            KernelEvents::FINISH_REQUEST => ['onFinishRequest'],
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onFinishRequest(): void
     {
-        if (!$event->isMainRequest()) {
-            return;
-        }
-        $request = $event->getRequest();
-
-        if (\array_key_exists($request->getPathInfo(), self::URLS_MAPPING)) {
-            $event->setResponse(new RedirectResponse($request->getBasePath() . self::URLS_MAPPING[$request->getPathInfo()]));
-        }
+        \Html::resetAjaxParam();
+        \Session::resetAjaxParam();
     }
 }

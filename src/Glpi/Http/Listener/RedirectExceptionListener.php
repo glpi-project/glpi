@@ -32,23 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
+use Glpi\Exception\RedirectException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class LegacyPostRequestActionsListener implements EventSubscriberInterface
+final class RedirectExceptionListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::FINISH_REQUEST => ['onFinishRequest'],
+            // priority = 1 to be executed before the default Symfony listeners
+            KernelEvents::EXCEPTION => ['onKernelException', 1],
         ];
     }
 
-    public function onFinishRequest(): void
+    public function onKernelException(ExceptionEvent $event): void
     {
-        \Html::resetAjaxParam();
-        \Session::resetAjaxParam();
+        $throwable = $event->getThrowable();
+
+        if ($throwable instanceof RedirectException) {
+            $event->setResponse($throwable->getResponse());
+        }
     }
 }

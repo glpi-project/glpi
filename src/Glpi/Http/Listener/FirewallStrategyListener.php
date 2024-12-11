@@ -32,29 +32,46 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
-use Glpi\Exception\RedirectException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class RedirectExceptionListener implements EventSubscriberInterface
+final readonly class FirewallStrategyListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents(): array
+    public function __construct(private Firewall $firewall)
     {
-        return [
-            // priority = 1 to be executed before the default Symfony listeners
-            KernelEvents::EXCEPTION => ['onKernelException', 1],
-        ];
     }
 
-    public function onKernelException(ExceptionEvent $event): void
+    public static function getSubscribedEvents(): array
     {
-        $throwable = $event->getThrowable();
+        return [KernelEvents::CONTROLLER => 'onKernelController'];
+    }
 
-        if ($throwable instanceof RedirectException) {
-            $event->setResponse($throwable->getResponse());
+    public function onKernelController(ControllerEvent $event): void
+    {
+        $strategy = null;
+
+        /** @var SecurityStrategy[] $attributes */
+        $attributes = $event->getAttributes(SecurityStrategy::class);
+        $number_of_attributes = \count($attributes);
+        if ($number_of_attributes > 1) {
+            throw new \RuntimeException(\sprintf(
+                'You can apply only one security strategy per HTTP request. You actually used the "%s" attribute %d times.',
+                SecurityStrategy::class,
+                $number_of_attributes,
+            ));
+        } elseif ($number_of_attributes === 1) {
+            $strategy = current($attributes)->strategy;
+        } elseif ($event->isMainRequest()) {
+            $strategy = $this->firewall->computeFallbackStrategy($event->getRequest());
+        }
+
+        if ($strategy !== null) {
+            $this->firewall->applyStrategy($strategy);
         }
     }
 }

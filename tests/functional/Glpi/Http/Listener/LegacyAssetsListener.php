@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Http;
+namespace tests\units\Glpi\Http\Listener;
 
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;

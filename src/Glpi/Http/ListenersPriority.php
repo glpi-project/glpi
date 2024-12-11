@@ -35,6 +35,11 @@
 namespace Glpi\Http;
 
 use Glpi\Config\LegacyConfigProviderListener;
+use Glpi\Http\Listener\LegacyAssetsListener;
+use Glpi\Http\Listener\LegacyItemtypeRouteListener;
+use Glpi\Http\Listener\LegacyRouterListener;
+use Glpi\Http\Listener\PluginsRouterListener;
+use Glpi\Http\Listener\RedirectLegacyRouteListener;
 
 final class ListenersPriority
 {

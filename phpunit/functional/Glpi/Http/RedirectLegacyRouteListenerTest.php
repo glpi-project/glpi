@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Http;
 
-use Glpi\Http\RedirectLegacyRouteListener;
+use Glpi\Http\Listener\RedirectLegacyRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
