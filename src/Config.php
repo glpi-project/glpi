@@ -1650,7 +1650,7 @@ class Config extends CommonDBTM
         if (!isset($_SERVER['REQUEST_URI'])) {
             // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
             // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
-            // and it cannot be done only once configuration is loaded.
+            // and it can only be done once configuration is loaded.
 
             // `$CFG_GLPI['root_doc']` is not supposed to be used in a CLI context,
             // but it is likely to be used indirectly by cron tasks.
