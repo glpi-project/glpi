@@ -2350,7 +2350,7 @@ class TicketTest extends DbTestCase
         );
 
         $this->assertCount(
-            9,
+            8,
             $clonedTicket->getTimelineItems(['with_logs' => true])
         );
         //User: Add a link with an item: 5 times
