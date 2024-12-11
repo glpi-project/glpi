@@ -39,7 +39,7 @@ use Glpi\Application\SystemConfigurator;
 use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
-use Glpi\Http\PluginsRouterListener;
+use Glpi\Http\Listener\PluginsRouterListener;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;

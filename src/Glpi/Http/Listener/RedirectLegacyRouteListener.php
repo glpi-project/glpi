@@ -32,45 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
-use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Http\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class FirewallStrategyListener implements EventSubscriberInterface
+final readonly class RedirectLegacyRouteListener implements EventSubscriberInterface
 {
-    public function __construct(private Firewall $firewall)
-    {
-    }
+    private const URLS_MAPPING = [
+        '/front/helpdesk.public.php' => '/Helpdesk',
+    ];
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::CONTROLLER => 'onKernelController'];
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+        ];
     }
 
-    public function onKernelController(ControllerEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
-        $strategy = null;
-
-        /** @var SecurityStrategy[] $attributes */
-        $attributes = $event->getAttributes(SecurityStrategy::class);
-        $number_of_attributes = \count($attributes);
-        if ($number_of_attributes > 1) {
-            throw new \RuntimeException(\sprintf(
-                'You can apply only one security strategy per HTTP request. You actually used the "%s" attribute %d times.',
-                SecurityStrategy::class,
-                $number_of_attributes,
-            ));
-        } elseif ($number_of_attributes === 1) {
-            $strategy = current($attributes)->strategy;
-        } elseif ($event->isMainRequest()) {
-            $strategy = $this->firewall->computeFallbackStrategy($event->getRequest());
+        if (!$event->isMainRequest()) {
+            return;
         }
+        $request = $event->getRequest();
 
-        if ($strategy !== null) {
-            $this->firewall->applyStrategy($strategy);
+        if (\array_key_exists($request->getPathInfo(), self::URLS_MAPPING)) {
+            $event->setResponse(new RedirectResponse($request->getBasePath() . self::URLS_MAPPING[$request->getPathInfo()]));
         }
     }
 }

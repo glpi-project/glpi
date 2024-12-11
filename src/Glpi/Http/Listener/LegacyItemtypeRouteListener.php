@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
 use CommonDevice;
 use CommonDropdown;
@@ -46,6 +46,7 @@ use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
+use Glpi\Http\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

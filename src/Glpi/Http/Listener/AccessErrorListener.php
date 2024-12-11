@@ -32,12 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Http\Listener;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\AuthenticationFailedException;
-use Glpi\Exception\RedirectException;
 use Glpi\Exception\SessionExpiredException;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
