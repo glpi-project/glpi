@@ -111,6 +111,17 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
+    public function boot(): void
+    {
+        parent::boot();
+
+        if ($this->booted) {
+            return;
+        }
+
+        $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
+    }
+
     public function loadCommonGlobalConfig(): void
     {
         $this->boot();

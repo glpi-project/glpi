@@ -35,37 +35,28 @@
 namespace Glpi\Config\LegacyConfigurators;
 
 use Auth;
-use DBConnection;
-use DBmysql;
 use Config;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Http\Listener\CheckGlpiConfigListener;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
 use Html;
 use Session;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Toolbox;
 use Update;
 
 final readonly class StandardIncludes implements LegacyConfigProviderInterface
 {
-    public function __construct(
-        #[Autowire('%kernel.project_dir%')] private string $projectDir,
-    ) {
-    }
-
     public function execute(): void
     {
         /**
-         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $DB,
-               $CFG_GLPI,
+        global $CFG_GLPI,
                $GLPI_CACHE
         ;
 
@@ -76,88 +67,17 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             return;
         }
 
-        $skip_db_checks = false;
         $skip_maintenance_checks = false;
-        if (array_key_exists('REQUEST_URI', $_SERVER)) {
-            if (preg_match('#^' . $CFG_GLPI['root_doc'] . '/front/(css|locale).php#', $_SERVER['REQUEST_URI']) === 1) {
-                $skip_db_checks  = true;
-                $skip_maintenance_checks = true;
-            }
-
-            $no_db_checks_scripts = [
-                '#^' . $CFG_GLPI['root_doc'] . '/$#',
-                '#^' . $CFG_GLPI['root_doc'] . '/index.php#',
-                '#^' . $CFG_GLPI['root_doc'] . '/install/install.php#',
-                '#^' . $CFG_GLPI['root_doc'] . '/install/update.php#',
-            ];
-            foreach ($no_db_checks_scripts as $pattern) {
-                if (preg_match($pattern, $_SERVER['REQUEST_URI']) === 1) {
-                    $skip_db_checks = true;
-                    break;
-                }
-            }
+        if (
+            array_key_exists('REQUEST_URI', $_SERVER)
+            && preg_match('#^' . $CFG_GLPI['root_doc'] . '/front/(css|locale).php#', $_SERVER['REQUEST_URI']) === 1
+        ) {
+            $skip_maintenance_checks = true;
         }
 
         //init cache
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-
-        // Check if the DB is configured properly
-        if (!$skip_db_checks) {
-            if ($DB instanceof DBmysql) {
-                //Database connection
-                if (!$DB->connected) {
-                    DBConnection::displayMySQLError();
-                    exit(1);
-                }
-
-                //Options from DB, do not touch this part.
-                if (!Config::isLegacyConfigurationLoaded()) {
-                    echo "Error accessing config table";
-                    exit(1);
-                }
-            } else {
-                Session::loadLanguage('', false);
-
-                if (!isCommandLine()) {
-                    // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                    $debug_mode = $_SESSION['glpi_use_mode'];
-                    $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-                    Html::nullHeader('Missing configuration', $CFG_GLPI["root_doc"]);
-                    $twig_params = [
-                        'config_db' => GLPI_CONFIG_DIR . '/config_db.php',
-                        'install_exists' => file_exists($this->projectDir . '/install/install.php'),
-                    ];
-                    // language=Twig
-                    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                        <div class="container-fluid mb-4">
-                            <div class="row justify-content-center">
-                                <div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">
-                                    <h2>GLPI seems to not be configured properly.</h2>
-                                    <p class="mt-2 mb-n2 alert alert-warning">
-                                        Database configuration file "{{ config_db }}" is missing or is corrupted.
-                                        You have to either restart the install process, either restore this file.
-                                        <br />
-                                        <br />
-                                        {% if install_exists %}
-                                            <a class="btn btn-primary" href="{{ path('install/install.php') }}">Go to install page</a>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-    TWIG, $twig_params);
-                    Html::nullFooter();
-                    $_SESSION['glpi_use_mode'] = $debug_mode;
-                } else {
-                    echo "GLPI seems to not be configured properly.\n";
-                    echo sprintf('Database configuration file "%s" is missing or is corrupted.', GLPI_CONFIG_DIR . '/config_db.php') . "\n";
-                    echo "You have to either restart the install process, either restore this file.\n";
-                }
-                exit(1);
-            }
-        }
 
         if (
             isCommandLine()
@@ -206,7 +126,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         }
 
         // Check version
-        if (!$skip_db_checks && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (!CheckGlpiConfigListener::skipDbChecks() && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             Session::checkCookieSecureConfig();
 
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.

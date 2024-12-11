@@ -34,16 +34,19 @@
 
 namespace Glpi\Http;
 
+use Glpi\Http\Listener\CheckGlpiConfigListener;
 use Glpi\Config\LegacyConfigProviderListener;
 use Glpi\Http\Listener\LegacyAssetsListener;
 use Glpi\Http\Listener\LegacyItemtypeRouteListener;
 use Glpi\Http\Listener\LegacyRouterListener;
 use Glpi\Http\Listener\PluginsRouterListener;
 use Glpi\Http\Listener\RedirectLegacyRouteListener;
+use Glpi\Http\Listener\RootDocListener;
+use Glpi\Http\Listener\SessionStartListener;
 
 final class ListenersPriority
 {
-    public const LEGACY_LISTENERS_PRIORITIES = [
+    public const REQUEST_LISTENERS_PRIORITIES = [
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
         LegacyAssetsListener::class         => 500,
@@ -53,6 +56,10 @@ final class ListenersPriority
         // Legacy URLs redirections does not require any complex logic. It can be done prior to
         // GLPI config and plugins initialization.
         RedirectLegacyRouteListener::class  => 375,
+
+        RootDocListener::class              => 370,
+        SessionStartListener::class         => 365,
+        CheckGlpiConfigListener::class      => 360,
 
         // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
@@ -70,6 +77,10 @@ final class ListenersPriority
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
         PluginsRouterListener::class => 31,
+    ];
+
+    public const POST_BOOT_LISTENERS_PRIORITIES = [
+        SessionStartListener::class => 500,
     ];
 
     private function __construct()

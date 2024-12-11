@@ -50,7 +50,7 @@ final readonly class LegacyConfigProviderListener implements EventSubscriberInte
     {
         return [
             // Has to be executed before anything else!
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::LEGACY_LISTENERS_PRIORITIES[self::class]],
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 
