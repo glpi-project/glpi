@@ -13,7 +13,7 @@ final readonly class SessionStartListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 

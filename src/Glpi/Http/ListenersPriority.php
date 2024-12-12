@@ -44,6 +44,7 @@ use Glpi\Http\Listener\ProfilerStartListener;
 use Glpi\Http\Listener\RedirectLegacyRouteListener;
 use Glpi\Http\Listener\RootDocListener;
 use Glpi\Http\Listener\SessionStartListener;
+use Glpi\Http\Listener\DebugModeListener;
 
 final class ListenersPriority
 {
@@ -83,6 +84,7 @@ final class ListenersPriority
     public const POST_BOOT_LISTENERS_PRIORITIES = [
         SessionStartListener::class => 500,
         ProfilerStartListener::class => 400,
+        DebugModeListener::class => 300,
     ];
 
     private function __construct()

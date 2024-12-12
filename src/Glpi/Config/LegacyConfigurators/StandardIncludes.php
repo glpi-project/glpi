@@ -79,20 +79,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
-        if (
-            isCommandLine()
-            && !defined('TU_USER') // In test suite context, used --debug option is the atoum one
-            && isset($_SERVER['argv'])
-        ) {
-            $key = array_search('--debug', $_SERVER['argv']);
-            if ($key) {
-                $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-                unset($_SERVER['argv'][$key]);
-                $_SERVER['argv']           = array_values($_SERVER['argv']);
-                $_SERVER['argc']--;
-            }
-        }
-
         // Override cfg_features by session value
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
             if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
