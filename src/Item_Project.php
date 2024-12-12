@@ -237,9 +237,8 @@ class Item_Project extends CommonDBRelation
                     return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
 
                 default:
-                   // Not used now
                     if (
-                        Session::haveRight("project", Project::READMY)
+                        Project::canView()
                         && $item instanceof CommonDBTM
                         && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                     ) {
@@ -280,7 +279,7 @@ class Item_Project extends CommonDBRelation
 
             default:
                 if (
-                    Session::haveRight("project", Project::READMY)
+                    Project::canView()
                     && $item instanceof CommonDBTM
                     && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                 ) {
