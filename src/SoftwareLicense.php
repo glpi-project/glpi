@@ -1064,6 +1064,7 @@ TWIG, $twig_params);
                 $expired = false;
             }
             $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
+            $nb_assoc  += SoftwareLicense_User::countForLicense($data['id']);
             $tot_assoc += $nb_assoc;
 
             if ($data['number'] < 0) {

@@ -39,9 +39,9 @@
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-if ($DB->fieldExists(SoftwareLicense::getTable(), 'softwares_id')) {
+if ($DB->fieldExists('glpi_softwarelicenses', 'softwares_id')) {
     $migration->changeField(
-        SoftwareLicense::getTable(),
+        'glpi_softwarelicenses',
         'softwares_id',
         'softwares_id',
         "int {$default_key_sign}",
@@ -49,5 +49,4 @@ if ($DB->fieldExists(SoftwareLicense::getTable(), 'softwares_id')) {
             'null' => true
         ]
     );
-    $migration->migrationOneTable(SoftwareLicense::getTable());
 }

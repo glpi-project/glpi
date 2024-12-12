@@ -405,7 +405,7 @@ class User extends CommonDBTM
         $this->addStandardTab('Auth', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
         $this->addStandardTab('Certificate_Item', $ong, $options);
-        $this->addStandardTab('Item_SoftwareLicense', $ong, $options);
+        $this->addStandardTab(SoftwareLicense_User::class, $ong, $options);
         $this->addStandardTab(Contract_User::class, $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 

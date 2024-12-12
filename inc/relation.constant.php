@@ -1661,6 +1661,7 @@ $RELATION = [
         '_glpi_softwarelicenses_users'          => 'users_id',
         '_glpi_contracts_users'         => 'users_id',
     ],
+
     'glpi_usertitles' => [
         'glpi_contacts' => 'usertitles_id',
         'glpi_users'    => 'usertitles_id',

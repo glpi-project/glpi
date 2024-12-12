@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -51,20 +50,47 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-        return User::getTypeName($nb);
+        return SoftwareLicense::getTypeName($nb);
     }
 
-    public static function countForLicense($softwarelicenses_id)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (!$withtemplate && SoftwareLicense::canView() && $item::class === User::class) {
+            $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = countElementsInTable(SoftwareLicense_User::getTable(), ['users_id' => $item->fields['id']]);
+            }
+            return self::createTabEntry(
+                SoftwareLicense_User::getTypeName(Session::getPluralNumber()),
+                $nb,
+                $item::class,
+                'ti ti-package'
+            );
+        }
+
+        return '';
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if (!$withtemplate && SoftwareLicense::canView() && $item::class === User::class) {
+            self::showForUser($item, $withtemplate);
+        }
+
+        return true;
+    }
+
+    public static function countForLicense(int $softwarelicenses_id): int
     {
         return countElementsInTable(static::getTable(), ['softwarelicenses_id' => $softwarelicenses_id]);
     }
 
-    public static function showForUser(CommonDBTM $item, $withtemplate = 0)
+    private static function showForUser(CommonDBTM $item, $withtemplate = 0): void
     {
-        $ID       = $item->fields['id'];
+        $ID = $item->fields['id'];
 
         if (
-            !Item_SoftwareLicense::canView()
+            !SoftwareLicense::canView()
             || !$item->can($ID, READ)
         ) {
             return;
@@ -76,10 +102,10 @@ class SoftwareLicense_User extends CommonDBRelation
         $iterator = self::getListForItem($item);
 
         $licenses = [];
-        $used      = [];
+        $used     = [];
         foreach ($iterator as $data) {
             $licenses[$data['id']] = $data;
-            $used[$data['id']]      = $data['id'];
+            $used[$data['id']]     = $data['id'];
         }
         if ($canedit && ((int) $withtemplate !== 2)) {
             $twig_params = [
@@ -111,47 +137,37 @@ TWIG, $twig_params);
 
         $entries = [];
         $entity_cache = [];
-        $software_cache = [];
         $type_cache = [];
         foreach ($licenses as $data) {
             $entry = [
-                'itemtype' => self::class,
-                'id'       => $data['linkid'],
+                'itemtype'  => self::class,
+                'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'number'      => $data['number']
+                'number'    => $data['number']
             ];
-            $con         = new SoftwareLicense();
-            $con->getFromResultSet($data);
-            $entry['name'] = $con->getLink();
-            if (!isset($entity_cache[$con->fields["entities_id"]])) {
-                $entity_cache[$con->fields["entities_id"]] = Dropdown::getDropdownName(
+            $license = new SoftwareLicense();
+            $license->getFromResultSet($data);
+            $entry['name'] = $license->getLink();
+            if (!isset($entity_cache[$license->fields["entities_id"]])) {
+                $entity_cache[$license->fields["entities_id"]] = Dropdown::getDropdownName(
                     "glpi_entities",
-                    $con->fields["entities_id"]
+                    $license->fields["entities_id"]
                 );
             }
-            $entry['entity'] = $entity_cache[$con->fields["entities_id"]];
+            $entry['entity'] = $entity_cache[$license->fields["entities_id"]];
 
-            if (
-                !isset($type_cache[$con->fields["softwares_id"]])
-                && !empty($con->fields["softwares_id"])
-            ) {
-                $soft = new Software();
-                $url = $software_cache[$con->fields["softwares_id"]] = $soft->getFormURLWithID($con->fields["softwares_id"]);
-                $name = Dropdown::getDropdownName(
-                    "glpi_softwares",
-                    $con->fields["softwares_id"]
-                );
-                $software_cache[$con->fields["softwares_id"]] = "<a href=\"$url\">" . $name . "</a>";
-                $entry['software'] = $software_cache[$con->fields["softwares_id"]];
-            }
+            $software = new Software();
+            $entry['software'] = $software->getFromDB($license->fields["softwares_id"])
+                ? $software->getLink()
+                : '-';
 
-            if (!isset($type_cache[$con->fields["softwarelicensetypes_id"]])) {
-                $type_cache[$con->fields["softwarelicensetypes_id"]] = Dropdown::getDropdownName(
+            if (!isset($type_cache[$license->fields["softwarelicensetypes_id"]])) {
+                $type_cache[$license->fields["softwarelicensetypes_id"]] = Dropdown::getDropdownName(
                     "glpi_softwarelicensetypes",
-                    $con->fields["softwarelicensetypes_id"]
+                    $license->fields["softwarelicensetypes_id"]
                 );
             }
-            $entry['type'] = $type_cache[$con->fields["softwarelicensetypes_id"]];
+            $entry['type'] = $type_cache[$license->fields["softwarelicensetypes_id"]];
             $entries[] = $entry;
         }
 
