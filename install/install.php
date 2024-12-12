@@ -47,10 +47,6 @@ use Glpi\Toolbox\Filesystem;
  */
 global $CFG_GLPI, $GLPI_CACHE;
 
-// Force `root_doc` value
-$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-$CFG_GLPI['root_doc'] = $request->getBasePath();
-
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {

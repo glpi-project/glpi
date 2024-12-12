@@ -356,6 +356,7 @@ The present file will list all changes made to the project; according to the
 - `Computer_Item::showForItem()`
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
+- `Config::detectRootDoc()`
 - `Config::getCurrentDBVersion()`
 - `Config::showDebug()`
 - `Config::validatePassword()`

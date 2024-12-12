@@ -70,17 +70,11 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         ;
 
         if (isset($_SESSION['is_installing'])) {
-            // Force `root_doc` value
-            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-            $CFG_GLPI['root_doc'] = $request->getBasePath();
-
             $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
             Session::loadLanguage(with_plugins: false);
             return;
         }
-
-        Config::detectRootDoc();
 
         $skip_db_checks = false;
         $skip_maintenance_checks = false;
@@ -306,13 +300,6 @@ TWIG, $twig_params);
             Html::nullFooter();
             $_SESSION['glpi_use_mode'] = $debug_mode;
             exit();
-        }
-
-        // First call to `Config::detectRootDoc()` cannot compute the value
-        // in CLI context, as it requires DB connection to be up.
-        // Now DB is up, so value can be computed.
-        if (!isset($CFG_GLPI['root_doc'])) {
-            Config::detectRootDoc();
         }
 
         // Load Language file

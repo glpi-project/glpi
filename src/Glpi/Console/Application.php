@@ -433,7 +433,6 @@ class Application extends BaseApplication
         global $CFG_GLPI;
         $this->config = &$CFG_GLPI;
 
-        Config::detectRootDoc();
         Config::loadLegacyConfiguration();
     }
 

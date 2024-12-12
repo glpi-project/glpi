@@ -41,7 +41,15 @@ final readonly class LoadLegacyConfiguration implements LegacyConfigProviderInte
 {
     public function execute(): void
     {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
         if (isset($_SESSION['is_installing'])) {
+            // Force `root_doc` value
+            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+            $CFG_GLPI['root_doc'] = $request->getBasePath();
             return;
         }
 
