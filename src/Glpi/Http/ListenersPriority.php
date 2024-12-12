@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Glpi\Http\Listener\InitializeDbConnection;
 use Glpi\Http\Listener\CheckGlpiConfigListener;
 use Glpi\Config\LegacyConfigProviderListener;
 use Glpi\Http\Listener\LegacyAssetsListener;
@@ -48,6 +49,14 @@ use Glpi\Http\Listener\DebugModeListener;
 
 final class ListenersPriority
 {
+    public const POST_BOOT_LISTENERS_PRIORITIES = [
+        SessionStartListener::class => 90,
+        ProfilerStartListener::class => 80,
+        DebugModeListener::class => 70,
+        RootDocListener::class => 60,
+        InitializeDbConnection::class => 50,
+    ];
+    
     public const REQUEST_LISTENERS_PRIORITIES = [
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
@@ -77,13 +86,6 @@ final class ListenersPriority
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
         PluginsRouterListener::class => 31,
-    ];
-
-    public const POST_BOOT_LISTENERS_PRIORITIES = [
-        SessionStartListener::class => 500,
-        ProfilerStartListener::class => 400,
-        DebugModeListener::class => 300,
-        RootDocListener::class => 200,
     ];
 
     private function __construct()

@@ -32,20 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
 use DBConnection;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class InitializeDbConnection implements LegacyConfigProviderInterface
+final readonly class InitializeDbConnection implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
     {
         if (isset($_SESSION['is_installing'])) {
             return;
         }
 
         if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+            // Inexistent config file is handled in another listener.
             return;
         }
 

@@ -50,6 +50,9 @@ final readonly class RootDocListener implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $request = Request::createFromGlobals();
         $CFG_GLPI['root_doc'] = $request->getBasePath();
     }
