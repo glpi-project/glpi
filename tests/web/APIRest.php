@@ -319,7 +319,6 @@ class APIRest extends atoum
         $this->array($data['session'])
             ->hasKey('glpiID')
             ->hasKey('glpiname')
-            ->hasKey('glpiroot')
             ->hasKey('glpilanguage')
             ->hasKey('glpilist_limit');
     }

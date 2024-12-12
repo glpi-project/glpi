@@ -359,6 +359,7 @@ The present file will list all changes made to the project; according to the
 - `Config::detectRootDoc()`
 - `Config::getCurrentDBVersion()`
 - `Config::showDebug()`
+- `Config::showLibrariesInformation()`
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
@@ -376,6 +377,7 @@ The present file will list all changes made to the project; according to the
 - `Document_Item::showSimpleAddForItem()`
 - `Dropdown::showAdvanceDateRestrictionSwitch()`
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
+- `DropdownTranslation::getTranslationByName()`
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
 - `Entity::cleanEntitySelectorCache()`
@@ -550,12 +552,11 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
-- `Config::showLibrariesInformation()`
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
+- `$_SESSION['glpiroot']` session variable.
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
-- `DropdownTranslation::getTranslationByName()`
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 - `ajax/ldapdaterestriction.php` script.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.

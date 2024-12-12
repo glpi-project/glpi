@@ -172,21 +172,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
                 $_SERVER['argc']--;
             }
         }
-        Toolbox::setDebugMode();
-
-        if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"] != $_SESSION["glpiroot"]) {
-            // When `$_SESSION["glpiroot"]` differs from `$CFG_GLPI["root_doc"]`, it means that
-            // either web server configuration changed,
-            // either session was initialized on another GLPI instance.
-            // Destroy session and redirect to login to ensure that session from another GLPI instance is not reused.
-            Session::destroy();
-            Auth::setRememberMeCookie('');
-            Html::redirectToLogin();
-        }
-
-        if (!isset($_SESSION["glpilanguage"])) {
-            $_SESSION["glpilanguage"] = Session::getPreferredLanguage();
-        }
 
         // Override cfg_features by session value
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
