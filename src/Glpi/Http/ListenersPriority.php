@@ -59,8 +59,6 @@ final class ListenersPriority
         // GLPI config and plugins initialization.
         RedirectLegacyRouteListener::class  => 375,
 
-        RootDocListener::class              => 370,
-        SessionStartListener::class         => 365,
         CheckGlpiConfigListener::class      => 360,
 
         // Config providers may still expect some `$_SERVER` variables to be redefined.
@@ -85,6 +83,7 @@ final class ListenersPriority
         SessionStartListener::class => 500,
         ProfilerStartListener::class => 400,
         DebugModeListener::class => 300,
+        RootDocListener::class => 200,
     ];
 
     private function __construct()

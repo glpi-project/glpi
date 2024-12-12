@@ -34,27 +34,23 @@
 
 namespace Glpi\Http\Listener;
 
-use Config;
 use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\Request;
 
 final readonly class RootDocListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onPostBoot(): void
     {
-        if (!$event->isMainRequest()) {
-            return;
-        }
-
-        Config::detectRootDoc();
+        $request = Request::createFromGlobals();
+        $CFG_GLPI['root_doc'] = $request->getBasePath();
     }
 }
