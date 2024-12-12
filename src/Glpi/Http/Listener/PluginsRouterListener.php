@@ -46,12 +46,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Router;
 
-class PluginsRouterListener implements EventSubscriberInterface
+final readonly class PluginsRouterListener implements EventSubscriberInterface
 {
     public const ROUTE_NAME = 'glpi_plugin';
 
     public function __construct(
-        private readonly PluginContainer $plugin_container,
+        private PluginContainer $plugin_container,
     ) {
     }
 

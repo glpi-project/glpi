@@ -38,7 +38,7 @@ use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DebugModeListener implements EventSubscriberInterface
+final readonly class DebugModeListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

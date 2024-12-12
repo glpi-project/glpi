@@ -37,7 +37,7 @@ namespace Glpi\Http\Listener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class LegacyPostRequestActionsListener implements EventSubscriberInterface
+final readonly class LegacyPostRequestActionsListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
