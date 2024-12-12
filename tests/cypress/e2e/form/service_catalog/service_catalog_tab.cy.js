@@ -53,12 +53,12 @@ describe('Service catalog tab', () => {
 
         // Make sure the values we are about to apply are are not already set to
         // prevent false negative.
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('not.contain.text', 'request-service.svg');
+        cy.findByRole("textbox", {'name': 'Illustration'}).should('not.contain.text', 'request-service');
         cy.findByLabelText("Description").awaitTinyMCE().should('not.contain.text', 'My description');
         cy.getDropdownByLabelText("Category").should('not.have.text', category_name);
 
         // Set values
-        cy.findByRole("textbox", {'name': 'Illustration'}).type('request-service.svg');
+        cy.findByRole("textbox", {'name': 'Illustration'}).type('request-service');
         cy.findByLabelText("Description").awaitTinyMCE().type('My description');
         cy.getDropdownByLabelText('Category').selectDropdownValue(category_dropdown_value);
 
@@ -67,7 +67,7 @@ describe('Service catalog tab', () => {
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
         // Validate values
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('have.value', 'request-service.svg');
+        cy.findByRole("textbox", {'name': 'Illustration'}).should('have.value', 'request-service');
         cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
         cy.getDropdownByLabelText("Category").should('have.text', category_name);
     });

@@ -146,7 +146,7 @@ const config = {
     },
 };
 
-// Copy raw JS and SCSS files
+// Copy raw JS, SCSS files and SVG files
 const filesToCopy = [
     // JS files
     {
@@ -195,7 +195,13 @@ const filesToCopy = [
     {
         package: 'swagger-ui-dist',
         from: 'oauth2-redirect.html'
-    }
+    },
+    // SVG files
+    {
+        package: '@glpi-project/illustrations',
+        context: 'dist',
+        from: '*.svg',
+    },
 ];
 
 const copyPatterns = [];

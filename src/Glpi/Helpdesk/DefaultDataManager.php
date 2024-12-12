@@ -39,11 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
-use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
-use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ContentField;
-use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
@@ -101,7 +97,7 @@ final class DefaultDataManager
             $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
                 'title'        => __("Browse help articles"),
                 'description'  => __("See all available help articles and our FAQ."),
-                'illustration' => "browse-help.svg",
+                'illustration' => "browse-kb",
                 'page'         => GlpiPageTile::PAGE_FAQ,
             ]);
 
@@ -112,21 +108,21 @@ final class DefaultDataManager
             $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
                 'title'        => __("Request a service"),
                 'description'  => __("Ask for a service to be provided by our team."),
-                'illustration' => "request-service.svg",
+                'illustration' => "request-service",
                 'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
             ]);
 
             $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
                 'title'        => __("Make a reservation"),
                 'description'  => __("Pick an available asset and reserve it for a given date."),
-                'illustration' => "make-reservation.svg",
+                'illustration' => "reservation",
                 'page'         => GlpiPageTile::PAGE_RESERVATION,
             ]);
 
             $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
                 'title'        => __("View approval requests"),
                 'description'  => __("View all tickets waiting for your validation."),
-                'illustration' => "approval-request.svg",
+                'illustration' => "approve-requests",
                 'page'         => GlpiPageTile::PAGE_APPROVAL,
             ]);
         }
@@ -159,7 +155,7 @@ final class DefaultDataManager
         $form = $this->createForm(
             name: __('Report an issue'),
             description: __("Ask for support from our helpdesk team."),
-            illustration: 'report-issue.svg',
+            illustration: 'report-issue',
         );
 
         // Get first section
@@ -222,7 +218,7 @@ final class DefaultDataManager
         $form = $this->createForm(
             name: __('Request a service'),
             description: __("Ask for a service to be provided by our team."),
-            illustration: 'request-service.svg',
+            illustration: 'request-service',
         );
 
         // Get first section

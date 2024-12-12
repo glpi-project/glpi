@@ -34,114 +34,56 @@
 
 namespace Glpi\UI;
 
-use DirectoryIterator;
+use Glpi\Application\View\TemplateRenderer;
 
 final class IllustrationManager
 {
+    public string $icons_definition_file;
+    public string $icons_sprites_path;
+
     public function __construct(
-        private string $illustration_dir = GLPI_ROOT . "/resources/illustration"
+        ?string $icons_definition_file = null,
+        ?string $icons_sprites_path = null,
     ) {
-    }
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-    /**
-     * @param int $size Height and width (px)
-     */
-    public function render(string $filename, int $size = 100): string
-    {
-        if (!$this->isValidIllustrationName($filename)) {
-            return "";
-        }
-
-        $svg_content = $this->getSvgContent($filename);
-        $svg_content = $this->replaceColorsByVariables($svg_content);
-        $svg_content = $this->adjustSize($svg_content, $size);
-
-        return $svg_content;
-    }
-
-    /** @return string[] */
-    public function getAllIllustrationsNames(): array
-    {
-        $illustrations = [];
-        $illustrations_files = new DirectoryIterator($this->getIllustrationDir());
-        foreach ($illustrations_files as $file) {
-            /** @var \SplFileInfo $file */
-            if ($file->isDir()) {
-                continue;
-            }
-
-            if ($file->getExtension() !== 'svg') {
-                continue;
-            }
-
-            $illustrations[] = $file->getFilename();
-        }
-
-        return $illustrations;
-    }
-
-    private function isValidIllustrationName(string $filename): bool
-    {
-        $full_path = $this->getIllustrationDir() . "/$filename";
-
-        return
-            file_exists($full_path)
-            && is_file($full_path)
-            && is_readable($full_path)
-            && str_ends_with($full_path, '.svg')
-            // Make sure malicious users are not able to read files outside the illustration directory
-            && realpath($full_path) == $full_path
+        $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
+            . '/node_modules/@glpi-project/illustrations/dist/icons.json'
+        ;
+        $this->icons_sprites_path = $icons_sprites_path ?? $CFG_GLPI['url_base']
+            . '/lib/glpi-project/illustrations/glpi-illustrations.svg'
         ;
     }
 
-    private function getIllustrationDir(): string
+    /**
+     * @param int|null $size Height and width (px). Will be set to 100% if null.
+     */
+    public function render_icon(string $icon_id, ?int $size = null): string
     {
-        return $this->illustration_dir;
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/icon.svg.twig', [
+            'file_path' => $this->icons_sprites_path,
+            'icon_id'   => $icon_id,
+            'size'      => $this->computeSize($size),
+        ]);
     }
 
-    private function getSvgContent(string $filename): string
+    /** @return string[] */
+    public function getAllIconsIds(): array
     {
-        $svg_content = file_get_contents($this->getIllustrationDir() . "/$filename");
-        if (!$svg_content) {
-            return "";
+        $json = file_get_contents($this->icons_definition_file);
+        $definition = json_decode($json, associative: true);
+
+        return array_keys($definition);
+    }
+
+    private function computeSize(?int $size = null): string
+    {
+        if ($size === null) {
+            return "100%";
         }
 
-        return $svg_content;
-    }
-
-    private function replaceColorsByVariables(string $svg_content): string
-    {
-        $mapping = [
-            'rgb(71,71,71)'    => "--glpi-mainmenu-bg",
-            '#474747'          => "--glpi-mainmenu-bg",
-            'rgb(186,186,186)' => "--glpi-helpdesk-header",
-            '#BABABA'          => "--glpi-helpdesk-header",
-            '#bababa'          => "--glpi-helpdesk-header",
-            'rgb(235,235,235)' => "--tblr-primary",
-            '#EBEBEB'          => "--tblr-primary",
-            '#ebebeb'          => "--tblr-primary",
-        ];
-
-        foreach ($mapping as $color => $variable) {
-            $svg_content = str_replace($color, "var($variable)", $svg_content);
-        }
-
-        return $svg_content;
-    }
-
-    private function adjustSize(string $svg_content, int $size): string
-    {
-        $svg_content = str_replace(
-            'width="100%"',
-            'width="' . $size . 'px"',
-            $svg_content
-        );
-        $svg_content = str_replace(
-            'height="100%"',
-            'height="' . $size . 'px"',
-            $svg_content
-        );
-
-        return $svg_content;
+        return $size . "px";
     }
 }
