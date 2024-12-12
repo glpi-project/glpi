@@ -113,7 +113,6 @@ class Application extends BaseApplication
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
         $this->initApplication();
-        $this->initCache();
         $this->initDb();
         $this->initSession();
         $this->initConfig();
@@ -401,22 +400,6 @@ class Application extends BaseApplication
        // Default value for use mode
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         $_SESSION['glpiname'] = 'cli';
-    }
-
-    /**
-     * Initialize GLPI cache.
-     *
-     * @global \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-     *
-     * @return void
-     */
-    private function initCache()
-    {
-
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $cache_manager = new CacheManager();
-        $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
     }
 
     /**
