@@ -46,3 +46,5 @@
         {{ inputs.submit('add', _x('button', 'Add'), 1) }}
     </div>
 </form>
+
+{{ include('components/datatable.html.twig', datatable_params, with_context = false) }}

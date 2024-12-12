@@ -239,7 +239,7 @@ class Item_Project extends CommonDBRelation
                 default:
                    // Not used now
                     if (
-                        Session::haveRight("project", Project::READALL)
+                        Session::haveRight("project", Project::READMY)
                         && $item instanceof CommonDBTM
                         && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                     ) {
@@ -280,7 +280,7 @@ class Item_Project extends CommonDBRelation
 
             default:
                 if (
-                    Session::haveRight("project", Project::READALL)
+                    Session::haveRight("project", Project::READMY)
                     && $item instanceof CommonDBTM
                     && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                 ) {
@@ -307,7 +307,7 @@ class Item_Project extends CommonDBRelation
             $project = new Project();
             $result = $project->getFromDB($value['projects_id']);
 
-            if ($result === false) {
+            if ($result === false || !$project->can($project->fields['id'], READ)) {
                 continue;
             }
 
@@ -352,19 +352,18 @@ class Item_Project extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
             'item' => $item,
-            'used' => $used
-        ]);
-
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'is_tab' => true,
-            'nopager' => true,
-            'nofilter' => true,
-            'nosort' => true,
-            'columns' => $cols['columns'],
-            'formatters' => $cols['formatters'],
-            'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
+            'used' => $used,
+            'datatable_params' => [
+                'is_tab' => true,
+                'nopager' => true,
+                'nofilter' => true,
+                'nosort' => true,
+                'columns' => $cols['columns'],
+                'formatters' => $cols['formatters'],
+                'entries' => $entries,
+                'total_number' => count($entries),
+                'filtered_number' => count($entries),
+            ]
         ]);
     }
 }
