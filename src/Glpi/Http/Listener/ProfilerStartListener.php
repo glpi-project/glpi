@@ -34,11 +34,11 @@
 
 namespace Glpi\Http\Listener;
 
+use Glpi\Debug\Profile;
 use Glpi\Debug\Profiler;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class ProfilerStartListener implements EventSubscriberInterface
 {
@@ -56,6 +56,14 @@ final readonly class ProfilerStartListener implements EventSubscriberInterface
             Profiler::getInstance()->disable();
         } else {
             Profiler::getInstance()->start('php_request');
+        }
+
+        if (
+            isset($_SESSION['glpi_use_mode'])
+            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+        ) {
+            // Start the debug profile
+            Profile::getCurrent();
         }
     }
 }
