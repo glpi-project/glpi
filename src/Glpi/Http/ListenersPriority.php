@@ -40,6 +40,7 @@ use Glpi\Http\Listener\LegacyAssetsListener;
 use Glpi\Http\Listener\LegacyItemtypeRouteListener;
 use Glpi\Http\Listener\LegacyRouterListener;
 use Glpi\Http\Listener\PluginsRouterListener;
+use Glpi\Http\Listener\ProfilerStartListener;
 use Glpi\Http\Listener\RedirectLegacyRouteListener;
 use Glpi\Http\Listener\RootDocListener;
 use Glpi\Http\Listener\SessionStartListener;
@@ -81,6 +82,7 @@ final class ListenersPriority
 
     public const POST_BOOT_LISTENERS_PRIORITIES = [
         SessionStartListener::class => 500,
+        ProfilerStartListener::class => 400,
     ];
 
     private function __construct()

@@ -32,14 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
-use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profiler;
+use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-final readonly class ProfilerStart implements LegacyConfigProviderInterface
+final readonly class ProfilerStartListener implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            // priority = 1 to be executed before the default Symfony listeners
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
     {
         if (isCommandLine()) {
             Profiler::getInstance()->disable();
