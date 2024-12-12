@@ -272,10 +272,12 @@
                                             {% if not (color matches '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/') %}
                                                 {% set color = '#BBBBBB' %}
                                             {% endif %}
-                                            <div class="badge_block" style="border-color: {{ color }}">
-                                                <span class="me-1" style="background: {{ color }}"></span>
-                                                {{ content }}
-                                            </div>
+                                            {% if content is not empty %}
+                                                <div class="badge_block" style="border-color: {{ color }}">
+                                                    <span class="me-1" style="background: {{ color }}"></span>
+                                                    {{ content }}
+                                                </div>
+                                            {% endif %}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
