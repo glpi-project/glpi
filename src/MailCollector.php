@@ -960,6 +960,11 @@ class MailCollector extends CommonDBTM
                             $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                             $rejected->add($rejinput);
                         } else if ($fup->add($fup_input)) {
+                            // Update ticket to apply rules
+                            $ticket->update([
+                                'id' => $tkt['tickets_id'],
+                                ...$tkt
+                            ]);
                             $delete[$uid] =  self::ACCEPTED_FOLDER;
                         } else {
                             $error++;
@@ -1161,6 +1166,8 @@ class MailCollector extends CommonDBTM
             $subject = '';
         }
         $tkt['name'] = $this->cleanSubject($subject);
+        $tkt['_subject'] = $this->cleanSubject($subject);
+        $tkt['_from'] = $requester;
         if (!Toolbox::seems_utf8($tkt['name'])) {
             $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
         }
@@ -1207,6 +1214,7 @@ class MailCollector extends CommonDBTM
                      $requester
                  )))
             ) {
+                unset($tkt['name']);
                 if ($tkt['_supplier_email']) {
                     $tkt['content'] = sprintf(__('From %s'), $requester)
                     . ($this->body_is_html ? '<br /><br />' : "\n\n")
