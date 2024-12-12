@@ -306,7 +306,7 @@ class Item_Project extends CommonDBRelation
             $project = new Project();
             $result = $project->getFromDB($value['projects_id']);
 
-            if ($result === false || !$project->can($project->fields['id'], READ)) {
+            if ($result === false) {
                 continue;
             }
 
@@ -314,19 +314,28 @@ class Item_Project extends CommonDBRelation
             $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
-            $data = [
-                'name' => $project->getLink(),
-                'projectstates_id' => $state !== false
-                    ? [
-                        'content' => $state->fields['name'],
-                        'color' => $state->fields['color']
-                    ] : '',
-                'priority' => [
-                    'content' => $priority,
-                    'color' => $prioritycolor
-                ],
-                'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
-            ];
+            if (!$project->can($project->fields['id'], READ)) {
+                $data = [
+                    'name' => $project->getLink(),
+                    'projectstates_id' => '',
+                    'priority' => '',
+                    'percent_done' => '',
+                ];
+            } else {
+                $data = [
+                    'name' => $project->getLink(),
+                    'projectstates_id' => $state !== false
+                        ? [
+                            'content' => $state->fields['name'],
+                            'color' => $state->fields['color']
+                        ] : '',
+                    'priority' => [
+                        'content' => $priority,
+                        'color' => $prioritycolor
+                    ],
+                    'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
+                ];
+            }
             $entries[] = array_merge($project->fields, $data);
         }
 
