@@ -2437,9 +2437,7 @@ class Session
         } finally {
             self::$bypass_right_checks = false;
         }
-        if ($caught_throwable !== null) {
-            throw $caught_throwable;
-        }
+        throw $caught_throwable;
     }
 
     /**
