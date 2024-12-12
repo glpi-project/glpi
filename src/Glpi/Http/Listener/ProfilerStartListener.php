@@ -34,6 +34,7 @@
 
 namespace Glpi\Http\Listener;
 
+use Session;
 use Glpi\Debug\Profile;
 use Glpi\Debug\Profiler;
 use Glpi\Http\ListenersPriority;
