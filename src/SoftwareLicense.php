@@ -105,16 +105,6 @@ class SoftwareLicense extends CommonTreeDropdown
         }
         $input = parent::prepareInputForAdd($input);
 
-        if (!isset($this->input['softwares_id']) || !$this->input['softwares_id']) {
-            Session::addMessageAfterRedirect(
-                __s("Please select a software for this license"),
-                true,
-                ERROR,
-                true
-            );
-             return false;
-        }
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -1074,6 +1064,7 @@ TWIG, $twig_params);
                 $expired = false;
             }
             $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
+            $nb_assoc  += SoftwareLicense_User::countForLicense($data['id']);
             $tot_assoc += $nb_assoc;
 
             if ($data['number'] < 0) {

@@ -225,7 +225,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $expected = [
             1 => "Summary",
-            2 => "Items",
+            2 => "Affected items",
         ];
         $tabs = array_map(
             'strip_tags',
@@ -236,7 +236,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [
             1 => "Summary",
-            2 => "Items 2"
+            2 => "Affected items 2"
         ];
         $tabs = array_map(
             'strip_tags',
