@@ -40,10 +40,10 @@ use DB;
 use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
-use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
@@ -106,6 +106,8 @@ class Application extends BaseApplication
      * @var OutputInterface
      */
     private $output;
+
+    private ?Kernel $kernel;
 
     public function __construct()
     {
@@ -342,6 +344,21 @@ class Application extends BaseApplication
      */
     private function initApplication()
     {
+        /** @var Kernel|null $kernel */
+        global $kernel;
+
+        if ($kernel) {
+            $this->kernel = $kernel;
+            $getter = (function () { return $this->booted; })->bindTo($kernel, $kernel::class);
+            $is_booted = $getter->call($kernel);
+            if (!$is_booted) {
+                $this->kernel->boot();
+            }
+            return;
+        }
+
+        $this->kernel = new Kernel();
+        $this->kernel->boot();
     }
 
     /**
@@ -387,19 +404,6 @@ class Application extends BaseApplication
      */
     private function initSession()
     {
-
-        if (!Session::canWriteSessionFiles()) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(
-                sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
-            );
-        }
-
-        Session::setPath();
-        Session::start();
-
-       // Default value for use mode
-        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-        $_SESSION['glpiname'] = 'cli';
     }
 
     /**
@@ -601,8 +605,11 @@ class Application extends BaseApplication
      */
     public function getKernel(): ?KernelInterface
     {
-        /** @var KernelInterface|null $kernel */
-        global $kernel;
+        if (!$this->kernel) {
+            global $kernel;
+        } else {
+            $kernel = $this->kernel;
+        }
 
         return $kernel;
     }

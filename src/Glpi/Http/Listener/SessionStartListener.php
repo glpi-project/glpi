@@ -97,8 +97,14 @@ final readonly class SessionStartListener implements EventSubscriberInterface
             Session::start();
         }
 
-        // Initialize some session data before everything else so all layers can use it, even if session isn't started
-        $_SESSION['glpi_use_mode'] = null;
-        $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+        if (isCommandLine()) {
+            // Default value for use mode
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+            $_SESSION['glpiname'] = 'cli';
+        } else {
+            // Initialize some session data before everything else so all layers can use it, even if session isn't started
+            $_SESSION['glpi_use_mode'] = null;
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+        }
     }
 }
