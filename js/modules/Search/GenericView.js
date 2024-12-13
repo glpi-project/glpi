@@ -84,7 +84,7 @@ window.GLPI.Search.GenericView = class GenericView {
         const ajax_container = this.getResultsView().getAJAXContainer();
         const search_container = ajax_container.closest('.search-container');
 
-        $(search_container).on('click', 'a.bookmark_record.save', () => {
+        $(search_container).on('click', 'button[name="save_bookmark_record"]', () => {
             const modal = $('#savedsearch-modal');
             //move the modal to the body so it can be displayed above the rest of the page
             modal.appendTo('body');
@@ -100,20 +100,12 @@ window.GLPI.Search.GenericView = class GenericView {
             </div>
             `);
             const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
-
-            if (window.location.search.includes('reset=reset') || window.location.search.trim() === '') {
-                alert(`${__(
-                    `To save a bookmark correctly, you must first execute the search to validate and record the criteria.
-                    Otherwise, the default search parameters will be saved, which may not match your intended settings.`
-                )}`);
-            } else {
-                modal.on('show.bs.modal', () => {
-                    const params = JSON.parse(modal.attr('data-params'));
-                    params['url'] = window.location.pathname + window.location.search;
-                    modal.find('.modal-body').load(CFG_GLPI.root_doc + '/ajax/savedsearch.php', params);
-                });
-                bs_modal.show();
-            }
+            modal.off('show.bs.modal').on('show.bs.modal', () => {
+                const params = JSON.parse(modal.attr('data-params'));
+                params['url'] = window.location.pathname + window.location.search;
+                modal.find('.modal-body').load(`${CFG_GLPI.root_doc}/ajax/savedsearch.php`, params);
+            });
+            bs_modal.show();
         });
     }
 

@@ -44,6 +44,25 @@ window.GLPI.Search.Table = class Table extends GenericView {
         super(element_id);
 
         this.shiftSelectAllCheckbox();
+        this.toogleSavedSearch(true);
+    }
+
+    toogleSavedSearch(disable) {
+        if (disable) {
+            $('.bookmark_record')
+            .attr('title', __('Perform a first search to save it'))
+            .removeClass('btn-ghost-secondary')
+            .css('color', 'gray')
+            .on('click', function(event) {
+                event.preventDefault();
+                return false;
+            });
+        } else {
+            $('.bookmark_record')
+            .addClass('btn-ghost-secondary')
+            .css('color', '')
+            .off('click');
+        }
     }
 
     getElement() {
@@ -199,6 +218,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+                this.toogleSavedSearch(false);
             }, () => {
                 handle_search_failure();
             });
