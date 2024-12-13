@@ -36,6 +36,8 @@
 namespace Glpi\Application\View\Extension;
 
 use Entity;
+use Glpi\Config\ConfigManager;
+use Glpi\Config\ConfigSection;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -49,6 +51,7 @@ class ConfigExtension extends AbstractExtension
         return [
             new TwigFunction('config', [$this, 'config']),
             new TwigFunction('entity_config', [$this, 'getEntityConfig']),
+            new TwigFunction('config_section', [$this, 'getSection']),
         ];
     }
 
@@ -84,5 +87,10 @@ class ConfigExtension extends AbstractExtension
         }
 
         return Entity::getUsedConfig($inheritence_key, $entity_id, $key, $default_value);
+    }
+
+    public function getSection(string $name): ?ConfigSection
+    {
+        return ConfigManager::getInstance()->getSectionByFullName($name);
     }
 }

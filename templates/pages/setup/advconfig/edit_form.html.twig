@@ -31,37 +31,27 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set form_path = form_path|default('Config'|itemtype_form_path) %}
-{% if canedit %}
-    <form name="form"
-          action="{{ form_path }}"
-          method="post"
-          data-track-changes="true">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-{% endif %}
+{# Use common logic already used in config base form #}
+{% import('pages/setup/general/base_form.html.twig') as config_macros %}
+{% import('components/form/fields_macros.html.twig') as fields %}
 
- {% macro render_section_header_centered(section) %}
-    <div class="hr-text">
-       <i class="{{ section.getIcon() }}"></i>
-       <span>{{ section.getLabel() }}</span>
-    </div>
- {% endmacro %}
-
- {% macro render_option(option, scope, additional_field_options = {}, default = null, scope_params = {}) %}
-     {{ call([option, 'renderInput'], [scope, scope_params, additional_field_options]) }}
- {% endmacro %}
-
-<div class="row">
-    {% block config_fields %}
-    {% endblock %}
-</div>
-
-{% if canedit %}
-        <div class="card-footer mx-n2 d-flex">
-            <button type="submit" name="update" value="1" class="ms-auto btn btn-primary">
-                <i class="ti ti-device-floppy"></i>
-                <span>{{ _x('button', 'Save') }}</span>
-            </button>
-        </div>
+<div>
+    <form>
+        {{ fields.readOnlyField('', scope.getLabel(), __('Scope'), {
+            is_horizontal: false,
+        }) }}
+        {% if scope == constant('Glpi\\Config\\ConfigScope::ENTITY') %}
+            {{ fields.readOnlyField('', get_item_name('Entity', scope_params['entities_id']|default(session('glpiactive_entity'))), 'Entity'|itemtype_name(1), {
+                is_horizontal: false,
+            }) }}
+        {% elseif scope == constant('Glpi\\Config\\ConfigScope::USER') %}
+            {{ fields.readOnlyField('', get_item_name('User', scope_params['users_id']|default(session('glpiID'))), 'User'|itemtype_name(1), {
+                is_horizontal: false,
+            }) }}
+        {% endif %}
+        {{ config_macros.render_option(option, scope, {
+            full_width: true,
+            is_horizontal: false
+        }, null, scope_params) }}
     </form>
-{% endif %}
+</div>

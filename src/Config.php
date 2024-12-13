@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigManager;
+use Glpi\Config\ConfigScope;
 use Glpi\Dashboard\Grid;
 use Glpi\Plugin\Hooks;
 use Glpi\System\RequirementsManager;
@@ -107,11 +109,28 @@ class Config extends CommonDBTM
             $menu['options'][APIClient::class]['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
             $menu['options'][APIClient::class]['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
             $menu['options'][APIClient::class]['links']['add']    = '/front/apiclient.form.php';
+
+            $menu['options']['advconfig']['icon']            = 'ti ti-adjustments';
+            $menu['options']['advconfig']['title']           = __('Advanced configuration');
+            $menu['options']['advconfig']['page']            = '/front/advconfig.php';
+
+            $menu['links'] = self::getAdditionalMenuLinks();
         }
         if (count($menu)) {
             return $menu;
         }
         return false;
+    }
+
+    public static function getAdditionalMenuLinks()
+    {
+        if (basename($_SERVER['PHP_SELF'], '.php') === 'advconfig') {
+            return [];
+        }
+        $adv_config_title = __('Advanced configuration');
+        return [
+            '<i class="ti ti-adjustments pointer" title="' . $adv_config_title . '"></i><span class="d-none d-xxl-block">' . $adv_config_title . '</span>' => 'front/advconfig.php',
+        ];
     }
 
 
@@ -448,9 +467,14 @@ class Config extends CommonDBTM
             return;
         }
 
+        $options = ConfigManager::getInstance()->getOptions(ConfigScope::GLOBAL, 'general');
+        $opt_names = array_map(static fn ($option) => $option->getName(), $options);
+        $options = array_combine($opt_names, $options);
+
         TemplateRenderer::getInstance()->display('pages/setup/general/general_setup.html.twig', [
             'canedit' => Session::haveRight(self::$rightname, UPDATE),
             'config'  => $CFG_GLPI,
+            'options' => $options,
         ]);
     }
 
