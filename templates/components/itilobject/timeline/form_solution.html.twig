@@ -194,23 +194,23 @@
                         }
                      ) }}
 
-                     {% if can_read_kb and kb_id_toload > 0 %}
-                        {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           'kb_linked_id',
-                           1,
-                           link_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                              'yes_value': kb_id_toload,
-                           }
-                        ) }}
-                     {% endif %}
+                    {% set link_kb_lbl %}
+                       <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                          title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
+                    {% endset %}
+                    {{ fields.sliderField(
+                       'kb_linked_id',
+                       1,
+                       link_kb_lbl,
+                       {
+                          'full_width': true,
+                          'icon_label': true,
+                          'rand': rand,
+                          'yes_value': kb_id_toload,
+                          'add_field_class': 'd-none',
+                           'disabled': true,
+                       }
+                    ) }}
 
                      {% if candedit and can_update_kb and not nokb %}
                         {% set sol_to_kb_lbl %}
@@ -295,6 +295,11 @@
                     }).then((data) => {
                         if (data) {
                             setRichTextEditorContent("content_{{ rand }}", data);
+                            const link_kb = $('.itilsolution input[type="checkbox"][name="kb_linked_id"]');
+                            link_kb.val(solutions_id);
+                            link_kb.removeAttr('disabled');
+                            link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', solutions_id));
+                            link_kb.closest('.form-field').removeClass('d-none');
                         }
                     });
                 }
