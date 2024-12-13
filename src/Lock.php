@@ -474,7 +474,8 @@ class Lock extends CommonGLPI
             ];
             $params['FIELDS'] = ['id', 'remoteid'];
             $first  = true;
-            foreach ($DB->request($remote_management->getTable(), $params) as $line) {
+            $data = $DB->request($remote_management->getTable(), $params);
+            foreach ($data as $line) {
                 if ($first) {
                     echo "<tr>";
                     echo "<th width='10'></th>";
