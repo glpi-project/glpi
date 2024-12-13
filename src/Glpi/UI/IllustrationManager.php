@@ -59,7 +59,7 @@ final class IllustrationManager
     /**
      * @param int|null $size Height and width (px). Will be set to 100% if null.
      */
-    public function render_icon(string $icon_id, ?int $size = null): string
+    public function renderIcon(string $icon_id, ?int $size = null): string
     {
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [

@@ -61,6 +61,6 @@ class IllustrationExtension extends AbstractExtension
 
     public function renderIllustration(string $filename, int $size = 100): string
     {
-        return $this->illustration_manager->render_icon($filename, $size);
+        return $this->illustration_manager->renderIcon($filename, $size);
     }
 }
