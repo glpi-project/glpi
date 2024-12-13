@@ -34,6 +34,7 @@
 
 namespace Glpi\Http\Listener;
 
+use Session;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

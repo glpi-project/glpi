@@ -39,7 +39,6 @@ use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
 use Glpi\Config\LegacyConfigurators\ConfigRest;
 use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;
 use Glpi\Config\LegacyConfigurators\CustomObjectsBootstrap;
-use Glpi\Http\Listener\InitializeDbConnection;
 use Glpi\Config\LegacyConfigurators\InitializePlugins;
 use Glpi\Config\LegacyConfigurators\LoadLegacyConfiguration;
 use Glpi\Config\LegacyConfigurators\SessionConfig;
