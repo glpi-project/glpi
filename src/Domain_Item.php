@@ -44,8 +44,6 @@ class Domain_Item extends CommonDBRelation
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
 
-    public static $rightname = 'domain';
-
     public static function getTypeName($nb = 0)
     {
         return _n('Domain item', 'Domain items', $nb);
