@@ -50,7 +50,6 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            // priority = 1 to be executed before the default Symfony listeners
             KernelEvents::EXCEPTION => ['onKernelException', 1],
         ];
     }

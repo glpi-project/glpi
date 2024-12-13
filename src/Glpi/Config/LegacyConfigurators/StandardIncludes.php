@@ -70,13 +70,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             $skip_maintenance_checks = true;
         }
 
-        // Override cfg_features by session value
-        foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
-            }
-        }
-
         // Check maintenance mode
         if (
             !$skip_maintenance_checks

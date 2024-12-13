@@ -32,19 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
 use Config;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class LoadLegacyConfiguration implements LegacyConfigProviderInterface
+final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostboot(): void
     {
         /**
          * @var array $CFG_GLPI
          */
         global $CFG_GLPI;
+
+        // Override cfg_features by session value
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
 
         if (isset($_SESSION['is_installing'])) {
             // Force `root_doc` value
