@@ -383,17 +383,6 @@ class Application extends BaseApplication
             $DB = @new DB();
         }
         $this->db = $DB;
-
-        if (!$this->db->connected) {
-            return;
-        }
-
-        ob_start();
-        $checkdb = Config::displayCheckDbEngine();
-        $message = ob_get_clean();
-        if ($checkdb > 0) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException($message);
-        }
     }
 
     /**
