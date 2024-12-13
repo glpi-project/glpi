@@ -282,12 +282,12 @@
          $('button[name="search_solution"]').on('click', () => {
             window.glpi_ajax_dialog({
                 id: 'modal_searchSolution',
-                modalclass: 'modal-lg',
+                modalclass: 'modal-xl',
                 title: '{{ __('Search a solution') }}',
-                url: '{{ path('/ajax/common.tabs.php') ~ ('?_glpi_tab=Knowbase$1&_target=/front/knowbaseitem.php&_itemtype=Knowbase&item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID())|e('js') }}'
+                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
             });
-            $(document).off('click', '#modal_searchSolution button.use_solution').on('click', '#modal_searchSolution button.use_solution', (e) => {
-                const solutions_id = $(e.target).attr('data-solution-id');
+            $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
+                const solutions_id = $(e.target).closest('.list-group-item').attr('data-solution-id');
                 $('#modal_searchSolution').modal('hide');
                 if (solutions_id) {
                     $.ajax({
