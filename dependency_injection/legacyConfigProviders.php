@@ -35,14 +35,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Config\LegacyConfigurators\CleanPHPSelfParam;
-use Glpi\Config\LegacyConfigurators\ConfigRest;
-use Glpi\Config\LegacyConfigurators\CustomObjectsAutoloader;
-use Glpi\Config\LegacyConfigurators\CustomObjectsBootstrap;
-use Glpi\Config\LegacyConfigurators\InitializePlugins;
-use Glpi\Config\LegacyConfigurators\LoadLegacyConfiguration;
-use Glpi\Config\LegacyConfigurators\SessionConfig;
-use Glpi\Config\LegacyConfigurators\StandardIncludes;
+use Glpi\Config\LegacyConfigurators;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
@@ -62,19 +55,18 @@ return static function (ContainerConfigurator $container): void {
      * ⚠ Here, ORDER of definition matters!
      */
 
-    $services->set(LoadLegacyConfiguration::class)->tag($tagName, ['priority' => 180]);
-    $services->set(StandardIncludes::class)->tag($tagName, ['priority' => 160]);
-    $services->set(CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
-    $services->set(SessionConfig::class)->tag($tagName, ['priority' => 130]);
+    $services->set(LegacyConfigurators\StandardIncludes::class)->tag($tagName, ['priority' => 160]);
+    $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
+    $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
     // Must be done before plugins initialization, to allow plugin to work with concrete class names.
-    $services->set(CustomObjectsAutoloader::class)->tag($tagName, ['priority' => 120]);
+    $services->set(LegacyConfigurators\CustomObjectsAutoloader::class)->tag($tagName, ['priority' => 120]);
 
-    $services->set(InitializePlugins::class)->tag($tagName, ['priority' => 110]);
+    $services->set(LegacyConfigurators\InitializePlugins::class)->tag($tagName, ['priority' => 110]);
 
     // Must be done after plugins initialization, to allow plugin to register new capacities.
-    $services->set(CustomObjectsBootstrap::class)->tag($tagName, ['priority' => 100]);
+    $services->set(LegacyConfigurators\CustomObjectsBootstrap::class)->tag($tagName, ['priority' => 100]);
 
     // FIXME: This class MUST stay at the end until the entire config is revamped.
-    $services->set(ConfigRest::class)->tag($tagName, ['priority' => 10]);
+    $services->set(LegacyConfigurators\ConfigRest::class)->tag($tagName, ['priority' => 10]);
 };
