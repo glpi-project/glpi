@@ -372,14 +372,16 @@ class Application extends BaseApplication
      */
     private function initDb()
     {
-
         if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
             return;
         }
 
         /** @var \DBmysql $DB */
         global $DB;
-        $DB = @new DB();
+
+        if (!$DB) {
+            $DB = @new DB();
+        }
         $this->db = $DB;
 
         if (!$this->db->connected) {
