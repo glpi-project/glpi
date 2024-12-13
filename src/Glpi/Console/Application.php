@@ -116,7 +116,6 @@ class Application extends BaseApplication
 
         $this->initApplication();
         $this->initDb();
-        $this->initSession();
         $this->initConfig();
 
         $this->computeAndLoadOutputLang();
@@ -383,18 +382,6 @@ class Application extends BaseApplication
             $DB = @new DB();
         }
         $this->db = $DB;
-    }
-
-    /**
-     * Initialize GLPI session.
-     * This is mandatory to init cache and load languages.
-     *
-     * @TODO Do not use session for console.
-     *
-     * @return void
-     */
-    private function initSession()
-    {
     }
 
     /**
