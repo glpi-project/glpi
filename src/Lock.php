@@ -479,6 +479,7 @@ class Lock extends CommonGLPI
                     echo "<tr>";
                     echo "<th width='10'></th>";
                     echo "<th>" . $remote_management->getTypeName(Session::getPluralNumber()) . "</th>";
+                    echo "<th>" . __('Type') . "</th>";
                     echo "<th>" . __('Automatic inventory') . "</th>";
                     echo "</tr>";
                     $first = false;
@@ -493,6 +494,7 @@ class Lock extends CommonGLPI
                 }
                 echo "</td>";
                 echo "<td class='left'><a href='" . $remote_management->getLinkURL() . "'>" . $remote_management->fields['remoteid'] . "</a></td>";
+                echo "<td class='left'>" . $remote_management->fields['type'] . "</td>";
                 echo "<td class='left'>" . Dropdown::getYesNo($remote_management->fields['is_dynamic']) . "</td>";
                 echo "</tr>\n";
             }
