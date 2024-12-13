@@ -56,7 +56,7 @@ final class ListenersPriority
         RootDocListener::class => 60,
         InitializeDbConnection::class => 50,
     ];
-    
+
     public const REQUEST_LISTENERS_PRIORITIES = [
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
