@@ -46,7 +46,6 @@ final readonly class ProfilerStartListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            // priority = 1 to be executed before the default Symfony listeners
             PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
         ];
     }

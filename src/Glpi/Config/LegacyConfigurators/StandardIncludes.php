@@ -54,15 +54,10 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $CFG_GLPI,
-               $GLPI_CACHE
-        ;
+        global $CFG_GLPI;
 
         if (isset($_SESSION['is_installing'])) {
-            $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
-
             Session::loadLanguage(with_plugins: false);
             return;
         }
@@ -74,10 +69,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         ) {
             $skip_maintenance_checks = true;
         }
-
-        //init cache
-        $cache_manager = new CacheManager();
-        $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 
         // Override cfg_features by session value
         foreach ($CFG_GLPI['user_pref_field'] as $field) {

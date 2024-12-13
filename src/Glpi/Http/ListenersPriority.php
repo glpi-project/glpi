@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Glpi\Http\Listener\InitCacheListener;
 use Glpi\Http\Listener\InitializeDbConnection;
 use Glpi\Http\Listener\CheckGlpiConfigListener;
 use Glpi\Config\LegacyConfigProviderListener;
@@ -55,6 +56,7 @@ final class ListenersPriority
         DebugModeListener::class => 70,
         RootDocListener::class => 60,
         InitializeDbConnection::class => 50,
+        InitCacheListener::class => 0,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [
