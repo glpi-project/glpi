@@ -480,7 +480,7 @@ class Lock extends CommonGLPI
                     echo "<tr>";
                     echo "<th width='10'></th>";
                     echo "<th>" . $remote_management->getTypeName(Session::getPluralNumber()) . "</th>";
-                    echo "<th>" . __('Type') . "</th>";
+                    echo "<th>" . _n('Type', 'Types', 1) . "</th>";
                     echo "<th>" . __('Automatic inventory') . "</th>";
                     echo "</tr>";
                     $first = false;
