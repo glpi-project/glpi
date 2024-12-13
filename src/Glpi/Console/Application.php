@@ -111,12 +111,14 @@ class Application extends BaseApplication
 
     public function __construct()
     {
-
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
         $this->initApplication();
         $this->initDb();
-        $this->initConfig();
+
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $this->config = &$CFG_GLPI;
 
         $this->computeAndLoadOutputLang();
 
@@ -338,10 +340,8 @@ class Application extends BaseApplication
 
     /**
      * Initalize GLPI.
-     *
-     * @return void
      */
-    private function initApplication()
+    private function initApplication(): void
     {
         /** @var Kernel|null $kernel */
         global $kernel;
@@ -361,15 +361,9 @@ class Application extends BaseApplication
     }
 
     /**
-     * Initialize database connection.
-     *
-     * @global DBmysql $DB
-     *
-     * @return void
-     *
      * @throws RuntimeException
      */
-    private function initDb()
+    private function initDb(): void
     {
         if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
             return;
@@ -378,27 +372,7 @@ class Application extends BaseApplication
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!$DB) {
-            $DB = @new DB();
-        }
         $this->db = $DB;
-    }
-
-    /**
-     * Initialize GLPI configuration.
-     *
-     * @global array $CFG_GLPI
-     *
-     * @return void
-     */
-    private function initConfig()
-    {
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-        $this->config = &$CFG_GLPI;
-
-        Config::loadLegacyConfiguration();
     }
 
     /**
