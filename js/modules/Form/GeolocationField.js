@@ -87,21 +87,19 @@ class GeolocationField {
             errorMessage: __('No result found'),
             placeholder: __('Search')
         });
-        geocoder.on('markgeocode', function(e) {
+        geocoder.on('markgeocode', (e) => {
             this._map.fitBounds(e.geocode.bbox);
         });
         this.map.addControl(geocoder);
         this.#autoSearch();
 
-        function onMapClick(e) {
+        this.map.on('click', (e) => {
             const popup = L.popup();
             popup
                 .setLatLng(e.latlng)
                 .setContent('SELECTPOPUP')
                 .openOn(this.map);
-        }
-
-        this.map.on('click', onMapClick);
+        });
 
         this.map.on('popupopen', (e) => {
             const _popup = e.popup;
