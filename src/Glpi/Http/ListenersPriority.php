@@ -39,15 +39,16 @@ use Glpi\Config\LegacyConfigProviderListener;
 final class ListenersPriority
 {
     public const POST_BOOT_LISTENERS_PRIORITIES = [
-        Listener\SessionStartListener::class => 90,
-        Listener\ProfilerStartListener::class => 80,
-        Listener\DebugModeListener::class => 70,
-        Listener\RootDocListener::class => 60,
-        Listener\InitializeDbConnection::class => 50,
-        Listener\InitCacheListener::class => 40,
-        Listener\LoadLegacyConfiguration::class => 30,
-        Listener\CustomObjectsAutoloaderRegistrationListener::class => 20,
-        Listener\InitializePluginsListener::class => 10,
+        Listener\SessionStartListener::class => 210,
+        Listener\ProfilerStartListener::class => 200,
+        Listener\DebugModeListener::class => 190,
+        Listener\RootDocListener::class => 180,
+        Listener\InitializeDbConnection::class => 170,
+        Listener\InitCacheListener::class => 160,
+        Listener\LoadLegacyConfiguration::class => 150,
+        Listener\CustomObjectsAutoloaderRegistrationListener::class => 140,
+        Listener\InitializePluginsListener::class => 130,
+        Listener\CustomObjectsBootstrapListener::class => 120,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

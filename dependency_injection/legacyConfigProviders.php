@@ -59,9 +59,6 @@ return static function (ContainerConfigurator $container): void {
     $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
     $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
-    // Must be done after plugins initialization, to allow plugin to register new capacities.
-    $services->set(LegacyConfigurators\CustomObjectsBootstrap::class)->tag($tagName, ['priority' => 100]);
-
     // FIXME: This class MUST stay at the end until the entire config is revamped.
     $services->set(LegacyConfigurators\ConfigRest::class)->tag($tagName, ['priority' => 10]);
 };
