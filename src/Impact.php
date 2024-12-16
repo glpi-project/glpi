@@ -1771,7 +1771,7 @@ TWIG, $twig_params);
     public static function getEnabledItemtypes(): array
     {
         // Get configured values
-        $enabled_itemtypes = json_decode(Config::getConfigurationValue('core', self::CONF_ENABLED), true) ?? [];
+        $enabled_itemtypes = json_decode(Config::getConfigurationValue('core', self::CONF_ENABLED)) ?? [];
 
         if (!count($enabled_itemtypes)) {
             return [];

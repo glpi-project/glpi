@@ -167,13 +167,15 @@
         __('Icon'),
     ) }}
 
-    {% if item.fields['picture'] is not empty %}
-        {{ fields.imageField('picture', item.fields['picture']|picture_url, field['label'], {
-            'clearable': (not item.isNewItem() and item.canUpdateItem())
-        }) }}
-    {% else %}
-        {{ fields.fileField('picture', null, _n('Picture', 'Pictures', 1), {
-            'onlyimages': true
-        }) }}
+    {% if item.isField('picture') %}
+        {% if item.fields['picture'] is not empty %}
+            {{ fields.imageField('picture', item.fields['picture']|picture_url, field['label'], {
+                'clearable': (not item.isNewItem() and item.canUpdateItem())
+            }) }}
+        {% else %}
+            {{ fields.fileField('picture', null, _n('Picture', 'Pictures', 1), {
+                'onlyimages': true
+            }) }}
+        {% endif %}
     {% endif %}
 {% endblock %}
