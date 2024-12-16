@@ -202,6 +202,12 @@ const filesToCopy = [
         context: 'dist',
         from: '*.svg',
     },
+    // JSON files
+    {
+        package: '@glpi-project/illustrations',
+        context: 'dist',
+        from: '*.json',
+    },
 ];
 
 const copyPatterns = [];

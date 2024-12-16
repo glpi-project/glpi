@@ -49,10 +49,9 @@ final class IllustrationManager
         global $CFG_GLPI;
 
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
-            . '/node_modules/@glpi-project/illustrations/dist/icons.json'
+            . '/lib/glpi-project/illustrations/icons.json'
         ;
-        $this->icons_sprites_path = $icons_sprites_path ?? $CFG_GLPI['url_base']
-            . '/lib/glpi-project/illustrations/glpi-illustrations.svg'
+        $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations.svg'
         ;
     }
 
