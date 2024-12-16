@@ -114,17 +114,25 @@ class HasImpactCapacity extends AbstractCapacity
         }
 
         $relation = new ImpactRelation();
-        $relation->deleteByCriteria([
-            'OR' => [
-                'itemtype_source' => $classname,
-                'itemtype_impacted' => $classname,
-            ]
-        ], true, false);
+        $relation->deleteByCriteria(
+            [
+                'OR' => [
+                    'itemtype_source' => $classname,
+                    'itemtype_impacted' => $classname,
+                ]
+            ],
+            force: true,
+            history: false
+        );
 
         $impact_item = new ImpactItem();
-        $impact_item->deleteByCriteria([
-            'itemtype' => $classname,
-        ], true, false);
+        $impact_item->deleteByCriteria(
+            [
+                'itemtype' => $classname,
+            ],
+            force: true,
+            history: false
+        );
 
         // Clean history related to links
         $this->deleteRelationLogs($classname, ImpactItem::class);
