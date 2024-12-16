@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,13 +36,17 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
+use Glpi\Asset\Capacity\HasImpactCapacity;
+use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
+use Impact;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
 use Plugin;
 use Ticket;
+use Toolbox;
 
 class ImpactTest extends \DbTestCase
 {
@@ -78,6 +81,43 @@ class ImpactTest extends \DbTestCase
                 'target' => $edge[1],
                 'flag'   => \Impact::DIRECTION_FORWARD | \Impact::DIRECTION_BACKWARD,
             ];
+        }
+    }
+
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasImpactCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach (array_keys($CFG_GLPI['impact_asset_types']) as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Impact$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasImpactCapacity::class]);
+
+        foreach (array_keys($CFG_GLPI['impact_asset_types']) as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Impact::class, $item->getCloneRelations(), $itemtype);
         }
     }
 

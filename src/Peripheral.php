@@ -69,7 +69,9 @@ class Peripheral extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Asset_PeripheralAsset::class,
-            KnowbaseItem_Item::class
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
+            KnowbaseItem_Item::class,
         ];
     }
 
