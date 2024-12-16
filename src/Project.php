@@ -2855,7 +2855,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         ),
                     ],
                     [
-                        'content' => $project->fields['percent_done'] . '%',
+                        'content' => Html::getProgressBar((float)$project->fields['percent_done'])
                     ]
                 ]
             ];
