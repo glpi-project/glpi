@@ -63,7 +63,11 @@ class Appliance extends CommonDBTM
             Document_Item::class,
             Infocom::class,
             Notepad::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
         ];
     }
 

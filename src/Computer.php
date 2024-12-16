@@ -84,6 +84,15 @@ class Computer extends CommonDBTM
             KnowbaseItem_Item::class,
             Item_RemoteManagement::class,
             ItemAntivirus::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // DatabaseInstance::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ItemVirtualMachine::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
 

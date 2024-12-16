@@ -63,7 +63,11 @@ class Software extends CommonDBTM
             Infocom::class,
             Contract_Item::class,
             Document_Item::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Appliance_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
         ];
     }
 

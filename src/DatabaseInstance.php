@@ -62,7 +62,8 @@ class DatabaseInstance extends CommonDBTM
             KnowbaseItem_Item::class,
             Certificate_Item::class,
             Domain_Item::class,
-            Database::class
+            Database::class,
+            ManualLink::class,
         ];
     }
 
@@ -95,6 +96,7 @@ class DatabaseInstance extends CommonDBTM
          ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Certificate_Item', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)

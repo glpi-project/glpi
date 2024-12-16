@@ -36,10 +36,31 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity\IsReservableCapacity;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ReservationTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [IsReservableCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['reservation_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Reservation$1', $tabs, $itemtype);
+        }
+    }
+
     public function testGetReservableItemtypes(): void
     {
         // No reservable items

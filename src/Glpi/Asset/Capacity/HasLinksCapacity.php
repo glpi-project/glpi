@@ -53,6 +53,13 @@ class HasLinksCapacity extends AbstractCapacity
         return ManualLink::getIcon();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            ManualLink::class,
+        ];
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

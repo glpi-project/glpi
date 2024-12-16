@@ -292,6 +292,7 @@ class PassiveDCEquipment extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Infocom::class,
+            Socket::class,
         ];
     }
 }
