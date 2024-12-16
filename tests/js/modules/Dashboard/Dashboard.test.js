@@ -223,8 +223,10 @@ describe('Dashboard', () => {
             // TODO These duplicated values probably shouldn't be here
             color: '#ff00ff',
             widgettype: 'testWidget',
+            palette: 'testPalette',
             use_gradient: 1,
             point_labels: 1,
+            legend: 1,
             limit: 10,
             gridstack_id: 'mycard_12345678-1234-1234-1234-123456789012',
         });
@@ -342,8 +344,10 @@ describe('Dashboard', () => {
             args: {
                 color: null,
                 widgettype: null,
+                palette: null,
                 use_gradient: 0,
                 point_labels: 0,
+                legend: 0,
                 limit: 7,
                 card_id: undefined,
                 gridstack_id: 'undefined_12345678-1234-1234-1234-123456789012',
