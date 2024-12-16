@@ -40,7 +40,7 @@ use Glpi\Kernel\PostBootEvent;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class InitCacheListener implements EventSubscriberInterface
+final readonly class InitCacheListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
