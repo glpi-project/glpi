@@ -57,7 +57,10 @@ class Enclosure extends CommonDBTM
         return [
             Item_Enclosure::class,
             Item_Devices::class,
-            NetworkPort::class
+            NetworkPort::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Infocom::class,
         ];
     }
 

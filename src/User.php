@@ -84,7 +84,9 @@ class User extends CommonDBTM
     {
         return [
             Profile_User::class,
-            Group_User::class
+            Group_User::class,
+            Certificate_Item::class,
+            ManualLink::class,
         ];
     }
 

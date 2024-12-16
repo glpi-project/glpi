@@ -36,11 +36,50 @@
 namespace test\units;
 
 use DbTestCase;
-
-/* Test for inc/knowbaseitem_item.class.php */
+use Glpi\Asset\Capacity\HasKnowbaseCapacity;
+use Glpi\Features\Clonable;
+use KnowbaseItem_Item;
+use Toolbox;
 
 class KnowbaseItem_ItemTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasKnowbaseCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['kb_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('KnowbaseItem_Item$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasKnowbaseCapacity::class]);
+
+        foreach ($CFG_GLPI['kb_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(KnowbaseItem_Item::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testGetTypeName()
     {
         $expected = 'Knowledge base item';

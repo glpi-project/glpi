@@ -77,6 +77,8 @@ class IsProjectAssetCapacity extends AbstractCapacity
     {
         // Allow our item to be linked to projects
         $this->registerToTypeConfig('project_asset_types', $classname);
+
+        CommonGLPI::registerStandardTab($classname, Item_Project::class, 95);
     }
 
     public function onCapacityDisabled(string $classname): void

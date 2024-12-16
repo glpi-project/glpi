@@ -36,9 +36,50 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity\HasVirtualMachineCapacity;
+use Glpi\Features\Clonable;
+use ItemVirtualMachine;
+use Toolbox;
 
 class ItemVirtualMachineTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasVirtualMachineCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['itemvirtualmachines_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('ItemVirtualMachine$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasVirtualMachineCapacity::class]);
+
+        foreach ($CFG_GLPI['itemvirtualmachines_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(ItemVirtualMachine::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testCreateAndGet()
     {
         $this->login();

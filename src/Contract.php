@@ -63,6 +63,8 @@ class Contract extends CommonDBTM
             Contract_Item::class,
             Contract_Supplier::class,
             ContractCost::class,
+            KnowbaseItem_Item::class,
+            ManualLink::class,
         ];
     }
 

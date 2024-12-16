@@ -91,7 +91,7 @@ class ContractTest extends DbTestCase
         $cloned = $contract->clone();
         $this->assertGreaterThan($cid, $cloned);
 
-        foreach ($contract->getCloneRelations() as $rel_class) {
+        foreach ([\ContractCost::class, \Contract_Supplier::class, \Contract_Item::class] as $rel_class) {
             $this->assertSame(
                 1,
                 countElementsInTable(

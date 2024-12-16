@@ -36,9 +36,50 @@
 namespace tests\units\Glpi;
 
 use DbTestCase;
+use Glpi\Asset\Capacity\HasSocketCapacity;
+use Glpi\Features\Clonable;
+use Glpi\Socket;
+use Toolbox;
 
 class SocketTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['socket_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Glpi\\Socket$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+
+        foreach ($CFG_GLPI['socket_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Socket::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testCreateNoItem()
     {
         $socket = new \Glpi\Socket();

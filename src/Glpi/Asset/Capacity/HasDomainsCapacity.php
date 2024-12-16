@@ -52,6 +52,13 @@ class HasDomainsCapacity extends AbstractCapacity
         return Domain::getIcon();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Domain_Item::class,
+        ];
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

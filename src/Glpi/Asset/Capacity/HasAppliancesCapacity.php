@@ -52,6 +52,13 @@ class HasAppliancesCapacity extends AbstractCapacity
         return Appliance::getIcon();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Appliance_Item::class,
+        ];
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

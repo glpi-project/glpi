@@ -626,6 +626,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CableStrand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(CartridgeItem\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CartridgeItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(CartridgeItem\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CartridgeItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
 	'count' => 1,
