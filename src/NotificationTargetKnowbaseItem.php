@@ -46,6 +46,9 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
 
     public function addNotificationTargets($entity)
     {
+        if (Session::haveRight("config", UPDATE)) {
+            $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
+        }
         $this->addGroupsToTargets($entity);
     }
 

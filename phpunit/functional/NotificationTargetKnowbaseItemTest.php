@@ -48,6 +48,9 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
 {
     public function testgetDataForNotifKnowbaseItem()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $this->login();
 
         Config::setConfigurationValues('core', ['use_notifications' => 1]);
@@ -94,6 +97,9 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
 
         //test add group for notification
         foreach ($knowbasenotifs as $kbnotif) {
+            // remove default targets
+            $DB->delete(NotificationTarget::getTable(), ['notifications_id' => $kbnotif['id']]);
+
             $ntarget = $this->createItem(
                 NotificationTarget::class,
                 [
