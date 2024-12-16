@@ -46,6 +46,7 @@ final class ListenersPriority
         Listener\InitializeDbConnection::class => 50,
         Listener\InitCacheListener::class => 40,
         Listener\LoadLegacyConfiguration::class => 40,
+        Listener\CustomObjectsAutoloaderRegistrationListener::class => 40,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

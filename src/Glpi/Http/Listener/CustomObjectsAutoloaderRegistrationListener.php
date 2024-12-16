@@ -32,17 +32,26 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInterface
+final readonly class CustomObjectsAutoloaderRegistrationListener implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostboot(): void
     {
         if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
             // Requires the database to be available.

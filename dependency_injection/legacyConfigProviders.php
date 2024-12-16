@@ -59,9 +59,6 @@ return static function (ContainerConfigurator $container): void {
     $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
     $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
-    // Must be done before plugins initialization, to allow plugin to work with concrete class names.
-    $services->set(LegacyConfigurators\CustomObjectsAutoloader::class)->tag($tagName, ['priority' => 120]);
-
     $services->set(LegacyConfigurators\InitializePlugins::class)->tag($tagName, ['priority' => 110]);
 
     // Must be done after plugins initialization, to allow plugin to register new capacities.
