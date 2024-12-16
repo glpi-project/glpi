@@ -4421,9 +4421,14 @@ $empty_data_builder = new class
                 'id'               => '166',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '23',
+                'notifications_id' => '22',
             ], [
                 'id'               => '167',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '23',
+            ], [
+                'id'               => '168',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '24',
@@ -4453,86 +4458,81 @@ $empty_data_builder = new class
                 'type'             => '1',
                 'notifications_id' => '39',
             ], [
-                'id'               => '175',
+                'id'               => '174',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '50',
             ], [
-                'id'               => '177',
+                'id'               => '175',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '59',
             ], [
-                'id'               => '178',
+                'id'               => '176',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '60',
             ], [
-                'id'               => '179',
+                'id'               => '177',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '61',
             ], [
-                'id'               => '180',
+                'id'               => '178',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '62',
             ], [
-                'id'               => '181',
+                'id'               => '179',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '63',
             ], [
-                'id'               => '182',
+                'id'               => '180',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '64',
             ], [
-                'id'               => '183',
+                'id'               => '181',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '65',
             ], [
-                'id'               => '185',
+                'id'               => '182',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '67',
             ], [
-                'id'               => '186',
+                'id'               => '183',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '68',
             ], [
-                'id'               => '187',
+                'id'               => '184',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '69',
             ], [
-                'id'               => '188',
+                'id'               => '185',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '70',
             ], [
-                'id'               => '189',
+                'id'               => '186',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '72',
             ], [
-                'id'               => '191',
+                'id'               => '187',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '74',
             ], [
-                'id'               => '192',
+                'id'               => '188',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '75',
-            ], [
-                'id'               => '193',
-                'items_id'         => '1',
-                'type'             => '1',
-                'notifications_id' => '22',
-            ],
+            ]
         ];
 
         $tables['glpi_notificationtemplates'] = [
