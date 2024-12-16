@@ -109,7 +109,7 @@ class HasImpactCapacity extends AbstractCapacity
 
         $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
         if (in_array($classname, $enabled_types, true)) {
-            $enabled_types = array_diff($enabled_types, [$classname]);
+            $enabled_types = \array_values(\array_diff($enabled_types, [$classname]));
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
         }
 
