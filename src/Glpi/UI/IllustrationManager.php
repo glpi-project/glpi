@@ -72,7 +72,10 @@ final class IllustrationManager
     public function getAllIconsIds(): array
     {
         $json = file_get_contents($this->icons_definition_file);
-        $definition = json_decode($json, associative: true);
+        if ($json === false) {
+            throw new \RuntimeException();
+        }
+        $definition = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
 
         return array_keys($definition);
     }
