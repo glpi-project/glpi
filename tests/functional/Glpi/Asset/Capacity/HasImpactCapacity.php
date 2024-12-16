@@ -44,13 +44,6 @@ use ImpactRelation;
 
 class HasImpactCapacity extends DbTestCase
 {
-    use CapacityUsageTestTrait;
-
-    protected function getTargetCapacity(): string
-    {
-        return \Glpi\Asset\Capacity\HasImpactCapacity::class;
-    }
-
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -174,137 +167,98 @@ class HasImpactCapacity extends DbTestCase
         $this->array($CFG_GLPI['impact_asset_types'])->hasKey($classname_2);
     }
 
-    public function provideIsUsed(): iterable
+    public function testIsUsed(): void
     {
-        yield [
-            'target_classname' => ImpactRelation::class,
-        ];
-    }
-
-    /**
-     * Test if the method isUsed returns true if the capacity can be disabled
-     * without data loss.
-     *
-     * @dataProvider provideIsUsed
-     * @return void
-     */
-    public function testIsUsed(
-        string $target_classname,
-        array $target_fields = [],
-        ?string $relation_classname = null,
-        array $relation_fields = [],
-    ): void {
-        // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
 
-        // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [\Glpi\Asset\Capacity\HasImpactCapacity::class]
         );
+        $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
 
-        // Create our test subject
-        $subject = $this->createItem($definition->getAssetClassName(), [
+        $asset = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
         $computers_id = getItemByTypeName('Computer', '_test_pc01', true);
 
-        // Check that the capacity can be disabled
-        $capacity = new ($this->getTargetCapacity());
+        // Check usage when the custom asset is the source asset
         $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+        $relation = $this->createItem(
+            ImpactRelation::class,
+            [
+                'itemtype_source'   => $definition->getAssetClassName(),
+                'items_id_source'   => $asset->getID(),
+                'itemtype_impacted' => 'Computer',
+                'items_id_impacted' => $computers_id,
 
-        // Create item
-        $target_fields['itemtype_source'] = $definition->getAssetClassName();
-        $target_fields['items_id_source'] = $subject->getID();
-        $target_fields['itemtype_impacted'] = 'Computer';
-        $target_fields['items_id_impacted'] = $computers_id;
-
-        $item = $this->createItem($target_classname, $target_fields);
-
-        // Check that the capacity can't be safely disabled
+            ]
+        );
         $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
 
-        $item->delete(['id' => $item->getID()], true);
+        // Delete the relation
+        $this->boolean($relation->delete(['id' => $relation->getID()], true))->isTrue();
         $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
 
         // Check when the custom asset on the other side of the relation
-        $target_fields['itemtype_source'] = 'Computer';
-        $target_fields['items_id_source'] = $computers_id;
-        $target_fields['itemtype_impacted'] = $definition->getAssetClassName();
-        $target_fields['items_id_impacted'] = $subject->getID();
+        $this->createItem(
+            ImpactRelation::class,
+            [
+                'itemtype_source'   => 'Computer',
+                'items_id_source'   => $computers_id,
+                'itemtype_impacted' => $definition->getAssetClassName(),
+                'items_id_impacted' => $asset->getID(),
 
-        $this->createItem($target_classname, $target_fields);
-
-        // Check that the capacity can't be safely disabled
+            ]
+        );
         $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
     }
 
-    public function provideGetCapacityUsageDescription(): iterable
+    public function testGetCapacityUsageDescription(): void
     {
-        yield [
-            'target_classname' => \ImpactRelation::class,
-            'expected' => '%d impact relations involving %d assets'
-        ];
-    }
-
-    /**
-     * Test if the getCapacityUsageDescription method returns a correct description
-     * of the capacity usage.
-     *
-     * @dataProvider provideGetCapacityUsageDescription
-     * @return void
-     */
-    public function testGetCapacityUsageDescription(
-        string $target_classname,
-        string $expected,
-        array $target_fields = [],
-        ?string $relation_classname = null,
-        array $relation_fields = [],
-    ): void {
-        $capacity = new ($this->getTargetCapacity());
-
-        // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
 
-        // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [\Glpi\Asset\Capacity\HasImpactCapacity::class]
         );
+        $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
 
-        // Create our test subject
-        $subject = $this->createItem($definition->getAssetClassName(), [
+        $asset_1 = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
-
-        // Create item
-        $this->createItem($target_classname, [
-            'itemtype_source' => $definition->getAssetClassName(),
-            'items_id_source' => $subject->getID(),
-            'itemtype_impacted' => 'Computer',
-            'items_id_impacted' => getItemByTypeName('Computer', '_test_pc01', true),
-        ]);
-
-        // Check that the capacity usage description is correct
-        $expectedValue = sprintf($expected, 1, 1);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
-
-        // Create a second subject
-        $subject2 = $this->createItem($definition->getAssetClassName(), [
-            'name' => 'Test asset 2',
+        $asset_2 = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset',
             'entities_id' => $entity_id,
         ]);
+        $computer_1_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $computer_2_id = getItemByTypeName('Computer', '_test_pc02', true);
 
-        // Create a second item
-        $this->createItem($target_classname, [
-            'itemtype_impacted' => $definition->getAssetClassName(),
-            'items_id_impacted' => $subject2->getID(),
-            'itemtype_source' => 'Computer',
-            'items_id_source' => getItemByTypeName('Computer', '_test_pc01', true),
+        $this->createItem(ImpactRelation::class, [
+            'itemtype_source'   => $definition->getAssetClassName(),
+            'items_id_source'   => $asset_1->getID(),
+            'itemtype_impacted' => 'Computer',
+            'items_id_impacted' => $computer_1_id,
         ]);
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('1 impact relations involving 1 assets');
 
-        // Check that the capacity usage description is correct
-        $expectedValue = sprintf($expected, 2, 2);
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
+        $this->createItem(ImpactRelation::class, [
+            'itemtype_source'   => $definition->getAssetClassName(),
+            'items_id_source'   => $asset_1->getID(),
+            'itemtype_impacted' => 'Computer',
+            'items_id_impacted' => $computer_2_id,
+        ]);
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('2 impact relations involving 1 assets');
+
+        $this->createItem(ImpactRelation::class, [
+            'itemtype_source'   => $definition->getAssetClassName(),
+            'items_id_source'   => $asset_2->getID(),
+            'itemtype_impacted' => 'Computer',
+            'items_id_impacted' => $computer_1_id,
+        ]);
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('3 impact relations involving 2 assets');
     }
 }

@@ -63,6 +63,25 @@ class HasImpactCapacity extends AbstractCapacity
         ]);
     }
 
+    private function countAssetsUsingImpact(string $classname): int
+    {
+        $source_assets_count = \countDistinctElementsInTable(
+            ImpactRelation::getTable(),
+            'items_id_source',
+            [
+                'itemtype_source' => $classname,
+            ]
+        );
+        $impacted_assets_count = \countDistinctElementsInTable(
+            ImpactRelation::getTable(),
+            'items_id_impacted',
+            [
+                'itemtype_impacted' => $classname,
+            ]
+        );
+        return $source_assets_count + $impacted_assets_count;
+    }
+
     public function isUsed(string $classname): bool
     {
         //NOTE: This doesn't consider cases where assets exist inside graphs on other asset types. Maybe there is no good solution since it involves scanning every graph.
@@ -73,7 +92,7 @@ class HasImpactCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         $impact_count = $this->countImpactRelations($classname);
-        $asset_count = $this->countAssets($classname);
+        $asset_count = $this->countAssetsUsingImpact($classname);
 
         return sprintf(__('%1$s impact relations involving %2$s assets'), $impact_count, $asset_count);
     }
