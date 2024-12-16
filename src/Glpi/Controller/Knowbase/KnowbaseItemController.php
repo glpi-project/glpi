@@ -125,14 +125,14 @@ final class KnowbaseItemController extends AbstractController
         $criteria = KnowbaseItem::getListRequest([
             'contains' => $contains,
         ]);
+        $count_criteria = $criteria;
         $criteria['START'] = $start;
         $criteria['LIMIT'] = $_SESSION['glpilist_limit'];
-        $count_criteria = $criteria;
-        unset($count_criteria['SELECT'], $count_criteria['ORDERBY']);
+        unset($count_criteria['SELECT'], $count_criteria['ORDERBY'], $count_criteria['GROUPBY']);
         $count_criteria['COUNT'] = 'cpt';
 
         $it = $DB->request($criteria);
-        $total_count = $DB->request($count_criteria)->current()['cpt'];
+        $total_count = $DB->request($count_criteria)->current()['cpt'] ?? 0;
         $results = [];
 
         foreach ($it as $data) {
@@ -164,14 +164,17 @@ final class KnowbaseItemController extends AbstractController
             ];
         }
 
-        return new StreamedResponse(static function () use ($contains, $itemtype, $items_id, $results, $request) {
-            $twig_params = [
-                'contains' => $contains,
-                'results' => $results,
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
-                'is_ajax' => $request->get('ajax_reload', 0),
-            ];
+        $twig_params = [
+            'contains' => $contains,
+            'results' => $results,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+            'is_ajax' => $request->get('ajax_reload', 0),
+            'count' => $total_count,
+            'start' => $start,
+        ];
+
+        return new StreamedResponse(static function () use ($twig_params) {
             TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_params);
         });
     }

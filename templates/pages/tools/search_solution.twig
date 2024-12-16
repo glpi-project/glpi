@@ -41,28 +41,39 @@
             <div id="search_solution_form" class="d-flex justify-content-center mb-3 mt-3">
                 {{ inputs.text('contains', contains, {additional_attributes: {size: 50}, input_addclass: 'me-1'}) }}
                 {{ inputs.button('search', _x('button', 'Search')) }}
+                {{ inputs.hidden('start', start) }}
             </div>
-            <div class="search-solution-results list-group list-group-flush list-group-hoverable">
-                {% for result in results %}
-                    <div class="list-group-item d-flex" data-solution-id="{{ result.id }}">
-                        <div class="col-auto">
-                            <i class="{{ result.icon }}" title="{{ result.icon_title }}"></i>
+            {% if results|length %}
+                {{ include('components/pager.html.twig', {
+                    no_limit_display: true,
+                }) }}
+                <div class="search-solution-results list-group list-group-flush list-group-hoverable">
+                    {% for result in results %}
+                        <div class="list-group-item d-flex" data-solution-id="{{ result.id }}">
+                            <div class="col-auto">
+                                <i class="{{ result.icon }}" title="{{ result.icon_title }}"></i>
+                            </div>
+                            <div class="col">
+                                <div class="fs-2">{{ result.name }}</div>
+                                <div class="fs-4">{{ result.content_preview }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-solution" title="{{ __('Use as a solution') }}">
+                                    <i class="ti ti-check"></i>
+                                </button>
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-solution" title="{{ __('Preview') }}">
+                                    <i class="ti ti-eye"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col">
-                            <div class="fs-2">{{ result.name }}</div>
-                            <div class="fs-4">{{ result.content_preview }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-solution" title="{{ __('Use as a solution') }}">
-                                <i class="ti ti-check"></i>
-                            </button>
-                            <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-solution" title="{{ __('View') }}">
-                                <i class="ti ti-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    {{ __('No data') }}
+                </div>
+            {% endif %}
+
         </div>
         <div class="card preview-card" style="display: none">
             <div>
@@ -114,6 +125,25 @@
             $('#{{ container_id}}').find('div.spinner-overlay').css('visibility', 'hidden');
         }
 
+        function refreshResults() {
+            showLoading();
+            $.ajax({
+                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (itemtype ~ '/' ~ items_id)|e('js') }}',
+                method: 'GET',
+                data: {
+                    contains: $('#{{ container_id}} #search_solution_form input[name="contains"]').val(),
+                    ajax_reload: 1,
+                    start: $('#{{ container_id}} #search_solution_form input[name="start"]').val(),
+                }
+            }).then((html) => {
+                $('#{{ container_id}}').html(html);
+                hideLoading();
+            }, () => {
+                window.glpi_toast_error('{{ __('An error occurred while searching for solutions') }}');
+                hideLoading();
+            });
+        }
+
         // Use Solution button handled by whatever loads this template (form_solution.html.twig for example)
         $('#{{ container_id}}').on('click', 'button.view-solution', (e) => {
             const kbi_id = $(e.target).closest('.list-group-item').attr('data-solution-id');
@@ -131,24 +161,20 @@
                 hideLoading();
             });
         }).on('click', 'button[name="search"]', () => {
-            showLoading();
-            $.ajax({
-                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (itemtype ~ '/' ~ items_id)|e('js') }}',
-                method: 'GET',
-                data: {
-                    contains: $('#{{ container_id}} #search_solution_form input[name="contains"]').val(),
-                    ajax_reload: 1
-                }
-            }).then((html) => {
-                $('#{{ container_id}}').html(html);
-                hideLoading();
-            }, () => {
-                window.glpi_toast_error('{{ __('An error occurred while searching for solutions') }}');
-                hideLoading();
-            });
+            refreshResults();
         }).on('click', 'button.back-to-results', () => {
             $('#{{ container_id}} .preview-card').hide();
             $('#{{ container_id}} .search-card').show();
+        }).on('keyup', 'input[name="contains"]', (e) => {
+            if (e.key === 'Enter') {
+                refreshResults();
+            }
+        }).on('click', '.search-pager .page-link', (e) => {
+            e.preventDefault();
+            const clicked_link = $(e.target).closest('.page-link');
+            const new_start = clicked_link.attr('data-start');
+            $('#{{ container_id}} input[name="start"]').val(new_start);
+            refreshResults();
         });
     </script>
 {% endif %}
