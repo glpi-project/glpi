@@ -45,8 +45,9 @@ final class ListenersPriority
         Listener\RootDocListener::class => 60,
         Listener\InitializeDbConnection::class => 50,
         Listener\InitCacheListener::class => 40,
-        Listener\LoadLegacyConfiguration::class => 40,
-        Listener\CustomObjectsAutoloaderRegistrationListener::class => 40,
+        Listener\LoadLegacyConfiguration::class => 30,
+        Listener\CustomObjectsAutoloaderRegistrationListener::class => 20,
+        Listener\InitializePluginsListener::class => 10,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

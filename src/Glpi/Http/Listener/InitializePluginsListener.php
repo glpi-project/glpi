@@ -32,34 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
-use Glpi\Config\LegacyConfigProviderInterface;
+use DBConnection;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
+use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
 use Plugin;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Update;
 
-final readonly class InitializePlugins implements LegacyConfigProviderInterface
+final readonly class InitializePluginsListener implements EventSubscriberInterface
 {
     public function __construct(private PluginContainer $pluginContainer)
     {
     }
 
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
     {
         /*
          * On startup, register all plugins configured for use,
          * except during the database install/update process.
          */
-        if (isset($_SESSION['is_installing']) || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             return;
         }
 
         Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
         $plugin = new Plugin();
         $plugin->init(true);
-
         $this->pluginContainer->initializeContainer();
         Profiler::getInstance()->stop('InitializePlugins::execute');
     }
