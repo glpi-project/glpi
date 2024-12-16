@@ -49,7 +49,7 @@ final class IllustrationManager
         global $CFG_GLPI;
 
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
-            . '/lib/glpi-project/illustrations/icons.json'
+            . '/public/lib/glpi-project/illustrations/icons.json'
         ;
         $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations.svg'
         ;
