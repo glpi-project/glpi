@@ -49,6 +49,7 @@ final class ListenersPriority
         Listener\CustomObjectsAutoloaderRegistrationListener::class => 140,
         Listener\InitializePluginsListener::class => 130,
         Listener\CustomObjectsBootstrapListener::class => 120,
+        Listener\LoadLanguageListener::class => 110,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

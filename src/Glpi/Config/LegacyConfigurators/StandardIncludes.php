@@ -34,10 +34,8 @@
 
 namespace Glpi\Config\LegacyConfigurators;
 
-use Auth;
 use Config;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
 use Glpi\Config\LegacyConfigProviderInterface;
 use Glpi\Http\Listener\CheckGlpiConfigListener;
 use Glpi\System\Requirement\DatabaseTablesEngine;
@@ -56,11 +54,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
          * @var array $CFG_GLPI
          */
         global $CFG_GLPI;
-
-        if (isset($_SESSION['is_installing'])) {
-            Session::loadLanguage(with_plugins: false);
-            return;
-        }
 
         $skip_maintenance_checks = false;
         if (
@@ -81,7 +74,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             }
 
             if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-                Session::loadLanguage('', false);
                 if (isCommandLine()) {
                     echo __('Service is down for maintenance. It will be back shortly.');
                     echo "\n";
@@ -102,8 +94,6 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
             $debug_mode = $_SESSION['glpi_use_mode'];
             Toolbox::setDebugMode(Session::NORMAL_MODE);
-
-            Session::loadLanguage('', false);
 
             if (isCommandLine()) {
                 echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
@@ -176,8 +166,5 @@ TWIG, $twig_params);
             $_SESSION['glpi_use_mode'] = $debug_mode;
             exit();
         }
-
-        // Load Language file
-        Session::loadLanguage();
     }
 }
