@@ -348,7 +348,7 @@ class Application extends BaseApplication
 
         if ($kernel) {
             $this->kernel = $kernel;
-            $getter = (function () { return $this->booted; })->bindTo($kernel, $kernel::class);
+            $getter = (fn() => $this->booted)->bindTo($kernel, $kernel::class);
             $is_booted = $getter->call($kernel);
             if (!$is_booted) {
                 $this->kernel->boot();
