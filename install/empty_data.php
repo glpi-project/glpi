@@ -4382,6 +4382,156 @@ $empty_data_builder = new class
                 'items_id'         => '37',
                 'type'             => '1',
                 'notifications_id' => '40',
+            ], [
+                'id'               => '159',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '1',
+            ], [
+                'id'               => '160',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '12',
+            ], [
+                'id'               => '161',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '16',
+            ], [
+                'id'               => '162',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '17',
+            ], [
+                'id'               => '163',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '18',
+            ], [
+                'id'               => '164',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '20',
+            ], [
+                'id'               => '165',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '21',
+            ], [
+                'id'               => '166',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '23',
+            ], [
+                'id'               => '167',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '24',
+            ], [
+                'id'               => '169',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '26',
+            ], [
+                'id'               => '170',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '27',
+            ], [
+                'id'               => '171',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '37',
+            ], [
+                'id'               => '172',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '38',
+            ], [
+                'id'               => '173',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '39',
+            ], [
+                'id'               => '175',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '50',
+            ], [
+                'id'               => '177',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '59',
+            ], [
+                'id'               => '178',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '60',
+            ], [
+                'id'               => '179',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '61',
+            ], [
+                'id'               => '180',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '62',
+            ], [
+                'id'               => '181',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '63',
+            ], [
+                'id'               => '182',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '64',
+            ], [
+                'id'               => '183',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '65',
+            ], [
+                'id'               => '185',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '67',
+            ], [
+                'id'               => '186',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '68',
+            ], [
+                'id'               => '187',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '69',
+            ], [
+                'id'               => '188',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '70',
+            ], [
+                'id'               => '189',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '72',
+            ], [
+                'id'               => '191',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '74',
+            ], [
+                'id'               => '192',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '196',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '22',
             ],
         ];
 
