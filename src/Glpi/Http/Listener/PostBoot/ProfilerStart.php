@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
 use Session;
 use Glpi\Debug\Profile;
@@ -41,7 +41,7 @@ use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class ProfilerStartListener implements EventSubscriberInterface
+final readonly class ProfilerStart implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

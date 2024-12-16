@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
 use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
@@ -43,7 +43,7 @@ use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Update;
 
-final readonly class CustomObjectsBootstrapListener implements EventSubscriberInterface
+final readonly class CustomObjectsAutoloaderRegistration implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -59,9 +59,9 @@ final readonly class CustomObjectsBootstrapListener implements EventSubscriberIn
             return;
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
+        AssetDefinitionManager::getInstance()->registerAutoload();
+        DropdownDefinitionManager::getInstance()->registerAutoload();
+        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
     }
 }

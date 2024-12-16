@@ -32,14 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
+use DBConnection;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Debug\Profiler;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Update;
 
-final readonly class RootDocListener implements EventSubscriberInterface
+final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,12 +52,16 @@ final readonly class RootDocListener implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostboot(): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+            // Requires the database to be available.
+            return;
+        }
 
-        $request = Request::createFromGlobals();
-        $CFG_GLPI['root_doc'] = $request->getBasePath();
+        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
+        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }

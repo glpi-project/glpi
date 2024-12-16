@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -40,7 +40,7 @@ use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final readonly class SessionStartListener implements EventSubscriberInterface
+final readonly class SessionStart implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

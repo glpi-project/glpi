@@ -32,18 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
-final readonly class CustomObjectsAutoloaderRegistrationListener implements EventSubscriberInterface
+final readonly class LoadLanguage implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -54,14 +50,6 @@ final readonly class CustomObjectsAutoloaderRegistrationListener implements Even
 
     public function onPostboot(): void
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
-            // Requires the database to be available.
-            return;
-        }
-
-        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
-        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
+        Session::loadLanguage();
     }
 }

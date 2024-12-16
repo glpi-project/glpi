@@ -32,23 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
-use DBConnection;
-use Glpi\Debug\Profiler;
-use Glpi\DependencyInjection\PluginContainer;
+use Config;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
-use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
-final readonly class InitializePluginsListener implements EventSubscriberInterface
+final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 {
-    public function __construct(private PluginContainer $pluginContainer)
-    {
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -56,20 +48,27 @@ final readonly class InitializePluginsListener implements EventSubscriberInterfa
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostboot(): void
     {
-        /*
-         * On startup, register all plugins configured for use,
-         * except during the database install/update process.
+        /**
+         * @var array $CFG_GLPI
          */
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        global $CFG_GLPI;
+
+        // Override cfg_features by session value
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
+
+        if (isset($_SESSION['is_installing'])) {
+            // Force `root_doc` value
+            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+            $CFG_GLPI['root_doc'] = $request->getBasePath();
             return;
         }
 
-        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
-        $plugin = new Plugin();
-        $plugin->init(true);
-        $this->pluginContainer->initializeContainer();
-        Profiler::getInstance()->stop('InitializePlugins::execute');
+        Config::loadLegacyConfiguration();
     }
 }

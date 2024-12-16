@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
-use Config;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 
-final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
+final readonly class RootDoc implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,27 +48,12 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        // Override cfg_features by session value
-        foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
-            }
-        }
-
-        if (isset($_SESSION['is_installing'])) {
-            // Force `root_doc` value
-            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-            $CFG_GLPI['root_doc'] = $request->getBasePath();
-            return;
-        }
-
-        Config::loadLegacyConfiguration();
+        $request = Request::createFromGlobals();
+        $CFG_GLPI['root_doc'] = $request->getBasePath();
     }
 }

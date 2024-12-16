@@ -32,14 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Http\Listener\PostBoot;
 
-use Session;
+use Glpi\Cache\CacheManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class DebugModeListener implements EventSubscriberInterface
+final readonly class InitializeCache implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,20 +49,21 @@ final readonly class DebugModeListener implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostboot(): void
     {
-        if (
-            isCommandLine()
-            && !defined('TU_USER') // In test suite context, used --debug option is the atoum one
-            && isset($_SERVER['argv'])
-        ) {
-            $key = array_search('--debug', $_SERVER['argv']);
-            if ($key) {
-                $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-                unset($_SERVER['argv'][$key]);
-                $_SERVER['argv']           = array_values($_SERVER['argv']);
-                $_SERVER['argc']--;
-            }
+        /** @var ?CacheInterface $GLPI_CACHE */
+        global $GLPI_CACHE;
+
+        if ($GLPI_CACHE) {
+            // Don't override, it might have been set for specific reasons already, especially for some CLI scripts.
+            return;
+        }
+
+        $cache_manager = new CacheManager();
+        if (isset($_SESSION['is_installing'])) {
+            $GLPI_CACHE = $cache_manager->getInstallerCacheInstance();
+        } else {
+            $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
         }
     }
 }
