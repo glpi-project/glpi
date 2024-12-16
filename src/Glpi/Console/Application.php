@@ -97,24 +97,27 @@ class Application extends BaseApplication
      */
     private $error_handler;
 
-    /**
-     * @var DBmysql|null
-     */
-    private $db;
+    private ?DBmysql $db = null;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    private ?Kernel $kernel;
+    private Kernel $kernel;
 
     public function __construct()
     {
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
-        $this->initApplication();
-        $this->initDb();
+        $this->initKernel();
+
+        if (class_exists('DB', false) && class_exists('mysqli', false)) {
+            /** @var \DBmysql $DB */
+            global $DB;
+
+            $this->db = $DB;
+        }
 
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -341,7 +344,7 @@ class Application extends BaseApplication
     /**
      * Initalize GLPI.
      */
-    private function initApplication(): void
+    private function initKernel(): void
     {
         /** @var Kernel|null $kernel */
         global $kernel;
@@ -358,21 +361,6 @@ class Application extends BaseApplication
 
         $this->kernel = new Kernel();
         $this->kernel->boot();
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    private function initDb(): void
-    {
-        if (!class_exists('DB', false) || !class_exists('mysqli', false)) {
-            return;
-        }
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $this->db = $DB;
     }
 
     /**
@@ -462,7 +450,7 @@ class Application extends BaseApplication
     private function checkCoreMandatoryRequirements(
         array $command_specific_requirements
     ): bool {
-        $db = property_exists($this, 'db') ? $this->db : null;
+        $db = $this->db;
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
@@ -553,16 +541,11 @@ class Application extends BaseApplication
      * Gets the Kernel associated with this Console.
      *
      * This method is required by most of the commands provided by the `symfony/framework-bundle`.
+     *
      * @see \Symfony\Bundle\FrameworkBundle\Console\Application::getKernel()
      */
-    public function getKernel(): ?KernelInterface
+    public function getKernel(): KernelInterface
     {
-        if (!$this->kernel) {
-            global $kernel;
-        } else {
-            $kernel = $this->kernel;
-        }
-
-        return $kernel;
+        return $this->kernel;
     }
 }
