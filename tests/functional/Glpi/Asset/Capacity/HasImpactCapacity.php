@@ -35,11 +35,12 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Config;
 use DbTestCase;
 use Entity;
 use Glpi\Tests\Asset\CapacityUsageTestTrait;
-use ImpactItem;
-use Log;
+use Impact;
+use ImpactRelation;
 
 class HasImpactCapacity extends DbTestCase
 {
@@ -83,7 +84,7 @@ class HasImpactCapacity extends DbTestCase
             $classname_3 => true,
         ];
 
-        $enabled_impact_types = json_decode(\Config::getConfigurationValue('core', \Impact::CONF_ENABLED), true) ?? [];
+        $enabled_impact_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
         foreach ($has_impact_mapping as $classname => $has_impact) {
             // Check that the class is globally registered
             if ($has_impact) {
@@ -142,7 +143,7 @@ class HasImpactCapacity extends DbTestCase
         );
 
         $impact_item_1 = $this->createItem(
-            \ImpactRelation::class,
+            ImpactRelation::class,
             [
                 'itemtype_source'           => $item_1::class,
                 'items_id_source'           => $item_1->getID(),
@@ -151,7 +152,7 @@ class HasImpactCapacity extends DbTestCase
             ]
         );
         $impact_item_2 = $this->createItem(
-            \ImpactRelation::class,
+            ImpactRelation::class,
             [
                 'itemtype_source'             => 'Computer',
                 'items_id_source'             => getItemByTypeName('Computer', '_test_pc01', true),
@@ -160,23 +161,23 @@ class HasImpactCapacity extends DbTestCase
             ]
         );
 
-        $this->object(\ImpactRelation::getById($impact_item_1->getID()))->isInstanceOf(\ImpactRelation::class);
-        $this->object(\ImpactRelation::getById($impact_item_2->getID()))->isInstanceOf(\ImpactRelation::class);
+        $this->object(ImpactRelation::getById($impact_item_1->getID()))->isInstanceOf(ImpactRelation::class);
+        $this->object(ImpactRelation::getById($impact_item_2->getID()))->isInstanceOf(ImpactRelation::class);
         $this->array($CFG_GLPI['impact_asset_types'])->hasKey($classname_1);
         $this->array($CFG_GLPI['impact_asset_types'])->hasKey($classname_2);
 
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(\ImpactRelation::getById($impact_item_1->getID()))->isFalse();
+        $this->boolean(ImpactRelation::getById($impact_item_1->getID()))->isFalse();
         $this->array($CFG_GLPI['impact_asset_types'])->notHasKey($classname_1);
 
-        $this->object(\ImpactRelation::getById($impact_item_2->getID()))->isInstanceOf(\ImpactRelation::class);
+        $this->object(ImpactRelation::getById($impact_item_2->getID()))->isInstanceOf(ImpactRelation::class);
         $this->array($CFG_GLPI['impact_asset_types'])->hasKey($classname_2);
     }
 
     public function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => \ImpactRelation::class,
+            'target_classname' => ImpactRelation::class,
         ];
     }
 
@@ -193,8 +194,6 @@ class HasImpactCapacity extends DbTestCase
         ?string $relation_classname = null,
         array $relation_fields = [],
     ): void {
-        global $DB;
-
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
 
@@ -262,8 +261,6 @@ class HasImpactCapacity extends DbTestCase
         ?string $relation_classname = null,
         array $relation_fields = [],
     ): void {
-        global $DB;
-
         $capacity = new ($this->getTargetCapacity());
 
         // Retrieve the test root entity

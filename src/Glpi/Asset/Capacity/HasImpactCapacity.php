@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -89,13 +88,16 @@ class HasImpactCapacity extends AbstractCapacity
             false
         );
 
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
+        CommonGLPI::registerStandardTab($classname, Impact::class, 2);
+    }
+
+    public function onCapacityEnabled(string $classname): void
+    {
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
         if (!in_array($classname, $enabled_types, true)) {
             $enabled_types[] = $classname;
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
         }
-
-        CommonGLPI::registerStandardTab($classname, Impact::class, 2);
     }
 
     public function onCapacityDisabled(string $classname): void
@@ -105,9 +107,11 @@ class HasImpactCapacity extends AbstractCapacity
 
         unset($CFG_GLPI['impact_asset_types'][$classname]);
 
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
-        $enabled_types = array_diff($enabled_types, [$classname]);
-        Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
+        if (in_array($classname, $enabled_types, true)) {
+            $enabled_types = array_diff($enabled_types, [$classname]);
+            Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
+        }
 
         $relation = new ImpactRelation();
         $relation->deleteByCriteria([
