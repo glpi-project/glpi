@@ -41,6 +41,7 @@ use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Update;
 
 final readonly class CustomObjectsAutoloaderRegistrationListener implements EventSubscriberInterface
 {
@@ -53,7 +54,7 @@ final readonly class CustomObjectsAutoloaderRegistrationListener implements Even
 
     public function onPostboot(): void
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             // Requires the database to be available.
             return;
         }
