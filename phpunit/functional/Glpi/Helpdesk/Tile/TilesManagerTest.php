@@ -67,13 +67,13 @@ final class TilesManagerTest extends DbTestCase
         $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
             'description'  => "Link to GLPI project website",
-            'illustration' => "request-service.svg",
+            'illustration' => "request-service",
             'url'          => "https://glpi-project.org",
         ]);
         $manager->addTile($profile, GlpiPageTile::class, [
             'title'        => "FAQ",
             'description'  => "Link to the FAQ",
-            'illustration' => "browse-help.svg",
+            'illustration' => "browse-kb",
             'page'         => GlpiPageTile::PAGE_FAQ,
         ]);
 
@@ -86,14 +86,14 @@ final class TilesManagerTest extends DbTestCase
         $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
         $this->assertEquals("GLPI project", $first_tile->getTitle());
         $this->assertEquals("Link to GLPI project website", $first_tile->getDescription());
-        $this->assertEquals("request-service.svg", $first_tile->getIllustration());
+        $this->assertEquals("request-service", $first_tile->getIllustration());
         $this->assertEquals("https://glpi-project.org", $first_tile->getTileUrl());
 
         $second_tile = $tiles[1];
         $this->assertInstanceOf(GlpiPageTile::class, $second_tile);
         $this->assertEquals("FAQ", $second_tile->getTitle());
         $this->assertEquals("Link to the FAQ", $second_tile->getDescription());
-        $this->assertEquals("browse-help.svg", $second_tile->getIllustration());
+        $this->assertEquals("browse-kb", $second_tile->getIllustration());
         $this->assertEquals("/glpi/front/helpdesk.faq.php", $second_tile->getTileUrl());
     }
 
@@ -113,7 +113,7 @@ final class TilesManagerTest extends DbTestCase
         $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
             'description'  => "Link to GLPI project website",
-            'illustration' => "request-service.svg",
+            'illustration' => "request-service",
             'url'          => "https://glpi-project.org",
         ]);
     }

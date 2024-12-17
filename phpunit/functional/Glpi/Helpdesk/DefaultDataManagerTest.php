@@ -366,7 +366,7 @@ final class DefaultDataManagerTest extends DbTestCase
     {
         // Arrange: load valid illustration names
         $illustration_manager = new IllustrationManager();
-        $valid_illustrations = $illustration_manager->getAllIllustrationsNames();
+        $valid_icons = $illustration_manager->getAllIconsIds();
 
         // Act: load the default tiles
         $profile_tiles = (new Profile_Tile())->find([]);
@@ -384,7 +384,7 @@ final class DefaultDataManagerTest extends DbTestCase
             $this->assertInstanceOf(TileInterface::class, $tile);
             $this->assertNotEmpty($tile->getTitle());
             $this->assertNotEmpty($tile->getDescription());
-            $this->assertContains($tile->getIllustration(), $valid_illustrations);
+            $this->assertContains($tile->getIllustration(), $valid_icons);
             $this->assertNotEmpty($tile->getTileUrl());
         }
     }

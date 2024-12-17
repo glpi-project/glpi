@@ -55,7 +55,9 @@ $is-dark: true;
     --tblr-muted: #aaa;
     --tblr-badge-bg: var(--tblr-light);
     --tblr-badge-color: var(--tblr-dark);
-    --glpi-mainmenu-bg: #242323;
+    --glpi-mainmenu-bg: #242323; // hsl(0deg, 1%, 14%)
+    --glpi-helpdesk-header: #1f1e1e;
+    --glpi-illustrations-header-light: hsl(31deg, 5%, 75%);
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-form-header-border-color: transparent;
     --glpi-form-header-fg: var(--tblr-light);

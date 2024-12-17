@@ -34,6 +34,7 @@
 :root[data-glpi-theme="greenflat"] {
     --tblr-primary-rgb: 254, 201, 92;
     --tblr-link-color-rgb: 0, 122, 88;
-    --glpi-mainmenu-bg: #09a071;
+    --glpi-mainmenu-bg: #09a071; // hsl(161deg, 89%, 33%)
+    --glpi-helpdesk-header: hsl(162deg, 82%, 85%);
     --glpi-mainmenu-fg: #fff;
 }

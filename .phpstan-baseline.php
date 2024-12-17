@@ -3692,12 +3692,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/RequirementsManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\UI\\\\ThemeManager\\:\\:getCustomThemesDirectory\\(\\) should return string but returns null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,

@@ -125,6 +125,12 @@
     --glpi-zindex-popover: #{$zindex-popover};
     --glpi-zindex-tooltip: #{$zindex-tooltip};
     --glpi-zindex-toast: #{$zindex-toast};
+
+    // Variables for @glpi-project/illustrations
+    --glpi-illustrations-background: white;
+    --glpi-illustrations-header-dark: var(--glpi-mainmenu-bg);
+    --glpi-illustrations-header-light: var(--glpi-helpdesk-header);
+    --glpi-illustrations-primary: var(--tblr-primary);
 }
 
 @media(prefers-reduced-motion) {
