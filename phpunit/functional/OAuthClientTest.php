@@ -35,9 +35,11 @@
 
 namespace tests\units;
 
-class OAuthClient extends \DbTestCase
+use PHPUnit\Framework\Attributes\DataProvider;
+
+class OAuthClientTest extends \DbTestCase
 {
-    protected function validateAllowedIPsProvider()
+    public static function validateAllowedIPsProvider()
     {
         return [
             [null, true],
@@ -57,9 +59,7 @@ class OAuthClient extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider validateAllowedIPsProvider
-     */
+    #[DataProvider('validateAllowedIPsProvider')]
     public function testValidateAllowedIPs($allowed_ips, $is_valid)
     {
         $client = new \OAuthClient();
@@ -67,20 +67,20 @@ class OAuthClient extends \DbTestCase
             'allowed_ips' => $allowed_ips
         ]);
         if (!$is_valid) {
-            $this->variable($add_result)->isEqualTo(false);
+            $this->assertFalse($add_result);
             $this->hasSessionMessages(ERROR, ['Invalid IP address or CIDR range']);
         } else {
-            $this->variable($add_result['allowed_ips'])->isIdenticalTo($allowed_ips);
+            $this->assertSame($allowed_ips, $add_result['allowed_ips']);
         }
 
         $update_result = $client->prepareInputForUpdate([
             'allowed_ips' => $allowed_ips
         ]);
         if (!$is_valid) {
-            $this->variable($update_result)->isEqualTo(false);
+            $this->assertFalse($update_result);
             $this->hasSessionMessages(ERROR, ['Invalid IP address or CIDR range']);
         } else {
-            $this->variable($update_result['allowed_ips'])->isIdenticalTo($allowed_ips);
+            $this->assertSame($allowed_ips, $update_result['allowed_ips']);
         }
     }
 }

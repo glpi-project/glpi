@@ -37,7 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class ProfileRight extends DbTestCase
+class ProfileRightTest extends DbTestCase
 {
     public function testUpdateProfileLastRightsUpdate()
     {
@@ -48,10 +48,10 @@ class ProfileRight extends DbTestCase
         $this->updateItem('Profile', $profile->getID(), [
             'last_rights_update' => null
         ]);
-        $profile->getFromDB($profile->getID());
+        $this->assertTrue($profile->getFromDB($profile->getID()));
 
         // Check that the last_rights_update field is null
-        $this->variable($profile->fields['last_rights_update'])->isNull();
+        $this->assertNull($profile->fields['last_rights_update']);
 
         // Create a profile right
         $profileRight = $this->createItem('ProfileRight', [
@@ -59,27 +59,27 @@ class ProfileRight extends DbTestCase
             'name'    => 'testUpdateProfileLastRightsUpdate',
             'rights'  => READ
         ]);
-        $profile->getFromDB($profile->getID());
+        $this->assertTrue($profile->getFromDB($profile->getID()));
 
         // Check that the last_rights_update field is not null
-        $this->variable($profile->fields['last_rights_update'])->isNotNull();
+        $this->assertNotNull($profile->fields['last_rights_update']);
 
         // Update the last_rights_update field to null
         $this->updateItem('Profile', $profile->getID(), [
             'last_rights_update' => null
         ]);
-        $profile->getFromDB($profile->getID());
+        $this->assertTrue($profile->getFromDB($profile->getID()));
 
         // Check that the last_rights_update field is null
-        $this->variable($profile->fields['last_rights_update'])->isNull();
+        $this->assertNull($profile->fields['last_rights_update']);
 
         // Update the profile right
         $this->updateItem('ProfileRight', $profileRight->getID(), [
             'rights' => READ | UPDATE
         ]);
-        $profile->getFromDB($profile->getID());
+        $this->assertTrue($profile->getFromDB($profile->getID()));
 
         // Check that the last_rights_update field is not null
-        $this->variable($profile->fields['last_rights_update'])->isNotNull();
+        $this->assertNotNull($profile->fields['last_rights_update']);
     }
 }

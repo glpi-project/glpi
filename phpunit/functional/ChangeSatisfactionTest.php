@@ -36,8 +36,8 @@
 namespace tests\units;
 
 // Force import because of atoum autoloader not working
-require_once 'CommonITILSatisfaction.php';
+require_once __DIR__ . '/../abstracts/CommonITILSatisfaction.php';
 
-class TicketSatisfaction extends CommonITILSatisfaction
+class ChangeSatisfactionTest extends CommonITILSatisfaction
 {
 }

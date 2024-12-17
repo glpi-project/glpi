@@ -36,11 +36,12 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /*
  * Test for src/CommonITILObject_CommonITILObject.php
  * */
-class CommonITILObject_CommonITILObject extends DbTestCase
+class CommonITILObject_CommonITILObjectTest extends DbTestCase
 {
     public function testCountAllLinks()
     {
@@ -51,7 +52,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Ticket::INCOMING
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
         // Create a Change
         $change = new \Change();
@@ -60,7 +61,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Change::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Change
         $itil_itil = new \Change_Ticket();
@@ -69,10 +70,10 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'changes_id' => $changes_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
         // Check the number of links
-        $this->integer(\CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id))->isEqualTo(1);
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
 
         // Create a Problem
         $problem = new \Problem();
@@ -81,7 +82,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Problem::INCOMING
         ]);
-        $this->integer($problems_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $problems_id);
 
         // Link the Ticket to the Problem
         $itil_itil = new \Problem_Ticket();
@@ -90,9 +91,9 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'problems_id' => $problems_id,
             'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->integer(\CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id))->isEqualTo(2);
+        $this->assertEquals(2, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
 
         // Add another ticket
         $tickets_id2 = $ticket->add([
@@ -100,7 +101,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test2',
             'status' => \Ticket::INCOMING
         ]);
-        $this->integer($tickets_id2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id2);
 
         // Link the second Ticket to the original ticket
         $ticket_ticket = new \Ticket_Ticket();
@@ -109,11 +110,11 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'tickets_id_2' => $tickets_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($ticket_ticket_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ticket_ticket_id);
 
         // Count links for both tickets
-        $this->integer(\CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id))->isEqualTo(3);
-        $this->integer(\CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2))->isEqualTo(1);
+        $this->assertEquals(3, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2));
     }
 
     public function testCountLinksByStatus()
@@ -127,7 +128,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Ticket::INCOMING
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
         // Create a Change
         $change = new \Change();
@@ -136,7 +137,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Change::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Change
         $itil_itil = new \Change_Ticket();
@@ -145,11 +146,11 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'changes_id' => $changes_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
         // Check the number of links by status
-        $this->integer(\Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::INCOMING]))->isEqualTo(1);
-        $this->integer(\Change_Ticket::countLinksByStatus('Change', $changes_id, [\Ticket::INCOMING]))->isEqualTo(1);
+        $this->assertEquals(1, \Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::INCOMING]));
+        $this->assertEquals(1, \Change_Ticket::countLinksByStatus('Change', $changes_id, [\Ticket::INCOMING]));
 
         // Create a Problem
         $problem = new \Problem();
@@ -158,7 +159,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Problem::INCOMING
         ]);
-        $this->integer($problems_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $problems_id);
 
         // Link the Ticket to the Problem
         $itil_itil = new \Problem_Ticket();
@@ -167,24 +168,24 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'problems_id' => $problems_id,
             'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->integer(\Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]))->isEqualTo(1);
-        $this->integer(\Change_Ticket::countLinksByStatus('Change', $changes_id, [\Ticket::INCOMING]))->isEqualTo(1);
-        $this->integer(\Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING]))->isEqualTo(1);
-        $this->integer(\Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING], [\CommonITILObject_CommonITILObject::LINK_TO]))->isEqualTo(0);
-        $this->integer(\Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING], [\CommonITILObject_CommonITILObject::DUPLICATE_WITH]))->isEqualTo(1);
+        $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]));
+        $this->assertEquals(1, \Change_Ticket::countLinksByStatus('Change', $changes_id, [\Ticket::INCOMING]));
+        $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING]));
+        $this->assertEquals(0, \Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING], [\CommonITILObject_CommonITILObject::LINK_TO]));
+        $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Problem', $problems_id, [\Ticket::INCOMING], [\CommonITILObject_CommonITILObject::DUPLICATE_WITH]));
 
         // Update Change status
-        $this->boolean($change->update([
+        $this->assertTrue($change->update([
             'id' => $changes_id,
             'status' => \Change::PLANNED
-        ]))->isTrue();
+        ]));
 
-        $this->integer(\Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]))->isEqualTo(1);
-        $this->integer(\Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::INCOMING]))->isEqualTo(0);
-        $this->integer(\Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::PLANNED]))->isEqualTo(1);
-        $this->integer(\Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]))->isEqualTo(1);
+        $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]));
+        $this->assertEquals(0, \Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::INCOMING]));
+        $this->assertEquals(1, \Change_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Change::PLANNED]));
+        $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]));
     }
 
     public function testGetLinkedTo()
@@ -196,7 +197,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Ticket::INCOMING
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
         // Create a Change
         $change = new \Change();
@@ -205,7 +206,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Change::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Change
         $itil_itil = new \Change_Ticket();
@@ -214,7 +215,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'changes_id' => $changes_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
         // Create a Problem
         $problem = new \Problem();
@@ -223,7 +224,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Problem::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Problem
         $itil_itil = new \Problem_Ticket();
@@ -232,23 +233,23 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'problems_id' => $problems_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->integer(count(\Ticket_Ticket::getLinkedTo('Ticket', $tickets_id)))->isEqualTo(0);
-        $this->integer(count(\Change_Ticket::getLinkedTo('Ticket', $tickets_id)))->isEqualTo(1);
-        $this->integer(count(\Problem_Ticket::getLinkedTo('Ticket', $tickets_id)))->isEqualTo(1);
+        $this->assertCount(0, \Ticket_Ticket::getLinkedTo('Ticket', $tickets_id));
+        $this->assertCount(1, \Change_Ticket::getLinkedTo('Ticket', $tickets_id));
+        $this->assertCount(1, \Problem_Ticket::getLinkedTo('Ticket', $tickets_id));
     }
 
     public function testGetAllLinkedTo()
     {
-// Create a Ticket
+        // Create a Ticket
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
             'name' => 'test',
             'content' => 'test',
             'status' => \Ticket::INCOMING
         ]);
-        $this->integer($tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $tickets_id);
 
         // Create a Change
         $change = new \Change();
@@ -257,7 +258,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Change::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Change
         $itil_itil = new \Change_Ticket();
@@ -266,7 +267,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'changes_id' => $changes_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
         // Create a Problem
         $problem = new \Problem();
@@ -275,7 +276,7 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'content' => 'test',
             'status' => \Problem::INCOMING
         ]);
-        $this->integer($changes_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $changes_id);
 
         // Link the Ticket to the Problem
         $itil_itil = new \Problem_Ticket();
@@ -284,11 +285,11 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             'problems_id' => $problems_id,
             'link' => \CommonITILObject_CommonITILObject::LINK_TO
         ]);
-        $this->integer($itil_itil_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->integer(count(\CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id)))->isEqualTo(2);
-        $this->integer(count(\CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id)))->isEqualTo(1);
-        $this->integer(count(\CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id)))->isEqualTo(1);
+        $this->assertCount(2, \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id));
     }
 
     public function testGetLinkName()
@@ -304,14 +305,14 @@ class CommonITILObject_CommonITILObject extends DbTestCase
             $inverted = \CommonITILObject_CommonITILObject::getLinkName($link_type, true, false);
             $with_icon = \CommonITILObject_CommonITILObject::getLinkName($link_type, false, true);
 
-            $this->boolean(is_string($normal))->isTrue();
-            $this->boolean(is_string($inverted))->isTrue();
-            $this->boolean(is_string($with_icon))->isTrue();
+            $this->assertTrue(is_string($normal));
+            $this->assertTrue(is_string($inverted));
+            $this->assertTrue(is_string($with_icon));
 
             if ($link_type !== \CommonITILObject_CommonITILObject::LINK_TO) {
-                $this->string($normal)->isNotEqualTo($inverted);
+                $this->assertNotEquals($inverted, $normal);
             }
-            $this->string($with_icon)->contains('<i class');
+            $this->assertStringContainsString('<i class', $with_icon);
         }
 
         // Test invalid link type
@@ -319,12 +320,12 @@ class CommonITILObject_CommonITILObject extends DbTestCase
         $normal = \CommonITILObject_CommonITILObject::getLinkName($invalid_link_type, false, false);
         $inverted = \CommonITILObject_CommonITILObject::getLinkName($invalid_link_type, true, false);
         $with_icon = \CommonITILObject_CommonITILObject::getLinkName($invalid_link_type, false, true);
-        $this->string($normal)->isEqualTo(NOT_AVAILABLE);
-        $this->string($inverted)->isEqualTo(NOT_AVAILABLE);
-        $this->string($with_icon)->isEqualTo(NOT_AVAILABLE);
+        $this->assertEquals(NOT_AVAILABLE, $normal);
+        $this->assertEquals(NOT_AVAILABLE, $inverted);
+        $this->assertEquals(NOT_AVAILABLE, $with_icon);
     }
 
-    protected function getLinkClassProvider()
+    public static function getLinkClassProvider()
     {
         return [
             ['Ticket', 'Ticket', \Ticket_Ticket::class],
@@ -339,25 +340,23 @@ class CommonITILObject_CommonITILObject extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getLinkClassProvider
-     */
+    #[DataProvider('getLinkClassProvider')]
     public function testGetLinkClass(string $itemtype_1, string $itemtype_2, string $expected)
     {
-        $this->string(\CommonITILObject_CommonITILObject::getLinkClass($itemtype_1, $itemtype_2))->isEqualTo($expected);
+        $this->assertEquals($expected, \CommonITILObject_CommonITILObject::getLinkClass($itemtype_1, $itemtype_2));
     }
 
     public function testGetAllLinkClasses()
     {
         $link_classes = \CommonITILObject_CommonITILObject::getAllLinkClasses();
-        $this->integer(count($link_classes))->isGreaterThanOrEqualTo(6);
+        $this->assertGreaterThanOrEqual(6, count($link_classes));
 
         foreach ($link_classes as $link_class) {
-            $this->boolean(is_subclass_of($link_class, \CommonITILObject_CommonITILObject::class, true))->isTrue();
+            $this->assertTrue(is_subclass_of($link_class, \CommonITILObject_CommonITILObject::class, true));
         }
     }
 
-    protected function normalizeInputProvider()
+    public static function normalizeInputProvider()
     {
         return [
             [
@@ -508,12 +507,10 @@ class CommonITILObject_CommonITILObject extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider normalizeInputProvider
-     */
+    #[DataProvider('normalizeInputProvider')]
     public function testNormalizeInput(string $class, array $input, array $expected)
     {
         $instance = new $class();
-        $this->array($instance->normalizeInput($input))->isIdenticalTo($expected);
+        $this->assertSame($expected, $instance->normalizeInput($input));
     }
 }

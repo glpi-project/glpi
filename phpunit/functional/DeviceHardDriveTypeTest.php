@@ -37,77 +37,72 @@ namespace tests\units;
 
 use DbTestCase;
 
-class DeviceHardDrive extends DbTestCase
+class DeviceHardDriveTypeTest extends DbTestCase
 {
     public function testAdd()
     {
         $this->login();
-        $obj = new \DeviceHardDrive();
+        $obj = new \DeviceHardDriveType();
 
-       // Add
+        // Add
         $in = [
-            'designation'              => __METHOD__,
-            'manufacturers_id'         => $this->getUniqueInteger(),
-            'deviceharddrivetypes_id'  => $this->getUniqueInteger(),
-            'deviceharddrivemodels_id' => $this->getUniqueInteger(),
-            'interfacetypes_id'        => $this->getUniqueInteger(),
+            'name' => __METHOD__,
+            'comment' => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
-        $this->integer($id)->isGreaterThan(0);
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
-        $this->variable($obj->getField('id'))->isEqualTo($id);
+        // getField methods
+        $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testUpdate()
     {
         $this->login();
-        $obj = new \DeviceHardDrive();
+        $obj = new \DeviceHardDriveType();
 
-       // Add
+        // Add
         $id = $obj->add([
-            'designation' => $this->getUniqueString(),
+            'name' => $this->getUniqueString(),
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
-            'id'                    => $id,
-            'designation'           => __METHOD__,
-            'manufacturers_id'      => $this->getUniqueInteger(),
-            'deviceharddrivetypes_id'  => $this->getUniqueInteger(),
-            'deviceharddrivemodels_id' => $this->getUniqueInteger(),
-            'interfacetypes_id'        => $this->getUniqueInteger(),
+            'id' => $id,
+            'name' => __METHOD__,
+            'comment' => $this->getUniqueString(),
         ];
-        $this->boolean($obj->update($in))->isTrue();
-        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->assertTrue($obj->update($in));
+        $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
-            $this->variable($obj->getField($k))->isEqualTo($v);
+            $this->assertEquals($v, $obj->getField($k));
         }
     }
 
     public function testDelete()
     {
         $this->login();
-        $obj = new \DeviceHardDrive();
+        $obj = new \DeviceHardDriveType();
 
-       // Add
+        // Add
         $id = $obj->add([
-            'designation' => __METHOD__,
+            'name' => __METHOD__,
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
-            'id'                       => $obj->getID(),
+            'id' => $id,
         ];
-        $this->boolean($obj->delete($in))->isTrue();
+        $this->assertTrue($obj->delete($in));
+        $this->assertFalse($obj->getFromDB($id));
     }
 }

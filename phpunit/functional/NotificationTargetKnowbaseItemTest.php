@@ -44,7 +44,7 @@ use QueuedNotification;
 
 /* Test for inc/notificationtargetticket.class.php */
 
-class NotificationTargetKnowbaseItem extends DbTestCase
+class NotificationTargetKnowbaseItemTest extends DbTestCase
 {
     public function testgetDataForNotifKnowbaseItem()
     {
@@ -62,7 +62,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         );
         // test activate notification
         foreach ($knowbasenotifs as $kbnotif) {
-            $this->boolean($notif->update(['id' => $kbnotif['id'], 'is_active' => 1]))->isTrue();
+            $this->assertTrue($notif->update(['id' => $kbnotif['id'], 'is_active' => 1]));
         }
         //search glpi user
         $this->createItem(
@@ -81,7 +81,7 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                 'name' => 'testknowbasegroup',
             ]
         );
-        $this->string($group->fields['name'])->isEqualTo('testknowbasegroup');
+        $this->assertEquals('testknowbasegroup', $group->fields['name']);
 
         //add user to group
         $this->createItem(
@@ -102,14 +102,15 @@ class NotificationTargetKnowbaseItem extends DbTestCase
                     'items_id' => $group->fields['id'],
                 ]
             );
-            $this->array($ntarget->fields)->isIdenticalTo(
+            $this->assertSame(
                 [
                     'id' => $ntarget->fields['id'],
                     'items_id' => $group->fields['id'],
                     'type' => Notification::GROUP_TYPE,
                     'notifications_id' => $kbnotif['id'],
                     'is_exclusion' => 0,
-                ]
+                ],
+                $ntarget->fields
             );
         }
 
@@ -124,8 +125,10 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         );
         //test check if add notification is in notification queue
         $notifqueue = new QueuedNotification();
-        $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
-        $this->integer($count)->isEqualTo(1);
+        $this->assertCount(
+            1,
+            $notifqueue->find(['itemtype' => 'KnowbaseItem'])
+        );
 
         $this->updateItem(
             \KnowbaseItem::class,
@@ -138,8 +141,10 @@ class NotificationTargetKnowbaseItem extends DbTestCase
         );
         //test check if update notification is in notification queue
         $notifqueue = new QueuedNotification();
-        $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
-        $this->integer($count)->isEqualTo(2);
+        $this->assertCount(
+            2,
+            $notifqueue->find(['itemtype' => 'KnowbaseItem'])
+        );
 
         $this->deleteItem(
             \KnowbaseItem::class,
@@ -148,7 +153,9 @@ class NotificationTargetKnowbaseItem extends DbTestCase
 
         //test check if delete notification is in notification queue
         $notifqueue = new QueuedNotification();
-        $count = count($notifqueue->find(['itemtype' => 'KnowbaseItem']));
-        $this->integer($count)->isEqualTo(3);
+        $this->assertCount(
+            3,
+            $notifqueue->find(['itemtype' => 'KnowbaseItem'])
+        );
     }
 }

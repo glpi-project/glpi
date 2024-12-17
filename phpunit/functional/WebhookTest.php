@@ -38,7 +38,7 @@ namespace tests\units;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
 
-class Webhook extends \DbTestCase
+class WebhookTest extends \DbTestCase
 {
     /**
      * Make sure all webhook item types have an ID search option so that the criteria filters can be applied properly
@@ -67,7 +67,7 @@ class Webhook extends \DbTestCase
             if ($id_opt_num === null) {
                 echo 'No ID option found for itemtype ' . $itemtype;
             }
-            $this->variable($id_opt_num)->isNotNull();
+            $this->assertNotNull($id_opt_num);
         }
     }
 
@@ -81,7 +81,7 @@ class Webhook extends \DbTestCase
             'externalid' => 'ext1234',
             'entities_id' => $_SESSION['glpiactive_entity']
         ]);
-        $this->string($ticket->fields['externalid'])->isEqualTo('ext1234');
+        $this->assertEquals('ext1234', $ticket->fields['externalid']);
 
         $payload = <<<JSON
             {
@@ -116,16 +116,16 @@ JSON;
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
-        $this->array($queued_webhook)->size->isGreaterThan(0);
+        $this->assertGreaterThan(0, count($queued_webhook));
 
         $body = json_decode($queued_webhook['body'], true);
 
-        $this->string($body['event'])->isEqualTo('new');
-        $this->string($body['external_id'])->isEqualTo('ext1234');
-        $this->string($body['item']['id'])->isEqualTo($fup->getID());
-        $this->string($body['item']['itemtype'])->isEqualTo('Ticket');
-        $this->string($body['item']['items_id'])->isEqualTo($ticket->getID());
-        $this->string($body['item']['content'])->isEqualTo('Test followup');
+        $this->assertEquals('new', $body['event']);
+        $this->assertEquals('ext1234', $body['external_id']);
+        $this->assertEquals($fup->getID(), $body['item']['id']);
+        $this->assertEquals('Ticket', $body['item']['itemtype']);
+        $this->assertEquals($ticket->getID(), $body['item']['items_id']);
+        $this->assertEquals('Test followup', $body['item']['content']);
     }
 
     public function testWebhookURLTemplate()
@@ -165,8 +165,8 @@ JSON;
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
-        $this->array($queued_webhook)->size->isGreaterThan(0);
-        $this->string($queued_webhook['url'])->isEqualTo('http://localhost/ext1234/new/' . $fup->getID());
+        $this->assertGreaterThan(0, count($queued_webhook));
+        $this->assertEquals('http://localhost/ext1234/new/' . $fup->getID(), $queued_webhook['url']);
     }
 
     public function testWebhookHeaderTemplate()
@@ -216,13 +216,13 @@ JSON;
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
-        $this->array($queued_webhook)->size->isGreaterThan(0);
+        $this->assertGreaterThan(0, count($queued_webhook));
         $headers = json_decode($queued_webhook['headers'], true);
 
-        $this->string($headers['X-Test-Event'])->isEqualTo('new');
-        $this->string($headers['X-Test-External-ID'])->isEqualTo('ext1234');
-        $this->string($headers['X-Test-Item-ID'])->isEqualTo($fup->getID());
-        $this->string($headers['X-Test-Mixed'])->isEqualTo('new-ext1234-' . $fup->getID());
+        $this->assertEquals('new', $headers['X-Test-Event']);
+        $this->assertEquals('ext1234', $headers['X-Test-External-ID']);
+        $this->assertEquals($fup->getID(), $headers['X-Test-Item-ID']);
+        $this->assertEquals('new-ext1234-' . $fup->getID(), $headers['X-Test-Mixed']);
     }
 
     public function testGetResultForPath()
@@ -241,7 +241,7 @@ JSON;
         $users_id = \Session::getLoginUserID();
         // Make sure we get at least something as a response.
         // The main purpose is to test the internal authentication middleware.
-        $this->variable($webhook->getResultForPath('/Administration/User/' . $users_id, 'new', 'User', $users_id))->isNotNull();
+        $this->assertNotNull($webhook->getResultForPath('/Administration/User/' . $users_id, 'new', 'User', $users_id));
     }
 
     public function testGetAPIItemtypeData()
@@ -251,12 +251,12 @@ JSON;
 
         $supported_types = \Webhook::getAPIItemtypeData();
         foreach ($supported_types as $controller => $type_data) {
-            $this->boolean(is_subclass_of($controller, AbstractController::class))->isTrue();
+            $this->assertTrue(is_subclass_of($controller, AbstractController::class));
             foreach ($type_data as $category => $types) {
-                $this->string($category)->matches('/main|subtypes/');
+                $this->assertMatchesRegularExpression('/main|subtypes/', $category);
                 foreach ($types as $type_key => $type) {
-                    $this->boolean(class_exists($type_key))->isTrue();
-                    $this->array($type)->isNotEmpty();
+                    $this->assertTrue(class_exists($type_key));
+                    $this->assertNotEmpty($type);
                 }
             }
         }
