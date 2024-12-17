@@ -45,7 +45,7 @@ final class InstallationNotOverriden extends AbstractRequirement
     /**
      * Database instance.
      *
-     * @var DBmysql
+     * @var DBmysql|null
      */
     private $db;
 

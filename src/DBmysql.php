@@ -1255,7 +1255,7 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-            /** @var \DBmysql $DB */
+            /** @var \DBmysql|null $DB */
             global $DB;
             $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";

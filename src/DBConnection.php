@@ -854,7 +854,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCharset(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -873,7 +873,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCollation(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -892,7 +892,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultPrimaryKeySignOption(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
@@ -932,7 +932,7 @@ class DBConnection extends CommonDBTM
      */
     public static function isDbAvailable(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
         return $DB instanceof DBmysql && $DB->connected;
     }
