@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
@@ -47,14 +46,10 @@ use Glpi\Toolbox\Filesystem;
  */
 global $CFG_GLPI, $GLPI_CACHE;
 
-$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
-
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
     Session::loadLanguage(with_plugins: false);
 }
-
-Session::checkCookieSecureConfig();
 
 //Print a correct  Html header for application
 function header_html($etape)
