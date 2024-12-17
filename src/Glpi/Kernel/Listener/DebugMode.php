@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
+use Session;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
-use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class LoadLanguage implements EventSubscriberInterface
+final readonly class DebugMode implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,8 +48,20 @@ final readonly class LoadLanguage implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
-        Session::loadLanguage();
+        if (
+            isCommandLine()
+            && !defined('TU_USER') // In test suite context, used --debug option is the atoum one
+            && isset($_SERVER['argv'])
+        ) {
+            $key = array_search('--debug', $_SERVER['argv']);
+            if ($key) {
+                $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+                unset($_SERVER['argv'][$key]);
+                $_SERVER['argv']           = array_values($_SERVER['argv']);
+                $_SERVER['argc']--;
+            }
+        }
     }
 }

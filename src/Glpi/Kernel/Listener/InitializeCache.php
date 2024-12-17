@@ -32,18 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Cache\CacheManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
-final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
+final readonly class InitializeCache implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -54,14 +51,19 @@ final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
 
     public function onPostboot(): void
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
-            // Requires the database to be available.
+        /** @var ?CacheInterface $GLPI_CACHE */
+        global $GLPI_CACHE;
+
+        if ($GLPI_CACHE) {
+            // Don't override, it might have been set for specific reasons already, especially for some CLI scripts.
             return;
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        $cache_manager = new CacheManager();
+        if (isset($_SESSION['is_installing'])) {
+            $GLPI_CACHE = $cache_manager->getInstallerCacheInstance();
+        } else {
+            $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+        }
     }
 }

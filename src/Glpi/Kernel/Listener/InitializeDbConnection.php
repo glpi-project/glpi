@@ -32,23 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
 use DBConnection;
-use Glpi\Debug\Profiler;
-use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
-use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
-final readonly class InitializePlugins implements EventSubscriberInterface
+final readonly class InitializeDbConnection implements EventSubscriberInterface
 {
-    public function __construct(private PluginContainer $pluginContainer)
-    {
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -58,18 +50,21 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /*
-         * On startup, register all plugins configured for use,
-         * except during the database install/update process.
-         */
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        if (isset($_SESSION['is_installing'])) {
             return;
         }
 
-        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
-        $plugin = new Plugin();
-        $plugin->init(true);
-        $this->pluginContainer->initializeContainer();
-        Profiler::getInstance()->stop('InitializePlugins::execute');
+        if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+            // Inexistent config file is handled in another listener.
+            return;
+        }
+
+        include_once(GLPI_CONFIG_DIR . '/config_db.php');
+
+        if (!\class_exists('DB', false)) {
+            return;
+        }
+
+        DBConnection::establishDBConnection(false, false);
     }
 }

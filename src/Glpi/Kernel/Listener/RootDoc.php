@@ -32,18 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
+use Symfony\Component\HttpFoundation\Request;
 
-final readonly class CustomObjectsAutoloaderRegistration implements EventSubscriberInterface
+final readonly class RootDoc implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -52,16 +48,12 @@ final readonly class CustomObjectsAutoloaderRegistration implements EventSubscri
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
-            // Requires the database to be available.
-            return;
-        }
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
-        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
+        $request = Request::createFromGlobals();
+        $CFG_GLPI['root_doc'] = $request->getBasePath();
     }
 }

@@ -32,14 +32,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use Config;
+use Session;
+use Glpi\Debug\Profile;
+use Glpi\Debug\Profiler;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
+final readonly class ProfilerStart implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,27 +50,20 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
-
-        // Override cfg_features by session value
-        foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
-            }
+        if (isCommandLine()) {
+            Profiler::getInstance()->disable();
+        } else {
+            Profiler::getInstance()->start('php_request');
         }
 
-        if (isset($_SESSION['is_installing'])) {
-            // Force `root_doc` value
-            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-            $CFG_GLPI['root_doc'] = $request->getBasePath();
-            return;
+        if (
+            isset($_SESSION['glpi_use_mode'])
+            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+        ) {
+            // Start the debug profile
+            Profile::getCurrent();
         }
-
-        Config::loadLegacyConfiguration();
     }
 }

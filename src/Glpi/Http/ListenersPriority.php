@@ -35,21 +35,22 @@
 namespace Glpi\Http;
 
 use Glpi\Config\LegacyConfigProviderListener;
+use Glpi\Kernel\Listener as KernelListener;
 
 final class ListenersPriority
 {
     public const POST_BOOT_LISTENERS_PRIORITIES = [
-        Listener\PostBoot\SessionStart::class =>                        200,
-        Listener\PostBoot\ProfilerStart::class =>                       190,
-        Listener\PostBoot\DebugMode::class =>                           180,
-        Listener\PostBoot\RootDoc::class =>                             170,
-        Listener\PostBoot\InitializeDbConnection::class =>              160,
-        Listener\PostBoot\InitializeCache::class =>                     150,
-        Listener\PostBoot\LoadLegacyConfiguration::class =>             140,
-        Listener\PostBoot\CustomObjectsAutoloaderRegistration::class => 130,
-        Listener\PostBoot\InitializePlugins::class =>                   120,
-        Listener\PostBoot\CustomObjectsBootstrap::class =>              110,
-        Listener\PostBoot\LoadLanguage::class =>                        100,
+        KernelListener\SessionStart::class =>                        200,
+        KernelListener\ProfilerStart::class =>                       190,
+        KernelListener\DebugMode::class =>                           180,
+        KernelListener\RootDoc::class =>                             170,
+        KernelListener\InitializeDbConnection::class =>              160,
+        KernelListener\InitializeCache::class =>                     150,
+        KernelListener\LoadLegacyConfiguration::class =>             140,
+        KernelListener\CustomObjectsAutoloaderRegistration::class => 130,
+        KernelListener\InitializePlugins::class =>                   120,
+        KernelListener\CustomObjectsBootstrap::class =>              110,
+        KernelListener\LoadLanguage::class =>                        100,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

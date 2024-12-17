@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use DBConnection;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class InitializeDbConnection implements EventSubscriberInterface
+final readonly class LoadLanguage implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -48,23 +48,8 @@ final readonly class InitializeDbConnection implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostboot(): void
     {
-        if (isset($_SESSION['is_installing'])) {
-            return;
-        }
-
-        if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-            // Inexistent config file is handled in another listener.
-            return;
-        }
-
-        include_once(GLPI_CONFIG_DIR . '/config_db.php');
-
-        if (!\class_exists('DB', false)) {
-            return;
-        }
-
-        DBConnection::establishDBConnection(false, false);
+        Session::loadLanguage();
     }
 }

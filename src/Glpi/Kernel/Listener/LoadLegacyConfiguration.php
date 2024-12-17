@@ -32,15 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use Glpi\Cache\CacheManager;
+use Config;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
-use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class InitializeCache implements EventSubscriberInterface
+final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -51,19 +50,25 @@ final readonly class InitializeCache implements EventSubscriberInterface
 
     public function onPostboot(): void
     {
-        /** @var ?CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
 
-        if ($GLPI_CACHE) {
-            // Don't override, it might have been set for specific reasons already, especially for some CLI scripts.
+        // Override cfg_features by session value
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
+
+        if (isset($_SESSION['is_installing'])) {
+            // Force `root_doc` value
+            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+            $CFG_GLPI['root_doc'] = $request->getBasePath();
             return;
         }
 
-        $cache_manager = new CacheManager();
-        if (isset($_SESSION['is_installing'])) {
-            $GLPI_CACHE = $cache_manager->getInstallerCacheInstance();
-        } else {
-            $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-        }
+        Config::loadLegacyConfiguration();
     }
 }

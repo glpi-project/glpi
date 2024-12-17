@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;

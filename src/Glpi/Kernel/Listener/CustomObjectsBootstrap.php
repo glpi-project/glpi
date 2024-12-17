@@ -32,16 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener\PostBoot;
+namespace Glpi\Kernel\Listener;
 
-use Session;
-use Glpi\Debug\Profile;
+use DBConnection;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Debug\Profiler;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Http\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Update;
 
-final readonly class ProfilerStart implements EventSubscriberInterface
+final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -50,20 +52,16 @@ final readonly class ProfilerStart implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostboot(): void
     {
-        if (isCommandLine()) {
-            Profiler::getInstance()->disable();
-        } else {
-            Profiler::getInstance()->start('php_request');
+        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+            // Requires the database to be available.
+            return;
         }
 
-        if (
-            isset($_SESSION['glpi_use_mode'])
-            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-        ) {
-            // Start the debug profile
-            Profile::getCurrent();
-        }
+        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
+        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }
