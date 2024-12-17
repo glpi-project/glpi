@@ -46,16 +46,13 @@ use User;
 
 /* Test for inc/RuleRight.class.php */
 
-/**
- * @engine isolate
- */
-class ValidatorSubstitute extends DbTestCase
+class ValidatorSubstituteTest extends DbTestCase
 {
-    public function providerGetTabNameForItem()
+    protected function providerGetTabNameForItem()
     {
         //login to get session
         $auth = new Auth();
-        $this->boolean($auth->login(TU_USER, TU_PASS, true))->isTrue();
+        $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
 
         yield [
             'item' => new Computer(),
@@ -67,7 +64,7 @@ class ValidatorSubstitute extends DbTestCase
             'expected' => 'Authorized substitutes',
         ];
 
-        $validatorSubstitute = new $this->newTestedInstance();
+        $validatorSubstitute = new \ValidatorSubstitute();
         $validatorSubstitute->add([
             'users_id' => Session::getLoginUserId(),
             'users_id_substitute' => User::getIdByName('glpi'),
@@ -86,7 +83,7 @@ class ValidatorSubstitute extends DbTestCase
         ];
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
-        $validatorSubstitute = new $this->newTestedInstance();
+        $validatorSubstitute = new \ValidatorSubstitute();
         $validatorSubstitute->add([
             'users_id' => Session::getLoginUserId(),
             'users_id_substitute' => User::getIdByName('tech'),
@@ -105,22 +102,20 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerGetTabNameForItem
-     *
-     * @param CommonGLPI $item
-     * @param string $expected
-     * @return void
-     */
-    public function testGetTabNameForItem(CommonGLPI $item, string $expected)
+    public function testGetTabNameForItem()
     {
-        $instance = $this->newTestedInstance;
+        foreach ($this->providerGetTabNameForItem() as $row) {
+            $item = $row['item'];
+            $expected = $row['expected'];
 
-        $output = $instance->getTabNameForItem($item);
-        $this->string(strip_tags($output))->isEqualTo($expected);
+            $instance = new \ValidatorSubstitute();
+
+            $output = $instance->getTabNameForItem($item);
+            $this->assertEquals($expected, strip_tags($output));
+        }
     }
 
-    public function providerCanCreateItem()
+    protected function providerCanCreateItem()
     {
         yield [
             'input' => [
@@ -144,22 +139,20 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCanCreateItem
-     *
-     * @param array $input
-     * @param bool  $expected
-     * @return void
-     */
-    public function testCanCreateItem(array $input, bool $expected)
+    public function testCanCreateItem()
     {
-        $instance = $this->newTestedInstance;
-        $instance->fields = $input;
-        $output = $instance->canCreateItem();
-        $this->boolean($output)->isEqualTo($expected);
+        foreach ($this->providerCanCreateItem() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+
+            $instance = new \ValidatorSubstitute();
+            $instance->fields = $input;
+            $output = $instance->canCreateItem();
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerCanViewItem()
+    protected function providerCanViewItem()
     {
         yield [
             'input' => [
@@ -183,19 +176,16 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCanViewItem
-     *
-     * @param array $input
-     * @param boolean $expected
-     * @return void
-     */
-    public function testCanViewItem(array $input, bool $expected)
+    public function testCanViewItem()
     {
-        $instance = $this->newTestedInstance;
-        $instance->fields = $input;
-        $output = $instance->canViewItem();
-        $this->boolean($output)->isEqualTo($expected);
+        foreach ($this->providerCanViewItem() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
+            $instance->fields = $input;
+            $output = $instance->canViewItem();
+            $this->assertEquals($expected, $output);
+        }
     }
 
     public function providerCanUpdateItem()
@@ -222,22 +212,19 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCanUpdateItem
-     *
-     * @param array $input
-     * @param boolean $expected
-     * @return void
-     */
-    public function testCanUpdateItem(array $input, bool $expected)
+    public function testCanUpdateItem()
     {
-        $instance = $this->newTestedInstance;
-        $instance->fields = $input;
-        $output = $instance->canUpdateItem();
-        $this->boolean($output)->isEqualTo($expected);
+        foreach ($this->providerCanUpdateItem() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
+            $instance->fields = $input;
+            $output = $instance->canUpdateItem();
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerCanDeleteItem()
+    protected function providerCanDeleteItem()
     {
         yield [
             'input' => [
@@ -261,22 +248,19 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCanDeleteItem
-     *
-     * @param array $input
-     * @param boolean $expected
-     * @return void
-     */
-    public function testCanDeleteItem(array $input, bool $expected)
+    public function testCanDeleteItem()
     {
-        $instance = $this->newTestedInstance;
-        $instance->fields = $input;
-        $output = $instance->canDeleteItem();
-        $this->boolean($output)->isEqualTo($expected);
+        foreach ($this->providerCanDeleteItem() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
+            $instance->fields = $input;
+            $output = $instance->canDeleteItem();
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerCanPurgeItem()
+    protected function providerCanPurgeItem()
     {
         yield [
             'input' => [
@@ -300,22 +284,19 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCanPurgeItem
-     *
-     * @param array $input
-     * @param boolean $expected
-     * @return void
-     */
-    public function testCanPurgeItem(array $input, bool $expected)
+    public function testCanPurgeItem()
     {
-        $instance = $this->newTestedInstance;
-        $instance->fields = $input;
-        $output = $instance->canPurgeItem();
-        $this->boolean($output)->isEqualTo($expected);
+        foreach ($this->providerCanPurgeItem() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
+            $instance->fields = $input;
+            $output = $instance->canPurgeItem();
+            $this->assertEquals($expected, $output);
+        }
     }
 
-    public function providerUpdateSubstitutes_dateRange()
+    protected function providerUpdateSubstitutes_dateRange()
     {
         $this->login('normal', 'normal');
         yield 'not allowed to edit' => [
@@ -434,48 +415,35 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerUpdateSubstitutes_dateRange
-     *
-     * Tests update of substitute date range only (not substitutes users)
-     *
-     * @param array $input
-     * @param array $expected
-     * @return void
-     */
-    public function testUpdateSubstitutes_dateRange(array $input, array $expected)
+    public function testUpdateSubstitutes_dateRange()
     {
-        $instance = $this->newTestedInstance;
+        foreach ($this->providerUpdateSubstitutes_dateRange() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
 
-        $output = $instance->updateSubstitutes($input);
+            $output = $instance->updateSubstitutes($input);
 
-        // Check the return value
-        $this->boolean($output)->isEqualTo($expected['return']);
+            // Check the return value
+            $this->assertEquals($expected['return'], $output);
 
-        if ($expected['return'] === false) {
-            // Check error message
-            $this->hasSessionMessages(ERROR, $expected['messages']);
-            // Nothing more to check
-            return;
-        }
+            if ($expected['return'] === false) {
+                // Check error message
+                $this->hasSessionMessages(ERROR, $expected['messages']);
+                // Nothing more to check
+                return;
+            }
 
-        // Check the expected date range
-        $user = User::getById($input['users_id']);
-        $this->object($user)->isInstanceOf(User::class);
+            // Check the expected date range
+            $user = User::getById($input['users_id']);
+            $this->assertInstanceOf(\User::class, $user);
 
-        if ($expected['range']['start'] === null) {
-            $this->variable($user->fields['substitution_start_date'])->isNull();
-        } else {
-            $this->string($user->fields['substitution_start_date'])->isEqualTo($expected['range']['start']);
-        }
-        if ($expected['range']['end'] === null) {
-            $this->variable($user->fields['substitution_end_date'])->isNull();
-        } else {
-            $this->string($user->fields['substitution_end_date'])->isEqualTo($expected['range']['end']);
+            $this->assertEquals($expected['range']['start'], $user->fields['substitution_start_date']);
+            $this->assertEquals($expected['range']['end'], $user->fields['substitution_end_date']);
         }
     }
 
-    public function providerUpdateSubstitutes_substitutes()
+    protected function providerUpdateSubstitutes_substitutes()
     {
         $this->login('normal', 'normal');
         yield 'not allowed to edit' => [
@@ -529,57 +497,48 @@ class ValidatorSubstitute extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerUpdateSubstitutes_substitutes
-     *
-     * Tests update of substitutes only (not date range)
-     *
-     * @param array $input
-     * @param array $expected
-     * @return void
-     */
-    public function testUpdateSubstitutes_substitutes(array $input, array $expected)
+    public function testUpdateSubstitutes_substitutes()
     {
-        $instance = $this->newTestedInstance;
+        foreach ($this->providerUpdateSubstitutes_substitutes() as $row) {
+            $input = $row['input'];
+            $expected = $row['expected'];
+            $instance = new \ValidatorSubstitute();
 
-        $dbUtils = new DbUtils();
-        $allRowsCount = $dbUtils->countElementsInTable($instance::getTable());
-        $output = $instance->updateSubstitutes($input);
+            $dbUtils = new DbUtils();
+            $allRowsCount = $dbUtils->countElementsInTable($instance::getTable());
+            $output = $instance->updateSubstitutes($input);
 
-        // Check the return value
-        $this->boolean($output)->isEqualTo($expected['return']);
+            // Check the return value
+            $this->assertEquals($expected['return'], $output);
 
-        if ($expected['return'] === false) {
-            // Check error message
-            $this->hasSessionMessages(ERROR, $expected['messages']);
-            // Check that no rows was added / deleted
-            $this->integer($dbUtils->countElementsInTable($instance::getTable()))->isEqualTo($allRowsCount);
-            // Nothing more to check
-            return;
-        }
+            if ($expected['return'] === false) {
+                // Check error message
+                $this->hasSessionMessages(ERROR, $expected['messages']);
+                // Check that no rows was added / deleted
+                $this->assertEquals($allRowsCount, $dbUtils->countElementsInTable($instance::getTable()));
+                // Nothing more to check
+                return;
+            }
 
-        // Check the expected rows count
-        $rows = $instance->find([
-            'users_id' => $input['users_id'],
-        ]);
-        $this->array($rows)->hasSize(count($expected['rows']));
-        if (count($expected['rows']) == 0) {
-            // Nothing more to test
-            return;
-        }
+            // Check the expected rows count
+            $rows = $instance->find([
+                'users_id' => $input['users_id'],
+            ]);
+            $this->assertCount(count($expected['rows']), $rows);
 
-        // Check the expected rows
-        $rowsSearch = $rows;
-        foreach ($rowsSearch as $id => $row) {
-            foreach ($expected['rows'] as $expectedRow) {
-                if ($row['users_id_substitute'] == $expectedRow['users_id_substitute']) {
-                    // Row found, removing it from the set
-                    unset($rows[$id]);
+            // Check the expected rows
+            $rowsSearch = $rows;
+            foreach ($rowsSearch as $id => $row) {
+                foreach ($expected['rows'] as $expectedRow) {
+                    if ($row['users_id_substitute'] == $expectedRow['users_id_substitute']) {
+                        // Row found, removing it from the set
+                        unset($rows[$id]);
+                    }
                 }
             }
-        }
 
-        // if all rows are found, the array must now be empty
-        $this->array($rows)->hasSize(0);
+            // if all rows are found, the array must now be empty
+            $this->assertCount(0, $rows);
+        }
     }
 }

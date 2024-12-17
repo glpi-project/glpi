@@ -46,7 +46,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
      */
     protected function getTestedClass(): string
     {
-        $test_class = static::class;
+        $test_class = str_replace('Test', '', static::class);
         // Rule class has the same name as the test class but in the global namespace
         return substr(strrchr($test_class, '\\'), 1);
     }
@@ -57,7 +57,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
         $tested_class = $this->getTestedClass();
         $itemtype = $tested_class::getItemtype();
         // Verify the itemtype is a subclass of CommonITILObject
-        $this->boolean(is_a($itemtype, \CommonITILObject::class, true))->isTrue();
+        $this->assertTrue(is_a($itemtype, \CommonITILObject::class, true));
     }
 
     public function testGetSurveyUrl()
@@ -75,7 +75,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'entities_id' => $root_entity_id,
             'solvedate'   => $_SESSION['glpi_currenttime'],
         ]);
-        $this->integer($items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $items_id);
 
         $this->login(); // Authorized user required to update entity config
 
@@ -84,25 +84,25 @@ abstract class CommonITILSatisfaction extends DbTestCase
         $config_suffix = $itemtype === 'Ticket' ? '' : ('_' . strtolower($itemtype));
         $inquest_url = "[ITEMTYPE],[ITEMTYPE_NAME],[{$tag_prefix}_ID],[{$tag_prefix}_NAME],[{$tag_prefix}_CREATEDATE],
             [{$tag_prefix}_SOLVEDATE],[{$tag_prefix}_PRIORITY]";
-        $this->boolean(
+        $this->assertTrue(
             $entity->update([
                 'id'                              => $root_entity_id,
                 'inquest_URL' . $config_suffix    => $inquest_url,
                 'inquest_config' . $config_suffix => \CommonITILSatisfaction::TYPE_EXTERNAL,
             ])
-        )->isTrue();
+        );
 
         $expected = "{$itemtype},{$item->getTypeName(1)},{$items_id},{$item->fields['name']},{$item->getField('date')},
             {$item->getField('solvedate')},{$item->getField('priority')}";
         $generated = \Entity::generateLinkSatisfaction($item);
-        $this->string($generated)->isEqualTo($expected);
+        $this->assertEquals($expected, $generated);
     }
 
     public function testGetIndexName()
     {
         $index_name = $this->getTestedClass()::getIndexName();
-        $this->boolean(is_string($index_name))->isTrue();
-        $this->string($index_name)->isNotEmpty();
+        $this->assertTrue(is_string($index_name));
+        $this->assertNotEmpty($index_name);
     }
 
     public function testGetLogTypeID()
@@ -118,7 +118,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'solvedate'   => $_SESSION['glpi_currenttime'],
         ]);
-        $this->integer($items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $items_id);
 
         // Add a satisfaction
         /** @var \CommonITILSatisfaction $satisfaction */
@@ -131,14 +131,14 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
-        $this->integer($satisfaction_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $satisfaction_id);
 
         $log_type = $satisfaction->getLogTypeID();
-        $this->boolean(is_array($log_type))->isTrue();
-        $this->array($log_type)->size->isEqualTo(2);
-        $this->string($log_type[0])->isEqualTo($itilobject_type);
+        $this->assertIsArray($log_type);
+        $this->assertCount(2, $log_type);
+        $this->assertEquals($itilobject_type, $log_type[0]);
 
-        $this->integer($log_type[1])->isEqualTo($items_id);
+        $this->assertEquals($items_id, $log_type[1]);
     }
 
     public function testDateAnsweredSetOnAnswer()
@@ -156,11 +156,11 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'solvedate'   => $_SESSION['glpi_currenttime'],
             'users_id_recipient' => getItemByTypeName('User', TU_USER, true),
         ]);
-        $this->integer($items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $items_id);
 
-        $this->boolean($item->addTeamMember('User', getItemByTypeName('User', TU_USER, true), [
+        $this->assertTrue($item->addTeamMember('User', getItemByTypeName('User', TU_USER, true), [
             'role' => Team::ROLE_REQUESTER,
-        ]))->isTrue();
+        ]));
 
         // Add a satisfaction
         /** @var \CommonITILSatisfaction $satisfaction */
@@ -173,17 +173,17 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
-        $this->integer($satisfaction_id)->isGreaterThan(0);
-        $this->variable($satisfaction->fields['date_answered'])->isNull();
+        $this->assertGreaterThan(0, $satisfaction_id);
+        $this->assertNull($satisfaction->fields['date_answered']);
 
         $this->login();
 
-        $this->boolean($satisfaction->update([
+        $this->assertTrue($satisfaction->update([
             $itilobject_type::getForeignKeyField() => $items_id, // These items don't use `id` as the index field...
             'satisfaction' => 5
-        ]))->isTrue();
+        ]));
 
-        $this->variable($satisfaction->fields['date_answered'])->isNotNull();
-        $this->string($satisfaction->fields['date_answered'])->isEqualTo($_SESSION['glpi_currenttime']);
+        $this->assertNotNull($satisfaction->fields['date_answered']);
+        $this->assertEquals($_SESSION['glpi_currenttime'], $satisfaction->fields['date_answered']);
     }
 }

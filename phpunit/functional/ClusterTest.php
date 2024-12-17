@@ -40,7 +40,7 @@ use DbTestCase;
 use Item_Cluster;
 use NetworkEquipment;
 
-class Cluster extends DbTestCase
+class ClusterTest extends DbTestCase
 {
     protected function getClusterByItemProvider(): iterable
     {
@@ -129,17 +129,19 @@ class Cluster extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getClusterByItemProvider
-     */
-    public function testgetClusterByItem(CommonDBTM $item, ?int $expected): void
+    public function testgetClusterByItem(): void
     {
-        $result = \Cluster::getClusterByItem($item);
-        if ($result === null) {
-            $this->variable($result)->isNull();
-        } else {
-            $this->object($result)->isInstanceOf(\Cluster::class);
-            $this->integer($result->getID())->isEqualTo($expected);
+        foreach ($this->getClusterByItemProvider() as $row) {
+            $item = $row["item"];
+            $expected = $row["expected"];
+
+            $result = \Cluster::getClusterByItem($item);
+            if ($result === null) {
+                $this->assertNull($result);
+            } else {
+                $this->assertInstanceOf(\Cluster::class, $result);
+                $this->assertEquals($expected, $result->getID());
+            }
         }
     }
 }

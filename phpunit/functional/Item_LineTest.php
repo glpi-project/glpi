@@ -36,10 +36,11 @@
 namespace tests\units;
 
 use DbTestCase;
+use Psr\Log\LogLevel;
 
 /* Test for inc/item_line.class.php */
 
-class Item_Line extends DbTestCase
+class Item_LineTest extends DbTestCase
 {
     /**
      * Test for linking items to lines
@@ -50,12 +51,13 @@ class Item_Line extends DbTestCase
     {
         $line = new \Line();
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$line->add([
                 'name'         => 'Test line - testAdd',
                 'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
             ])
-        )->isGreaterThan(0);
+        );
 
         $item_line = new \Item_Line();
 
@@ -64,64 +66,63 @@ class Item_Line extends DbTestCase
 
         //try to add without required field
         $item_line->getEmpty();
-        $this->integer(
-            (int)$item_line->add([
+        $this->assertFalse(
+            $item_line->add([
                 'itemtype'  => 'Phone',
                 'items_id'  => $phone_1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['A line is required']);
+        //$this->hasPhpLogRecordThatContains(LogLevel::WARNING, 'A line is required.');
 
         //try to add without required field
         $item_line->getEmpty();
-        $this->integer(
-            (int)$item_line->add([
+        $this->assertFalse(
+            $item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'items_id'  => $phone_1
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['An item type is required']);
 
         //try to add without required field
         $item_line->getEmpty();
-        $this->integer(
-            (int)$item_line->add([
+        $this->assertFalse(
+            $item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'itemtype'  => 'Phone',
             ])
-        )->isIdenticalTo(0);
+        );
 
         $this->hasSessionMessages(ERROR, ['An item is required']);
 
         //try to add without error
         $item_line->getEmpty();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'itemtype'  => 'Phone',
                 'items_id'  => $phone_1
             ])
-        )->isGreaterThan(0);
+        );
 
         //Add another item linked to line
         $item_line->getEmpty();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'itemtype'  => 'Phone',
                 'items_id'  => $phone_2
             ])
-        )->isGreaterThan(0);
+        );
 
-        global $DB;
-        $items = $DB->request([
-            'FROM'   => \Item_Line::getTable(),
-            'WHERE'  => [
-                'lines_id' => $line->fields['id']
-            ]
-        ]);
-        $this->array(iterator_to_array($items))->hasSize(2);
+        $this->assertCount(
+            2,
+            $item_line->find(['lines_id'  => $line->fields['id']])
+        );
     }
 }
