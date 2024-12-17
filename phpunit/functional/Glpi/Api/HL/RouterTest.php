@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -43,17 +44,17 @@ use Glpi\Http\Response;
 use GLPITestCase;
 use Psr\Http\Message\RequestInterface;
 
-class Router extends GLPITestCase
+class RouterTest extends GLPITestCase
 {
     public function testMatch()
     {
         $router = TestRouter::getInstance();
-        $this->variable($router->match(new Request('GET', '/test')))->isNotNull();
+        $this->assertNotNull($router->match(new Request('GET', '/test')));
     }
 
     public function testAllRoutesHaveVersioningInfo()
     {
-        $router = \Glpi\Api\HL\Router::getInstance();
+        $router = Router::getInstance();
         $all_routes = $router->getAllRoutes();
 
         $routes_missing_versions = [];
@@ -63,12 +64,12 @@ class Router extends GLPITestCase
                 $routes_missing_versions[] = $route->getRoutePath();
             }
         }
-        $this->array($routes_missing_versions)->isEmpty('Routes missing versioning info: ' . implode(', ', $routes_missing_versions));
+        $this->assertEmpty($routes_missing_versions, 'Routes missing versioning info: ' . implode(', ', $routes_missing_versions));
     }
 
     public function testAllSchemasHaveVersioningInfo()
     {
-        $router = \Glpi\Api\HL\Router::getInstance();
+        $router = Router::getInstance();
         $controllers = $router->getControllers();
 
         $schemas_missing_versions = [];
@@ -84,23 +85,23 @@ class Router extends GLPITestCase
             }
         }
 
-        $this->array($schemas_missing_versions)->isEmpty('Schemas missing versioning info: ' . implode(', ', $schemas_missing_versions));
+        $this->assertEmpty($schemas_missing_versions, 'Schemas missing versioning info: ' . implode(', ', $schemas_missing_versions));
     }
 
     public function testNormalizeAPIVersion()
     {
-        $this->string(TestRouter::normalizeAPIVersion('50'))->isEqualTo('50.2.0');
-        $this->string(TestRouter::normalizeAPIVersion('50.1.1'))->isEqualTo('50.1.1');
-        $this->string(TestRouter::normalizeAPIVersion('50.1'))->isEqualTo('50.1.2');
-        $this->string(TestRouter::normalizeAPIVersion('50.2'))->isEqualTo('50.2.0');
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
+        $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
+        $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
     }
 }
 
 // @codingStandardsIgnoreStart
-class TestRouter extends \Glpi\Api\HL\Router
+class TestRouter extends Router
 {
     // @codingStandardsIgnoreEnd
-    public static function getInstance(): \Glpi\Api\HL\Router
+    public static function getInstance(): Router
     {
         static $router = null;
         if ($router === null) {

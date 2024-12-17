@@ -35,11 +35,14 @@
 
 namespace tests\units\Glpi\Api\HL\RSQL;
 
+use Glpi\Api\HL\RSQL\Lexer;
+use Glpi\Api\HL\RSQL\RSQLException;
 use GLPITestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class Lexer extends GLPITestCase
+class LexerTest extends GLPITestCase
 {
-    protected function tokenizeProvider()
+    public static function tokenizeProvider()
     {
         return [
             [
@@ -62,53 +65,56 @@ class Lexer extends GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider tokenizeProvider
-     */
+    #[DataProvider('tokenizeProvider')]
     public function testTokenize(string $query, array $expected)
     {
-        $tokens = \Glpi\Api\HL\RSQL\Lexer::tokenize($query);
-        $this->array($tokens)->isEqualTo($expected);
+        $tokens = Lexer::tokenize($query);
+        $this->assertEquals($expected, $tokens);
     }
 
     public function testMissingOperator()
     {
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('id');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query is missing an operator in filter for property "id"');
+        $this->expectException(RSQLException::class);
+        $this->expectExceptionMessage('RSQL query is missing an operator in filter for property "id"');
+        Lexer::tokenize('id');
     }
 
-    public function testIncompleteOperator()
+    public static function incompleteOperatorProvider()
     {
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('id=');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query has an incomplete operator in filter for property "id"');
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('id=l');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query has an incomplete operator in filter for property "id"');
+        return [
+            ['id='],
+            ['id=l']
+        ];
+    }
+
+    #[DataProvider('incompleteOperatorProvider')]
+    public function testIncompleteOperator(string $query)
+    {
+        $this->expectException(RSQLException::class);
+        $this->expectExceptionMessage('RSQL query has an incomplete operator in filter for property "id"');
+        Lexer::tokenize($query);
     }
 
     public function testMissingValue()
     {
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('id=like=');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query is missing a value in filter for property "id"');
+        $this->expectException(RSQLException::class);
+        $this->expectExceptionMessage('RSQL query is missing a value in filter for property "id"');
+        Lexer::tokenize('id=like=');
     }
 
-    public function testUnclosedGroup()
+    public static function unclosedGroupProvider()
     {
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('(id=like=1');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query has one or more unclosed groups');
+        return [
+            ['(id=like=1'],
+            ['name==Test1,((id=like=1),(name==Test2)']
+        ];
+    }
 
-        $this->exception(function () {
-            \Glpi\Api\HL\RSQL\Lexer::tokenize('name==Test1,((id=like=1),(name==Test2)');
-        })->isInstanceOf(\Glpi\Api\HL\RSQL\RSQLException::class)
-            ->hasMessage('RSQL query has one or more unclosed groups');
+    #[DataProvider('unclosedGroupProvider')]
+    public function testUnclosedGroup(string $query)
+    {
+        $this->expectException(RSQLException::class);
+        $this->expectExceptionMessage('RSQL query has one or more unclosed groups');
+        Lexer::tokenize($query);
     }
 }

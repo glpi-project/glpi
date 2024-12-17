@@ -37,10 +37,11 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class CoreController extends \HLAPITestCase
+class CoreControllerTest extends \HLAPITestCase
 {
-    protected function routeMatchProvider()
+    public static function routeMatchProvider()
     {
         return [
             [new Request('GET', '/Session'), true],
@@ -51,12 +52,10 @@ class CoreController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider routeMatchProvider
-     */
+    #[DataProvider('routeMatchProvider')]
     public function testRouteMatches(Request $request, bool $expected)
     {
-        $this->api->hasMatch($request)->isEqualTo($expected);
+        $this->assertEquals($expected, $this->api->hasMatch($request));
     }
 
     public function testOptionsRoute()
@@ -67,9 +66,9 @@ class CoreController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->string($headers['Allow'])->isIdenticalTo('GET');
+                    $this->assertEquals('GET', $headers['Allow']);
                 })
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(204));
+                ->status(fn ($status) => $this->assertEquals(204, $status));
         });
 
         $this->api->call(new Request('OPTIONS', '/Administration/User'), function ($call) {
@@ -77,9 +76,9 @@ class CoreController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->array($headers['Allow'])->containsValues(['GET', 'POST']);
+                    $this->assertCount(2, array_intersect($headers['Allow'], ['GET', 'POST']));
                 })
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(204));
+                ->status(fn ($status) => $this->assertEquals(204, $status));
         });
     }
 
@@ -91,22 +90,20 @@ class CoreController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->string($headers['Content-Type'])->isEqualTo('application/json');
+                    $this->assertEquals('application/json', $headers['Content-Type']);
                 })
-                ->content(fn ($content) => $this->string($content)->isEmpty());
+                ->content(fn ($content) => $this->assertEmpty($content));
         });
     }
 
-    protected function responseContentSchemaProvider()
+    public static function responseContentSchemaProvider()
     {
         return [
             [new Request('GET', '/Session'), 'Session']
         ];
     }
 
-    /**
-     * @dataProvider responseContentSchemaProvider
-     */
+    #[DataProvider('responseContentSchemaProvider')]
     public function testResponseContentSchema(Request $request, string $schema_name)
     {
         $this->login();
@@ -128,13 +125,13 @@ class CoreController extends \HLAPITestCase
             'name' => 'Computer 1',
             'entities_id' => $root_entity,
         ]);
-        $this->integer($computers_id_1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computers_id_1);
 
         $computers_id_2 = $computer->add([
             'name' => 'Computer 2',
             'entities_id' => $root_entity,
         ]);
-        $this->integer($computers_id_2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $computers_id_2);
 
         // Create a monitor to test transfer options are passed correctly (keep_dc_monitor)
         $monitor = new \Monitor();
@@ -142,7 +139,7 @@ class CoreController extends \HLAPITestCase
             'name' => 'Monitor 1',
             'entities_id' => $root_entity,
         ]);
-        $this->integer($monitors_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $monitors_id);
 
         // Connect the monitor to the computer
         $connection_item = new Asset_PeripheralAsset();
@@ -152,7 +149,7 @@ class CoreController extends \HLAPITestCase
             'itemtype_peripheral' => \Monitor::class,
             'items_id_peripheral' => $monitors_id,
         ]);
-        $this->integer($connection_item_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $connection_item_id);
 
         // Create 2 new entities (not using API)
         $entity = new \Entity();
@@ -160,13 +157,13 @@ class CoreController extends \HLAPITestCase
             'name' => 'Entity 1',
             'entities_id' => $root_entity,
         ]);
-        $this->integer($entities_id_1)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $entities_id_1);
 
         $entities_id_2 = $entity->add([
             'name' => 'Entity 2',
             'entities_id' => $root_entity,
         ]);
-        $this->integer($entities_id_2)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $entities_id_2);
 
         $transfer_records = [
             [
@@ -197,31 +194,31 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
-                ->content(fn ($content) => $this->string($content)->isEmpty());
+                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->content(fn ($content) => $this->assertEmpty($content));
         });
 
         // Check the computers have been transferred
-        $this->boolean($computer->getFromDB($computers_id_1))->isTrue();
-        $this->integer($computer->fields['entities_id'])->isEqualTo($entities_id_1);
+        $this->assertTrue($computer->getFromDB($computers_id_1));
+        $this->assertEquals($entities_id_1, $computer->fields['entities_id']);
 
-        $this->boolean($computer->getFromDB($computers_id_2))->isTrue();
-        $this->integer($computer->fields['entities_id'])->isEqualTo($entities_id_2);
+        $this->assertTrue($computer->getFromDB($computers_id_2));
+        $this->assertEquals($entities_id_2, $computer->fields['entities_id']);
 
         // Verify computer 1 has a monitor connection, and computer 2 doesn't
-        $this->boolean($connection_item->getFromDBByCrit([
+        $this->assertTrue($connection_item->getFromDBByCrit([
             'itemtype_asset' => \Computer::class,
             'items_id_asset' => $computers_id_1,
             'itemtype_peripheral' => \Monitor::class,
             'items_id_peripheral' => $monitors_id,
-        ]) === true)->isTrue();
+        ]) === true);
 
-        $this->boolean($connection_item->getFromDBByCrit([
+        $this->assertFalse($connection_item->getFromDBByCrit([
             'itemtype_asset' => \Computer::class,
             'items_id_asset' => $computers_id_2,
             'itemtype_peripheral' => \Monitor::class,
             'items_id_peripheral' => $monitors_id,
-        ]) === true)->isFalse();
+        ]) === true);
     }
 
     public function testOAuthPasswordGrant()
@@ -235,7 +232,7 @@ class CoreController extends \HLAPITestCase
             'is_active' => 1,
             'is_confidential' => 1,
         ]);
-        $this->integer($client_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $client_id);
 
         // get client ID and secret
         $it = $DB->request([
@@ -243,7 +240,7 @@ class CoreController extends \HLAPITestCase
             'FROM' => \OAuthClient::getTable(),
             'WHERE' => ['id' => $client_id],
         ]);
-        $this->integer($it->count())->isEqualTo(1);
+        $this->assertCount(1, $it);
         $client_data = $it->current();
         $auth_data = [
             'grant_type' => 'password',
@@ -259,7 +256,7 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(401));
+                ->status(fn ($status) => $this->assertEquals(401, $status));
         });
 
         $client->update([
@@ -271,12 +268,11 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
-                    $this->string($content['token_type'])->isEqualTo('Bearer');
-                    $this->string($content['access_token'])->isNotEmpty();
-                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                    $this->assertEquals('Bearer', $content['token_type']);
+                    $this->assertNotEmpty($content['access_token']);
+                    $this->assertGreaterThan(0, $content['expires_in']);
                 });
         });
     }
@@ -293,7 +289,7 @@ class CoreController extends \HLAPITestCase
             'is_confidential' => 1,
             'grants' => ['password']
         ]);
-        $this->integer($client_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $client_id);
 
         // get client ID and secret
         $it = $DB->request([
@@ -301,7 +297,7 @@ class CoreController extends \HLAPITestCase
             'FROM' => \OAuthClient::getTable(),
             'WHERE' => ['id' => $client_id],
         ]);
-        $this->integer($it->count())->isEqualTo(1);
+        $this->assertCount(1, $it);
         $client_data = $it->current();
         $auth_data = [
             'grant_type' => 'password',
@@ -316,12 +312,11 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
-                    $this->string($content['token_type'])->isEqualTo('Bearer');
-                    $this->string($content['access_token'])->isNotEmpty();
-                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                    $this->assertEquals('Bearer', $content['token_type']);
+                    $this->assertNotEmpty($content['access_token']);
+                    $this->assertGreaterThan(0, $content['expires_in']);
                 });
         });
     }
@@ -338,7 +333,7 @@ class CoreController extends \HLAPITestCase
             'is_active' => 1,
             'is_confidential' => 1,
         ]);
-        $this->integer($client_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $client_id);
 
         $client->update([
             'id' => $client_id,
@@ -352,7 +347,7 @@ class CoreController extends \HLAPITestCase
             'FROM' => \OAuthClient::getTable(),
             'WHERE' => ['id' => $client_id],
         ]);
-        $this->integer($it->count())->isEqualTo(1);
+        $this->assertCount(1, $it);
         $client_data = $it->current();
 
         // Test authorize endpoint
@@ -367,10 +362,10 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(302))
+                ->status(fn ($status) => $this->assertEquals(302, $status))
                 ->headers(function ($headers) {
                     global $CFG_GLPI;
-                    $this->string($headers['Location'])->matches('/^' . preg_quote($CFG_GLPI['url_base'], '/') . '\/\?redirect=/');
+                    $this->assertMatchesRegularExpression('/^' . preg_quote($CFG_GLPI['url_base'], '/') . '\/\?redirect=/', $headers['Location']);
                 });
         });
     }
@@ -386,7 +381,7 @@ class CoreController extends \HLAPITestCase
             'is_active' => 1,
             'is_confidential' => 1,
         ]);
-        $this->integer($client_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $client_id);
 
         // get client ID and secret
         $it = $DB->request([
@@ -394,7 +389,7 @@ class CoreController extends \HLAPITestCase
             'FROM' => \OAuthClient::getTable(),
             'WHERE' => ['id' => $client_id],
         ]);
-        $this->integer($it->count())->isEqualTo(1);
+        $this->assertCount(1, $it);
         $client_data = $it->current();
         $auth_data = [
             'grant_type' => 'client_credentials',
@@ -408,7 +403,7 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(401));
+                ->status(fn ($status) => $this->assertEquals(401, $status));
         });
 
         $client->update([
@@ -421,12 +416,11 @@ class CoreController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['access_token', 'expires_in', 'token_type']);
-                    $this->string($content['token_type'])->isEqualTo('Bearer');
-                    $this->string($content['access_token'])->isNotEmpty();
-                    $this->integer($content['expires_in'])->isGreaterThan(0);
+                    $this->assertEquals('Bearer', $content['token_type']);
+                    $this->assertNotEmpty($content['access_token']);
+                    $this->assertGreaterThan(0, $content['expires_in']);
                 });
         });
     }

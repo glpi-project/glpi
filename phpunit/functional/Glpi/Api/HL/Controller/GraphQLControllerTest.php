@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 
-class GraphQLController extends \HLAPITestCase
+class GraphQLControllerTest extends \HLAPITestCase
 {
     public function testGraphQLListSchemas()
     {
@@ -48,25 +48,21 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('data');
-                    $this->array($content['data'])->hasKey('__schema');
-                    $this->array($content['data']['__schema'])->hasKey('types');
-                    $this->array($content['data']['__schema']['types'])->size->isGreaterThan(150);
+                    $this->assertGreaterThan(150, $content['data']['__schema']['types']);
                     $types = $content['data']['__schema']['types'];
                     $some_expected = ['Computer', 'Ticket', 'User', 'PrinterModel', 'FirmwareType'];
                     $found = [];
                     foreach ($types as $type) {
-                        $this->array($type)->hasKey('name');
-                        $this->array($type)->notHasKey('description');
-                        $this->array($type)->notHasKey('fields');
-                        $this->string($type['name'])->isNotEmpty();
+                        $this->assertArrayNotHasKey('description', $type);
+                        $this->assertArrayNotHasKey('fields', $type);
+                        $this->assertNotEmpty($type['name']);
                         if (in_array($type['name'], $some_expected, true)) {
                             $found[] = $type['name'];
                         }
                     }
-                    $this->array($found)->size->isEqualTo(count($some_expected));
+                    $this->assertCount(count($some_expected), $found);
                 });
         });
 
@@ -74,13 +70,13 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
-                        $this->array($type)->hasKey('name');
-                        $this->array($type)->hasKey('description');
-                        $this->array($type)->notHasKey('fields');
+                        $this->assertArrayHasKey('name', $type);
+                        $this->assertArrayHasKey('description', $type);
+                        $this->assertArrayNotHasKey('fields', $type);
                     }
                 });
         });
@@ -89,13 +85,13 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
-                        $this->array($type)->hasKey('name');
-                        $this->array($type)->notHasKey('description');
-                        $this->array($type)->hasKey('fields');
+                        $this->assertArrayHasKey('name', $type);
+                        $this->assertArrayNotHasKey('description', $type);
+                        $this->assertArrayHasKey('fields', $type);
                     }
                 });
         });
@@ -109,15 +105,12 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('data');
-                    $this->array($content['data'])->hasSize(1);
-                    $this->array($content['data']['Computer'])->hasSize(1);
-                    $this->array($content['data']['Computer'][0])->hasKey('id');
-                    $this->array($content['data']['Computer'][0])->hasKey('name');
-                    $this->integer($content['data']['Computer'][0]['id'])->isEqualTo(1);
-                    $this->string($content['data']['Computer'][0]['name'])->isEqualTo('_test_pc01');
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
                 });
         });
     }
@@ -130,11 +123,10 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('data');
-                    $this->array($content['data'])->hasSize(1);
-                    $this->array($content['data']['Computer'])->size->isGreaterThan(2);
+                    $this->assertCount(1, $content['data']);
+                    $this->assertGreaterThan(2, count($content['data']['Computer']));
                 });
         });
     }
@@ -147,11 +139,10 @@ class GraphQLController extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('data');
-                    $this->array($content['data'])->hasSize(1);
-                    $this->array($content['data']['Computer'])->size->isEqualTo(9);
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(9, $content['data']['Computer']);
                 });
         });
     }
@@ -163,35 +154,33 @@ class GraphQLController extends \HLAPITestCase
 
         // Create some data just to ensure there is something to return
         $printer_model = new \PrinterModel();
-        $this->integer($printer_model->add([
+        $this->assertGreaterThan(0, $printer_model->add([
             'name' => '_test_printer_model',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
-        ]))->isGreaterThan(0);
+        ]));
         $cartridge_item = new \CartridgeItem();
-        $this->integer($cartridge_item->add([
+        $this->assertGreaterThan(0, $cartridge_item->add([
             'name' => '_test_cartridge_item',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
-        ]))->isGreaterThan(0);
-        $this->integer((new \CartridgeItem_PrinterModel())->add([
+        ]));
+        $this->assertGreaterThan(0, (new \CartridgeItem_PrinterModel())->add([
             'cartridgeitems_id' => $cartridge_item->getID(),
             'printermodels_id'  => $printer_model->getID()
-        ]))->isGreaterThan(0);
+        ]));
 
         // product_number is not available this way via the REST API, but should be available here as the partial schema gets replaced by the full schema
         $request = new Request('POST', '/GraphQL', [], 'query { CartridgeItem { id name printer_models { name product_number } } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('data');
-                    $this->array($content['data'])->hasSize(1);
-                    $this->array($content['data']['CartridgeItem'][0])->hasKey('id');
-                    $this->array($content['data']['CartridgeItem'][0])->hasKey('name');
-                    $this->array($content['data']['CartridgeItem'][0])->hasKey('printer_models');
-                    $this->array($content['data']['CartridgeItem'][0]['printer_models'])->size->isGreaterThan(0);
-                    $this->array($content['data']['CartridgeItem'][0]['printer_models'][0])->hasKey('name');
-                    $this->array($content['data']['CartridgeItem'][0]['printer_models'][0])->hasKey('product_number');
+                    $this->assertCount(1, $content['data']);
+                    $this->assertArrayHasKey('id', $content['data']['CartridgeItem'][0]);
+                    $this->assertArrayHasKey('name', $content['data']['CartridgeItem'][0]);
+                    $this->assertGreaterThan(0, count($content['data']['CartridgeItem'][0]['printer_models']));
+                    $this->assertArrayHasKey('name', $content['data']['CartridgeItem'][0]['printer_models'][0]);
+                    $this->assertArrayHasKey('product_number', $content['data']['CartridgeItem'][0]['printer_models'][0]);
                 });
         });
     }
@@ -203,18 +192,18 @@ class GraphQLController extends \HLAPITestCase
     public function testGetStateVisibilities()
     {
         $state = new \State();
-        $this->integer($states_id = $state->add([
+        $this->assertGreaterThan(0, $states_id = $state->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_visible_computer' => 1,
             'is_visible_monitor' => 0
-        ]))->isGreaterThan(0);
+        ]));
         $computer = new \Computer();
-        $this->integer($computers_id = $computer->add([
+        $this->assertGreaterThan(0, $computers_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'states_id' => $states_id
-        ]))->isGreaterThan(0);
+        ]));
 
         $this->login();
         $request = new Request('POST', '/GraphQL', [], <<<GRAPHQL
@@ -235,16 +224,16 @@ GRAPHQL);
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->status(fn ($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
-                    $this->array($content['data'])->hasSize(1);
-                    $this->array($content['data']['Computer'])->hasSize(1);
-                    $this->array($content['data']['Computer'][0])->hasKey('id');
-                    $this->array($content['data']['Computer'][0])->hasKey('name');
-                    $this->array($content['data']['Computer'][0])->hasKey('status');
-                    $this->array($content['data']['Computer'][0]['status'])->hasKey('name');
-                    $this->boolean($content['data']['Computer'][0]['status']['visibilities']['computer'])->isTrue();
-                    $this->boolean($content['data']['Computer'][0]['status']['visibilities']['monitor'])->isFalse();
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertArrayHasKey('id', $content['data']['Computer'][0]);
+                    $this->assertArrayHasKey('name', $content['data']['Computer'][0]);
+                    $this->assertArrayHasKey('status', $content['data']['Computer'][0]);
+                    $this->assertArrayHasKey('name', $content['data']['Computer'][0]['status']);
+                    $this->assertTrue($content['data']['Computer'][0]['status']['visibilities']['computer']);
+                    $this->assertFalse($content['data']['Computer'][0]['status']['visibilities']['monitor']);
                 });
         });
     }

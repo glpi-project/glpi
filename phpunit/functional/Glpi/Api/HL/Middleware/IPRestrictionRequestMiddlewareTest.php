@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\Api\HL\Middleware;
 
-class IPRestrictionRequestMiddleware extends \GLPITestCase
+use PHPUnit\Framework\Attributes\DataProvider;
+
+class IPRestrictionRequestMiddlewareTest extends \GLPITestCase
 {
-    protected function isIPAllowedProvider()
+    public static function isIPAllowedProvider()
     {
         return [
             ['ip' => '127.0.0.1', 'allowed_ips' => '127.0.0.1', 'expected' => true],
@@ -55,17 +57,14 @@ class IPRestrictionRequestMiddleware extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider isIPAllowedProvider
-     */
+    #[DataProvider('isIPAllowedProvider')]
     public function testIsIPAllowed($ip, $allowed_ips, $expected)
     {
         $middleware = new \Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware();
-        $this->variable($this->callPrivateMethod($middleware, 'isIPAllowed', $ip, $allowed_ips))
-            ->isEqualTo($expected);
+        $this->assertEquals($expected, $this->callPrivateMethod($middleware, 'isIPAllowed', $ip, $allowed_ips));
     }
 
-    protected function isCidrMatchProvider()
+    public static function isCidrMatchProvider()
     {
         return [
             ['ip' => '10.10.13.5', 'range' => '10.10.13.0/24', 'expected' => true],
@@ -78,13 +77,10 @@ class IPRestrictionRequestMiddleware extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider isCidrMatchProvider
-     */
+    #[DataProvider('isCidrMatchProvider')]
     public function testIsCidrMatch($ip, $range, $expected)
     {
         $middleware = new \Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware();
-        $this->variable($this->callPrivateMethod($middleware, 'isCidrMatch', $ip, $range))
-            ->isEqualTo($expected);
+        $this->assertEquals($expected, $this->callPrivateMethod($middleware, 'isCidrMatch', $ip, $range));
     }
 }

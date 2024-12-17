@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
 
-class ITILController extends \HLAPITestCase
+class ITILControllerTest extends \HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {
@@ -71,9 +71,7 @@ class ITILController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $this->string($headers['Location'])->contains('/Assistance/' . $itil_type);
+                        $this->assertStringContainsString('/Assistance/' . $itil_type, $headers['Location']);
                         $itil_base_path = $headers['Location'];
                     });
             });
@@ -101,9 +99,7 @@ class ITILController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $this->string($headers['Location'])->contains('/Assistance/' . $itil_type);
+                        $this->assertStringContainsString('/Assistance/' . $itil_type, $headers['Location']);
                         $itil_base_path = $headers['Location'];
                     });
             });
@@ -131,9 +127,7 @@ class ITILController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $this->string($headers['Location'])->contains('/Assistance/' . $itil_type);
+                        $this->assertStringContainsString('/Assistance/' . $itil_type, $headers['Location']);
                         $itil_base_path = $headers['Location'];
                     });
             });
@@ -157,7 +151,7 @@ class ITILController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) {
-                        $this->array($content)->size->isGreaterThanOrEqualTo(4);
+                        $this->assertGreaterThanOrEqual(4, count($content));
                         // Ensure there are 2 items with type=Task and 2 items with type=Followup
                         $remaining_matches = [
                             'Task' => ['test0' => 1, 'test1' => 1],
@@ -166,7 +160,7 @@ class ITILController extends \HLAPITestCase
                         $tasks = array_filter($content, static function ($item) {
                             return $item['type'] === 'Task';
                         });
-                        $this->array($tasks)->size->isIdenticalTo(2);
+                        $this->assertCount(2, $tasks);
                         foreach ($tasks as $task) {
                             unset($remaining_matches['Task'][$task['item']['content']]);
                         }
@@ -174,13 +168,13 @@ class ITILController extends \HLAPITestCase
                         $fups = array_filter($content, static function ($item) {
                             return $item['type'] === 'Followup';
                         });
-                        $this->array($fups)->size->isIdenticalTo(2);
+                        $this->assertCount(2, $fups);
                         foreach ($fups as $fup) {
                             unset($remaining_matches['Followup'][$fup['item']['content']]);
                         }
 
-                        $this->array($remaining_matches['Task'])->isEmpty();
-                        $this->array($remaining_matches['Followup'])->isEmpty();
+                        $this->assertEmpty($remaining_matches['Task']);
+                        $this->assertEmpty($remaining_matches['Followup']);
                     });
             });
         }
@@ -247,12 +241,12 @@ class ITILController extends \HLAPITestCase
             // Create a ITIL template
             $template_class = $itil_type . 'Template';
             $template = new $template_class();
-            $this->integer($templates_id = $template->add([
+            $this->assertGreaterThan(0, $templates_id = $template->add([
                 'name' => __FUNCTION__,
                 'content' => 'test',
                 'is_recursive' => 1,
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            ]))->isGreaterThan(0);
+            ]));
 
             $this->api->autoTestCRUD('/Assistance/Recurring' . $itil_type, [
                 'name' => $func_name,
@@ -268,11 +262,11 @@ class ITILController extends \HLAPITestCase
     public function testBlockOverridingParentItem()
     {
         $ticket = new \Ticket();
-        $this->integer($tickets_id = $ticket->add([
+        $this->assertGreaterThan(0, $tickets_id = $ticket->add([
             'name' => __FUNCTION__,
             'content' => 'test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        ]));
 
         $fup = new \ITILFollowup();
         $task = new \TicketTask();
@@ -282,50 +276,50 @@ class ITILController extends \HLAPITestCase
         $document_item = new \Document_Item();
 
         // Create a followup
-        $this->integer($fup_id = $fup->add([
+        $this->assertGreaterThan(0, $fup_id = $fup->add([
             'name' => __FUNCTION__,
             'content' => 'test',
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create a task
-        $this->integer($task_id = $task->add([
+        $this->assertGreaterThan(0, $task_id = $task->add([
             'name' => __FUNCTION__,
             'content' => 'test',
             'tickets_id' => $tickets_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create a solution
-        $this->integer($solution_id = $solution->add([
+        $this->assertGreaterThan(0, $solution_id = $solution->add([
             'name' => __FUNCTION__,
             'content' => 'test',
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create a validation
-        $this->integer($validation_id = $validation->add([
+        $this->assertGreaterThan(0, $validation_id = $validation->add([
             'name' => __FUNCTION__,
             'content' => 'test',
             'tickets_id' => $tickets_id,
             'itemtype_target' => 'User',
             'items_id_target' => 2
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create a document
-        $this->integer($document_id = $document->add([
+        $this->assertGreaterThan(0, $document_id = $document->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        ]));
 
         // Link the document to the ticket
-        $this->integer($document_item_id = $document_item->add([
+        $this->assertGreaterThan(0, $document_item_id = $document_item->add([
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'documents_id' => $document_id,
             'itemtype' => 'Ticket',
             'items_id' => $tickets_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // Need to login to use the API
         $this->login('glpi', 'glpi');
@@ -343,8 +337,8 @@ class ITILController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
-                $this->integer($content['items_id'])->isIdenticalTo($tickets_id);
-                $this->string($content['itemtype'])->isIdenticalTo('Ticket');
+                $this->assertEquals($tickets_id, $content['items_id']);
+                $this->assertEquals('Ticket', $content['itemtype']);
             });
         });
 
@@ -360,7 +354,7 @@ class ITILController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
-                $this->integer($content['tickets_id'])->isIdenticalTo($tickets_id);
+                $this->assertEquals($tickets_id, $content['tickets_id']);
             });
         });
 
@@ -377,8 +371,8 @@ class ITILController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
-                $this->integer($content['items_id'])->isIdenticalTo($tickets_id);
-                $this->string($content['itemtype'])->isIdenticalTo('Ticket');
+                $this->assertEquals($tickets_id, $content['items_id']);
+                $this->assertEquals('Ticket', $content['itemtype']);
             });
         });
 
@@ -394,7 +388,7 @@ class ITILController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
-                $this->integer($content['tickets_id'])->isIdenticalTo($tickets_id);
+                $this->assertEquals($tickets_id, $content['tickets_id']);
             });
         });
 
@@ -411,8 +405,8 @@ class ITILController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
-                $this->integer($content['items_id'])->isIdenticalTo($tickets_id);
-                $this->string($content['itemtype'])->isIdenticalTo('Ticket');
+                $this->assertEquals($tickets_id, $content['items_id']);
+                $this->assertEquals('Ticket', $content['itemtype']);
             });
         });
     }

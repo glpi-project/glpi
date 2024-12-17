@@ -37,8 +37,9 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Http\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class AdministrationController extends \HLAPITestCase
+class AdministrationControllerTest extends \HLAPITestCase
 {
     public function testSearchUsers()
     {
@@ -54,13 +55,13 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isNotEmpty();
+                    $this->assertNotEmpty($content);
                     foreach ($content as $v) {
-                        $this->boolean(is_array($v))->isTrue();
-                        $this->array($v)->hasKeys(['id', 'username', 'realname', 'firstname']);
+                        $this->assertTrue(is_array($v));
+                        $this->assertCount(4, array_intersect(array_keys($v), ['id', 'username', 'realname', 'firstname']));
                         // Should never have "name" field as it should be mapped to "username"
                         // Should never pass the password fields to the client
-                        $this->array($v)->notHasKeys(['name', 'password', 'password2']);
+                        $this->assertCount(0, array_intersect(array_keys($v), ['name', 'password', 'password2']));
                     }
                 });
         });
@@ -73,11 +74,11 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasSize(1);
+                    $this->assertCount(1, $content);
                     $user = $content[0];
-                    $this->integer($user['id'])->isGreaterThan(0);
-                    $this->string($user['username'])->isEqualTo(TU_USER);
-                    $this->array($user['emails'])->size->isGreaterThanOrEqualTo(1);
+                    $this->assertGreaterThan(0, $user['id']);
+                    $this->assertEquals(TU_USER, $user['username']);
+                    $this->assertGreaterThanOrEqual(1, $user['emails']);
                 });
         });
 
@@ -88,11 +89,11 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasSize(1);
+                    $this->assertCount(1, $content);
                     $user = $content[0];
-                    $this->integer($user['id'])->isGreaterThan(0);
-                    $this->string($user['username'])->isEqualTo(TU_USER);
-                    $this->array($user['emails'])->size->isGreaterThanOrEqualTo(1);
+                    $this->assertGreaterThan(0, $user['id']);
+                    $this->assertEquals(TU_USER, $user['username']);
+                    $this->assertGreaterThanOrEqual(1, $user['emails']);
                 });
         });
     }
@@ -125,9 +126,9 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasSize(1);
+                    $this->assertCount(1, $content);
                     $user = $content[0];
-                    $this->string($user['username'])->isEqualTo(TU_USER);
+                    $this->assertEquals(TU_USER, $user['username']);
                 });
         });
     }
@@ -169,7 +170,7 @@ class AdministrationController extends \HLAPITestCase
         ]);
     }
 
-    protected function getItemProvider()
+    public static function getItemProvider()
     {
         return [
             ['User', getItemByTypeName('User', TU_USER, true)],
@@ -179,9 +180,7 @@ class AdministrationController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider getItemProvider
-     */
+    #[DataProvider('getItemProvider')]
     public function testGetItem(string $type, int $id)
     {
         $this->login('glpi', 'glpi');
@@ -190,8 +189,8 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($id) {
-                    $this->boolean(is_array($content))->isTrue();
-                    $this->integer($content['id'])->isEqualTo($id);
+                    $this->assertIsArray($content);
+                    $this->assertEquals($id, $content['id']);
                 });
         });
     }
@@ -204,7 +203,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['username'])->isEqualTo(TU_USER);
+                    $this->assertEquals(TU_USER, $content['username']);
                 });
         });
     }
@@ -217,7 +216,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['username'])->isEqualTo(TU_USER);
+                    $this->assertEquals(TU_USER, $content['username']);
                 });
         });
 
@@ -228,7 +227,7 @@ class AdministrationController extends \HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['username'])->isEqualTo(TU_USER);
+                    $this->assertEquals(TU_USER, $content['username']);
                 });
         });
     }
@@ -241,16 +240,16 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isNotEmpty();
+                    $this->assertNotEmpty($content);
                     $has_expected_email = false;
                     foreach ($content as $v) {
-                        $this->boolean(is_array($v))->isTrue();
-                        $this->array($v)->hasKeys(['id', 'email', 'is_default']);
+                        $this->assertIsArray($v);
+                        $this->assertCount(3, array_intersect(array_keys($v), ['id', 'email', 'is_default']));
                         if ($v['email'] === TU_USER . '@glpi.com') {
                             $has_expected_email = true;
                         }
                     }
-                    $this->boolean($has_expected_email)->isTrue();
+                    $this->assertTrue($has_expected_email);
                 });
         });
     }
@@ -275,8 +274,8 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['id', 'email', 'is_default']);
-                    $this->string($content['email'])->isEqualTo(TU_USER . '@glpi.com');
+                    $this->assertCount(3, array_intersect(array_keys($content), ['id', 'email', 'is_default']));
+                    $this->assertEquals(TU_USER . '@glpi.com', $content['email']);
                 });
         });
 
@@ -298,7 +297,7 @@ class AdministrationController extends \HLAPITestCase
     {
         global $DB;
         $picture_path = \Toolbox::savePicture($picture_path, '', true);
-        $this->variable($picture_path)->isNotFalse();
+        $this->assertIsString($picture_path);
         $DB->update('glpi_users', [
             'id' => $user_id,
             'picture' => $picture_path
@@ -315,7 +314,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'), $content);
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -325,7 +324,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['picture'])->contains('/front/document.send.php');
+                    $this->assertStringContainsString('/front/document.send.php', $content['picture']);
                 });
         });
 
@@ -334,7 +333,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'), $content);
                 });
         });
     }
@@ -349,7 +348,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'), $content);
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -359,7 +358,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'), $content);
                 });
         });
     }
@@ -373,7 +372,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/public/pics/picture.png'), $content);
                 });
         });
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
@@ -383,7 +382,7 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->content(function ($content) {
-                    $this->string($content)->isIdenticalTo(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'));
+                    $this->assertEquals(file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png'), $content);
                 });
         });
     }
@@ -451,10 +450,10 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasSize(3);
-                    $this->string($content[0]['username'])->isEqualTo('testuser1');
-                    $this->string($content[1]['username'])->isEqualTo('testuser3');
-                    $this->string($content[2]['username'])->isEqualTo('testuser2');
+                    $this->assertCount(3, $content);
+                    $this->assertEquals('testuser1', $content[0]['username']);
+                    $this->assertEquals('testuser3', $content[1]['username']);
+                    $this->assertEquals('testuser2', $content[2]['username']);
                 });
         });
         $request->setParameter('sort', 'firstname:desc,username');
@@ -463,10 +462,10 @@ class AdministrationController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasSize(3);
-                    $this->string($content[0]['username'])->isEqualTo('testuser2');
-                    $this->string($content[1]['username'])->isEqualTo('testuser1');
-                    $this->string($content[2]['username'])->isEqualTo('testuser3');
+                    $this->assertCount(3, $content);
+                    $this->assertEquals('testuser2', $content[0]['username']);
+                    $this->assertEquals('testuser1', $content[1]['username']);
+                    $this->assertEquals('testuser3', $content[2]['username']);
                 });
         });
     }
@@ -517,9 +516,9 @@ class AdministrationController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($expected_used) {
-                        $this->integer(count($content))->isGreaterThanOrEqualTo(count($expected_used));
+                        $this->assertGreaterThanOrEqual(count($expected_used), count($content));
                         foreach ($expected_used as $type => $ids) {
-                            $this->array(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'))->containsValues($ids);
+                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'), $ids));
                         }
                     });
             });
@@ -530,9 +529,9 @@ class AdministrationController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($expected_managed) {
-                        $this->integer(count($content))->isGreaterThanOrEqualTo(count($expected_managed));
+                        $this->assertGreaterThanOrEqual(count($expected_managed), count($content));
                         foreach ($expected_managed as $type => $ids) {
-                            $this->array(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'))->containsValues($ids);
+                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'), $ids));
                         }
                     });
             });
