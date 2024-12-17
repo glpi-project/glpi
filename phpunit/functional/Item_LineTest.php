@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/item_line.class.php */
 
@@ -74,7 +73,6 @@ class Item_LineTest extends DbTestCase
         );
 
         $this->hasSessionMessages(ERROR, ['A line is required']);
-        //$this->hasPhpLogRecordThatContains(LogLevel::WARNING, 'A line is required.');
 
         //try to add without required field
         $item_line->getEmpty();
