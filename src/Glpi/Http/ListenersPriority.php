@@ -43,9 +43,9 @@ final class ListenersPriority
         Listener\PostBoot\ProfilerStart::class =>                       190,
         Listener\PostBoot\DebugMode::class =>                           180,
         Listener\PostBoot\RootDoc::class =>                             170,
-        Listener\PostBoot\InitializeDbConnection::class =>                      160,
+        Listener\PostBoot\InitializeDbConnection::class =>              160,
         Listener\PostBoot\InitializeCache::class =>                     150,
-        Listener\PostBoot\LoadLegacyConfiguration::class =>                     140,
+        Listener\PostBoot\LoadLegacyConfiguration::class =>             140,
         Listener\PostBoot\CustomObjectsAutoloaderRegistration::class => 130,
         Listener\PostBoot\InitializePlugins::class =>                   120,
         Listener\PostBoot\CustomObjectsBootstrap::class =>              110,
@@ -56,6 +56,8 @@ final class ListenersPriority
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
         Listener\LegacyAssetsListener::class         => 500,
+
+        Listener\SessionCheckCookieListener::class   => 550,
 
         Listener\LegacyRouterListener::class         => 400,
 

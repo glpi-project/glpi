@@ -123,8 +123,6 @@ final class IndexController extends AbstractController
             }
         }
 
-        Session::checkCookieSecureConfig();
-
         $_SESSION["glpicookietest"] = 'testcookie';
 
         // For compatibility reason
