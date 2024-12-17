@@ -80,16 +80,9 @@ class AssociatedItemsField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . AssociatedItemsFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_values_extra_field' => [
+                'empty_label'         => __("Select an itemtype..."),
                 'itemtype_aria_label' => __("Select the itemtype of the item to associate..."),
                 'items_id_aria_label' => __("Select the item to associate..."),
                 'input_name'          => $input_name . "[" . AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS . "]",
@@ -117,22 +110,26 @@ class AssociatedItemsField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $associated_items = $config->getStrategy()->getAssociatedItems($config, $answers_set) ?? [];
+        // Compute value according to strategies
+        foreach ($config->getStrategies() as $strategy) {
+            $associated_items = $strategy->getAssociatedItems($config, $answers_set);
 
-        $valid_itemtypes = array_keys(CommonITILObject::getAllTypesForHelpdesk());
-        foreach ($associated_items as $associated_item) {
-            // Do not edit input if invalid value was found
-            if (
-                !in_array($associated_item['itemtype'], $valid_itemtypes)
-                || !is_numeric($associated_item['items_id'])
-                || $associated_item['items_id'] <= 0
-            ) {
-                continue;
+            if (!empty($associated_items)) {
+                $valid_itemtypes = array_keys(CommonITILObject::getAllTypesForHelpdesk());
+                foreach ($associated_items as $associated_item) {
+                    // Do not edit input if invalid value was found
+                    if (
+                        !in_array($associated_item['itemtype'], $valid_itemtypes)
+                        || !is_numeric($associated_item['items_id'])
+                        || $associated_item['items_id'] <= 0
+                    ) {
+                        continue;
+                    }
+
+                    // Apply value
+                    $input['items_id'][$associated_item['itemtype']][] = $associated_item['items_id'];
+                }
             }
-
-            // Apply value
-            $input['items_id'][$associated_item['itemtype']][] = $associated_item['items_id'];
         }
 
         return $input;
@@ -142,11 +139,11 @@ class AssociatedItemsField extends AbstractConfigField
     public function getDefaultConfig(Form $form): AssociatedItemsFieldConfig
     {
         return new AssociatedItemsFieldConfig(
-            AssociatedItemsFieldStrategy::LAST_VALID_ANSWER
+            [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (AssociatedItemsFieldStrategy::cases() as $strategies) {
@@ -229,6 +226,14 @@ class AssociatedItemsField extends AbstractConfigField
             foreach ($itemtypes as $index => $itemtype) {
                 $item_id = $items_ids[$index];
 
+                // Ensure that itemtype and item_id are valid
+                if (
+                    getItemForItemtype($itemtype) === false
+                    || getItemForItemtype($itemtype)->getFromDB($item_id) === false
+                ) {
+                    continue;
+                }
+
                 if (!isset($result[$itemtype])) {
                     $result[$itemtype] = [];
                 }
@@ -240,5 +245,11 @@ class AssociatedItemsField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function canHaveMultipleStrategies(): bool
+    {
+        return true;
     }
 }

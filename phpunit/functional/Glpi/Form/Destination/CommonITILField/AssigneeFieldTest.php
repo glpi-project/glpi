@@ -62,7 +62,7 @@ final class AssigneeFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $from_template_config = new AssigneeFieldConfig(
-            ITILActorFieldStrategy::FROM_TEMPLATE
+            [ITILActorFieldStrategy::FROM_TEMPLATE]
         );
 
         // The default GLPI's template doesn't have a predefined value
@@ -124,7 +124,7 @@ final class AssigneeFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $form_filler_config = new AssigneeFieldConfig(
-            ITILActorFieldStrategy::FORM_FILLER
+            [ITILActorFieldStrategy::FORM_FILLER]
         );
 
         // The default GLPI's template doesn't have a predefined value
@@ -161,7 +161,7 @@ final class AssigneeFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID()
                 ]
@@ -174,7 +174,7 @@ final class AssigneeFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
                     Group::getForeignKeyField() . '-' . $group->getID()
@@ -188,7 +188,7 @@ final class AssigneeFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
                     Group::getForeignKeyField() . '-' . $group->getID(),
@@ -225,7 +225,7 @@ final class AssigneeFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "Assignee 1")]
             ),
             answers: [
@@ -245,7 +245,7 @@ final class AssigneeFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $this->getQuestionId($form, "Assignee 1"),
                     $this->getQuestionId($form, "Assignee 2")
@@ -272,7 +272,7 @@ final class AssigneeFieldTest extends DbTestCase
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $last_valid_answer_config = new AssigneeFieldConfig(
-            ITILActorFieldStrategy::LAST_VALID_ANSWER
+            [ITILActorFieldStrategy::LAST_VALID_ANSWER]
         );
 
         $technician_profiles_id = getItemByTypeName('Profile', 'Technician', true);
@@ -351,6 +351,43 @@ final class AssigneeFieldTest extends DbTestCase
             config: $last_valid_answer_config,
             answers: [],
             expected_actors_ids: [$user1->getID()]
+        );
+    }
+
+    public function testMultipleStrategies(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $user1 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 1']);
+        $user2 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 2']);
+        $group = $this->createItem(Group::class, ['name' => 'testMultipleStrategies Group']);
+        $supplier = $this->createItem(Supplier::class, [
+            'name' => 'testMultipleStrategies Supplier',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+
+        // Set the user as default assignee using predefined fields
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 5, // User assignee
+            'value' => $user1->getID(),
+        ]);
+
+        // Multiple strategies: FROM_TEMPLATE and SPECIFIC_VALUES
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::FROM_TEMPLATE, ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    User::getForeignKeyField() . '-' . $user2->getID(),
+                    Group::getForeignKeyField() . '-' . $group->getID(),
+                    Supplier::getForeignKeyField() . '-' . $supplier->getID()
+                ]
+            ),
+            answers: [],
+            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID(), $supplier->getID()]
         );
     }
 

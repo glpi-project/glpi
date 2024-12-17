@@ -70,14 +70,6 @@ abstract class SLMField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . SLMFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'slm_class' => $this->getSLMClass(),
@@ -99,8 +91,11 @@ abstract class SLMField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $slm_id = $config->getStrategy()->getSLMID($config);
+        $slm_id = $strategy->getSLMID($config);
 
         // Do not edit input if invalid value was found
         $slm_class = $this->getSLMClass();
@@ -121,7 +116,7 @@ abstract class SLMField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (SLMFieldStrategy::cases() as $strategies) {
