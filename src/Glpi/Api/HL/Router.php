@@ -578,6 +578,7 @@ EOT;
     {
         // Start an output buffer to capture any potential debug errors
         ob_start();
+
         $response = null;
         $original_method = $request->getMethod();
         if ($original_method === 'HEAD') {
@@ -686,15 +687,10 @@ EOT;
         if ($original_method === 'HEAD') {
             $response = $response->withBody(Utils::streamFor(''));
         }
-        // Clear output buffers
-        $ob_config = ini_get('output_buffering');
-        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        while (ob_get_level() > $max_level) {
-            ob_end_clean();
-        }
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
+
+        // Clean the current output buffer
+        ob_end_clean();
+
         return $response;
     }
 

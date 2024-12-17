@@ -57,23 +57,19 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
             $next($input);
             return;
         }
-        $outputs = [];
-        // Go through all output buffers
-        while (ob_get_level() > 0) {
-            $outputs[] = ob_get_clean();
-        }
+
         $debug_messages = [];
+
         // If the output matches an HTML debug alert, extract the inner text and add it to the array
-        foreach ($outputs as $output) {
-            if (!is_string($output)) {
-                continue;
-            }
+        $output = ob_get_contents(); // Get the current buffer content without closing it
+        if (is_string($output)) {
             $crawler = new Crawler($output);
             $node = $crawler->filter('div.glpi-debug-alert');
             if ($node->count() > 0) {
                 $debug_messages[] = $node->text();
             }
         }
+
         // If there are debug messages, add them to the response
         if (count($debug_messages) > 0) {
             $header_value = '';
