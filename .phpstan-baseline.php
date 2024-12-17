@@ -164,12 +164,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 3,
-	'path' => __DIR__ . '/install/install.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between mixed~\'\' and \'\' will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
@@ -322,12 +316,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/update.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
 	'count' => 1,
 	'path' => __DIR__ . '/install/update.php',
 ];
@@ -1478,18 +1466,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/config_db_slave\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 5,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -2012,12 +1988,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/inc/downstream\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:getItemtype\\(\\) should return bool but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
@@ -2260,12 +2230,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Router\\:\\:resumeSession\\(\\) is unused\\.$#',
 	'identifier' => 'method.unused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/inc/downstream\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
@@ -2562,12 +2526,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Config/LegacyConfigurators/InitializeDbConnection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
@@ -5758,12 +5716,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter &\\$curl_info by\\-ref type of method Toolbox\\:\\:callCurl\\(\\) expects array\\|null, \\(array\\<string, array\\<int, array\\<string, string\\>\\>\\|float\\|int\\|string\\|null\\>\\|false\\) given\\.$#',
 	'identifier' => 'parameterByRef.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include\\(\\) "/config_db\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'include.fileNotFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
