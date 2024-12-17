@@ -650,7 +650,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             }
         }
 
-        $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()]);
+        $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()], $this->input['_do_not_compute_takeintoaccount'] ?? false);
 
         if (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0)) {
             $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);

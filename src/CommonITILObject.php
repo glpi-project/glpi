@@ -5210,6 +5210,13 @@ abstract class CommonITILObject extends CommonDBTM
                 $update['users_id_lastupdater'] = $users_id_lastupdater;
             }
 
+            // set take into account delay stat
+            if ($no_stat_computation && $this->getType() == Ticket::class) {
+                if ($this->fields['takeintoaccount_delay_stat'] == 0) {
+                    $update['takeintoaccount_delay_stat'] = 0;
+                }
+            }
+
             $DB->update(
                 $this->getTable(),
                 $update,
