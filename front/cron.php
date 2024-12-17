@@ -70,6 +70,12 @@ if (!is_writable(GLPI_LOCK_DIR)) {
     exit(1);
 }
 
+// Session needed initialized, but shouldn't be saved
+session_abort();
+// Cron should not be limited by entity
+$_SESSION['glpiactive_entity'] = 0;
+$_SESSION['glpiactiveentities'] = getSonsOf('glpi_entities', 0);
+
 if (!isCommandLine()) {
    //The advantage of using background-image is that cron is called in a separate
    //request and thus does not slow down output of the main page as it would if called
