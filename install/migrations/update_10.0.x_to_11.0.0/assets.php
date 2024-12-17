@@ -50,6 +50,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             `system_name` varchar(255) DEFAULT NULL,
             `label` varchar(255) NOT NULL,
             `icon` varchar(255) DEFAULT NULL,
+            `picture` text,
             `comment` text,
             `is_active` tinyint NOT NULL DEFAULT '0',
             `capacities` JSON NOT NULL,
@@ -74,6 +75,7 @@ SQL;
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
+    $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];

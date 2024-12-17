@@ -9906,6 +9906,7 @@ CREATE TABLE `glpi_assets_assetdefinitions` (
   `system_name` varchar(255) DEFAULT NULL,
   `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
+  `picture` text,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
   `capacities` JSON NOT NULL,
