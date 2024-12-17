@@ -64,7 +64,9 @@ class ConsumableItem extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [
+            Infocom::class,
+        ];
     }
 
     public static function getTypeName($nb = 0)
