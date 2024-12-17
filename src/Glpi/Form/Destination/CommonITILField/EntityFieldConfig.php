@@ -37,13 +37,17 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
 use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class EntityFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class EntityFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -91,9 +95,18 @@ final class EntityFieldConfig implements JsonFieldInterface, ConfigWithForeignKe
         ];
     }
 
-    public function getStrategy(): EntityFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<EntityFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificQuestionId(): ?int

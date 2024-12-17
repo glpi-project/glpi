@@ -202,7 +202,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'AssociatedItemsField' => [
             'field_key'        => AssociatedItemsField::getKey(),
             'config_fn'        => fn($created_items) => new AssociatedItemsFieldConfig(
-                strategy: AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
+                strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
                 specific_associated_items: [
                     \Computer::class => [$created_items[0]->getId()],
                     \Monitor::class  => [$created_items[1]->getId()],
@@ -260,7 +260,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'ValidationField' => [
             'field_key'        => ValidationField::getKey(),
             'config_fn'        => fn($created_items) => new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                 specific_actors: [
                     getForeignKeyFieldForItemType(\User::class) . '-' . $created_items[0]->getId(),
                     getForeignKeyFieldForItemType(\Group::class) . '-' . $created_items[1]->getId(),
@@ -284,7 +284,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 assertEquals(
                     array_diff_key(
                         (new ValidationFieldConfig(
-                            strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                            strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                             specific_actors: [
                                 \User::class => [$created_items[0]->getId()],
                                 \Group::class => [$created_items[1]->getId()],
@@ -316,7 +316,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'RequesterField' => [
             'field_key' => RequesterField::getKey(),
             'config_fn' => fn($created_items) => new RequesterFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     getForeignKeyFieldForItemType(\User::class) . '-' . $created_items[0]->getId(),
                     getForeignKeyFieldForItemType(\Group::class) . '-' . $created_items[1]->getId(),
@@ -347,7 +347,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 assertEquals(
                     array_diff_key(
                         (new RequesterFieldConfig(
-                            strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                             specific_itilactors_ids: [
                                 \User::class => [$created_items[0]->getId()],
                                 \Group::class => [$created_items[1]->getId()],
@@ -364,7 +364,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'ObserverField' => [
             'field_key' => ObserverField::getKey(),
             'config_fn' => fn($created_items) => new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     getForeignKeyFieldForItemType(\User::class) . '-' . $created_items[0]->getId(),
                     getForeignKeyFieldForItemType(\Group::class) . '-' . $created_items[1]->getId(),
@@ -388,7 +388,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 assertEquals(
                     array_diff_key(
                         (new ObserverFieldConfig(
-                            strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                             specific_itilactors_ids: [
                                 \User::class => [$created_items[0]->getId()],
                                 \Group::class => [$created_items[1]->getId()],
@@ -404,7 +404,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'AssigneeField' => [
             'field_key' => AssigneeField::getKey(),
             'config_fn' => fn($created_items) => new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     getForeignKeyFieldForItemType(\User::class) . '-' . $created_items[0]->getId(),
                     getForeignKeyFieldForItemType(\Group::class) . '-' . $created_items[1]->getId(),
@@ -428,7 +428,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 assertEquals(
                     array_diff_key(
                         (new AssigneeFieldConfig(
-                            strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                             specific_itilactors_ids: [
                                 \User::class => [$created_items[0]->getId()],
                                 \Group::class => [$created_items[1]->getId()],
@@ -633,7 +633,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'AssociatedItemsField' => [
             'field_key' => AssociatedItemsField::getKey(),
             'config_fn'    => fn($questions) => new AssociatedItemsFieldConfig(
-                strategy: AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     current($questions)->getId(),
                     next($questions)->getId(),
@@ -656,7 +656,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'ValidationField' => [
             'field_key' => ValidationField::getKey(),
             'config_fn'    => fn($questions) => new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     current($questions)->getId(),
                     next($questions)->getId(),
@@ -690,7 +690,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'RequesterField' => [
             'field_key' => RequesterField::getKey(),
             'config_fn' => fn($questions) => new RequesterFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     current($questions)->getId(),
                     next($questions)->getId(),
@@ -713,7 +713,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'ObserverField' => [
             'field_key' => ObserverField::getKey(),
             'config_fn' => fn($questions) => new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     current($questions)->getId(),
                     next($questions)->getId(),
@@ -736,7 +736,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         yield 'AssigneeField' => [
             'field_key' => AssigneeField::getKey(),
             'config_fn' => fn($questions) => new AssigneeFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     current($questions)->getId(),
                     next($questions)->getId(),

@@ -36,13 +36,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Override;
 
-final class TemplateFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class TemplateFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -93,9 +97,18 @@ final class TemplateFieldConfig implements JsonFieldInterface, ConfigWithForeign
         ];
     }
 
-    public function getStrategy(): TemplateFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<TemplateFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificTemplateID(): ?int
