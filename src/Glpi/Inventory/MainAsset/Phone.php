@@ -33,28 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
 use PhoneModel;
 use PhoneType;
 
-class GenericAsset extends MainAsset
+class Phone extends MainAsset
 {
     protected function getModelsFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $model_classname = $item->getDefinition()->getAssetModelClassName();
-
-        return getForeignKeyFieldForItemType($model_classname);
+        return PhoneModel::getForeignKeyField();
     }
 
     protected function getTypesFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $type_classname = $item->getDefinition()->getAssetTypeClassName();
-
-        return getForeignKeyFieldForItemType($type_classname);
+        return PhoneType::getForeignKeyField();
     }
 }

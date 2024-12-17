@@ -148,7 +148,6 @@ class RuleImportAssetCollection extends RuleCollection
                 ->handleRequest($contents);
 
             $inventory = $inventory_request->getInventory();
-            $item = $inventory->getItem();
             $invitem = $inventory->getMainAsset();
 
             // sanitize input

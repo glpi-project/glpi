@@ -43,6 +43,7 @@ use CommonDropdown;
 use Dropdown;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Inventory\Request;
 use Lockedfield;
 use Manufacturer;
@@ -84,8 +85,6 @@ abstract class InventoryAsset
     protected array $known_links = [];
     /** @var array */
     protected array $raw_links = [];
-        /** @var array */
-    protected array $input_notmanaged = [];
 
     /**
      * Constructor
@@ -391,11 +390,11 @@ abstract class InventoryAsset
     /**
      * Set inventory item
      *
-     * @param InventoryAsset $mainasset Main inventory asset instance
+     * @param MainAsset $mainasset Main inventory asset instance
      *
      * @return InventoryAsset
      */
-    public function setMainAsset(InventoryAsset $mainasset): self
+    public function setMainAsset(MainAsset $mainasset): self
     {
         $this->main_asset = $mainasset;
         return $this;
@@ -404,16 +403,16 @@ abstract class InventoryAsset
     /**
      * Get main inventory asset
      *
-     * @return InventoryAsset
+     * @return MainAsset
      */
-    public function getMainAsset(): InventoryAsset
+    public function getMainAsset(): MainAsset
     {
         return $this->main_asset;
     }
 
     /**
      * Add or move a peripheral asset.
-     * If the peripheral asset is already linked to another maina sset, existing link will be replaced by new link.
+     * If the peripheral asset is already linked to another main asset, existing link will be replaced by new link.
      *
      * @param array $input
      *
@@ -440,7 +439,7 @@ abstract class InventoryAsset
         }
 
         $relation = new Asset_PeripheralAsset();
-        $relation->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
+        $relation->add($input, [], !$this->item->isNewItem()); //log only if main item is not new
     }
 
     protected function setNew(): self
