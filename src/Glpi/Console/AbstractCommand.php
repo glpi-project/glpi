@@ -49,7 +49,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
     /**
-     * @var DBmysql
+     * @var DBmysql|null
      */
     protected $db;
 
@@ -109,7 +109,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     protected function initDbConnection()
     {
 
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {

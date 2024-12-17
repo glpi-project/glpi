@@ -98,7 +98,7 @@ class Application extends BaseApplication
     private $error_handler;
 
     /**
-     * @var DBmysql
+     * @var DBmysql|null
      */
     private $db;
 

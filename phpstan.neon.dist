@@ -4,6 +4,7 @@ includes:
 parameters:
     level: 4
     bootstrapFiles:
+        - stubs/db_config_classes.php
         - stubs/glpi_constants.php
     paths:
         - ajax
@@ -60,7 +61,6 @@ parameters:
         - PLUGINS_DIRECTORIES
         - TU_USER
     ignoreErrors:
-        - '~Instantiated class (DB|DBSlave) not found~'
         - '~Instantiated class XHProfRuns_Default not found~'
         - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
         - { message: '~Variable \$this might not be defined~', paths: [ 'inc/includes.php' ] }

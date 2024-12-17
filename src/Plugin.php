@@ -278,7 +278,7 @@ class Plugin extends CommonDBTM
      **/
     public function init(bool $load_plugins = false)
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         self::$plugins_state_checked = false;

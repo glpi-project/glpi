@@ -40,7 +40,7 @@ use Glpi\Toolbox\VersionParser;
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
 /**
- * @var \DBmysql $DB
+ * @var \DBmysql|null $DB
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  * @var \Update $update
  * @var bool $HEADER_LOADED
