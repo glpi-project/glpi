@@ -33,20 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
-use ComputerModel;
-use ComputerType;
-
-class Computer extends MainAsset
+class GenericAsset extends MainAsset
 {
     protected function getModelsFieldName(): string
     {
-        return ComputerModel::getForeignKeyField();
+        /** @var \Glpi\Asset\Asset $item */
+        $item = $this->item;
+        $model_classname = $item->getDefinition()->getAssetModelClassName();
+
+        return getForeignKeyFieldForItemType($model_classname);
     }
 
     protected function getTypesFieldName(): string
     {
-        return ComputerType::getForeignKeyField();
+        /** @var \Glpi\Asset\Asset $item */
+        $item = $this->item;
+        $type_classname = $item->getDefinition()->getAssetTypeClassName();
+
+        return getForeignKeyFieldForItemType($type_classname);
     }
 }

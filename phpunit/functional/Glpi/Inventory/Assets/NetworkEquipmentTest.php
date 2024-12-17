@@ -172,7 +172,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $json = json_decode($data);
 
         $netequ = new \NetworkEquipment();
-        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
         $main->setExtraData((array)$json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
@@ -193,7 +193,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
         $result = $main->prepare();
         $this->assertCount(1, $result);
@@ -213,7 +213,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
         $result = $main->prepare();
         $this->assertCount(5, $result);
@@ -423,7 +423,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\NetworkEquipment($netequ, $json);
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $result = $main->prepare();

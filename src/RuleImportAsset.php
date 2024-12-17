@@ -943,7 +943,7 @@ class RuleImportAsset extends Rule
                     }
 
                     $back_class = Unmanaged::class;
-                    if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                    if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
@@ -991,7 +991,7 @@ class RuleImportAsset extends Rule
                         }
 
                         $back_class = Unmanaged::class;
-                        if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                        if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
                             $back_class = $class->getItemtype();
                         }
 
