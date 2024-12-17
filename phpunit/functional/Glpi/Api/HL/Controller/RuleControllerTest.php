@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RuleController extends \HLAPITestCase
+class RuleControllerTest extends \HLAPITestCase
 {
     protected function getRuleCollections()
     {
@@ -56,13 +58,13 @@ class RuleController extends \HLAPITestCase
         $rule_ticket_right = $_SESSION['glpiactiveprofile']['rule_ticket'];
         $_SESSION['glpiactiveprofile']['rule_ticket'] = 0;
 
-        $this->api->getRouter()->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
         $this->api->call(new Request('GET', '/Rule/Collection'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isNotEmpty();
+                    $this->assertNotEmpty($content);
                     $has_ticket_rule = false;
                     foreach ($content as $collection) {
                         if ($collection['rule_type'] === 'Ticket') {
@@ -70,7 +72,7 @@ class RuleController extends \HLAPITestCase
                             break;
                         }
                     }
-                    $this->boolean($has_ticket_rule)->isFalse();
+                    $this->assertFalse($has_ticket_rule);
                 });
         }, false); // false here avoids initializing a new temporary session and instead uses the InternalAuthMiddleware
 
@@ -82,7 +84,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isNotEmpty();
+                    $this->assertNotEmpty($content);
                     $has_ticket_rule = false;
                     foreach ($content as $collection) {
                         if ($collection['rule_type'] === 'Ticket') {
@@ -90,7 +92,7 @@ class RuleController extends \HLAPITestCase
                             break;
                         }
                     }
-                    $this->boolean($has_ticket_rule)->isTrue();
+                    $this->assertTrue($has_ticket_rule);
                 });
         }, false); // false here avoids initializing a new temporary session and instead uses the InternalAuthMiddleware
     }
@@ -105,12 +107,13 @@ class RuleController extends \HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $types = array_column($content, 'rule_type');
-                    $this->array($types)->containsValues($this->getRuleCollections());
+                    $rule_collections = $this->getRuleCollections();
+                    $this->assertCount(count($rule_collections), array_intersect($rule_collections, $types));
                 });
         });
     }
 
-    protected function listRuleCriteriaConditionsProvider()
+    public static function listRuleCriteriaConditionsProvider()
     {
         return [
             [
@@ -155,9 +158,7 @@ class RuleController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider listRuleCriteriaConditionsProvider
-     */
+    #[DataProvider('listRuleCriteriaConditionsProvider')]
     public function testListRuleCriteriaConditions($type, $conditions)
     {
         $this->login();
@@ -171,18 +172,18 @@ class RuleController extends \HLAPITestCase
                     foreach ($conditions as $id => $condition) {
                         foreach ($content as $item) {
                             if ($item['id'] === $id) {
-                                $this->string($item['description'])->isIdenticalTo($condition['description']);
-                                $this->array($item['fields'])->containsValues($condition['fields']);
+                                $this->assertEquals($condition['description'], $item['description']);
+                                $this->assertCount(count($condition['fields']), array_intersect($condition['fields'], $item['fields']));
                                 $tested[] = $id;
                             }
                         }
                     }
-                    $this->array($tested)->hasSize(count($conditions));
+                    $this->assertCount(count($conditions), $tested);
                 });
         });
     }
 
-    protected function listRuleCriteriaCriteriaProvider()
+    public static function listRuleCriteriaCriteriaProvider()
     {
         return [
             [
@@ -215,9 +216,7 @@ class RuleController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider listRuleCriteriaCriteriaProvider
-     */
+    #[DataProvider('listRuleCriteriaCriteriaProvider')]
     public function testListRuleCriteriaCriteria($type, $criteria)
     {
         $this->login();
@@ -231,17 +230,17 @@ class RuleController extends \HLAPITestCase
                     foreach ($criteria as $id => $name) {
                         foreach ($content as $item) {
                             if ($item['id'] === $id) {
-                                $this->string($item['name'])->isIdenticalTo($name);
+                                $this->assertEquals($name, $item['name']);
                                 $tested[] = $id;
                             }
                         }
                     }
-                    $this->array($tested)->hasSize(count($criteria));
+                    $this->assertCount(count($criteria), $tested);
                 });
         });
     }
 
-    protected function listRuleActionTypesProvider()
+    public static function listRuleActionTypesProvider()
     {
         return [
             [
@@ -269,9 +268,7 @@ class RuleController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider listRuleActionTypesProvider
-     */
+    #[DataProvider('listRuleActionTypesProvider')]
     public function testListActionTypes($type, $action_types)
     {
         $this->login();
@@ -285,18 +282,18 @@ class RuleController extends \HLAPITestCase
                     foreach ($action_types as $id => $name) {
                         foreach ($content as $item) {
                             if ($item['id'] === $id) {
-                                $this->string($item['name'])->isIdenticalTo($name);
-                                $this->array($item['fields'])->isNotEmpty();
+                                $this->assertEquals($name, $item['name']);
+                                $this->assertNotEmpty($item['fields']);
                                 $tested[] = $id;
                             }
                         }
                     }
-                    $this->array($tested)->hasSize(count($action_types));
+                    $this->assertCount(count($action_types), $tested);
                 });
         });
     }
 
-    protected function listRuleActionFieldsProvider()
+    public static function listRuleActionFieldsProvider()
     {
         return [
             [
@@ -326,9 +323,7 @@ class RuleController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider listRuleActionFieldsProvider
-     */
+    #[DataProvider('listRuleActionFieldsProvider')]
     public function testListActionFields($type, $fields)
     {
         $this->login();
@@ -342,13 +337,13 @@ class RuleController extends \HLAPITestCase
                     foreach ($fields as $id => $name) {
                         foreach ($content as $item) {
                             if ($item['id'] === $id) {
-                                $this->string($item['name'])->isIdenticalTo($name);
-                                $this->array($item['action_types'])->isNotEmpty();
+                                $this->assertEquals($name, $item['name']);
+                                $this->assertNotEmpty($item['action_types']);
                                 $tested[] = $id;
                             }
                         }
                     }
-                    $this->array($tested)->hasSize(count($fields));
+                    $this->assertCount(count($fields), $tested);
                 });
         });
     }
@@ -370,8 +365,7 @@ class RuleController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($collection, &$new_url) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->startWith("/Rule/Collection/{$collection}/Rule");
+                        $this->assertStringStartsWith("/Rule/Collection/{$collection}/Rule", $headers['Location']);
                         $new_url = $headers['Location'];
                     });
             });
@@ -382,8 +376,7 @@ class RuleController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($collection) {
-                        $this->array($content)->hasKeys(['name']);
-                        $this->string($content['name'])->isEqualTo("testCRUDRules{$collection}");
+                        $this->assertEquals("testCRUDRules{$collection}", $content['name']);
                     });
             });
 
@@ -395,8 +388,7 @@ class RuleController extends \HLAPITestCase
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($collection) {
-                        $this->array($content)->hasKeys(['name']);
-                        $this->string($content['name'])->isEqualTo("testCRUDRules{$collection}2");
+                        $this->assertEquals("testCRUDRules{$collection}2", $content['name']);
                     });
             });
 
@@ -420,11 +412,11 @@ class RuleController extends \HLAPITestCase
         $this->login();
 
         $rule = new \Rule();
-        $this->integer($rules_id = $rule->add([
+        $this->assertGreaterThan(0, $rules_id = $rule->add([
             'entities_id' => $this->getTestRootEntity(true),
             'name' => 'testCRUDRuleCriteria',
             'sub_type' => 'RuleTicket',
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create
         $request = new Request('POST', "/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria");
@@ -437,8 +429,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($rules_id, &$new_url) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria");
+                    $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria", $headers['Location']);
                     $new_url = $headers['Location'];
                 });
         });
@@ -449,10 +440,9 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['criteria', 'condition', 'pattern']);
-                    $this->string($content['criteria'])->isEqualTo('name');
-                    $this->integer($content['condition'])->isEqualTo(0);
-                    $this->string($content['pattern'])->isEqualTo('testCRUDRuleCriteria');
+                    $this->assertEquals('name', $content['criteria']);
+                    $this->assertEquals(0, $content['condition']);
+                    $this->assertEquals('testCRUDRuleCriteria', $content['pattern']);
                 });
         });
 
@@ -464,10 +454,9 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['criteria', 'condition', 'pattern']);
-                    $this->string($content['criteria'])->isEqualTo('name');
-                    $this->integer($content['condition'])->isEqualTo(0);
-                    $this->string($content['pattern'])->isEqualTo('testCRUDRuleCriteria2');
+                    $this->assertEquals('name', $content['criteria']);
+                    $this->assertEquals(0, $content['condition']);
+                    $this->assertEquals('testCRUDRuleCriteria2', $content['pattern']);
                 });
         });
 
@@ -490,11 +479,11 @@ class RuleController extends \HLAPITestCase
         $this->login();
 
         $rule = new \Rule();
-        $this->integer($rules_id = $rule->add([
+        $this->assertGreaterThan(0, $rules_id = $rule->add([
             'entities_id' => $this->getTestRootEntity(true),
             'name' => 'testCRUDRuleAction',
             'sub_type' => 'RuleTicket',
-        ]))->isGreaterThan(0);
+        ]));
 
         // Create
         $request = new Request('POST', "/Rule/Collection/Ticket/Rule/{$rules_id}/Action");
@@ -507,8 +496,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($rules_id, &$new_url) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Action");
+                    $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Action", $headers['Location']);
                     $new_url = $headers['Location'];
                 });
         });
@@ -519,10 +507,9 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['field', 'action_type', 'value']);
-                    $this->string($content['field'])->isEqualTo('name');
-                    $this->string($content['action_type'])->isEqualTo('assign');
-                    $this->string($content['value'])->isEqualTo('testCRUDRuleAction');
+                    $this->assertEquals('name', $content['field']);
+                    $this->assertEquals('assign', $content['action_type']);
+                    $this->assertEquals('testCRUDRuleAction', $content['value']);
                 });
         });
 
@@ -534,10 +521,9 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['field', 'action_type', 'value']);
-                    $this->string($content['field'])->isEqualTo('name');
-                    $this->string($content['action_type'])->isEqualTo('assign');
-                    $this->string($content['value'])->isEqualTo('testCRUDRuleAction2');
+                    $this->assertEquals('name', $content['field']);
+                    $this->assertEquals('assign', $content['action_type']);
+                    $this->assertEquals('testCRUDRuleAction2', $content['value']);
                 });
         });
 
@@ -570,8 +556,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule", $headers['Location']);
                     $new_url = $headers['Location'];
                 });
         });
@@ -581,9 +566,8 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['name', 'ranking']);
-                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
-                    $this->integer($content['ranking'])->isEqualTo(1);
+                    $this->assertEquals("testCRUDRulesRuleTicket", $content['name']);
+                    $this->assertEquals(1, $content['ranking']);
                 });
         });
     }
@@ -603,8 +587,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule", $headers['Location']);
                     $new_url = $headers['Location'];
                 });
         });
@@ -615,9 +598,8 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['name', 'ranking']);
-                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
-                    $this->integer($content['ranking'])->isNotEqualTo(-1);
+                    $this->assertEquals("testCRUDRulesRuleTicket", $content['name']);
+                    $this->assertGreaterThanOrEqual(0, $content['ranking']);
                 });
         });
     }
@@ -636,8 +618,7 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_url) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule", $headers['Location']);
                     $new_url = $headers['Location'];
                 });
         });
@@ -650,9 +631,8 @@ class RuleController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['name', 'ranking']);
-                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
-                    $this->integer($content['ranking'])->isEqualTo(0);
+                    $this->assertEquals("testCRUDRulesRuleTicket", $content['name']);
+                    $this->assertEquals(0, $content['ranking']);
                 });
         });
     }

@@ -37,10 +37,11 @@ namespace tests\units\Glpi\Api\HL\Doc;
 
 use GLPITestCase;
 use Glpi\Api\HL\Doc;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class Schema extends GLPITestCase
+class SchemaTest extends GLPITestCase
 {
-    protected function schemaArrayProvider()
+    public static function schemaArrayProvider()
     {
         return [
             [
@@ -66,19 +67,15 @@ class Schema extends GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider schemaArrayProvider
-     */
+    #[DataProvider('schemaArrayProvider')]
     public function testToArray($schema, $array)
     {
-        $this->array($schema->toArray())->isIdenticalTo($array);
+        $this->assertEquals($array, $schema->toArray());
     }
 
-    /**
-     * @dataProvider schemaArrayProvider
-     */
+    #[DataProvider('schemaArrayProvider')]
     public function testFromArray($schema, $array)
     {
-        $this->object(Doc\Schema::fromArray($array))->isEqualTo($schema);
+        $this->assertEquals($schema, Doc\Schema::fromArray($array));
     }
 }

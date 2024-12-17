@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Api\HL;
 
 use HLAPITestCase;
 
-class OpenAPIGenerator extends HLAPITestCase
+class OpenAPIGeneratorTest extends HLAPITestCase
 {
     public function testExpandedEndpoints()
     {
@@ -56,7 +56,7 @@ class OpenAPIGenerator extends HLAPITestCase
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $path) {
-            $this->array($openapi['paths'])->hasKey($path);
+            $this->assertArrayHasKey($path, $openapi['paths']);
         }
 
         // Check that the pre-expanded paths are not present
@@ -66,7 +66,7 @@ class OpenAPIGenerator extends HLAPITestCase
             '/Assets/{itemtype}',
         ];
         foreach ($to_check as $path) {
-            $this->array($openapi['paths'])->notHasKey($path);
+            $this->assertArrayNotHasKey($path, $openapi['paths']);
         }
     }
 
@@ -91,7 +91,7 @@ class OpenAPIGenerator extends HLAPITestCase
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $endpoint) {
-            $this->array(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn ($v) => $v['name'] === $endpoint['placeholder']))->size->isEqualTo(0);
+            $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn ($v) => $v['name'] === $endpoint['placeholder']));
         }
     }
 }

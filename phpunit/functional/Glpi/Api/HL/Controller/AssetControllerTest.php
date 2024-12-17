@@ -36,8 +36,9 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class AssetController extends \HLAPITestCase
+class AssetControllerTest extends \HLAPITestCase
 {
     public function testIndex()
     {
@@ -50,17 +51,17 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
-                    $this->array($content)->size->isGreaterThanOrEqualTo(count($types));
+                    $this->assertGreaterThanOrEqual(count($types), count($content));
                     foreach ($content as $asset) {
-                        $this->array($asset)->hasKeys(['itemtype', 'name', 'href']);
-                        $this->string($asset['name'])->isNotEmpty();
-                        $this->string($asset['href'])->isEqualTo('/Assets/' . $asset['itemtype']);
+                        $this->assertNotEmpty($asset['itemtype']);
+                        $this->assertNotEmpty($asset['name']);
+                        $this->assertEquals('/Assets/' . $asset['itemtype'], $asset['href']);
                     }
                 });
         });
     }
 
-    public function searchProvider()
+    public static function searchProvider()
     {
         return [
             ['schema' => 'Computer', 'filters' => [], 'expected' => ['count' => ['>=', 9]]],
@@ -91,10 +92,7 @@ class AssetController extends \HLAPITestCase
             ['schema' => 'SoftwareLicense', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
         ];
     }
-
-    /**
-     * @dataProvider searchProvider
-     */
+    #[DataProvider('searchProvider')]
     public function testSearch(string $schema, array $filters, array $expected)
     {
         $this->login();
@@ -133,7 +131,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($dataset) {
-                    $this->array($content)->size->isGreaterThanOrEqualTo(1);
+                    $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $asset) {
                         $to_skip = ['SoftwareLicense', 'Unmanaged'];
                         if (in_array($asset['itemtype'], $to_skip, true)) {
@@ -145,7 +143,7 @@ class AssetController extends \HLAPITestCase
         });
     }
 
-    protected function getItemProvider()
+    public static function getItemProvider()
     {
         return [
             ['schema' => 'Computer', 'id' => getItemByTypeName('Computer', '_test_pc01', true), 'expected' => ['fields' => ['name' => '_test_pc01']]],
@@ -158,9 +156,7 @@ class AssetController extends \HLAPITestCase
         ];
     }
 
-    /**
-     * @dataProvider getItemProvider
-     */
+    #[DataProvider('getItemProvider')]
     public function testGetItem(string $schema, int $id, array $expected)
     {
         $this->login();
@@ -176,7 +172,7 @@ class AssetController extends \HLAPITestCase
         });
     }
 
-    protected function createUpdateDeleteItemProvider()
+    public static function createUpdateDeleteItemProvider()
     {
         $types = [
             'Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
@@ -196,9 +192,7 @@ class AssetController extends \HLAPITestCase
         }
     }
 
-    /**
-     * @dataProvider createUpdateDeleteItemProvider
-     */
+    #[DataProvider('createUpdateDeleteItemProvider')]
     public function testCreateUpdateDeleteItem(string $schema, array $fields)
     {
         $this->api->autoTestCRUD('/Assets/' . $schema, $fields);
@@ -229,7 +223,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isEmpty();
+                    $this->assertEmpty($content);
                 });
         });
 
@@ -244,7 +238,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$rackitem_location) {
-                    $this->array($headers)->hasKey('Location');
+                    $this->assertNotEmpty($headers['Location']);
                     $rackitem_location = $headers['Location'];
                 });
         });
@@ -255,9 +249,9 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($computer_id) {
-                    $this->array($content)->size->isEqualTo(1);
-                    $this->string($content[0]['itemtype'])->isEqualTo('Computer');
-                    $this->integer($content[0]['items_id'])->isEqualTo($computer_id);
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('Computer', $content[0]['itemtype']);
+                    $this->assertEquals($computer_id, $content[0]['items_id']);
                 });
         });
 
@@ -293,7 +287,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isEmpty();
+                    $this->assertEmpty($content);
                 });
         });
     }
@@ -310,15 +304,15 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->size->isGreaterThanOrEqualTo(3);
+                    $this->assertGreaterThanOrEqual(3, count($content));
                     $count_by_type = [];
                     // Count by the _itemtype field in each element
                     foreach ($content as $item) {
                         $count_by_type[$item['_itemtype']] = ($count_by_type[$item['_itemtype']] ?? 0) + 1;
                     }
-                    $this->integer($count_by_type['Computer'])->isGreaterThanOrEqualTo(1);
-                    $this->integer($count_by_type['Monitor'])->isGreaterThanOrEqualTo(1);
-                    $this->integer($count_by_type['Printer'])->isGreaterThanOrEqualTo(1);
+                    $this->assertGreaterThanOrEqual(1, $count_by_type['Computer']);
+                    $this->assertGreaterThanOrEqual(1, $count_by_type['Monitor']);
+                    $this->assertGreaterThanOrEqual(1, $count_by_type['Printer']);
                 });
         });
     }
@@ -329,7 +323,7 @@ class AssetController extends \HLAPITestCase
 
         // Create a software
         $software = new \Software();
-        $this->integer($software_id = $software->add([
+        $this->assertGreaterThan(0, $software_id = $software->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
@@ -343,8 +337,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($software_id, &$new_item_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Assets/Software/$software_id/Version/");
+                    $this->assertNotEmpty($headers['Location']);
+                    $this->assertStringStartsWith("/Assets/Software/$software_id/Version/", $headers['Location']);
                     $new_item_location = $headers['Location'];
                 });
         });
@@ -355,8 +349,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('name');
-                    $this->string($content['name'])->isEqualTo('1.0');
+                    $this->assertNotEmpty($content['name']);
+                    $this->assertEquals('1.0', $content['name']);
                 });
         });
 
@@ -391,24 +385,24 @@ class AssetController extends \HLAPITestCase
     {
         $this->login();
         $state = new \State();
-        $this->integer($state_id = $state->add([
+        $this->assertGreaterThan(0, $state_id = $state->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        ]));
         $computer = new \Computer();
-        $this->integer($computer_id = $computer->add([
+        $this->assertGreaterThan(0, $computer_id = $computer->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'states_id' => $state_id,
-        ]))->isGreaterThan(0);
+        ]));
         $dropdown_translation = new \DropdownTranslation();
-        $this->integer($dropdown_translation->add([
+        $this->assertGreaterThan(0, $dropdown_translation->add([
             'items_id'  => $state_id,
             'itemtype'  => 'State',
             'language'  => 'fr_FR',
             'field'     => 'name',
             'value'     => 'Essai',
-        ]))->isGreaterThan(0);
+        ]));
 
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
@@ -416,9 +410,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
-                    $this->array($content)->hasKey('status');
-                    $this->array($content['status'])->hasKey('name');
-                    $this->string($content['status']['name'])->isEqualTo('Test');
+                    $this->assertEquals($state_id, $content['status']['id']);
+                    $this->assertEquals('Test', $content['status']['name']);
                 });
         });
         // Change language and verify
@@ -430,9 +423,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
-                    $this->array($content)->hasKey('status');
-                    $this->array($content['status'])->hasKey('name');
-                    $this->string($content['status']['name'])->isEqualTo('Essai');
+                    $this->assertEquals($state_id, $content['status']['id']);
+                    $this->assertEquals('Essai', $content['status']['name']);
                 });
         });
     }
@@ -441,16 +433,16 @@ class AssetController extends \HLAPITestCase
     {
         $this->login();
         $state = new \State();
-        $this->integer($state_id = $state->add([
+        $this->assertGreaterThan(0, $state_id = $state->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]))->isGreaterThan(0);
+        ]));
         $computer = new \Computer();
-        $this->integer($computer_id = $computer->add([
+        $this->assertGreaterThan(0, $computer_id = $computer->add([
             'name' => 'Test',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'states_id' => $state_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
@@ -458,9 +450,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
-                    $this->array($content)->hasKey('status');
-                    $this->array($content['status'])->hasKey('name');
-                    $this->string($content['status']['name'])->isEqualTo('Test');
+                    $this->assertEquals($state_id, $content['status']['id']);
+                    $this->assertEquals('Test', $content['status']['name']);
                 });
         });
         // Change language and verify the default name is returned instead of null
@@ -470,9 +461,8 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
-                    $this->array($content)->hasKey('status');
-                    $this->array($content['status'])->hasKey('name');
-                    $this->string($content['status']['name'])->isEqualTo('Test');
+                    $this->assertEquals($state_id, $content['status']['id']);
+                    $this->assertEquals('Test', $content['status']['name']);
                 });
         });
     }
@@ -503,9 +493,9 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($computers_id) {
-                    $this->string($content['itemtype'])->isEqualTo('Computer');
-                    $this->integer($content['items_id'])->isEqualTo($computers_id);
-                    $this->string($content['date_buy'])->isEqualTo('2020-01-01');
+                    $this->assertEquals('Computer', $content['itemtype']);
+                    $this->assertEquals($computers_id, $content['items_id']);
+                    $this->assertEquals('2020-01-01', $content['date_buy']);
                 });
         });
     }
@@ -524,8 +514,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith('/Assets/Computer/');
+                    $this->assertStringStartsWith('/Assets/Computer/', $headers['Location']);
                     $new_location = $headers['Location'];
                 });
         });
@@ -535,9 +524,7 @@ class AssetController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKey('entity');
-                    $this->array($content['entity'])->hasKey('name');
-                    $this->string($content['entity']['name'])->isEqualTo('_test_child_1');
+                    $this->assertEquals('_test_child_1', $content['entity']['name']);
                 });
         });
     }

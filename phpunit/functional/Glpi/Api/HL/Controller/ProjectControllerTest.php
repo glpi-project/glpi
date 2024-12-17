@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
 
-class ProjectController extends \HLAPITestCase
+class ProjectControllerTest extends \HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {
@@ -60,13 +60,10 @@ class ProjectController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->isNotEmpty();
-                    $this->string($headers['Location'])->contains('/Project');
+                    $this->assertStringContainsString('/Project', $headers['Location']);
                 })
                 ->jsonContent(function ($content) use (&$projects_id) {
-                    $this->array($content)->hasKey('id');
-                    $this->integer($content['id'])->isGreaterThan(0);
+                    $this->assertGreaterThan(0, $content['id']);
                     $projects_id = $content['id'];
                 });
         });
@@ -80,9 +77,7 @@ class ProjectController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_item_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->isNotEmpty();
-                    $this->string($headers['Location'])->contains("/Project/Task");
+                    $this->assertStringContainsString('/Project/Task', $headers['Location']);
                     $new_item_location = $headers['Location'];
                 });
         });
@@ -93,7 +88,7 @@ class ProjectController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['content'])->isIdenticalTo('test');
+                    $this->assertEquals('test', $content['content']);
                 });
         });
 
@@ -111,7 +106,7 @@ class ProjectController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->string($content['content'])->isIdenticalTo('test2');
+                    $this->assertEquals('test2', $content['content']);
                 });
         });
 

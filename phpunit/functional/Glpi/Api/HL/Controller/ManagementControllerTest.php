@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
 
-class ManagementController extends \HLAPITestCase
+class ManagementControllerTest extends \HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {
@@ -55,6 +55,6 @@ class ManagementController extends \HLAPITestCase
     {
         $this->login();
         // Not sure we can mock a file upload to actually test the download. At least we need to check the endpoint exists.
-        $this->api->hasMatch(new Request('GET', '/Management/Document/1/Download'));
+        $this->assertTrue($this->api->hasMatch(new Request('GET', '/Management/Document/1/Download')));
     }
 }

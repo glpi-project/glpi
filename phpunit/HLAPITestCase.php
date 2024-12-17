@@ -49,7 +49,6 @@ use Glpi\Http\Response;
 class HLAPITestCase extends \DbTestCase
 {
     private $bearer_token = null;
-    private $fake_score = null;
 
     public function afterTestMethod($method)
     {
@@ -61,24 +60,6 @@ class HLAPITestCase extends \DbTestCase
     public function resetSession()
     {
         parent::resetSession();
-    }
-
-    public function getScore()
-    {
-        // if this method wasn't called from the \atoum\atoum\asserter\exception class, we can return the real score
-        // We only need to intercept the score when it's called from the exception class so we can modify the data
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-        if (count($trace) < 2 || $trace[1]['class'] !== 'atoum\atoum\asserter\exception') {
-            return parent::getScore();
-        }
-        if ($this->fake_score === null) {
-            $real_score = parent::getScore();
-            if ($real_score === null) {
-                return null;
-            }
-            $this->fake_score = new HLAPITestScore($real_score);
-        }
-        return $this->fake_score;
     }
 
     protected function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
@@ -103,9 +84,10 @@ class HLAPITestCase extends \DbTestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->hasKeys(['token_type', 'expires_in', 'access_token', 'refresh_token']);
-                    $this->string($content['token_type'])->isEqualTo('Bearer');
-                    $this->string($content['access_token'])->isNotEmpty();
+                    $this->assertEquals('Bearer', $content['token_type']);
+                    $this->assertNotEmpty($content['expires_in']);
+                    $this->assertNotEmpty($content['access_token']);
+                    $this->assertNotEmpty($content['refresh_token']);
                     $this->bearer_token = $content['access_token'];
                 });
         });
@@ -123,19 +105,19 @@ class HLAPITestCase extends \DbTestCase
             $operator = $expected['count'][0];
             switch ($operator) {
                 case '>':
-                    $this->integer(count($content))->isGreaterThan($expected['count'][1]);
+                    $this->assertGreaterThan($expected['count'][1], count($content));
                     break;
                 case '>=':
-                    $this->integer(count($content))->isGreaterThanOrEqualTo($expected['count'][1]);
+                    $this->assertGreaterThanOrEqual($expected['count'][1], count($content));
                     break;
                 case '<':
-                    $this->integer(count($content))->isLessThan($expected['count'][1]);
+                    $this->assertLessThan($expected['count'][1], count($content));
                     break;
                 case '<=':
-                    $this->integer(count($content))->isLessThanOrEqualTo($expected['count'][1]);
+                    $this->assertLessThanOrEqual($expected['count'][1], count($content));
                     break;
                 case '=':
-                    $this->integer(count($content))->isEqualTo($expected['count'][1]);
+                    $this->assertEquals($expected['count'][1], count($content));
                     break;
             }
         }
@@ -146,10 +128,9 @@ class HLAPITestCase extends \DbTestCase
                 $parts = explode('.', $field);
                 $current = $content;
                 foreach ($parts as $part) {
-                    $this->array($current)->hasKey($part);
                     $current = $current[$part];
                 }
-                $this->variable($current)->isEqualTo($value);
+                $this->assertEquals($value, $current);
             }
         }
     }
@@ -199,17 +180,6 @@ final class HLAPIHelper
     }
 
     /**
-     * @return RoutePath[]
-     */
-    private function getRoutes(): array
-    {
-        if (count(self::$routes_cache) === 0) {
-            self::$routes_cache = $this->router->getAllRoutes();
-        }
-        return self::$routes_cache;
-    }
-
-    /**
      * @param string $endpoint
      * @return RoutePath[]
      */
@@ -226,26 +196,17 @@ final class HLAPIHelper
         return $all_routes;
     }
 
-    private function getRoutePathDoc(RoutePath $route_path, string $method, bool $required = true): Doc\Route
-    {
-        $doc = $route_path->getRouteDoc($method);
-        if ($required) {
-            $this->test->variable($doc)->isNotNull('No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
-        }
-        return $doc;
-    }
-
     private function getRoutePathBodySchema(RoutePath $route_path, string $method, array $attributes = []): array|null
     {
         $doc = $route_path->getRouteDoc($method);
-        $this->test->variable($doc)->isNotNull('No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
+        $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
 
         $params = $doc->getParameters();
         $body_params = array_filter($params, static fn ($param) => $param->getName() === '_' && $param->getLocation() === 'body');
         if (empty($body_params)) {
             return null;
         }
-        $this->test->array($body_params)->hasSize(1, 'Multiple body parameters found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
+        $this->test->assertCount(1, $body_params, 'Multiple body parameters found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
         $body_param = array_values($body_params)[0];
         $schema = $body_param->getSchema();
         if ($schema instanceof Doc\SchemaReference) {
@@ -264,7 +225,7 @@ final class HLAPIHelper
     private function getRoutePathResponseSchema(RoutePath $route_path, string $method, $status = 200, array $attributes = []): array|null
     {
         $doc = $route_path->getRouteDoc($method);
-        $this->test->variable($doc)->isNotNull('No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
+        $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
 
         $responses = $doc->getResponses();
         $response = array_filter($responses, static fn ($response) => $response->getStatusCode() === $status)[0] ?? null;
@@ -281,7 +242,7 @@ final class HLAPIHelper
     private function routePathHasParameter(RoutePath $route_path, string $parameter, string $location): bool
     {
         $doc = $route_path->getRouteDoc('GET');
-        $this->test->variable($doc)->isNotNull('No documentation found for route ' . $route_path->getRoutePath() . ' with method GET');
+        $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method GET');
 
         $params = $doc->getParameters();
         $matches = array_filter($params, static fn ($param) => $param->getName() === $parameter && $param->getLocation() === $location);
@@ -308,7 +269,7 @@ final class HLAPIHelper
         ) {
             $is_default_route = true;
         }
-        return $this->test->boolean($match !== null && !$is_default_route);
+        return $match !== null && !$is_default_route;
     }
 
     /**
@@ -341,7 +302,7 @@ final class HLAPIHelper
         }
         $required_methods = ['POST', 'GET', 'PATCH', 'DELETE'];
         $missing_methods = array_diff($required_methods, $all_methods);
-        $this->test->array($missing_methods)->isEmpty('The endpoint "' . $endpoint . '" does not support the following CRUD methods: ' . implode(', ', $missing_methods));
+        $this->test->assertEmpty($missing_methods, 'The endpoint "' . $endpoint . '" does not support the following CRUD methods: ' . implode(', ', $missing_methods));
 
         $schema = null;
         foreach ($routes as $route) {
@@ -351,8 +312,8 @@ final class HLAPIHelper
                 break;
             }
         }
-        $this->test->variable($schema)->isNotNull('The POST route for endpoint "' . $endpoint . '" does not have a body schema');
-        $this->test->string($schema['type'])->isEqualTo('object', 'The POST route for endpoint "' . $endpoint . '" body schema is not for an object');
+        $this->test->assertNotNull($schema, 'The POST route for endpoint "' . $endpoint . '" does not have a body schema');
+        $this->test->assertEquals('object', $schema['type'], 'The POST route for endpoint "' . $endpoint . '" body schema is not for an object');
         $schema_json = json_encode($schema);
         $flattened_props = Doc\Schema::flattenProperties($schema['properties'] ?? []);
 
@@ -360,19 +321,15 @@ final class HLAPIHelper
             $attributes = $route->getAttributesFromPath($endpoint);
             if (in_array('GET', $route->getRouteMethods(), true) && str_ends_with($route->getRoutePath(), '/{id}')) {
                 $get_schema = $this->getRoutePathResponseSchema(route_path: $route, method: 'GET', attributes: $attributes);
-                $this->test
-                    ->variable($get_schema)->isNotNull('The GET route for endpoint "' . $endpoint . '" does not have a response schema');
-                $this->test
-                    ->string(json_encode($get_schema))->isEqualTo($schema_json, 'The POST route for endpoint "' . $endpoint . '" body schema does not match the GET route response schema');
+                $this->test->assertNotNull($get_schema, 'The GET route for endpoint "' . $endpoint . '" does not have a response schema');
+                $this->test->assertEquals($schema_json, json_encode($get_schema), 'The POST route for endpoint "' . $endpoint . '" body schema does not match the GET route response schema');
             } else if (in_array('PATCH', $route->getRouteMethods(), true)) {
                 $patch_schema = $this->getRoutePathBodySchema(route_path: $route, method: 'PATCH', attributes: $attributes);
-                $this->test
-                    ->variable($patch_schema)->isNotNull('The PATCH route for endpoint "' . $endpoint . '" does not have a body schema');
-                $this->test
-                    ->string(json_encode($patch_schema))->isEqualTo($schema_json, 'The input body for the POST route path and the body for the PATCH route path of endpoint "' . $endpoint . '" do not match');
+                $this->test->assertNotNull($patch_schema, 'The PATCH route for endpoint "' . $endpoint . '" does not have a body schema');
+                $this->test->assertEquals($schema_json, json_encode($patch_schema), 'The input body for the POST route path and the body for the PATCH route path of endpoint "' . $endpoint . '" do not match');
             } else if (in_array('DELETE', $route->getRouteMethods(), true)) {
                 $delete_schema = $this->getRoutePathBodySchema(route_path: $route, method: 'DELETE', attributes: $attributes);
-                $this->test->variable($delete_schema)->isNull('The DELETE route for endpoint "' . $endpoint . '" has a body schema');
+                $this->test->assertNull($delete_schema, 'The DELETE route for endpoint "' . $endpoint . '" has a body schema');
             }
         }
 
@@ -408,18 +365,13 @@ final class HLAPIHelper
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($endpoint) {
-                    $this->test->array($content)
-                        ->hasKey('id', 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
-                    $this->test->integer($content['id'])
-                        ->isGreaterThan(0, 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');
-                    $this->test->array($content)
-                        ->hasKey('href', 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "href" field');
-                    $this->test->integer(strcasecmp($content['href'], $endpoint . '/' . $content['id']))
-                        ->isEqualTo(0, 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    $this->test->assertArrayHasKey('id', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
+                    $this->test->assertGreaterThan(0, $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');
+                    $this->test->assertArrayHasKey('href', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "href" field');
+                    $this->test->assertEqualsIgnoringCase($content['href'], $endpoint . '/' . $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
                 })
                 ->headers(function ($headers) use (&$new_item_location) {
-                    $this->test->array($headers)->hasKey('Location');
-                    $this->test->string($headers['Location'])->isNotEmpty();
+                    $this->test->assertNotEmpty($headers['Location']);
                     $new_item_location = $headers['Location'];
                 });
         });
@@ -446,9 +398,9 @@ final class HLAPIHelper
                 ->jsonContent(function ($content) use ($create_params) {
                     foreach ($create_params as $key => $value) {
                         if (is_array($content[$key]) && isset($content[$key]['id'])) {
-                            $this->test->variable($content[$key]['id'])->isEqualTo($value);
+                            $this->test->assertEquals($value, $content[$key]['id']);
                         } else {
-                            $this->test->variable($content[$key])->isEqualTo($value);
+                            $this->test->assertEquals($value, $content[$key]);
                         }
                     }
                 });
@@ -474,9 +426,9 @@ final class HLAPIHelper
                 ->jsonContent(function ($content) use ($update_params) {
                     foreach ($update_params as $key => $value) {
                         if (is_array($content[$key]) && isset($content[$key]['id'])) {
-                            $this->test->variable($content[$key]['id'])->isEqualTo($value);
+                            $this->test->assertEquals($value, $content[$key]['id']);
                         } else {
-                            $this->test->variable($content[$key])->isEqualTo($value);
+                            $this->test->assertEquals($value, $content[$key]);
                         }
                     }
                 });
@@ -487,7 +439,7 @@ final class HLAPIHelper
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(fn ($content) => $this->test->variable($content)->isNull());
+                ->jsonContent(fn ($content) => $this->test->assertNull($content));
         });
 
         $itemtype = $schema['x-itemtype'];
@@ -502,9 +454,9 @@ final class HLAPIHelper
                         ->jsonContent(function ($content) use ($update_params) {
                             foreach ($update_params as $key => $value) {
                                 if (is_array($content[$key]) && isset($content[$key]['id'])) {
-                                    $this->test->variable($content[$key]['id'])->isEqualTo($value);
+                                    $this->test->assertEquals($value, $content[$key]['id']);
                                 } else {
-                                    $this->test->variable($content[$key])->isEqualTo($value);
+                                    $this->test->assertEquals($value, $content[$key]);
                                 }
                             }
                         });
@@ -517,7 +469,7 @@ final class HLAPIHelper
                     /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
-                        ->jsonContent(fn ($content) => $this->test->variable($content)->isNull());
+                        ->jsonContent(fn ($content) => $this->test->assertNull($content));
                 });
             }
         }
@@ -535,7 +487,7 @@ final class HLAPIHelper
     public function autoTestSearch(string $endpoint, array $dataset, string $unique_field = 'name'): self
     {
         $this->test->resetSession();
-        $this->test->array($dataset)->size->isGreaterThan(2, 'Dataset for endpoint "' . $endpoint . '" must have at least 3 entries');
+        $this->test->assertCount(3, $dataset, 'Dataset for endpoint "' . $endpoint . '" must have at least 3 entries');
 
         // Search without authorization should return an error
         $this->call(new Request('GET', $endpoint), function ($call) {
@@ -550,19 +502,19 @@ final class HLAPIHelper
         $routes = [...$this->getRoutesForEndpoint($endpoint)];
         $search_route = array_filter($routes, static fn ($rp) => in_array('GET', $rp->getRouteMethods()))[0] ?? null;
 
-        $this->test->variable($search_route)->isNotNull('No GET route found for endpoint "' . $endpoint . '"');
+        $this->test->assertNotNull($search_route, 'No GET route found for endpoint "' . $endpoint . '"');
         $response_schema = $this->getRoutePathResponseSchema(route_path: $search_route, method: 'GET', attributes: $search_route->getAttributesFromPath($endpoint));
-        $this->test->variable($response_schema)->isNotNull('No response schema found for GET route for endpoint "' . $endpoint . '"');
-        $this->test->string($response_schema['type'])->isEqualTo('array', 'Response schema for GET route for endpoint "' . $endpoint . '" is not for an array');
+        $this->test->assertNotNull($response_schema, 'No response schema found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertEquals('array', $response_schema['type'], 'Response schema for GET route for endpoint "' . $endpoint . '" is not for an array');
 
         // Search routes should allow filtering, pagination, and sorting
-        $this->test->boolean($this->routePathHasParameter($search_route, 'filter', 'query'))->isTrue('No "filter" query parameter found for GET route for endpoint "' . $endpoint . '"');
-        $this->test->boolean($this->routePathHasParameter($search_route, 'start', 'query'))->isTrue('No "start" query parameter found for GET route for endpoint "' . $endpoint . '"');
-        $this->test->boolean($this->routePathHasParameter($search_route, 'limit', 'query'))->isTrue('No "limit" query parameter found for GET route for endpoint "' . $endpoint . '"');
-        $this->test->boolean($this->routePathHasParameter($search_route, 'sort', 'query'))->isTrue('No "sort" query parameter found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertTrue($this->routePathHasParameter($search_route, 'filter', 'query'), 'No "filter" query parameter found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertTrue($this->routePathHasParameter($search_route, 'start', 'query'), 'No "start" query parameter found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertTrue($this->routePathHasParameter($search_route, 'limit', 'query'), 'No "limit" query parameter found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertTrue($this->routePathHasParameter($search_route, 'sort', 'query'), 'No "sort" query parameter found for GET route for endpoint "' . $endpoint . '"');
 
         // Search routes should specify the ResultFormatterMiddleware to allow optionally returning results as CSV or XML
-        $this->test->boolean($this->routePathHasMiddleware($search_route, ResultFormatterMiddleware::class))->isTrue('ResultFormatterMiddleware not found on GET route for endpoint "' . $endpoint . '"');
+        $this->test->assertTrue($this->routePathHasMiddleware($search_route, ResultFormatterMiddleware::class), 'ResultFormatterMiddleware not found on GET route for endpoint "' . $endpoint . '"');
 
         foreach ($dataset as $i => &$entry) {
             if (!isset($entry[$unique_field])) {
@@ -592,13 +544,13 @@ final class HLAPIHelper
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($endpoint, $dataset) {
-                    $this->test->array($headers)->hasKey('Content-Range');
+                    $this->test->assertArrayHasKey('Content-Range', $headers);
                     $content_range = $headers['Content-Range'];
                     [$result_range, $total_count] = explode('/', $content_range);
                     $result_range = explode('-', $result_range);
-                    $this->test->integer((int) $result_range[0])->isEqualTo(0, 'The Content-Range header for endpoint "' . $endpoint . '" does not start at 0 when no pagination parameters are specified (' . $content_range . ')');
-                    $this->test->integer((int) $result_range[1])->isLessThanOrEqualTo($total_count, 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid range when no pagination parameters are specified (' . $content_range . ')');
-                    $this->test->integer((int) $total_count)->isGreaterThanOrEqualTo(count($dataset), 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid total count when no pagination parameters are specified (' . $content_range . ')');
+                    $this->test->assertEquals(0, (int) $result_range[0], 'The Content-Range header for endpoint "' . $endpoint . '" does not start at 0 when no pagination parameters are specified (' . $content_range . ')');
+                    $this->test->assertLessThanOrEqual($total_count, (int) $result_range[1], 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid range when no pagination parameters are specified (' . $content_range . ')');
+                    $this->test->assertGreaterThanOrEqual(count($dataset), (int) $total_count, 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid total count when no pagination parameters are specified (' . $content_range . ')');
                 });
         });
 
@@ -611,13 +563,13 @@ final class HLAPIHelper
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($endpoint, $dataset) {
-                    $this->test->array($headers)->hasKey('Content-Range');
+                    $this->test->assertArrayHasKey('Content-Range', $headers);
                     $content_range = $headers['Content-Range'];
                     [$result_range, $total_count] = explode('/', $content_range);
                     $result_range = explode('-', $result_range);
-                    $this->test->integer((int) $result_range[0])->isEqualTo(1, 'The Content-Range header for endpoint "' . $endpoint . '" does not start at the correct position (' . $content_range . ')');
-                    $this->test->integer((int) $result_range[1])->isEqualTo(2, 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid range (' . $content_range . ')');
-                    $this->test->integer((int) $total_count)->isGreaterThanOrEqualTo(count($dataset), 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid total count (' . $content_range . ')');
+                    $this->test->assertEquals(1, (int) $result_range[0], 'The Content-Range header for endpoint "' . $endpoint . '" does not start at the correct position (' . $content_range . ')');
+                    $this->test->assertEquals(2, (int) $result_range[1], 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid range (' . $content_range . ')');
+                    $this->test->assertGreaterThanOrEqual(count($dataset), (int) $total_count, 'The Content-Range header for endpoint "' . $endpoint . '" does not have a valid total count (' . $content_range . ')');
                 });
         });
 
@@ -634,7 +586,7 @@ final class HLAPIHelper
                     $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct number of results when filtering by ' . $unique_field;
                     $fail_msg .= ' (filter: ' . $unique_field . '=like=' . $unique_prefix . '*)';
                     $fail_msg .= "\n" . var_export($content, true);
-                    $this->test->array($content)->hasSize(count($dataset), $fail_msg);
+                    $this->test->assertCount(count($dataset), $content, $fail_msg);
                 });
         });
 
@@ -648,7 +600,7 @@ final class HLAPIHelper
                     $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct number of results when filtering by ' . $unique_field;
                     $fail_msg .= ' (filter: ' . $unique_field . '==' . $content[0][$unique_field] . ')';
                     $fail_msg .= "\n" . var_export($content, true);
-                    $this->test->array($content)->hasSize(1, $fail_msg);
+                    $this->test->assertCount(1, $content, $fail_msg);
                 });
         });
 
@@ -670,10 +622,10 @@ final class HLAPIHelper
                 ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
                     $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct results when sorting with ' . $sort;
                     $fail_msg .= "\n" . var_export($content, true);
-                    $this->test->array($content)->hasSize(count($sorted_dataset), $fail_msg);
+                    $this->test->assertCount(count($sorted_dataset), $content, $fail_msg);
                     // Compare the results with the sorted dataset
                     foreach ($sorted_dataset as $i => $entry) {
-                        $this->test->variable($content[$i][$unique_field])->isEqualTo($entry[$unique_field], $fail_msg);
+                        $this->test->assertEquals($entry[$unique_field], $content[$i][$unique_field], $fail_msg);
                     }
                 });
         });
@@ -691,10 +643,10 @@ final class HLAPIHelper
                 ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
                     $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct results when sorting with ' . $sort;
                     $fail_msg .= "\n" . var_export($content, true);
-                    $this->test->array($content)->hasSize(count($sorted_dataset), $fail_msg);
+                    $this->test->assertCount(count($sorted_dataset), $content, $fail_msg);
                     // Compare the results with the sorted dataset
                     foreach ($sorted_dataset as $i => $entry) {
-                        $this->test->variable($content[$i][$unique_field])->isEqualTo($entry[$unique_field], $fail_msg);
+                        $this->test->assertEquals($entry[$unique_field], $content[$i][$unique_field], $fail_msg);
                     }
                 });
         });
@@ -838,10 +790,8 @@ final class HLAPIResponseAsserter
             $response_content = json_decode((string) $this->response->getBody(), true);
             $fail_msg .= " ($status_code):\n" . var_export($response_content, true);
             // Status is 200 - 299
-            $this->call_asserter->test
-                ->integer($this->response->getStatusCode())->isGreaterThanOrEqualTo(200, $fail_msg);
-            $this->call_asserter->test
-                ->integer($this->response->getStatusCode())->isLessThan(300, $fail_msg);
+            $this->call_asserter->test->assertGreaterThanOrEqual(200, $status_code, $fail_msg);
+            $this->call_asserter->test->assertLessThan(300, $status_code, $fail_msg);
         }
         return $this;
     }
@@ -851,12 +801,10 @@ final class HLAPIResponseAsserter
         $uri = $this->call_asserter->originalRequest->getUri();
         // Status is 401
         $this->call_asserter->test
-            ->integer($this->response->getStatusCode())->isEqualTo(401, 'Status code for call to ' . $uri . ' is not 401');
+            ->assertEquals(401, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 401');
         $decoded_content = json_decode((string) $this->response->getBody(), true);
-        $this->call_asserter->test
-            ->array($decoded_content)->hasKeys(['title', 'detail', 'status'], 'Response from ' . $uri . ' is not a valid error response');
-        $this->call_asserter->test
-            ->string($decoded_content['status'])->isEqualTo('ERROR_UNAUTHENTICATED', 'Status property in response from ' . $uri . ' is not ERROR_UNAUTHENTICATED');
+        $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
+        $this->call_asserter->test->assertEquals('ERROR_UNAUTHENTICATED', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_UNAUTHENTICATED');
         return $this;
     }
 
@@ -865,12 +813,10 @@ final class HLAPIResponseAsserter
         $uri = $this->call_asserter->originalRequest->getUri();
         // Status is 404
         $this->call_asserter->test
-            ->integer($this->response->getStatusCode())->isEqualTo(404, 'Status code for call to ' . $uri . ' is not 404');
+            ->assertEquals(404, $this->response->getStatusCode(), 'Status code for call to ' . $uri . ' is not 404');
         $decoded_content = json_decode((string) $this->response->getBody(), true);
-        $this->call_asserter->test
-            ->array($decoded_content)->hasKeys(['title', 'detail', 'status'], 'Response from ' . $uri . ' is not a valid error response');
-        $this->call_asserter->test
-            ->string($decoded_content['status'])->isEqualTo('ERROR_ITEM_NOT_FOUND', 'Status property in response from ' . $uri . ' is not ERROR_ITEM_NOT_FOUND');
+        $this->call_asserter->test->assertCount(3, array_intersect(['title', 'detail', 'status'], array_keys($decoded_content)), 'Response from ' . $uri . ' is not a valid error response');
+        $this->call_asserter->test->assertEquals('ERROR_ITEM_NOT_FOUND', $decoded_content['status'], 'Status property in response from ' . $uri . ' is not ERROR_ITEM_NOT_FOUND');
         return $this;
     }
 
@@ -898,8 +844,7 @@ final class HLAPIResponseAsserter
                 $fail_msg = $fail_msg ?? 'Response content does not match the schema';
                 $fail_msg .= ":\n" . var_export($item, true);
                 $fail_msg .= "\n\nSchema:\n" . var_export($schema, true);
-                $this->call_asserter->test
-                    ->boolean($matches)->isTrue($fail_msg);
+                $this->call_asserter->test->assertTrue($matches, $fail_msg);
             }
         }
         return $this;
@@ -931,85 +876,19 @@ final class HLAPIRouteAsserter
     public function isAuthRequired(): self
     {
         $this->call_asserter->test
-            ->boolean($this->routePath->getRouteSecurityLevel() !== Route::SECURITY_NONE)->isTrue('Route does not require authentication');
+            ->assertTrue($this->routePath->getRouteSecurityLevel() !== Route::SECURITY_NONE, 'Route does not require authentication');
         return $this;
     }
 
     public function isAnonymousAllowed(): self
     {
         $this->call_asserter->test
-            ->boolean($this->routePath->getRouteSecurityLevel() === Route::SECURITY_NONE)->isTrue('Route does not allow anonymous access');
+            ->assertTrue($this->routePath->getRouteSecurityLevel() === Route::SECURITY_NONE, 'Route does not allow anonymous access');
         return $this;
     }
 
     public function get(): RoutePath
     {
         return $this->routePath;
-    }
-}
-
-// @codingStandardsIgnoreStart
-/**
- * Proxy score class to modify the failure data to be able to have more details about the failures.
- * By default, atoum reports assertion failures with the file, line, and message of the line in the test class where the assertion was called
- * rather than where the asserter was actually called.
- *
- * This issue can present itself in several ways. First, if a test is in a parent, abstract class, the line for the failure will always be 0.
- * If you use a helper method (like we do with the API tests), it will report the line in the test class that called the helper.
- */
-class HLAPITestScore extends atoum\atoum\score {
-    protected $real_score;
-    public function __construct($real_score = null)
-    {
-        parent::__construct();
-        $this->real_score = $real_score;
-    }
-
-    public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
-    {
-        // Search stack trace for the frame after this function but before the atoum assert call
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        while (str_contains($trace[0]['file'], 'atoum')) {
-            array_shift($trace);
-        }
-        // remove one more frame because the asserts are technically part of the test class
-        array_shift($trace);
-        $frame = array_shift($trace);
-        // If the frame refers to a closure, we can use the next frame instead since the closure is probably some magic used by this helper
-        if (str_ends_with($frame['function'], '{closure}')) {
-            $frame = array_shift($trace);
-        }
-
-        $new_asserter = $asserter;
-        if ($frame !== null && isset($frame['line'], $frame['class'], $frame['function'])) {
-            $real_line = $frame['line'];
-            $real_class = $frame['class'];
-            $real_method = $frame['function'];
-
-            // Replace the $asserter string to display the desired info
-            $new_asserter = $real_class . '::' . $real_method . ' (line ' . $real_line . ')';
-        }
-        return $this->real_score->addFail($file, $class, $method, $line, $new_asserter, $reason, $case, $dataSetKey, $dataSetProvider);
-    }
-
-    // Redirect all others
-    public function __call($name, $arguments)
-    {
-        return call_user_func_array([$this->real_score, $name], $arguments);
-    }
-
-    public function __get($name)
-    {
-        return $this->real_score->$name;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->real_score->$name = $value;
-    }
-
-    public function __isset($name)
-    {
-        return isset($this->real_score->$name);
     }
 }

@@ -37,8 +37,9 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class ComponentController extends \HLAPITestCase
+class ComponentControllerTest extends \HLAPITestCase
 {
     public function testIndex()
     {
@@ -51,17 +52,17 @@ class ComponentController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
-                    $this->array($content)->size->isGreaterThanOrEqualTo(count($types));
+                    $this->assertGreaterThanOrEqual(count($types), count($content));
                     foreach ($content as $component) {
-                        $this->array($component)->hasKeys(['itemtype', 'name', 'href']);
-                        $this->string($component['name'])->isNotEmpty();
-                        $this->string($component['href'])->startWith('/Components/');
+                        $this->assertNotEmpty($component['itemtype']);
+                        $this->assertNotEmpty($component['name']);
+                        $this->assertStringStartsWith('/Components/', $component['href']);
                     }
                 });
         });
     }
 
-    protected function deviceTypeProvider()
+    public static function deviceTypeProvider()
     {
         $types = [
             'Battery', 'Camera', 'Case', 'Controller', 'Drive', 'Firmware', 'GenericDevice', 'GraphicCard',
@@ -74,9 +75,7 @@ class ComponentController extends \HLAPITestCase
         }
     }
 
-    /**
-     * @dataProvider deviceTypeProvider
-     */
+    #[DataProvider('deviceTypeProvider')]
     public function testCRUD(string $type)
     {
         $this->api->autoTestCRUD('/Components/' . $type, [
@@ -85,9 +84,7 @@ class ComponentController extends \HLAPITestCase
         ]);
     }
 
-    /**
-     * @dataProvider deviceTypeProvider
-     */
+    #[DataProvider('deviceTypeProvider')]
     public function testGetComponentsOfType(string $type)
     {
         global $DB;
@@ -98,7 +95,7 @@ class ComponentController extends \HLAPITestCase
 
         //ignore SIMCard for now because sim cards not in a device are impossible to exist
         if ($type === 'SIMCard') {
-            $this->boolean(true)->isTrue();
+            $this->assertTrue(true);
             return;
         }
 
@@ -112,8 +109,7 @@ class ComponentController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($type, &$new_item_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Components/" . $type);
+                    $this->assertStringStartsWith("/Components/" . $type, $headers['Location']);
                     $new_item_location = $headers['Location'];
                 });
         });
@@ -125,7 +121,7 @@ class ComponentController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
-                    $this->array($content)->isEmpty();
+                    $this->assertEmpty($content);
                 });
         });
 
@@ -140,12 +136,12 @@ class ComponentController extends \HLAPITestCase
             'FROM'   => $schema['x-itemtype']::getTable(),
             'WHERE'  => ['designation' => $type . $func_name],
         ])->current()['id'];
-        $this->integer($items_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $items_id);
 
         // Add a component of this type
-        $this->integer($item->add([
+        $this->assertGreaterThan(0, $item->add([
             $device_fk => $items_id,
-        ]))->isGreaterThan(0);
+        ]));
 
         // There should now be one component of this type
         $this->api->call(new Request('GET', $items_location), function ($call) use ($type) {
@@ -153,7 +149,7 @@ class ComponentController extends \HLAPITestCase
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($type) {
-                    $this->array($content)->size->isEqualTo(1);
+                    $this->assertCount(1, $content);
                     $join_key = $type;
                     // If there is a lowercase letter followed by an uppercase letter, we need to add an underscore between them
                     // Ex: PowerSupply => Power_Supply
@@ -163,7 +159,8 @@ class ComponentController extends \HLAPITestCase
                     $join_key = preg_replace('/([A-Z]{2,})([A-Z])/', '$1_$2', $join_key);
                     // Make lowercase
                     $join_key = strtolower($join_key);
-                    $this->array($content[0])->hasKeys(['id', $join_key]);
+                    $this->assertArrayHasKey('id', $content[0]);
+                    $this->assertArrayHasKey($join_key, $content[0]);
                 });
         });
     }
