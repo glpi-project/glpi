@@ -267,6 +267,11 @@ class Session
         if (!isset($_SESSION['glpi_use_mode'])) {
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         }
+
+        // Define default language
+        if (!isset($_SESSION['glpilanguage'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
+        }
     }
 
 

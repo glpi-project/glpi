@@ -116,6 +116,9 @@ class Application extends BaseApplication
         global $CFG_GLPI;
         $this->config = &$CFG_GLPI;
 
+        // Force the current "username"
+        $_SESSION['glpiname'] = 'cli';
+
         $this->computeAndLoadOutputLang();
 
        // Load core commands only to check if called command prevent or not usage of plugins
