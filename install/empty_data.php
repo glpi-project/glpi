@@ -4498,6 +4498,11 @@ $empty_data_builder = new class
                 'type'             => '1',
                 'notifications_id' => '65',
             ], [
+                'id'               => '181',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '66',
+            ], [
                 'id'               => '182',
                 'items_id'         => '1',
                 'type'             => '1',
@@ -4517,6 +4522,11 @@ $empty_data_builder = new class
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '70',
+            ], [
+                'id'               => '185',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '71',
             ], [
                 'id'               => '186',
                 'items_id'         => '1',

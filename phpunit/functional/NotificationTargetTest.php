@@ -39,9 +39,11 @@ use DbTestCase;
 use Entity;
 use Generator;
 use Monolog\Logger;
+use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Session;
+use ReflectionClass;
 
 /* Test for inc/notificationtarget.class.php */
 
@@ -637,5 +639,58 @@ class NotificationTargetTest extends DbTestCase
         $this->assertCount(1, $targets);
         $target = reset($targets);
         $this->assertEquals(getItemByTypeName('User', TU_USER, true), $target['users_id']);
+    }
+
+    public function testAdminTargetInstall()
+    {
+        $this->login();
+
+        $notification = new \Notification();
+        $notifications = $notification->find();
+
+        $tables = require(GLPI_ROOT . '/install/empty_data.php');
+        foreach ($notifications as $notification) {
+            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype']);
+            $notification_target->addNotificationTargets(0);
+
+            if (isset($notification_target->notification_targets["1_1"]) && $notification_target->notification_targets["1_1"] === "1_" . __("Administrator")) {
+                $filtered = array_filter(
+                    $tables["glpi_notificationtargets"],
+                    function ($empty_data_array) use ($notification) {
+                        return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
+                            $empty_data_array['items_id'] === '1' &&
+                            $empty_data_array['notifications_id'] === strval($notification['id']);
+                    }
+                );
+                $this->assertNotEmpty($filtered);
+            }
+        }
+    }
+
+    public function testNotificationHaveDefaultRecipient()
+    {
+        $this->login();
+
+        $notification = new \Notification();
+        $notifications = $notification->find();
+
+        foreach ($notifications as $notification) {
+            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype']);
+
+            $notification_target->deleteByCriteria([
+                'notifications_id' => $notification['id'],
+            ]);
+
+            $notification_target->addNotificationTargets(0);
+            $target_find = $notification_target->getFromDBByCrit([
+                'notifications_id' => $notification['id'],
+                'items_id' => 1,
+            ]);
+            if (isset($notification_target->notification_targets["1_1"]) && $notification_target->notification_targets["1_1"] === "1_" . __("Administrator")) {
+                $this->assertTrue($target_find);
+            } else {
+                $this->assertFalse($target_find);
+            }
+        }
     }
 }
