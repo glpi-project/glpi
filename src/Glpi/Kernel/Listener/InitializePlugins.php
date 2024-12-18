@@ -37,7 +37,7 @@ namespace Glpi\Kernel\Listener;
 use DBConnection;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

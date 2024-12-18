@@ -35,7 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use Glpi\Cache\CacheManager;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

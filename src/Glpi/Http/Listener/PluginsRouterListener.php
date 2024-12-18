@@ -37,7 +37,7 @@ namespace Glpi\Http\Listener;
 use Glpi\Controller\AbstractController;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

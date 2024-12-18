@@ -32,10 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http;
+namespace Glpi\Kernel;
 
-use Glpi\Config\LegacyConfigProviderListener;
+use Glpi\Http\Listener\LegacyConfigProviderListener;
 use Glpi\Kernel\Listener as KernelListener;
+use Glpi\Http\Listener as HttpListener;
 
 final class ListenersPriority
 {
@@ -56,17 +57,17 @@ final class ListenersPriority
     public const REQUEST_LISTENERS_PRIORITIES = [
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
-        Listener\LegacyAssetsListener::class         => 500,
+        HttpListener\LegacyAssetsListener::class         => 500,
 
-        Listener\SessionCheckCookieListener::class   => 550,
+        HttpListener\SessionCheckCookieListener::class   => 550,
 
-        Listener\LegacyRouterListener::class         => 400,
+        HttpListener\LegacyRouterListener::class         => 400,
 
         // Legacy URLs redirections does not require any complex logic. It can be done prior to
         // GLPI config and plugins initialization.
-        Listener\RedirectLegacyRouteListener::class  => 375,
+        HttpListener\RedirectLegacyRouteListener::class  => 375,
 
-        Listener\CheckGlpiConfigListener::class      => 360,
+        HttpListener\CheckGlpiConfigListener::class      => 360,
 
         // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
@@ -75,7 +76,7 @@ final class ListenersPriority
         // Plugins itemtypes requires plugins to be initialized, therefore config must be already set.
         // Also, keep it after the `LegacyRouterListener` to not map to the generic controller if a
         // legacy script exists for the requested URI.
-        Listener\LegacyItemtypeRouteListener::class => 300,
+        HttpListener\LegacyItemtypeRouteListener::class => 300,
 
         // This listener allows matching plugins routes at runtime,
         //   that's why it's executed right after Symfony's Router,
@@ -83,7 +84,7 @@ final class ListenersPriority
         //
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        Listener\PluginsRouterListener::class => 31,
+        HttpListener\PluginsRouterListener::class => 31,
     ];
 
     private function __construct()

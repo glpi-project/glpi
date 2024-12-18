@@ -34,7 +34,7 @@
 
 namespace Glpi\Http\Listener;
 
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

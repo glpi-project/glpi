@@ -38,7 +38,7 @@ use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Update;

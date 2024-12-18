@@ -35,7 +35,7 @@
 namespace Glpi\Http\Listener;
 
 use Glpi\Http\LegacyRouterTrait;
-use Glpi\Http\ListenersPriority;
+use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
