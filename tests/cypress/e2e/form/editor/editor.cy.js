@@ -273,7 +273,7 @@ describe ('Form editor', () => {
 
         // Delete question
         cy.get('@second_section')
-            .findByRole('button', {'name': "Section actions"})
+            .findByRole('button', {'name': "More actions"})
             .click()
         ;
         cy.findByRole('button', {'name': "Delete section"}).click();
@@ -301,7 +301,7 @@ describe ('Form editor', () => {
         // Duplicate second section
         cy.get('@sections').eq(1).as('second_section');
         cy.get('@second_section')
-            .findByRole('button', {'name': "Section actions"})
+            .findByRole('button', {'name': "More actions"})
             .click()
         ;
         cy.findByRole('button', {'name': "Duplicate section"}).click();
@@ -359,7 +359,7 @@ describe ('Form editor', () => {
         // Merge the two sections
         cy.get('@sections')
             .eq(1)
-            .findByRole('button', {'name': "Section actions"})
+            .findByRole('button', {'name': "More actions"})
             .click()
         ;
         cy.findByRole('button', {'name': "Merge with previous section"}).click();
@@ -530,7 +530,7 @@ describe ('Form editor', () => {
 
         // Create a second section
         cy.addSection("Second section");
-        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
         cy.get('@sections').should('have.length', 2);
 
         // Add two questions to our section
@@ -540,7 +540,7 @@ describe ('Form editor', () => {
         // Open "reorder sections" modal
         cy.get('@sections')
             .eq(0)
-            .findByRole('button', {'name': "Section actions"})
+            .findByRole('button', {'name': "More actions"})
             .click()
         ;
         cy.findByRole('button', {'name': "Move section"}).click();
@@ -719,8 +719,8 @@ describe ('Form editor', () => {
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Actors');
 
         // Duplicate first section
-        cy.findAllByRole('region', {'name': 'Form section'}).eq(0).within(() => {
-            cy.findByRole('button', {'name': 'Section actions'}).click();
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(0).within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
             cy.findByRole('button', {'name': 'Duplicate section'}).click();
         });
 

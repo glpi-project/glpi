@@ -104,6 +104,11 @@ function checkThatVisibilityOptionsAreHidden() {
     cy.findByRole('label', {'name': "Hidden if..."}).should('not.exist');
 }
 
+function initVisibilityConfiguration() {
+    cy.findByRole('button', {'name': 'More actions'}).click();
+    cy.findByRole('button', {'name': 'Configure visiblity'}).click();
+}
+
 function openVisibilityOptions() {
     cy.findByTitle('Configure visibility').click();
 }
@@ -193,7 +198,7 @@ describe ('Conditions', () => {
         // Select 'Visible if...' (editor should be displayed)
         getAndFocusQuestion('My first question').within(() => {
             checkThatVisibilityOptionsAreHidden();
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Always visible');
             checkThatConditionEditorIsNotDisplayed();
@@ -241,7 +246,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My first question').within(() => {
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             checkThatSelectedVisibilityOptionIs('Always visible');
             checkThatConditionEditorIsNotDisplayed();
             closeVisibilityOptions();
@@ -256,7 +261,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             setVisibilityOption('Visible if...');
             fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
             addNewEmptyCondition();
@@ -312,7 +317,7 @@ describe ('Conditions', () => {
         addQuestion('My third question');
 
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             setVisibilityOption('Visible if...');
             fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
             addNewEmptyCondition();
@@ -367,7 +372,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusComment('My first comment').within(() => {
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             setVisibilityOption('Visible if...');
             fillCondition(0, null, 'My second question', 'Contains', 'I love GLPI');
             addNewEmptyCondition();
@@ -422,7 +427,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusSection('My second section').within(() => {
-            openVisibilityOptions();
+            initVisibilityConfiguration();
             setVisibilityOption('Visible if...');
             fillCondition(0, null, 'My second question', 'Do not contains', 'I love GLPI');
             addNewEmptyCondition();
