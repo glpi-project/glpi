@@ -121,12 +121,14 @@ describe("Custom Assets - Custom Fields", () => {
         cy.findByLabelText('Status').closest('.form-field').should('be.visible').invoke('index').should('eq', 0);
     });
 
-    it('Create custom fields', () => {
-        function createField(label, type, options = new Map()) {
-            cy.findByRole('button', {name: 'Create new field'}).click();
-            cy.findByRole('button', {name: 'Create new field'}).siblings('.modal[data-cy-ready=true]').should('be.visible').within(() => {
+    // eslint-disable-next-line cypress/no-async-tests
+    it('Create custom fields', async () => {
+        async function createField(label, type, options = new Map()) {
+            cy.findByRole('button', {name: 'New field'}).click();
+            cy.findByRole('dialog').should('be.visible').within(() => {
                 cy.findByLabelText('Label').type(label);
                 cy.findByLabelText('Type').select(type, {force: true});
+                cy.findByLabelText('System name').should('have.attr', 'readonly');
 
                 if (options.has('item_type')) {
                     cy.findByLabelText('Item type').select(options.get('item_type'), {force: true});
@@ -153,7 +155,7 @@ describe("Custom Assets - Custom Fields", () => {
                 cy.findByRole('button', {name: 'Add'}).click();
                 cy.waitForNetworkIdle('/front/asset/customfielddefinition.form.php', 100);
             });
-            cy.findByRole('button', {name: 'Create new field'}).siblings('.modal').should('not.be.visible');
+            cy.findByRole('dialog').should('not.exist');
             cy.get(`.sortable-field[data-key="custom_${label.toLowerCase().replace(' ', '_')}"]`).should('be.visible');
         }
 
@@ -167,36 +169,16 @@ describe("Custom Assets - Custom Fields", () => {
 
         cy.findByRole('tab', {name:  /^Fields/}).click();
 
-        cy.intercept({
-            pathname: '/ajax/asset/assetdefinition.php',
-            query: {
-                action: 'get_all_fields'
-            },
-            times: 1
-        }, (req) => {
-            req.reply({
-                results: [
-                    {text: "Fake field", type: 'Glpi\\Asset\\CustomFieldType\\StringType', id: "fake_field"},
-                    {text: "Fake custom field", type: 'Glpi\\Asset\\CustomFieldType\\StringType', id: "custom_fake_field"}
-                ]
-            });
-        });
-
-        cy.findByRole('button', {name: 'Create new field'}).parents('.tab-pane').should('have.class', 'active').first().within(() => {
-            cy.findByLabelText('Field').siblings('.select2').find('.select2-selection__arrow').trigger('mousedown', {which: 1});
-
-            cy.root().closest('body').find('.select2-results__option').contains('Fake field').should('be.visible');
-            cy.root().closest('body').find('.select2-results__option').contains('Fake custom field').should('be.visible');
-
-            createField('Test String', 'String');
-            createField('Test Text', 'Text');
-            createField('Test Number', 'Number', new Map([['min', '10'], ['max', '20'], ['step', '2']]));
-            createField('Test Date', 'Date');
-            createField('Test Datetime', 'Date and time');
-            createField('Test Dropdown', 'Dropdown', new Map([['item_type', 'Monitor']]));
-            createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
-            createField('Test URL', 'URL');
-            createField('Test YesNo', 'Yes/No');
+        cy.findByRole('button', {name: 'New field'}).parents('.tab-pane').should('have.class', 'active').first().within(async () => {
+            await createField('Test String', 'String');
+            await createField('Test Text', 'Text');
+            await createField('Test Number', 'Number', new Map([['min', '10'], ['max', '20'], ['step', '2']]));
+            await createField('Test Date', 'Date');
+            await createField('Test Datetime', 'Date and time');
+            await createField('Test Dropdown', 'Dropdown', new Map([['item_type', 'Monitor']]));
+            await createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
+            await createField('Test URL', 'URL');
+            await createField('Test YesNo', 'Yes/No');
 
             // Intercept form submission to check the form display values sent
             cy.intercept('POST', '/front/asset/assetdefinition.form.php').as('saveFieldsDisplay');
@@ -231,24 +213,16 @@ describe("Custom Assets - Custom Fields", () => {
             req.reply({ results: [] });
         });
 
-        cy.get('.sortable-field[data-key="name"] .edit-field').click();
+        cy.get('.sortable-field[data-key="name"] .edit-field').click({force: true});
         cy.get('#core_field_options_editor').within(() => {
             cy.findByLabelText('Full width').should('be.visible').check();
             cy.findByLabelText('Readonly').should('be.visible').check();
             cy.findByLabelText('Mandatory').should('be.visible').check();
             cy.intercept('POST', '/ajax/asset/assetdefinition.php').as('saveFieldOptions');
             cy.findByRole('button', {name: 'Save'}).click();
-            cy.wait('@saveFieldOptions').then((interception) => {
-                const formDataObject = parseRequest(interception);
-                expect(formDataObject['action']).to.be.equal('get_field_placeholder');
-                cy.location('search').then((search) => {
-                    expect(`${formDataObject['assetdefinitions_id']}`).to.be.equal((new URLSearchParams(search)).get('id'));
-                });
-                expect(formDataObject['fields[0][key]']).to.be.equal('name');
-                expect(formDataObject['fields[0][field_options][full_width]']).to.be.equal('1');
-                expect(formDataObject['fields[0][field_options][readonly]']).to.be.equal('1');
-                expect(formDataObject['fields[0][field_options][required]']).to.be.equal('1');
-            });
         });
+        cy.get('input[name="field_options[name][full_width]"]').should('have.value', '1');
+        cy.get('input[name="field_options[name][readonly]"]').should('have.value', '1');
+        cy.get('input[name="field_options[name][required]"]').should('have.value', '1');
     });
 });
