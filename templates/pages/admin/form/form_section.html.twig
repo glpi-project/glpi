@@ -95,6 +95,7 @@
                     {# Visibility dropdown #}
                     {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                         'item': section,
+                        'type': "Glpi\\Form\\Section",
                     }, with_context = false) }}
 
                     {# Collapse section #}
@@ -108,13 +109,13 @@
                     ></i>
 
                     {# Extra actions #}
-                    <div class="dropdown ms-1 cursor-pointer d-flex align-items-center">
+                    <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
                         <i
                             class="ti ti-dots-vertical show"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             role="button"
-                            title="{{ __('Section actions') }}"
+                            title="{{ __('More actions') }}"
                         ></i>
                         <ul class="dropdown-menu" data-bs-popper="none">
                             <li>
@@ -159,6 +160,17 @@
                                 >
                                     <i class="ti ti-trash me-2"></i>
                                     <span>{{ __("Delete section") }}</span>
+                                </button>
+                            </li>
+
+                            <li>
+                                <button
+                                    type="button"
+                                    class="dropdown-item"
+                                    data-glpi-form-editor-on-click="show-visibility-dropdown"
+                                >
+                                    <i class="ti ti-eye-cog me-2"></i>
+                                    <span>{{ __("Configure visiblity") }}</span>
                                 </button>
                             </li>
                         </ul>

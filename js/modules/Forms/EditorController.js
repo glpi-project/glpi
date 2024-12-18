@@ -180,7 +180,7 @@ export class GlpiFormEditorController
         $(document)
             .on(
                 'show.bs.dropdown',
-                '[data-glpi-form-editor-visibility-editor-dropdown]',
+                '[data-glpi-form-editor-visibility-dropdown]',
                 (e) => this.#renderVisibilityEditor(
                     $(e.target)
                         .parent()
@@ -428,6 +428,12 @@ export class GlpiFormEditorController
             case "delete-comment":
                 this.#deleteComment(
                     target.closest("[data-glpi-form-editor-comment]")
+                );
+                break;
+
+            case "show-visibility-dropdown":
+                this.#showVisibilityDropdown(
+                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
                 );
                 break;
 
@@ -1875,6 +1881,19 @@ export class GlpiFormEditorController
     #setFormDetailsAsActive() {
         const form_details = $(this.#target).find("[data-glpi-form-editor-form-details]");
         this.#setActiveItem(form_details);
+    }
+
+    #showVisibilityDropdown(container) {
+        container
+            .find('[data-glpi-form-editor-visibility-dropdown-container]')
+            .removeClass('d-none')
+        ;
+
+        const dropdown = container
+            .find('[data-glpi-form-editor-visibility-dropdown-container]')
+            .find('[data-glpi-form-editor-visibility-dropdown]')
+        ;
+        bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
     #setVisibilityValue(container, value) {
