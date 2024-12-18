@@ -85,6 +85,6 @@
 
 <input
     type="hidden"
-    {{ access_control.getNormalizedInputName("_token") }}
+    name="{{ access_control.getNormalizedInputName("_token") }}"
     value="{{ config.getToken() }}"
 >

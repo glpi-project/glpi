@@ -47,6 +47,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -59,6 +61,7 @@ describe('Form access policy', () => {
 
         // Check if "allow unauthenticated users" checkbox isn't checked
         cy.findByRole('checkbox', { 'name': 'Allow unauthenticated users ?' }).should('not.be.checked');
+        cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url_before_save');
 
         // Save changes
         cy.findByRole('button', { 'name': 'Save changes' }).click();
@@ -66,8 +69,16 @@ describe('Form access policy', () => {
         // Retrieve the direct access URL
         cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url');
 
-        // Visit the direct access URL
+        // Make sure the url wasn't regenerated
+        cy.get('@direct_access_url_before_save').invoke('val').then((direct_access_url_before_save) => {
+            cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
+                expect(direct_access_url_before_save).to.equal(direct_access_url);
+            });
+        });
+
+        // Visit the direct access URL as non admin (to make sure the token is taken into account)
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
+            cy.changeProfile('Self-Service');
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
@@ -76,6 +87,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set and direct access works with autenticated user', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -111,6 +124,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set and direct access works with unauthenticated user', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -143,6 +158,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set and direct access works with unauthenticated user and hide blacklisted questions', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
