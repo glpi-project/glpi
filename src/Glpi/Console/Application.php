@@ -92,11 +92,6 @@ class Application extends BaseApplication
      */
     private $config;
 
-    /**
-     * @var ErrorHandler
-     */
-    private $error_handler;
-
     private ?DBmysql $db = null;
 
     /**
