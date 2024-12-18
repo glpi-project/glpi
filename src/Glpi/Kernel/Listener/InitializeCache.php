@@ -51,13 +51,8 @@ final readonly class InitializeCache implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /** @var ?CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface|null $GLPI_CACHE */
         global $GLPI_CACHE;
-
-        if ($GLPI_CACHE) {
-            // Don't override, it might have been set for specific reasons already, especially for some CLI scripts.
-            return;
-        }
 
         $cache_manager = new CacheManager();
         if (isset($_SESSION['is_installing'])) {
