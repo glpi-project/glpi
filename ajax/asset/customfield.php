@@ -53,6 +53,9 @@ if (isset($_POST['action'])) {
         foreach ($field_options as $option) {
             echo $option->getFormInput();
         }
+    } else if ($_POST['action'] === 'purge_field') {
+        $field->check($_POST['customfielddefinitions_id'], PURGE);
+        $field->delete(['id' => $_POST['customfielddefinitions_id']]);
     } else {
         throw new BadRequestHttpException();
     }
