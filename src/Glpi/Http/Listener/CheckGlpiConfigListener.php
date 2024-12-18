@@ -86,8 +86,6 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             }
 
             $no_db_checks_scripts = [
-                '#^' . $root_doc . '/$#',
-                '#^' . $root_doc . '/index.php#',
                 '#^' . $root_doc . '/install/#i',
             ];
             foreach ($no_db_checks_scripts as $pattern) {
