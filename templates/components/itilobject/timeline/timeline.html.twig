@@ -169,7 +169,7 @@
                         {% if matching_types|length > 0 %}
                            {% set timeline_itemtype = matching_types|first %}
                            {% if timeline_itemtype.template is defined %}
-                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                              {{ include(timeline_itemtype.template, {'form_mode': 'view', 'subitem': timeline_itemtype.item}}) }}
                            {% endif %}
                         {% endif %}
                      {% else %}
