@@ -101,11 +101,14 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             }
         }
 
-        // Check if the DB is configured properly
-        if (self::$skip_db_checks) {
+        if (
+            self::$skip_db_checks
+            || isset($_SESSION['is_installing'])
+        ) {
             return;
         }
 
+        // Check if the DB is configured properly
         if (!\is_file(GLPI_CONFIG_DIR . '/config_db.php')) {
             Session::loadLanguage('', false);
 
@@ -119,7 +122,10 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             return;
         }
 
-        if (self::$skip_db_checks) {
+        if (
+            self::$skip_db_checks
+            || isset($_SESSION['is_installing'])
+        ) {
             return;
         }
 

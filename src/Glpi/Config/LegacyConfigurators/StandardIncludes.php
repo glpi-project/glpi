@@ -88,7 +88,7 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
         }
 
         // Check version
-        if (!CheckGlpiConfigListener::skipDbChecks() && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if (!isset($_SESSION['is_installing']) && !CheckGlpiConfigListener::skipDbChecks() && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
             $debug_mode = $_SESSION['glpi_use_mode'];
             Toolbox::setDebugMode(Session::NORMAL_MODE);

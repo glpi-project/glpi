@@ -85,11 +85,10 @@ final class IndexController extends AbstractController
     private function call(): void
     {
         /**
-         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var array $PLUGIN_HOOKS
          */
-        global $DB, $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         // If config_db doesn't exist -> start installation
         if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php") || !class_exists('DB', false)) {
