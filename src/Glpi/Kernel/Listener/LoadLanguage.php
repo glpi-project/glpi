@@ -48,7 +48,7 @@ final readonly class LoadLanguage implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
         Session::loadLanguage();
     }

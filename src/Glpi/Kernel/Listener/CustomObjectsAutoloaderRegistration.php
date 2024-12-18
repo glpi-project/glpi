@@ -52,7 +52,7 @@ final readonly class CustomObjectsAutoloaderRegistration implements EventSubscri
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
         if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             // Requires the database to be available.

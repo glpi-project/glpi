@@ -49,7 +49,7 @@ final readonly class InitializeCache implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
         /** @var ?CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;

@@ -48,7 +48,7 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
         ];
     }
 
-    public function onPostboot(): void
+    public function onPostBoot(): void
     {
         /**
          * @var array $CFG_GLPI
