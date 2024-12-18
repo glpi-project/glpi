@@ -53,7 +53,7 @@ global $CFG_GLPI, $GLPI_CACHE;
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('testing');
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");

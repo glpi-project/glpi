@@ -43,7 +43,7 @@ if (PHP_SAPI === 'cli') {
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
     $kernel = new \Glpi\Kernel\Kernel();
-    $kernel->loadCommonGlobalConfig();
+    $kernel->boot();
 }
 
 /**
