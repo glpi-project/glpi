@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/profile.class.php */
 
@@ -60,8 +61,8 @@ class ProfileTest extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => false],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => false],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => false],
                 ],
             ],
             [
@@ -74,8 +75,8 @@ class ProfileTest extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => true],
                 ],
             ],
             [
@@ -88,8 +89,8 @@ class ProfileTest extends DbTestCase
                     ['name' => \Computer::$rightname, 'value' => DELETE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => CREATE, 'expected' => true],
                     ['name' => \Ticket::$rightname, 'value' => DELETE, 'expected' => false],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMYTICKET, 'expected' => true],
-                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLTICKET, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDMY, 'expected' => true],
+                    ['name' => \ITILFollowup::$rightname, 'value' => \ITILFollowup::ADDALLITEM, 'expected' => true],
                 ],
             ],
         ];
@@ -100,9 +101,8 @@ class ProfileTest extends DbTestCase
      *
      * @param array   $user     Array containing 'login' and 'password' fields of tested user.
      * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
-     *
-     * @dataProvider haveUserRightProvider
      */
+    #[DataProvider('haveUserRightProvider')]
     public function testHaveUserRight(array $user, array $rightset)
     {
 
@@ -195,6 +195,61 @@ class ProfileTest extends DbTestCase
         }
     }
 
+    public function testClone()
+    {
+        global $DB;
+
+        // Get default "Admin" profile
+        $profile = new \Profile();
+        $this->assertTrue($profile->getFromDB(3));
+
+        // Clone it
+        $cloned_profile = new \Profile();
+        $clone_profiles_id = $profile->clone([
+            'name' => __FUNCTION__,
+        ]);
+        $this->assertGreaterThan(0, $clone_profiles_id);
+        $this->assertTrue($cloned_profile->getFromDB($clone_profiles_id));
+
+        // Verify the original profile still references the source profile
+        $this->assertEquals(3, $profile->fields['id']);
+
+        // Some fields in the Profile itself to check that they are cloned
+        $core_fields = ['interface', 'helpdesk_hardware', 'helpdesk_item_type'];
+        foreach ($core_fields as $field) {
+            if ($field === 'helpdesk_item_type') {
+                $this->assertEquals(
+                    importArrayFromDB($profile->fields[$field]),
+                    importArrayFromDB($cloned_profile->fields[$field])
+                );
+            } else {
+                $this->assertEquals($profile->fields[$field], $cloned_profile->fields[$field]);
+            }
+        }
+
+        $rights_iterator = $DB->request([
+            'SELECT' => ['profiles_id', 'name', 'rights'],
+            'FROM'   => \ProfileRight::getTable(),
+            'WHERE'  => ['profiles_id' => [3, $clone_profiles_id]],
+        ]);
+        // Check that all rights with profiles_id 3 exist with the clone ID as well
+        $rights = [
+            3 => [],
+            $clone_profiles_id => [],
+        ];
+        foreach ($rights_iterator as $right) {
+            $rights[$right['profiles_id']][$right['name']] = $right['rights'];
+        }
+        $this->assertEquals(
+            count($rights[3]),
+            count($rights[$clone_profiles_id])
+        );
+
+        foreach ($rights[3] as $right => $value) {
+            $this->assertEquals($value, $rights[$clone_profiles_id][$right]);
+        }
+    }
+
     /**
      * Tests for Profile->canPurgeItem()
      *
@@ -247,7 +302,8 @@ class ProfileTest extends DbTestCase
             '_profile' => [UPDATE . "_0" => false]
         ]));
         $this->hasSessionMessages(ERROR, [
-            "Can't remove update right on this profile as it is the only remaining profile with this right."
+            // Session messages may contain HTML (allowed), but this message only contains text from translations and it should be santiiized
+            "Can&#039;t remove update right on this profile as it is the only remaining profile with this right."
         ]);
 
         // Try to change the interface of the lock profile
@@ -258,7 +314,8 @@ class ProfileTest extends DbTestCase
         $readonly->getFromDB($readonly->fields['id']); // Reload data
         $this->assertEquals('central', $readonly->fields['interface']);
         $this->hasSessionMessages(ERROR, [
-            "This profile can't be moved to the simplified interface as it is used for locking items."
+            // Session messages may contain HTML (allowed), but this message only contains text from translations and it should be santiiized
+            "This profile can&#039;t be moved to the simplified interface as it is used for locking items."
         ]);
     }
 

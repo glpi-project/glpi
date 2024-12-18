@@ -1,0 +1,182 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/setup/general/base_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set field_options = {
+   'label_class': 'col-xxl-7',
+   'input_class': 'col-xxl-5',
+} %}
+
+{% block config_fields %}
+   {{ fields.dropdownNumberField('time_step', config['time_step'], __('Step for the hours (minutes)'), field_options|merge({
+      min: 30,
+      max: 60,
+      step: 30,
+      toadd: {
+         1: 1,
+         5: 5,
+         10: 10,
+         15: 15,
+         20: 20,
+      }
+   })) }}
+   {% set planning_end_field %}
+      <span class="mx-1">-></span>
+      {{ fields.dropdownHoursField(planning_end, config['planning_end'], '', field_options|merge({
+         no_label: true
+      })) }}
+   {% endset %}
+   {{ fields.dropdownHoursField(planning_begin, config['planning_begin'], __('Limit of the schedules for planning'), field_options|merge({
+      add_field_html: planning_end_field
+   })) }}
+
+   {% set max_filesize_dropdown %}
+      {% do call('MailCollector::showMaxFilesize', ['default_mailcollector_filesize_max', config['default_mailcollector_filesize_max']]) %}
+   {% endset %}
+   {{ fields.htmlField('', max_filesize_dropdown, __('Default file size limit imported by the mails receiver'), field_options) }}
+   {{ fields.dropdownField(
+      'DocumentCategory',
+      'documentcategories_id_forticket',
+      config['documentcategories_id_forticket'],
+      __('Default heading when adding a document to a ticket'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownYesNo(
+      'default_software_helpdesk_visible',
+      config['default_software_helpdesk_visible'],
+      __('By default, a software may be linked to a ticket'),
+      field_options
+   ) }}
+   {{ fields.dropdownYesNo(
+      'keep_tickets_on_delete',
+      config['keep_tickets_on_delete'],
+      __('Keep tickets when purging hardware in the inventory'),
+      field_options
+   ) }}
+   {{ fields.dropdownYesNo(
+      'use_check_pref',
+      config['use_check_pref'],
+      __('Show personnal information in new ticket form (simplified interface)'),
+      field_options
+   ) }}
+   {{ fields.dropdownYesNo(
+      'use_anonymous_helpdesk',
+      config['use_anonymous_helpdesk'],
+      __('Allow anonymous ticket creation (helpdesk.receiver)'),
+      field_options
+   ) }}
+   {{ fields.dropdownYesNo(
+      'use_anonymous_followups',
+      config['use_anonymous_followups'],
+      __('Allow anonymous followups (receiver)'),
+      field_options
+   ) }}
+
+   {{ fields.dropdownArrayField('planning_work_days', null, {
+      1: __('Monday'),
+      2: __('Tuesday'),
+      3: __('Wednesday'),
+      4: __('Thursday'),
+      5: __('Friday'),
+      6: __('Saturday'),
+      0: __('Sunday'),
+   }, __('Planning work days'), field_options|merge({
+      values: config['planning_work_days'],
+      multiple: true,
+   })) }}
+
+   {{ fields.smallTitle(__('Matrix of calculus for priority')) }}
+   {{ inputs.hidden('_matrix', 1) }}
+   <table class="table table-borderless table-sm">
+      <tbody>
+         <tr>
+            <td></td>
+            <td class="fw-bold align-right">{{ __('Impact') }}</td>
+            {% for impact in 5..1 %}
+               <td class="center">
+                  {{ call('Ticket::getImpactName', [impact]) }}
+                  <br>
+                  {% if impact == 3 %}
+                     {{ inputs.hidden('_impact_3', 1) }}
+                  {% else %}
+                     {{ fields.dropdownYesNo('_impact_' ~ impact, is_impact[impact], '', {
+                        nolabel: true
+                     }) }}
+                  {% endif %}
+               </td>
+            {% endfor %}
+         </tr>
+         <tr>
+            <td class="fw-bold">{{ __('Urgency') }}</td>
+            {% for impact in 5..1 %}
+               <td></td>
+            {% endfor %}
+         </tr>
+         {% for urgency in 5..1 %}
+            <tr>
+               <td>{{ call('Ticket::getUrgencyName', [urgency]) }}</td>
+               <td>
+                  {% if urgency == 3 %}
+                     {{ inputs.hidden('_urgency_3', 1) }}
+                  {% else %}
+                     {{ fields.dropdownYesNo('_urgency_' ~ urgency, is_urgency[urgency], '', {
+                        nolabel: true
+                     }) }}
+                  {% endif %}
+               </td>
+               {% for impact in 5..1 %}
+                  {% set priority = config['priority_matrix'][urgency][impact]|default(((urgency + impact) / 2)|round) %}
+                  {% if is_urgency[urgency] and is_impact[impact] %}
+                     {% set bg_color = session('glpipriority_' ~ priority) %}
+                     <td class="center" style="background-color: {{ bg_color }}">
+                        {% do call('Ticket::dropdownPriority', [{
+                           value: priority,
+                           name: '_matrix_' ~ urgency ~ '_' ~ impact,
+                           enable_filtering: false
+                        }]) %}
+                     </td>
+                  {% else %}
+                     <td>
+                        {{ inputs.hidden('_matrix_' ~ urgency ~ '_' ~ impact, priority) }}
+                     </td>
+                  {% endif %}
+               {% endfor %}
+            </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+{% endblock %}

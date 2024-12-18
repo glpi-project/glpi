@@ -36,8 +36,6 @@
 /**
  * @since 0.85
  */
-include('../inc/includes.php');
-
 $rule = new Rule();
 $rule->getFromDB(intval($_POST['rules_id']));
 

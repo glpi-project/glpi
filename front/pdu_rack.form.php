@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 $pra  = new \PDU_Rack();
@@ -78,5 +76,5 @@ if ($ajax) {
     $pra->display($params);
 } else {
     $menus = ["assets", "rack"];
-    PDU_Rack::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
+    PDU_Rack::displayFullPageForItem((int)($_GET['id'] ?? 0), $menus, $params);
 }

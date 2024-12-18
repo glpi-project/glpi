@@ -33,7 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-include(__DIR__ . '/../inc/includes.php');
+if (PHP_SAPI != 'cli') {
+    echo "This script must be run from command line";
+    exit();
+}
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCommonGlobalConfig();
 
 $printers_id = false;
 $networkports_id = false;

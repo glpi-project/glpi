@@ -36,10 +36,10 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 require_once __DIR__ . '/../Autoload.php';
-
-/* Test for inc/autoload.function.php */
 
 class AutoloadTest extends DbTestCase
 {
@@ -57,9 +57,7 @@ class AutoloadTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataItemType
-     **/
+    #[DataProvider('dataItemType')]
     public function testIsPluginItemType($type, $plug, $class)
     {
         $res = isPluginItemType($type);
@@ -76,11 +74,16 @@ class AutoloadTest extends DbTestCase
         }
     }
 
-    /**
-     * Checks autoload of some class located in Glpi namespace.
-     */
-    public function testAutoloadGlpiEvent()
+    #[RunInSeparateProcess]
+    public function testPluginAutoloading()
     {
-        $this->assertTrue(class_exists('Glpi\\Event'));
+        // PSR4 autoloader (registered during plugins initialization)
+        $this->assertTrue(class_exists('GlpiPlugin\\Tester\\MyPsr4Class'));
+
+        // Pseudo-PSR4 class with no namespace
+        $this->assertTrue(class_exists('PluginTesterMyPseudoPsr4Class'));
+
+        // Legacy `inc/*.class.php` files
+        $this->assertTrue(class_exists('PluginTesterMyLegacyClass'));
     }
 }

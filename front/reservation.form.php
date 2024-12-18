@@ -35,15 +35,16 @@
 
 use Glpi\Event;
 
-/** @var array $CFG_GLPI */
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
 
 // avoid reloading js libs
 if (isset($_GET['ajax']) && $_GET['ajax']) {
-    $AJAX_INCLUDE = true;
+    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    $this->setAjax();
 }
-
-include('../inc/includes.php');
 
 Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 

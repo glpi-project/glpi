@@ -33,12 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
-
-$SECURITY_STRATEGY = 'faq_access';
-
-include('../inc/includes.php');
 
 // Redirect management
 if (isset($_GET["redirect"])) {

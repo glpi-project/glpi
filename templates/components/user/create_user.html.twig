@@ -1,0 +1,67 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<span data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      title="{{ __('Create user') }}">
+    <span class="btn btn-icon btn-sm btn-ghost-secondary ms-2"
+          id="create_user_{{ item.fields['id'] }}"
+          data-bs-toggle="modal"
+          data-bs-target="#add_{{ item.fields['id'] }}">
+        <i class="ti ti-user-plus"></i>
+    </span>
+</span>
+<script type="text/javascript">
+    $(function() {
+        const button   = $('#create_user_{{ item.fields['id'] }}');
+
+        // Prevent toggle only if mousedown and mouseup were done on button (i.e. it is a click).
+        // It is not possible to use `e.preventDefault()` on a `click` event,
+        // as current handler is executed after bootstrap handlers.
+        var mousedown_catched = false;
+        var prevent_toggle    = false;
+        button.on('mousedown', function(e) {
+            mousedown_catched = true;
+        });
+        button.on('mouseup', function(e) {
+            prevent_toggle = mousedown_catched;
+        });
+        const collapse = button.closest('.accordion-item').find('.accordion-collapse');
+        collapse.on('show.bs.collapse hide.bs.collapse', function(e) {
+            if (prevent_toggle) {
+                e.preventDefault();
+                prevent_toggle = false;
+            }
+        });
+    });
+</script>

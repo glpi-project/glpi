@@ -35,6 +35,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Asset_PeripheralAsset;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/monitor.class.php */
@@ -128,9 +131,7 @@ class MonitorTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -148,14 +149,18 @@ class MonitorTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no monitor linked to this computer
-        $ico = new \Computer_Item();
-                 $this->assertFalse(
-                     $ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']),
-                     'A monitor is already linked to computer!'
-                 );
+        //first, check there are no monitor linked to this computer
+        $ico = new Asset_PeripheralAsset();
+        $this->assertFalse(
+            $ico->getFromDbByCrit([
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id'],
+                'itemtype_peripheral' => 'Monitor'
+            ]),
+            'A monitor is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -172,11 +177,15 @@ class MonitorTest extends AbstractInventoryAsset
         $agent->getEmpty();
         $asset->setAgent($agent);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
-            $ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']),
+            $ico->getFromDbByCrit([
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id'],
+                'itemtype_peripheral' => 'Monitor'
+            ]),
             'Monitor has not been linked to computer :('
         );
     }
@@ -186,7 +195,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -238,11 +247,20 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //same inventory again
@@ -269,7 +287,11 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //same monitor, but on another computer
@@ -319,15 +341,28 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //no longer linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(0, $monitors);
 
         //but now linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //replay first computer inventory, monitor is back \o/
@@ -351,15 +386,28 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //linked again on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //no longer linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(0, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
     }
 
@@ -368,7 +416,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -420,11 +468,20 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //same inventory again
@@ -451,11 +508,15 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //set to global management
-        $this->assertTrue($monitor->getFromDB(current($monitors)['items_id']));
+        $this->assertTrue($monitor->getFromDB(current($monitors)['items_id_peripheral']));
         $this->assertTrue($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
@@ -505,17 +566,35 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //still linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //also linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
     }
 
@@ -524,7 +603,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -586,11 +665,20 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //same monitor, but on another computer
@@ -650,17 +738,35 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //still linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //also linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
     }
 
@@ -669,7 +775,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -731,11 +837,20 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //same inventory again
@@ -762,11 +877,15 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //set to global management
-        $this->assertTrue($monitor->getFromDB(current($monitors)['items_id']));
+        $this->assertTrue($monitor->getFromDB(current($monitors)['items_id_peripheral']));
         $this->assertTrue($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
@@ -826,15 +945,28 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //no longer linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(0, $monitors);
 
         //but now linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
 
         //change default configuration to unit management
@@ -868,15 +1000,28 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($monitors)['manufacturers_id']);
 
         //linked again on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //no longer linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(0, $monitors);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
     }
 
@@ -885,7 +1030,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -970,11 +1115,20 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertCount(1, $monitors);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->assertCount(1, $monitors);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $monitors);
     }
 
@@ -983,7 +1137,7 @@ class MonitorTest extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -1040,10 +1194,24 @@ class MonitorTest extends AbstractInventoryAsset
         //we have 2 monitor
         $this->assertCount(2, $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]));
         //we have 2 monitor items linked to the computer
-        $this->assertCount(2, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]));
+        $this->assertCount(
+            2,
+            $item_monitor->find([
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computers_id,
+                'itemtype_peripheral' => 'Monitor'
+            ])
+        );
         //we have 2 dynamic link
-        $this->assertCount(2, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]));
-
+        $this->assertCount(
+            2,
+            $item_monitor->find([
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+                'is_dynamic' => 1
+            ])
+        );
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -1083,10 +1251,18 @@ class MonitorTest extends AbstractInventoryAsset
         //we have 2 monitor
         $this->assertCount(2, $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]));
         //we have 1 monitor items linked to the computer
-        $this->assertCount(1, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]));
+        $this->assertCount(1, $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]));
         //we have 1 dynamic link
-        $this->assertCount(1, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]));
-
+        $this->assertCount(1, $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]));
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -1133,9 +1309,18 @@ class MonitorTest extends AbstractInventoryAsset
         //we have 2 monitor
         $this->assertCount(2, $monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]]));
         //we have 2 monitor items linked to the computer
-        $this->assertCount(2, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]));
+        $this->assertCount(2, $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]));
         //we have 2 dynamic link
-        $this->assertCount(2, $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]));
+        $this->assertCount(2, $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]));
     }
 
     public function testInventoryRemoved()
@@ -1169,7 +1354,7 @@ class MonitorTest extends AbstractInventoryAsset
         //check created monitor
         ++$nb_monitors;
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
-        $this->assertCount(1, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
+        $this->assertCount(1, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id, 'itemtype_peripheral' => 'Monitor']]));
 
         //remove monitor
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
@@ -1179,7 +1364,7 @@ class MonitorTest extends AbstractInventoryAsset
         //monitor is still present in database
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
         //link to monitor has been removed
-        $this->assertCount(0, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
+        $this->assertCount(0, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id, 'itemtype_peripheral' => 'Monitor']]));
     }
 
     public function testPartialInventoryRemoved()
@@ -1213,7 +1398,7 @@ class MonitorTest extends AbstractInventoryAsset
         //check created monitor
         ++$nb_monitors;
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
-        $this->assertCount(1, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
+        $this->assertCount(1, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
 
         //no monitor in inventory (missing node)
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
@@ -1224,7 +1409,7 @@ class MonitorTest extends AbstractInventoryAsset
         //monitor is still present in database
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
         //link to monitor is still present
-        $this->assertCount(1, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
+        $this->assertCount(1, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
 
         //no monitor left in inventory (empty node)
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3.json'));
@@ -1235,6 +1420,6 @@ class MonitorTest extends AbstractInventoryAsset
         //monitor is still present in database
         $this->assertSame($nb_monitors, countElementsInTable(\Monitor::getTable()));
         //link to monitor has been removed
-        $this->assertCount(0, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
+        $this->assertCount(0, $DB->request(['FROM' => Asset_PeripheralAsset::getTable(), 'WHERE' => ['itemtype_peripheral' => \Monitor::class, 'itemtype_asset' => 'Computer', 'items_id_asset' => $computers_id]]));
     }
 }

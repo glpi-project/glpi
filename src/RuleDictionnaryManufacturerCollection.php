@@ -41,9 +41,6 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
     public $item_table  = "glpi_manufacturers";
     public $menu_option = "manufacturers";
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of manufacturers');

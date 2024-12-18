@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/drive.class.php and inc/inventory/asset/harddrive.class.php */
@@ -63,7 +65,7 @@ class DriveTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "type": "disk", "capacity": 250059, "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409", "is_dynamic": 1}'
+                'expected'  => '{"description": "PCI", "disksize": 250059, "firmware": "BXV77D0Q", "manufacturer": "Samsung", "model": "PM951NVMe SAMSUNG 256GB", "name": "nvme0n1", "type": "disk", "serial": "S29NNXAH146409", "capacity": 250059, "deviceharddrivetypes_id": "disk", "manufacturers_id": "Samsung", "designation": "PM951NVMe SAMSUNG 256GB", "serial": "S29NNXAH146409", "is_dynamic": 1}'
             ], [ //cdrom
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -89,9 +91,7 @@ class DriveTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -409,11 +409,18 @@ class DriveTest extends AbstractInventoryAsset
         $interfacetypes_id = $interface->fields['id'];
         $this->assertGreaterThan(0, $interfacetypes_id);
 
+        $hdd_type = new \DeviceHardDriveType();
+        $hddt_id = $hdd_type->add([
+            'name' => 'disk'
+        ]);
+        $this->assertGreaterThan(0, $hddt_id);
+
         $harddrive_1_id = $device_hdd->add([
             'designation' => 'PM951 NVMe SAMSUNG 256GB',
             'manufacturers_id' => $manufacturers_id,
             'interfacetypes_id' => $interfacetypes_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
+            'deviceharddrivetypes_id' => $hddt_id
         ]);
         $this->assertGreaterThan(0, $harddrive_1_id);
 
@@ -421,7 +428,7 @@ class DriveTest extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'deviceharddrives_id' => $harddrive_1_id,
-            'serial'       => 'S29NNXAH146764'
+            'serial'       => 'S29NNXAH146764',
         ]);
         $this->assertGreaterThan(0, $item_harddrive_1_id);
 
@@ -429,7 +436,8 @@ class DriveTest extends AbstractInventoryAsset
             'designation' => 'HGST HTS725032A7E630',
             'manufacturers_id' => $manufacturers_id,
             'interfacetypes_id' => $interfacetypes_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
+            'deviceharddrivetypes_id' => $hddt_id
         ]);
         $this->assertGreaterThan(0, $harddrive_2_id);
 
@@ -489,6 +497,7 @@ class DriveTest extends AbstractInventoryAsset
       <DESCRIPTION>PCI</DESCRIPTION>
       <DISKSIZE>256060</DISKSIZE>
       <FIRMWARE>BXV77D0Q</FIRMWARE>
+      <INTERFACE>IDE</INTERFACE>
       <MANUFACTURER>Samsung</MANUFACTURER>
       <MODEL>PM951 NVMe SAMSUNG 256GB</MODEL>
       <NAME>nvme0n1</NAME>

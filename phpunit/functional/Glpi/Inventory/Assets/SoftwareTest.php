@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use SoftwareVersion;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
@@ -103,9 +104,7 @@ class SoftwareTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -210,7 +209,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         //new computer with same software
         global $DB;
-        $soft_reference = $DB->request(\Software::getTable());
+        $soft_reference = $DB->request(['FROM' => \Software::getTable()]);
         $this->assertCount(5, $soft_reference);
 
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
@@ -241,7 +240,7 @@ class SoftwareTest extends AbstractInventoryAsset
             'A software version has not been linked to computer!'
         );
 
-        $this->assertCount(count($soft_reference), $DB->request(\Software::getTable()));
+        $this->assertCount(count($soft_reference), $DB->request(['FROM' => \Software::getTable()]));
     }
 
     public function testInventoryUpdate()
@@ -813,9 +812,7 @@ class SoftwareTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider softwareProvider
-     */
+    #[DataProvider('softwareProvider')]
     public function testSoftwareWithHtmlentites($path)
     {
         $fixtures_path = FIXTURE_DIR . '/inventories/software/';
@@ -1545,6 +1542,113 @@ class SoftwareTest extends AbstractInventoryAsset
             "softwareversions_id" => $versions_id
         ]));
         $this->assertSame($item_version->fields['id'], $item_versions_id);
+    }
+
+    public function testDateInstallUpdate()
+    {
+        $computer = new \Computer();
+        $soft = new \Software();
+        $version = new \SoftwareVersion();
+        $item_version = new \Item_SoftwareVersion();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+      <SOFTWARES>
+      <NAME>A great software</NAME>
+      <VERSION>2.0.0</VERSION>
+      <INSTALL_DATE>2014-03-04 16:12:35</INSTALL_DATE>
+      <PUBLISHER>Manufacture</PUBLISHER>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>sdfgdfg8dfg</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc003',
+            'serial' => 'sdfgdfg8dfg',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        $this->doInventory($xml_source, true);
+
+        //check software has been created
+        $this->assertTrue(
+            $soft->getFromDBByCrit(['name' => 'A great software'])
+        );
+        $softwares_id = $soft->fields['id'];
+
+        //check version has been created
+        $this->assertTrue(
+            $version->getFromDBByCrit(['name' => '2.0.0'])
+        );
+        $this->assertSame($softwares_id, $version->fields['softwares_id']);
+        $versions_id = $version->fields['id'];
+
+        //check computer-softwareverison relation has been created
+        $this->assertTrue($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id,
+            "date_install" => "2014-03-04"
+        ]));
+        $item_versions_id = $item_version->fields['id'];
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+      <SOFTWARES>
+      <NAME>A great software</NAME>
+      <VERSION>2.0.0</VERSION>
+      <INSTALL_DATE>2024-03-04 16:12:35</INSTALL_DATE>
+      <PUBLISHER>Manufacture</PUBLISHER>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>sdfgdfg8dfg</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //import again
+        $this->doInventory($xml_source, true);
+
+        //check software is the same
+        $this->assertTrue(
+            $soft->getFromDBByCrit(['name' => 'A great software'])
+        );
+        $this->assertSame($soft->fields['id'], $softwares_id);
+
+        //check version is the same
+        $this->assertTrue(
+            $version->getFromDBByCrit(['name' => '2.0.0'])
+        );
+        $this->assertSame($version->fields['id'], $versions_id);
+
+        //check computer-softwareverison relation has been updated (date_install)
+        $this->assertTrue($item_version->getFromDBByCrit([
+            "itemtype" => "Computer",
+            "items_id" => $computers_id,
+            "softwareversions_id" => $versions_id,
+            "date_install" => "2024-03-04"
+        ]));
+
+        //check computer-softwareverison relation is the same (ID)
     }
 
     public function testSubCategoryDictionnary()

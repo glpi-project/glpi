@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/antivirus.class.php */
@@ -102,9 +104,7 @@ class AntivirusTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -122,7 +122,7 @@ class AntivirusTest extends AbstractInventoryAsset
     {
         $mainitem = getItemByTypeName('Printer', '_test_printer_all');
         $asset = new \Glpi\Inventory\Asset\Antivirus($mainitem);
-        $this->expectExceptionMessage('Antivirus are handled for computers only.');
+        $this->expectExceptionMessage('Antivirus are not handled for Printer');
         $asset->prepare();
     }
 
@@ -132,9 +132,9 @@ class AntivirusTest extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         //first, check there are no AV linked to this computer
-        $avc = new \ComputerAntivirus();
+        $avc = new \ItemAntivirus();
         $this->assertFalse(
-            $avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]),
+            $avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]),
             'An antivirus is already linked to computer!'
         );
 
@@ -160,7 +160,7 @@ class AntivirusTest extends AbstractInventoryAsset
 
         $asset->handle();
         $this->assertTrue(
-            $avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]),
+            $avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]),
             'Antivirus has not been linked to computer :('
         );
 
@@ -174,9 +174,9 @@ class AntivirusTest extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no AV linked to this computer
-        $avc = new \ComputerAntivirus();
+        $avc = new \ItemAntivirus();
         $this->assertTrue(
-            $avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]),
+            $avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]),
             'No antivirus linked to computer!'
         );
 
@@ -199,7 +199,7 @@ class AntivirusTest extends AbstractInventoryAsset
 
         $asset->handleLinks();
         $asset->handle();
-        $this->assertTrue($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]));
+        $this->assertTrue($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]));
 
         $this->assertSame('4.5.12.0', $avc->fields['antivirus_version']);
     }
@@ -207,7 +207,7 @@ class AntivirusTest extends AbstractInventoryAsset
     public function testInventoryUpdate()
     {
         $computer = new \Computer();
-        $antivirus = new \ComputerAntivirus();
+        $antivirus = new \ItemAntivirus();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -250,7 +250,8 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $computers_id);
 
         $antivirus_1_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Kaspersky Endpoint Security 10 for Windows',
             'antivirus_version' => '2021 21.3.10.391',
             'is_active' => 1
@@ -258,7 +259,8 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $antivirus_1_id);
 
         $antivirus_2_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Microsoft Security Essentials',
             'antivirus_version' => '4.3.216.0',
             'is_active' => 1
@@ -266,14 +268,15 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $antivirus_2_id);
 
         $antivirus_3_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Avast Antivirus',
             'antivirus_version' => '19',
             'is_active' => 1
         ]);
         $this->assertGreaterThan(0, $antivirus_3_id);
 
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $results);
         foreach ($results as $result) {
             $this->assertEquals(0, $result['is_dynamic']);
@@ -283,11 +286,11 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 antivirus linked to the computer
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $results);
 
         //antivirus present in the inventory source are now dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_1_id));
@@ -297,7 +300,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertSame(1, $antivirus->fields['is_dynamic']);
 
         //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_3_id));
@@ -331,11 +334,11 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we now have 2 antivirus only
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $results);
 
         //antivirus present in the inventory source are still dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_1_id));
@@ -345,7 +348,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertFalse($antivirus->getFromDB($antivirus_2_id));
 
         //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_3_id));
@@ -370,14 +373,14 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we now have 1 antivirus only
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(1, $results);
     }
 
     public function testPartialUpdate()
     {
         $computer = new \Computer();
-        $antivirus = new \ComputerAntivirus();
+        $antivirus = new \ItemAntivirus();
 
         //create manually a computer, with 3 antivirus
         $computers_id = $computer->add([
@@ -388,7 +391,8 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $computers_id);
 
         $antivirus_1_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Kaspersky Endpoint Security 10 for Windows',
             'antivirus_version' => '2021 21.3.10.391',
             'is_active' => 1
@@ -396,7 +400,8 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $antivirus_1_id);
 
         $antivirus_2_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Microsoft Security Essentials',
             'antivirus_version' => '4.3.216.0',
             'is_active' => 1
@@ -404,14 +409,15 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $antivirus_2_id);
 
         $antivirus_3_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Avast Antivirus',
             'antivirus_version' => '19',
             'is_active' => 1
         ]);
         $this->assertGreaterThan(0, $antivirus_3_id);
 
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $results);
         foreach ($results as $result) {
             $this->assertEquals(0, $result['is_dynamic']);
@@ -452,11 +458,11 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->doInventory(json_decode($source));
 
         //we still have 3 antivirus linked to the computer
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $results);
 
         //antivirus present in the inventory source are now dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_1_id));
@@ -466,7 +472,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertSame(1, $antivirus->fields['is_dynamic']);
 
         //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_3_id));
@@ -500,11 +506,11 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->doInventory(json_decode($source));
 
         //we now have 2 antivirus only
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $results);
 
         //antivirus present in the inventory source are still dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_1_id));
@@ -514,7 +520,7 @@ class AntivirusTest extends AbstractInventoryAsset
         $this->assertFalse($antivirus->getFromDB($antivirus_2_id));
 
         //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $results);
 
         $this->assertTrue($antivirus->getFromDB($antivirus_3_id));

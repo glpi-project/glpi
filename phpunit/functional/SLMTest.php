@@ -40,6 +40,7 @@ use DbTestCase;
 use MassiveAction;
 use OlaLevel;
 use OlaLevel_Ticket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleBuilder;
 use RuleTicket;
@@ -75,7 +76,7 @@ class SLMTest extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->getUniqueString(),
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -111,7 +112,7 @@ class SLMTest extends DbTestCase
 
         // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->getUniqueString(),
+            'name'           => __METHOD__,
             'execution_time' => -DAY_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -175,7 +176,7 @@ class SLMTest extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->getUniqueString(),
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -187,7 +188,7 @@ class SLMTest extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->getUniqueString()
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -224,8 +225,8 @@ class SLMTest extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->getUniqueString(),
-            'content' => $this->getUniqueString()
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
@@ -238,17 +239,16 @@ class SLMTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->getUniqueString()
+            'content' => __METHOD__
         ]);
         $this->assertGreaterThan(0, $tickets_id_2);
-        $newname = $this->getUniqueString();
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
-                'name' => $newname
+                'name' => __METHOD__
             ])
         );
-        $ticket_input_2['name'] = $newname;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
         $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
@@ -293,7 +293,7 @@ class SLMTest extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->getUniqueString(),
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -329,7 +329,7 @@ class SLMTest extends DbTestCase
 
         // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->getUniqueString(),
+            'name'           => __METHOD__,
             'execution_time' => -MONTH_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -393,7 +393,7 @@ class SLMTest extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->getUniqueString(),
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -405,7 +405,7 @@ class SLMTest extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->getUniqueString()
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -442,8 +442,8 @@ class SLMTest extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->getUniqueString(),
-            'content' => $this->getUniqueString()
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
@@ -456,7 +456,7 @@ class SLMTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->getUniqueString()
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         //SLA/OLA  TTR/TTO not already set
@@ -465,14 +465,13 @@ class SLMTest extends DbTestCase
         $this->assertEquals(0, (int)$ticket->getField('olas_id_tto'));
         $this->assertEquals(0, (int)$ticket->getField('olas_id_ttr'));
 
-        $newname = $this->getUniqueString();
         $this->assertTrue(
             $ticket->update([
                 'id'   => $tickets_id_2,
-                'name' => $newname
+                'name' => __METHOD__
             ])
         );
-        $ticket_input_2['name'] = $newname;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
         $this->assertEquals($sla2_id, (int)$ticket->getField('slas_id_ttr'));
@@ -1092,7 +1091,7 @@ class SLMTest extends DbTestCase
                         : '2034-06-12 14:16:12'
                 ];
 
-                // 4 hours LA with pauses accross multiple days
+                // 4 hours LA with pauses across multiple days
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1139,7 +1138,7 @@ class SLMTest extends DbTestCase
                          : '2034-06-08 14:30:00'
                 ];
 
-                // 5 days LA over a week-end without pauses
+                // 5 days LA over a weekend without pauses
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1161,7 +1160,7 @@ class SLMTest extends DbTestCase
                     'target_escalation_date' =>  '2034-06-15 11:16:12'
                 ];
 
-                // 5 days LA over a week-end without pauses
+                // 5 days LA over a weekend without pauses
                 // + `end_of_working_day`
                 yield [
                     'la_class'          => $la_class,
@@ -1181,7 +1180,7 @@ class SLMTest extends DbTestCase
                     'target_escalation_date' =>  '2034-06-14 19:00:00'
                 ];
 
-                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // 5 days LA with multiple pauses, including a pause of multiple days over a weekend
                 yield [
                     'la_class'          => $la_class,
                     'la_params'         => [
@@ -1225,7 +1224,7 @@ class SLMTest extends DbTestCase
                         : '2034-07-05 10:00:00'
                 ];
 
-                // 5 days LA with multiple pauses, including a pause of multiple days over a week-end
+                // 5 days LA with multiple pauses, including a pause of multiple days over a weekend
                 // + `end_of_working_day`
                 yield [
                     'la_class'          => $la_class,
@@ -1268,7 +1267,7 @@ class SLMTest extends DbTestCase
                     // Positive 2 hours escalation level
                     'escalation_time'   => 2 * HOUR_TIMESTAMP,
                     'target_escalation_date' => $la_type == \SLM::TTR
-                        // Must be two hours after their respetive target date
+                        // Must be two hours after their respective target date
                         ? '2034-06-22 09:30:00'
                         : '2034-06-15 10:30:00'
                 ];
@@ -1276,9 +1275,7 @@ class SLMTest extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider laProvider
-     */
+    #[DataProvider('laProvider')]
     public function testComputation(
         string $la_class,
         array $la_params,
@@ -1444,7 +1441,7 @@ class SLMTest extends DbTestCase
                 }
 
                 // First OLA is added on creation
-                $builder = new RuleBuilder('Add first LA on creation');
+                $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONADD)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1453,7 +1450,7 @@ class SLMTest extends DbTestCase
                 $this->createRule($builder);
 
                 // First OLA is added on update
-                $builder = new RuleBuilder('Add second LA on update');
+                $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONUPDATE)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1664,7 +1661,7 @@ class SLMTest extends DbTestCase
             ]);
 
             // First OLA is added on creation
-            $builder = new RuleBuilder('Add first LA on creation');
+            $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONADD)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1809,7 +1806,7 @@ class SLMTest extends DbTestCase
             ]);
 
             // OLA is added on update
-            $builder = new RuleBuilder('Add second LA on update');
+            $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONUPDATE)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1892,10 +1889,7 @@ class SLMTest extends DbTestCase
         $actions = $sla_level->getSpecificMassiveActions();
 
         // Check that the export action is not available
-        $this->assertArrayNotHasKey(
-            Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export',
-            $actions
-        );
+        $this->assertArrayNotHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', $actions);
     }
 
     public function testCloneSLA()
@@ -1987,7 +1981,7 @@ class SLMTest extends DbTestCase
         // Check that SLA levels have been cloned
         $sla_clone_levels = (new \SlaLevel())->find(['slas_id' => $sla_clone_id]);
         $this->assertCount(2, $sla_clone_levels);
-        $current = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
+        $sla_compare = \SlaLevel::getById(current($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[0]->fields,
@@ -1999,9 +1993,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $sla_compare
         );
-        $current = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
+        $sla_compare = \SlaLevel::getById(next($sla_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels[1]->fields,
@@ -2013,13 +2007,12 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $sla_compare
         );
 
         // Check that SLA levels criteria have been cloned
         $sla_clone_criteria = (new \SlaLevelCriteria())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_criteria);
-        $current = \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[0]->fields,
@@ -2028,9 +2021,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            \SlaLevelCriteria::getById(current($sla_clone_criteria)['id'])->fields
         );
-        $current = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
+        $sla_compare = \SlaLevelCriteria::getById(next($sla_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_criterias[1]->fields,
@@ -2039,13 +2032,13 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
 
         // Check that SLA levels actions have been cloned
         $sla_clone_actions = (new \SlaLevelAction())->find(['slalevels_id' => array_column($sla_clone_levels, 'id')]);
         $this->assertCount(2, $sla_clone_actions);
-        $current = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
+        $sla_compare = \SlaLevelAction::getById(current($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[0]->fields,
@@ -2054,9 +2047,9 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => reset($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
-        $current = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
+        $sla_compare = \SlaLevelAction::getById(next($sla_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $sla_levels_actions[1]->fields,
@@ -2065,7 +2058,7 @@ class SLMTest extends DbTestCase
                     'slalevels_id' => next($sla_clone_levels)['id'],
                 ]
             ),
-            $current
+            $sla_compare
         );
     }
 
@@ -2158,7 +2151,7 @@ class SLMTest extends DbTestCase
         // Check that OLA levels have been cloned
         $ola_clone_levels = (new \OlaLevel())->find(['olas_id' => $ola_clone_id]);
         $this->assertCount(2, $ola_clone_levels);
-        $current = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
+        $ola_compare = \OlaLevel::getById(current($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[0]->fields,
@@ -2170,9 +2163,9 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
+        $ola_compare = \OlaLevel::getById(next($ola_clone_levels)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels[1]->fields,
@@ -2184,13 +2177,13 @@ class SLMTest extends DbTestCase
                     'is_active' => 0,
                 ]
             ),
-            $current
+            $ola_compare
         );
 
         // Check that OLA levels criteria have been cloned
         $ola_clone_criteria = (new \OlaLevelCriteria())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
         $this->assertCount(2, $ola_clone_criteria);
-        $current = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
+        $ola_compare = \OlaLevelCriteria::getById(current($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[0]->fields,
@@ -2199,9 +2192,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
+        $ola_compare = \OlaLevelCriteria::getById(next($ola_clone_criteria)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_criterias[1]->fields,
@@ -2210,13 +2203,13 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
 
         // Check that OLA levels actions have been cloned
         $ola_clone_actions = (new \OlaLevelAction())->find(['olalevels_id' => array_column($ola_clone_levels, 'id')]);
         $this->assertCount(2, $ola_clone_actions);
-        $current = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
+        $ola_compare = \OlaLevelAction::getById(current($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[0]->fields,
@@ -2225,9 +2218,9 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => reset($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
-        $current = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
+        $ola_compare = \OlaLevelAction::getById(next($ola_clone_actions)['id'])->fields;
         $this->assertEquals(
             array_merge(
                 $ola_levels_actions[1]->fields,
@@ -2236,7 +2229,7 @@ class SLMTest extends DbTestCase
                     'olalevels_id' => next($ola_clone_levels)['id'],
                 ]
             ),
-            $current
+            $ola_compare
         );
     }
 }

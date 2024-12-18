@@ -97,3 +97,15 @@ div.search-input {
         }
     }
 }
+
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    border-color: var(--tblr-border-color);
+    background-image: none;
+    padding-right: initial;
+
+    &:focus {
+        border-color: var(--tblr-border-color);
+        box-shadow: initial;
+    }
+}

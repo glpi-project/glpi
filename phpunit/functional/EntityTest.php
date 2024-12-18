@@ -42,6 +42,7 @@ use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
 use NotificationTargetTicket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Ticket;
 use Ticket_Contract;
@@ -133,14 +134,14 @@ class EntityTest extends DbTestCase
                 'name' => ''
             ])
         );
-        $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
+        $this->hasSessionMessages(ERROR, ["You can&#039;t add an entity without name"]);
 
         $this->assertFalse(
             $entity->prepareInputForAdd([
                 'anykey' => 'anyvalue'
             ])
         );
-        $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
+        $this->hasSessionMessages(ERROR, ["You can&#039;t add an entity without name"]);
 
         $prepared = $entity->prepareInputForAdd([
             'name' => 'entname'
@@ -248,7 +249,7 @@ class EntityTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $expected = [0 => 0, 1 => $ent0];
+        $expected = [0 => 0, $ent0 => $ent0];
         $ancestors = getAncestorsOf('glpi_entities', $ent1);
         $this->assertSame($expected, $ancestors);
 
@@ -638,9 +639,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getUsedConfigProvider
-     */
+    #[DataProvider('getUsedConfigProvider')]
     public function testGetUsedConfig(
         array $root_values,
         array $child_values,
@@ -763,9 +762,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider customCssProvider
-     */
+    #[DataProvider('customCssProvider')]
     public function testGetCustomCssTag(
         int $entity_id,
         int $root_enable_custom_css,
@@ -871,9 +868,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testAnonymizeSettingProvider
-     */
+    #[DataProvider('testAnonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,
@@ -1005,22 +1000,30 @@ class EntityTest extends DbTestCase
         // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
         // Case 2: test values recovered from CommonITILObject:::showShort()
-        ob_start();
-        Ticket::showShort($tickets_id);
-        $html = ob_get_clean();
+        $entries = Ticket::getDatatableEntries([
+            [
+                'item_id' => $tickets_id,
+                'id' => $tickets_id,
+                'itemtype' => 'Ticket',
+            ]
+        ]);
+        $entry = $entries[0];
 
+        $entry_contents = array_reduce(array_keys($entry), static function ($carry, $key) use ($entry) {
+            return $carry . $entry[$key];
+        }, '');
         foreach ($possible_values as $value) {
-            if ($value == $expected) {
+            if ($value === $expected) {
                 $this->assertStringContainsString(
                     $value,
-                    $html,
-                    "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
+                    $entry_contents,
+                    "Ticket getDatatableEntries must contains '$value' in interface '$interface' with settings '$setting'"
                 );
             } else {
                 $this->assertStringNotContainsString(
                     $value,
-                    $html,
-                    "Ticket showShort must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
+                    $entry_contents,
+                    "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
                 );
             }
         }
@@ -1281,8 +1284,30 @@ class EntityTest extends DbTestCase
         $this->assertEquals('New entity', $new_entity->fields['name']);
     }
 
+    /**
+     * Regression test to ensure that renaming an entity doesn't force it to become a child of the root entity (ID 0)
+     */
+    public function testRenameDoesntChangeParent(): void
+    {
+        $this->login();
+        $entity = $this->createItem('Entity', [
+            'name'        => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertTrue($entity->update([
+            'id'   => $entity->getID(),
+            'name' => __FUNCTION__ . ' renamed',
+        ]));
+        $this->assertTrue($entity->getFromDB($entity->getID()));
+        $this->assertEquals($this->getTestRootEntity(true), $entity->fields['entities_id']);
+        $this->assertEquals(__FUNCTION__ . ' renamed', $entity->fields['name']);
+    }
+
     public static function entityTreeProvider(): iterable
     {
+        $e2e_test_root = getItemByTypeName('Entity', 'E2ETestEntity', true);
+        $e2e_test_child1 = getItemByTypeName('Entity', 'E2ETestSubEntity1', true);
+        $e2e_test_child2 = getItemByTypeName('Entity', 'E2ETestSubEntity2', true);
         $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
         $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
         $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
@@ -1293,6 +1318,19 @@ class EntityTest extends DbTestCase
                 0 => [
                     'name' => 'Root entity',
                     'tree' => [
+                        $e2e_test_root => [
+                            'name' => 'E2ETestEntity',
+                            'tree' => [
+                                $e2e_test_child1 => [
+                                    'name' => 'E2ETestSubEntity1',
+                                    'tree' => [],
+                                ],
+                                $e2e_test_child2 => [
+                                    'name' => 'E2ETestSubEntity2',
+                                    'tree' => [],
+                                ],
+                            ],
+                        ],
                         $entity_test_root->getID() => [
                             'name' => $entity_test_root->fields['name'],
                             'tree' => [
@@ -1315,7 +1353,7 @@ class EntityTest extends DbTestCase
             'entity_id' => $entity_test_root->getID(),
             'result'    => [
                 $entity_test_root->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_root->fields['completename']),
+                    'name' => $entity_test_root->fields['completename'],
                     'tree' => [
                         $entity_test_child_1->getID() => [
                             'name' => $entity_test_child_1->fields['name'],
@@ -1334,7 +1372,7 @@ class EntityTest extends DbTestCase
             'entity_id' => $entity_test_child_1->getID(),
             'result'    => [
                 $entity_test_child_1->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_1->fields['completename']),
+                    'name' => $entity_test_child_1->fields['completename'],
                     'tree' => [
                     ]
                 ]
@@ -1345,7 +1383,7 @@ class EntityTest extends DbTestCase
             'entity_id' => $entity_test_child_2->getID(),
             'result'    => [
                 $entity_test_child_2->getID() => [
-                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_2->fields['completename']),
+                    'name' => $entity_test_child_2->fields['completename'],
                     'tree' => [
                     ]
                 ]
@@ -1353,9 +1391,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider entityTreeProvider
-     */
+    #[DataProvider('entityTreeProvider')]
     public function testGetEntityTree(int $entity_id, array $result): void
     {
         $this->login();
@@ -1380,10 +1416,10 @@ class EntityTest extends DbTestCase
 
         $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
             foreach ($selector as $item) {
-                // extract entity name from the first <a> element inside the 'title' property
+                // extract entity name from the first <button> element inside the 'title' property
                 $matches = [];
-                preg_match('/>(.+)<\/a>/', $item['title'], $matches);
-                $entity_name = $matches[1];
+                preg_match('/<button.*?>(.*?)<\/button>/s', $item['title'], $matches);
+                $entity_name = trim($matches[1]);
                 foreach ($entities as $child) {
                     if ($child['name'] === $entity_name && $child['entities_id'] === $parent_id) {
                         $found[] = $child['id'];

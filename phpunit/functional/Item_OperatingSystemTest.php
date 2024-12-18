@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/item_operatingsystem.class.php */
 
@@ -96,8 +95,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue($ios->getFromDB($ios->getID()));
 
         $this->assertSame(
-            "Operating systems <span class='badge'>1</span>",
-            $ios->getTabNameForItem($computer)
+            "Operating systems 1",
+            strip_tags($ios->getTabNameForItem($computer))
         );
         $this->assertSame(
             1,
@@ -105,8 +104,8 @@ class Item_OperatingSystemTest extends DbTestCase
         );
 
         $expected_error = "/Duplicate entry '{$computer->getID()}-Computer-{$objects['']->getID()}-{$objects['Architecture']->getID()}' for key '(glpi_items_operatingsystems\.)?unicity'/";
+        $this->expectExceptionMessageMatches($expected_error);
         $this->assertFalse($ios->add($input));
-        $this->hasSqlLogRecordThatMatches($expected_error, LogLevel::ERROR);
 
         $this->assertSame(
             1,
@@ -132,8 +131,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue($ios->getFromDB($ios->getID()));
 
         $this->assertSame(
-            "Operating systems <span class='badge'>2</span>",
-            $ios->getTabNameForItem($computer)
+            "Operating systems 2",
+            strip_tags($ios->getTabNameForItem($computer))
         );
         $this->assertSame(
             2,

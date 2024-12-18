@@ -33,10 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
-
-Session::checkLoginUser();
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 switch ($_REQUEST['action']) {
     case "getActors":

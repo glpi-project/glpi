@@ -36,19 +36,27 @@
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var CommonDropdown $dropdown
+ * @var LegacyFileLoadController $this
  */
 
-if (!($dropdown instanceof CommonDropdown)) {
-    Html::displayErrorAndDie('');
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Controller\LegacyFileLoadController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
+if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof CommonDropdown)) {
+    throw new LogicException();
 }
-if (!$dropdown->canView()) {
-   // Gestion timeout session
-    Session::redirectIfNotLoggedIn();
-    Html::displayRightError();
+
+\Toolbox::deprecated(\sprintf(
+    'Requiring legacy dropdown files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for dropdowns.',
+    debug_backtrace()[0]['file'] ?? 'including',
+    'glpi_dropdown',
+));
+
+if (!$dropdown::canView()) {
+    throw new AccessDeniedHttpException();
 }
 
-$dropdown::displayCentralHeader();
-
-Search::show(get_class($dropdown));
-
-Html::footer();
+TemplateRenderer::getInstance()->display('pages/generic_list.html.twig', [
+    'object_class' => $dropdown::class,
+]);

@@ -65,11 +65,11 @@ class Notification_NotificationTemplateTest extends DbTestCase
 
         $this->login();
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame('Templates <span class=\'badge\'>1</span>', $name);
+        $this->assertSame("Templates 1", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame('Templates', $name);
+        $this->assertSame("Templates", strip_tags($name));
 
         $toadd = $n_nt->fields;
         unset($toadd['id']);
@@ -78,30 +78,9 @@ class Notification_NotificationTemplateTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->assertSame('Templates <span class=\'badge\'>2</span>', $name);
+        $this->assertSame("Templates 2", strip_tags($name));
     }
 
-    public function testShowForNotification()
-    {
-        $notif = new \Notification();
-        $this->assertTrue($notif->getFromDB(1));
-
-        //not logged, no ACLs
-        ob_start();
-        \Notification_NotificationTemplate::showForNotification($notif);
-        $output = ob_get_clean();
-        $this->assertEmpty($output);
-
-        $this->login();
-
-        ob_start();
-        \Notification_NotificationTemplate::showForNotification($notif);
-        $output = ob_get_clean();
-        $this->assertSame(
-            "<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>",
-            $output
-        );
-    }
 
     public function testGetName()
     {
@@ -118,16 +97,6 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $n_nt->showForm(1);
         $output = ob_get_clean();
         $this->assertEmpty($output);
-    }
-
-    public function testShowForForm()
-    {
-        $this->login();
-        ob_start();
-        $n_nt = new \Notification_NotificationTemplate();
-        $n_nt->showForm(1);
-        $output = ob_get_clean();
-        $this->assertMatchesRegularExpression('/_glpi_csrf/', $output);
     }
 
     public function testGetMode()

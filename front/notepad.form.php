@@ -33,13 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
-
-use Glpi\Event;
-
-include('../inc/includes.php');
 
 $note = new Notepad();
 
@@ -80,6 +79,18 @@ if (isset($_POST['add'])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
+} else if (isset($_POST["delete_document"])) {
+    $doc = new Document();
+    $doc->getFromDB(intval($_POST['documents_id']));
+    if ($doc->can($doc->getID(), UPDATE)) {
+        $document_item = new Document_Item();
+        $document_item->deleteByCriteria([
+            'itemtype'     => "Notepad",
+            'items_id'     => (int)$_POST['id'],
+            'documents_id' => $doc->getID()
+        ]);
+    }
+    Html::back();
 }
 
 if (isset($_GET['id']) && $note->getFromDB($_GET['id'])) {
@@ -88,5 +99,5 @@ if (isset($_GET['id']) && $note->getFromDB($_GET['id'])) {
     $redirect = $parent_itemtype::getFormURLWithID($note->fields['items_id'], true) . "&forcetab=Notepad$1";
     Html::redirect($redirect);
 } else {
-    Html::displayErrorAndDie("lost");
+    throw new BadRequestHttpException();
 }

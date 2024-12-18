@@ -60,7 +60,7 @@ class GLPIPDF extends TCPDF
     ];
     private array $config = [];
 
-    public function __construct(array $config = [], ?int $count = null, ?string $title = null)
+    public function __construct(array $config = [], ?int $count = null, ?string $title = null, bool $addpage = true)
     {
         $config += self::$default_config;
         $this->config = $config;
@@ -95,7 +95,9 @@ class GLPIPDF extends TCPDF
 
         //set auto page breaks
         $this->SetAutoPageBreak(true, $config['margin_bottom']);
-        $this->AddPage();
+        if ($addpage === true) {
+            $this->AddPage();
+        }
     }
 
     /**
@@ -145,11 +147,10 @@ class GLPIPDF extends TCPDF
         // only available inside the function scope, and will so not affect other elements from loop.
         // Also, varibales declared in font file will be automatically garbage collected (some are huge).
         $include_fct = function ($font_path) use (&$list) {
-            $name = null;
-            $type = null;
-
             include $font_path;
 
+            $name = $name ?? null;
+            $type = $type ?? null;
             if ($name === null) {
                 return; // Not a font file
             }

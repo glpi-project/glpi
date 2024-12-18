@@ -46,20 +46,8 @@ class RuleSoftwareCategoryCollection extends RuleCollection
         return __('Rules for assigning a category to software');
     }
 
-
-    /**
-     * Get the attributes needed for processing the rules
-     *
-     * @see RuleCollection::prepareInputDataForProcess()
-     *
-     * @param $input     input data
-     * @param $software  software data array
-     *
-     * @return array of attributes
-     **/
     public function prepareInputDataForProcess($input, $software)
     {
-
         $params["name"] = $software["name"];
         if (isset($software["comment"])) {
             $params["comment"] = $software["comment"];

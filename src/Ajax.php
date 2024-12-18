@@ -169,15 +169,26 @@ class Ajax
         }
         $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
 
+        if (isset($options['extradata'])) {
+            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+        }
+
         $rand = mt_rand();
+
+        $domid  = htmlescape($domid);
+        $url    = htmlescape($url);
+        $title  = htmlescape($param['title']);
+        $class  = htmlescape($param['dialog_class']);
+        $height = (int) $param['height'];
+        $width  = (int) $param['width'];
 
         $html = <<<HTML
          <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog {$param['dialog_class']}">
+            <div class="modal-dialog {$class}">
                <div class="modal-content">
                   <div class="modal-header">
                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                     <h3>{$param['title']}</h3>
+                     <h3>{$title}</h3>
                   </div>
                   <div class="modal-body">
                      <iframe id='iframe$domid' class="iframe hidden"
@@ -213,16 +224,8 @@ HTML;
          }
 
          document.getElementById('iframe$domid').onload = function() {
-            if ({$param['height']} !== 'undefined') {
-               var h =  {$param['height']};
-            } else {
-               var h =  $('#iframe{$domid}').contents().height();
-            }
-            if ({$param['width']} !== 'undefined') {
-               var w =  {$param['width']};
-            } else {
-               var w =  $('#iframe{$domid}').contents().width();
-            }
+            var h = {$height};
+            var w = {$width};
 
             $('#iframe{$domid}')
                .height(h);
@@ -241,7 +244,7 @@ HTML;
       });
 JAVASCRIPT;
 
-        $out = "<script type='text/javascript'>$js</script>" . trim($html);
+        $out = Html::scriptBlock($js) . trim($html);
 
         if ($param['display']) {
             echo $out;
@@ -319,6 +322,10 @@ JAVASCRIPT;
                 $nav_width      = "";
             }
 
+            if (($options['in_modal'] ?? false)) {
+                $border = "border-0";
+            }
+
             echo "<div class='d-flex card-tabs $flex_container $orientation'>";
             echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
             $html_tabs = "";
@@ -334,33 +341,70 @@ JAVASCRIPT;
                 $display_class = "d-none";
             }
 
-            foreach ($tabs as $val) {
+            foreach ($tabs as $tab_key => $val) {
                 $target = str_replace('\\', '_', $val['id']);
-                $html_tabs .= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
-                $html_tabs .= " href='" . $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '') . "' data-bs-target='#{$target}'>";
-                $html_tabs .= $val['title'] . "</a></li>";
+                $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
+                $selected = $active_id == $target ? 'selected' : '';
+                $title = $val['title'];
+                $title_clean = strip_tags($title);
 
-                $html_sele .= "<option value='$i' " . ($active_id == $target ? "selected" : "") . ">
-               {$val['title']}
-            </option>";
+                // Compute direct link that user can reach in a new tab using
+                // middle mouse click.
+                // TODO: ctrl+click should have the same behavior but it seems
+                // to be caught by the tabs events handler and does not trigger
+                // a new browser tab.
+                $direct_link_url = $_SERVER['REQUEST_URI'];
+                if (count($_GET)) {
+                    $direct_link_url .= count($_GET) ? '&' : '?';
+                } elseif (!str_contains($direct_link_url, "?")) {
+                    $direct_link_url .= "?";
+                }
+                $direct_link_url .= "forcetab=$tab_key";
+
+                if ($tab_key !== -1) {
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a
+                                class='nav-link justify-content-between $navlinkp $display_class'
+                                data-bs-toggle='tab'
+                                title='{$title_clean}'
+                                data-glpi-ajax-content='{$tab_content_url}'
+                                href='{$direct_link_url}'
+                                data-bs-target='#{$target}'
+                            >{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                } else {
+                    // All tabs
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
+                                title='{$title_clean}' href='#' data-show-all-tabs="true">{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                }
                 $i++;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
                 $id = str_replace('\\', '_', $val['id']);
-                echo "<div class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
+                echo "<div data-glpi-tab-content class='tab-pane fade' role='tabpanel' id='{$id}'></div>";
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
-            $js = "
+
+            $json_type = json_encode($type);
+            $withtemplate = (int)($_GET['withtemplate'] ?? 0);
+            $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
-            var url = tablink.attr('href');
+            var url = tablink.data('glpi-ajax-content');
             var base_url = CFG_GLPI.url_base;
             if (base_url === '') {
                 // If base URL is not configured, fallback to current URL domain + GLPI base dir.
@@ -373,25 +417,12 @@ JAVASCRIPT;
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: '" . addslashes($type) . "',
+                     itemtype: $json_type,
                      id: '$ID',
                      tab_key: href_url_params.get('_glpi_tab'),
-                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: $withtemplate
                   }
-               ).done(function() {
-                    // try to restore the scroll on a specific anchor
-                    if (url_hash.length > 0) {
-                        // as we load content by ajax, when full page was ready, the anchor was not present
-                        // se we recall it to force the scroll.
-                        window.location.href = url_hash;
-
-                        // animate item with a flash
-                        $(url_hash).addClass('animate__animated animate__shakeX animate__slower');
-
-                        // unset hash (to avoid scrolling when changing tabs)
-                        url_hash   = '';
-                    }
-               });
+               );
             }
             if ($(target).html() && !force_reload) {
                 updateCurrentTab();
@@ -407,20 +438,42 @@ JAVASCRIPT;
                if (update_session_tab) {
                    updateCurrentTab();
                }
+            }).done(function() {
+                // try to restore the scroll on a specific anchor
+                if (url_hash.length > 0) {
+                    // as we load content by ajax, when full page was ready, the anchor was not present
+                    // se we recall it to force the scroll.
+                    window.location.href = url_hash;
+
+                    // animate item with a flash
+                    $(url_hash).addClass('animate__animated animate__shakeX animate__slower');
+
+                    // unset hash (to avoid scrolling when changing tabs)
+                    url_hash   = '';
+                }
+            }).fail(function(data) {
+               $(target).html(data.responseText);
             });
          };
 
          var reloadTab = function (add) {
             var active_link = $('main #tabspanel .nav-item .nav-link.active');
 
-            // Update href and load tab contents
-            var currenthref = active_link.attr('href');
-            active_link.attr('href', currenthref + '&' + add);
+            // Update target AJAX endpoint URL and load tab contents
+            var current_url = active_link.data('glpi-ajax-content');
+            active_link.data('glpi-ajax-content', current_url + '&' + add);
             loadTabContents(active_link, true);
 
-            // Restore href
-            active_link.attr('href', currenthref);
+            // Restore URL
+            active_link.data('glpi-ajax-content', current_url);
          };
+
+         var loadAllTabs = () => {
+             const tabs = $('#$tabdiv_id a[data-bs-toggle=\"tab\"]');
+             tabs.each((index, tab) => {
+                loadTabContents($(tab));
+             });
+         }
 
          $(function() {
             // Keep track of the first load which will be the tab stored in the
@@ -431,7 +484,16 @@ JAVASCRIPT;
 
             $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
                e.preventDefault();
-               loadTabContents($(this), false, !first_load);
+               if ($(this).attr('data-show-all-tabs') === 'true') {
+                  loadAllTabs();
+                  // show all tabs by adding active and show classes to all tabs
+                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+               } else {
+                  // Remove active and show classes from all tabs except the one that is clicked
+                  let clicked_tab = $(this).attr('data-bs-target');
+                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  loadTabContents($(this), false, !first_load);
+               }
             });
 
             // load initial tab
@@ -443,7 +505,7 @@ JAVASCRIPT;
                $('#$tabdiv_id li a').eq($(this).val()).tab('show');
             });
          });
-         ";
+JS;
 
             echo Html::scriptBlock($js);
         }
@@ -616,31 +678,24 @@ JAVASCRIPT;
         $output = '';
         foreach ($zones as $zone) {
             foreach ($events as $event) {
+                $event   = htmlescape($event);
+                $zone_id = htmlescape(Html::cleanId($zone));
+
                 if ($buffertime > 0) {
                     $output .= "var last$zone$event = 0;";
                 }
-                $output .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".on(
-               '$event',
-               function(event) {";
-               // TODO manage buffer time !!?
-               // if ($buffertime > 0) {
-               //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
-               //          last$zone$event = new Date().getTime();
-               //          if (elapsed < $buffertime) {
-               //             return;
-               //          }";
-               // }
 
+                $output .= "$('#$zone_id').on('$event', function(event) {";
                 $condition = '';
                 if ($minsize >= 0) {
-                    $condition = Html::jsGetElementbyID(Html::cleanId($zone)) . ".val().length >= $minsize ";
+                    $condition = "$('#$zone_id').val().length >= $minsize ";
                 }
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                              $condition .= " || ";
                         }
-                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".val() == '$value'";
+                        $condition .= "$('#$zone_id').val() == '$value'";
                     }
                 }
                 if (!empty($condition)) {
@@ -651,7 +706,7 @@ JAVASCRIPT;
                     $output .= "}";
                 }
                 $output .=  "}";
-                $output .= ");\n";
+                $output .= ");";
             }
         }
         if ($display) {
@@ -757,7 +812,7 @@ JAVASCRIPT;
         $display = true
     ) {
 
-        $out = Html::jsGetElementbyID($toupdate) . ".load('$url'\n";
+        $out = sprintf('$("#%s").load("%s"', htmlescape($toupdate), htmlescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;
@@ -775,10 +830,10 @@ JAVASCRIPT;
 
                 $out .= $key . ":";
                 $regs = [];
-                if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val ?? '', $regs)) {
-                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
-                } else if (!is_array($val) && $val === "__VALUE__") {
-                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
+                if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
+                } else if (is_string($val) && $val === "__VALUE__") {
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve)));
                 } else {
                     $out .=  json_encode($val);
                 }

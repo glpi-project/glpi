@@ -73,7 +73,7 @@ export default class SearchTokenizerResult {
     */
     getFullPhrase() {
         let full_phrase = '';
-        this.getUntaggedTerms().forEach(t => full_phrase += ' ' + t.term);
+        this.getUntaggedTerms().forEach(t => full_phrase += ` ${t.term}`);
         return full_phrase.trim();
     }
 }

@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Inventory\Asset;
 
 use Lockedfield;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
@@ -90,9 +91,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();

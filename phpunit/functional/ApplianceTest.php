@@ -42,13 +42,14 @@ class ApplianceTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Appliance$main'     => 'Appliance',
-            'Impact$1'           => 'Impact analysis',
-            'ManualLink$1'       => 'Links',
+            'Appliance$main'     => "Appliance",
+            'Impact$1'           => "Impact analysis",
+            'ManualLink$1'       => "Links",
         ];
 
         $appliance = new \Appliance();
-        $this->assertSame($expected, $appliance->defineTabs());
+        $tabs = array_map('strip_tags', $appliance->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testGetTypes()

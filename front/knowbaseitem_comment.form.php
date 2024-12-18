@@ -34,27 +34,23 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
-
-Session::checkLoginUser();
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $comment = new KnowbaseItem_Comment();
 if (!isset($_POST['knowbaseitems_id'])) {
-    $message = __('Mandatory fields are not filled!');
-    Session::addMessageAfterRedirect($message, false, ERROR);
+    Session::addMessageAfterRedirect(__s('Mandatory fields are not filled!'), false, ERROR);
     Html::back();
 }
 $kbitem = new KnowbaseItem();
 $kbitem->getFromDB($_POST['knowbaseitems_id']);
 if (!$kbitem->canComment()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (isset($_POST["add"])) {
-    if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['comment'])) {
-        $message = __('Mandatory fields are not filled!');
-        Session::addMessageAfterRedirect($message, false, ERROR);
+    if (!isset($_POST['knowbaseitems_id'], $_POST['comment'])) {
+        Session::addMessageAfterRedirect(__s('Mandatory fields are not filled!'), false, ERROR);
         Html::back();
     }
 
@@ -67,7 +63,7 @@ if (isset($_POST["add"])) {
             sprintf(__('%s adds a comment on knowledge base'), $_SESSION["glpiname"])
         );
         Session::addMessageAfterRedirect(
-            "<a href='#kbcomment$newid'>" . __('Your comment has been added') . "</a>",
+            "<a href='#kbcomment$newid'>" . __s('Your comment has been added') . "</a>",
             false,
             INFO
         );
@@ -77,8 +73,7 @@ if (isset($_POST["add"])) {
 
 if (isset($_POST["edit"])) {
     if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['id']) || !isset($_POST['comment'])) {
-        $message = __('Mandatory fields are not filled!');
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(__s('Mandatory fields are not filled!'), false, ERROR);
         Html::back();
     }
 
@@ -93,7 +88,7 @@ if (isset($_POST["edit"])) {
             sprintf(__('%s edit a comment on knowledge base'), $_SESSION["glpiname"])
         );
         Session::addMessageAfterRedirect(
-            "<a href='#kbcomment{$comment->getID()}'>" . __('Your comment has been edited') . "</a>",
+            "<a href='#kbcomment{$comment->getID()}'>" . __s('Your comment has been edited') . "</a>",
             false,
             INFO
         );
@@ -101,4 +96,4 @@ if (isset($_POST["edit"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

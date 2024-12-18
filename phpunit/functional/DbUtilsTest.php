@@ -36,8 +36,9 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
 /* Test for inc/dbutils.class.php */
 
@@ -75,9 +76,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataTableKey
-     **/
+    #[DataProvider('dataTableKey')]
     public function testGetForeignKeyFieldForTable($table, $key)
     {
         $instance = new \DbUtils();
@@ -87,9 +86,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame($key, getForeignKeyFieldForTable($table));
     }
 
-    /**
-     * @dataProvider dataTableForeignKey
-     **/
+    #[DataProvider('dataTableForeignKey')]
     public function testIsForeignKeyFieldBase($table, $key)
     {
         $instance = new \DbUtils();
@@ -118,9 +115,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertFalse(isForeignKeyField(42));
     }
 
-    /**
-     * @dataProvider dataTableForeignKey
-     **/
+    #[DataProvider('dataTableForeignKey')]
     public function testGetTableNameForForeignKeyField($table, $key)
     {
         $instance = new \DbUtils();
@@ -139,6 +134,7 @@ class DbUtilsTest extends DbTestCase
         require_once FIXTURE_DIR . '/pluginfoobar.php';
         require_once FIXTURE_DIR . '/pluginfooservice.php';
         require_once FIXTURE_DIR . '/pluginfoo_search_item_filter.php';
+        require_once FIXTURE_DIR . '/pluginfoo_item_filter.php';
         require_once FIXTURE_DIR . '/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
         require_once FIXTURE_DIR . '/test_a_b.php';
 
@@ -155,16 +151,50 @@ class DbUtilsTest extends DbTestCase
             ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
             ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
             ['glpi_plugin_foo_searches_items_filters', 'GlpiPlugin\Foo\Search\Item_Filter', true], // Multi-level namespace + CommonDBRelation
+            ['glpi_plugin_foo_items_filters', 'GlpiPlugin\Foo\Item_Filter', true], // Single level namespace + CommonDBRelation
             ['glpi_anothers_tests', 'Glpi\Another_Test', true], // Single level namespace + CommonDBRelation
             ['glpi_tests_as_bs', 'Glpi\Test\A_B', true], // Multi-level namespace + CommonDBRelation
             ['glpi_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long namespace
         ];
     }
 
-    /**
-     * @dataProvider dataTableType
-     **/
-    public function testGetTableForItemType($table, $type, $is_valid_type)
+    public static function getTableForItemTypeProvider()
+    {
+        $table_types_mapping = array_map(
+            function ($entry) {
+                return array_slice($entry, 0, 2); // remove the useless `is_valid` param
+            },
+            self::dataTableType()
+        );
+
+        $table_types_mapping[] = ['glpi_configs', \NotificationSetting::class];
+
+        $known_classes = self::getClasses();
+
+        foreach ($known_classes as $known_class) {
+            if (is_a($known_class, \NotificationTarget::class, true)) {
+                // Classes that extends NotificationTarget are always using the `glpi_notificationtargets` table
+                $table_types_mapping[] = ['glpi_notificationtargets', $known_class];
+            }
+            if (is_a($known_class, \Rule::class, true) && !in_array($known_class, [\OlaLevel::class, \SlaLevel::class])) {
+                // Classes that extends Rule are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+            if (is_a($known_class, \RuleCollection::class, true)) {
+                // Classes that extends RuleCollection are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+        }
+
+        // specific cases of classes that extends Rule
+        $table_types_mapping[] = ['glpi_olalevels', \OlaLevel::class];
+        $table_types_mapping[] = ['glpi_slalevels', \SlaLevel::class];
+
+        return $table_types_mapping;
+    }
+
+    #[DataProvider('getTableForItemTypeProvider')]
+    public function testGetTableForItemType($table, $type)
     {
         $instance = new \DbUtils();
         $this->assertSame($table, $instance->getTableForItemType($type));
@@ -173,11 +203,29 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame($table, getTableForItemType($type));
     }
 
-    /**
-     * @dataProvider dataTableType
-     **/
+    #[DataProvider('dataTableType')]
+    public function testGetExpectedTableNameForClass($table, $type, $is_valid_type)
+    {
+        $instance = new \DbUtils();
+        $this->assertSame(
+            $table,
+            $instance->getExpectedTableNameForClass($type)
+        );
+    }
+
+    #[DataProvider('dataTableType')]
     public function testGetItemTypeForTable($table, $type, $is_valid_type)
     {
+        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+
         $instance = new \DbUtils();
         if ($is_valid_type) {
             $this->assertSame($type, $instance->getItemTypeForTable($table));
@@ -211,11 +259,20 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider getItemForItemtypeProvider
-     **/
+    #[DataProvider('getItemForItemtypeProvider')]
     public function testGetItemForItemtype($itemtype, $is_valid, $expected_class)
     {
+        // Pseudo plugin class for test
+        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+
         $instance = new \DbUtils();
         if ($is_valid) {
             $this->assertInstanceOf($expected_class, $instance->getItemForItemtype($itemtype));
@@ -231,29 +288,6 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
-    public function testGetItemForItemtypeSanitized()
-    {
-        require_once FIXTURE_DIR . '/pluginbarfoo.php';
-
-        $instance = new \DbUtils();
-        $instance->getItemForItemtype(addslashes('Glpi\Event'));
-        $this->hasPhpLogRecordThatContains(
-            'Unexpected sanitized itemtype "Glpi\\\\Event" encountered.',
-            Logger::WARNING
-        );
-    }
-
-    public function testGetItemForItemtypeSanitized2()
-    {
-        require_once FIXTURE_DIR . '/pluginbarfoo.php';
-
-        $instance = new \DbUtils();
-        $instance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo'));
-        $this->hasPhpLogRecordThatContains(
-            'Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.',
-            Logger::WARNING
-        );
-    }
 
     public function testGetItemForItemtypeAbstract()
     {
@@ -263,7 +297,7 @@ class DbUtilsTest extends DbTestCase
         $instance->getItemForItemtype('CommonDevice');
         $this->hasPhpLogRecordThatContains(
             'Cannot instanciate "CommonDevice" as it is an abstract class.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -275,7 +309,7 @@ class DbUtilsTest extends DbTestCase
         $instance->getItemForItemtype('GlpiPlugin\Bar\AbstractStuff');
         $this->hasPhpLogRecordThatContains(
             'Cannot instanciate "GlpiPlugin\Bar\AbstractStuff" as it is an abstract class.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -298,9 +332,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataPlural
-     */
+    #[DataProvider('dataPlural')]
     public function testGetPlural($singular, $plural)
     {
         $instance = new \DbUtils();
@@ -326,9 +358,7 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
-    /**
-     * @dataProvider dataPlural
-     **/
+    #[DataProvider('dataPlural')]
     public function testGetSingular($singular, $plural)
     {
         $instance = new \DbUtils();
@@ -379,9 +409,9 @@ class DbUtilsTest extends DbTestCase
         $instance = new \DbUtils();
         $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'id'));
         $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'context'));
-        $this->assertSame(2, $instance->countDistinctElementsInTable('glpi_tickets', 'entities_id'));
-        $this->assertSame(17, $instance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']));
-        $this->assertSame(20, $instance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']));
+        $this->assertGreaterThanOrEqual(2, $instance->countDistinctElementsInTable('glpi_tickets', 'entities_id'));
+        $this->assertSame(21, $instance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']));
+        $this->assertSame(27, $instance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']));
         $this->assertSame(1, $instance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']));
         $this->assertSame(0, $instance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']));
 
@@ -425,9 +455,7 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataCountMyEntities
-     */
+    #[DataProvider('dataCountMyEntities')]
     public function testCountElementsInTableForMyEntities(
         $entity,
         $recursive,
@@ -459,9 +487,7 @@ class DbUtilsTest extends DbTestCase
     }
 
 
-    /**
-     * @dataProvider dataCountEntities
-     */
+    #[DataProvider('dataCountEntities')]
     public function testCountElementsInTableForEntity(
         $entity,
         $table,
@@ -527,7 +553,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertTrue($instance->isIndex('glpi_users', 'unicityloginauth'));
 
         $this->assertFalse($instance->isIndex('fakeTable', 'id'));
-        $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', Logger::WARNING);
+        $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', LogLevel::WARNING);
     }
 
     public function testProceduralIsIndex()
@@ -540,13 +566,17 @@ class DbUtilsTest extends DbTestCase
         $this->assertTrue(isIndex('glpi_users', 'unicityloginauth'));
 
         $this->assertFalse(isIndex('fakeTable', 'id'));
-        $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', Logger::WARNING);
+        $this->hasPhpLogRecordThatContains('Table fakeTable does not exists', LogLevel::WARNING);
     }
 
     public function testGetEntityRestrict()
     {
         $this->login();
         $instance = new \DbUtils();
+
+        $root = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2 = getItemByTypeName('Entity', '_test_child_2', true);
 
         // See all, really all
         $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
@@ -555,35 +585,35 @@ class DbUtilsTest extends DbTestCase
 
         $it = new \DBmysqlIterator(null);
 
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
 
         //keep testing old method from db.function
         $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
 
         // See all
         $this->setEntity('_test_root_entity', true);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'1\', \'2\', \'3\')',
+            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')  ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'1\', \'2\', \'3\'))',
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2'))",
             $it->getSql()
         );
 
@@ -591,23 +621,23 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_root_entity', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'1\')',
+            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'1\'))',
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root'))",
             $it->getSql()
         );
 
@@ -615,45 +645,45 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_child_1', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'2\')',
+            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$child1')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'2\'))',
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child1'))",
             $it->getSql()
         );
 
         // Child without table
         $this->assertSame(
-            "WHERE ( `entities_id` IN ('2')  ) ",
+            "WHERE ( `entities_id` IN ('$child1')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE')
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria());
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria()]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE `entities_id` IN (\'2\')',
+            "SELECT * FROM `glpi_computers` WHERE `entities_id` IN ('$child1')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `entities_id` IN ('2')  ) ",
+            "WHERE ( `entities_id` IN ('$child1')  ) ",
             getEntitiesRestrictRequest('WHERE')
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria());
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria()]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (\'2\'))',
+            "SELECT * FROM `glpi_computers` WHERE (`entities_id` IN ('$child1'))",
             $it->getSql()
         );
 
@@ -661,72 +691,72 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_child_2', false);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, 1)) ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
             $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', true));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\')))',
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, 1)) ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\'))))',
+            "SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
         //Child + parent on glpi_entities
-        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (\'3\', \'0\', \'1\'))',
+            "SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN ('$child2', '0', '$root'))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
-        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN (\'3\', \'0\', \'1\')))',
+            "SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN ('$child2', '0', '$root')))",
             $it->getSql()
         );
 
         //Child + parent -- automatic recusrivity detection
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\')))',
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
         //keep testing old method from db.function
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto')]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\'))))',
+            "SELECT * FROM `glpi_computers` WHERE ((`glpi_computers`.`entities_id` IN ('$child2') OR (`glpi_computers`.`is_recursive` = '1' AND `glpi_computers`.`entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
         // Child + parent without table
         $this->assertSame(
-            "WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN (0, 1)) ) ",
+            "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
             $instance->getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
-        $it->execute('glpi_computers', $instance->getEntitiesRestrictCriteria('', '', '', true));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (\'3\') OR (`is_recursive` = \'1\' AND `entities_id` IN (\'0\', \'1\')))',
+            "SELECT * FROM `glpi_computers` WHERE (`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root')))",
             $it->getSql()
         );
 
-        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', $child1, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (\'3\', \'0\', \'1\'))',
+            "SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN ('$child1', '0', '$root'))",
             $it->getSql()
         );
 
-        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', 7, true)]);
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = \'7\'',
             $it->getSql()
@@ -734,22 +764,22 @@ class DbUtilsTest extends DbTestCase
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN (0, 1)) ) ",
+            "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
             getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
-        $it->execute('glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
+        $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_computers` WHERE ((`entities_id` IN (\'3\') OR (`is_recursive` = \'1\' AND `entities_id` IN (\'0\', \'1\'))))',
+            "SELECT * FROM `glpi_computers` WHERE ((`entities_id` IN ('$child2') OR (`is_recursive` = '1' AND `entities_id` IN ('0', '$root'))))",
             $it->getSql()
         );
 
-        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', $child1, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN (\'3\', \'0\', \'1\')))',
+            "SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN ('$child1', '0', '$root')))",
             $it->getSql()
         );
 
-        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 7, true)]);
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'7\')',
             $it->getSql()
@@ -797,7 +827,7 @@ class DbUtilsTest extends DbTestCase
         }
 
        //test on ent1
-        $expected = [0 => 0, 1 => $ent0];
+        $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
         } else if ($cache === true && $hit === true) {
@@ -812,7 +842,7 @@ class DbUtilsTest extends DbTestCase
         }
 
         //test on ent2
-        $expected = [0 => 0, 1 => $ent0];
+        $expected = [0 => 0, $ent0 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
         } else if ($cache === true && $hit === true) {
@@ -876,21 +906,14 @@ class DbUtilsTest extends DbTestCase
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id2));
         }
 
-       //test on multiple entities
+        // test on multiple entities
+        // getAncestorsOf was already called on $new_id and $new_id2 separately, so cache is already populated since we don't cache ancestors of multiple entities together anymore.
+        // Ex: getAncestorsOf('glpi_entities', [$new_id, $new_id2]) will populate ancestors_cache_glpi_entities_$new_id and ancestors_cache_glpi_entities_$new_id2
+        // but not ancestors_cache_glpi_entities_ . md5(implode('|', [$new_id, $new_id2]))
+        // We will ignore the $cache and $hit parameters here and just ensure the combined result is correct.
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-        $ckey_new_all = 'ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2);
-        if ($cache === true && $hit === false) {
-            $this->assertFalse($GLPI_CACHE->has($ckey_new_all));
-        } else if ($cache === true && $hit === true) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_all));
-        }
-
         $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
         $this->assertSame($expected, $ancestors);
-
-        if ($cache === true && $hit === false) {
-            $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_all));
-        }
     }
 
     public function testGetAncestorsOf()
@@ -1387,10 +1410,10 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertCount(2, $result[0]['date']);
         $this->assertSame('<=', $result[0]['date'][0]);
-        $this->assertInstanceOf('\QueryExpression', $result[0]['date'][1]);
+        $this->assertInstanceOf('\Glpi\DBAL\QueryExpression', $result[0]['date'][1]);
 
         $this->assertSame(
-            "ADDDATE('2018-11-09', INTERVAL 1 DAY)",
+            "DATE_ADD('2018-11-09', INTERVAL 1 DAY)",
             $result[0]['date'][1]->getValue()
         );
 
@@ -1400,10 +1423,10 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame(['date' => ['>=', '2018-11-08']], $result[0]);
         $this->assertCount(2, $result[1]['date']);
         $this->assertSame('<=', $result[1]['date'][0]);
-        $this->assertInstanceOf('\QueryExpression', $result[1]['date'][1]);
+        $this->assertInstanceOf('\Glpi\DBAL\QueryExpression', $result[1]['date'][1]);
 
         $this->assertSame(
-            "ADDDATE('2018-11-09', INTERVAL 1 DAY)",
+            "DATE_ADD('2018-11-09', INTERVAL 1 DAY)",
             $result[1]['date'][1]->getValue()
         );
     }
@@ -1414,7 +1437,7 @@ class DbUtilsTest extends DbTestCase
         $instance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', null);
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -1424,12 +1447,14 @@ class DbUtilsTest extends DbTestCase
         $instance->getDateCriteria('date', null, '2023-02-19\', INTERVAL 1 DAY)))))');
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
     public static function autoNameProvider()
     {
+        $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+
         return [
          //will return name without changes
             [
@@ -1440,51 +1465,6 @@ class DbUtilsTest extends DbTestCase
                 'itemtype'     => 'Computer',
                 'entities_id'  => -1, //default
                 'expected'     => 'Computer 1'
-            ], [
-            //not a template
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => false,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => false, // is_template=false result in exiting before deprecation warning
-            ], [
-            //does not match pattern
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => true,
-            ], [
-            //first added
-                'name'         => '&lt;####&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '0001',
-                'deprecated'   => true,
-            ], [
-            //existing
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '_test_pc23',
-                'deprecated'   => true,
-            ], [
-            //not existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 0,
-                'expected'     => '_test_pc01',
-                'deprecated'   => true,
             ], [
             // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
@@ -1502,86 +1482,37 @@ class DbUtilsTest extends DbTestCase
                 'entities_id'  => 0,
                 'expected'     => '自動名稱—0001—測試'
             ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 1,
-                'expected'     => '_test_pc04',
-                'deprecated'   => true,
-            ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, new XSS clean output
-                'name'         => '&#60;_test_pc##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, not sanitized
+            // existing on entity
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
-                'entities_id'  => 2,
+                'entities_id'  => $test_child_1,
                 'expected'     => '_test_pc14'
-            ], [
-            // not existing on entity, new XSS clean output, and containing a special char
-                'name'         => '&#60;pc_&#60;_##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => 'pc_&#60;_01',
-                'deprecated'   => true,
             ], [
             // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
-                'entities_id'  => 2,
+                'entities_id'  => $test_child_1,
                 'expected'     => 'pc_>_01'
             ],
         ];
     }
 
-    /**
-     * @dataProvider autoNameProvider
-     */
-    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected, bool $deprecated = false)
+    #[DataProvider('autoNameProvider')]
+    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected)
     {
         $instance = new \DbUtils();
 
-        $call = function () use ($name, $field, $is_template, $itemtype, $entities_id, $instance) {
-            return $instance->autoName(
-                $name,
-                $field,
-                $is_template,
-                $itemtype,
-                $entities_id
-            );
-        };
-        if (!$deprecated) {
-            $autoname = $call();
-        } else {
-            $autoname = $call();
-            $this->hasPhpLogRecordThatContains(
-                'Handling of encoded/escaped value in autoName() is deprecated.',
-                Logger::NOTICE
-            );
-        }
+        $autoname = $instance->autoName(
+            $name,
+            $field,
+            $is_template,
+            $itemtype,
+            $entities_id
+        );
         $this->assertSame($expected, $autoname);
     }
 
@@ -1617,6 +1548,10 @@ class DbUtilsTest extends DbTestCase
                 'itemtype' => 'glpiplugin\\foo\\models\\foo\\bar_item',
                 'expected' => 'GlpiPlugin\\Foo\\Models\\Foo\\Bar_Item',
             ],
+            [
+                'itemtype' => 'glpiplugin\\foo\\relation_item',
+                'expected' => 'GlpiPlugin\\Foo\\Relation_Item',
+            ],
          // Good case (should not be altered)
             [
                 'itemtype' => 'MyClass',
@@ -1642,26 +1577,27 @@ class DbUtilsTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider fixItemtypeCaseProvider
-     */
+    #[DataProvider('fixItemtypeCaseProvider')]
     public function testGetItemtypeWithFixedCase($itemtype, $expected)
     {
+        $name = 'glpi' . mt_rand();
         vfsStream::setup(
-            'glpi',
+            $name,
             null,
             [
                 'src' => [
-                    'Application' => [
-                        'Console' => [
-                            'MyCommand.php' => '',
+                    'Glpi' => [
+                        'Application' => [
+                            'Console' => [
+                                'MyCommand.php' => '',
+                            ],
                         ],
-                    ],
-                    'Something' => [
-                        'Item_Filter.php' => '',
+                        'Something' => [
+                            'Item_Filter.php' => '',
+                        ],
+                        'NamespacedClass.php' => '',
                     ],
                     'MyClass.php' => '',
-                    'NamespacedClass.php' => '',
                 ],
                 'plugins' => [
                     'foo' => [
@@ -1673,13 +1609,14 @@ class DbUtilsTest extends DbTestCase
                             ],
                             'NamespacedBar.php' => '',
                             'PluginFooBarItem.php' => '',
+                            'Relation_Item.php' => '',
                         ],
                     ],
                 ],
             ]
         );
         $instance = new \DbUtils();
-        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'));
+        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url($name), [vfsStream::url("$name/plugins")]);
         $this->assertEquals($expected, $result);
     }
 }

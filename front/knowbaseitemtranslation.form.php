@@ -40,8 +40,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
     $translation->add($_POST);
@@ -56,17 +54,17 @@ if (isset($_POST['add'])) {
     $translation->check($_GET["id"], UPDATE);
     if ($translation->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item translation has been reverted to revision %s'),
                 $_GET['to_rev']
-            )
+            ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item translation has not been reverted to revision %s'),
                 $_GET['to_rev']
-            ),
+            )),
             false,
             ERROR
         );

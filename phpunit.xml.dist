@@ -11,7 +11,7 @@
     </testsuite>
   </testsuites>
   <php>
-    <ini name="memory_limit" value="512M" />
+    <!-- 1G was not enough for when code coverage is enabled, 2G should be enough. -->
+    <ini name="memory_limit" value="2G" />
   </php>
 </phpunit>
-

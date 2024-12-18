@@ -40,7 +40,7 @@
 /**
  * Update from 9.2.2 to 9.2.3
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update922to923()
 {
@@ -82,7 +82,7 @@ function update922to923()
             $notification->getFromDBByCrit(['itemtype' => $notif, 'event' => 'alert'])
             && $template->getFromDBByCrit(['itemtype' => $notif])
         ) {
-            $DB->updateOrDie(
+            $DB->update(
                 "glpi_notificationtemplatetranslations",
                 ["notificationtemplates_id" => $template->fields['id']],
                 ["notificationtemplates_id" => $notification->fields['id']]
@@ -100,7 +100,7 @@ function update922to923()
                 ) == 0
             ) {
                 //Add missing notification template link for saved searches
-                $DB->insertOrDie("glpi_notifications_notificationtemplates", [
+                $DB->insert("glpi_notifications_notificationtemplates", [
                     'notifications_id'         => $notification->fields['id'],
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $template->fields['id']

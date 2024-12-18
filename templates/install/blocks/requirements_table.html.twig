@@ -45,11 +45,11 @@
             <tr class="tab_bg_1">
                <td class="text-start">
                   {% if not requirement.isOptional() %}
-                     <span class="badge bg-warning">{{ __('Required') }}</span>
+                     <span class="badge bg-warning text-warning-fg">{{ __('Required') }}</span>
                   {% elseif requirement.isRecommendedForSecurity() %}
-                     <span class="badge bg-danger">{{ __('Security') }}</span>
+                     <span class="badge bg-danger text-danger-fg">{{ __('Security') }}</span>
                   {% else %}
-                     <span class="badge bg-secondary">{{ __('Suggested') }}</span>
+                     <span class="badge bg-secondary text-secondary-fg">{{ __('Suggested') }}</span>
                   {% endif %}
                   <strong>{{ requirement.getTitle() }}</strong>
                   {% set description = requirement.getDescription() %}

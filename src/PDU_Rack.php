@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class PDU_Rack extends CommonDBRelation
 {
     public static $itemtype_1 = 'Rack';
@@ -154,7 +156,7 @@ class PDU_Rack extends CommonDBRelation
         if (count($error_detected)) {
             foreach ($error_detected as $error) {
                 Session::addMessageAfterRedirect(
-                    $error,
+                    htmlescape($error),
                     true,
                     ERROR
                 );
@@ -237,7 +239,7 @@ class PDU_Rack extends CommonDBRelation
         $rand = mt_rand();
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_pdus_id$rand'>" . PDU::getTypeName(1) . "</label></td>";
+        echo "<td><label for='dropdown_pdus_id$rand'>" . htmlescape(PDU::getTypeName(1)) . "</label></td>";
         echo "<td>";
         PDU::dropdown([
             'value'       => $this->fields["pdus_id"],
@@ -247,7 +249,7 @@ class PDU_Rack extends CommonDBRelation
             'entity_sons' => $rack->fields['is_recursive'],
         ]);
         echo "</td>";
-        echo "<td><label for='dropdown_side$rand'>" . __('Side (from rear perspective)') . "</label></td>";
+        echo "<td><label for='dropdown_side$rand'>" . __s('Side (from rear perspective)') . "</label></td>";
         echo "<td >";
         Dropdown::showFromArray(
             'side',
@@ -261,11 +263,11 @@ class PDU_Rack extends CommonDBRelation
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_racks_id$rand'>" . Rack::getTypeName(1) . "</label></td>";
+        echo "<td><label for='dropdown_racks_id$rand'>" . htmlescape(Rack::getTypeName(1)) . "</label></td>";
         echo "<td>";
         Rack::dropdown(['value' => $this->fields["racks_id"], 'rand' => $rand]);
         echo "</td>";
-        echo "<td><label for='dropdown_position$rand'>" . __('Position') . "</label></td>";
+        echo "<td><label for='dropdown_position$rand'>" . __s('Position') . "</label></td>";
         echo "<td >";
         Dropdown::showNumber(
             'position',
@@ -283,7 +285,7 @@ class PDU_Rack extends CommonDBRelation
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='bgcolor$rand'>" . __('Background color') . "</label></td>";
+        echo "<td><label for='bgcolor$rand'>" . __s('Background color') . "</label></td>";
         echo "<td>";
         Html::showColorField(
             'bgcolor',
@@ -305,69 +307,52 @@ class PDU_Rack extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        echo "<h2>" . __("Side pdus") . "</h2>";
+        echo "<h2>" . __s("Side pdus") . "</h2>";
 
         $pdu     = new PDU();
         $canedit = $rack->canEdit($rack->getID());
         $rand    = mt_rand();
         $items   = $DB->request([
+            'SELECT' => ['id', 'pdus_id', 'side', 'position'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'racks_id' => $rack->getID()
             ]
         ]);
 
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+        $entries = [];
+        foreach ($items as $row) {
+            if ($pdu->getFromDB($row['pdus_id'])) {
+                $entries[] = [
+                    'itemtype' => self::class,
+                    'id'       => $row['id'],
+                    'item'     => $pdu->getLink(),
+                    'side'     => self::getSideName($row['side']),
+                    'position' => $row['position']
                 ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
-            $header .= "<th>" . __('Side') . "</th>";
-            $header .= "<th>" . __('Position') . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                if ($pdu->getFromDB($row['pdus_id'])) {
-                    echo "<tr lass='tab_bg_1'>";
-                    if ($canedit) {
-                        echo "<td>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                        echo "</td>";
-                    }
-                    echo "<td>" . $pdu->getLink() . "</td>";
-                    echo "<td>" . self::getSideName($row['side']) . "</td>";
-                    echo "<td>{$row['position']}</td>";
-                    echo "</tr>";
-                }
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
             }
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'item' => _n('Item', 'Items', 1),
+                'side' => __('Side'),
+                'position' => __('Position')
+            ],
+            'formatters' => [
+                'item' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     public static function showStatsForRack(Rack $rack)
@@ -420,7 +405,7 @@ class PDU_Rack extends CommonDBRelation
         }
 
         echo "<div id='rack_pdus' class='rack_side_block'>";
-        echo "<h2>" . __("Power units") . "</h2>";
+        echo "<h2>" . __s("Power units") . "</h2>";
         echo "<div class='rack_side_block_content'>";
         if (count($found_pdus)) {
             echo "<table class='pdu_list'>";
@@ -433,26 +418,27 @@ class PDU_Rack extends CommonDBRelation
                     $fg_color_s = "color: $fg_color;";
                     echo "<tr style='background-color: $bg_color; color: $fg_color;'>";
                     echo "<td class='rack_position'>";
+                    $current_pdu['position'] = (int) $current_pdu['position'];
                     if ($current_pdu['racked']) {
                         echo "<i class='fa fa-server fa-fw'
-                           title='" . __("Racked") . " (" . $current_pdu['position'] . ")'></i>";
+                           title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
                     } else {
                         switch ($current_pdu['side']) {
                             case self::SIDE_LEFT:
                                 echo "<i class='fa fa-arrow-left fa-fw'
-                                 title='" . __("On left") . " (" . $current_pdu['position'] . ")'></i>";
+                                 title='" . __s("On left") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_RIGHT:
                                  echo "<i class='fa fa-arrow-right fa-fw'
-                                 title='" . __("On right") . " (" . $current_pdu['position'] . ")'></i>";
+                                 title='" . __s("On right") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_TOP:
                                 echo "<i class='fa fa-arrow-up fa-fw'
-                                 title='" . __("On top") . " (" . $current_pdu['position'] . ")'></i>";
+                                 title='" . __s("On top") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_BOTTOM:
                                 echo "<i class='fa fa-arrow-down fa-fw'
-                                 title='" . __("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
+                                 title='" . __s("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                         }
                     }
@@ -485,7 +471,7 @@ class PDU_Rack extends CommonDBRelation
     {
 
         $rand = mt_rand();
-        echo "<label for='dropdown_sub_form$rand'>" . __("The pdu will be") . "</label>&nbsp;";
+        echo "<label for='dropdown_sub_form$rand'>" . __s("The pdu will be") . "</label>&nbsp;";
         Dropdown::showFromArray('sub_form', [
             'racked'    => __('racked'),
             'side_rack' => __('placed at rack side'),
@@ -577,28 +563,28 @@ JAVASCRIPT;
 
                     $tip = "<span class='tipcontent'>";
                     $tip .= "<span>
-                        <label>" . _n('Type', 'Types', 1) . ":</label>" .
+                        <label>" . _sn('Type', 'Types', 1) . ":</label>" .
                         $pdu->getTypeName() . "
                      </span>
                      <span>
-                        <label>" . __('name') . ":</label>" .
+                        <label>" . __s('name') . ":</label>" .
                         $pdu->getName() . "
                      </span>";
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
-                           <label>" . __('serial') . ":</label>" .
-                           $pdu->fields['serial'] . "
+                           <label>" . __s('serial') . ":</label>" .
+                           htmlescape($pdu->fields['serial']) . "
                         </span>";
                     }
                     if (!empty($pdu->fields['otherserial'])) {
                         $tip .= "<span>
-                           <label>" . __('Inventory number') . ":</label>" .
-                           $pdu->fields['otherserial'] . "
+                           <label>" . __s('Inventory number') . ":</label>" .
+                           htmlescape($pdu->fields['otherserial']) . "
                         </span>";
                     }
                     if (!empty($model_name)) {
                         $tip .= "<span>
-                           <label>" . __('model') . ":</label>
+                           <label>" . __s('model') . ":</label>
                            $model_name
                         </span>";
                     }
@@ -636,7 +622,7 @@ JAVASCRIPT;
                      <a href='" . $rel->getLinkUrl() . "' class='rel-link'>
                         <i class='fa fa-pencil-alt fa-rotate-270'
                            style='$fg_color_s'
-                           title='" . __("Edit rack relation") . "'></i>
+                           title='" . __s("Edit rack relation") . "'></i>
                      </a>
                      $tip
                   </div>

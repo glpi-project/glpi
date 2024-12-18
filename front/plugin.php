@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("config", UPDATE);
 
 // This has to be called before search process is called, in order to add
@@ -46,15 +44,15 @@ Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 \Glpi\Marketplace\View::showFeatureSwitchDialog();
 
-$catalog_btn = '<div class="center my-2">'
-   . '<a href="http://plugins.glpi-project.org" class="btn btn-primary" target="_blank">'
-   . "<i class='fas fa-eye'></i>"
-   . "<span>" . __('See the catalog of plugins') . "</span>"
-   . '</a>'
-   . '</div>';
-
 Search::show('Plugin');
 
-echo $catalog_btn;
+echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    <div class="text-center my-2">
+        <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
+            <i class="ti ti-eye"></i>
+            <span>{{ label }}</span>
+        </a>
+    </div>
+TWIG, ['label' => __('See the catalog of plugins')]);
 
 Html::footer();

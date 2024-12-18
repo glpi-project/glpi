@@ -38,6 +38,7 @@ namespace tests\units;
 use Change;
 use Generator;
 use Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Ticket;
 use User;
@@ -90,9 +91,7 @@ abstract class AbstractRightsDropdown extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider getPostedIdsProvider
-     */
+    #[DataProvider('getPostedIdsProvider')]
     public function testGetPostedIds(
         array $values,
         string $class,

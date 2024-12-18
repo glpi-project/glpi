@@ -145,9 +145,9 @@ class Calendar_HolidayTest extends DbTestCase
 
         $holiday_id = getItemByTypeName('Holiday', 'Winter holidays', true);
         $this->assertTrue($calendar_holiday->getFromDBByCrit(['holidays_id' => $holiday_id]));
-        $this->boolean(
+        $this->assertTrue(
           $calendar_holiday->update(['id' => $calendar_holiday->fields['id'], 'calendars_id' => $calendar_id])
-        )->isTrue();
+        );
         $this->assertFalse($GLPI_CACHE->has($cache_key)); // Previously associated calendar cache is invalidated
         $this->assertFalse($GLPI_CACHE->has(sprintf('calendar-%s-holidays', $calendar_id)));
         */

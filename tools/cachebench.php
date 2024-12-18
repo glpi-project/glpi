@@ -38,10 +38,13 @@ if (PHP_SAPI != 'cli') {
     exit();
 }
 
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCommonGlobalConfig();
+
 define('PER_LEVEL', 8);
 define('COUNT', 1024);
-
-require __DIR__ . '/../inc/includes.php';
 
 // To bypass various right checks
 $_SESSION['glpishowallentities'] = 1;
@@ -79,9 +82,6 @@ if ($nb < 100000) {
             }
         }
     }
-
-   //echo "Regenerate tree\n";
-   //regenerateTreeCompleteName('glpi_entities');
 
     $nb = countElementsInTable('glpi_entities');
 }

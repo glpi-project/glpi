@@ -42,6 +42,14 @@
       }) }}
       {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
       <div class="d-flex">
+         {% if link_types is defined and link_types is not empty %}
+            <div class="col-auto">
+               {{ fields.dropdownArrayField('link', link_types|first, link_types, '', {
+                  no_label: true,
+                  field_class: ''
+               }) }}
+            </div>
+         {% endif %}
          <div class="col-auto">
             {{ fields.dropdownField(primary_dropdown_itemtype, primary_dropdown_itemtype|itemtype_foreign_key, '', '', {
                no_label: true,

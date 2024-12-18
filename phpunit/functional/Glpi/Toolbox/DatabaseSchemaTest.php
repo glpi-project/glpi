@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class DatabaseSchemaTest extends \GLPITestCase
 {
     public static function versionsProvider(): iterable
@@ -65,9 +67,7 @@ class DatabaseSchemaTest extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider versionsProvider
-     */
+    #[DataProvider('versionsProvider')]
     public function testGetEmptySchemaPath(string $version, ?string $expected): void
     {
         $instance = new \Glpi\Toolbox\DatabaseSchema();

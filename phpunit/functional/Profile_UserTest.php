@@ -53,31 +53,40 @@ class Profile_UserTest extends DbTestCase
         $super_admin = getItemByTypeName('Profile', 'Super-Admin');
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
 
-        // Default: 3 super admin account authorizations
+        // Default: 4 super admin account authorizations
         $authorizations = (new \Profile_User())->find([
             'profiles_id' => $super_admin->fields['id']
         ]);
-        $this->assertCount(3, $authorizations);
-        $this->assertEquals(
-            [
-                2, // glpi
-                6, // TU_USER
-                7, // jsmith123
-            ],
-            array_column($authorizations, 'id')
-        );
+        $this->assertCount(4, $authorizations);
+        $glpi_users_id = getItemByTypeName('User', 'glpi', true);
+        $tu_users_id = getItemByTypeName('User', TU_USER, true);
+        $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
+        $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
+
+        $auth_array = array_column($authorizations, 'users_id');
+        $this->assertContains($glpi_users_id, $auth_array);
+        $this->assertContains($tu_users_id, $auth_array);
+        $this->assertContains($jsmith_users_id, $auth_array);
+        $this->assertContains($e2e_tests_users_id, $auth_array);
+
+        $authorizations_by_user_id = [];
+        foreach ($authorizations as $authorization) {
+            $authorizations_by_user_id[$authorization['users_id']] = $authorization['id'];
+        }
 
         // Delete 2 authorizations
         $this->login('glpi', 'glpi');
-        $this->assertTrue(\Profile_User::getById(6)->canPurgeItem());
-        $this->assertTrue((new \Profile_User())->delete(['id' => 6], 1));
-        $this->assertTrue(\Profile_User::getById(7)->canPurgeItem());
-        $this->assertTrue((new \Profile_User())->delete(['id' => 7], 1));
+        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$tu_users_id])->canPurgeItem());
+        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
+        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
+        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1));
+        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem());
+        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
 
         // Last user, can't be purged
-        $this->assertFalse(\Profile_User::getById(2)->canPurgeItem());
+        $this->assertFalse(\Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
         // Can still be purged by calling delete, maybe it should not be possible ?
-        $this->assertTrue((new \Profile_User())->delete(['id' => 2], 1));
+        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
     }
 
     public function testLogOperationOnAddAndDelete(): void
@@ -91,7 +100,7 @@ class Profile_UserTest extends DbTestCase
         $entity2  = getItemByTypeName(\Entity::class, '_test_child_1');
 
         // Create items
-        $DB->truncate(\Log::getTable());
+        $DB->delete(\Log::getTable(), [1]);
 
         $input1 = [
             'users_id'     => $user->getId(),
@@ -256,7 +265,7 @@ class Profile_UserTest extends DbTestCase
         }
 
         // Delete items
-        $DB->truncate(\Log::getTable());
+        $DB->delete(\Log::getTable(), [1]);
 
         $profile_user = new \Profile_User();
         $this->assertTrue($profile_user->deleteByCriteria($input1));

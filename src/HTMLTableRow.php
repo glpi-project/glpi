@@ -38,12 +38,12 @@
  **/
 class HTMLTableRow extends HTMLTableEntity
 {
+    /** @var HTMLTableGroup */
     private $group;
     private $empty              = true;
     private $cells              = [];
     private $numberOfSubRows    = 1;
     private $linesWithAttributs = [];
-
 
     /**
      * @param $group
@@ -53,30 +53,25 @@ class HTMLTableRow extends HTMLTableEntity
         $this->group = $group;
     }
 
-
     public function getGroup()
     {
         return $this->group;
     }
-
 
     public function notEmpty()
     {
         return !$this->empty;
     }
 
-
     public function getNumberOfsubRows()
     {
         return $this->numberOfSubRows;
     }
 
-
     public function createAnotherRow()
     {
         return $this->group->createRow();
     }
-
 
     /**
      * @param $lineIndex
@@ -87,12 +82,11 @@ class HTMLTableRow extends HTMLTableEntity
         $this->linesWithAttributs[$lineIndex] = $attributs;
     }
 
-
     /**
-     * @param $header    HTMLTableHeader object
+     * @param HTMLTableHeader $header object
      * @param $content
-     * @param $father    HTMLTableCell object (default NULL)
-     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
+     * @param ?HTMLTableCell $father object (default NULL)
+     * @param ?CommonDBTM $item object: The item associated with the current cell (default NULL)
      **/
     public function addCell(
         HTMLTableHeader $header,
@@ -116,15 +110,13 @@ class HTMLTableRow extends HTMLTableEntity
         return $cell;
     }
 
-
     public function prepareDisplay()
     {
-
         if ($this->empty) {
             return false;
         }
 
-       // First, compute the total nomber of rows ...
+        // First, compute the total nomber of rows ...
         $this->numberOfSubRows = 0;
         foreach ($this->cells as $cellsOfHeader) {
             if (isset($cellsOfHeader[0])) {
@@ -142,12 +134,12 @@ class HTMLTableRow extends HTMLTableEntity
             }
         }
 
-       // Then notify each cell and compute its starting row
+        // Then notify each cell and compute its starting row
         foreach ($this->cells as $cellsOfHeader) {
             if (isset($cellsOfHeader[0])) {
                 $header = $cellsOfHeader[0]->getHeader();
 
-               // Only do this for cells that don't have father: they will propagate this to there sons
+                // Only do this for cells that don't have father: they will propagate this to there sons
                 if (is_null($header->getFather())) {
                     HTMLTableCell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
 
@@ -162,13 +154,11 @@ class HTMLTableRow extends HTMLTableEntity
         return true;
     }
 
-
     /**
      * @param $headers
      **/
     public function displayRow($headers)
     {
-
         echo "\t<tbody";
         $this->displayEntityAttributs();
         echo ">\n";
@@ -201,7 +191,6 @@ class HTMLTableRow extends HTMLTableEntity
         }
         echo "\t</tbody>\n";
     }
-
 
     /**
      * @param $name

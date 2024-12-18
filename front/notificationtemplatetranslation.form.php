@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 if (!isset($_GET["id"])) {
@@ -99,7 +97,7 @@ if (isset($_POST["add"])) {
         $options = [];
     }
 
-    $menus = ["config", "notification", "notificationtemplate"];
+    $menus = ["config", "notification", "NotificationTemplate"];
     NotificationTemplateTranslation::displayFullPageForItem(
         $_GET["id"],
         $menus,

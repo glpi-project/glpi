@@ -36,12 +36,13 @@
 namespace Glpi\Tests\Command;
 
 use DBmysql;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Toolbox;
 
 class TestUpdatedDataCommand extends Command
 {
@@ -145,6 +146,7 @@ class TestUpdatedDataCommand extends Command
                 ['NOT' => ['table_name' => $this->getExcludedTables()]],
             ]
         );
+
         foreach ($table_iterator as $table_data) {
             $table_name = $table_data['TABLE_NAME'];
 
@@ -165,11 +167,17 @@ class TestUpdatedDataCommand extends Command
             foreach ($row_iterator as $row_data) {
                 $criteria = [];
 
+                // Ignore e2e_tests user
+                if ($table_name === 'glpi_users' && $row_data['name'] === 'e2e_tests') {
+                    continue;
+                }
+
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
                     }
-                    if ($value === null && !in_array($this->getFieldType($fresh_db, $table_name, $key), ['datetime', 'timestamp'])) {
+                    $field_type = $this->getFieldType($fresh_db, $table_name, $key);
+                    if ($value === null && !in_array($field_type, ['datetime', 'timestamp'], true)) {
                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
@@ -177,6 +185,15 @@ class TestUpdatedDataCommand extends Command
                                 [$key => null],
                             ]
                         ];
+                    } elseif ($field_type === 'json') {
+                        // Compare JSON fields using they CHAR representation
+                        $criteria[$key] = new QueryExpression(
+                            sprintf(
+                                '%s = %s',
+                                QueryFunction::cast($key, 'CHAR'),
+                                $fresh_db->quoteValue($value)
+                            )
+                        );
                     } else {
                         $criteria[$key] = $value;
                     }
@@ -185,12 +202,12 @@ class TestUpdatedDataCommand extends Command
                 $found_in_updated = $updated_db->request(
                     [
                         'FROM'  => $table_name,
-                        'WHERE' => Toolbox::addslashes_deep($criteria),
+                        'WHERE' => $criteria,
                     ]
                 );
                 if ($found_in_updated->count() !== 1) {
                      $missing = true;
-                     $msg = sprintf('Unable to found following object in table "%s": %s', $table_name, json_encode($row_data));
+                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
                      $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }
@@ -207,21 +224,36 @@ class TestUpdatedDataCommand extends Command
     private function getExcludedTables(): array
     {
         return [
-         // Root entity configuration is never updated during migration
+            // Root entity configuration is never updated during migration
             'glpi_entities',
 
-         // Migration may produce logs
+            // Migration may produce logs
             'glpi_logs',
 
-         // Profiles are not automatically updated
+            // Notifications update is complex and following cases can result in differences between updated data and fresh install:
+            // - existing templates are never updated;
+            // - existing templates are rarely reused, as they can have been modified/deleted;
+            // - new notifications events/targets defaults are not always applied during update, to let administrator decide how to configure them;
+            // - ...
+            'glpi_notifications',
+            'glpi_notifications_notificationtemplates',
+            'glpi_notificationtargets',
+            'glpi_notificationtemplate',
+            'glpi_notificationtemplatetranslations',
+
+            // Profiles are not automatically updated
             'glpi_profilerights',
             'glpi_profiles',
             'glpi_profiles_users',
 
-         // Rules are not automatically updated
+            // Rules are not automatically updated
             'glpi_rules',
             'glpi_rulecriterias',
             'glpi_ruleactions',
+
+            // Dashbords may have placeholders which are only present on new installs
+            'glpi_dashboards_dashboards',
+            'glpi_dashboards_items'
         ];
     }
 
@@ -239,24 +271,21 @@ class TestUpdatedDataCommand extends Command
                 'comment', // Some items contains comments like 'Automatically generated by GLPI X.X.X'
                 'date_creation',
                 'date_mod',
+                // By definition, any uuid fields should always be unique
+                'uuid',
+                'forms_sections_uuid',
             ],
             'glpi_configs' => [
                 'value', // Default values may have changed
             ],
             'glpi_crontasks' => [
+                'frequency', // Field default value may have changed
+                'hourmin', // Field default value may have changed
+                'hourmax', // Field default value may have changed
                 'lastrun',
             ],
             'glpi_displaypreferences' => [
                 'rank', // New display preferences are added with next available rank by migrations
-            ],
-            'glpi_notifications' => [
-                'is_active', // Active status was not changed by migration (9.1.x to 9.2.0)
-            ],
-            'glpi_notificationtemplatetranslations' => [
-            // Notification content is not automatically updated
-                'content_text',
-                'content_html',
-                'subject',
             ],
             'glpi_requesttypes' => [
                 'is_followup_default', // Field value was not forced by migration (0.90.x to 9.1.0)
@@ -307,13 +336,13 @@ class TestUpdatedDataCommand extends Command
                 ]
             );
             foreach ($fields_iterator as $field_data) {
-                 $table_name = $field_data['TABLE_NAME'];
-                 $field_name = $field_data['COLUMN_NAME'];
-                 $field_type = $field_data['DATA_TYPE'];
+                $table_name = $field_data['TABLE_NAME'];
+                $field_name = $field_data['COLUMN_NAME'];
+                $field_type = $field_data['DATA_TYPE'];
                 if (!array_key_exists($table_name, $types)) {
                     $types[$table_name] = [];
                 }
-                 $types[$table_name][$field_name] = $field_type;
+                $types[$table_name][$field_name] = $field_type;
             }
         }
 

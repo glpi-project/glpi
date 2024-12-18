@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  Class used to manage Auth mail config
  */
@@ -48,29 +50,44 @@ class AuthMail extends CommonDBTM
         return _n('Mail server', 'Mail servers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', Auth::class, self::class];
+    }
+
     public function prepareInputForUpdate($input)
     {
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
-        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            return false;
+        }
+
+        if (!empty($input['mail_server'])) {
             $input["connect_string"] = Toolbox::constructMailServerConfig($input);
         }
         return $input;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
-        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            return false;
+        }
+
+        if (!empty($input['mail_server'])) {
             $input["connect_string"] = Toolbox::constructMailServerConfig($input);
         }
         return $input;
@@ -78,7 +95,6 @@ class AuthMail extends CommonDBTM
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
@@ -98,7 +114,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
@@ -107,7 +123,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'datatype'           => 'number',
@@ -116,7 +132,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'host',
             'name'               => __('Server'),
             'datatype'           => 'string'
@@ -124,7 +140,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'connect_string',
             'name'               => __('Connection string'),
             'massiveaction'      => false,
@@ -133,7 +149,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool'
@@ -141,7 +157,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
@@ -150,7 +166,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -169,48 +185,14 @@ class AuthMail extends CommonDBTM
      */
     public function showForm($ID, array $options = [])
     {
-
-        if (!Config::canUpdate()) {
+        if (!$this->can($ID, UPDATE)) {
             return false;
         }
-        if (empty($ID)) {
-            $this->getEmpty();
-        } else {
-            $this->getFromDB($ID);
-        }
 
-        $options['colspan'] = 1;
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-        echo "<td><input class='form-control' type='text' name='name' value='" . $this->fields["name"] . "'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td colspan='3'>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Email domain Name (users email will be login@domain)') . "</td>";
-        echo "<td><input class='form-control' type='text' name='host' value='" . $this->fields["host"] . "'>";
-        echo "</td></tr>";
-
-        Toolbox::showMailServerConfig($this->fields["connect_string"]);
-
-        echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-        echo "<td>";
-        echo "<textarea class='form-control' name='comment'>" . $this->fields["comment"] . "</textarea>";
-        if ($ID > 0) {
-            echo "<br>";
-           //TRANS: %s is the datetime of update
-            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-        }
-
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
+            'item' => $this,
+            'params' => $options
+        ]);
     }
 
     /**
@@ -220,30 +202,47 @@ class AuthMail extends CommonDBTM
      */
     public function showFormTestMail()
     {
-
         $ID = $this->getField('id');
 
         if ($this->getFromDB($ID)) {
-            echo "<form method='post' action='" . $this->getFormURL() . "'>";
-            echo "<input type='hidden' name='imap_string' value=\"" . $this->fields['connect_string'] . "\">";
-            echo "<div class='center'><table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . __('Test connection to email server') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Login') . "</td>";
-            echo "<td><input class='form-control' type='text' name='imap_login' value=''></td></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
-            echo "<td><input class='form-control' type='password' name='imap_password' value=''
-                    autocomplete='new-password'></td></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input type='submit' name='test' class='btn btn-primary' value=\"" . _sx('button', 'Test') . "\">" .
-              "</td>";
-            echo "</tr></table></div>";
-            Html::closeForm();
+            $twig_params = [
+                'title'          => __('Test connection to email server'),
+                'login'          => __('Login'),
+                'password'       => __('Password'),
+                'test'           => _x('button', 'Test'),
+                'connect_string' => $this->fields['connect_string'] ?? ''
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <form method="post" action="{{ 'AuthMail'|itemtype_form_path }}" data-submit-once>
+                    <div class="text-center d-flex flex-column">
+                        <div>
+                            <h1 class="fs-2">{{ title }}</h1>
+                        </div>
+                        {{ fields.textField('imap_login', '', login, {
+                            full_width: true,
+                            additional_attributes: {
+                                autocomplete: 'username'
+                            }
+                        }) }}
+                        {{ fields.passwordField('imap_password', '', password, {
+                            full_width: true,
+                            clearable: false,
+                            additional_attributes: {
+                                autocomplete: 'password'
+                            }
+                        }) }}
+                        {{ fields.hiddenField('imap_string', connect_string) }}
+                        <div>
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>
+                        </div>
+                    </div>
+                </form>
+TWIG, $twig_params);
         }
     }
-
 
     /**
      * Is the Mail authentication used?
@@ -254,7 +253,6 @@ class AuthMail extends CommonDBTM
     {
         return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
     }
-
 
     /**
      * Test a connexion to the IMAP/POP server
@@ -267,7 +265,6 @@ class AuthMail extends CommonDBTM
      */
     public static function testAuth($connect_string, $login, $password)
     {
-
         $auth = new Auth();
         return $auth->connection_imap(
             $connect_string,
@@ -275,7 +272,6 @@ class AuthMail extends CommonDBTM
             Toolbox::decodeFromUtf8($password)
         );
     }
-
 
     /**
      * Authenticate a user by checking a specific mail server
@@ -289,8 +285,7 @@ class AuthMail extends CommonDBTM
      */
     public static function mailAuth($auth, $login, $password, $mail_method)
     {
-
-        if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
+        if (!empty($mail_method["connect_string"])) {
             $auth->auth_succeded = $auth->connection_imap(
                 $mail_method["connect_string"],
                 $login,
@@ -298,16 +293,15 @@ class AuthMail extends CommonDBTM
             );
             if ($auth->auth_succeded) {
                  $auth->extauth      = 1;
-                 $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+                 $auth->user_present = $auth->user->getFromDBbyName($login);
                  $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
-                 //Update the authentication method for the current user
+                 // Update the authentication method for the current user
                  $auth->user->fields["authtype"] = Auth::MAIL;
                  $auth->user->fields["auths_id"] = $mail_method["id"];
             }
         }
         return $auth;
     }
-
 
     /**
      * Try to authenticate a user by checking all the mail server
@@ -323,7 +317,6 @@ class AuthMail extends CommonDBTM
      */
     public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
     {
-
         if ($auths_id <= 0) {
             foreach ($auth->authtypes["mail"] as $mail_method) {
                 if (!$auth->auth_succeded && $mail_method['is_active']) {
@@ -335,7 +328,7 @@ class AuthMail extends CommonDBTM
                 }
             }
         } else if (array_key_exists($auths_id, $auth->authtypes["mail"])) {
-           //Check if the mail server indicated as the last good one still exists !
+            // Check if the mail server indicated as the last good one still exists !
             $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
         }
         return $auth;
@@ -351,7 +344,7 @@ class AuthMail extends CommonDBTM
         /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
             $ong = [];
-            $ong[1] = _sx('button', 'Test');    // test connexion
+            $ong[1] = _sx('button', 'Test');    // test connection
 
             return $ong;
         }
@@ -368,7 +361,6 @@ class AuthMail extends CommonDBTM
         }
         return true;
     }
-
 
     public static function getIcon()
     {

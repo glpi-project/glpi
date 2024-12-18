@@ -35,11 +35,14 @@
 
 use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
+use Psr\SimpleCache\CacheInterface;
 
-/// Class USBVendor
+/**
+ * USBVendor class
+ */
 class USBVendor extends CommonDropdown implements CacheableListInterface
 {
-    public $cache_key = 'glpi_usbvendors';
+    public string $cache_key = 'glpi_usbvendors';
 
     public static function getTypeName($nb = 0)
     {
@@ -67,7 +70,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'vendorid',
             'name'               => __('Vendor ID'),
             'datatype'           => 'string'
@@ -75,7 +78,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'deviceid',
             'name'               => __('Device ID'),
             'datatype'           => 'string'
@@ -91,7 +94,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $vendors = new USBVendor();
@@ -100,7 +103,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         }
 
         $jsonfile = new FilesToJSON();
-        $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true);
+        $file_usbids = json_decode(file_get_contents($jsonfile->getJsonFilePath('usbid')), true) ?? [];
         $db_usbids = $vendors->getDbList();
         $usbids = $db_usbids + $file_usbids;
         $usbids = array_change_key_case($usbids, CASE_LOWER);
@@ -120,7 +123,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         global $DB;
 
         $list = [];
-        $iterator = $DB->request(['FROM' => $this->getTable()]);
+        $iterator = $DB->request(['FROM' => static::getTable()]);
         foreach ($iterator as $row) {
             $row_key = $row['vendorid'];
             if (!empty($row['deviceid'])) {
@@ -141,10 +144,11 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      * Clean cache
      *
      * @return void
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function invalidateListCache(): void
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete($this->cache_key);
@@ -157,9 +161,9 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getManufacturer($vendorid)
+    public function getManufacturer($vendorid): false|string
     {
-        $usbids = $this->getList();
+        $usbids = self::getList();
 
         $vendorid = strtolower($vendorid);
 
@@ -181,15 +185,16 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getProductName($vendorid, $deviceid)
+    public function getProductName($vendorid, $deviceid): false|string
     {
-        $usbids = $this->getList();
+        $usbids = self::getList();
 
         $vendorid = strtolower($vendorid);
         $deviceid = strtolower($deviceid);
 
-        if (isset($usbids[$vendorid . '::' . $deviceid])) {
-            $usb_product = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$vendorid . '::' . $deviceid]);
+        $combined_id = $vendorid . '::' . $deviceid;
+        if (isset($usbids[$combined_id])) {
+            $usb_product = preg_replace('/&(?!\w+;)/', '&amp;', $usbids[$combined_id]);
             if (!empty($usb_product)) {
                 return $usb_product;
             }

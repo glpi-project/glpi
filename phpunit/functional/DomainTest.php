@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/software.class.php */
 
@@ -295,5 +296,72 @@ class DomainTest extends DbTestCase
 
         $result = $domain->cronDomainsAlert($crontask);
         $this->assertEquals(0, $result); // 0 = nothing to do (alerts were already sent)
+    }
+
+    public static function linkContentProvider(): iterable
+    {
+        // Empty link
+        yield [
+            'link'     => '',
+            'safe_url' => false,
+            'expected' => [''],
+        ];
+        yield [
+            'link'     => '',
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+
+        foreach ([true, false] as $safe_url) {
+            yield [
+                'link'     => 'https://{{ LOGIN }}@{{ DOMAIN }}/',
+                'safe_url' => $safe_url,
+                'expected' => ['https://_test_user@domain.tld/'],
+            ];
+        }
+
+        // Javascript link
+        yield [
+            'link'     => 'javascript:alert(1);" title="{{ DOMAIN }}"',
+            'safe_url' => false,
+            'expected' => ['javascript:alert(1);" title="domain.tld"'],
+        ];
+        yield [
+            'link'     => 'javascript:alert(1);" title="{{ DOMAIN }}"',
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+    }
+
+    #[DataProvider('linkContentProvider')]
+    public function testGenerateLinkContents(
+        string $link,
+        bool $safe_url,
+        array $expected
+    ): void {
+        $this->login();
+
+        // Create computer
+        $item = $this->createItem(
+            \Domain::class,
+            [
+                'name'         => 'domain.tld',
+                'entities_id'  => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $instance = new \Domain();
+        $this->assertEquals(
+            $expected,
+            $instance->generateLinkContents($link, $item, $safe_url)
+        );
+
+        // Validates that default is to generate safe URLs
+        if ($safe_url) {
+            $this->assertEquals(
+                $expected,
+                $instance->generateLinkContents($link, $item)
+            );
+        }
     }
 }

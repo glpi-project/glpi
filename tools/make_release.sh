@@ -96,10 +96,10 @@ git --git-dir="$SOURCE_DIR/.git" checkout-index --all --force --prefix="$WORKING
 
 if [[ ! $ASSUME_YES = 1 ]]
 then
-    FOUND_VERSION=$(grep -Eo "define\('GLPI_VERSION', '[^']+'\);" $WORKING_DIR/glpi/inc/define.php | sed "s/define('GLPI_VERSION', '\([^)]*\)');/\1/")
+    FOUND_VERSION=$(grep -Eo "define\('GLPI_VERSION', '[^']+'\);" $WORKING_DIR/glpi/src/autoload/constants.php | sed "s/define('GLPI_VERSION', '\([^)]*\)');/\1/")
     if [[ ! "$RELEASE" = "$FOUND_VERSION" ]]
     then
-        read -p "$RELEASE does not match version $FOUND_VERSION declared in inc/define.php. Do you want to continue? [Y/n] " -n 1 -r
+        read -p "$RELEASE does not match version $FOUND_VERSION declared in src/autoload/constants.php. Do you want to continue? [Y/n] " -n 1 -r
         echo # (optional) move to a new line
         if [[ ! $REPLY =~ ^[Yy]$ ]]
         then

@@ -41,24 +41,18 @@ use Glpi\Application\ErrorHandler;
  */
 global $CFG_GLPI, $TRANSLATE;
 
-$SECURITY_STRATEGY = 'no_check'; // locales must be accessible also on public pages
-
-$_GET['donotcheckversion']   = true;
-$dont_check_maintenance_mode = true;
-
-include('../inc/includes.php');
-
 session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
-$is_cacheable = !isset($_GET['debug']);
+$is_cacheable = GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT; // do not use browser cache on development env
 if (!Update::isDbUpToDate()) {
    // Make sure to not cache if in the middle of a GLPI update
     $is_cacheable = false;
 }
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies,
+    // unless when we are in the middle of a GLPI update.
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');
@@ -89,7 +83,8 @@ try {
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
    // No TextDomain found means that there is no translations for given domain.
    // It is mostly related to plugins that does not provide any translations.
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 
 // Extract headers from main po file
@@ -104,7 +99,8 @@ $po_file_handle = fopen(
 );
 if (false === $po_file_handle) {
     trigger_error(sprintf('Unable to extract locales data from "%s".', $po_file), E_USER_WARNING);
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 $in_headers = false;
 $headers = [];
@@ -128,10 +124,11 @@ while (false !== ($line = fgets($po_file_handle))) {
 }
 if (count(array_diff($header_keys, array_keys($headers))) > 0) {
     trigger_error(sprintf('Missing mandatory locale headers in "%s".', $po_file), E_USER_WARNING);
-    exit($default_response);
+    echo $default_response;
+    return;
 }
 
 // Output messages and headers
 $messages[''] = $headers;
 $messages->ksort();
-echo(json_encode($messages, JSON_PRETTY_PRINT));
+echo(json_encode($messages));

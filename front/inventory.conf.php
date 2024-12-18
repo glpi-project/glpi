@@ -35,8 +35,6 @@
 
 use Glpi\Inventory\Conf;
 
-include('../inc/includes.php');
-
 Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
 
 Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory");
@@ -47,12 +45,13 @@ if (isset($_FILES['inventory_files'])) {
     $conf->displayImportFiles($_FILES);
 } elseif (isset($_POST['update'])) {
     unset($_POST['update']);
-    $conf->saveConf($_POST);
-    Session::addMessageAfterRedirect(
-        __('Configuration has been updated'),
-        false,
-        INFO
-    );
+    if ($conf->saveConf($_POST)) {
+        Session::addMessageAfterRedirect(
+            __s('Configuration has been updated'),
+            false,
+            INFO
+        );
+    }
     Html::back();
 } else {
     $conf->display(['id' => 1]);

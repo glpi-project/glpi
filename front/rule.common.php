@@ -38,10 +38,6 @@
  * @var RuleCollection $rulecollection
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -55,21 +51,21 @@ if (isset($_POST["action"])) {
 } else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
    //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
-    if ($ruleclass::initRules()) {
+    if ($ruleclass->initRules()) {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
             //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
-            )
+            ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
                 //TRANS: first parameter is the rule type name
                 __('%1$s reset failed.'),
                 $rulecollection->getTitle()
-            ),
+            )),
             false,
             ERROR
         );
@@ -99,16 +95,19 @@ if (isset($_POST["action"])) {
         && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])
     ) {
         Html::footer();
-        exit();
+        return;
     }
 
     echo "<table class='tab_cadrehov'>";
 
-    echo "<tr><th><div class='relative b'>" . $rulecollection->getTitle() . "<br>" .
-         __('Replay the rules dictionary') . "</div></th></tr>\n";
+    echo "<tr><th><div class='relative b'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
+         __s('Replay the rules dictionary') . "</div></th></tr>";
     echo "<tr><td class='center'>";
-    Html::createProgressBar(__('Work in progress...'));
-    echo "</td></tr>\n";
+    Html::progressBar('doaction_progress', [
+        'create' => true,
+        'message' => __s('Work in progress...')
+    ]);
+    echo "</td></tr>";
     echo "</table>";
 
     if (!isset($_GET['offset'])) {
@@ -136,15 +135,15 @@ if (isset($_POST["action"])) {
             __('Task completed in %s'),
             Html::timestampToString($duree)
         ));
-        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __('Back') . "</a>";
+        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __s('Back') . "</a>";
     } else {
        // Need more work
         Html::redirect($_SERVER['PHP_SELF'] . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .
                      "$manufacturer");
     }
 
-    Html::footer(true);
-    exit();
+    Html::footer();
+    return;
 }
 
 Html::header(

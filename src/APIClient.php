@@ -55,12 +55,12 @@ class APIClient extends CommonDBTM
         'app_token'
     ];
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
@@ -68,6 +68,16 @@ class APIClient extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n("API client", "API clients", $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ["config", Config::class, self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
     }
 
     public function defineTabs($options = [])

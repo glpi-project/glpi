@@ -43,27 +43,6 @@ use Glpi\SocketModel;
 
 class CableTest extends DbTestCase
 {
-    public function testAddSocket()
-    {
-
-        $socket = getItemByTypeName(Socket::class, '_socket01');
-        $location = getItemByTypeName('Location', '_location01');
-        $expected = $socket->getName() . " (" . $location->getName() . ")";
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID());
-        $this->assertSame($expected, $ret);
-
-        // test of return with comments
-        $expected = ['name'    => $expected,
-            'comment' => "Comment for socket _socket01"
-        ];
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID(), true);
-        $this->assertSame($expected, $ret);
-
-        // test of return without $tooltip
-        $ret = \Dropdown::getDropdownName('glpi_sockets', $socket->getID(), true, true, false);
-        $this->assertSame($expected, $ret);
-    }
-
     public function testAddNetworkPortThenSocket()
     {
         $this->login();
@@ -393,6 +372,7 @@ class CableTest extends DbTestCase
             'color'                 => '#f72f04',
             'otherserial'           => 'otherserial',
             'states_id'             => $cableState_id,
+            'users_id'              => 1,
             'users_id_tech'         => 2,
             'cabletypes_id'         => $cableType_id,
             'comment'               => 'comment',
@@ -409,6 +389,8 @@ class CableTest extends DbTestCase
             'name'                  => 'cable',
             'entities_id'           => $computer1->fields['entities_id'],
             'is_recursive'          => 0,
+            'is_template' => 0,
+            'template_name' => null,
             'itemtype_endpoint_a'         => 'Computer',
             'itemtype_endpoint_b'        => 'Computer',
             'items_id_endpoint_a'         => $computer1->getID(),
@@ -421,11 +403,12 @@ class CableTest extends DbTestCase
             'color'                 => '#f72f04',
             'otherserial'           => 'otherserial',
             'states_id'              => $cableState_id,
+            'users_id'              => 1,
             'users_id_tech'         => 2,
             'cabletypes_id'         => $cableType_id,
             'comment'               => 'comment',
             'is_deleted' => 0
         ];
-        $this->assertSame($expected, $current_cable);
+        $this->assertEquals($expected, $current_cable);
     }
 }

@@ -96,6 +96,8 @@ class Alert extends CommonDBTM
             'value'          => 0,
             'display'        => true,
             'inherit_parent' => false,
+            'show_hours'     => false,
+            'show_days'      => false,
         ];
 
         if (count($options)) {
@@ -111,7 +113,18 @@ class Alert extends CommonDBTM
         }
 
         $times[Entity::CONFIG_NEVER]  = __('Never');
+        if ($p['show_hours']) {
+            $times[HOUR_TIMESTAMP] = __('Each hour');
+            for ($i = 2; $i <= 24; $i++) {
+                $times[$i * HOUR_TIMESTAMP] = sprintf(__('Every %1$s hours'), $i);
+            }
+        }
         $times[DAY_TIMESTAMP]         = __('Each day');
+        if ($p['show_days']) {
+            for ($i = 2; $i <= 6; $i++) {
+                $times[$i * DAY_TIMESTAMP] = sprintf(__('Every %1$s days'), $i);
+            }
+        }
         $times[WEEK_TIMESTAMP]        = __('Each week');
         $times[MONTH_TIMESTAMP]       = __('Each month');
 
@@ -216,7 +229,7 @@ class Alert extends CommonDBTM
         if ($items_id <= 0 || $type <= 0) {
             return false;
         }
-        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        $iter = $DB->request(['FROM' => self::getTable(), 'WHERE' => ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]]);
         if ($row = $iter->current()) {
             return $row['id'];
         }
@@ -244,7 +257,7 @@ class Alert extends CommonDBTM
         if ($items_id <= 0 || $type <= 0) {
             return false;
         }
-        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        $iter = $DB->request(['FROM' => self::getTable(), 'WHERE' => ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]]);
         if ($row = $iter->current()) {
             return $row['date'];
         }
@@ -266,7 +279,9 @@ class Alert extends CommonDBTM
         global $DB;
 
         if ($items_id) {
-            $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
+            $iter = $DB->request([
+                'FROM'     => self::getTable(),
+                'FIELDS'   => 'date',
                 'ORDER'    => 'date DESC',
                 'LIMIT'    => 1,
                 'itemtype' => $itemtype,

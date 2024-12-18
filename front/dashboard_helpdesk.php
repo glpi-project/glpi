@@ -33,13 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Dashboard\Dashboard;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
-
 
 Session::checkCentralAccess();
 $default = Glpi\Dashboard\Grid::getDefaultDashboardForMenu('helpdesk');
@@ -51,8 +49,7 @@ if ($default == "") {
 
 $dashboard = new Dashboard($default);
 if (!$dashboard->canViewCurrent()) {
-    Html::displayRightError();
-    exit();
+    throw new AccessDeniedHttpException();
 }
 
 Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");

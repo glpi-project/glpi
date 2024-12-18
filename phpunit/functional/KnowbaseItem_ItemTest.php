@@ -194,23 +194,23 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame('Associated elements <span class=\'badge\'>3</span>', $name);
+        $this->assertSame("Associated elements 3", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame('Associated elements', $name);
+        $this->assertSame("Associated elements", strip_tags($name));
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($ticket3, true);
-        $this->assertSame('Knowledge base <span class=\'badge\'>2</span>', $name);
+        $this->assertSame("Knowledge base 2", strip_tags($name));
 
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->assertSame('Knowledge base <span class=\'badge\'>2</span>', $name);
+        $this->assertSame("Knowledge base 2", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->assertSame('Knowledge base', $name);
+        $this->assertSame("Knowledge base", strip_tags($name));
     }
 }

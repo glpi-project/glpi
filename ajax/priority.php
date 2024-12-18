@@ -33,11 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 if (
     isset($_REQUEST["urgency"])
@@ -58,10 +54,14 @@ if (
     } elseif ($_REQUEST["priority"]) {
         // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
-        echo "<script type='text/javascript' >\n";
-        echo Html::jsSetDropdownValue($_REQUEST["priority"], $priority);
-        echo "\n</script>";
+        echo Html::scriptBlock(
+            sprintf(
+                '$("#%s").trigger("setValue", "%s");',
+                htmlescape($_REQUEST["priority"]),
+                htmlescape($priority)
+            )
+        );
     } else {
-        echo Ticket::getPriorityName($priority);
+        echo htmlescape(Ticket::getPriorityName($priority));
     }
 }

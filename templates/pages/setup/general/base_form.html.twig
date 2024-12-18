@@ -31,9 +31,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set form_path = form_path|default('Config'|itemtype_form_path) %}
 {% if canedit %}
     <form name="form"
-          action="{{ 'Config'|itemtype_form_path }}"
+          action="{{ form_path }}"
           method="post"
           data-track-changes="true">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />

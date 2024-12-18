@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
+
 class RuleDictionnaryPrinterCollection extends RuleCollection
 {
    // From RuleCollection
@@ -44,22 +46,14 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
     public static $rightname           = 'rule_dictionnary_printer';
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of printers');
     }
 
-
-    /**
-     * @see RuleCollection::cleanTestOutputCriterias()
-     **/
     public function cleanTestOutputCriterias(array $output)
     {
-
-       //If output array contains keys begining with _ : drop it
+        //If output array contains keys begining with _ : drop it
         foreach ($output as $criteria => $value) {
             if (($criteria[0] == '_') && ($criteria != '_ignore_import')) {
                 unset($output[$criteria]);
@@ -67,7 +61,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         }
         return $output;
     }
-
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
@@ -186,28 +179,28 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
 
     /**
-     * @param $res_rule  array
-     * @param $input     array
+     * @param array $res_rule
+     * @param array $input
+     * @return bool
      **/
     public static function somethingHasChanged(array $res_rule, array $input)
     {
 
         if (
-            (isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
-            || (isset($res_rule["manufacturer"]) && ($res_rule["manufacturer"] != ''))
-            || (isset($res_rule['is_global']) && ($res_rule['is_global'] != ''))
+            (isset($res_rule["name"]) && ($res_rule["name"] !== $input["name"]))
+            || (isset($res_rule["manufacturer"]) && ($res_rule["manufacturer"] !== ''))
+            || (isset($res_rule['is_global']) && ($res_rule['is_global'] !== ''))
         ) {
             return true;
         }
         return false;
     }
 
-
     /**
      * Replay dictionary on several printers
      *
-     * @param $IDs       array of printers IDs to replay
-     * @param $res_rule  array of rule results
+     * @param array $IDs of printers IDs to replay
+     * @param array $res_rule of rule results
      *
      * @return void
      **/
@@ -251,27 +244,24 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $this->putOldPrintersInTrash($delete_ids);
     }
 
-
     /**
-     * @param $IDS array
+     * @param array $IDS
      */
     public function putOldPrintersInTrash($IDS = [])
     {
-
         $printer = new Printer();
         foreach ($IDS as $id) {
             $printer->delete(['id' => $id]);
         }
     }
 
-
     /**
      * Replay dictionary on one printer
      *
-     * @param &$new_printers   array containing new printers already computed
-     * @param $res_rule        array of rule results
-     * @param $params          array
-     * @param &$printers_ids   array containing replay printer need to be put in trashbin
+     * @param array &$new_printers   array containing new printers already computed
+     * @param array $res_rule        array of rule results
+     * @param array $params
+     * @param array &$printers_ids   array containing replay printer need to be put in trashbin
      **/
     public function replayDictionnaryOnOnePrinter(
         array &$new_printers,
@@ -305,12 +295,12 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             $manufacturer = "";
 
             if (isset($res_rule["manufacturer"])) {
-                $manufacturer = addslashes(Dropdown::getDropdownName(
+                $manufacturer = Dropdown::getDropdownName(
                     "glpi_manufacturers",
                     $res_rule["manufacturer"]
-                ));
+                );
             } else {
-                $manufacturer = addslashes($p['manufacturer']);
+                $manufacturer = $p['manufacturer'];
             }
 
            //New printer not already present in this entity
@@ -347,44 +337,49 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         }
     }
 
-
     /**
      * Move direct connections from old printer to the new one
      *
-     * @param $ID                 the old printer's id
-     * @param $new_printers_id    the new printer's id
+     * @param integer $ID                 the old printer's id
+     * @param integer $new_printers_id    the new printer's id
      *
      * @return void
      **/
     public function moveDirectConnections($ID, $new_printers_id)
     {
-        $computeritem = new Computer_Item();
-       //For each direct connection of this printer
+        $conn = new Asset_PeripheralAsset();
+
+        $relation_table = Asset_PeripheralAsset::getTable();
+
+        // For each direct connection of this printer
         $connections = getAllDataFromTable(
-            'glpi_computers_items',
+            $relation_table,
             [
-                'itemtype'  => 'Printer',
-                'items_id'  => $ID
+                'itemtype_peripheral' => 'Printer',
+                'items_id_peripheral' => $ID
             ]
         );
         foreach ($connections as $connection) {
-            //Direct connection exists in the target printer ?
+            // Direct connection exists in the target printer ?
             if (
                 !countElementsInTable(
-                    "glpi_computers_items",
-                    ['itemtype'     => 'Printer',
-                        'items_id'     => $new_printers_id,
-                        'computers_id' => $connection["computers_id"]
+                    $relation_table,
+                    [
+                        'itemtype_asset'      => $connection["itemtype_asset"],
+                        'items_id_asset'      => $connection["items_id_asset"],
+                        'itemtype_peripheral' => 'Printer',
+                        'items_id_peripheral' => $new_printers_id,
                     ]
                 )
             ) {
-               //Direct connection doesn't exists in the target printer : move it
-                $computeritem->update(['id'       => $connection['id'],
-                    'items_id' => $new_printers_id
+                // Direct connection doesn't exists in the target printer : move it
+                $conn->update([
+                    'id'                  => $connection['id'],
+                    'items_id_peripheral' => $new_printers_id
                 ]);
             } else {
-               //Direct connection already exists in the target printer : delete it
-                $computeritem->delete($connection);
+                // Direct connection already exists in the target printer : delete it
+                $conn->delete($connection);
             }
         }
     }

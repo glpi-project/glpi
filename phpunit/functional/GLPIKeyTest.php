@@ -36,8 +36,9 @@
 namespace tests\units;
 
 use Glpi\Plugin\Hooks;
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
 /* Test for inc/glpikey.class.php */
 
@@ -60,9 +61,7 @@ class GLPIKeyTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getExpectedKeyPathProvider
-     */
+    #[DataProvider('getExpectedKeyPathProvider')]
     public function testGetExpectedKeyPath($glpi_version, $expected_path)
     {
         $glpikey = new \GLPIKey();
@@ -91,7 +90,7 @@ class GLPIKeyTest extends \DbTestCase
 
         // string with special chars, default key
         yield [
-            'encrypted' => 'IYx+rrgV1IqUtqSD1repTebaf4c=',
+            'encrypted' => 'IYx+rrgV1IqUtqSD1repTQ==',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
             'key'       => null,
         ];
@@ -105,15 +104,13 @@ class GLPIKeyTest extends \DbTestCase
 
         // string with special chars, complex custom  key
         yield [
-            'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVkimkW8=',
+            'encrypted' => 'n7iLkqvGhVeXsoFVwqWEVg==',
             'decrypted' => 'zE2^oS1!mC6"dD6&',
             'key'       => 'sY4<sT6*oK3^aN0%',
         ];
     }
 
-    /**
-     * @dataProvider legacyEncryptedProvider
-     */
+    #[DataProvider('legacyEncryptedProvider')]
     public function testDecryptUsingLegacyKey(string $encrypted, string $decrypted, ?string $key)
     {
         $glpikey = new \GLPIKey();
@@ -128,7 +125,7 @@ class GLPIKeyTest extends \DbTestCase
         $glpikey->get();
         $this->hasPhpLogRecordThatContains(
             'You must create a security key, see security:change_key command.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -142,7 +139,7 @@ class GLPIKeyTest extends \DbTestCase
         $glpikey->get();
         $this->hasPhpLogRecordThatContains(
             'Unable to get security key file contents.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -155,7 +152,7 @@ class GLPIKeyTest extends \DbTestCase
         $glpikey->get();
         $this->hasPhpLogRecordThatContains(
             'Invalid security key file contents.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -203,7 +200,7 @@ class GLPIKeyTest extends \DbTestCase
         $glpikey->getLegacyKey();
         $this->hasPhpLogRecordThatContains(
             'Unable to get security legacy key file contents.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -253,7 +250,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertFalse($glpikey->generate());
         $this->hasPhpLogRecordThatContains(
             'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -268,7 +265,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertFalse($glpikey->generate());
         $this->hasPhpLogRecordThatContains(
             'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -282,7 +279,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertFalse($glpikey->generate());
         $this->hasPhpLogRecordThatContains(
             'Unable to get security key file contents.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -295,7 +292,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertFalse($glpikey->generate());
         $this->hasPhpLogRecordThatContains(
             'Invalid security key file contents.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -348,9 +345,7 @@ class GLPIKeyTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider encryptDecryptProvider
-     */
+    #[DataProvider('encryptDecryptProvider')]
     public function testEncryptUsingSpecificKey(?string $string, ?string $encrypted, ?string $key = null)
     {
         vfsStream::setup('glpi', null, ['config' => []]);
@@ -368,9 +363,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEquals($string, $decrypted);
     }
 
-    /**
-     * @dataProvider encryptDecryptProvider
-     */
+    #[DataProvider('encryptDecryptProvider')]
     public function testDecryptUsingSpecificKey(?string $string, ?string $encrypted, ?string $key = null)
     {
         vfsStream::setup('glpi', null, ['config' => []]);
@@ -381,9 +374,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEquals($string, $decrypted);
     }
 
-    /**
-     * @dataProvider encryptDecryptProvider
-     */
+    #[DataProvider('encryptDecryptProvider')]
     public function testDecryptEmptyValue(?string $string, ?string $encrypted, ?string $key = null)
     {
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
@@ -405,7 +396,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEmpty($glpikey->decrypt('not a valid value'));
         $this->hasPhpLogRecordThatContains(
             'Unable to extract nonce from string. It may not have been crypted with sodium functions.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -419,7 +410,7 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEmpty($glpikey->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY='));
         $this->hasPhpLogRecordThatContains(
             'Unable to decrypt string. It may have been crypted with another key.',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -453,6 +444,7 @@ class GLPIKeyTest extends \DbTestCase
             [
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
+                'glpi_oauthclients.secret',
                 'glpi_snmpcredentials.auth_passphrase',
                 'glpi_snmpcredentials.priv_passphrase',
                 'glpi_plugin_myplugin_remote.key',

@@ -47,7 +47,6 @@ class NetworkPortType extends CommonDropdown
 
     public function getAdditionalFields()
     {
-
         return [
             [
                 'name'   => 'value_decimal',
@@ -73,7 +72,7 @@ class NetworkPortType extends CommonDropdown
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'value_decimal',
             'name'               => __('Decimal'),
             'datatype'           => 'integer'
@@ -81,7 +80,7 @@ class NetworkPortType extends CommonDropdown
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_importable',
             'name'               => __('Import'),
             'datatype'           => 'bool'
@@ -89,7 +88,7 @@ class NetworkPortType extends CommonDropdown
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'instantiation_type',
             'name'               => __('Instanciation type'),
             'datatype'           => 'itemtypename',
@@ -106,7 +105,7 @@ class NetworkPortType extends CommonDropdown
 
         $default_instanciations = [
             'Ethernet'     => [6, 7, 62, 117, 169],
-            'Wifi'         => [71],
+            'Wifi'         => [71, 188],
             'Fiberchannel' => [56]
         ];
 
@@ -161,7 +160,7 @@ class NetworkPortType extends CommonDropdown
          */
         global $DB, $GLPI_CACHE;
 
-        if (null === $type || empty($type)) {
+        if (empty($type)) {
             return self::DEFAULT_TYPE;
         }
 
@@ -184,7 +183,7 @@ class NetworkPortType extends CommonDropdown
             $name = $entry['name'];
             $othername = "$name ($num)";
 
-            if ($type === $num || $type == $name || $type == $othername) {
+            if (in_array($type, [$num, $name, $othername], true)) {
                 return $entry['instantiation_type'] ?? self::DEFAULT_TYPE;
             }
         }

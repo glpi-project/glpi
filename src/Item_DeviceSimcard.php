@@ -33,16 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.2
- */
-
+use Glpi\Features\AssignableItem;
 
 /**
  * Relation between item and devices
+ * @since 9.2
  **/
 class Item_DeviceSimcard extends Item_Devices
 {
+    use AssignableItem;
+
     public static $itemtype_2 = 'DeviceSimcard';
     public static $items_id_2 = 'devicesimcards_id';
 
@@ -117,11 +117,50 @@ class Item_DeviceSimcard extends Item_Devices
                 'datatype'   => 'dropdown',
                 'dropdown_options' => ['right' => 'all']
             ],
-            'groups_id'        => ['long name'  => Group::getTypeName(1),
+            'groups_id'        => [
+                'long name'  => Group::getTypeName(1),
                 'short name' => Group::getTypeName(1),
                 'size'       => 20,
                 'id'         => 22,
-                'datatype'   => 'dropdown'
+                'joinparams'         => [
+                    'beforejoin'         => [
+                        'table'              => 'glpi_groups_items',
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                        ]
+                    ]
+                ],
+                'forcegroupby'       => true,
+                'massiveaction'      => false,
+                'datatype'           => 'dropdown'
+            ],
+            'users_id_tech'  => [
+                'long name'  => __('Technician in charge'),
+                'short name' => __('Technician in charge'),
+                'size'       => 20,
+                'id'         => 23,
+                'datatype'   => 'dropdown',
+                'dropdown_options' => ['right' => 'own_ticket']
+            ],
+            'groups_id_tech' => [
+                'long name'  => __('Group in charge'),
+                'short name' => __('Group in charge'),
+                'size'       => 20,
+                'id'         => 24,
+                'joinparams' => [
+                    'beforejoin'         => [
+                        'table'              => 'glpi_groups_items',
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                        ]
+                    ]
+                ],
+                'forcegroupby'     => true,
+                'massiveaction'    => false,
+                'datatype'         => 'dropdown',
+                'dropdown_options' => ['condition' => ['is_assign' => 1]]
             ],
         ];
     }

@@ -38,9 +38,6 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
     public $item_table  = "glpi_computermodels";
     public $menu_option = "model.computer";
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of computer models');

@@ -59,8 +59,8 @@ jobs:
           git checkout -b ${{ env.BUMP_BRANCH }}
           echo "Renaming version file..."
           git mv version/${{ env.TAG }} version/${{ env.NEXT_VERSION }}
-          echo "Replacing version in inc/define.php..."
-          sed -i "s/define('GLPI_VERSION', '[^)]*');/define('GLPI_VERSION', '${{ env.NEXT_VERSION }}-dev');/g" inc/define.php
+          echo "Replacing version in src/autoload/constants.php..."
+          sed -i "s/define('GLPI_VERSION', '[^)]*');/define('GLPI_VERSION', '${{ env.NEXT_VERSION }}-dev');/g" src/autoload/constants.php
           echo "Archiving MySQL empty schema file..."
           cp install/mysql/glpi-empty.sql install/mysql/glpi-${{ env.TAG }}-empty.sql
           echo "Updating CHANGELOG.md..."

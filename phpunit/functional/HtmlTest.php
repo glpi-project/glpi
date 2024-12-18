@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Glpi\Toolbox\FrontEnd;
 
@@ -103,8 +104,8 @@ class HtmlTest extends \GLPITestCase
     public function testCleanInputText()
     {
         $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->assertSame($expected, \Html::cleanInputText($origin));
+        $expected = 'This is a &#039;string&#039; with some &quot;replacements&quot; needed, but not « others »!';
+        $this->assertSame($expected, @\Html::cleanInputText($origin));
     }
 
     public function cleanParametersURL()
@@ -120,30 +121,21 @@ class HtmlTest extends \GLPITestCase
          'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
          'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
         $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show i&nbsp;(...)';
+         'If the string is not truncated, well... We&#039;re wrong and got a very serious issue in our codebase!' .
+         'And if the string has been correctly truncated, well... All is ok then, let&#039;s show i&nbsp;(...)';
         $this->assertSame($expected, \Html::resume_text($origin));
 
         $origin = 'A string that is longer than 10 characters.';
         $expected = 'A string t&nbsp;(...)';
         $this->assertSame($expected, \Html::resume_text($origin, 10));
-    }
 
-    public function testCleanPostForTextArea()
-    {
-        $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
-        $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
-        $this->assertSame($expected, \Html::cleanPostForTextArea($origin));
+        $origin = 'A string that contains HTML special chars like >, < and &, and some text that should be truncated.';
+        $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, a&nbsp;(...)';
+        $this->assertSame($expected, \Html::resume_text($origin, 60));
 
-        $aorigin = [
-            $origin,
-            "Another\\none!"
-        ];
-        $aexpected = [
-            $expected,
-            "Another\none!"
-        ];
-        $this->assertSame($aexpected, \Html::cleanPostForTextArea($aorigin));
+        $origin = 'A string that contains HTML special chars like >, < and &, and some text that should NOT be truncated.';
+        $expected = 'A string that contains HTML special chars like &gt;, &lt; and &amp;, and some text that should NOT be truncated.';
+        $this->assertSame($expected, \Html::resume_text($origin, 1500));
     }
 
     public function testFormatNumber()
@@ -325,7 +317,6 @@ class HtmlTest extends \GLPITestCase
             'KnowbaseItem',
             'ReservationItem',
             'Report',
-            'MigrationCleaner',
             'SavedSearch',
             'Impact'
         ];
@@ -343,21 +334,25 @@ class HtmlTest extends \GLPITestCase
             'Rule',
             'Profile',
             'QueuedNotification',
-            'Glpi\\Event',
-            'Glpi\Inventory\Inventory'
+            'Glpi\System\Log\LogViewer',
+            'Glpi\Inventory\Inventory',
+            'Glpi\Form\Form',
         ];
         $this->assertSame('Administration', $menu['admin']['title']);
         $this->assertSame($expected, $menu['admin']['types']);
 
         $expected = [
+            'Glpi\Asset\AssetDefinition',
             'CommonDropdown',
             'CommonDevice',
             'Notification',
+            'Webhook',
             'SLM',
             'Config',
             'FieldUnicity',
             'CronTask',
             'Auth',
+            'OAuthClient',
             'MailCollector',
             'Link',
             'Plugin'
@@ -655,17 +650,11 @@ class HtmlTest extends \GLPITestCase
         // init menu
         \Html::generateMenuSession(true);
 
-        // test modal
-        $modal = \Html::FuzzySearch('getHtml');
-        $this->assertStringContainsString('id="fuzzysearch"', $modal);
-        $this->assertMatchesRegularExpression('/class="results[^"]*"/', $modal);
+        // test retrieving entries
+        $entries = \Html::getMenuFuzzySearchList();
+        $this->assertGreaterThan(5, count($entries));
 
-       // test retrieving entries
-        $default = json_decode(\Html::FuzzySearch(), true);
-        $entries = json_decode(\Html::FuzzySearch('getList'), true);
-        $this->assertSame($default, $entries);
-
-        foreach ($default as $entry) {
+        foreach ($entries as $entry) {
             $this->assertArrayHasKey('title', $entry);
             $this->assertArrayHasKey('url', $entry);
         }
@@ -675,10 +664,10 @@ class HtmlTest extends \GLPITestCase
     {
         $value = 'Should be \' "escaped" éè!';
         $expected = 'Should be &#039; &quot;escaped&quot; &eacute;&egrave;!';
-        $result = \Html::entities_deep($value);
+        $result = @\Html::entities_deep($value);
         $this->assertSame($expected, $result);
 
-        $result = \Html::entities_deep([$value, $value, $value]);
+        $result = @\Html::entities_deep([$value, $value, $value]);
         $this->assertSame([$expected, $expected, $expected], $result);
     }
 
@@ -717,41 +706,44 @@ class HtmlTest extends \GLPITestCase
 
     public function testDisplayBackLink()
     {
-        ob_start();
-        \Html::displayBackLink();
-        $output = ob_get_clean();
-        $this->assertSame("<a href='javascript:history.back();'>Back</a>", $output);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        $_SERVER['HTTP_REFERER'] = 'originalpage.html';
+        $CFG_GLPI['url_base'] = 'http://localhost/glpi';
+
         ob_start();
         \Html::displayBackLink();
         $output = ob_get_clean();
-        $this->assertSame("<a href='originalpage.html'>Back</a>", $output);
+        $this->assertSame('<a href="http://localhost/glpi">Back</a>', $output);
+
+        $_SERVER['HTTP_REFERER'] = 'http://localhost/glpi/originalpage.html';
+        ob_start();
+        \Html::displayBackLink();
+        $output = ob_get_clean();
+        $this->assertSame('<a href="http://localhost/glpi/originalpage.html">Back</a>', $output);
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 
     public function testAddConfirmationOnAction()
     {
         $string = 'Are U\' OK?';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ ;return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string));
 
         $strings = ['Are you', 'OK?'];
-        $expected = 'onclick="if (window.confirm(\'Are you\nOK?\')){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are you\nOK?&quot;)){ ;return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($strings));
 
         $actions = '$("#mydiv").focus();';
-        $expected = 'onclick="if (window.confirm(\'Are U\\\' OK?\')){ $("#mydiv").focus();return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string, $actions));
     }
 
     public function testJsFunctions()
     {
-        $this->assertSame("$('#myid').hide();\n", \Html::jsHide('myid'));
-        $this->assertSame("$('#myid').show();\n", \Html::jsShow('myid'));
-        $this->assertSame("$('#myid')", \Html::jsGetElementbyID('myid'));
-        $this->assertSame("$('#myid').trigger('setValue', 'myval');", \Html::jsSetDropdownValue('myid', 'myval'));
-        $this->assertSame("$('#myid').val()", \Html::jsGetDropdownValue('myid'));
+        $this->assertSame("$('#myid')", @\Html::jsGetElementbyID('myid'));
+        $this->assertSame("$('#myid').trigger('setValue', 'myval');", @\Html::jsSetDropdownValue('myid', 'myval'));
+        $this->assertSame("$('#myid').val()", @\Html::jsGetDropdownValue('myid'));
     }
 
     public function testCleanId()
@@ -767,18 +759,22 @@ class HtmlTest extends \GLPITestCase
     public function testImage()
     {
         $path = '/path/to/image.png';
-        $expected = '<img src="/path/to/image.png" title="" alt=""  />';
+        $expected = '<img src="/path/to/image.png" title="" alt="" />';
         $this->assertSame($expected, \Html::image($path));
 
         $options = [
             'title'  => 'My title',
             'alt'    => 'no img text'
         ];
-        $expected = '<img src="/path/to/image.png" title="My title" alt="no img text"  />';
+        $expected = '<img src="/path/to/image.png" title="My title" alt="no img text" />';
         $this->assertSame($expected, \Html::image($path, $options));
 
         $options = ['url' => 'mypage.php'];
-        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class=\'pointer\' /></a>';
+        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class="pointer" /></a>';
+        $this->assertSame($expected, \Html::image($path, $options));
+
+        $options = ['url' => 'mypage.php', 'class' => 'specific-class'];
+        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
         $this->assertSame($expected, \Html::image($path, $options));
     }
 
@@ -793,11 +789,11 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'confirm'   => 'U sure?'
         ];
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
         $this->assertSame($expected, \Html::link($text, $url, $options));
 
         $options['confirmaction'] = 'window.close();';
-        $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ window.close();return true;} else { return false;}">My link</a>';
+        $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
         $this->assertSame($expected, \Html::link($text, $url, $options));
     }
 
@@ -853,38 +849,97 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::input($name, $options));
     }
 
-    public static function providerGetBackUrl()
+    public static function providerGetRefererUrl(): iterable
     {
-        return [
-            [
-                "http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2",
-                "http://localhost/glpi/front/change.form.php?id=1",
-            ],
-            [
-                "http://localhost/glpi/front/change.form.php?id=1",
-                "http://localhost/glpi/front/change.form.php?id=1",
-            ],
-            [
-                "https://test/test/test.php?param1=1&param2=2&param3=3",
-                "https://test/test/test.php?param1=1&param2=2&param3=3",
-            ],
-            [
-                "/front/computer.php?id=15&forcetab=test&ok=1",
-                "/front/computer.php?id=15&ok=1",
-            ],
-            [
-                "/front/computer.php?forcetab=test",
-                "/front/computer.php",
-            ],
+        // Basic cases
+        yield 'http://example.org/' => [
+            'referer'  => 'http://example.org/',
+            'expected' => 'http://example.org/',
+        ];
+        yield 'http://localhost/glpi/front/change.form.php?id=1' => [
+            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1',
+            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        ];
+
+        // Invalid referer
+        yield '/invalid/referer' => [
+            'referer'  => '/invalid/referer',
+            'expected' => null,
+        ];
+        yield '' => [
+            'referer'  => '',
+            'expected' => null,
         ];
     }
 
-    /**
-     * @dataProvider providerGetBackUrl
-     */
-    public function testGetBackUrl($url_in, $url_out)
+    #[DataProvider('providerGetRefererUrl')]
+    public function testGetRefererUrl(string $referer, ?string $expected): void
     {
-        $this->assertSame($url_out, \Html::getBackUrl($url_in));
+        $_SERVER['HTTP_REFERER'] = $referer;
+        $this->assertSame($expected, \Html::getRefererUrl());
+    }
+
+    public static function providerGetBackUrl(): iterable
+    {
+        // Basic cases
+        yield 'http://localhost/glpi/front/change.form.php?id=1' => [
+            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        ];
+        yield 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3' => [
+            'referer'  => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
+        ];
+
+        // `forcetab` param stripping
+        yield 'http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2' => [
+            'referer'  => 'http://localhost/glpi/front/change.form.php?id=1&forcetab=Change$2',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi/front/change.form.php?id=1',
+        ];
+        yield 'http://localhost/glpi/test.php?param1=1&param2=2&forcetab=test&param3=3' => [
+            'referer'  => 'http://localhost/glpi/test.php?param1=1&param2=2&forcetab=test&param3=3',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi/test.php?param1=1&param2=2&param3=3',
+        ];
+
+        // Prevent switch between http and https schemes
+        yield 'http://localhost/glpi/front/computer.form.php?id=1' => [
+            'referer'  => 'http://localhost/glpi/front/computer.form.php?id=1',
+            'base_url' => 'https://localhost/glpi',
+            'expected' => 'http://localhost/glpi/front/computer.form.php?id=1'
+        ];
+        yield 'https://localhost/glpi/front/computer.form.php?id=1' => [
+            'referer'  => 'https://localhost/glpi/front/computer.form.php?id=1',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'https://localhost/glpi/front/computer.form.php?id=1',
+        ];
+
+        // Invalid referer
+        yield '/invalid/referer' => [
+            'referer'  => '/invalid/referer',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi',
+        ];
+        yield '' => [
+            'referer'  => '',
+            'base_url' => 'http://localhost/glpi',
+            'expected' => 'http://localhost/glpi',
+        ];
+    }
+
+    #[DataProvider('providerGetBackUrl')]
+    public function testGetBackUrl(string $referer, string $base_url, string $expected): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $_SERVER['HTTP_REFERER'] = $referer;
+        $CFG_GLPI['url_base'] = $base_url;
+
+        $this->assertSame($expected, \Html::getBackUrl());
     }
 
     public function testGetScssFileHash()
@@ -1026,9 +1081,7 @@ SCSS
         ];
     }
 
-    /**
-     * @dataProvider testGetGenericDateTimeSearchItemsProvider
-     */
+    #[DataProvider('testGetGenericDateTimeSearchItemsProvider')]
     public function testGetGenericDateTimeSearchItems(
         array $options,
         array $check_values,
@@ -1059,14 +1112,18 @@ SCSS
         ];
 
         yield [
-            'name'      => 'foo\'"$**-_23',
+            'name'      => 'foo\'"$**_23',
             'expected'  => 'foo_23',
+        ];
+
+        // Make sure the format used in form destination config is not broken
+        yield [
+            'name'     => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
+            'expected' => 'config[glpi-form-destination-commonitilfield-olattrfield][slm_id]',
         ];
     }
 
-    /**
-     * @dataProvider inputNameProvider
-     */
+    #[DataProvider('inputNameProvider')]
     public function testSanitizeInputName(string $name, string $expected): void
     {
         $this->assertEquals($expected, \Html::sanitizeInputName($name));

@@ -77,7 +77,7 @@ class PCIVendorTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $vendors->add([
-                'name'  => addslashes("UnAllied Telesis, Inc (Good ID)"),
+                'name'  => "UnAllied Telesis, Inc (Good ID)",
                 'vendorid'  => '0010'
             ])
         );

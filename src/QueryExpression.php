@@ -34,38 +34,18 @@
  */
 
 /**
- *  Query expression class
- **/
-class QueryExpression
+ * @deprecated 11.0.0
+ */
+class QueryExpression extends Glpi\DBAL\QueryExpression
 {
-    private $expression;
-
     /**
      * Create a query expression
      *
-     * @param string $expression Query parameter value, defaults to '?'
+     * @param string $expression The query expression
      */
     public function __construct($expression)
     {
-        if (empty($expression)) {
-            throw new \RuntimeException('Cannot build an empty expression');
-        }
-        $this->expression = $expression;
-    }
-
-    /**
-     * Query expression value
-     *
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->expression;
-    }
-
-
-    public function __toString()
-    {
-        return $this->getValue();
+        Toolbox::deprecated();
+        parent::__construct($expression);
     }
 }

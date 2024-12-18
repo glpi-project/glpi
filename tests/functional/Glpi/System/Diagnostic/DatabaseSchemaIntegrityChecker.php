@@ -94,7 +94,7 @@ CREATE TABLE `table_{$table_increment}` (
   KEY`is_deleted`(`is_deleted`),
   KEY `values` (
     `value`,
-    `steps`,    
+    `steps`,
     `max`
   )
 ) ENGINE=MyISAM
@@ -1281,6 +1281,105 @@ DIFF,
             ]
         );
 
+        // MariaDB does not have a JSON type and instead uses an alias
+        foreach (['', ' NOT NULL'] as $null_property) {
+            $tables = [
+                [
+                    'name' => sprintf('table_%s', ++$table_increment),
+                    'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin{$null_property} CHECK (json_valid(`json`)),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                    'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `json` json{$null_property},
+  PRIMARY KEY (`id`)
+)
+SQL,
+                    'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` json{$null_property},
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                    'differences'    => null,
+                ],
+            ];
+
+            yield $convert_to_provider_entry(
+                $tables,
+                [
+                    'strict' => true,
+                    'allow_signed_keys' => true,
+                    'ignore_innodb_migration' => true,
+                    'ignore_timestamps_migration' => true,
+                    'ignore_utf8mb4_migration' => true,
+                    'ignore_dynamic_row_format_migration' => true,
+                    'ignore_unsigned_keys_migration' => true
+                ]
+            );
+        }
+
+        $tables = [
+            [
+                'name' => sprintf('table_%s', ++$table_increment),
+                'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` longtext CHARACTER SET utf8 COLLATE utf8_bin NOT NULL CHECK (json_valid(`json`)),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `json` json NOT NULL,
+  PRIMARY KEY (`id`)
+)
+SQL,
+                'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `json` json,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+SQL,
+                'differences'    => [
+                    'type' => 'altered_table',
+                    'diff' => <<<DIFF
+--- Expected database schema
++++ Current database schema
+@@ @@
+ CREATE TABLE `table_{$table_increment}` (
+   `id` int NOT NULL AUTO_INCREMENT,
+-  `json` json NOT NULL,
++  `json` json,
+   PRIMARY KEY (`id`)
+ )
+
+DIFF,
+                ],
+            ],
+        ];
+
+        yield $convert_to_provider_entry(
+            $tables,
+            [
+                'strict' => true,
+                'allow_signed_keys' => true,
+                'ignore_innodb_migration' => true,
+                'ignore_timestamps_migration' => true,
+                'ignore_utf8mb4_migration' => true,
+                'ignore_dynamic_row_format_migration' => true,
+                'ignore_unsigned_keys_migration' => true
+            ]
+        );
+
         // Always ignore key length when value is `250`,
         // but detect differences when value is not `250`.
         yield $convert_to_provider_entry(
@@ -1762,8 +1861,7 @@ SQL
             '10.0.1',
             '10.0.2',
             '10.0.3',
-            '10.1.0-dev',
-            '10.1.0',
+            '11.0.0-dev',
             '11.0.0-beta1',
             '11.0.0-rc2',
             '11.0.0',
@@ -1952,8 +2050,7 @@ SQL
             '10.0.1',
             '10.0.2',
             '10.0.3',
-            '10.1.0-dev',
-            '10.1.0',
+            '11.0.0-dev',
             '11.0.0-beta1',
             '11.0.0-rc2',
             '11.0.0',
@@ -2109,5 +2206,43 @@ DIFF);
         }
 
         return $db;
+    }
+
+    public function testIndexTypesAreNormalized(): void
+    {
+        // Arrange: get the SQL of a table that uses index types
+        $sql = <<<SQL
+CREATE TABLE `glpi_displaypreferences` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity2` (`users_id`,`itemtype`,`num`,`interface`) USING BTREE,
+  UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`) USING HASH,
+  UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL;
+
+        // Act: normalize the SQL
+        // TODO: the sql should be normalized by an independent service to
+        // make testing easier and promote the single responsibility principle
+        $db = $this->geDbMock();
+        $integrity_checker = new \Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker(
+            $db,
+        );
+        $normalized_sql = $this->callPrivateMethod(
+            $integrity_checker,
+            'getNormalizedSql',
+            $sql
+        );
+
+        // Assert: the index types should be removed are normalized
+        $this->string($normalized_sql)->isEqualTo(<<<SQL
+CREATE TABLE `glpi_displaypreferences` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity2` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`),
+  UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL);
     }
 }

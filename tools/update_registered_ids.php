@@ -38,11 +38,10 @@ if (PHP_SAPI != 'cli') {
     exit();
 }
 
-/**
- * @since 0.85
- */
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-include('../inc/includes.php');
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->loadCommonGlobalConfig();
 
 $registeredid = new RegisteredID();
 $manufacturer = new Manufacturer();
@@ -62,7 +61,7 @@ foreach (
         }
         if ($line[0] != '\t') {
             $id   = strtolower(substr($line, 0, 4));
-            $name = addslashes(trim(substr($line, 4)));
+            $name = trim(substr($line, 4));
             if (
                 $registeredid->getFromDBByCrit([
                     'itemtype'     => 'Manufacturer',
@@ -88,7 +87,7 @@ foreach (
        // if (($line[0] == "\t") && ($line[1] != '\t'))  {
        //    $line = trim($line);
        //    $id   = strtolower(substr($line, 0, 4));
-       //    $name = addslashes(trim(substr($line, 4)));
+       //    $name = trim(substr($line, 4));
        //    continue;
        // }
     }

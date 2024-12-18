@@ -38,12 +38,12 @@ namespace tests\units\Glpi\RichText;
 use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Ticket;
 use Ticket_User;
@@ -197,9 +197,7 @@ HTML
         }
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testHandleUserMentions(
         string $itemtype,
         string $main_itemtype,
@@ -268,7 +266,7 @@ HTML
         }
 
         // Create item
-        $item_id = $item->add(Sanitizer::sanitize($input));
+        $item_id = $item->add($input);
         $this->assertGreaterThan(0, $item_id);
 
         // Check observers on creation
@@ -293,7 +291,7 @@ HTML
         $this->assertCount(count($add_expected_notified), $notifications);
 
         // Update item
-        $update = $item->update(Sanitizer::sanitize(['id' => $item->getID(), 'content' => $update_content]));
+        $update = $item->update(['id' => $item->getID(), 'content' => $update_content]);
         $this->assertTrue($update);
 
         // Check observers on update
@@ -459,9 +457,8 @@ HTML
 
     /**
      * Specific tests on TicketValidation that contains 2 content fields.
-     *
-     * @dataProvider ticketValidationProvider
      */
+    #[DataProvider('ticketValidationProvider')]
     public function testHandleUserMentionsOnTicketValidation(
         ?string $submission_add,
         ?string $validation_add,
@@ -503,17 +500,19 @@ HTML
 
         // Create TicketValidation
         $input = [
-            'tickets_id'        => $ticket_id,
-            'users_id_validate' => Session::getLoginUserID(),
+            'tickets_id'      => $ticket_id,
+            'itemtype_target' => 'User',
+            'items_id_target' => Session::getLoginUserID(),
         ];
         if ($submission_add !== null) {
             $input['comment_submission'] = $submission_add;
         }
         if ($validation_add !== null) {
             $input['comment_validation'] = $validation_add;
+            $input['users_id_validate']  = Session::getLoginUserID();
         }
         $ticket_validation = new TicketValidation();
-        $ticket_validation_id = $ticket_validation->add(Sanitizer::sanitize($input));
+        $ticket_validation_id = $ticket_validation->add($input);
         $this->assertGreaterThan(0, $ticket_validation_id);
 
         // Check observers on creation
@@ -547,7 +546,7 @@ HTML
         if ($validation_update !== null) {
             $input['comment_validation'] = $validation_update;
         }
-        $update = $ticket_validation->update(Sanitizer::sanitize($input));
+        $update = $ticket_validation->update($input);
         $this->assertTrue($update);
 
         // Check observers on update

@@ -35,12 +35,222 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
-
-/* Test for inc/ruleticket.class.php */
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Rule;
+use RuleAction;
+use RuleCriteria;
+use SingletonRuleList;
 
 class RuleAssetTest extends DbTestCase
 {
+    protected function testCriteriaProvider(): Generator
+    {
+        // Test case 1 for last_inventory_update -> Precise date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => "2022-02-28 22:05:30",
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => '2022-02-28 22:05:30',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_EQUAL,
+            'success'        => true,
+        ];
+
+        // Test case 2 for last_inventory_update -> Precise date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => "2022-02-28 22:05:30",
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => '2022-02-28 22:05:31',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_EQUAL,
+            'success'        => false,
+        ];
+
+        // Test case 3 for last_inventory_update -> Today
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => $_SESSION["glpi_currenttime"],
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => 'TODAY',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_EQUAL,
+            'success'        => true,
+        ];
+
+        // Test case 4 for last_inventory_update -> Today
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => "2022-02-28 22:05:30",
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => 'TODAY',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_EQUAL,
+            'success'        => false,
+        ];
+
+        // Test case 5 for last_inventory_update -> before relative date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => date('Y-m-d H:i:s', time() - 18000),
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => '-2HOUR',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_BEFORE,
+            'success'        => true,
+        ];
+
+        // Test case 6 for last_inventory_update -> before relative date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => $_SESSION["glpi_currenttime"],
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => '-2DAY',
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_BEFORE,
+            'success'        => false,
+        ];
+
+        // Test case 7 for last_inventory_update -> after fixed date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => "2022-04-15 17:34:47",
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => "2022-02-28 22:05:30",
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_AFTER,
+            'success'        => true,
+        ];
+
+        // Test case 8 for last_inventory_update -> after fixed date
+        yield [
+            'itemtype' => Computer::getType(),
+            'input' => [
+                'name'                  => 'testLastInventoryUpdateCriteria1',
+                'last_inventory_update' => "2022-02-26 20:23:18",
+                'entities_id'           => 0,
+            ],
+            'criteria_field' => 'last_inventory_update',
+            'criteria_value' => "2022-02-28 22:05:30",
+            'action_field'   => 'comment',
+            'condition'      => Rule::PATTERN_DATE_IS_AFTER,
+            'success'        => false,
+        ];
+    }
+
+    /**
+     * Test a given criteria
+     */
+    public function testCriteria()
+    {
+        global $DB;
+
+        $this->login();
+
+        $provider = $this->testCriteriaProvider();
+        foreach ($provider as $row) {
+            $itemtype = $row['itemtype'];
+            $input = $row['input'];
+            $criteria_field = $row['criteria_field'];
+            $criteria_value = $row['criteria_value'];
+            $action_field = $row['action_field'];
+            $condition = $row['condition'];
+            $success = $row['success'];
+
+            // Disable all others rules before running the test
+            $DB->update(Rule::getTable(), ['is_active' => false], [
+                'sub_type' => "RuleAsset"
+            ]);
+            $active_rules = countElementsInTable(Rule::getTable(), [
+                'is_active' => true,
+                'sub_type' => "RuleAsset",
+            ]);
+            $this->assertEquals(0, $active_rules);
+
+            // Create the rule
+            $rule_asset = $this->createItem(\RuleAsset::getType(), [
+                'name' => 'testLastInventoryUpdateCriteria',
+                'match' => 'AND',
+                'is_active' => true,
+                'sub_type' => 'RuleAsset',
+                'condition' => \RuleAsset::ONUPDATE,
+            ]);
+
+            // Add the condition
+            $this->createItem(RuleCriteria::getType(), [
+                'rules_id' => $rule_asset->getID(),
+                'criteria' => $criteria_field,
+                'condition' => $condition,
+                'pattern' => $criteria_value,
+            ]);
+
+            // Add the action
+            $this->createItem(RuleAction::getType(), [
+                'rules_id' => $rule_asset->getID(),
+                'action_type' => "assign",
+                'field' => $action_field,
+                'value' => "value_changed",
+            ]);
+
+            // Reset rule cache
+            SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
+            SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
+
+            // Creat the test subject
+            $item = $this->createItem($itemtype, $input);
+
+            // Safety check before test
+            $this->assertNotEquals("value_changed", $item->fields[$action_field]);
+
+            // Execute the test
+            $update = $item->update([
+                'id' => $item->getID(),
+                $action_field => 'value_not_changed',
+            ]);
+            $this->assertTrue($update);
+            $this->assertTrue($item->getFromDB($item->getID()));
+
+            // Check whether the rule affected our item
+            $value = $item->fields[$action_field];
+            if ($success == true) {
+                $this->assertEquals("value_changed", $value);
+            } else {
+                $this->assertEquals("value_not_changed", $value);
+            }
+        }
+    }
+
     public function testGetCriteria()
     {
         $rule = new \RuleAsset();
@@ -500,7 +710,7 @@ class RuleAssetTest extends DbTestCase
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertEquals(
-            $user->getField('groups_id'),
+            [$user->getField('groups_id')],
             $computer->getField('groups_id')
         );
     }
@@ -584,6 +794,6 @@ class RuleAssetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
-        $this->assertEquals($group_id, $computer->getField('groups_id'));
+        $this->assertEquals([$group_id], $computer->getField('groups_id'));
     }
 }

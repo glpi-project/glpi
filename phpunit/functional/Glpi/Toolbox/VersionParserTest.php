@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Test class for src/Glpi/Toolbox/versionparser.class.php
  */
@@ -151,27 +153,21 @@ class VersionParserTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider versionsProvider
-     */
+    #[DataProvider('versionsProvider')]
     public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();
         $this->assertEquals($normalized, $version_parser->getNormalizedVersion($version, $keep_stability_flag));
     }
 
-    /**
-     * @dataProvider versionsProvider
-     */
+    #[DataProvider('versionsProvider')]
     public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();
         $this->assertSame($stable, $version_parser->isStableRelease($version));
     }
 
-    /**
-     * @dataProvider versionsProvider
-     */
+    #[DataProvider('versionsProvider')]
     public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();

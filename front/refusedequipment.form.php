@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("refusedequipment", READ);
 
 if (!isset($_GET["id"])) {
@@ -73,7 +71,7 @@ if (isset($_POST["purge"])) {
     );
     Html::back();
 } else {
-    $menus = ["admin", "glpi\inventory\inventory", "refusedequipment"];
+    $menus = ["admin", "glpi\inventory\inventory", "RefusedEquipment"];
     RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"

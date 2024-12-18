@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    <input type="hidden" name="printers_id" value="{{ printer.getID() }}"/>
+    <input type="hidden" name="cartridgeitems_id" value="{{ item.fields['cartridgeitems_id'] }}"/>
+    {{ fields.htmlField('', printer.getLink(), 'Printer'|itemtype_name) }}
+    {{ fields.htmlField('', model.getLink(), _n('Cartridge model', 'Cartridge models', 1)) }}
+
+    {{ fields.htmlField('', item.fields['date_in']|formatted_date|e, __('Add date')) }}
+    {% if item.fields['date_use'] is not empty and item.fields['date_out'] is empty %}
+        {{ fields.dateField('date_use', item.fields['date_use'], __('Use date'), {
+            maybeempty: false,
+            canedit: true,
+            min: item.fields['date_in'],
+        }) }}
+    {% else %}
+        {{ fields.htmlField('', item.fields['date_use']|formatted_date|e, __('Use date')) }}
+    {% endif %}
+
+    {% if item.fields['date_out'] is not empty %}
+        {{ fields.dateField('date_out', item.fields['date_out'], __('End date'), {
+            maybeempty: false,
+            canedit: true,
+            min: item.fields['date_use'],
+        }) }}
+        {{ fields.numberField('pages', item.fields['pages'], __('Printer counter')) }}
+    {% endif %}
+{% endblock %}

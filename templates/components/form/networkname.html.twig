@@ -152,8 +152,8 @@
 
                   {{ fields.htmlField(
                      '_vrtual',
-                     show_child|raw,
-                     ip_label ~ add_child,
+                      (add_child ~ show_child)|raw,
+                     ip_label,
                      field_options
                   ) }}
                </div> {# .row #}

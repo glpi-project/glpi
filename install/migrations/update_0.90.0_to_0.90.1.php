@@ -36,7 +36,7 @@
 /**
  * Update from 0.90 to 0.90.1
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update0900to0901()
 {

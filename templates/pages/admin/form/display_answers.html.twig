@@ -1,0 +1,73 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<form method="POST" action="{{ item.getFormURL() }}">
+
+    {# TODO: improve UI #}
+    <div class="ms-3 mt-2">
+        <h2 class="mb-3">{{ item.fields.name }}</h2>
+
+        <div class="mb-3">
+            <label class="form-label">
+                {{ __("Author") }}
+            </label>
+            <div class="form-control-plaintext">{{ get_item_link('User', item.fields.users_id) }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">
+                {{ _n('Date', 'Dates', 1) }}
+            </label>
+            <div
+                class="form-control-plaintext"
+            >
+                {{ item.fields.date_creation }}
+            </div>
+        </div>
+
+        {% for answer in answers %}
+            {% set type = answer.getType() %}
+            {% if answer.getRawAnswer() is not empty and type is not null %}
+                <div class="mb-3">
+                    <label class="form-label">
+                        {{ answer.getQuestionLabel() }}
+                    </label>
+                    {{ type.renderAnswerTemplate(answer.getRawAnswer())|raw }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {# Show actions #}
+    {{ include("components/form/buttons.html.twig") }}
+</form>

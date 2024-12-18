@@ -1,0 +1,225 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set is_ajax = _request['searchform_id'] is defined and _request['searchform_id'] is not null %}
+{% set rand = random() %}
+{% set mainform = mainform is not defined ? true : mainform %}
+{% set main_block_class = mainform ? '' : 'sub_criteria' %}
+{% set card_class %}
+   {% if mainform %}
+      {{ 'search-form card card-sm' ~ (user_pref('show_search_form') ? ' border mb-3' : '') }}
+   {% else %}
+      {{ 'border d-inline-block ms-1' }}
+   {% endif %}
+{% endset %}
+{% set hide_criteria = not(p.hide_criteria is defined and not p.hide_criteria) %}
+{% set extra_actions_templates = p.extra_actions_templates|default([]) %}
+{% set hide_controls = p.hide_controls is defined and p.hide_controls %}
+{% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
+
+{% if mainform and showaction %}
+   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
+
+   {% for param_name, param_value in additional_params %}
+       <input type="hidden" name="{{ param_name }}" value="{{ param_value }}" />
+   {% endfor %}
+{% endif %}
+
+<div class="{{ card_class }}">
+   <div id="searchcriteria{{ rand }}" class="{{ main_block_class }}">
+      {# init criteria count #}
+      {% set nbsearchcountvar = "nbcriteria" ~ normalized_itemtype ~ random() %}
+      <script>
+         let {{ nbsearchcountvar }} = {{ criteria|length }};
+      </script>
+      <div class="list-group list-group-flush list-group-hoverable criteria-list pt-2" id="criteriatable{{ normalized_itemtype }}{{ random() }}">
+         {% if p.defaultfilter is defined %}
+            <div class="p-2 b-0">
+               <label class="form-check form-switch btn btn-sm btn-ghost-secondary me-1 me-sm-2 px-1 mb-0 flex-column-reverse flex-sm-row"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover"
+                     title="{{ __('Toggle additional default filters') }}">
+                  <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 default-filter" role="button"
+                        {{ p.nodefault is defined ? '' : 'checked' }} autocomplete="off" {{ (can_disablefilter) ? '' : 'disabled' }} />
+                  <span class="form-check-label mb-1 mb-sm-0">
+                     <i class="ti fa-lg ti-filter"></i>
+                  </span>
+               </label>
+               <span title="{{ p.defaultfilter['comment'] }}">{{ p.defaultfilter['name'] }}</span>
+            </div>
+         {% endif %}
+         {% for i in p['criteria']|keys %}
+            {{ call("Glpi\\Search\\Input\\QueryBuilder::displayCriteria", [{
+               itemtype: itemtype,
+               num: i,
+               p: p
+            }]) }}
+         {% endfor %}
+         <a id="more-criteria{{ rand }}" role="button" class="normalcriteria list-group-item p-2 b-0 d-none"></a>
+      </div>
+      {% if _get['savedsearches_id'] is defined %}
+         <input type="hidden" name="savedsearches_id" value="{{ _get['savedsearches_id'] }}">
+      {% endif %}
+
+      {# Keep track of display params affecting the results, they must be kept on refresh #}
+      <input type="hidden" name="params[hide_criteria]" value="{{ hide_criteria ? "1" : "0" }}">
+      <input type="hidden" name="params[hide_controls]" value="{{ hide_controls ? "1" : "0" }}">
+      <input type="hidden" name="params[showmassiveactions]" value="{{ showmassiveactions ? "1" : "0" }}">
+
+      <div class="card-footer d-flex search_actions">
+         <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
+            <i class="ti ti-square-plus"></i>
+            <span class="d-none d-sm-block">{{ __('rule') }}</span>
+         </button>
+         {% if linked is defined and linked|length > 0 %}
+            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
+               <i class="ti ti-circle-plus"></i>
+               <span class="d-none d-sm-block">{{ __('global rule') }}</span>
+            </button>
+         {% endif %}
+         <button id="addcriteriagroup{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
+            <i class="ti ti-code-plus"></i>
+            <span class="d-none d-sm-block">{{ __('group') }}</span>
+         </button>
+         {% if mainform %}
+            <span class="ms-auto btn-group">
+                {% if (showaction) %}
+                {# Display submit button #}
+                <button class="btn btn-sm btn-primary" type="button" name="{{ p['actionname'] }}">
+                    <i class="ti ti-search"></i>
+                    <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
+                </button>
+                {% endif %}
+                {% if p['showbookmark'] %}
+                {{ include('pages/tools/savedsearch/save_button.html.twig', {
+                    type: constant('SavedSearch::SEARCH'),
+                    itemtype: itemtype,
+                    active: _get['savedsearches_id'] is defined
+                }) }}
+                {% endif %}
+                {% if p['showreset'] %}
+                <a class="btn btn-sm btn-icon px-2 search-reset"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom"
+                   href="{{ p['target'] ~ ('?' in p['target'] ? '&' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
+                    <i class="ti ti-square-x"></i>
+                </a>
+                {% elseif p['forcereset'] %}
+                <input type="hidden" name="reset" value="reset">
+                {% endif %}
+            </span>
+         {% endif %}
+         {% for template, params in extra_actions_templates %}
+            {% include template with params %}
+         {% endfor %}
+      </div>
+
+      {# TODO These tokens could be data attributes on the related elements #}
+      {% set idor_display_criteria = idor_token(itemtype) %}
+      {% set idor_display_meta_criteria = idor_token(itemtype) %}
+      {% set idor_display_criteria_group = idor_token(itemtype) %}
+      {% set itemtype_escaped = itemtype|escape('js') %}
+
+      {# TODO JS could probably be moved to a JS file #}
+      {% set ajax_url = config('root_doc') ~ "/ajax/search.php" %}
+      <script>
+         $('#addsearchcriteria{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_criteria',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+               $(data).insertBefore('#more-criteria{{ rand }}');
+               {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+         $('#addmetasearchcriteria{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_meta_criteria',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+                 $(data).insertBefore('#more-criteria{{ rand }}');
+                {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+         $('#addcriteriagroup{{ rand }}').on('click', function(event) {
+             event.preventDefault();
+             $.post("{{ ajax_url }}", {
+                 'action': 'display_criteria_group',
+                 'itemtype': "{{ itemtype_escaped }}",
+                 'num': {{ nbsearchcountvar }},
+                 'p': {{ p|json_encode|raw }},
+                 '_idor_token': "{{ idor_display_criteria }}"
+             }).done(function (data) {
+                 $(data).insertBefore('#more-criteria{{ rand }}');
+                {{ nbsearchcountvar }} = {{ nbsearchcountvar }} + 1;
+             });
+         });
+
+         {% if mainform and not hide_criteria %}
+            $(document).off('click', '.remove-search-criteria').on("click", ".remove-search-criteria", function() {
+                // force removal of tooltip
+                const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
+                if (tooltip !== null) {
+                    tooltip.dispose();
+                }
+
+                const rowID = $(this).data('rowid');
+                $('#' + rowID).remove();
+                $('#searchcriteria{{ rand }} .criteria-list .list-group-item:first-child').addClass('headerRow').show();
+            });
+         {% endif %}
+      </script>
+
+      {% if p['addhidden']|length > 0 %}
+         {% for key, val in p['addhidden'] %}
+            <input type="hidden" name="{{ key }}" value="{{ val }}">
+         {% endfor %}
+      {% endif %}
+
+      {% if mainform %}
+         <input type="hidden" name="itemtype" value="{{ itemtype }}">
+         <input type="hidden" name="start" value="0">
+      {% endif %}
+   </div>
+</div>
+
+{% if mainform and showaction %}
+   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   </form>
+{% endif %}

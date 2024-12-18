@@ -1,0 +1,145 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="asset {{ bg }}">
+    {{ include('components/form/header.html.twig') }}
+
+    {% set rand = random() %}
+    {% set params  = params ?? [] %}
+    {% set field_options = {} %}
+
+    <div class="card-body d-flex flex-wrap">
+        <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                <div class="row flex-row align-items-start flex-grow-1">
+                    <div class="row flex-row">
+                        {% block form_fields %}
+                            {{ fields.textField('name', item.fields['name'], __('Name')) }}
+                            {{ fields.dropdownArrayField('grants', null, {
+                                'password': __("Password"),
+                                'client_credentials': __("Client credentials"),
+                                'authorization_code': __("Authorization code"),
+                            }, __('Grants'), {
+                                multiple: true,
+                                values: item.fields['grants']|default(['authorization_code']),
+                            }) }}
+                            {% if not item.isNewItem() %}
+                                {{ fields.textField('identifier', item.fields['identifier'], __('Client ID'), {
+                                    readonly: true,
+                                    is_copyable: true,
+                                }) }}
+                            {% endif %}
+                            {% if allowed_scopes is defined and allowed_scopes is not empty %}
+                                {{ fields.dropdownArrayField('scopes', null, allowed_scopes, __('Scopes'), {
+                                    multiple: true,
+                                    values: item.fields['scopes'],
+                                }) }}
+                            {% else %}
+                                {{ fields.nullField() }}
+                            {% endif %}
+                            {% if not item.isNewItem() %}
+                                {{ fields.passwordField('secret', item.fields['secret'], __('Client Secret'), {
+                                    is_disclosable: true,
+                                    readonly: true,
+                                }) }}
+                            {% endif %}
+
+                            {{ fields.textareaField(
+                                'comment',
+                                item.fields['comment'],
+                                _n('Comment', 'Comments', get_plural_number()),
+                                field_options
+                            ) }}
+
+                            {{ fields.smallTitle(__('Authorized redirect URIs'), 'ti ti-forms', __('Only applies to Authorization Code grants')) }}
+                            {% set authorized_uri_field %}
+                                <template id="authorized-uri-fields-template">
+                                    <div class="authorized-uri-field d-flex mb-2">
+                                        {{ fields.textField('redirect_uri[]', '', '', {
+                                            no_label: true,
+                                            mb: ''
+                                        }) }}
+                                        <button class="btn btn-danger btn-icon" name="remove_header" type="button" title="{{ __('Remove') }}">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </div>
+                                </template>
+                            {% endset %}
+                            {{ fields.field('', authorized_uri_field, '', {
+                                no_label: true,
+                                field_class: 'col-12 d-flex',
+                            }) }}
+                            <div class="authorized-uri-fields mb-3">
+                                <button type="button" class="btn btn-secondary mt-3" name="add_uri">
+                                    <i class="ti ti-plus"></i>
+                                    {{ __('Add URI') }}
+                                </button>
+                            </div>
+                            <script>
+                                $('button[name="add_uri"]').on('click', () => {
+                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
+                                });
+                                $('.authorized-uri-fields').on('click', 'button[name="remove_header"]', function() {
+                                    $(this).closest('.authorized-uri-field').remove();
+                                });
+                                const already_added_uris = {{ item.fields['redirect_uri']|default([])|json_encode|raw }};
+                                const global_uris = ['/api.php/oauth2/redirection', '/api.php/swagger-oauth-redirect'];
+                                global_uris.forEach((uri) => {
+                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-field input').last().val(uri);
+                                    // Remove delete button and disable input
+                                    $('.authorized-uri-field button[name="remove_header"]').remove();
+                                    $('.authorized-uri-field input').last().prop('disabled', true);
+                                });
+                                already_added_uris.forEach((uri) => {
+                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-field input').last().val(uri);
+                                });
+                            </script>
+
+                            {{ fields.smallTitle(__('IP Restrictions'), 'ti ti-network', __('Comma separated list of individual IPv4/IPv6 addresses or ranges in CIDR notation. An empty list indicates there are no restrictions.')) }}
+                            {{ fields.textField('allowed_ips', item.fields['allowed_ips'], null, {
+                                no_label: true,
+                                field_class: 'col-12 d-flex',
+                            }) }}
+                        {% endblock %}
+                    </div> {# .row #}
+                </div> {# .row #}
+            </div> {# .flex-row #}
+        </div>
+    </div> {# .card-body #}
+
+    {{ include('components/form/buttons.html.twig') }}
+</div>

@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Toolbox;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class FilesystemTest extends \GLPITestCase
 {
@@ -172,9 +173,7 @@ class FilesystemTest extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider isFilepathSafeProvider
-     */
+    #[DataProvider('isFilepathSafeProvider')]
     public function testIsFilepathSafe(string $path, ?string $restricted_directory, bool $is_safe): void
     {
         $instance = new \Glpi\Toolbox\Filesystem();

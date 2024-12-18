@@ -52,11 +52,10 @@ class SavedSearch_User extends CommonDBRelation
         switch ($field) {
             case 'users_id':
                 if (!empty($values[$field])) {
-                    return "<span class='fa fa-star bookmark_default'><span class='sr-only'>" . __('Yes') . "</span></span>";
+                    return "<span class='fa fa-star bookmark_default'><span class='sr-only'>" . __s('Yes') . "</span></span>";
                 } else {
-                    return "<span class='fa fa-star bookmark_record'><span class='sr-only'>" . __('No') . "</span></span>";
+                    return "<span class='fa fa-star bookmark_record'><span class='sr-only'>" . __s('No') . "</span></span>";
                 }
-                break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

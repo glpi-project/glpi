@@ -63,7 +63,8 @@ class OperatingSystemEditionTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemEdition$main' => 'Edition',
+            'OperatingSystemEdition$main' => "Edition",
+            'DropdownTranslation$1' => "Translations",
         ];
     }
 

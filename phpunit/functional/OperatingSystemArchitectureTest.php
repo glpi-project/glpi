@@ -57,7 +57,7 @@ class OperatingSystemArchitectureTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemArchitecture$main'  => 'Operating system architecture',
+            'OperatingSystemArchitecture$main'  => "Operating system architecture",
         ];
     }
 

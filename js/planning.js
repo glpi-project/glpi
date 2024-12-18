@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-arrow-callback: 0 */
+/* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 /* global glpi_ajax_dialog, glpi_html_dialog */
 var GLPIPlanning  = {
@@ -53,7 +55,6 @@ var GLPIPlanning  = {
                 'dayGrid', 'interaction', 'list', 'timeGrid',
                 'resourceTimeline', 'rrule', 'bootstrap'
             ],
-            license_key: "",
             resources: [],
             now: null,
             can_create: false,
@@ -67,7 +68,7 @@ var GLPIPlanning  = {
         };
         options = Object.assign({}, default_options, options);
 
-        GLPIPlanning.dom_id = 'planning'+options.rand;
+        GLPIPlanning.dom_id = `planning${options.rand}`;
         var window_focused  = true;
         var loaded          = false;
         var disable_qtip    = false;
@@ -96,7 +97,7 @@ var GLPIPlanning  = {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
             maxTime:     CFG_GLPI.planning_end,
-            schedulerLicenseKey: options.license_key,
+            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
             editable: true, // we can drag / resize items
             droppable: false, // we cant drop external items by default
@@ -158,7 +159,7 @@ var GLPIPlanning  = {
                 }
                 $(info.el)
                     .find('.fc-cell-text')
-                    .prepend('<i class="fas fa-'+icon+'"></i>&nbsp;');
+                    .prepend(`<i class="fas fa-${icon}"></i>&nbsp;`);
 
                 if (info.resource._resource.extendedProps.itemtype == 'Group_User') {
                     info.el.style.backgroundColor = 'lightgray';
@@ -173,7 +174,7 @@ var GLPIPlanning  = {
                 // append event data to dom (to re-use they in clone behavior)
                 element.data('myevent', event);
 
-                var eventtype_marker = '<span class="event_type" style="background-color: '+extProps.typeColor+'"></span>';
+                var eventtype_marker = `<span class="event_type" style="background-color: ${extProps.typeColor}"></span>`;
                 element.append(eventtype_marker);
 
                 var content = extProps.content;
@@ -182,7 +183,7 @@ var GLPIPlanning  = {
                && view.type.indexOf('list') < 0
                && event.rendering != "background"
                && !event.allDay){
-                    element.append('<div class="content">'+content+'</div>');
+                    element.append(`<div class="content">${content}</div>`);
                 }
 
                 // add icon if exists
@@ -193,7 +194,7 @@ var GLPIPlanning  = {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append("&nbsp;<i class='"+extProps.icon+"' title='"+icon_alt+"'></i>");
+                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
                 }
 
                 // add classes to current event
@@ -277,15 +278,15 @@ var GLPIPlanning  = {
                     // create new one
                     var actions = '';
                     if (options.can_create) {
-                        actions += '<li class="clone-event"><i class="far fa-clone"></i>'+__("Clone")+'</li>';
+                        actions += `<li class="clone-event"><i class="far fa-clone"></i>${__("Clone")}</li>`;
                     }
                     if (options.can_delete) {
-                        actions += '<li class="delete-event"><i class="fas fa-trash"></i>'+__("Delete")+'</li>';
+                        actions += `<li class="delete-event"><i class="fas fa-trash"></i>${__("Delete")}</li>`;
                     }
                     if (actions == '') {
                         return;
                     }
-                    var context = $('<ul class="planning-context-menu" data-event-id="">'+actions+'</ul>');
+                    var context = $(`<ul class="planning-context-menu" data-event-id="">${actions}</ul>`);
 
                     // add it to body and place it correctly
                     $('body').append(context);
@@ -315,7 +316,7 @@ var GLPIPlanning  = {
                     // 1- clone event
                     $('.planning-context-menu .clone-event').on('click', function() {
                         $.ajax({
-                            url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                             type: 'POST',
                             data: {
                                 action: 'clone_event',
@@ -337,7 +338,7 @@ var GLPIPlanning  = {
                         var ajaxDeleteEvent = function(instance) {
                             instance = instance || false;
                             $.ajax({
-                                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                                 type: 'POST',
                                 data: {
                                     action: 'delete_event',
@@ -359,8 +360,8 @@ var GLPIPlanning  = {
                         } else {
                             glpi_html_dialog({
                                 title: __("Make a choice"),
-                                body: __("Delete the whole serie of the recurrent event") + "<br>" +
-                            __("or just add an exception by deleting this instance?"),
+                                body: `${__("Delete the whole serie of the recurrent event")}<br>${ 
+                                    __("or just add an exception by deleting this instance?")}`,
                                 buttons: [{
                                     label: __("Serie"),
                                     click:  function() {
@@ -389,7 +390,7 @@ var GLPIPlanning  = {
                 }
 
                 // attach button (planning and refresh) in planning header
-                $('#'+GLPIPlanning.dom_id+' .fc-toolbar .fc-center h2')
+                $(`#${GLPIPlanning.dom_id} .fc-toolbar .fc-center h2`)
                     .after(
                         $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
                     ).after(
@@ -429,7 +430,7 @@ var GLPIPlanning  = {
                 GLPIPlanning.last_view = view_type;
                 // inform backend we changed view (to store it in session)
                 $.ajax({
-                    url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                    url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                     type: 'POST',
                     data: {
                         action: 'view_changed',
@@ -448,7 +449,7 @@ var GLPIPlanning  = {
                 GLPIPlanning.setEndofDays(info.view);
             },
             events: {
-                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                 type: 'POST',
                 extraParams: function() {
                     var view_name = GLPIPlanning.calendar
@@ -550,7 +551,7 @@ var GLPIPlanning  = {
                 var editable = event.extendedProps._editable; // do not know why editable property is not available
                 if (event.extendedProps.ajaxurl && editable && !disable_edit) {
                     var start    = event.start;
-                    var ajaxurl  = event.extendedProps.ajaxurl+"&start="+start.toISOString();
+                    var ajaxurl  = `${event.extendedProps.ajaxurl}&start=${start.toISOString()}`;
                     info.jsEvent.preventDefault(); // don't let the browser navigate
                     glpi_ajax_dialog({
                         url: ajaxurl,
@@ -594,13 +595,14 @@ var GLPIPlanning  = {
 
                 if ($('div.modal.planning-modal').length === 0) {
                     glpi_ajax_dialog({
-                        url: CFG_GLPI.root_doc + "/ajax/planning.php",
+                        url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
                         params: {
                             action: 'add_event_fromselect',
                             begin: start.toISOString(),
                             end: end.toISOString(),
                             res_itemtype: itemtype,
                             res_items_id: items_id,
+                            in_modal: 1
                         },
                         dialogclass: 'modal-lg planning-modal',
                         title: __('Add an event'),
@@ -696,11 +698,11 @@ var GLPIPlanning  = {
                 .addClass('end-of-day');
 
             // add class to hours list header
-            $('#planning .fc-time-area.fc-widget-header table tr:nth-child(3) th:nth-child('+nb_slots+'n)')
+            $(`#planning .fc-time-area.fc-widget-header table tr:nth-child(3) th:nth-child(${nb_slots}n)`)
                 .addClass('end-of-day');
 
             // add class to content bg (content slots)
-            $('#planning .fc-time-area.fc-widget-content table td:nth-child('+nb_slots+'n)')
+            $(`#planning .fc-time-area.fc-widget-content table td:nth-child(${nb_slots}n)`)
                 .addClass('end-of-day');
         }
     },
@@ -726,21 +728,7 @@ var GLPIPlanning  = {
         });
 
         $('#planning_filter .delete_planning').on( 'click', function() {
-            var deleted = $(this);
-            var li = deleted.closest('ul.filters > li');
-            $.ajax({
-                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
-                type: 'POST',
-                data: {
-                    action: 'delete_filter',
-                    filter: deleted.attr('value'),
-                    type: li.attr('event_type')
-                },
-                success: function() {
-                    li.remove();
-                    GLPIPlanning.refresh();
-                }
-            });
+            GLPIPlanning.deletePlanning(this);
         });
 
         var sendDisplayEvent = function(current_checkbox, refresh_planning) {
@@ -757,7 +745,7 @@ var GLPIPlanning  = {
             var checked    = current_checkbox.is(':checked');
 
             return $.ajax({
-                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                 type: 'POST',
                 data: {
                     action:  'toggle_filter',
@@ -801,7 +789,7 @@ var GLPIPlanning  = {
 
                 // refresh planning once for all checkboxes (and not for each)
                 // after theirs promises done
-                $.when.apply($, promises).then(function() {
+                $.when(...promises).then(function() {
                     GLPIPlanning.refresh();
                 });
             });
@@ -814,7 +802,7 @@ var GLPIPlanning  = {
                 current_li = current_li.eq(0);
             }
             $.ajax({
-                url:  CFG_GLPI.root_doc+"/ajax/planning.php",
+                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
                 type: 'POST',
                 data: {
                     action: 'color_filter',
@@ -838,6 +826,24 @@ var GLPIPlanning  = {
                 $('#planning_filter').toggleClass('folded');
                 $('#planning_container').toggleClass('folded');
             });
+        });
+    },
+
+    deletePlanning: (trigger_element) => {
+        const deleted = $(trigger_element);
+        const li = deleted.closest('ul.filters > li');
+        $.ajax({
+            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            type: 'POST',
+            data: {
+                action: 'delete_filter',
+                filter: deleted.attr('value'),
+                type: li.attr('event_type')
+            },
+            success: function() {
+                li.remove();
+                GLPIPlanning.refresh();
+            }
         });
     },
 
@@ -878,18 +884,18 @@ var GLPIPlanning  = {
             && recurringDef.typeData
             && recurringDef.typeData.origOptions.dtstart !== start
         ) {
-            let startDate = new Date(start);
-            let dtstart = recurringDef.typeData._dtstart || recurringDef.typeData.origOptions.dtstart;
-            let originDate = new Date(dtstart);
+            const startDate = new Date(start);
+            const dtstart = recurringDef.typeData._dtstart || recurringDef.typeData.origOptions.dtstart;
+            const originDate = new Date(dtstart);
 
-            let hours = startDate.getHours();
-            let minutes = startDate.getMinutes();
+            const hours = startDate.getHours();
+            const minutes = startDate.getMinutes();
 
             originDate.setHours(hours, minutes);
 
             start = originDate;
 
-            let duration = end - event.start;
+            const duration = end - event.start;
             end = new Date(start.getTime() + duration);
         }
 
@@ -906,7 +912,7 @@ var GLPIPlanning  = {
         var old_start = old_event.start || start;
 
         $.ajax({
-            url: CFG_GLPI.root_doc+"/ajax/planning.php",
+            url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
             type: 'POST',
             data: {
                 action:        'update_event_times',

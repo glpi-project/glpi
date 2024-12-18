@@ -35,7 +35,8 @@
 
 namespace tests\units\Glpi\Inventory;
 
-use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
 /**
  * Test class for src/Glpi/Inventory/conf.class.php
@@ -73,9 +74,7 @@ class ConfTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider inventoryfilesProvider
-     */
+    #[DataProvider('inventoryfilesProvider')]
     public function testIsInventoryFile(string $file, bool $expected)
     {
         $conf = new \Glpi\Inventory\Conf();
@@ -96,9 +95,7 @@ class ConfTest extends \GLPITestCase
         return $provider;
     }
 
-    /**
-     * @dataProvider confProvider
-     */
+    #[DataProvider('confProvider')]
     public function testGetter($key, $value)
     {
         $conf = new \Glpi\Inventory\Conf();
@@ -109,7 +106,7 @@ class ConfTest extends \GLPITestCase
     {
         $conf = new \Glpi\Inventory\Conf();
         $this->assertNull($conf->doesNotExists);
-        $this->hasPhpLogRecordThatContains('Property doesNotExists does not exists!', Logger::WARNING);
+        $this->hasPhpLogRecordThatContains('Property doesNotExists does not exists!', LogLevel::WARNING);
         $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
     }
 }

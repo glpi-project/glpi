@@ -58,7 +58,7 @@ class TransferTest extends DbTestCase
 
         $location_id = getItemByTypeName('Location', '_location01', true);
 
-        $itemtypeslist = $this->getClasses(
+        $itemtypeslist = self::getClasses(
             'searchOptions',
             [
                 '/^Rule.*/',
@@ -66,7 +66,6 @@ class TransferTest extends DbTestCase
                 '/^DB.*/',
                 '/^SlaLevel.*/',
                 '/^OlaLevel.*/',
-                '/^Event$/',
                 '/^Glpi\\Event$/',
                 '/^KnowbaseItem$/',
                 '/SavedSearch.*/',
@@ -84,7 +83,6 @@ class TransferTest extends DbTestCase
                 '/^USBVendor$/',
                 '/^PCIVendor$/',
                 '/^PendingReasonCron$/',
-                '/^Netpoint$/',
             ]
         );
 
@@ -433,6 +431,103 @@ class TransferTest extends DbTestCase
         }
     }
 
+    public function testCleanSoftware()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $dest_entity = getItemByTypeName('Entity', '_test_child_1', true);
+
+        // Create test computers
+
+        $computer = new Computer();
+        $computers_id_1 = $computer->add([
+            'name'        => 'test_transfer_pc_1',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_1);
+        $computers_id_2 = $computer->add([
+            'name'        => 'test_transfer_pc_2',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $computers_id_2);
+
+        // Create test software and versions. One software is linked to both computers, the other is linked to only one.
+        $software = new Software();
+        $software_id_1 = $software->add([
+            'name'        => 'test_transfer_software_1',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $software_id_1);
+        $software_id_2 = $software->add([
+            'name'        => 'test_transfer_software_2',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $software_id_2);
+        $softwareversion = new SoftwareVersion();
+        $softwareversion_id_1 = $softwareversion->add([
+            'name'         => 'test_transfer_software_1::V1',
+            'softwares_id' => $software_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $softwareversion_id_1);
+        $softwareversion_id_2 = $softwareversion->add([
+            'name'         => 'test_transfer_software_1::V2',
+            'softwares_id' => $software_id_2,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $softwareversion_id_2);
+
+        $item_softwareversion = new Item_SoftwareVersion();
+        $item_softwareversion_id_1 = $item_softwareversion->add([
+            'items_id'     => $computers_id_1,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_1);
+        $item_softwareversion_id_2 = $item_softwareversion->add([
+            'items_id'     => $computers_id_1,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_2,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_2);
+        $item_softwareversion_id_3 = $item_softwareversion->add([
+            'items_id'     => $computers_id_2,
+            'itemtype'     => 'Computer',
+            'softwareversions_id' => $softwareversion_id_1,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_3);
+
+        // Transfer the first computer to another entity
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Computer' => [$computers_id_1]], $dest_entity, ['keep_software' => 1, 'clean_software' => 1]);
+
+        // Software 2 should be deleted since it was only linked to the first computer
+        //TODO Why not just move?
+        $this->assertTrue($software->getFromDB($software_id_2));
+        $this->assertEquals(1, $software->fields['is_deleted']);
+        // There should be a non-deleted copy of software 2 in the destination entity
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $software::getTable(),
+            'WHERE'  => [
+                'name' => 'test_transfer_software_2',
+                'entities_id' => $dest_entity,
+                'is_deleted' => 0
+            ]
+        ]);
+        $this->assertCount(1, $it);
+        $software_id_2_dest = $it->current()['id'];
+
+        // Transfer computer 1 back to the original entity but purge software instead
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Computer' => [$computers_id_1]], $test_entity, ['keep_software' => 1, 'clean_software' => 2]);
+        $this->assertFalse($software->getFromDB($software_id_2_dest));
+    }
+
     protected function testKeepCertificateOptionData(): array
     {
         $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -646,5 +741,122 @@ class TransferTest extends DbTestCase
         //reload ticket
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals(0, $ticket->fields['locations_id']);
+    }
+
+    public function testTransferLinkedSuppliers()
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $supplier = new \Supplier();
+        $supplier_id = $supplier->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $source_entity,
+        ]);
+        $this->assertGreaterThan(0, $supplier_id);
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $supplier_ticket = new \Supplier_Ticket();
+        $this->assertGreaterThan(0, $supplier_ticket->add([
+            'tickets_id'   => $ticket_id,
+            'suppliers_id' => $supplier_id,
+            'type'         => \CommonITILActor::ASSIGN,
+        ]));
+
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Ticket' => [$ticket_id]], $destination_entity, []);
+
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+
+        $suppliers = $supplier->find([
+            'name' => __FUNCTION__,
+            'entities_id' => $destination_entity,
+        ]);
+        $this->assertCount(1, $suppliers);
+        $supplier = reset($suppliers);
+        $this->assertCount(1, $supplier_ticket->find([
+            'tickets_id' => $ticket_id,
+            'suppliers_id' => $supplier['id'],
+            'type'         => \CommonITILActor::ASSIGN,
+        ]));
+    }
+
+    public function testTransferTaskCategory()
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $task_cat = new \TaskCategory();
+        $task_cat_id = $task_cat->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $task_cat_id);
+
+        $ticket_task = new \TicketTask();
+        $task_id = $ticket_task->add([
+            'name' => 'task',
+            'content' => 'content task',
+            'taskcategories_id' => $task_cat_id,
+            'tickets_id' => $ticket_id,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems(['Ticket' => [$ticket_id]], $destination_entity, []);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+
+        $task_cats = $task_cat->find([
+            'name' => __FUNCTION__,
+            'entities_id' => $destination_entity,
+        ]);
+        $this->assertCount(1, $task_cats);
+        $task_cat = reset($task_cats);
+        $this->assertTrue($ticket_task->getFromDB($task_id));
+        $this->assertEquals($task_cat['id'], $ticket_task->fields['taskcategories_id']);
+    }
+
+    public function testGenericAssetTransfer(): void
+    {
+        $this->login();
+        $source_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = getItemByTypeName('Entity', '_test_child_2', true);
+
+        //create Smartphone generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'Smartphone' . $this->getUniqueString()
+        );
+        $classname  = $definition->getAssetClassName();
+
+        $item = new $classname();
+        $item_id = $item->add([
+            'name' => 'To transfer Smartphone',
+            'entities_id' => $source_entity
+        ]);
+        $this->assertGreaterThan(0, $item_id);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems([$classname => [$item_id]], $destination_entity, []);
+        $this->assertTrue($item->getFromDB($item_id));
+        $this->assertEquals($destination_entity, $item->fields['entities_id']);
     }
 }

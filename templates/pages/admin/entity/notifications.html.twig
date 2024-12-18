@@ -1,0 +1,202 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% macro inherited_email(item, inheritance_labels, field, label) %}
+   {{ fields.emailField(field, item.fields[field], label, {
+      add_field_html: inheritance_labels[field]|default(null)
+   }) }}
+{% endmacro %}
+
+{% macro inherited_text(item, inheritance_labels, field, label) %}
+   {{ fields.textField(field, item.fields[field], label, {
+      add_field_html: inheritance_labels[field]|default(null)
+   }) }}
+{% endmacro %}
+
+{% macro inherited_alert_yesno(item, inheritance_labels, field, label) %}
+   {% set to_add = {} %}
+   {% if item.fields['id'] > 0 %}
+      {% set to_add = {
+         (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+      } %}
+   {% endif %}
+   {{ fields.dropdownArrayField(field, item.fields[field], to_add + {
+      0: __('No'),
+      1: __('Yes')
+   }, label, {
+      add_field_html: inheritance_labels[field]|default(null),
+   }) }}
+{% endmacro %}
+
+{% macro inherited_alert_int_never(item, inheritance_labels, field, label, unit = 'day') %}
+   {% set to_add = {} %}
+   {% if item.fields['id'] > 0 %}
+      {% set to_add = {
+         (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+      } %}
+   {% endif %}
+   {{ fields.dropdownNumberField(field, item.fields[field], label, {
+      min: 1,
+      max: 99,
+      unit: unit,
+      toadd: to_add + {
+         0: __('No')
+      },
+      add_field_html: inheritance_labels[field]|default(null),
+   }) }}
+{% endmacro %}
+
+{% macro inherited_alert_dropdown(item, inheritance_labels, field, label, values) %}
+   {% set to_add = {} %}
+   {% if item.fields['id'] > 0 %}
+      {% set to_add = {
+         (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+      } %}
+   {% endif %}
+   {{ fields.dropdownArrayField(field, item.fields[field], to_add + values, label, {
+      add_field_html: inheritance_labels[field]|default(null),
+   }) }}
+{% endmacro %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      {{ fields.largeTitle(__('Notification options'), 'Notification'|itemtype_icon) }}
+      {{ _self.inherited_email(item, inheritance_labels, 'admin_email', __('Administrator email address')) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'admin_email_name', __('Administrator name')) }}
+
+      {{ _self.inherited_email(item, inheritance_labels, 'from_email', __('Email sender email address')) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'from_email_name', __('Email sender name')) }}
+
+      {{ _self.inherited_email(item, inheritance_labels, 'noreply_email', __('No-Reply address')) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'noreply_email_name', __('No-Reply name')) }}
+
+      {{ _self.inherited_email(item, inheritance_labels, 'replyto_email', __('Reply-To address')) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'replyto_email_name', __('Reply-To name')) }}
+
+      {{ _self.inherited_text(item, inheritance_labels, 'notification_subject_tag', __('Prefix for notifications')) }}
+
+      {% set to_add = {} %}
+      {% if item.fields['id'] > 0 %}
+         {% set to_add = {
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+         } %}
+      {% endif %}
+      {{ fields.dropdownNumberField('delay_send_emails', item.fields['delay_send_emails'], __('Delay to send email notifications'), {
+         add_field_html: inheritance_labels['delay_send_emails']|default(null),
+         min: 0,
+         max: 100,
+         unit: 'minute',
+         toadd: to_add
+      }) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'is_notif_enable_default', __('Enable notifications by default')) }}
+
+      {{ fields.textareaField('mailing_signature', item.fields['mailing_signature'], __('Email signature'), {
+         add_field_html: inheritance_labels['mailing_signature']|default(null),
+      }) }}
+      {{ _self.inherited_text(item, inheritance_labels, 'url_base', __('URL of the application')) }}
+
+      {{ fields.largeTitle(__('Alarms options'), 'ti ti-alarm') }}
+
+      {{ fields.smallTitle('Cartridge'|itemtype_name(get_plural_number())) }}
+      {{ fields.dropdownField('Alert', 'cartridges_alert_repeat', item.fields['cartridges_alert_repeat'], __('Reminders frequency for alarms on cartridges'), {
+         add_field_html: inheritance_labels['cartridges_alert_repeat']|default(null),
+         inherit_parent: item.fields['id'] > 0 ? 1 : 0
+      }) }}
+      {{ fields.dropdownNumberField('default_cartridges_alarm_threshold', item.fields['default_cartridges_alarm_threshold'], __('Default threshold for cartridges count'), {
+         add_field_html: inheritance_labels['default_cartridges_alarm_threshold']|default(null),
+         min: 0,
+         max: 100,
+         toadd: to_add + {
+            (constant('Entity::CONFIG_NEVER')): __('Never')
+         }
+      }) }}
+
+      {{ fields.smallTitle('Consumable'|itemtype_name(get_plural_number())) }}
+      {{ fields.dropdownField('Alert', 'consumables_alert_repeat', item.fields['consumables_alert_repeat'], __('Reminders frequency for alarms on consumables'), {
+         add_field_html: inheritance_labels['consumables_alert_repeat']|default(null),
+         inherit_parent: item.fields['id'] > 0 ? 1 : 0
+      }) }}
+      {{ fields.dropdownNumberField('default_consumables_alarm_threshold', item.fields['default_consumables_alarm_threshold'], __('Default threshold for consumables count'), {
+         add_field_html: inheritance_labels['default_consumables_alarm_threshold']|default(null),
+         min: 0,
+         max: 100,
+         toadd: to_add + {
+            (constant('Entity::CONFIG_NEVER')): __('Never')
+         }
+      }) }}
+
+      {{ fields.smallTitle('Contract'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_contracts_alert', __('Alarms on contracts')) }}
+      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_contract_alert', __('Default value'), contract_alert_choices) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_contracts_alert_before_delay', __('Send contract alarms before')) }}
+
+      {{ fields.smallTitle('Infocom'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_infocoms_alert', __('Alarms on financial and administrative information')) }}
+      {{ _self.inherited_alert_dropdown(item, inheritance_labels, 'default_infocom_alert', __('Default value'), infocom_alert_choices) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_infocoms_alert_before_delay', __('Send financial and administrative information alarms before')) }}
+
+      {{ fields.smallTitle('SoftwareLicense'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_licenses_alert', __('Alarms on expired licenses')) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_licenses_alert_before_delay', __('Send license alarms before')) }}
+
+      {{ fields.smallTitle('Certificate'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_certificates_alert', __('Alarms on expired certificates')) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_certificates_alert_before_delay', __('Send certificates alarms before')) }}
+      {{ fields.dropdownField('Alert', 'certificates_alert_repeat_interval', item.fields['certificates_alert_repeat_interval'], __('Reminders frequency for alarms on certificates'), {
+         add_field_html: inheritance_labels['certificates_alert_repeat_interval']|default(null),
+         inherit_parent: item.fields['id'] > 0 ? 1 : 0
+      }) }}
+
+      {{ fields.smallTitle('Reservation'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'use_reservations_alert', __('Alerts on reservations'), 'hour') }}
+
+      {{ fields.smallTitle('Ticket'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'notclosed_delay', __('Alerts on tickets which are not solved since')) }}
+
+      {{ fields.smallTitle('%s / %s'|format('Ticket'|itemtype_name(get_plural_number()), 'Change'|itemtype_name(get_plural_number()))) }}
+      {{ fields.dropdownField('Alert', 'approval_reminder_repeat_interval', item.fields['approval_reminder_repeat_interval'], __('Approval reminder frequency'), {
+         add_field_html: inheritance_labels['approval_reminder_repeat_interval']|default(null),
+         inherit_parent: item.fields['id'] > 0 ? 1 : 0
+      }) }}
+
+      {{ fields.smallTitle('Domain'|itemtype_name(get_plural_number())) }}
+      {{ _self.inherited_alert_yesno(item, inheritance_labels, 'use_domains_alert', __('Alarms on domains expiries')) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_domains_alert_close_expiries_delay', __('Domains closes expiries')) }}
+      {{ _self.inherited_alert_int_never(item, inheritance_labels, 'send_domains_alert_expired_delay', __('Domains expired')) }}
+
+   {% endblock %}
+{% endblock %}

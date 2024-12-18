@@ -37,6 +37,7 @@ namespace tests\units;
 
 use CalendarSegment;
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/calendar.class.php */
 
@@ -142,9 +143,7 @@ class CalendarTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider activeProvider
-     */
+    #[DataProvider('activeProvider')]
     public function testGetActiveTimeBetween($start, $end, $value, $days = false)
     {
         $calendar = new \Calendar();
@@ -172,9 +171,7 @@ class CalendarTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider workingdayProvider
-     */
+    #[DataProvider('workingdayProvider')]
     public function testIsAWorkingDay($date, $expected)
     {
         $calendar = new \Calendar();
@@ -209,9 +206,7 @@ class CalendarTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider workinghourProvider
-     */
+    #[DataProvider('workinghourProvider')]
     public function testIsAWorkingHour($date, $expected)
     {
         $calendar = new \Calendar();

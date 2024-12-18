@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/networkequipment.class.php */
@@ -159,9 +161,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -371,9 +371,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch(es) into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -493,9 +497,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -576,9 +584,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -640,9 +652,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -666,9 +682,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(1, $unmanageds, 'May have 1 new unmanaged device');
     }
 
-    /**
-     * @test
-     */
     public function testCisco1Switch()
     {
         //Cisco switch
@@ -756,9 +769,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -857,9 +874,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -962,9 +983,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1054,9 +1079,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1173,9 +1202,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1316,9 +1349,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1461,9 +1498,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1598,9 +1639,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1726,9 +1771,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1854,9 +1903,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -1989,9 +2042,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
         //$json = json_decode($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2205,9 +2262,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2325,9 +2386,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2441,9 +2506,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2593,9 +2662,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]));
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->assertFalse($inventory->inError());
         $this->assertSame([], $inventory->getErrors());
@@ -2674,9 +2747,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         ];
     }
 
-    /**
-     * @dataProvider prepareConnectionsProvider
-     */
+    #[DataProvider('prepareConnectionsProvider')]
     public function testPrepareConnections($json_source)
     {
         $networkEquipment = new \NetworkEquipment();

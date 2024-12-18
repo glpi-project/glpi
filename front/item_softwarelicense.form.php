@@ -34,21 +34,32 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkRight("software", UPDATE);
-$isl = new Item_SoftwareLicense();
+
+if (
+    isset($_POST["add"])
+    && (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || $_POST['items_id'] <= 0)
+) {
+    $message = sprintf(
+        __('Mandatory fields are not filled. Please correct: %s'),
+        _n('Item', 'Items', 1)
+    );
+    Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+    Html::back();
+}
+
+if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
+    $isl = new SoftwareLicense_User();
+    // convert form data to match the SoftwareLicense_User case
+    $_POST['users_id'] = $_POST['items_id'];
+    unset($_POST['itemtype'], $_POST['items_id']);
+} else {
+    $isl = new Item_SoftwareLicense();
+}
 
 if (isset($_POST["add"])) {
-    if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || $_POST['items_id'] <= 0) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Item', 'Items', 1)
-        );
-        Session::addMessageAfterRedirect($message, false, ERROR);
-        Html::back();
-    }
     if ($_POST['softwarelicenses_id'] > 0) {
         if ($isl->add($_POST)) {
             Event::log(
@@ -63,4 +74,5 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

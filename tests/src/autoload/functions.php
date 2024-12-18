@@ -46,7 +46,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.11',
+        '_version' => '4.12',
 
         // Type => array of entries
         'Entity' => [
@@ -180,6 +180,12 @@ function loadDataset()
             ], [
                 'name'           => '_test_phone_2',
                 'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-1',
+                'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-2',
+                'entities_id' => '_test_root_entity',
             ],
         ], 'User' => [
             [
@@ -243,8 +249,8 @@ function loadDataset()
             [
                 'is_recursive' => 1,
                 'taskcategories_id' => '_cat_1',
-                'name'         => 'R&#38;D', // sanitized value for "R&D"
-                'completename' => '_cat_1 > R&#38;D',
+                'name'         => 'R&D',
+                'completename' => '_cat_1 > R&D',
                 'comment'      => 'Comment for sub-category _subcat_2',
                 'level'        => 2,
             ],
@@ -321,6 +327,22 @@ function loadDataset()
                 'comment'      => 'Comment for location _sublocation02'
             ],
             [
+                'name'         => '_location02 > _sublocation02',
+                'comment'      => 'Comment for location _sublocation02',
+                'code'         => 'code_sublocation02'
+            ],
+            [
+                'name'         => '_location02 > _sublocation03',
+                'comment'      => 'Comment for location _sublocation03',
+                'alias'        => 'alias_sublocation03'
+            ],
+            [
+                'name'         => '_location02 > _sublocation04',
+                'comment'      => 'Comment for location _sublocation04',
+                'code'         => 'code_sublocation04',
+                'alias'        => 'alias_sublocation04'
+            ],
+            [
                 'name'         => '_location01_subentity',
                 'entities_id'  => '_test_root_entity',
                 'comment'      => 'Comment for location _location01_subentity'
@@ -350,6 +372,7 @@ function loadDataset()
             [
                 'name'           => '_ticket01',
                 'content'        => 'Content for ticket _ticket01',
+                'externalid'     => 'external_id',
                 'users_id_recipient' => TU_USER,
                 'entities_id'    => '_test_root_entity'
             ],
@@ -638,7 +661,24 @@ function loadDataset()
                 'version'      => '1.0.0',
                 'state'        => 1,
             ]
+        ], 'Change' => [
+            [
+                'name'           => '_change01',
+                'content'        => 'Content for ticket _change01',
+                'users_id_recipient' => TU_USER,
+                'entities_id'    => '_test_root_entity'
+            ],
         ],
+        'OAuthClient' => [
+            [
+                'redirect_uri' => ["/api.php/oauth2/redirection"],
+                'grants' => ['password', 'client_credentials', 'authorization_code'],
+                'scopes' => [],
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'name' => 'Test OAuth Client',
+            ]
+        ]
     ];
 
     // To bypass various right checks
@@ -649,6 +689,7 @@ function loadDataset()
     $_SESSION['glpiactive_entity']   = 0;
     $_SESSION['glpiactiveentities']  = [0];
     $_SESSION['glpiactiveentities_string'] = "'0'";
+    $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
     $CFG_GLPI['root_doc']            = '/glpi';
 
     $DB->beginTransaction();
@@ -663,11 +704,7 @@ function loadDataset()
     $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
 
     $conf = Config::getConfigurationValues('phpunit');
-    if (isset($conf['dataset']) && $conf['dataset'] == $data['_version']) {
-        printf("\nGLPI dataset version %s already loaded\n\n", $data['_version']);
-    } else {
-        printf("\nLoading GLPI dataset version %s\n", $data['_version']);
-
+    if (!(isset($conf['dataset']) && $conf['dataset'] == $data['_version'])) {
         $ids = [];
         foreach ($data as $type => $inputs) {
             if ($type[0] == '_') {
@@ -700,12 +737,10 @@ function loadDataset()
                 if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
                     $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
                     $item->update($input);
-                    echo ".";
                 } else {
                     // Not found, create it
                     $item = getItemForItemtype($type);
                     $id = $item->add($input);
-                    echo "+";
                     if (isset($input['name'])) {
                         $ids[$type][$input['name']] = $id;
                     }
@@ -713,7 +748,6 @@ function loadDataset()
             }
         }
         Search::$search = [];
-        echo "\nDone\n\n";
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
     $DB->commit();

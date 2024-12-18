@@ -36,7 +36,7 @@
 /**
  * Update from 9.1 to 9.1.1
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update910to911()
 {
@@ -79,16 +79,16 @@ function update910to911()
 
    // rectify missing right in 9.1 update
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
-        foreach ($DB->request("glpi_profilerights", ["name" => 'software']) as $profrights) {
-            $DB->insertOrDie(
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'software']]);
+        foreach ($prights as $profrights) {
+            $DB->insert(
                 "glpi_profilerights",
                 [
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
                     'name'         => "license",
                     'rights'       => $profrights['rights']
-                ],
-                "9.1 add right for softwarelicense"
+                ]
             );
         }
     }

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -42,7 +43,6 @@ use Glpi\Toolbox\VersionParser;
  **/
 class Update
 {
-    private $args = [];
     private $DB;
     /**
      * @var Migration
@@ -63,37 +63,12 @@ class Update
      * Constructor
      *
      * @param object $DB   Database instance
-     * @param array  $args Command line arguments; default to empty array
      * @param string $migrations_directory
      */
-    public function __construct($DB, $args = [], string $migrations_directory = GLPI_ROOT . '/install/migrations/')
+    public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
-        $this->args = $args;
         $this->migrations_directory = $migrations_directory;
-    }
-
-    /**
-     * Initialize session for update
-     *
-     * @return void
-     */
-    public function initSession()
-    {
-        if (is_writable(GLPI_SESSION_DIR)) {
-            Session::setPath();
-        } else {
-            if (isCommandLine()) {
-                die("Can't write in " . GLPI_SESSION_DIR . "\n");
-            }
-        }
-        Session::start();
-
-        if (isCommandLine()) {
-           // Init debug variable
-            $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-        }
     }
 
     /**
@@ -200,9 +175,9 @@ class Update
             $current_version = $this->version;
         }
 
-        if (version_compare($current_version, '0.80', 'lt')) {
-            die('Upgrade is not supported before 0.80!');
-            die(1);
+        if (version_compare($current_version, '0.85.5', 'lt')) {
+            echo('Upgrade from version < 0.85.5 is not supported!');
+            exit(1);
         }
 
         $DB = $this->DB;
@@ -241,25 +216,53 @@ class Update
         $plugin = new Plugin();
         $plugin->unactivateAll();
 
-        if (version_compare($current_version, '0.80', '<') || version_compare($current_version, GLPI_VERSION, '>')) {
+        if (version_compare($current_version, GLPI_VERSION, '>')) {
             $message = sprintf(
                 __('Unsupported version (%1$s)'),
                 $current_version
             );
             if (isCommandLine()) {
                 echo "$message\n";
-                die(1);
+                exit(1);
             } else {
                 $this->migration->displayWarning($message, true);
-                die(1);
+                exit(1);
             }
         }
 
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
-        foreach ($migrations as $file => $function) {
-            include_once($file);
-            $function();
+        foreach ($migrations as $key => $migration_specs) {
+            include_once($migration_specs['file']);
+
+            try {
+                $migration_specs['function']();
+            } catch (\Throwable $e) {
+                $this->migration->displayError(sprintf(
+                    __('An error occurred during the update. The error was: %s'),
+                    $e->getMessage()
+                ));
+                exit(1);
+            }
+
+            if ($key !== array_key_last($migrations)) {
+                // Set current version to target version to ensure complete migrations to not be replayed if one
+                // of remaining migrations fails.
+                //
+                // /!\ Do not dot this for last migration:
+                // 1. This should be done at the end of the whole update process.
+                // 2. Last migration target version value may be higher than GLPI_VERSION, when GLPI_VERSION uses a pre-release suffix.
+                Config::setConfigurationValues(
+                    'core',
+                    [
+                        'version' => $migration_specs['target_version']
+                    ]
+                );
+            }
         }
+
+        // Create default forms
+        $helpdesk_data_manager = new DefaultDataManager();
+        $helpdesk_data_manager->initializeDataIfNeeded();
 
         // Initalize rules
         $this->migration->displayTitle(__('Initializing rules...'));
@@ -277,27 +280,13 @@ class Update
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             $this->migration->displayError($message);
         }
-        /*
-         * FIXME: Remove `$DB->use_utf8mb4` and `$exclude_plugins = true` conditions in GLPI 10.1.
-         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
-         * Indeed, as migration command was not available in previous versions, users may not understand
-         * why this is considered as an error.
-         * Also, some plugins may not have yet handle the switch to utf8mb4.
-         */
-        if ($DB->use_utf8mb4 && ($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
+        if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
             $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             $this->migration->displayError($message);
         }
-        /*
-         * FIXME: Remove `!$DB->allow_signed_keys` and `$exclude_plugins = true` conditions in GLPI 10.1.
-         * These conditions are here only to prevent having this message on every migration to GLPI 10.0.x.
-         * Indeed, as migration command was not available in previous versions, users may not understand
-         * why this is considered as an error.
-         * Also, some plugins may not have yet handle the switch to unsigned keys.
-         */
-        if (!$DB->allow_signed_keys && ($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
+        if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
             $message = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
@@ -313,7 +302,7 @@ class Update
 
         if (defined('GLPI_SYSTEM_CRON')) {
            // Downstream packages may provide a good system cron
-            $DB->updateOrDie(
+            $DB->update(
                 'glpi_crontasks',
                 [
                     'mode'   => 2
@@ -343,6 +332,13 @@ class Update
                 ),
                 true
             );
+        }
+
+        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
+        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
+        if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
+            $this->migration->displayMessage("Generating OAuth keys");
+            \Glpi\OAuth\Server::generateKeys();
         }
     }
 
@@ -399,7 +395,7 @@ class Update
     {
         $migrations = [];
 
-        $current_version = VersionParser::getNormalizedVersion($current_version, true, true);
+        $current_version = VersionParser::getNormalizedVersion($current_version);
 
         $pattern = '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/';
         $migration_iterator = new DirectoryIterator($this->migrations_directory);
@@ -417,17 +413,21 @@ class Update
                 $force_migration = true;
             }
             if (version_compare($versions_matches['target_version'], $current_version, '>') || $force_migration) {
-                $migrations[$file->getPathname()] = preg_replace(
-                    '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
-                    'update$1$2$3to$4$5$6',
-                    $file->getBasename()
-                );
+                $migrations[$file->getPathname()] = [
+                    'file'           => $file->getPathname(),
+                    'function'       => preg_replace(
+                        '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
+                        'update$1$2$3to$4$5$6',
+                        $file->getBasename()
+                    ),
+                    'target_version' => $versions_matches['target_version'],
+                ];
             }
         }
 
         ksort($migrations, SORT_NATURAL);
 
-        return $migrations;
+        return array_values($migrations);
     }
 
     /**

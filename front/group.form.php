@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("group", READ);
 
 if (empty($_GET["id"])) {
@@ -70,8 +68,7 @@ if (isset($_POST["add"])) {
             $group->getTypeName(1),
             $_SERVER['PHP_SELF'],
             "admin",
-            "group",
-            str_replace('glpi_', '', $group->getTable())
+            "group"
         );
 
         $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);

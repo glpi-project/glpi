@@ -35,6 +35,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Asset_PeripheralAsset;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/computer.class.php */
@@ -173,9 +176,7 @@ class ComputerTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -194,8 +195,10 @@ class ComputerTest extends AbstractInventoryAsset
 
     public function testAutoCleanWithoutLockedField()
     {
-        global $DB, $CFG_GLPI;
-        $item_monitor = new \Computer_Item();
+        $this->login(); // required to be able to update entity config
+
+        global $DB;
+        $item_monitor = new Asset_PeripheralAsset();
 
         $manual_monitor = new \Monitor();
         $manual_monitor_id = $manual_monitor->add([
@@ -204,7 +207,12 @@ class ComputerTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $manual_monitor_id);
 
-         $CFG_GLPI['is_user_autoupdate']     = 1;
+        $entity = new \Entity();
+        $this->assertTrue($entity->getFromDB(0));
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoupdate' => 1,
+        ]));
 
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -266,25 +274,35 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertGreaterThan(
             0,
             $item_monitor->add([
-                "itemtype" => "Monitor",
-                "items_id" => $manual_monitor_id,
-                "computers_id" => $computers_id
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+                'items_id_peripheral' => $manual_monitor_id
             ])
         );
 
         $this->assertGreaterThan(0, $computer->fields['users_id']);
 
         //one dynamic monitor linked
-        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $dynamic_monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $dynamic_monitors);
 
         //one manual monitor linked
-        $manual_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $manual_monitors = $item_monitor->find([
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 0
+        ]);
         $this->assertCount(1, $manual_monitors);
 
         //load dynamic monitor
         $dynamic_monitor = new \Monitor();
-        $this->assertTrue($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id']));
+        $this->assertTrue($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id_peripheral']));
         //check same users
         $this->assertSame($computer->fields['users_id'], $dynamic_monitor->fields['users_id']);
         $this->assertSame(getItemByTypeName('User', 'tech', true), $dynamic_monitor->fields['users_id']);
@@ -292,15 +310,18 @@ class ComputerTest extends AbstractInventoryAsset
 
         //load manual monitor
         $manual_monitor = new \Monitor();
-        $this->assertTrue($manual_monitor->getFromDB(reset($manual_monitors)['items_id']));
+        $this->assertTrue($manual_monitor->getFromDB(reset($manual_monitors)['items_id_peripheral']));
         //check same users
         $this->assertSame($computer->fields['users_id'], $manual_monitor->fields['users_id']);
         $this->assertSame(getItemByTypeName('User', 'tech', true), $manual_monitor->fields['users_id']);
 
         //Enable option to clean users_id when element is disconnected
-        $CFG_GLPI['is_user_autoclean']     = 1;
-
-        //remove Computer_Item for dynamic monitor
+        $this->assertTrue($entity->getFromDB(0));
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoclean' => 1,
+        ]));
+        //remove Asset_PeripheralAsset for dynamic monitor
         $item_dynamic_monitor_id = reset($dynamic_monitors)['id'];
         $this->assertTrue($item_monitor->getFromDB($item_dynamic_monitor_id));
         $this->assertTrue($item_monitor->delete($item_monitor->fields, 1));
@@ -308,7 +329,7 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertTrue($dynamic_monitor->getFromDB($dynamic_monitor->getID()));
         $this->assertSame(0, $dynamic_monitor->fields['users_id']);
 
-        //remove Computer_Item for manual monitor
+        //remove Asset_PeripheralAsset for manual monitor
         $item_manual_monitor_id = reset($manual_monitors)['id'];
         $this->assertTrue($item_monitor->getFromDB($item_manual_monitor_id));
         $this->assertTrue($item_monitor->delete($item_monitor->fields, 1));
@@ -332,8 +353,10 @@ class ComputerTest extends AbstractInventoryAsset
 
     public function testAutoUpdateWithoutLockedField()
     {
-        global $DB, $CFG_GLPI;
-        $item_monitor = new \Computer_Item();
+        $this->login(); // required to be able to update entity config
+
+        global $DB;
+        $item_monitor = new Asset_PeripheralAsset();
 
         $manual_monitor = new \Monitor();
         $manual_monitor_id = $manual_monitor->add([
@@ -401,36 +424,51 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertGreaterThan(
             0,
             $item_monitor->add([
-                "itemtype" => "Monitor",
-                "items_id" => $manual_monitor_id,
-                "computers_id" => $computers_id
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computers_id,
+                'itemtype_peripheral' => 'Monitor',
+                'items_id_peripheral' => $manual_monitor_id
             ])
         );
 
         $this->assertGreaterThan(0, $computer->fields['users_id']);
 
         //one dynamic monitor linked
-        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $dynamic_monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $dynamic_monitors);
 
         //one manual monitor linked
-        $manual_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $manual_monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 0
+        ]);
         $this->assertCount(1, $manual_monitors);
 
         //load dynamic monitor
         $dynamic_monitor = new \Monitor();
-        $this->assertTrue($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id']));
+        $this->assertTrue($dynamic_monitor->getFromDB(reset($dynamic_monitors)['items_id_peripheral']));
         //check same users
         $this->assertSame($computer->fields['users_id'], $dynamic_monitor->fields['users_id']);
 
         //load manual monitor
         $manual_monitor = new \Monitor();
-        $this->assertTrue($manual_monitor->getFromDB(reset($manual_monitors)['items_id']));
+        $this->assertTrue($manual_monitor->getFromDB(reset($manual_monitors)['items_id_peripheral']));
         //check same users
         $this->assertSame($computer->fields['users_id'], $manual_monitor->fields['users_id']);
 
         //Enable option to propagate users_id on update to connected element
-        $CFG_GLPI['is_user_autoupdate']     = 1;
+        $entity = new \Entity();
+        $this->assertTrue($entity->getFromDB(0));
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_user_autoupdate' => 1,
+        ]));
 
         //change user from XML file
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -491,23 +529,33 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $computer->fields['users_id']);
 
         //one dynamic monitor linked
-        $dynamic_monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $dynamic_monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $dynamic_monitors);
 
         //one manual monitor linked
-        $monitors_manual = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $monitors_manual = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 0
+        ]);
         $this->assertCount(1, $monitors_manual);
 
         //load dynamic monitor
         $dynamic_monitor = new \Monitor();
-        $dynamic_monitor_id = reset($dynamic_monitors)['items_id'];
+        $dynamic_monitor_id = reset($dynamic_monitors)['items_id_peripheral'];
         $this->assertTrue($dynamic_monitor->getFromDB($dynamic_monitor_id));
         //check same users
         $this->assertSame($computer->fields['users_id'], $dynamic_monitor->fields['users_id']);
 
         //load manual monitor
         $manual_monitor = new \Monitor();
-        $manual_monitor_id = reset($monitors_manual)['items_id'];
+        $manual_monitor_id = reset($monitors_manual)['items_id_peripheral'];
         $this->assertTrue($manual_monitor->getFromDB($manual_monitor_id));
         //check same users
         $this->assertSame($computer->fields['users_id'], $manual_monitor->fields['users_id']);
@@ -533,6 +581,7 @@ class ComputerTest extends AbstractInventoryAsset
         $json = json_decode($json_str);
 
         $computer = new \Computer();
+        $conf = new \Glpi\Inventory\Conf();
 
         $data = (array)$json->content;
         $inventory = new \Glpi\Inventory\Inventory();
@@ -542,7 +591,7 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $agent->handleAgent($inventory->extractMetadata()));
 
         $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-        $main->setAgent($agent)->setExtraData($data);
+        $main->setAgent($agent)->setExtraData($data)->checkConf($conf);
         $result = $main->prepare();
         $this->assertCount(1, $result);
 
@@ -1516,7 +1565,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         //check domain has been created
         $domain = new \Domain();
-        $this->assertTrue($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed")]));
+        $this->assertTrue($domain->getFromDBByCrit(['name' => "workgroup'ed"]));
 
         //check relation has been created
         $domain_item = new \Domain_Item();
@@ -1536,7 +1585,7 @@ class ComputerTest extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->assertTrue($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]));
+        $this->assertTrue($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]));
 
         //check relation has been created - and there is only one remaining
         $domain_item = new \Domain_Item();
@@ -1573,7 +1622,7 @@ class ComputerTest extends AbstractInventoryAsset
         //check domain has been created
         $first_id = $domain->fields['id'];
         $domain = new \Domain();
-        $this->assertTrue($domain->getFromDBByCrit(['name' => addslashes("workgroup'ed another time")]));
+        $this->assertTrue($domain->getFromDBByCrit(['name' => "workgroup'ed another time"]));
 
         //check relation is still present - and non dynamic one as well
         $domain_item = new \Domain_Item();
@@ -1601,7 +1650,7 @@ class ComputerTest extends AbstractInventoryAsset
         </REQUEST>";
 
         $lockedfield = new \Lockedfield();
-        $this->assertGreaterThan(0, $lockedfield->add(['itemtype' => 'Computer', 'items_id' => 0, 'field' => 'entities_id', 'is_global' => 1 ]));
+        $this->assertGreaterThan(0, $lockedfield->add(['itemtype' => 'Computer', 'items_id' => 0, 'field' => 'entities_id', 'is_global' => 1]));
 
         $inventory = $this->doInventory($xml_source, true);
         $computers_id = $inventory->getItem()->fields['id'];

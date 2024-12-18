@@ -39,16 +39,12 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = '';
 }
-
-Session::checkLoginUser();
 
 $project = new Project();
 if (isset($_POST["add"])) {

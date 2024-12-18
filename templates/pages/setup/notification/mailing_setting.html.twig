@@ -1,0 +1,418 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if (config('notifications_mailing') == 1) %}
+    {% set rand = random() %}
+    {% set field_options = {
+        'field_class': 'col-12 col-xxl-6 col-sm-6',
+        'rand': rand,
+    } %}
+
+    <form action="{{ 'NotificationMailingSetting'|itemtype_form_path }}" method="post">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="id" value="1" />
+
+        <div class="row">
+            {{ fields.emailField(
+                'admin_email',
+                config('admin_email'),
+                __('Administrator email address'),
+                field_options
+            ) }}
+
+            {{ fields.textField(
+                'admin_email_name',
+                config('admin_email_name'),
+                __('Administrator name'),
+                field_options
+            ) }}
+
+            {{ fields.emailField(
+                'from_email',
+                config('from_email'),
+                __('Email sender address'),
+                field_options|merge({
+                    'helper': __('Address to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
+                })
+            ) }}
+
+            {{ fields.textField(
+                'from_email_name',
+                config('from_email_name'),
+                __('Email sender name'),
+                field_options|merge({
+                    'helper': __('Name to use in from for sent emails.') ~ '\n' ~ __('If not set, main or entity administrator email name will be used.')
+                })
+            ) }}
+
+            {{ fields.emailField(
+                'replyto_email',
+                config('replyto_email'),
+                __('Reply-To address'),
+                field_options|merge({
+                    'helper': __('Optionnal reply to address.') ~ '\n' ~ __('If not set, main or entity administrator email address will be used.')
+                })
+            ) }}
+
+            {{ fields.textField(
+                'replyto_email_name',
+                config('replyto_email_name'),
+                __('Reply-To name'),
+                field_options|merge({
+                    'helper': __('Optionnal reply to name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')
+                })
+            ) }}
+
+            {{ fields.emailField(
+                'noreply_email',
+                config('noreply_email'),
+                __('No-Reply address'),
+                field_options|merge({
+                    'helper': __('Optionnal No-Reply address.') ~ '\n' ~ __('If set, it will be used for notifications that doesnʼt expect a reply.')
+                })
+            ) }}
+
+            {{ fields.textField(
+                'noreply_email_name',
+                config('noreply_email_name'),
+                __('No-Reply name'),
+                field_options|merge({
+                    'helper': __('Optionnal No-Reply name.') ~ '\n' ~ __('If not set, main or entity administrator name will be used.')
+                })
+            ) }}
+
+            {{ fields.dropdownArrayField(
+                "attach_ticket_documents_to_mail",
+                config('attach_ticket_documents_to_mail'),
+                attach_documents_values,
+                __('Add documents into ticket notifications'),
+                field_options
+            ) }}
+
+            {{ fields.nullField() }}
+
+            {{ fields.textareaField(
+                'mailing_signature',
+                config('mailing_signature'),
+                __('Email signature'),
+                field_options
+            ) }}
+
+            {{ fields.nullField() }}
+
+            {% set extra_options = {} %}
+            {% if not is_mail_function_available %}
+                {% set extra_options = {
+                    'helper': __('The PHP mail function is unknown or is not activated on your system.') ~ '\n' ~ __('The use of a SMTP is needed.')
+                } %}
+            {% endif %}
+            {{ fields.dropdownArrayField(
+                "smtp_mode",
+                config('smtp_mode'),
+                mail_methods,
+                __('Way of sending emails'),
+                field_options|merge(extra_options)
+            ) }}
+            <script type="text/javascript">
+                $(function() {
+                    $('[name=smtp_mode]').on('change', function() {
+                        const value = $(this).find('option:selected').val();
+                        const is_mail  = value === '{{ constant('MAIL_MAIL') }}';
+                        const is_oauth = value === '{{ constant('MAIL_SMTPOAUTH') }}';
+
+                        $('#smtp_config').toggle(!is_mail);
+
+                        // show/hide elements not related to Oauth
+                        $('#dropdown_smtp_check_certificate{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp_passwd_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp_username_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+
+                        // show/hide elements related to Oauth
+                        $('#oauth_redirect_alert_{{ rand }}').toggleClass('d-none', !is_oauth);
+                        $('#_smtp_oauth_callback_url_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#dropdown_smtp_oauth_provider{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp_oauth_client_id_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp_oauth_client_secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#_force_redirect_to_smtp_oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
+                    });
+                    $('[name=smtp_mode]').trigger('change');
+                });
+            </script>
+
+            {{ fields.nullField() }}
+
+            {{ fields.numberField(
+                'smtp_max_retries',
+                config('smtp_max_retries'),
+                __('Max. delivery retries'),
+                field_options
+            ) }}
+
+            {{ fields.numberField(
+                'smtp_retry_time',
+                config('smtp_retry_time'),
+                __('Try to deliver again in (minutes)'),
+                field_options|merge({
+                    'min': 0,
+                    'max': 60,
+                    'step': 1,
+                })
+            ) }}
+        </div>
+
+        <div class="row" id="smtp_config">
+            <div class="hr-text">
+                <i class="{{ 'AuthMail'|itemtype_icon }}"></i>
+                <span>{{ 'AuthMail'|itemtype_name }}</span>
+            </div>
+
+            <div id="oauth_redirect_alert_{{ rand }}" class="d-flex alert alert-info mx-2">
+                <i class="fas fa-info-circle fa-2x alert-icon"></i>
+                {{ __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.') }}
+            </div>
+
+            {{ fields.dropdownArrayField(
+                'smtp_oauth_provider',
+                config('smtp_oauth_provider'),
+                providers_values,
+                __('Oauth provider'),
+                field_options|merge({'display_emptychoice': true})
+            ) }}
+
+            {{ fields.textField(
+                '_smtp_oauth_callback_url',
+                config('url_base') ~ '/front/smtp_oauth2_callback.php',
+                _x('oauth', 'Callback URL'),
+                field_options|merge({
+                    'helper': _x('oauth', 'This is the callback URL that you will have to declare in your provider application.'),
+                    'is_copyable': true,
+                    'readonly': true,
+                })
+            ) }}
+
+            {{ fields.textField(
+                'smtp_oauth_client_id',
+                config('smtp_oauth_client_id'),
+                _x('oauth', 'Client ID'),
+                field_options,
+            ) }}
+
+            {{ fields.passwordField(
+                'smtp_oauth_client_secret',
+                '',
+                _x('oauth', 'Client secret'),
+                field_options|merge({
+                    'clearable': false,
+                    'additional_attributes': {
+                        'autocomplete': 'new-password',
+                    }
+                }),
+            ) }}
+
+            {% for provider_class in supported_providers %}
+                {% for param_specs in call(provider_class ~ '::getAdditionalParameters') %}
+                    {% set extra_options = {
+                        'additional_attributes': {
+                            'data-oauth_additional_parameter': 'true',
+                            'data-oauth_provider': provider_class,
+                        },
+                    } %}
+                    {% if param_specs.helper is defined %}
+                        {% set extra_options = extra_options|merge({
+                            'helper': param_specs['helper'],
+                        }) %}
+                    {% endif %}
+
+                    {{ fields.textField(
+                        'smtp_oauth_options[' ~ param_specs['key'] ~ ']',
+                        config('smtp_oauth_provider') == provider_class ? (provider_options[param_specs['key']] ?? param_specs['default'] ?? '') : '',
+                        param_specs['label'],
+                        field_options|merge(extra_options),
+                    ) }}
+
+                    {# force new line #}
+                    <div class="w-100"></div>
+                {% endfor %}
+            {% endfor %}
+            <script type='text/javascript'>
+                $(function() {
+                    $('[name=smtp_oauth_provider]').on('change', function() {
+                        const value = $(this).find('option:selected').val();
+                        $(this.closest('form')).find('[data-oauth_additional_parameter="true"]').each(
+                            function (key, field) {
+                                const row = $(field).closest('.form-field');
+                                const matches_current_provider = value === $(field).attr('data-oauth_provider');
+                                row.toggle(matches_current_provider);
+                                row.find('input, select').prop('disabled', !matches_current_provider);
+                            }
+                        );
+
+                    });
+                    $('[name=smtp_oauth_provider]').trigger('change');
+                });
+            </script>
+
+            {% if config('smtp_oauth_refresh_token') != '' %}
+                {{ fields.checkboxField(
+                    '_force_redirect_to_smtp_oauth',
+                    '',
+                    _x('oauth', 'Force OAuth authentication refresh'),
+                    field_options|merge({
+                        'helper': _x('oauth', 'You can use this option to force redirection to the OAuth authentication process. This will trigger generation of a new OAuth token.')
+                    })
+                ) }}
+
+                {# force new line #}
+                <div class="w-100"></div>
+            {% endif %}
+
+            {{ fields.dropdownYesNo(
+                'smtp_check_certificate',
+                config('smtp_check_certificate'),
+                __('Check certificate'),
+                field_options,
+            ) }}
+
+            {# force new line #}
+            <div class="w-100"></div>
+
+            {{ fields.textField(
+                'smtp_host',
+                config('smtp_host'),
+                __('SMTP host'),
+                field_options,
+            ) }}
+
+            {{ fields.numberField(
+                'smtp_port',
+                config('smtp_port'),
+                _n('Port', 'Ports', 1),
+                field_options,
+            ) }}
+
+            {{ fields.textField(
+                'smtp_username',
+                config('smtp_username'),
+                __('SMTP login (optional)'),
+                field_options,
+            ) }}
+
+            {{ fields.passwordField(
+                'smtp_passwd',
+                '',
+                __('SMTP password (optional)'),
+                field_options|merge({
+                    'additional_attributes': {
+                        'autocomplete': 'new-password',
+                    }
+                }),
+            ) }}
+
+            {{ fields.emailField(
+                'smtp_sender',
+                config('smtp_sender'),
+                __('Email sender'),
+                field_options|merge({
+                    'helper': __('May be required for some mails providers.') ~ '\n' ~ __('If not set, main administrator email will be used.')
+                })
+            ) }}
+        </div>
+
+        <div class="card-footer mx-n2 mb-4 d-flex flex-row-reverse align-items-start flex-wrap">
+            <button type="submit" name="update" value="1" class="btn btn-primary">
+                <i class="ti ti-device-floppy"></i>
+                <span>{{ _x('button', 'Save') }}</span>
+            </button>
+            <button type="button" id="test-email-btn" class="btn btn-outline-secondary me-2" name="test_smtp_send" value="1">
+                {{ __('Send a test email to the administrator') }}
+            </button>
+
+            <div class="modal fade" id="mailTestLogModal" tabindex="-1" role="dialog" aria-labelledby="mailTestLogModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mailTestLogModalLabel">{{ __('Email sending test result') }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $('#test-email-btn').on('click', function () {
+                    const $modal = $('#mailTestLogModal');
+
+                    $.ajax({
+                        url: CFG_GLPI.root_doc + '/ajax/notificationmailingsettings.php',
+                        method: 'POST',
+                        data: {
+                            'test_smtp_send': 1
+                        }
+                    }).done(function (data) {
+                        const successText = data.success ? __('Success') : __('Error');
+                        const successClass = data.success ? 'bg-success' : 'bg-danger';
+                        const errorSection = data.error ? `<div><h4>${__('Error')}</h4><pre style="white-space: pre-wrap;">${data.error}</pre></div>` : '';
+                        const debugSection = data.debug ? `<div><h4>${__('Logs')}</h4><pre style="white-space: pre-wrap;">${data.debug}</pre></div>` : '';
+
+                        const modalBodyContent = `
+                            <div>
+                                <span class="badge mb-3 ${successClass}">${successText}</span>
+                            </div>
+                            ${errorSection}
+                            ${debugSection}
+                        `;
+
+                        $modal.find('.modal-body').html(modalBodyContent);
+                        $modal.modal('show');
+                    });
+                });
+            </script>
+        </div>
+    </form>
+{% else %}
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle fa-2x alert-icon"></i>
+                {{ __('Notifications are disabled.') }}
+                <a href="{{ config('root_doc') }}/front/setup.notification.php">{{ __('See configuration') }}</a>
+            </div>
+        </div>
+    </div>
+{% endif %}

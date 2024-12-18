@@ -34,8 +34,9 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\NotFoundHttpException;
 
-include('../inc/includes.php');
+Session::checkRight(NetworkName::$rightname, READ);
 
 $nn = new NetworkName();
 
@@ -136,7 +137,7 @@ if (isset($_POST["add"])) {
         );
         Html::back();
     } else {
-        Html::displayNotFoundError();
+        throw new NotFoundHttpException();
     }
 } else {
     if (!isset($_GET["id"])) {

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
    // From RuleCollection
@@ -44,23 +46,15 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 
     public static $rightname           = 'rule_dictionnary_software';
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
-       //TRANS: software in plural
+        //TRANS: software in plural
         return __('Dictionary of software');
     }
 
-
-    /**
-     * @see RuleCollection::cleanTestOutputCriterias()
-     **/
     public function cleanTestOutputCriterias(array $output)
     {
-
-       //If output array contains keys begining with _ : drop it
+        //If output array contains keys begining with _ : drop it
         foreach ($output as $criteria => $value) {
             if (($criteria[0] == '_') && ($criteria != '_ignore_import')) {
                 unset($output[$criteria]);
@@ -69,44 +63,41 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         return $output;
     }
 
-
-    /**
-     * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
-     **/
     public function warningBeforeReplayRulesOnExistingDB($target)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        $twig_params = [
+            'warning_title' => __('Warning before running rename based on the dictionary rules'),
+            'warning_message' => __('Warning! This operation can put merged software in the trashbin. Ensure to notify your users.'),
+            'manufacturer_label' => __('Replay dictionary rules for manufacturers'),
+            'btn_label' => _sx('button', 'Post'),
+            'target' => $target,
+            'emptylabel' => __('All'),
+        ];
 
-        echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"" .
-             $target . "\">\n";
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2' class='b'>" .
-            __('Warning before running rename based on the dictionary rules') . "</th></tr>\n";
-        echo "<tr><td class='tab_bg_2 center'>";
-        echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
-        echo "<td class='tab_bg_2 center'>" .
-            __('Warning! This operation can put merged software in the trashbin. Ensure to notify your users.') .
-           "</td></tr>\n";
-        echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th></tr>\n";
-        echo "<tr><td class='tab_bg_2 center'>" .
-            __('Replay dictionary rules for manufacturers (----- = All)') . "</td>";
-        echo "<td class='tab_bg_2 center'>";
-        Manufacturer::dropdown(['name' => 'manufacturer']);
-        echo "</td></tr>\n";
-
-        echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-        echo "<input type='submit' name='replay_rule' value=\"" . _sx('button', 'Post') . "\"
-             class='btn btn-primary'>";
-        echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
-        echo "</td></tr>";
-        echo "</table>\n";
-        echo "</div>\n";
-        Html::closeForm();
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/alerts_macros.html.twig' as alerts %}
+            <form name="testrule_form" id="softdictionnary_confirmation" method="post" action="{{ target }}">
+                <div class="card">
+                    <div class="card-body">
+                        {{ alerts.alert_warning(warning_title, warning_message) }}
+                        <div>
+                            {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
+                                emptylabel: emptylabel,
+                            }) }}
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex flex-row-reverse">
+                        <input type="hidden" name="replay_confirm" value="replay_confirm">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
+                    </div>
+                </div>
+            </form>
+TWIG, $twig_params);
         return true;
     }
-
 
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
@@ -116,10 +107,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         if (isCommandLine()) {
             echo "replayRulesOnExistingDB started : " . date("r") . "\n";
         }
-        $nb = 0;
         $i  = $offset;
 
-        if (count($items) == 0) {
+        if (count($items) === 0) {
            //Select all the differents software
             $criteria = [
                 'SELECT'          => [
@@ -194,12 +184,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     && ($res_rule['softwarecategories_id'] != $input['softwarecategories_id']))
                 ) {
                     $IDs = [];
-                   //Find all the software in the database with the same name and manufacturer
+                    //Find all the software in the database with the same name and manufacturer
                     $same_iterator = $DB->request([
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_softwares',
                         'WHERE'  => [
-                            'name'               => addslashes($input['name']),
+                            'name'               => $input['name'],
                             'manufacturers_id'   => $input['manufacturers_id']
                         ]
                     ]);
@@ -239,12 +229,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         return (($i == $nb) ? -1 : $i);
     }
 
-
     /**
      * Replay dictionary on several software
      *
-     * @param $IDs       array of software IDs to replay
-     * @param $res_rule  array of rule results
+     * @param array $IDs       array of software IDs to replay
+     * @param array $res_rule  array of rule results
      *
      * @return void
      **/
@@ -286,10 +275,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                      $new_softs,
                      $res_rule,
                      $ID,
-                     (isset($res_rule['new_entities_id'])
-                     ? $res_rule['new_entities_id']
-                     : $soft["entities_id"]
-                     ),
+                     $res_rule['new_entities_id'] ?? $soft["entities_id"],
                      $soft['name'] ?? '',
                      $soft['manufacturer'] ?? '',
                      $delete_ids
@@ -300,17 +286,16 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         $this->putOldSoftsInTrash($delete_ids);
     }
 
-
     /**
      * Replay dictionary on one software
      *
-     * @param &$new_softs      array containing new software already computed
-     * @param $res_rule        array of rule results
-     * @param $ID                    ID of the software
-     * @param $entity                working entity ID
-     * @param $name                  softwrae name
-     * @param $manufacturer          manufacturer name
-     * @param &$soft_ids       array containing replay software need to be put in trashbin
+     * @param array &$new_softs      array containing new software already computed
+     * @param array $res_rule        array of rule results
+     * @param integer $ID                    ID of the software
+     * @param integer $entity                working entity ID
+     * @param string $name                  software name
+     * @param string $manufacturer          manufacturer name
+     * @param array &$soft_ids       array containing replay software need to be put in trashbin
      **/
     public function replayDictionnaryOnOneSoftware(
         array &$new_softs,
@@ -337,9 +322,9 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             return;
         }
 
-       //Software's name has changed or entity
+        //Software's name has changed or entity
         if (
-            (isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($name)))
+            (isset($res_rule["name"]) && (strtolower($res_rule["name"]) !== strtolower($name)))
             //Entity has changed, and new entity is a parent of the current one
             || (!isset($res_rule["name"])
               && isset($res_rule['new_entities_id'])
@@ -351,18 +336,16 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             if (isset($res_rule["name"])) {
                 $new_name = $res_rule["name"];
             } else {
-                $new_name = addslashes($name);
+                $new_name = $name;
             }
 
             if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
                 $manufacturer = $res_rule["manufacturer"];
-            } else {
-                $manufacturer = addslashes($manufacturer);
             }
 
-           //New software not already present in this entity
+            //New software not already present in this entity
             if (!isset($new_softs[$entity][$new_name])) {
-               // create new software or restore it from trashbin
+                // create new software or restore it from trashbin
                 $new_software_id               = $soft->addOrRestoreFromTrash(
                     $new_name,
                     $manufacturer,
@@ -374,7 +357,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             } else {
                 $new_software_id = $new_softs[$entity][$new_name];
             }
-           // Move licenses to new software
+            // Move licenses to new software
             $this->moveLicenses($ID, $new_software_id);
         } else {
             $new_software_id = $ID;
@@ -389,8 +372,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             $soft->update($res_rule);
         }
 
-       // Add to software to deleted list
-        if ($new_software_id != $ID) {
+        // Add to software to deleted list
+        if ($new_software_id !== $ID) {
             $soft_ids[] = $ID;
         }
 
@@ -401,7 +384,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         ]);
 
         foreach ($iterator as $version) {
-            $input["version"] = addslashes($version["name"]);
+            $input["version"] = $version["name"];
             $old_version_name = $input["version"];
 
             if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {
@@ -427,11 +410,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         }
     }
 
-
     /**
      * Delete a list of software
      *
-     * @param $soft_ids array containing replay software need to be put in trashbin
+     * @param array $soft_ids array containing replay software need to be put in trashbin
      **/
     public function putOldSoftsInTrash(array $soft_ids)
     {
@@ -470,14 +452,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         }
     }
 
-
     /**
      * Change software's name, and move versions if needed
      *
      * @param int $ID                    old software ID
      * @param int $new_software_id       new software ID
      * @param int $version_id            version ID to move
-     * @param string $old_version        old version name
+     * @param string $old_version        old version name (Not used)
      * @param string $new_version        new version name
      * @param int $entity                entity ID
      * @return void
@@ -575,7 +556,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         }
     }
 
-
     /**
      * Move licenses from a software to another
      *
@@ -589,7 +569,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Return false if one of the 2 software doesn't exists
+        // Return false if one of the 2 software doesn't exist
         if (
             !countElementsInTable('glpi_softwares', ['id' => $old_software_id])
             || !countElementsInTable('glpi_softwares', ['id' => $new_software_id])
@@ -597,7 +577,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             return false;
         }
 
-       //Transfer licenses to new software if needed
+        // Transfer licenses to new software if needed
         if ($old_software_id != $new_software_id) {
             $DB->update(
                 'glpi_softwarelicenses',
@@ -612,19 +592,18 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         return true;
     }
 
-
     /**
      * Check if a version exists
      *
-     * @param $software_id  software ID
-     * @param $version      version name
+     * @param integer $software_id  software ID
+     * @param string $version      version name
      **/
     public function versionExists($software_id, $version)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Check if the version exists
+        // Check if the version exists
         $iterator = $DB->request([
             'FROM'   => 'glpi_softwareversions',
             'WHERE'  => [
@@ -632,10 +611,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                 'name'         => $version
             ]
         ]);
-        if (count($iterator)) {
-            $current = $iterator->current();
-            return $current['id'];
-        }
-        return -1;
+        return count($iterator) ? $iterator->current()['id'] : -1;
     }
 }

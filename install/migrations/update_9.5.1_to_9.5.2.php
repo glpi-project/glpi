@@ -36,7 +36,7 @@
 /**
  * Update from 9.5.1 to 9.5.2
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update951to952()
 {
@@ -72,7 +72,7 @@ function update951to952()
     $docs_input = [];
     foreach ($itemtypes as $itemtype => $field) {
         // Check ticket and child items (followups, tasks, solutions) contents
-        $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
+        $regexPattern = 'document\.send\.php\?docid=[0-9]+';
         $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
         $result = $DB->request([
             'SELECT' => ['id', $field, $user_field],
@@ -132,7 +132,7 @@ function update951to952()
         if (countElementsInTable('glpi_documents_items', $unicity_fields) > 0) {
             continue; // Already declared in DB
         }
-        $DB->insertOrDie('glpi_documents_items', $doc_input);
+        $DB->insert('glpi_documents_items', $doc_input);
     }
     /* /Fix document_item migration */
 

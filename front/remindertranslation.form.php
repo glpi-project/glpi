@@ -37,8 +37,6 @@
  * @since 9.5
  */
 
-include('../inc/includes.php');
-
 $translation = new ReminderTranslation();
 
 if (isset($_POST['add'])) {

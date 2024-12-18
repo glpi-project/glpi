@@ -34,11 +34,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
@@ -74,6 +76,16 @@ class Agent extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Agent', 'Agents', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
     }
 
     public function rawSearchOptions()
@@ -397,7 +409,7 @@ class Agent extends CommonDBTM
         $deviceid = $metadata['deviceid'];
 
         $aid = false;
-        if ($this->getFromDBByCrit(Sanitizer::dbEscapeRecursive(['deviceid' => $deviceid]))) {
+        if ($this->getFromDBByCrit(['deviceid' => $deviceid])) {
             $aid = $this->fields['id'];
         }
 
@@ -468,7 +480,6 @@ class Agent extends CommonDBTM
             return 0;
         }
 
-        $input = Sanitizer::sanitize($input);
         if ($aid) {
             $input['id'] = $aid;
             // We should not update itemtype in db if not an expected one
@@ -499,8 +510,8 @@ class Agent extends CommonDBTM
      */
     public function prepareInputs(array $input)
     {
-        if ($this->isNewItem() && (!isset($input['deviceid']) || empty($input['deviceid']))) {
-            Session::addMessageAfterRedirect(__('"deviceid" is mandatory!'), false, ERROR);
+        if ($this->isNewItem() && empty($input['deviceid'])) {
+            Session::addMessageAfterRedirect(__s('"deviceid" is mandatory!'), false, ERROR);
             return false;
         }
         return $input;
@@ -706,17 +717,8 @@ class Agent extends CommonDBTM
                 'connect_timeout' => self::TIMEOUT,
             ];
 
-            // add proxy string if configured in glpi
-            if (!empty($CFG_GLPI["proxy_name"])) {
-                $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-                $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-                $options['proxy'] = $proxy_string;
-            }
-
             // init guzzle client with base options
-            $httpClient = new Guzzle_Client($options);
+            $httpClient = Toolbox::getGuzzleClient($options);
             try {
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
@@ -749,7 +751,7 @@ class Agent extends CommonDBTM
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {
@@ -770,7 +772,7 @@ class Agent extends CommonDBTM
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->handleException($e);
+            ErrorHandler::getInstance()->handleException($e, true);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {
@@ -795,7 +797,7 @@ class Agent extends CommonDBTM
 
         switch ($request) {
             case self::ACTION_STATUS:
-                $data['answer'] = Sanitizer::encodeHtmlSpecialChars(preg_replace('/status: /', '', $raw_content));
+                $data['answer'] = preg_replace('/status: /', '', $raw_content);
                 break;
             case self::ACTION_INVENTORY:
                 $now = new DateTime();
@@ -848,7 +850,13 @@ class Agent extends CommonDBTM
             'SELECT' => ['id'],
             'FROM' => self::getTable(),
             'WHERE' => [
-                'last_contact' => ['<', new QueryExpression("date_add(now(), interval -" . $retention_time . " day)")]
+                'last_contact' => ['<',
+                    QueryFunction::dateSub(
+                        date: QueryFunction::now(),
+                        interval: $retention_time,
+                        interval_unit: 'DAY'
+                    )
+                ]
             ]
         ]);
 
@@ -884,17 +892,31 @@ class Agent extends CommonDBTM
                         break;
                     case Conf::STALE_AGENT_ACTION_STATUS:
                         if (isset($config['stale_agents_status']) && $item !== null) {
-                            //change status of agents linked assets
-                            $input = [
-                                'id'        => $item->fields['id'],
-                                'states_id' => $config['stale_agents_status'],
-                                'is_dynamic' => 1
-                            ];
-                            if ($item->update($input)) {
-                                $task->addVolume(1);
-                                $total++;
+                            $should_update = false;
+                            if (
+                                isset($config['stale_agents_status_condition'])
+                                && $config['stale_agents_status_condition'] != json_encode(['all']) // all status
+                            ) {
+                                $old_state_list = json_decode($config['stale_agents_status_condition']);
+                                if (in_array($item->fields['states_id'], $old_state_list)) {
+                                    $should_update = true;
+                                }
                             } else {
-                                $errors++;
+                                $should_update = true;
+                            }
+                            if ($should_update) {
+                                //change status of agents linked assets
+                                $input = [
+                                    'id'        => $item->fields['id'],
+                                    'states_id' => $config['stale_agents_status'],
+                                    'is_dynamic' => 1
+                                ];
+                                if ($item->update($input)) {
+                                    $task->addVolume(1);
+                                    $total++;
+                                } else {
+                                    $errors++;
+                                }
                             }
                         }
                         break;

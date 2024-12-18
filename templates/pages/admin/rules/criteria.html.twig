@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set no_header = true %}
+{% extends 'generic_show_form.html.twig' %}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {% block more_fields %}
+        {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
+        {% set criteria_dropdown %}
+            <div class="d-flex">
+                <div class="btn-group">
+                    {% do call([rule, 'dropdownCriteria'], [{
+                        value: item.fields['criteria'],
+                        rand: rand
+                    }]) %}
+                    {% if rule.specific_parameters %}
+                        {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
+                        <button type="button" class="btn btn-ghost-secondary btn-sm" title="{{ __('Add a criterion') }}"
+                                data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
+                            <i class="ti ti-plus"></i>
+                        </button>
+                        {% do call('Ajax::createIframeModalWindow', [
+                            'addcriterion' ~ rand,
+                            param_itemtype|itemtype_form_path,
+                            {
+                                reloadonclose: true,
+                            }
+                        ]) %}
+                    {% endif %}
+                </div>
+                <span id="criteria_span" class="d-flex"></span>
+            </div>
+        {% endset %}
+        {{ fields.htmlField('', criteria_dropdown, get_class(item)|itemtype_name, {
+            full_width: true
+        }) }}
+        {% do call(['Ajax', 'updateItemOnSelectEvent'], [
+            'dropdown_criteria' ~ rand,
+            'criteria_span',
+            config('root_doc') ~ '/ajax/rulecriteria.php',
+            {
+                criteria: '__VALUE__',
+                sub_type: get_class(rule),
+                rand: rand,
+            }
+        ]) %}
+        {% if item.fields['criteria'] is defined and item.fields['criteria'] is not empty %}
+            <script type="text/javascript">
+                $(() => {
+                    {% do call(['Ajax', 'updateItemJsCode'], [
+                        'criteria_span',
+                        config('root_doc') ~ '/ajax/rulecriteria.php',
+                        {
+                            criteria: item.fields['criteria'],
+                            condition: item.fields['condition'],
+                            pattern: item.fields['pattern'],
+                            sub_type: get_class(rule),
+                            rand: rand,
+                        }
+                    ]) %}
+                });
+            </script>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

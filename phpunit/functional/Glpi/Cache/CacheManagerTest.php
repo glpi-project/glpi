@@ -35,16 +35,14 @@
 
 namespace tests\units\Glpi\Cache;
 
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
-/**
- * @backupStaticAttributes disabled
- */
 class CacheManagerTest extends \GLPITestCase
 {
     public static function contextProvider(): iterable
@@ -76,9 +74,7 @@ class CacheManagerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider contextProvider
-     */
+    #[DataProvider('contextProvider')]
     public function testIsContextValid(string $context, bool $is_valid, bool $is_configurable): void
     {
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
@@ -143,7 +139,7 @@ class CacheManagerTest extends \GLPITestCase
                 'options'            => [],
                 'expected_set_error' => 'Invalid DSN: "whoot://invalid".',
                 'expected_get_error' => [
-                    'level' => Logger::WARNING,
+                    'level' => LogLevel::WARNING,
                     'message' => sprintf('Invalid configuration for cache context "%s".', $context)
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
@@ -156,7 +152,7 @@ class CacheManagerTest extends \GLPITestCase
                 'options'            => [],
                 'expected_set_error' => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
                 'expected_get_error' => [
-                    'level' => Logger::WARNING,
+                    'level' => LogLevel::WARNING,
                     'message' => sprintf('Invalid configuration for cache context "%s".', $context)
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
@@ -214,7 +210,7 @@ class CacheManagerTest extends \GLPITestCase
                 'options'            => [],
                 'expected_set_error' => sprintf('Invalid or non configurable context: "%s".', $context),
                 'expected_get_error' => [
-                    'level' => Logger::NOTICE,
+                    'level' => LogLevel::NOTICE,
                     'message' => sprintf('Invalid or non configurable context: "%s".', $context)
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
@@ -222,9 +218,7 @@ class CacheManagerTest extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider configurationProvider
-     */
+    #[DataProvider('configurationProvider')]
     public function testSetConfiguration(
         string $context,
         $dsn,
@@ -321,9 +315,7 @@ class CacheManagerTest extends \GLPITestCase
         $this->assertEquals($expected_config, include($config_file));
     }
 
-    /**
-     * @dataProvider configurationProvider
-     */
+    #[DataProvider('configurationProvider')]
     public function testGetConfigurableCache(
         string $context,
         $dsn,
@@ -373,9 +365,7 @@ class CacheManagerTest extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider contextProvider
-     */
+    #[DataProvider('contextProvider')]
     public function testGetCacheInstanceDefault(string $context, bool $is_valid, bool $is_configurable): void
     {
         if (!$is_valid) {
@@ -445,9 +435,7 @@ class CacheManagerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dsnProvider
-     */
+    #[DataProvider('dsnProvider')]
     public function testIsDsnValid($dsn, bool $is_valid, ?string $scheme = null): void
     {
 
@@ -461,9 +449,7 @@ class CacheManagerTest extends \GLPITestCase
         $this->assertSame($is_valid, $instance->isDsnValid($dsn));
     }
 
-    /**
-     * @dataProvider dsnProvider
-     */
+    #[DataProvider('dsnProvider')]
     public function testExtractScheme($dsn, bool $is_valid, ?string $scheme = null): void
     {
 

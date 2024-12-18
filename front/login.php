@@ -33,30 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\AuthenticationFailedException;
+
 /**
  * @since 0.85
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
-
-/** @var array $CFG_GLPI */
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
 
-$SECURITY_STRATEGY = 'no_check';
-
-include('../inc/includes.php');
-
-
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
-    if (!is_writable(GLPI_SESSION_DIR)) {
+    if (!Session::canWriteSessionFiles()) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
     } else {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
     }
 }
 
-$_POST = array_map('stripslashes', $_POST);
+if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
+    $_POST['totp_code'] = implode('', $_POST['totp_code']);
+}
 
 //Do login and checks
 //$user_present = 1;
@@ -66,7 +64,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
+    $password = $_POST[$_SESSION['pwdfield']];
 } else {
     $password = '';
 }
@@ -79,25 +77,22 @@ if (isset($_POST['auth'])) {
 
 $remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
 
-// Redirect management
-$REDIRECT = "";
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-    $REDIRECT = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
-    $REDIRECT = "?redirect=" . rawurlencode($_GET['redirect']);
-}
-
 $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
+if (isset($_REQUEST['totp_cancel'])) {
+    session_destroy();
+    Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
+}
+$mfa_params = [];
+if (!empty($_POST['totp_code'])) {
+    $mfa_params['totp_code'] = $_POST['totp_code'];
+} else if (!empty($_POST['backup_code'])) {
+    $mfa_params['backup_code'] = $_POST['backup_code'];
+}
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
-    http_response_code(401);
-    TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
-        'errors'    => $auth->getErrors(),
-        'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1' . str_replace("?", "&", $REDIRECT),
-    ]);
-    exit();
+    throw new AuthenticationFailedException(authentication_errors: $auth->getErrors());
 }

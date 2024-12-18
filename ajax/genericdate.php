@@ -33,14 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
     $withtime = filter_var($_POST['withtime'], FILTER_VALIDATE_BOOLEAN);
@@ -50,5 +48,5 @@ if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
         Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
     }
 } else {
-    echo "<input type='hidden' name='" . Html::cleanInputText($_POST['name']) . "' value='" . Html::cleanInputText($_POST['value']) . "'>";
+    echo "<input type='hidden' name='" . htmlescape($_POST['name']) . "' value='" . htmlescape($_POST['value']) . "'>";
 }

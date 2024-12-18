@@ -6,7 +6,7 @@ on:
       php-version:
         description: "PHP version"
         required: true
-        default: "7.4"
+        default: "8.0"
 
 jobs:
   build:

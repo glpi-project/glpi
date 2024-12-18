@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% if input|length %}
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title">{{ _n('Criterion', 'Criteria', get_plural_number()) }}</h3>
+      </div>
+      <div class="card-body d-flex flex-wrap">
+         <form name="testrule_form" id="testrulesengine_form" method="post" action="{{ params.target }}">
+            <div class="col-12 col-xxl12 flex-column">
+               <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                  <div class="row flex-row align-items-start flex-grow-1">
+                     <div class="row flex-row">
+                        {% for criterion in input %}
+                           {% set field_content %}
+                              {% do call([rule, 'displayCriteriaSelectPattern'], [criterion, criterion, constant('Rule::PATTERN_IS'), values[criterion]|default('')]) %}
+                           {% endset %}
+                           {{ fields.htmlField(
+                              criterion,
+                              field_content,
+                              criteria[criterion] is defined ? criteria[criterion]['name'] : criterion,
+                           ) }}
+                        {% endfor %}
+                        {% do call([rule, 'showSpecificCriteriasForPreview'], [_request]) %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {{ inputs.submit('test_all_rules', _x('button', 'Test'), 1) }}
+            {{ inputs.hidden('sub_type', rule_classname) }}
+            {{ inputs.hidden('condition', condition) }}
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+         </form>
+      </div>
+   </div>
+{% else %}
+   <div class="alert alert-danger">
+      <span>{{ __('No element to be tested') }}</span>
+   </div>
+{% endif %}

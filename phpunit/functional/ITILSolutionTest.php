@@ -37,7 +37,6 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */
@@ -95,7 +94,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
-                'content'   => 'Current friendly ticket\r\nis solved!'
+                'content'   => "Current friendly ticket\r\nis solved!"
             ])
         );
         //reload from DB
@@ -207,7 +206,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem->getID(),
-                'content'   => 'Current friendly problem\r\nis solved!'
+                'content'   => "Current friendly problem\r\nis solved!"
             ])
         );
         //reload from DB
@@ -245,7 +244,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change->getID(),
-                'content'   => 'Current friendly change\r\nis solved!'
+                'content'   => "Current friendly change\r\nis solved!"
             ])
         );
         //reload from DB
@@ -288,7 +287,7 @@ class ITILSolutionTest extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $duplicated,
                 'tickets_id_2' => $duplicate,
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
             ])
         );
 
@@ -377,11 +376,10 @@ class ITILSolutionTest extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a solution',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -406,11 +404,10 @@ HTML
         copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -483,7 +480,7 @@ HTML
         ]);
         $this->assertGreaterThan(0, $solutions_id);
 
-        $this->assertEquals('&#60;p&#62;test template&#60;/p&#62;', $solution->fields['content']);
+        $this->assertEquals('<p>test template</p>', $solution->fields['content']);
 
         //Reset ticket status
         $this->assertTrue(

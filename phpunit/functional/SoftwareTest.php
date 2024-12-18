@@ -438,10 +438,10 @@ class SoftwareTest extends DbTestCase
     {
         $software = new \Software();
         $result   = $software->rawSearchOptions();
-        $this->assertCount(43, $result);
+        $this->assertCount(45, $result);
 
         $this->login();
         $result   = $software->rawSearchOptions();
-        $this->assertCount(59, $result);
+        $this->assertCount(61, $result);
     }
 }

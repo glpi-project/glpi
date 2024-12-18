@@ -47,13 +47,8 @@ class RuleMailCollectorCollection extends RuleCollection
         return __('Rules for assigning a ticket created through a mails receiver');
     }
 
-
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
     public function prepareInputDataForProcess($input, $params)
     {
-
         if (isset($params['mailcollector'])) {
             $input['mailcollector'] = $params['mailcollector'];
         }
@@ -63,40 +58,40 @@ class RuleMailCollectorCollection extends RuleCollection
 
         $fields = $this->getFieldsToLookFor();
 
-       //Add needed ticket datas for rules processing
+        // Add needed ticket datas for rules processing
         if (isset($params['ticket']) && is_array($params['ticket'])) {
             foreach ($params['ticket'] as $key => $value) {
-                if (in_array($key, $fields) && !isset($input[$key])) {
+                if (in_array($key, $fields, true) && !isset($input[$key])) {
                     $input[$key] = $value;
                 }
             }
         }
 
-       //Add needed headers for rules processing
+        // Add needed headers for rules processing
         if (isset($params['headers']) && is_array($params['headers'])) {
             foreach ($params['headers'] as $key => $value) {
-                if (in_array($key, $fields) && !isset($input[$key])) {
+                if (in_array($key, $fields, true) && !isset($input[$key])) {
                     $input[$key] = $value;
                 }
             }
         }
 
-       //Add all user's groups
-        if (in_array('_groups_id_requester', $fields)) {
+        // Add all user's groups
+        if (in_array('_groups_id_requester', $fields, true)) {
             foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
                 $input['_groups_id_requester'][] = $group['id'];
             }
         }
 
-       //Add all user's profiles
-        if (in_array('profiles', $fields)) {
+        // Add all user's profiles
+        if (in_array('profiles', $fields, true)) {
             foreach (Profile_User::getForUser($input['_users_id_requester']) as $profile) {
                 $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
             }
         }
 
-       //If the criteria is "user has only one time the profile xxx"
-        if (in_array('unique_profile', $fields)) {
+        // If the criteria is "user has only one time the profile xxx"
+        if (in_array('unique_profile', $fields, true)) {
            //Get all profiles
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             foreach ($profiles as $profile) {
@@ -111,19 +106,19 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-       //Store the number of profiles of which the user belongs to
-        if (in_array('one_profile', $fields)) {
+        // Store the number of profiles of which the user belongs to
+        if (in_array('one_profile', $fields, true)) {
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
-            if (count($profiles) == 1) {
+            if (count($profiles) === 1) {
                 $tmp = array_pop($profiles);
                 $input['ONE_PROFILE'] = $tmp['profiles_id'];
             }
         }
 
-       //Store the number of profiles of which the user belongs to
-        if (in_array('known_domain', $fields)) {
+        // Store the number of profiles of which the user belongs to
+        if (in_array('known_domain', $fields, true)) {
             if (preg_match("/@(.*)/", $input['from'], $results)) {
-                if (Entity::getEntityIDByDomain($results[1]) != -1) {
+                if (Entity::getEntityIDByDomain($results[1]) !== -1) {
                     $input['KNOWN_DOMAIN'] = 1;
                 } else {
                     $input['KNOWN_DOMAIN'] = 0;
@@ -134,14 +129,8 @@ class RuleMailCollectorCollection extends RuleCollection
         return $input;
     }
 
-
-    /**
-     * @see RuleCollection::canList()
-     **/
     public function canList()
     {
-
-        return static::canView()
-             && MailCollector::countCollectors();
+        return static::canView() && MailCollector::countCollectors();
     }
 }

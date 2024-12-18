@@ -57,7 +57,7 @@ class OperatingSystemTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystem$main'  => 'Operating system',
+            'OperatingSystem$main'  => "Operating system",
         ];
     }
 

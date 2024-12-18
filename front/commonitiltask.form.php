@@ -33,30 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
+/** @var \DBmysql $DB */
+global $DB;
+
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var CommonITILTask $task
  */
 
-use Glpi\Event;
-
-/** @var \DBmysql $DB */
-global $DB;
-
-// autoload include in objecttask.form (tickettask, problemtask,...)
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
 Session::checkCentralAccess();
 
 if (!($task instanceof CommonITILTask)) {
-    Html::displayErrorAndDie('');
+    throw new BadRequestHttpException();
 }
 if (!$task->canView()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
-$itemtype = $task->getItilObjectItemType();
+$itemtype = $task::getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 $track = new $itemtype();
@@ -130,10 +128,10 @@ if ($handled) {
             'itemtype'         => $itemtype,
             'items_id'         => $task->getField($fk)
         ];
-        $existing = $DB->request(
-            'glpi_knowbaseitems_items',
-            $params
-        );
+        $existing = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_items',
+            'WHERE' => $params
+        ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
@@ -149,7 +147,7 @@ if ($handled) {
         $redirect = $track->getLinkURL() . $toadd;
     } else {
         Session::addMessageAfterRedirect(
-            __('You have been redirected because you no longer have access to this ticket'),
+            __s('You have been redirected because you no longer have access to this ticket'),
             true,
             ERROR
         );
@@ -162,5 +160,3 @@ if (null == $redirect) {
 } else {
     Html::redirect($redirect);
 }
-
-Html::displayErrorAndDie('Lost');

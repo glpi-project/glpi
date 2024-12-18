@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/notificationtemplate.class.php */
 
@@ -123,9 +124,7 @@ HTML,
         ];
     }
 
-    /**
-     * @dataProvider linksProvider
-     */
+    #[DataProvider('linksProvider')]
     public function testConvertRelativeGlpiLinksToAbsolute(
         string $content,
         string $expected

@@ -1,0 +1,91 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var Glpi\Form\Destination\AbstractCommonITILFormDestination item #}
+{# @var Glpi\Form\Form\                                         form #}
+{# @var array                                                   config #}
+
+<div>
+    {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
+    {% for field in item.getConfigurableFields()|sort((a, b) => a.getWeight() <=> b.getWeight()) %}
+
+        {% set extra_options = {} %}
+        {% if field.supportAutoConfiguration() %}
+            {% set use_auto_configuration = field.isAutoConfigurated(config) %}
+            {% set auto_configuration_checkbox %}
+                <div class="ms-auto row g-2 me-2">
+                    <label class="col form-check form-switch mb-0">
+                        <input
+                            name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
+                            type="hidden"
+                            value="0"
+                            data-glpi-itildestination-toggle-do-not-disable
+                        >
+                        <input
+                            name="{{ item.formatConfigInputName(field.getAutoConfigKey()) }}"
+                            class="form-check-input"
+                            type="checkbox"
+                            value="1"
+                            {{ use_auto_configuration ? 'checked' : '' }}
+                            data-glpi-itildestination-toggle-auto-config
+                            data-glpi-itildestination-toggle-do-not-disable
+                        >
+                        <span class="form-check-label">{{ __("Auto config") }}</span>
+                    </label>
+                    <span class="col-auto form-help align-self-center"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
+                        data-bs-placement="top"
+                        data-bs-html="true"
+                        data-bs-content="{{ __('The auto configuration option allows dynamically configuring the content of the created object based on the different fields of the form.') }}">
+                        ?
+                    </span>
+                </div>
+            {% endset %}
+
+            {% set extra_options = {
+                'insert_content_after_label': auto_configuration_checkbox,
+                'disabled': use_auto_configuration,
+            } %}
+        {% endif %}
+
+        <section data-glpi-itildestination-field aria-label="{{ field.getLabel() ~ " configuration" }}">
+            {{ field.renderConfigForm(
+                form,
+                field.getConfig(form, config),
+                item.formatConfigInputName(field.getKey()),
+                {'is_horizontal': false}|merge(extra_options)
+            )|raw }}
+        </section>
+    {% endfor %}
+</div>

@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkRight("notification", READ);
 
 if (!isset($_GET["id"])) {
@@ -83,6 +81,6 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["config", "notification", "notification"];
+    $menus = ["config", "notification", "Notification"];
     Notification::displayFullPageForItem($_GET["id"], $menus);
 }

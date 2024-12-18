@@ -127,7 +127,7 @@ $(function() {
 
    // toggle panel
    $(document).on('click', '.show-saved-searches', function() {
-      var clean_itemtype = $(this).data('itemtype').toLowerCase().replace('\\', '_');
+      var clean_itemtype = $(this).data('itemtype').toLowerCase().replaceAll('\\', '_');
       $(".saved-searches-panel." + clean_itemtype)
          .toggleClass('d-none')
          .toggleClass('responsive-toggle');

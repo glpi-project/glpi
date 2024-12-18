@@ -36,8 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
-use Psr\Log\LogLevel;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/location.class.php */
 
@@ -201,11 +200,12 @@ class LocationTest extends DbTestCase
         $this->assertTrue($location2->getFromDB($location2_id));
         $this->assertEquals('Non unique location', $location2->fields['completename']);
 
+
+        $this->expectExceptionMessageMatches('/Unique location\' for key \'/');
         $updated = $location2->update([
             'id'           => $location2_id,
             'name'         => 'Unique location',
         ]);
-        $this->hasSqlLogRecordThatContains('Unique location\' for key \'', LogLevel::ERROR);
 
         $this->assertFalse($updated);
         $this->assertTrue($location2->getFromDB($location2_id));
@@ -235,14 +235,12 @@ class LocationTest extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider importProvider
-     */
+    #[DataProvider('importProvider')]
     public function testImport(array $input, array $imported): void
     {
         $instance = new \Location();
         $count_before_import = countElementsInTable(\Location::getTable());
-        $this->assertGreaterThan(0, $instance->import(Sanitizer::sanitize($input)));
+        $this->assertGreaterThan(0, $instance->import($input));
         $this->assertEquals(count($imported), countElementsInTable(\Location::getTable()) - $count_before_import);
         foreach ($imported as $location_data) {
             $this->assertEquals(
@@ -258,12 +256,10 @@ class LocationTest extends DbTestCase
         // Import a non existing tree
         $instance = new \Location();
         $imported_id = $instance->import(
-            Sanitizer::sanitize(
-                [
-                    'entities_id'   => 0,
-                    'name'          => 'location 1 > sub location A',
-                ]
-            )
+            [
+                'entities_id'   => 0,
+                'name'          => 'location 1 > sub location A',
+            ]
         );
 
         $imported = \Location::getById($imported_id);
@@ -279,12 +275,10 @@ class LocationTest extends DbTestCase
         // Import a child of an existing location
         $instance = new \Location();
         $imported_id = $instance->import(
-            Sanitizer::sanitize(
-                [
-                    'entities_id'   => 0,
-                    'name'          => '_location01 > sub location B',
-                ]
-            )
+            [
+                'entities_id'   => 0,
+                'name'          => '_location01 > sub location B',
+            ]
         );
 
         $imported = \Location::getById($imported_id);
@@ -297,23 +291,19 @@ class LocationTest extends DbTestCase
     {
         $instance = new \Location();
         $imported_id = $instance->import(
-            Sanitizer::sanitize(
-                [
-                    'entities_id'   => 0,
-                    'name'          => '_location01 > _sublocation01',
-                ]
-            )
+            [
+                'entities_id'   => 0,
+                'name'          => '_location01 > _sublocation01',
+            ]
         );
         $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation01', true), $imported_id);
 
         $instance = new \Location();
         $imported_id = $instance->import(
-            Sanitizer::sanitize(
-                [
-                    'entities_id'   => 0,
-                    'name'          => '_location02>_sublocation02', // no spaces around separator
-                ]
-            )
+            [
+                'entities_id'   => 0,
+                'name'          => '_location02>_sublocation02', // no spaces around separator
+            ]
         );
         $this->assertEquals(getItemByTypeName(\Location::class, '_sublocation02', true), $imported_id);
     }
@@ -348,7 +338,7 @@ class LocationTest extends DbTestCase
         ];
 
         $count_before_import = countElementsInTable(\Location::getTable());
-        $this->assertGreaterThan(0, $instance->import(Sanitizer::sanitize($input)));
+        $this->assertGreaterThan(0, $instance->import($input));
         $this->assertEquals(count($imported), countElementsInTable(\Location::getTable()) - $count_before_import);
         foreach ($imported as $location_data) {
             $this->assertEquals(
@@ -405,7 +395,7 @@ class LocationTest extends DbTestCase
             ]
         ];
         $count_before_import = countElementsInTable(\Location::getTable());
-        $this->assertGreaterThan(0, $instance->import(Sanitizer::sanitize($input)));
+        $this->assertGreaterThan(0, $instance->import($input));
         $this->assertEquals(count($imported), countElementsInTable(\Location::getTable()) - $count_before_import);
         foreach ($imported as $location_data) {
             $this->assertEquals(

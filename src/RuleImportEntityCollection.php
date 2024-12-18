@@ -47,7 +47,6 @@ class RuleImportEntityCollection extends RuleCollection
         return static::canView();
     }
 
-
     public function getTitle()
     {
         return __('Rules for assigning an item to an entity');

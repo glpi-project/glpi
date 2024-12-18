@@ -36,7 +36,7 @@
 namespace test\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -205,11 +205,10 @@ class KnowbaseItemTest extends DbTestCase
         $instance = new \KnowbaseItem();
         $input = [
             'name'     => 'Test to remove',
-            'answer'   => Sanitizer::sanitize(<<<HTML
+            'answer'   => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -244,11 +243,10 @@ HTML
         file_put_contents($tmpFilename, base64_decode($base64Image));
         $success = $instance->update([
             'id'       => $instance->getID(),
-            'answer'   => Sanitizer::sanitize(<<<HTML
+            'answer'   => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1ffff.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -357,7 +355,7 @@ HTML
         $m_kbi->method('getFromDB')->willReturn(true);
 
         // True for call 1 & 3, false for call 2 and every following calls
-        $m_kbi->method('canViewItem')->willReturn(true, false, true, false);
+        $m_kbi->method('canViewItem')->willReturn(true, false, true, false, false, false);
 
         // Expected : [1, 3]
         // Replace global DB with mocked DB
@@ -532,9 +530,7 @@ HTML
         ];
     }
 
-    /**
-     * @dataProvider fullTextSearchProvider
-     */
+    #[DataProvider('fullTextSearchProvider')]
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
         $search = $this->callPrivateMethod(new \KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
@@ -723,9 +719,7 @@ HTML
         ];
     }
 
-    /**
-     * @dataProvider testGetListRequestProvider
-     */
+    #[DataProvider('testGetListRequestProvider')]
     public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
         global $DB;
@@ -775,8 +769,7 @@ HTML
     }
 
     /**
-     * FIXME: delete?
-     * To be deleted after 10.1 release
+     * To be deleted after 11.0 release
      */
     /*public function testCreateWithCategoriesDeprecated()
     {
@@ -792,7 +785,7 @@ HTML
         ]);
 
         // Create KB item with category
-        $kb_item = $this->createItem(\KnowbaseItem::class, [
+        $kb_item = @$this->createItem(\KnowbaseItem::class, [
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
             'knowbaseitemcategories_id' => $category->getID(),
@@ -804,7 +797,7 @@ HTML
         ]);
 
         // We expect one category
-        $this->array($linked_categories)->hasSize(1);
+        $this->assertCount(1, $linked_categories);
 
         // Check category id
         $data = array_pop($linked_categories);
@@ -901,18 +894,24 @@ HTML
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => false, // Not really a FAQ article
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ]
         ]);
 
@@ -960,66 +959,88 @@ HTML
                 'answer'   => 'FAQ 1',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 2',
                 'answer'   => 'FAQ 2',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 3',
                 'answer'   => 'FAQ 3',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 4',
                 'answer'   => 'FAQ 4',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 5',
                 'answer'   => 'FAQ 5',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 6',
                 'answer'   => 'FAQ 6',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 7',
                 'answer'   => 'FAQ 7',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 8',
                 'answer'   => 'FAQ 8',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 9',
                 'answer'   => 'FAQ 9',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 10',
                 'answer'   => 'FAQ 10',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'FAQ 11',
                 'answer'   => 'FAQ 11',
                 'is_faq'   => true,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
         ]);
 
@@ -1165,78 +1186,104 @@ HTML
                 'answer'   => 'KB 1',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 2',
                 'answer'   => 'KB 2',
                 'is_faq'   => false,
                 'users_id' => $tech_user, // Specific author (our test user)
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 3',
                 'answer'   => 'KB 3',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 4',
                 'answer'   => 'KB 4',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 5',
                 'answer'   => 'KB 5',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 6',
                 'answer'   => 'KB 6',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 7',
                 'answer'   => 'KB 7',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 8',
                 'answer'   => 'KB 8',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 9',
                 'answer'   => 'KB 9',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 10',
                 'answer'   => 'KB 10',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 11',
                 'answer'   => 'KB 11',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 12',
                 'answer'   => 'KB 12',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
             [
                 'name'     => 'KB 13',
                 'answer'   => 'KB 13',
                 'is_faq'   => false,
                 'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
             ],
         ]);
 
@@ -1404,6 +1451,38 @@ HTML
             sort($result);
 
             $this->assertEquals($value['articles'], $result);
+
+            // Check that every article can be opened
+            $item = new \KnowbaseItem();
+            foreach ($value['articles'] as $name) {
+                $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
+                $this->assertTrue($item->can($kb_id, READ));
+            }
+
+            // Compare with Search::showList result
+
+            // Run search and capture results
+            $params =  [
+                'display_type' => \Search::NAMES_OUTPUT,
+                'criteria'     => [],
+                'item_type'    => 'KnowbaseItem',
+                'is_deleted'   => 0,
+                'as_map'       => 0,
+                'browse'       => 0,
+                'unpublished'  => 1,
+            ];
+            ob_start();
+            \Search::showList('KnowbaseItem', $params);
+            $names = ob_get_contents();
+            ob_end_clean();
+
+            // Convert results to array
+            $names = trim($names);
+            $names = empty($names) ? [] : explode("\n", $names);
+
+            // Check results
+            $this->assertCount(count($value['articles']), $names);
+            $this->assertEqualsCanonicalizing($value['articles'], $names);
         }
     }
 
@@ -1538,7 +1617,6 @@ HTML
                 [
                     'itemtype'      => 'KnowbaseItem',
                     'items_id'      => $clonedKbitem->fields['id'],
-                    'entities_id'   => $entity->fields['id']
                 ]
             )
         );

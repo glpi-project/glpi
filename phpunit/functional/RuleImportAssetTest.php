@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/ruleimportcomputer.class.php */
 
@@ -109,7 +110,7 @@ class RuleImportAssetTest extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                    'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' + 2')
+                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2')
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],
@@ -671,9 +672,8 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @param array  $rdata  Rules data to use
      * @param string $rname  Expected rule name
-     *
-     * @dataProvider refuseProvider
      */
+    #[DataProvider('refuseProvider')]
     public function testRefuseImport($rdata, $rname)
     {
         $ruleCollection = new \RuleImportAssetCollection();
@@ -1010,7 +1010,7 @@ class RuleImportAssetTest extends DbTestCase
     public function testGetCriteria()
     {
         $instance = new \RuleImportAsset();
-        $this->assertSame(23, count($instance->getCriterias()));
+        $this->assertSame(24, count($instance->getCriterias()));
     }
 
     public function testGetActions()
@@ -1046,13 +1046,12 @@ class RuleImportAssetTest extends DbTestCase
     }
 
     /**
-     * @dataProvider ruleactionProvider
-     *
      * @param integer $value    Value to test
      * @param string  $expected Excpected result
      *
      * @return void
      */
+    #[DataProvider('ruleactionProvider')]
     public function testDisplayAdditionRuleActionValue($value, $expected)
     {
         $instance = new \RuleImportAsset();
@@ -1088,13 +1087,12 @@ class RuleImportAssetTest extends DbTestCase
     }
 
     /**
-     * @dataProvider moreCritProvider
-     *
      * @param string $criterion Criterion to test
      * @param array $expected   Expected result
      *
      * @return void
      */
+    #[DataProvider('moreCritProvider')]
     public function testAddMoreCriteria($criterion, $expected)
     {
         $instance = new \RuleImportAsset();
@@ -1110,7 +1108,7 @@ class RuleImportAssetTest extends DbTestCase
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
         $fields['serial'] = '75F4BFC';
-        $this->assertGreaterThan(0, (int)$computer->add(\Toolbox::addslashes_deep($fields)));
+        $this->assertGreaterThan(0, (int)$computer->add($fields));
 
         $input = [
             'itemtype' => 'Computer',

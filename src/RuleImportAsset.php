@@ -34,7 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 
 class RuleImportAsset extends Rule
 {
@@ -51,7 +52,6 @@ class RuleImportAsset extends Rule
     const LINK_RESULT_LINK              = 2;
 
     public $restrict_matching = Rule::AND_MATCHING;
-    public $can_sort          = true;
 
     public static $rightname         = 'rule_import';
 
@@ -66,7 +66,6 @@ class RuleImportAsset extends Rule
     /** @var boolean */
     private $link_criteria_port = false;
 
-
     public function getTitle()
     {
         $col = new RuleImportAssetCollection();
@@ -75,7 +74,6 @@ class RuleImportAsset extends Rule
 
     public function getCriterias()
     {
-
         static $criteria = [];
 
         if (count($criteria)) {
@@ -90,6 +88,22 @@ class RuleImportAsset extends Rule
                 'linkfield' => 'entities_id',
                 'type'      => 'dropdown',
                 'is_global'       => false,
+                'allow_condition' => [
+                    Rule::PATTERN_IS,
+                    Rule::PATTERN_IS_NOT,
+                    Rule::PATTERN_CONTAIN,
+                    Rule::PATTERN_NOT_CONTAIN,
+                    Rule::PATTERN_BEGIN,
+                    Rule::PATTERN_END,
+                    Rule::REGEX_MATCH,
+                    Rule::REGEX_NOT_MATCH
+                ],
+            ],
+            'virtualmachinetypes_id' => [
+                'table'     => 'glpi_virtualmachinetypes',
+                'field'     => 'name',
+                'name'      => VirtualMachineType::getTypeName(0),
+                'type'      => 'dropdown',
                 'allow_condition' => [
                     Rule::PATTERN_IS,
                     Rule::PATTERN_IS_NOT,
@@ -203,7 +217,6 @@ class RuleImportAsset extends Rule
         return $criteria;
     }
 
-
     public function getActions()
     {
         $actions = [
@@ -219,7 +232,6 @@ class RuleImportAsset extends Rule
         return $actions;
     }
 
-
     public static function getRuleActionValues()
     {
         return [
@@ -229,21 +241,14 @@ class RuleImportAsset extends Rule
         ];
     }
 
-
     public function displayAdditionRuleActionValue($value)
     {
-
         $values = self::getRuleActionValues();
-        if (isset($values[$value])) {
-            return $values[$value];
-        }
-        return '';
+        return $values[$value] ?? '';
     }
-
 
     public function manageSpecificCriteriaValues($criteria, $name, $value)
     {
-
         switch ($criteria['type']) {
             case "state":
                 $link_array = [
@@ -257,7 +262,6 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     /**
      * Add more criteria
      *
@@ -266,25 +270,19 @@ class RuleImportAsset extends Rule
      */
     public static function addMoreCriteria($criterion = '')
     {
-        switch ($criterion) {
-            case 'entityrestrict':
-                return [self::PATTERN_ENTITY_RESTRICT => __('Yes')];
-            case 'link_criteria_port':
-                return [self::PATTERN_NETWORK_PORT_RESTRICT => __('Yes')];
-            case 'only_these_criteria':
-                return [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')];
-            default:
-                return [
-                    self::PATTERN_FIND      => __('is already present'),
-                    self::PATTERN_IS_EMPTY  => __('is empty')
-                ];
-        }
+        return match ($criterion) {
+            'entityrestrict' => [self::PATTERN_ENTITY_RESTRICT => __('Yes')],
+            'link_criteria_port' => [self::PATTERN_NETWORK_PORT_RESTRICT => __('Yes')],
+            'only_these_criteria' => [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')],
+            default => [
+                self::PATTERN_FIND => __('is already present'),
+                self::PATTERN_IS_EMPTY => __('is empty')
+            ],
+        };
     }
-
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
-
         if (
             $condition == self::PATTERN_IS_EMPTY
             || $condition == self::PATTERN_ENTITY_RESTRICT
@@ -299,17 +297,15 @@ class RuleImportAsset extends Rule
                 isset($crit['type'])
                  && $crit['type'] == 'dropdown_inventory_itemtype'
             ) {
-                $array = $this->getItemTypesForRules();
+                $array = static::getItemTypesForRules();
                 return $array[$pattern];
             }
         }
         return false;
     }
 
-
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-
         if ($test) {
             return false;
         }
@@ -333,10 +329,8 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
-
         switch ($action['type']) {
             case 'inventory_type':
             case 'fusion_type':
@@ -346,10 +340,8 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     public function getCriteriaByID($ID)
     {
-
         $criteria = [];
         foreach ($this->criterias as $criterion) {
             if ($ID == $criterion->fields['criteria']) {
@@ -384,7 +376,7 @@ class RuleImportAsset extends Rule
                             isset($definition_criteria['is_global'])
                              && $definition_criteria['is_global']
                         ) {
-                         //If a value is missing, then there's a problem !
+                            // If a value is missing, then there's a problem !
                             trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                             return false;
                         }
@@ -454,16 +446,16 @@ class RuleImportAsset extends Rule
         $this->link_criteria_port = false;
 
         if (!$this->preComputeCriteria($input)) {
-           //logged in place, just exit
+            // logged in place, just ignore
             return false;
         }
 
-       //No complex criteria
-        if (empty($this->complex_criteria) || $this->found_criteria == 0) {
+        // No complex criteria
+        if (empty($this->complex_criteria) || $this->found_criteria === 0) {
             return true;
         }
 
-       // Get all equipment type
+        // Get all equipment type
         $itemtypeselected = [];
         if (
             isset($input['itemtype'])
@@ -479,8 +471,8 @@ class RuleImportAsset extends Rule
             foreach ($CFG_GLPI["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
-                    && $itemtype != 'SoftwareLicense'
-                    && $itemtype != 'Certificate'
+                    && $itemtype !== SoftwareLicense::class
+                    && $itemtype !== Certificate::class
                 ) {
                     $itemtypeselected[] = $itemtype;
                 }
@@ -494,7 +486,7 @@ class RuleImportAsset extends Rule
             $item = new $itemtype();
             $itemtable = $item->getTable();
 
-           //Build the request to check if the asset exists in GLPI
+            // Build the request to check if the asset exists in GLPI
             $where_entity = $input['entities_id'] ?? [];
             if (!empty($where_entity) && !is_array($where_entity)) {
                 $where_entity = [$where_entity];
@@ -503,24 +495,24 @@ class RuleImportAsset extends Rule
             $it_criteria = [
                 'SELECT' => ["$itemtable.id"],
                 'FROM'   => $itemtable, //to fill
-                'WHERE'  => [] //to fill
+                'WHERE'  => $item->getSystemSQLCriteria(), //to fill
             ];
 
             if ($this->link_criteria_port) {
                 $this->handleLinkCriteriaPort($item, $it_criteria);
             } else {
-               // 1 join per criterion
+                // 1 join per criterion
                 $this->handleOneJoinPerCriteria($item, $it_criteria);
             }
 
-            $this->handleFieldsCriteria($item, $it_criteria, Sanitizer::sanitize($input));
+            $this->handleFieldsCriteria($item, $it_criteria, $input);
 
             if (isset($PLUGIN_HOOKS['use_rules'])) {
                 foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
-                    if (is_array($val) && in_array($this->getType(), $val)) {
+                    if (is_array($val) && in_array(static::class, $val, true)) {
                         $params = [
                             'where_entity' => $where_entity,
                             'itemtype'     => $itemtype,
@@ -547,7 +539,7 @@ class RuleImportAsset extends Rule
                     $this->criterias_results['found_inventories'][$itemtype][] = $data['id'];
                     foreach ($data as $alias => $value) {
                         if (
-                            strstr($alias, "portid")
+                            str_contains($alias, "portid")
                             && !is_null($value)
                             && is_numeric($value)
                             && $value > 0
@@ -820,10 +812,10 @@ class RuleImportAsset extends Rule
 
                 case 'model':
                     $modelclass = $itemtype . 'Model';
-                    $options    = ['manufacturer' => addslashes($input['manufacturer'])];
+                    $options    = ['manufacturer' => $input['manufacturer']];
                     $mid        = Dropdown::importExternal(
                         $modelclass,
-                        addslashes($input['model']),
+                        $input['model'],
                         -1,
                         $options,
                         '',
@@ -835,7 +827,7 @@ class RuleImportAsset extends Rule
                 case 'manufacturer':
                     $mid = Dropdown::importExternal(
                         'Manufacturer',
-                        addslashes($input['manufacturer']),
+                        $input['manufacturer'],
                         -1,
                         [],
                         '',
@@ -1022,38 +1014,50 @@ class RuleImportAsset extends Rule
         return $output;
     }
 
-
     public function showSpecificCriteriasForPreview($fields)
     {
-
-        $entity_as_criterion = false;
+        $twig_params = [
+            'entity_as_criterion' => false,
+            'fields'              => $fields,
+            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+        ];
         foreach ($this->criterias as $criterion) {
-            if ($criterion->fields['criteria'] == 'entities_id') {
-                $entity_as_criterion = true;
+            if ($criterion->fields['criteria'] === 'entities_id') {
+                $twig_params['entity_as_criterion'] = true;
                 break;
             }
         }
-        if (!$entity_as_criterion) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . Entity::getTypeName(1) . "</td>";
-            echo "<td>";
-            Dropdown::show('Entity');
-            echo "</td></tr>";
-        }
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='2'>" . __('Use values found from an already refused equipment') . "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . RefusedEquipment::getTypeName(1) . "</td>";
-        echo "<td>";
-        Dropdown::show(RefusedEquipment::getType(), ['value' => ($fields['refusedequipments_id'] ?? null)]);
-        echo "</td></tr>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% if not entity_as_criterion %}
+                {{ fields.htmlField('', type_match|e, '', {
+                    no_label: true,
+                    field_class: 'col-2',
+                    input_class: 'col-12'
+                }) }}
+                {{ fields.dropdownField('Entity', 'entities_id', 0, 'Entity'|itemtype_name, {
+                    field_class: 'col-10',
+                    label_class: 'col-5',
+                    input_class: 'col-7'
+                }) }}
+            {% endif %}
+            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+                no_label: true,
+                field_class: 'col-2',
+                input_class: 'col-12'
+            }) }}
+            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', fields['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
+                field_class: 'col-10',
+                label_class: 'col-5',
+                input_class: 'col-7'
+            }) }}
+TWIG, $twig_params);
     }
 
     /**
-     * Get itemtypes have state_type and unmanaged devices
+     * Get itemtypes
      *
      * @global array $CFG_GLPI
      * @return array
@@ -1064,7 +1068,7 @@ class RuleImportAsset extends Rule
         global $CFG_GLPI;
 
         $types = [];
-        foreach ($CFG_GLPI["state_types"] as $itemtype) {
+        foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
             if (class_exists($itemtype)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();
@@ -1126,13 +1130,13 @@ class RuleImportAsset extends Rule
             'only_these_criteria'
         ], $this->getNetportCriteria());
 
-       //Add plugin global criteria
+        // Add plugin global criteria
         if (isset($PLUGIN_HOOKS['use_rules'])) {
             foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                if (is_array($val) && in_array($this->getType(), $val)) {
+                if (is_array($val) && in_array(static::class, $val, true)) {
                     $criteria = Plugin::doOneHook(
                         $plugin,
                         "ruleImportAsset_addGlobalCriteria",
@@ -1185,5 +1189,67 @@ class RuleImportAsset extends Rule
                 );
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    /**
+     * Get default rules as XML
+     *
+     * @return SimpleXMLElement|false
+     */
+    public function getDefaultRules(): SimpleXMLElement|false
+    {
+        $rules = parent::getDefaultRules();
+        if (!$rules) {
+            return false;
+        }
+
+        //add extra rules for active generic assets
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($definitions as $definition) {
+            if ($definition->hasCapacityEnabled(new \Glpi\Asset\Capacity\IsInventoriableCapacity())) {
+                $this->addGenericAssetRules($rules, $definition->getAssetClassName());
+            }
+        }
+
+        return $rules;
+    }
+
+    public function addGenericAssetRules(
+        SimpleXMLElement $rules,
+        string $itemtype_to,
+        string $itemtype_from = \Computer::class
+    ): void {
+        $extra_rules = $rules->xpath(
+            sprintf(
+                "/rules/rule[rulecriteria/criteria = 'itemtype' and rulecriteria/pattern = '%s']",
+                $itemtype_from
+            )
+        );
+
+        //switch to DOMXML since SimpleXML cannot add full children...
+        $drules = dom_import_simplexml($rules);
+
+        foreach ($extra_rules as $rule) {
+            $crule = clone($rule);
+            $crule->uuid = str_replace(
+                strtolower($itemtype_from),
+                Toolbox::slugify($itemtype_to),
+                $crule->uuid
+            );
+            $crule->name = str_replace(
+                $itemtype_from,
+                $itemtype_to,
+                $crule->name
+            );
+            foreach ($crule->rulecriteria as $criteria) {
+                if ($criteria->criteria == 'itemtype') {
+                    $criteria->pattern = $itemtype_to;
+                }
+            }
+
+            //switch to DOMXML since SimpleXML cannot add full children...
+            $drule = dom_import_simplexml($crule);
+            $drules->appendChild($drule->cloneNode(true));
+        }
     }
 }

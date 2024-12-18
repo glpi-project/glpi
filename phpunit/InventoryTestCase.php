@@ -35,7 +35,7 @@
 
 class InventoryTestCase extends \DbTestCase
 {
-    protected const INV_FIXTURES = GLPI_ROOT . 'vendor/glpi-project/inventory_format/examples/';
+    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     /**
      * Path to use to test inventory archive manipulations.
@@ -69,7 +69,7 @@ class InventoryTestCase extends \DbTestCase
 
         parent::tearDown();
 
-        if (str_starts_with($this->getName(), 'testImport')) {
+        if (str_starts_with($this->name(), 'testImport')) {
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
                 'FROM' => \Log::getTable(),
@@ -93,7 +93,7 @@ class InventoryTestCase extends \DbTestCase
             );
         }
 
-        if (str_starts_with($this->getName(), 'testUpdate')) {
+        if (str_starts_with($this->name(), 'testUpdate')) {
             $nblogsnow = countElementsInTable(\Log::getTable());
             $logs = $DB->request([
                 'FROM' => \Log::getTable(),

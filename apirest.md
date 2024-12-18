@@ -1,72 +1,5 @@
 # GLPI REST API:  Documentation
 
-## Summary
-
-- [GLPI REST API:  Documentation](#glpi-rest-api--documentation)
-  - [Summary](#summary)
-  - [Glossary](#glossary)
-  - [Important](#important)
-  - [Init session](#init-session)
-  - [Kill session](#kill-session)
-  - [Lost password](#lost-password)
-  - [Get my profiles](#get-my-profiles)
-  - [Get active profile](#get-active-profile)
-  - [Change active profile](#change-active-profile)
-  - [Get my entities](#get-my-entities)
-  - [Get active entities](#get-active-entities)
-  - [Change active entities](#change-active-entities)
-  - [Get full session](#get-full-session)
-  - [Get GLPI config](#get-glpi-config)
-  - [Get an item](#get-an-item)
-  - [Get all items](#get-all-items)
-  - [Get sub items](#get-sub-items)
-  - [Get multiple items](#get-multiple-items)
-  - [List searchOptions](#list-searchoptions)
-  - [Search items](#search-items)
-  - [Add item(s)](#add-items)
-  - [Update item(s)](#update-items)
-  - [Delete item(s)](#delete-items)
-  - [Get available massive actions for an itemtype](#get-available-massive-actions-for-an-itemtype)
-  - [Get available massive actions for an item](#get-available-massive-actions-for-an-item)
-  - [Get massive action parameters](#get-massive-action-parameters)
-  - [Apply massive action](#apply-massive-action)
-  - [Special cases](#special-cases)
-    - [Upload a document file](#upload-a-document-file)
-    - [Download a document file](#download-a-document-file)
-    - [Get a user's profile picture](#get-a-users-profile-picture)
-    - [Sanitized content](#sanitized-content)
-  - [Errors](#errors)
-    - [ERROR\_ITEM\_NOT\_FOUND](#error_item_not_found)
-    - [ERROR\_BAD\_ARRAY](#error_bad_array)
-    - [ERROR\_METHOD\_NOT\_ALLOWED](#error_method_not_allowed)
-    - [ERROR\_RIGHT\_MISSING](#error_right_missing)
-    - [ERROR\_SESSION\_TOKEN\_INVALID](#error_session_token_invalid)
-    - [ERROR\_SESSION\_TOKEN\_MISSING](#error_session_token_missing)
-    - [ERROR\_APP\_TOKEN\_PARAMETERS\_MISSING](#error_app_token_parameters_missing)
-    - [ERROR\_WRONG\_APP\_TOKEN\_PARAMETER](#error_wrong_app_token_parameter)
-    - [ERROR\_NOT\_DELETED](#error_not_deleted)
-    - [ERROR\_NOT\_ALLOWED\_IP](#error_not_allowed_ip)
-    - [ERROR\_LOGIN\_PARAMETERS\_MISSING](#error_login_parameters_missing)
-    - [ERROR\_LOGIN\_WITH\_CREDENTIALS\_DISABLED](#error_login_with_credentials_disabled)
-    - [ERROR\_GLPI\_LOGIN\_USER\_TOKEN](#error_glpi_login_user_token)
-    - [ERROR\_GLPI\_LOGIN](#error_glpi_login)
-    - [ERROR\_ITEMTYPE\_NOT\_FOUND\_NOR\_COMMONDBTM](#error_itemtype_not_found_nor_commondbtm)
-    - [ERROR\_SQL](#error_sql)
-    - [ERROR\_RANGE\_EXCEED\_TOTAL](#error_range_exceed_total)
-    - [ERROR\_GLPI\_ADD](#error_glpi_add)
-    - [ERROR\_GLPI\_PARTIAL\_ADD](#error_glpi_partial_add)
-    - [ERROR\_GLPI\_UPDATE](#error_glpi_update)
-    - [ERROR\_GLPI\_PARTIAL\_UPDATE](#error_glpi_partial_update)
-    - [ERROR\_GLPI\_DELETE](#error_glpi_delete)
-    - [ERROR\_GLPI\_PARTIAL\_DELETE](#error_glpi_partial_delete)
-    - [ERROR\_MASSIVEACTION\_KEY](#error_massiveaction_key)
-    - [ERROR\_MASSIVEACTION\_NO\_IDS](#error_massiveaction_no_ids)
-    - [ERROR\_FIELD\_NOT\_FOUND](#error_field_not_found)
-    - [ERROR\_UNKNOWN](#error_unknown)
-  - [Servers configuration](#servers-configuration)
-    - [Apache Httpd](#apache-httpd)
-    - [Nginx](#nginx)
-
 ## Glossary
 
 Endpoint
@@ -925,7 +858,7 @@ $ curl -X GET \
   * *criteria*: array of criterion objects to filter search. Optional.
     You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
     Each criterion object must provide at least:
-      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, OR NOT].
 
       And you can pass a direct searchoption usage :
 
@@ -985,7 +918,7 @@ $ curl -X GET \
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:
-        * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
+        * *link*: logical operator in [AND, OR, AND NOT, OR NOT]. Mandatory.
         * *itemtype*: second itemtype to link.
         * *field*: id of the searchoption.
         * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
@@ -1309,7 +1242,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1427,7 +1360,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1680,16 +1613,6 @@ $ curl -X GET \
 ```
 
 The body of the answer contains the raw image.
-
-### Sanitized content
-
-By default, the API will return sanitized content.  
-This mean that all HTML special characters will be encoded.  
-You can disable this feature by adding the following header to your request:  
-
-```
-X-GLPI-Sanitized-Content: false
-```
 
 ## Errors
 

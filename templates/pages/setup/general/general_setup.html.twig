@@ -106,36 +106,6 @@
 </div>
 
 <div class="hr-text">
-    <i class="ti ti-language"></i>
-    <span>{{ __('Translations') }}</span>
-</div>
-
-<div class="row ps-4">
-
-    {{ fields.checkboxField(
-        'translate_dropdowns',
-        config['translate_dropdowns'],
-        __("Translation of dropdowns"),
-        field_options
-    ) }}
-
-    {{ fields.checkboxField(
-        'translate_kb',
-        config['translate_kb'],
-        __("Knowledge base translation"),
-        field_options
-    ) }}
-
-    {{ fields.checkboxField(
-        'translate_reminders',
-        config['translate_reminders'],
-        __("Translation of reminders"),
-        field_options
-    ) }}
-
-</div>
-
-<div class="hr-text">
     <i class="ti ti-list"></i>
     <span>{{ __('Dynamic display') }}</span>
 </div>
@@ -303,6 +273,44 @@
         });
     });
     </script>
+</div>
+
+<div class="hr-text">
+    <i class="ti ti-layout-kanban"></i>
+    <span>{{ __('Project Task State') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_unstarted_states_id',
+        config['projecttask_unstarted_states_id']|default('0'),
+        __('Status of unstarted tasks'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_inprogress_states_id',
+        config['projecttask_inprogress_states_id']|default('0'),
+        __('Status of tasks in progress'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_completed_states_id',
+        config['projecttask_completed_states_id']|default('0'),
+        __('Status of tasks done'),
+        inline_field_options|merge({
+            'width': 'auto',
+        })
+    ) }}
 </div>
 
 <div class="hr-text">

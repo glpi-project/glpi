@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Security\TOTPManager;
+
 // class Preference for the current connected User
 class Preference extends CommonGLPI
 {
@@ -48,13 +50,41 @@ class Preference extends CommonGLPI
 
         $ong = [];
         $this->addStandardTab('User', $ong, $options);
+        $this->addStandardTab(__CLASS__, $ong, $options);
         if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
             $this->addStandardTab('Config', $ong, $options);
         }
+        $this->addStandardTab('ValidatorSubstitute', $ong, $options);
         $this->addStandardTab('DisplayPreference', $ong, $options);
 
         $ong['no_all_tab'] = true;
 
         return $ong;
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        return __('Two-factor authentication (2FA)');
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        $totp = new TOTPManager();
+        $regenerate_backup_codes = isset($_REQUEST['regenerate_backup_codes']) ? filter_var($_REQUEST['regenerate_backup_codes'], FILTER_VALIDATE_BOOLEAN) : false;
+        // Don't allow regenerating the codes from the URL if the user already has some to prevent malicious or accidental regenerations
+        $regenerate_backup_codes = $regenerate_backup_codes && $totp->is2FAEnabled($_SESSION['glpiID']) && !$totp->isBackupCodesAvailable($_SESSION['glpiID']);
+        $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']), $regenerate_backup_codes);
+        return true;
+    }
+
+    public function showTabsContent($options = [])
+    {
+        if (isset($_REQUEST['reset_2fa'])) {
+            $options['reset_2fa'] = $_REQUEST['reset_2fa'];
+        }
+        if (isset($_REQUEST['regenerate_backup_codes'])) {
+            $options['regenerate_backup_codes'] = $_REQUEST['regenerate_backup_codes'];
+        }
+        parent::showTabsContent($options);
     }
 }

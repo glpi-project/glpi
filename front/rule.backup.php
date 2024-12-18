@@ -37,8 +37,6 @@
  * @since 0.85
  */
 
-include("../inc/includes.php");
-
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -51,7 +49,7 @@ if (isset($_GET['action'])) {
 $rulecollection = new RuleCollection();
 $rulecollection->checkGlobal(READ);
 
-if ($action != "export") {
+if ($action !== "export") {
     Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 }
 
@@ -61,7 +59,8 @@ switch ($action) {
         if (RuleCollection::previewImportRules()) {
             break;
         }
-        //seems wanted not to break; I do no understand why
+        // no break
+        // seems wanted not to break; I do no understand why
 
     case "import":
         $rulecollection->checkGlobal(UPDATE);
@@ -75,24 +74,23 @@ switch ($action) {
         } else {
             $rules_key = array_keys($rule->find(getEntitiesRestrictCriteria()));
         }
-        $rulecollection->exportRulesToXML($rules_key);
+        $rulecollection::exportRulesToXML($rules_key);
         unset($_SESSION['exportitems']);
         break;
 
     case "download":
         echo "<div class='center'>";
         $itemtype = $_REQUEST['itemtype'];
-        echo "<a href='" . $itemtype::getSearchURL() . "'>" . __('Back') . "</a>";
+        echo "<a href='" . htmlescape($itemtype::getSearchURL()) . "'>" . __s('Back') . "</a>";
         echo "</div>";
-        Html::redirect("rule.backup.php?action=export&itemtype=" . $_REQUEST['itemtype']);
-        break;
-
+        Html::redirect("rule.backup.php?action=export&itemtype=" . urlencode($_REQUEST['itemtype']));
+        // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
     case "process_import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::processImportRules();
         Html::back();
-        break;
+        // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 }
-if ($action != "export") {
+if ($action !== "export") {
     Html::footer();
 }

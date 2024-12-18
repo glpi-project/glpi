@@ -42,8 +42,6 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 Session::checkRight("networking", READ);
 
 $np  = new NetworkPort();
@@ -81,6 +79,15 @@ if (isset($_POST["add"])) {
         unset($input['several']);
         unset($input['from_logical_number']);
         unset($input['to_logical_number']);
+
+        if ($_POST["to_logical_number"] < $_POST["from_logical_number"]) {
+            Session::addMessageAfterRedirect(
+                __s("'To' should not be smaller than 'From'"),
+                false,
+                ERROR
+            );
+            Html::back();
+        }
 
         for ($i = $_POST["from_logical_number"]; $i <= $_POST["to_logical_number"]; $i++) {
             $add = "";

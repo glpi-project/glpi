@@ -562,7 +562,7 @@ class Item_RackTest extends DbTestCase
             );
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the &quot;Test rack&quot; rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
         $this->assertTrue($model1->update([
@@ -611,7 +611,7 @@ class Item_RackTest extends DbTestCase
             );
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the &quot;Test rack&quot; rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
         $this->assertTrue($model2->update([
@@ -677,7 +677,7 @@ class Item_RackTest extends DbTestCase
             );
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the &quot;Test rack&quot; rack and the new required units do not fit into the rack']);
 
         // Update the ComputerModel
         $this->assertTrue($model1->update([
@@ -708,7 +708,7 @@ class Item_RackTest extends DbTestCase
             );
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the &quot;Test rack&quot; rack and the new required units do not fit into the rack']);
 
         // Test depth
         $this->assertTrue($model1->update([
@@ -756,7 +756,7 @@ class Item_RackTest extends DbTestCase
             );
         }
 
-        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the "Test rack" rack and the new required units do not fit into the rack']);
+        $this->hasSessionMessages(ERROR, ['Unable to update model because it is used by an asset in the &quot;Test rack&quot; rack and the new required units do not fit into the rack']);
     }
 
     /**

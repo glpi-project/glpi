@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/auth.class.php */
 
@@ -61,9 +62,7 @@ class AuthTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider loginProvider
-     */
+    #[DataProvider('loginProvider')]
     public function testIsValidLogin($login, $isvalid)
     {
         $this->assertSame($isvalid, \Auth::isValidLogin($login));
@@ -144,9 +143,8 @@ class AuthTest extends DbTestCase
 
     /**
      * Test that account is lock when authentication is done using an expired password.
-     *
-     * @dataProvider lockStrategyProvider
      */
+    #[DataProvider('lockStrategyProvider')]
     public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock)
     {
         /** @var array $CFG_GLPI */
@@ -176,5 +174,21 @@ class AuthTest extends DbTestCase
         $this->assertSame(!$expected_lock, $is_logged);
         $this->assertTrue($user->getFromDB($user->fields['id']));
         $this->assertSame(!$expected_lock, (bool)$user->fields['is_active']);
+    }
+
+    public static function validateLoginProvider()
+    {
+        return [
+            [TU_USER, TU_PASS, false, '', true],
+            ['jsmith123', TU_PASS, false, '', true],
+            ['fake_user', 'fake_user', false, '', false],
+        ];
+    }
+
+    #[DataProvider('validateLoginProvider')]
+    public function testValidateLogin(string $login, string $password, bool $noauto, $login_auth, bool $expected)
+    {
+        $auth = new \Auth();
+        $this->assertSame($expected, $auth->validateLogin($login, $password, $noauto, $login_auth));
     }
 }

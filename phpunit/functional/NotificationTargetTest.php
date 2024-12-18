@@ -39,6 +39,8 @@ use DbTestCase;
 use Entity;
 use Generator;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use Session;
 
 /* Test for inc/notificationtarget.class.php */
@@ -216,9 +218,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider getReplyToProvider
-     */
+    #[DataProvider('getReplyToProvider')]
     public function testGetReplyTo(
         array $global_config,
         array $entities_configs,
@@ -242,6 +242,71 @@ class NotificationTargetTest extends DbTestCase
             $target->setAllowResponse($allow_response);
             $this->assertEquals($expected_result, $target->getReplyTo());
         }
+    }
+
+
+    public function testGetUrlbase()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root    = getItemByTypeName('Entity', 'Root entity', true);
+        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ntarget_parent  = new \NotificationTarget($parent);
+        $ntarget_child_1 = new \NotificationTarget($child_1);
+        $ntarget_child_2 = new \NotificationTarget($child_2);
+
+       // test global settings
+         $CFG_GLPI['url_base'] = 'global.tld';
+
+        $this->assertEquals('global.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('global.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('global.tld', $ntarget_child_2->getUrlBase());
+
+        // test root entity settings
+        $entity  = new \Entity();
+        $this->assertTrue($entity->update([
+            'id'       => $root,
+            'url_base' => "root.tld",
+        ]));
+
+        $this->assertEquals('root.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('root.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('root.tld', $ntarget_child_2->getUrlBase());
+
+        // test parent entity settings
+        $this->assertTrue($entity->update([
+            'id'       => $parent,
+            'url_base' => "parent.tld",
+        ]));
+
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_2->getUrlBase());
+
+        // test child_1 entity settings
+        $this->assertTrue($entity->update([
+            'id'       => $child_1,
+            'url_base' => "child1.tld",
+        ]));
+
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('child1.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('parent.tld', $ntarget_child_2->getUrlBase());
+
+        // test child_2 entity settings
+        $this->assertTrue($entity->update([
+            'id'       => $child_2,
+            'url_base' => "child2.tld",
+        ]));
+
+        $this->assertEquals('parent.tld', $ntarget_parent->getUrlBase());
+        $this->assertEquals('child1.tld', $ntarget_child_1->getUrlBase());
+        $this->assertEquals('child2.tld', $ntarget_child_2->getUrlBase());
     }
 
     /**
@@ -350,7 +415,7 @@ class NotificationTargetTest extends DbTestCase
             if (!is_null($warning)) {
                 $this->hasPhpLogRecordThatContains(
                     $warning,
-                    Logger::WARNING
+                    LogLevel::WARNING
                 );
             }
         }
@@ -376,9 +441,8 @@ class NotificationTargetTest extends DbTestCase
 
     /**
      * Tests for NotificationTarget::getInstanceClass
-     *
-     * @dataProvider testGetInstanceClassProvider
      */
+    #[DataProvider('testGetInstanceClassProvider')]
     public function testGetInstanceClass(string $itemtype, string $class): void
     {
         $output = \NotificationTarget::getInstanceClass($itemtype);
@@ -421,9 +485,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testFormatUrlProvider
-     */
+    #[DataProvider('testFormatUrlProvider')]
     public function testFormatUrl(int $usertype, string $redirect, string $expected): void
     {
         $instance = new \NotificationTarget();
@@ -487,9 +549,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider messageItemProvider
-     */
+    #[DataProvider('messageItemProvider')]
     public function testGetMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event, string $expected)
     {
         //set UUID
@@ -514,5 +574,68 @@ class NotificationTargetTest extends DbTestCase
         $instance = new \NotificationTarget();
         $messageid = $instance->getMessageIdForEvent($itemtype, $items_id, $event);
         $this->assertMatchesRegularExpression($expected, $messageid);
+    }
+
+    public function testGetTargetsWithExclusions()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $notification_target = new \NotificationTarget();
+        $group = new \Group();
+        $user = new \User();
+
+        // Create new user with a fake email
+        $this->assertGreaterThan(0, $users_id = $user->add([
+            'name'     => __FUNCTION__,
+        ]));
+        $useremail = new \UserEmail();
+        $this->assertGreaterThan(0, $useremail->add([
+            'users_id' => $users_id,
+            'email'    => __FUNCTION__ . '@localhost',
+            'is_default' => 1,
+        ]));
+        // Create a new group for this user
+        $this->assertGreaterThan(0, $groups_id = $group->add([
+            'name'     => __FUNCTION__,
+        ]));
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(0, $group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $users_id,
+        ]));
+
+        $notification = new \Notification();
+        $this->assertGreaterThan(0, $fake_notification_id = $notification->add([
+            'itemtype' => 'Ticket',
+            'event'    => 'new',
+        ]));
+        $notification_target->data = [
+            'notifications_id' => $fake_notification_id,
+        ];
+        $rc = new \ReflectionClass($notification_target);
+        $rc->getProperty('event')->setValue($notification_target, \NotificationEventMailing::class);
+
+        $notification_target->addToRecipientsList([
+            'users_id' => getItemByTypeName('User', TU_USER, true),
+            'usertype' => \NotificationTarget::GLPI_USER,
+        ]);
+        $notification_target->addToRecipientsList([
+            'users_id' => $users_id,
+            'usertype' => \NotificationTarget::GLPI_USER,
+        ]);
+        $this->assertCount(2, $notification_target->getTargets());
+
+        $this->assertGreaterThan(0, $notification_target->add([
+            'notifications_id' => $fake_notification_id,
+            'type' => \Notification::GROUP_TYPE,
+            'items_id' => $groups_id,
+            'is_exclusion' => 1,
+        ]));
+        // Only TU_USER should be in the list
+        $targets = $notification_target->getTargets();
+        $this->assertCount(1, $targets);
+        $target = reset($targets);
+        $this->assertEquals(getItemByTypeName('User', TU_USER, true), $target['users_id']);
     }
 }

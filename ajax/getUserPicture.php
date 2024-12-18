@@ -33,19 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
+use Glpi\Exception\Http\BadRequestHttpException;
 
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (!isset($_REQUEST['users_id'])) {
-    Response::sendError(400, "Missing users_id parameter");
+    throw new BadRequestHttpException("Missing users_id parameter");
 } else if (!is_array($_REQUEST['users_id'])) {
     $_REQUEST['users_id'] = [$_REQUEST['users_id']];
 }

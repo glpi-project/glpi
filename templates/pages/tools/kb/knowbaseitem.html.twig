@@ -1,0 +1,127 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {{ inputs.hidden('__categories_defined', 1) }}
+    {{ inputs.hidden('users_id', session('glpiID')) }}
+    {{ fields.dropdownField('KnowbaseItemCategory', '_categories', item.fields['_categories']|default([]), 'KnowbaseItemCategory'|itemtype_name, {
+        multiple: true
+    }) }}
+    {% if item.isNewItem %}
+        {{ fields.nullField() }}
+    {% else %}
+        {{ fields.htmlField('', item.fields["view"], __('Views')) }}
+    {% endif %}
+
+    {% if has_profile_right('knowbase', constant('KnowbaseItem::PUBLISHFAQ')) %}
+        {{ fields.dropdownYesNo('is_faq', item.fields['is_faq'], __('Put this item in the FAQ')) }}
+    {% else %}
+        {% set faq_label %}
+            {% if item.fields['is_faq'] %}
+                {{ __('This item is part of the FAQ') }}
+            {% else %}
+                {{ __('This item is not part of the FAQ') }}
+            {% endif %}
+            {{ fields.htmlField('', faq_label, null, {
+                no_label: true
+            }) }}
+        {% endset %}
+    {% endif %}
+    {% if item.fields['users_id'] %}
+        {% set user_field = call('getUserName', [item.fields['users_id'], has_profile_right('user', constant('READ')) ? 1 : 0]) %}
+        {{ fields.htmlField('', user_field, __('Writer')) }}
+    {% else %}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {% if linked_item is defined and linked_item is not null and not linked_item.isNewItem() %}
+        {{ inputs.hidden('_itemtype', get_class(linked_item)) }}
+        {{ inputs.hidden('_items_id', linked_item.getID()) }}
+        {{ fields.checkboxField('_do_item_link', 1, __('Link with %1$s')|format(get_item_link(linked_item))) }}
+    {% endif %}
+
+    {{ fields.datetimeField('begin_date', item.fields['begin_date'], __('Visible since'), {
+        clearable: true
+    }) }}
+    {{ fields.datetimeField('end_date', item.fields['end_date'], __('Visible until'), {
+        clearable: true
+    }) }}
+
+    <hr class="my-2">
+
+    {{ fields.textField('name', item.fields['name'], __('Subject'), {
+        full_width: true,
+        label_class: 'col-1',
+        input_class: 'col-11'
+    }) }}
+    {{ fields.textareaField('answer', item.fields['answer'], __('Content'), {
+        full_width: true,
+        label_class: 'col-1',
+        input_class: 'col-11',
+        enable_fileupload: true,
+        enable_richtext: true,
+    }) }}
+
+    {% if item.isNewItem %}
+        <hr class="my-2">
+
+        {% set visibility_fields %}
+            <span id="visibility{{ rand }}"></span>
+            <script>
+                $(() => {
+                    $('#dropdown__visibility__type_{{ rand }}').on('change', (e) => {
+                        const selected_type = e.target.value;
+                        $('#visibility{{ rand }}').load(
+                            '{{ path('/ajax/visibility.php') }}',
+                            {
+                                'type': selected_type,
+                                'right': 'knowbase',
+                                'prefix': '_visibility',
+                                'nobutton': 1
+                            }
+                        );
+                    });
+                });
+            </script>
+        {% endset %}
+        {{ fields.dropdownItemTypes('_visibility[_type]', 0, _n('Target', 'Targets', 1), {
+            types: ['Entity', 'Group', 'Profile', 'User'],
+            rand: rand,
+            add_field_html: visibility_fields
+        }) }}
+    {% endif %}
+{% endblock %}

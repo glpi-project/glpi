@@ -35,6 +35,8 @@
 
 namespace tests\units;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class ImpactItemTest extends \DbTestCase
 {
     public function testFindForItem_inexistent()
@@ -93,9 +95,7 @@ class ImpactItemTest extends \DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider prepareInputForUpdateProvider
-     */
+    #[DataProvider('prepareInputForUpdateProvider')]
     public function testPrepareInputForUpdate($input, $result)
     {
         $impact_item = new \ImpactItem();

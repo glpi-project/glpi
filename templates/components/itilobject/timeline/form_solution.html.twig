@@ -90,7 +90,7 @@
             <input type="hidden" name="_no_message_link" value="1" />
             {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
-            {% if call('Ticket_Ticket::countOpenChildren', [item.fields['id']]) > 0 %}
+            {% if item.getType() == 'Ticket' and item.countOpenChildrenOfSameType() > 0 %}
                <div class="alert alert-important alert-warning">
                   <i class="fas fa-2x fa-info me-2"></i>
                   <span>{{ __('Warning: non closed children tickets depends on current ticket. Are you sure you want to close it?') }}</span>
@@ -169,6 +169,18 @@
                         <i class="fas fa-tag fa-fw me-1" title="{{ 'SolutionType'|itemtype_name }}"
                            data-bs-toggle="tooltip" data-bs-placement="top"></i>
                      {% endset %}
+                     {% set sol_search = {} %}
+                     {% if item.getType() == 'Ticket' %}
+                        {% if item.fields['type'] == constant('Ticket::INCIDENT_TYPE') %}
+                           {% set sol_search = {'is_incident': 1} %}
+                        {% elseif item.fields['type'] == constant('Ticket::DEMAND_TYPE') %}
+                           {% set sol_search = {'is_request': 1} %}
+                        {% endif %}
+                     {% elseif item.getType() == 'Problem' %}
+                        {% set sol_search = {'is_problem': 1} %}
+                     {% elseif item.getType() == 'Change' %}
+                        {% set sol_search = {'is_change': 1} %}
+                     {% endif %}
                      {{ fields.dropdownField(
                         'SolutionType',
                         'solutiontypes_id',
@@ -179,6 +191,7 @@
                            'icon_label': true,
                            'rand': rand,
                            'entity': item.fields['entities_id'],
+                           'condition': sol_search,
                            'disabled': disabled,
                         }
                      ) }}

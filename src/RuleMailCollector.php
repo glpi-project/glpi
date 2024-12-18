@@ -38,24 +38,14 @@ class RuleMailCollector extends Rule
 {
    // From Rule
     public static $rightname = 'rule_mailcollector';
-    public $orderby   = "name";
-    public $can_sort  = true;
 
-    /**
-     * @see Rule::getTitle()
-     **/
     public function getTitle()
     {
         return __('Rules for assigning a ticket created through a mails receiver');
     }
 
-
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -163,13 +153,8 @@ class RuleMailCollector extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                              = parent::getActions();
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
@@ -204,13 +189,15 @@ class RuleMailCollector extends Rule
         $actions['_refuse_email_with_response']['type']  = 'yesonly';
         $actions['_refuse_email_with_response']['table'] = '';
 
+        $actions['externalid']['name']             = __('External ID');
+        $actions['externalid']['type']             = 'text';
+        $actions['externalid']['force_actions']    = ['regex_result'];
+
         return $actions;
     }
 
-
     public function executeActions($output, $params, array $input = [])
     {
-
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
@@ -255,10 +242,10 @@ class RuleMailCollector extends Rule
                                    //Case 2 : check if there's only one profile for this user
                                     if (
                                         (isset($this->criterias_results['ONE_PROFILE'])
-                                        && (count($entities) == 1))
+                                        && (count($entities) === 1))
                                         || !isset($this->criterias_results['ONE_PROFILE'])
                                     ) {
-                                        if (count($entities) == 1) {
+                                        if (count($entities) === 1) {
                                             //User has right on only one entity
                                               $output['entities_id'] = array_pop($entities);
                                         } else if (isset($this->criterias_results['UNIQUE_PROFILE'])) {
@@ -282,8 +269,8 @@ class RuleMailCollector extends Rule
                                              // If an entity is defined in user's preferences,
                                              // and this entity allowed for this profile, use this one
                                              // else do not set the rule as matched
-                                                if (in_array($tmpid, $entities)) {
-                                                          $output['entities_id'] = $user->fields['entities_id'];
+                                                if (in_array($tmpid, $entities, true)) {
+                                                    $output['entities_id'] = $user->fields['entities_id'];
                                                 }
                                             }
                                         }
@@ -299,27 +286,31 @@ class RuleMailCollector extends Rule
                                  $action->fields["value"],
                                  $regex_result
                              );
-                            if ($res != null) {
-                                switch ($action->fields["field"]) {
-                                    case "_affect_entity_by_domain":
-                                        $entity_found = Entity::getEntityIDByDomain(addslashes($res));
-                                        break;
+                            if ($res !== null) {
+                                if ($action->fields["field"] === 'externalid') {
+                                    $output[$action->fields["field"]] = $res;
+                                } else {
+                                    switch ($action->fields["field"]) {
+                                        case "_affect_entity_by_domain":
+                                            $entity_found = Entity::getEntityIDByDomain($res);
+                                            break;
 
-                                    case "_affect_entity_by_tag":
-                                          $entity_found = Entity::getEntityIDByTag(addslashes($res));
-                                        break;
-                                }
+                                        case "_affect_entity_by_tag":
+                                              $entity_found = Entity::getEntityIDByTag($res);
+                                            break;
+                                    }
 
-                                //If an entity was found
-                                if ($entity_found > -1) {
-                                    $output['entities_id'] = $entity_found;
-                                    break;
+                                    //If an entity was found
+                                    if ($entity_found > -1) {
+                                        $output['entities_id'] = $entity_found;
+                                        break;
+                                    }
                                 }
                             }
                         }
                         break;
                     default:
-                    //Allow plugins actions
+                        // Allow plugins actions
                         $executeaction = clone $this;
                         $output = $executeaction->executePluginsActions($action, $output, $params, $input);
                         break;
@@ -328,7 +319,6 @@ class RuleMailCollector extends Rule
         }
         return $output;
     }
-
 
     public static function getIcon()
     {

@@ -40,16 +40,13 @@
 
 {% set entity_id = 0 %}
 {% set entity_name = '' %}
-{% if item.isEntityAssign() %}
-   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
-      {% set entity_id = null %}
-   {% else %}
-      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
-   {% endif %}
-
-   {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', entity_id is not empty ? entity_id : null) %}
-   {% endif %}
+{% if item.getType() == 'Entity' %}
+    {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
+{% elseif item.isEntityAssign() %}
+    {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+{% endif %}
+{% if is_multi_entities_mode() %}
+    {% set entity_name = entity_id is not null ? get_item_name('Entity', entity_id) : null %}
 {% endif %}
 
 {% set no_header = no_header|default(false) %}
@@ -60,7 +57,7 @@
 {% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
 
 {% if open_form and item.canEdit(item.fields['id']) %}
-<form name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+<form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
    {% endif %}
@@ -70,9 +67,7 @@
 {% endif %}
    <div id="mainformtable">
       {% if include_header_content %}
-         {{ include('components/form/header_content.html.twig', {'inside_main': true}) }}
-      {% else %}
-         <input type="hidden" name="is_recursive" value="{{ item.fields['is_recursive']|default(1) }}" />
+         {{ include('components/form/header_content.html.twig') }}
       {% endif %}
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}

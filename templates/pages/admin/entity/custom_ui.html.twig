@@ -1,0 +1,98 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+    {% block more_fields %}
+        {% set css_code = inherited_css is not null ? inherited_css : item.fields['custom_css_code'] %}
+        {{ fields.dropdownArrayField('enable_custom_css', item.fields['enable_custom_css'], enable_css_options, __('Enable CSS customization'), {
+            add_field_html: enable_css_inheritance_label
+        }) }}
+        {% set inherited_value = enabled_css_inherited_value %}
+        {% set show_editor = (inherited_value is null or inherited_value == 1) and item.fields['enable_custom_css'] != 0 %}
+        <div id="custom_css_container" class="custom_css_container {{ show_editor ? '' : 'd-none' }}" style="height: 400px"></div>
+        <div class="alert alert-info {{ item.fields['enable_custom_css'] == 0 ? '' : 'd-none' }}">{{ __('Custom CSS is disabled') }}</div>
+        <script>
+            const refreshCustomCSSEditor = () => {
+                if (window.monaco !== undefined) {
+                    window.monaco.editor.getEditors().forEach((editor) => {
+                        if (editor._domElement.className.includes('custom_css_container')) {
+                            editor.dispose();
+                        }
+                    })
+                }
+                $(function() {
+                    window.GLPI.Monaco.createEditor('custom_css_container', 'css', `{{ css_code|escape('js') }}`, [], {
+                        _force_default_lang: true,
+                        readOnly: {{ inherited_css is not null ? 1 : 0 }}
+                    }).then((editor) => {
+                        editor.editor.layout();
+                    });
+                });
+            };
+            $(() => {
+                refreshCustomCSSEditor();
+                $('select[name="enable_custom_css"]').on('change', (e) => {
+                    const val = $(e.target).val();
+                    if (val === '1') {
+                        $('.alert-info').addClass('d-none');
+                        $('#custom_css_container').removeClass('d-none');
+                    } else if (val === '-2') {
+                        $('.alert-info').addClass('d-none');
+                        if ({{ inherited_value|default(0) }} === 0) {
+                            $('#custom_css_container').addClass('d-none');
+                        } else {
+                            $('#custom_css_container').removeClass('d-none');
+                        }
+                    } else {
+                        $('.alert-info').removeClass('d-none');
+                        $('#custom_css_container').addClass('d-none');
+                    }
+                    refreshCustomCSSEditor();
+                });
+                $('#custom_css_container').closest('form').on('formdata', (e) => {
+                    const editors = window.monaco.editor.getEditors().filter((editor) => {
+                        return editor._domElement.classList.contains('custom_css_container');
+                    });
+                    if (editors.length) {
+                        e.originalEvent.formData.delete('custom_css_code');
+                        e.originalEvent.formData.append('custom_css_code', editors[0].getValue());
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

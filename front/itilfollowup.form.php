@@ -34,13 +34,10 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 /** @var \DBmysql $DB */
 global $DB;
-
-include('../inc/includes.php');
-
-Session::checkLoginUser();
 
 $fup = new ITILFollowup();
 
@@ -48,10 +45,12 @@ $redirect = null;
 $handled = false;
 
 if (!isset($_POST['itemtype']) || !class_exists($_POST['itemtype'])) {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 $track = getItemForItemtype($_POST['itemtype']);
-
+if ($track === false) {
+    throw new BadRequestHttpException();
+}
 
 if (isset($_POST["add"])) {
     $fup->check(-1, CREATE, $_POST);
@@ -120,10 +119,10 @@ if ($handled) {
             'itemtype'         => $track->getType(),
             'items_id'         => $track->getID()
         ];
-        $existing = $DB->request(
-            'glpi_knowbaseitems_items',
-            $params
-        );
+        $existing = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_items',
+            'WHERE' => $params
+        ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
@@ -139,7 +138,7 @@ if ($handled) {
         $redirect = $track->getLinkURL() . $toadd;
     } else {
         Session::addMessageAfterRedirect(
-            __('You have been redirected because you no longer have access to this ticket'),
+            __s('You have been redirected because you no longer have access to this ticket'),
             true,
             ERROR
         );
@@ -152,5 +151,3 @@ if (null == $redirect) {
 } else {
     Html::redirect($redirect);
 }
-
-Html::displayErrorAndDie('Lost');

@@ -109,7 +109,7 @@ class InstallationNotOverriden extends \GLPITestCase
         // Unique version file that matches current version during update from >= GLPI 10.0.4
         // -> validated
         $current_version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        foreach (['10.0.6', '10.0.7', '10.1.0-dev', '11.3.4'] as $previous_version) {
+        foreach (['10.0.6', '10.0.7', '11.0.0-dev', '11.3.4'] as $previous_version) {
             yield [
                 'files'            => [
                     $current_version => '',

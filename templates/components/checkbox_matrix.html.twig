@@ -31,14 +31,16 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="mx-n2 mb-4">
+<div class="mx-n2 mb-4 table-responsive">
    <table class="table table-hover card-table">
       <thead>
+         {% if title is not empty %}
          <tr class="border-top">
             <th colspan="{{ number_columns }}">
                <h4>{{ title }}</h4>
             </th>
          </tr>
+         {% endif %}
          <tr>
             <th>{{ param['first_cell']|raw }}</th>
             {% for col_name, column in columns %}

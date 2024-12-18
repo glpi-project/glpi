@@ -33,9 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 // Generic test classe, to be extended for CommonDBTM Object
+
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -116,19 +118,19 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
-
         $this->integer($id)->isGreaterThan($object instanceof Entity ? -1 : 0);
         $this->boolean($object->getFromDB($id))->isTrue();
         $this->variable($object->fields['id'])->isEqualTo($id);
 
         if (count($input)) {
             foreach ($input as $k => $v) {
+                $obj_var = var_export($object->fields[$k], true);
+                $input_var = var_export($v, true);
                 $this->variable($object->fields[$k])->isEqualTo(
                     $v,
                     "
-                '$k' key current value '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
-                is not equal to '$v' (" . gettype($v) . ")"
+                '$k' key current value '{$obj_var}' (" . gettype($object->fields[$k]) . ")
+                is not equal to '$input_var' (" . gettype($v) . ")"
                 );
             }
         }
@@ -144,15 +146,6 @@ class DbTestCase extends \GLPITestCase
      */
     protected function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
-        $excludes = array_merge(
-            $excludes,
-            [
-                'TicketFollowup', // Deprecated
-                '/^RuleImportComputer.*/', // Deprecated
-            ]
-        );
-
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
             RecursiveIteratorIterator::SELF_FIRST
@@ -199,16 +192,16 @@ class DbTestCase extends \GLPITestCase
     /**
      * Create an item of the given class
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
      *
-     * @return CommonDBTM
+     * @return T
      */
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $input = Sanitizer::sanitize($input);
         $id = $item->add($input);
         $this->integer($id)->isGreaterThan(0);
 
@@ -228,13 +221,14 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
-     * @param array $skip_fields Fields that wont be checked after update
+     * @param array $skip_fields Fields that wont be checked after creation
+     *
+     * @return CommonDBTM The updated item
      */
-    protected function updateItem($itemtype, $id, $input, $skip_fields = [])
+    protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input['id'] = $id;
-        $input = Sanitizer::sanitize($input);
         $success = $item->update($input);
         $this->boolean($success)->isTrue();
 
@@ -244,6 +238,8 @@ class DbTestCase extends \GLPITestCase
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);
+
+        return $item;
     }
 
     /**
@@ -265,6 +261,24 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Delete an item of the given class
+     *
+     * @param string $itemtype
+     * @param int $id
+     * @param bool $purge
+     *
+     * @return void
+     */
+    protected function deleteItem($itemtype, $id, bool $purge = false): void
+    {
+        /** @var CommonDBTM $item */
+        $item = new $itemtype();
+        $input['id'] = $id;
+        $success = $item->delete($input, $purge);
+        $this->boolean($success)->isTrue();
+    }
+
+    /**
      * Helper method to avoid writting the same boilerplate code for rule creation
      *
      * @param RuleBuilder $builder RuleConfiguration
@@ -273,9 +287,9 @@ class DbTestCase extends \GLPITestCase
      */
     protected function createRule(RuleBuilder $builder): Rule
     {
-        $rule = $this->createItem(RuleTicket::class, [
+        $rule = $this->createItem(Rule::class, [
             'is_active'    => 1,
-            'sub_type'     => 'RuleTicket',
+            'sub_type'     => $builder->getRuleType(),
             'name'         => $builder->getName(),
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),
@@ -302,5 +316,177 @@ class DbTestCase extends \GLPITestCase
         }
 
         return $rule;
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param ?string $system_name
+     * @param array $capacities
+     * @param ?array $profiles
+     *
+     * @return AssetDefinition
+     */
+    protected function initAssetDefinition(
+        ?string $system_name = null,
+        array $capacities = [],
+        ?array $profiles = null,
+    ): AssetDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            AssetDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'capacities'  => $capacities,
+                'profiles'    => $profiles,
+                'fields_display' => [],
+            ],
+            skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
+        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
+
+        return $definition;
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param ?string $system_name
+     * @param ?array $profiles
+     *
+     * @return DropdownDefinition
+     */
+    protected function initDropdownDefinition(
+        ?string $system_name = null,
+        ?array $profiles = null,
+    ): DropdownDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            DropdownDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'profiles'    => $profiles,
+            ],
+            skip_fields: ['profiles'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
+
+        return $definition;
+    }
+
+    /**
+     * Create a random text document.
+     * @return \Document
+     */
+    protected function createTxtDocument(): Document
+    {
+        $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
+        $filename = uniqid('glpitest_', true) . '.txt';
+        $contents = random_bytes(1024);
+
+        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
+        $this->integer($written_bytes)->isEqualTo(strlen($contents));
+
+        return $this->createItem(
+            Document::class,
+            [
+                'filename'    => $filename,
+                'entities_id' => $entity,
+                '_filename'   => [
+                    $filename,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Helper method to enable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to enable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function enableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Add new capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities[] = $capacity;
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was added
+        $this->array(
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        )->contains($capacity);
+
+        return $definition;
+    }
+
+    /**
+     * Helper method to disable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to disable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function disableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Remove capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities = array_diff($capacities, [$capacity]);
+
+        // Reorder keys to ensure json_decode will return an array instead of an
+        // object
+        $capacities = array_values($capacities);
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was deleted
+        $this->array(
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        )->notContains($capacity);
+
+        return $definition;
     }
 }

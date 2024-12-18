@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/firmware.class.php */
@@ -86,9 +88,7 @@ class BiosTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -179,7 +179,7 @@ class BiosTest extends AbstractInventoryAsset
         //create manually a computer, with a bios
         $computers_id = $computer->add([
             'name'   => 'pc002',
-            'serial' => addslashes("ggheb7'ne7"),
+            'serial' => "ggheb7'ne7",
             'entities_id' => 0
         ]);
         $this->assertGreaterThan(0, $computers_id);

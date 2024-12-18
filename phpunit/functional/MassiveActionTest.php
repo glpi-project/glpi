@@ -38,10 +38,14 @@ namespace tests\units;
 use CommonDBTM;
 use Contract;
 use DbTestCase;
+use Domain_Item;
 use Notepad;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Session;
 use Ticket;
+use User;
+use UserEmail;
 
 /* Test for inc/massiveaction.class.php */
 
@@ -53,55 +57,53 @@ class MassiveActionTest extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 21,
-                'singlecount'  => 13
+                'allcount'     => 29,
+                'singlecount'  => 20
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 20,
-                'singlecount'  => 12
+                'allcount'     => 24,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
                 'allcount'     => 15,
-                'singlecount'  => 9
+                'singlecount'  => 10
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 16,
-                'singlecount'  => 11
+                'allcount'     => 22,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 18,
-                'singlecount'  => 12
+                'allcount'     => 24,
+                'singlecount'  => 18
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 19,
-                'singlecount'  => 11
+                'allcount'     => 25,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 19,
-                'singlecount'  => 11
+                'allcount'     => 25,
+                'singlecount'  => 17
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
                 'allcount'     => 20,
-                'singlecount'  => 10
+                'singlecount'  => 9
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
-                'allcount'     => 2,
-                'singlecount'  => 1
+                'allcount'     => 3,
+                'singlecount'  => 2
             ]
         ];
     }
 
-    /**
-     * @dataProvider actionsProvider
-     */
+    #[DataProvider('actionsProvider')]
     public function testGetAllMassiveActions($itemtype, $items_id, $allcount, $singlecount)
     {
         $this->login();
@@ -165,11 +167,17 @@ class MassiveActionTest extends DbTestCase
         $ma->method('addMessage')->willReturn(null);
         $ma->method('getInput')->willReturn($input);
         $ma->method('itemDone')->willReturnCallback(
-            function ($item, $id, $res) use (&$ma_ok, &$ma_ko) {
-                if ($res == \MassiveAction::ACTION_OK) {
-                    $ma_ok++;
+            function ($item, $ids, $res) use (&$ma_ok, &$ma_ko) {
+                if (is_array($ids)) {
+                    $increment = count($ids);
                 } else {
-                    $ma_ko++;
+                    $increment = 1;
+                }
+
+                if ($res == \MassiveAction::ACTION_OK) {
+                    $ma_ok += $increment;
+                } else {
+                    $ma_ko += $increment;
                 }
             }
         );
@@ -203,9 +211,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider amendCommentProvider
-     */
+    #[DataProvider('amendCommentProvider')]
     public function testProcessMassiveActionsForOneItemtype_AmendComment(
         CommonDBTM $item,
         bool $itemtype_is_compatible,
@@ -217,6 +223,7 @@ class MassiveActionTest extends DbTestCase
 
         // Set rights if needed
         if ($has_right) {
+            $this->login();
             $_SESSION['glpiactiveentities'] = [
                 $item->getEntityID()
             ];
@@ -284,9 +291,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider addNoteProvider
-     */
+    #[DataProvider('addNoteProvider')]
     public function testProcessMassiveActionsForOneItemtype_AddNote(
         CommonDBTM $item,
         bool $has_right
@@ -379,9 +384,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider linkToProblemProvider
-     */
+    #[DataProvider('linkToProblemProvider')]
     public function testProcessMassiveActionsForOneItemtype_linkToProblem(
         CommonDBTM $item,
         array $input,
@@ -418,7 +421,7 @@ class MassiveActionTest extends DbTestCase
         }
 
         // Execute action
-        $this->processMassiveActionsForOneItemtype(
+        @$this->processMassiveActionsForOneItemtype(
             "link_to_problem",
             $item,
             [$item->fields['id']],
@@ -589,7 +592,6 @@ class MassiveActionTest extends DbTestCase
             $has_right = $row['has_right'];
             $should_work = $row['should_work'];
 
-
             // Set up session rights
             if ($has_right) {
                 $this->login('tech', 'tech');
@@ -623,5 +625,219 @@ class MassiveActionTest extends DbTestCase
                 Ticket::class
             );
         }
+    }
+
+    /**
+     * Data provider for testDeleteEmails
+     *
+     * @return iterable
+     */
+    protected function deleteEmailsProvider(): iterable
+    {
+        // Users used for our tests
+        $user1 = getItemByTypeName("User", "post-only", true);
+        $user2 = getItemByTypeName("User", "glpi", true);
+        $user3 = getItemByTypeName("User", "tech", true);
+        $users_ids = [$user1, $user2, $user3];
+
+        // Check that no email exist for our tests users
+        $this->assertCount(
+            0,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
+
+        // Create set of emails to be deleted
+        $this->createItems('UserEmail', [
+            // 1 email for user1
+            ['users_id' => $user1, 'email' => 'test1@mail.com'],
+            // 2 emails for user2
+            ['users_id' => $user2, 'email' => 'test2@mail.com'],
+            ['users_id' => $user2, 'email' => 'test3@mail.com'],
+            // 0 emails for user3
+        ]);
+
+        // Check that emails have been created as expected
+        $this->assertCount(
+            3,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
+
+        // First, login as someone who shouldn't be able to run this action
+        $this->login('post-only', 'postonly');
+        $current_right = Session::haveRight(User::$rightname, UPDATE);
+        $this->assertFalse(boolval($current_right));
+        yield [$users_ids, 0, 3]; // All failed
+
+        // Now login to someone that can run this action
+        $this->login('glpi', 'glpi');
+        $current_right = Session::haveRight(User::$rightname, UPDATE);
+        $this->assertTrue(boolval($current_right));
+        yield [$users_ids, 3, 0]; // Success
+
+        // Verify that emails have been cleaned
+        $this->assertCount(
+            0,
+            (new UserEmail())->find([
+                'users_id' => $users_ids
+            ])
+        );
+    }
+
+    /**
+     * Test the "delete_email" massive action for User
+     */
+    public function testProcessMassiveActionsForOneItemtype_deleteEmail()
+    {
+        $provider = $this->deleteEmailsProvider();
+        foreach ($provider as $row) {
+            $items = $row[0];
+            $ok = $row[1];
+            $ko = $row[2];
+
+            // Execute action
+            $this->processMassiveActionsForOneItemtype(
+                "delete_emails",
+                new User(),
+                $items,
+                [],
+                $ok,
+                $ko,
+                User::class
+            );
+        }
+    }
+
+
+
+    public function testProcessMassiveActionsForOneItemtype_AddDomain()
+    {
+        $this->login('glpi', 'glpi');
+
+        $domain_item = new \Domain_Item();
+
+        //create computer
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $computer->add([
+                'name' => 'test',
+                'entities_id' => 1,
+            ])
+        );
+
+        //create manual domain
+        $manual_domain = new \Domain();
+        $this->assertGreaterThan(
+            0,
+            $manual_domain->add([
+                'name' => 'manual_domain',
+                'entities_id' => 1,
+            ])
+        );
+
+
+        $this->assertTrue(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)));
+
+        // Execute action to link Computer and Manual Domain
+        $this->processMassiveActionsForOneItemtype(
+            "add_item",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $manual_domain->fields['id'], 'domainrelations_id' => \DomainRelation::BELONGS],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //check if exist
+        $rows = $domain_item->find([
+            'domains_id'            => $manual_domain->fields['id'],
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => false,
+        ]);
+        $this->assertCount(1, $rows);
+
+
+        //create new domain (for is_dynamic test)
+        $dynamic_domain = new \Domain();
+        $this->assertGreaterThan(
+            0,
+            $dynamic_domain->add([
+                'name' => 'dynamic_domain',
+            ])
+        );
+
+        //add relation (with is_dynamic = 1)
+        $this->assertGreaterThan(
+            0,
+            $domain_item->add([
+                'domains_id'            => $dynamic_domain->fields['id'],
+                'is_dynamic'            => 1,
+                'items_id'              => $computer->fields['id'],
+                'itemtype'              => $computer->getType(),
+                'domainrelations_id'    => \DomainRelation::BELONGS,
+                'is_deleted'            => false,
+            ])
+        );
+
+
+        // Execute action to remove link between Computer and Manual Domain
+        $this->processMassiveActionsForOneItemtype(
+            "remove_domain",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $manual_domain->fields['id']],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //manual Domain link should not exist
+        $rows = $domain_item->find([
+            'domains_id'            => $manual_domain->fields['id'],
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+        ]);
+        $this->assertCount(0, $rows);
+
+        //dynamic domain still exist
+        $rows = $domain_item->find([
+            'domains_id'            => $dynamic_domain->fields['id'],
+            'is_dynamic'            => 1,
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => false,
+        ]);
+        $this->assertCount(1, $rows);
+
+        // Execute action to remove link between Computer and Dynamic Domain
+        $this->processMassiveActionsForOneItemtype(
+            "remove_domain",
+            $computer,
+            [$computer->fields['id']],
+            ['domains_id' => $dynamic_domain->fields['id']],
+            1,
+            0,
+            \Domain::class
+        );
+
+        //dynamic domain still exist but in trashbin and locked
+        $rows = $domain_item->find([
+            'domains_id'            => $dynamic_domain->fields['id'],
+            'is_dynamic'            => 1,
+            'items_id'              => $computer->fields['id'],
+            'itemtype'              => $computer->getType(),
+            'domainrelations_id'    => \DomainRelation::BELONGS,
+            'is_deleted'            => true,
+        ]);
+        $this->assertCount(1, $rows);
     }
 }

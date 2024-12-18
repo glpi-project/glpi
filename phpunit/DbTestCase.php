@@ -33,12 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 // Generic test classe, to be extended for CommonDBTM Object
+
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetDefinitionManager;
 
 class DbTestCase extends \GLPITestCase
 {
+    /**
+     * Indicates whether the custom assets autoloader is registered.
+     * @var boolean
+     */
+    private $is_asset_autoloader_registered = false;
+
     public function setUp(): void
     {
         global $DB;
@@ -108,7 +115,7 @@ class DbTestCase extends \GLPITestCase
     /**
      * Generic method to test if an added object is corretly inserted
      *
-     * @param  Object $object The object to test
+     * @param  CommonDBTM $object The object to test
      * @param  int    $id     The id of added object
      * @param  array  $input  the input used for add object (optionnal)
      *
@@ -116,11 +123,9 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
-
         $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
         $this->assertTrue($object->getFromDB($id));
-        $this->assertEquals($id, $object->getField('id'));
+        $this->assertEquals($id, $object->getID());
 
         if (count($input)) {
             foreach ($input as $k => $v) {
@@ -143,17 +148,8 @@ class DbTestCase extends \GLPITestCase
      *
      * @return array
      */
-    protected function getClasses($function = false, array $excludes = [])
+    protected static function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
-        $excludes = array_merge(
-            $excludes,
-            [
-                '/^TicketFollowup$/', // Deprecated
-                '/^RuleImportComputer.*/', // Deprecated
-            ]
-        );
-
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
             RecursiveIteratorIterator::SELF_FIRST
@@ -209,8 +205,8 @@ class DbTestCase extends \GLPITestCase
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
-        $input = Sanitizer::sanitize($input);
-        $id = $item->add($input);
+        $item->add($input);
+        $id = $item->getID();
         $this->assertIsInt($id);
         $this->assertGreaterThan(0, $id);
 
@@ -230,13 +226,14 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
-     * @param array $skip_fields Fields that wont be checked after update
+     * @param array $skip_fields Fields that wont be checked after creation
+     *
+     * @return CommonDBTM The updated item
      */
-    protected function updateItem($itemtype, $id, $input, $skip_fields = [])
+    protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input['id'] = $id;
-        $input = Sanitizer::sanitize($input);
         $success = $item->update($input);
         $this->assertTrue($success);
 
@@ -246,6 +243,8 @@ class DbTestCase extends \GLPITestCase
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);
+
+        return $item;
     }
 
     /**
@@ -267,6 +266,64 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Delete an item of the given class
+     *
+     * @param string $itemtype
+     * @param int $id
+     * @param bool $purge
+     *
+     * @return void
+     */
+    protected function deleteItem($itemtype, $id, bool $purge = false): void
+    {
+        /** @var CommonDBTM $item */
+        $item = new $itemtype();
+        $input['id'] = $id;
+        $success = $item->delete($input, $purge);
+        $this->assertTrue($success);
+    }
+
+    /**
+     * Delete multiple items of the given class
+     *
+     * @param int[] $ids
+     */
+    protected function deleteItems(string $itemtype, array $ids, bool $purge = false): void
+    {
+        foreach ($ids as $id) {
+            $this->deleteItem($itemtype, $id, $purge);
+        }
+    }
+
+    /**
+     * Helper methods to quickly create many items of the same type.
+     *
+     * @param array[] $names
+     * @return CommonDBTM[]
+     */
+    protected function createItemsWithNames(string $itemtype, array $names): array
+    {
+        return array_map(
+            fn($name) => $this->createItem($itemtype, ['name' => $name]),
+            $names,
+        );
+    }
+
+    /**
+     * Helper methods to quickly get the names of multiple items using their ids.
+     *
+     * @param int[] $ids
+     * @return string[]
+     */
+    protected function getItemsNames(string $itemtype, array $ids): array
+    {
+        return array_map(
+            fn($id) => $itemtype::getById($id)->fields['name'],
+            $ids,
+        );
+    }
+
+    /**
      * Helper method to avoid writting the same boilerplate code for rule creation
      *
      * @param RuleBuilder $builder RuleConfiguration
@@ -275,10 +332,9 @@ class DbTestCase extends \GLPITestCase
      */
     protected function createRule(RuleBuilder $builder): Rule
     {
-        /** @var Rule $rule */
-        $rule = $this->createItem(RuleTicket::class, [
+        $rule = $this->createItem(Rule::class, [
             'is_active'    => 1,
-            'sub_type'     => 'RuleTicket',
+            'sub_type'     => $builder->getRuleType(),
             'name'         => $builder->getName(),
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),
@@ -305,5 +361,162 @@ class DbTestCase extends \GLPITestCase
         }
 
         return $rule;
+    }
+
+    /**
+     * Register the custom asset autoloader. This autoloader is not available by default in the testing context.
+     */
+    protected function registerAssetsAutoloader(): void
+    {
+        if (!$this->is_asset_autoloader_registered) {
+            AssetDefinitionManager::getInstance()->registerAutoload();
+            $this->is_asset_autoloader_registered = true;
+        }
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param string $system_name
+     * @param array $capacities
+     *
+     * @return AssetDefinition
+     */
+    protected function initAssetDefinition(
+        ?string $system_name = null,
+        array $capacities = [],
+        ?array $profiles = null,
+    ): AssetDefinition {
+        $this->registerAssetsAutoloader();
+
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            AssetDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'capacities'  => $capacities,
+                'profiles'    => $profiles,
+            ],
+            skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->assertEquals(
+            $capacities,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        );
+        $this->assertEquals(
+            $profiles,
+            $this->callPrivateMethod($definition, 'getDecodedProfilesField')
+        );
+
+        return $definition;
+    }
+
+    /**
+     * Create a random text document.
+     * @return \Document
+     */
+    protected function createTxtDocument(): Document
+    {
+        $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
+        $filename = uniqid('glpitest_', true) . '.txt';
+        $contents = random_bytes(1024);
+
+        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
+        $this->assertEquals(strlen($contents), $written_bytes);
+
+        return $this->createItem(
+            Document::class,
+            [
+                'filename'    => $filename,
+                'entities_id' => $entity,
+                '_filename'   => [
+                    $filename,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Helper method to enable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to enable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function enableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Add new capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities[] = $capacity;
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was added
+        $this->assertContains(
+            $capacity,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        );
+
+        return $definition;
+    }
+
+    /**
+     * Helper method to disable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to disable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function disableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Remove capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities = array_diff($capacities, [$capacity]);
+
+        // Reorder keys to ensure json_decode will return an array instead of an
+        // object
+        $capacities = array_values($capacities);
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was deleted
+        $this->assertNotContains(
+            $capacity,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        );
+
+        return $definition;
     }
 }

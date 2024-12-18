@@ -71,11 +71,15 @@ class KnowbaseItem_CommentTest extends DbTestCase
         // second, test what we retrieve
         $comments = \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
         $this->assertCount(2, $comments);
-        $this->assertCount(9, $comments[0]);
+        $this->assertCount(10, $comments[0]);
         $this->assertCount(2, $comments[0]['answers']);
         $this->assertCount(1, $comments[0]['answers'][0]['answers']);
         $this->assertCount(0, $comments[0]['answers'][1]['answers']);
-        $this->assertCount(9, $comments[1]);
+        $this->assertArrayHasKey('avatar', $comments[0]['user_info']);
+        $this->assertArrayHasKey('link', $comments[0]['user_info']);
+        $this->assertArrayHasKey('initials', $comments[0]['user_info']);
+        $this->assertArrayHasKey('initials_bg_color', $comments[0]['user_info']);
+        $this->assertCount(10, $comments[1]);
         $this->assertCount(0, $comments[1]['answers']);
     }
 
@@ -141,15 +145,15 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->assertSame('Comments <span class=\'badge\'>5</span>', $name);
+        $this->assertSame("Comments 5", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame('Comments <span class=\'badge\'>5</span>', $name);
+        $this->assertSame("Comments 5", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame('Comments', $name);
+        $this->assertSame("Comments", strip_tags($name));
 
         // Change knowbase rights to be empty
         $_SESSION['glpiactiveprofile']['knowbase'] = 0;
@@ -158,30 +162,30 @@ class KnowbaseItem_CommentTest extends DbTestCase
 
         // Add comment and read right
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
-        // Tab name should be filled (start with "Comments")
-        $this->assertMatchesRegularExpression('/^Comments/', $kbcom->getTabNameForItem($kb1));
+        // Tab name should be filled
+        $this->assertSame("Comments", strip_tags($name));
     }
 
     public function testDisplayComments()
     {
+        //TODO This should be part of an E2E test
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
-        preg_match_all("/li class='comment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(2, $results[0]);
 
-        preg_match_all("/li class='comment subcomment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
-        preg_match_all("/span class='ti ti-edit edit_item pointer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->assertCount(4, $results[0]);
 
-        preg_match_all("/span class='add_answer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->assertCount(5, $results[0]);
 
         //same tests, from another user
@@ -189,21 +193,20 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $result = $auth->login('glpi', 'glpi', true);
         $this->assertTrue($result);
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
-        preg_match_all("/li class='comment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(2, $results[0]);
 
-        preg_match_all("/li class='comment subcomment'/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
-        preg_match_all("/span class='ti ti-edit edit_item pointer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->assertCount(1, $results[0]);
 
-        preg_match_all("/span class='add_answer'/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->assertCount(5, $results[0]);
     }
 }

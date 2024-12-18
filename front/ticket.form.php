@@ -34,7 +34,7 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /**
  * @var array $CFG_GLPI
@@ -42,9 +42,6 @@ use Glpi\Toolbox\Sanitizer;
  */
 global $CFG_GLPI, $DB;
 
-include('../inc/includes.php');
-
-Session::checkLoginUser();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {
@@ -69,8 +66,9 @@ foreach ($date_fields as $date_field) {
     }
 }
 
-if (isset($_UPOST['_actors'])) {
-    $_POST['_actors'] = Sanitizer::sanitize(json_decode($_UPOST['_actors'], true));
+// as _actors virtual field stores json, bypass automatic escaping
+if (isset($_POST['_actors'])) {
+    $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
@@ -85,7 +83,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else if (isset($_POST['update'])) {
     if (!$track::canUpdate()) {
-        Html::displayRightError();
+        throw new AccessDeniedHttpException();
     }
     $track->update($_POST);
 
@@ -96,10 +94,10 @@ if (isset($_POST["add"])) {
             'itemtype'         => $track->getType(),
             'items_id'         => $track->getID()
         ];
-        $existing = $DB->request(
-            'glpi_knowbaseitems_items',
-            $params
-        );
+        $existing = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_items',
+            'WHERE' => $params
+        ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
@@ -124,7 +122,7 @@ if (isset($_POST["add"])) {
         Html::redirect(Ticket::getFormURLWithID($_POST["id"]) . $toadd);
     }
     Session::addMessageAfterRedirect(
-        __('You have been redirected because you no longer have access to this ticket'),
+        __s('You have been redirected because you no longer have access to this ticket'),
         true,
         ERROR
     );
@@ -199,7 +197,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
-    $input = array_merge(Toolbox::addslashes_deep($track->fields), [
+    $input = array_merge($track->fields, [
         'id' => $id,
         '_itil_' . $_POST['actortype'] => [
             '_type' => "user",
@@ -228,7 +226,7 @@ if (isset($_POST["add"])) {
             'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
-            $document_item->delete(Toolbox::addslashes_deep($item), true);
+            $document_item->delete($item, true);
         }
     }
     Html::back();
@@ -265,8 +263,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     Ticket::displayFullPageForItem($_GET["id"], $menus, $options);
 } else {
     if (Session::getCurrentInterface() != 'central') {
-        Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?create_ticket=1");
-        die;
+        Html::redirect($CFG_GLPI["root_doc"] . "/ServiceCatalog");
     }
 
     unset($_REQUEST['id']);

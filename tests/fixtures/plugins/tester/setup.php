@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use GlpiPlugin\Tester\MyPsr4Class;
+
 function plugin_version_tester()
 {
     return [
@@ -45,5 +47,14 @@ function plugin_version_tester()
                 'min' => '9.5.0',
             ]
         ]
+    ];
+}
+
+function plugin_tester_getDropdown(): array
+{
+    return [
+        PluginTesterMyLegacyClass::class => PluginTesterMyLegacyClass::getTypeName(),
+        PluginTesterMyPseudoPsr4Class::class => PluginTesterMyPseudoPsr4Class::getTypeName(),
+        MyPsr4Class::class => MyPsr4Class::getTypeName(),
     ];
 }

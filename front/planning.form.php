@@ -37,10 +37,6 @@
  * @since 9.1
  */
 
-include('../inc/includes.php');
-
-Session::checkLoginUser();
-
 if ($_REQUEST["action"] == "send_add_user_form") {
     Planning::sendAddUserForm($_REQUEST);
 }

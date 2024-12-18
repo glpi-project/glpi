@@ -60,9 +60,8 @@ class Item_OperatingSystem extends CommonDBRelation
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
-                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
-        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -251,6 +250,7 @@ class Item_OperatingSystem extends CommonDBRelation
         }
 
         foreach ($columns as $key => $val) {
+            $val = htmlescape($val);
             $header_end .= "<th" . ($sort == $key ? " class='order_$order'" : '') . ">" .
                         "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
                           (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
@@ -266,7 +266,7 @@ class Item_OperatingSystem extends CommonDBRelation
                     $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
                 }
                 $link = Toolbox::getItemTypeFormURL(self::getType());
-                $name = "<a href=\"" . $link . "?id=" . $data["assocID"] . "\">" . $linkname . "</a>";
+                $name = "<a href=\"" . $link . "?id=" . (int)$data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
 
                 echo "<tr class='tab_bg_1'>";
                 if (
@@ -277,10 +277,13 @@ class Item_OperatingSystem extends CommonDBRelation
                     Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
                     echo "</td>";
                 }
+                $version = htmlescape($data['version']);
+                $architecture = htmlescape($data['architecture']);
+                $servicepack = htmlescape($data['servicepack']);
                 echo "<td class='center'>{$name}</td>";
-                echo "<td class='center'>{$data['version']}</td>";
-                echo "<td class='center'>{$data['architecture']}</td>";
-                echo "<td class='center'>{$data['servicepack']}</td>";
+                echo "<td class='center'>{$version}</td>";
+                echo "<td class='center'>{$architecture}</td>";
+                echo "<td class='center'>{$servicepack}</td>";
 
                 echo "</tr>";
                 $i++;

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
 /**
@@ -48,8 +50,6 @@ class Supplier extends CommonDBTM
     public static $rightname           = 'contact_enterprise';
     protected $usenotepad       = true;
 
-
-
     /**
      * Name of the type
      *
@@ -58,6 +58,16 @@ class Supplier extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Supplier', 'Suppliers', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'financial';
     }
 
     public function post_getEmpty()
@@ -79,7 +89,6 @@ class Supplier extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Change_Supplier::class,
@@ -92,14 +101,12 @@ class Supplier extends CommonDBTM
             ]
         );
 
-       // Ticket rules use suppliers_id_assign
+        // Ticket rules use suppliers_id_assign
         Rule::cleanForItemAction($this, 'suppliers_id%');
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('Contact_Supplier', $ong, $options);
@@ -117,27 +124,22 @@ class Supplier extends CommonDBTM
         return $ong;
     }
 
-
     public static function dropdown($options = [])
     {
         $condition = ['is_active' => true];
         $options['condition'] = (isset($options['condition']) ? $options['condition'] + $condition : $condition);
-        return Dropdown::show(get_called_class(), $options);
+        return Dropdown::show(static::class, $options);
     }
 
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _x('button', 'Add a contact');
+               = _sx('button', 'Add a contact');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _x('button', 'Add a contract');
+               = _sx('button', 'Add a contract');
         }
         return $actions;
     }
@@ -156,7 +158,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
@@ -165,7 +167,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -174,7 +176,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'address',
             'name'               => __('Address'),
             'datatype'           => 'text'
@@ -182,7 +184,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'fax',
             'name'               => __('Fax'),
             'datatype'           => 'string',
@@ -190,7 +192,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'town',
             'name'               => __('City'),
             'datatype'           => 'string',
@@ -198,7 +200,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'datatype'           => 'string',
@@ -206,7 +208,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'state',
             'name'               => _x('location', 'State'),
             'datatype'           => 'string',
@@ -214,7 +216,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'country',
             'name'               => __('Country'),
             'datatype'           => 'string',
@@ -222,7 +224,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'website',
             'name'               => __('Website'),
             'datatype'           => 'weblink',
@@ -230,7 +232,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'phonenumber',
             'name'               => Phone::getTypeName(1),
             'datatype'           => 'string',
@@ -238,7 +240,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'email',
             'name'               => _n('Email', 'Emails', 1),
             'datatype'           => 'email',
@@ -254,7 +256,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
@@ -263,14 +265,14 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '121',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
             'massiveaction'      => false
         ];
 
-        if (($_SESSION["glpinames_format"] ?? User::REALNAME_BEFORE) == User::FIRSTNAME_BEFORE) {
+        if (($_SESSION["glpinames_format"] ?? User::REALNAME_BEFORE) === User::FIRSTNAME_BEFORE) {
             $name1 = 'firstname';
             $name2 = 'name';
         } else {
@@ -286,7 +288,7 @@ class Supplier extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'computation'        => "CONCAT(" . $DB->quoteName("TABLE.$name1") . ", ' ', " . $DB->quoteName("TABLE.$name2") . ")",
+            'computation'        => QueryFunction::concat(["TABLE.{$name1}", new QueryExpression($DB::quoteValue(' ')), "TABLE.{$name2}"]),
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -300,7 +302,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -317,7 +319,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '86',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
             'datatype'           => 'bool'
@@ -343,7 +345,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '70',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'registration_number',
             'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
@@ -352,7 +354,7 @@ class Supplier extends CommonDBTM
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool'
@@ -366,11 +368,10 @@ class Supplier extends CommonDBTM
         return $tab;
     }
 
-
     /**
      * Get links for an enterprise (website / edit)
      *
-     * @param $withname boolean : also display name ? (false by default)
+     * @param boolean $withname Also display name ? (false by default)
      **/
     public function getLinks($withname = false)
     {
@@ -380,7 +381,7 @@ class Supplier extends CommonDBTM
         $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
 
         if ($withname) {
-            $ret .= $this->fields["name"];
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 
@@ -391,19 +392,17 @@ class Supplier extends CommonDBTM
         }
 
         if ($this->can($this->fields['id'], READ)) {
-            $ret .= "<a href='" . Supplier::getFormURLWithID($this->fields['id']) . "'>
+            $ret .= "<a href='" . self::getFormURLWithID($this->fields['id']) . "'>
                   <img src='" . $CFG_GLPI["root_doc"] . "/pics/edit.png' class='middle' alt=\"" .
                    __s('Update') . "\" title=\"" . __s('Update') . "\"></a>";
         }
         return $ret;
     }
 
-
     /**
      * Print the HTML array for infocoms linked
      *
-     *@return void
-     *
+     * @return void|false
      **/
     public function showInfocoms()
     {
@@ -423,16 +422,16 @@ class Supplier extends CommonDBTM
         Html::printPagerForm();
         echo "</th><th colspan='3'>";
         if ($number == 0) {
-            echo __('No associated item');
+            echo __s('No associated item');
         } else {
-            echo _n('Associated item', 'Associated items', $number);
+            echo _sn('Associated item', 'Associated items', $number);
         }
         echo "</th></tr>";
-        echo "<tr><th>" . _n('Type', 'Types', 1) . "</th>";
+        echo "<tr><th>" . _sn('Type', 'Types', 1) . "</th>";
         echo "<th>" . Entity::getTypeName(1) . "</th>";
-        echo "<th>" . __('Name') . "</th>";
-        echo "<th>" . __('Serial number') . "</th>";
-        echo "<th>" . __('Inventory number') . "</th>";
+        echo "<th>" . __s('Name') . "</th>";
+        echo "<th>" . __s('Serial number') . "</th>";
+        echo "<th>" . __s('Inventory number') . "</th>";
         echo "</tr>";
 
         $num = 0;
@@ -525,7 +524,7 @@ class Supplier extends CommonDBTM
                     if ($nb > 0) {
                         $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                     }
-                    echo "<td class='center'>" . $title . "</td>";
+                    echo "<td class='center'>" . htmlescape($title) . "</td>";
                     echo "<td class='center' colspan='2'>";
                     $opt = ['order'      => 'ASC',
                         'is_deleted' => 0,
@@ -542,7 +541,7 @@ class Supplier extends CommonDBTM
                     $link .= (strpos($link, '?') ? '&amp;' : '?');
 
                     echo "<a href='$link" .
-                     Toolbox::append_params($opt) . "'>" . __('Device list') . "</a></td>";
+                     Toolbox::append_params($opt) . "'>" . __s('Device list') . "</a></td>";
 
                     echo "<td class='center'>-</td><td class='center'>-</td></tr>";
                 } else if ($nb) {
@@ -553,7 +552,7 @@ class Supplier extends CommonDBTM
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                         }
                         $link = $linktype::getFormURLWithID($data[$linkfield]);
-                        $name = "<a href='$link'>" . $name . "</a>";
+                        $name = "<a href='$link'>" . htmlescape($name) . "</a>";
 
                         echo "<tr class='tab_bg_1";
                         if (isset($data['is_template']) && $data['is_template'] == 1) {
@@ -566,7 +565,7 @@ class Supplier extends CommonDBTM
                             if ($nb > 0) {
                                 $title = sprintf(__('%1$s: %2$s'), $title, $nb);
                             }
-                            echo "<td class='center top' rowspan='$nb'>" . $title . "</td>";
+                            echo "<td class='center top' rowspan='$nb'>" . htmlescape($title) . "</td>";
                         }
                         echo "<td class='center'>" . Dropdown::getDropdownName(
                             "glpi_entities",
@@ -576,9 +575,9 @@ class Supplier extends CommonDBTM
                         echo ((isset($data['is_deleted']) && $data['is_deleted']) ? " tab_bg_2_2'" : "'") . ">";
                         echo $name . "</td>";
                         echo "<td class='center'>" .
-                           (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
+                           (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") . "</td>";
                         echo "<td class='center'>" .
-                           (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                           (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
                         echo "</tr>";
                     }
                 }
@@ -586,7 +585,7 @@ class Supplier extends CommonDBTM
             }
         }
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center'>" . (($num > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $num)
+        echo "<td class='center'>" . (($num > 0) ? sprintf(__s('%1$s = %2$s'), __s('Total'), $num)
                                              : "&nbsp;") . "</td>";
         echo "<td colspan='4'>&nbsp;</td></tr> ";
         echo "</table></div>";
@@ -597,22 +596,19 @@ class Supplier extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param $email boolean : also display name ? (false by default)
+     * @param boolean $email Also display name ? (false by default)
      **/
     public static function getSuppliersByEmail($email)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $suppliers = $DB->request([
+        return $DB->request([
             'SELECT' => ["id"],
             'FROM' => 'glpi_suppliers',
             'WHERE' => ['email' => $email]
         ]);
-
-        return $suppliers;
     }
-
 
     public static function getIcon()
     {

@@ -82,7 +82,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90.');
 
        // Test max compatibility
         $infos = ['max' => '9.3'];
@@ -95,7 +95,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &lt; 9.3.');
 
        // Test min and max compatibility
         $infos = ['min' => '0.90', 'max' => '9.3'];
@@ -108,14 +108,14 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos, true))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90 and &lt; 9.3.');
 
         $this->calling($plugin)->getGlpiVersion = '9.3.0';
         $this->output(
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90 and &lt; 9.3.');
     }
 
     public function testcheckPhpVersion()
@@ -131,7 +131,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires PHP >= 5.6.');
+        )->isIdenticalTo('This plugin requires PHP &gt;= 5.6.');
 
         $this->calling($plugin)->getPhpVersion = '7.1';
         $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
@@ -141,7 +141,7 @@ class Plugin extends DbTestCase
                 $infos = ['min' => '5.6', 'max' => '7.0'];
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires PHP >= 5.6 and < 7.0.');
+        )->isIdenticalTo('This plugin requires PHP &gt;= 5.6 and &lt; 7.0.');
 
         $infos = ['min' => '5.6', 'max' => '7.2'];
         $this->boolean($plugin->checkPhpVersion($infos))->isTrue();

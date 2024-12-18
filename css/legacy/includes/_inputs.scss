@@ -32,16 +32,14 @@
  */
 
  textarea:not(.form-control), input:not(.submit):not(.form-control):not([type=submit]):not([type=color]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):not(.tox-textfield) {
-   color: $input-color;
-   background-color: $input-bg;
+   color: var(--tblr-body-color);
+   background-color: var(--tblr-bg-forms);
    background-clip: padding-box;
-   border: $input-border-width solid $input-border-color;
-   border-radius: $input-border-radius;
-   padding: $input-btn-padding-y $input-btn-padding-x;
+   border: var(--tblr-border-width) solid var(--tblr-border-color);
+   border-radius: 4px;
+   padding: 0.375rem 0.75rem;
 
    &:focus {
-      color: $input-focus-color;
-      background-color: $input-focus-bg;
       border-color: $input-focus-border-color;
    }
 
@@ -52,33 +50,31 @@
 }
 
 select:not(.form-select) {
-   font-size: $form-select-font-size;
-   color: $form-select-color;
-   background-color: $form-select-bg;
-   background-image: escape-svg($form-select-indicator);
+   font-size: 1rem;
+   color: var(--tblr-body-color);
+   background-color: var(--tblr-bg-forms);
+   background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='var(--tblr-gray-800)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>");
    background-repeat: no-repeat;
-   background-position: $form-select-bg-position;
-   background-size: $form-select-bg-size;
+   background-position: right 0.75rem center;
+   background-size: 16px 12px;
    appearance: none;
-   border: $form-select-border-width solid $form-select-border-color;
-   border-radius: $form-select-border-radius;
-   padding: $form-select-padding-y $form-select-indicator-padding $form-select-padding-y $form-select-padding-x;
+   border: var(--tblr-border-width) solid var(--tblr-border-color);
+   border-radius: 4px;
+   padding: 0.375rem 0.75rem;
 
    &:focus {
-      border-color: $form-select-focus-border-color;
+      border-color: $input-focus-border-color;
       outline: 0;
    }
 
    &[multiple],
    &[size]:not([size="1"]) {
-     padding-right: $form-select-padding-x;
+     padding-right: 0.75rem;
      background-image: none;
    }
 
    &:disabled {
-     color: $form-select-disabled-color;
-     background-color: $form-select-disabled-bg;
-     border-color: $form-select-disabled-border-color;
+     background-color: var(--tblr-secondary-bg);
    }
 }
 
@@ -88,18 +84,16 @@ input.submit,
    align-items: center;
    justify-content: center;
    white-space: nowrap;
-   background-color: $primary;
-   color: color-contrast($primary);
-   border: $btn-border-width solid $border-color-dark-transparent;
-   border-radius: $btn-border-radius;
-   font-family: $btn-font-family;
-   font-weight: $btn-font-weight;
-   line-height: $btn-line-height;
-   padding: $btn-padding-y $btn-padding-x;
+   background-color: var(--tblr-primary);
+   color: var(--tblr-primary-fg);
+   border: var(--tblr-border-width) solid var(--tblr-border-color);
+   border-radius: 4px;
+   line-height: 1.5;
+   padding: 0.375rem 0.75rem;
 
    &:hover {
-      background: theme-color-darker($primary);
-      border-color: $primary;
+      background: color-mix(in srgb, var(--tblr-primary), black 10%);
+      border-color: var(--tblr-primary);
    }
 
    &.disabled {
@@ -107,7 +101,7 @@ input.submit,
    }
 
    &:focus:not([disabled]):not(.disabled) {
-      border-color: $primary;
+      border-color: var(--tblr-primary);
    }
 }
 

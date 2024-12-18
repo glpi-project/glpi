@@ -35,6 +35,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Asset_PeripheralAsset;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
@@ -66,9 +69,7 @@ class PeripheralTest extends AbstractInventoryAsset
         ];
     }
 
-    /**
-     * @dataProvider assetProvider
-     */
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -87,14 +88,18 @@ class PeripheralTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no peripheral linked to this computer
-        $idp = new \Computer_Item();
-                 $this->assertFalse(
-                     $idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']),
-                     'A peripheral is already linked to computer!'
-                 );
+        //first, check there are no peripheral linked to this computer
+        $idp = new Asset_PeripheralAsset();
+        $this->assertFalse(
+            $idp->getFromDbByCrit([
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id'],
+                'itemtype_peripheral' => 'Peripheral'
+            ]),
+            'A peripheral is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -107,7 +112,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
 
         $agent = new \Agent();
@@ -115,10 +120,11 @@ class PeripheralTest extends AbstractInventoryAsset
         $asset->setAgent($agent);
 
         $asset->handle();
-        $this->assertTrue(
-            $idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']),
-            'Peripheral has not been linked to computer :('
-        );
+        $this->assertTrue($idp->getFromDbByCrit([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computer->fields['id'],
+            'itemtype_peripheral' => 'Peripheral'
+        ]), 'Peripheral has not been linked to computer :(');
     }
 
     public function testInventoryUpdate()
@@ -127,7 +133,7 @@ class PeripheralTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
         $periph = new \Peripheral();
-        $item_periph = new \Computer_Item();
+        $item_periph = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -185,9 +191,10 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $periph_1_id);
 
         $item_periph_1_id = $item_periph->add([
-            'computers_id'     => $computers_id,
-            'itemtype'     => \Peripheral::class,
-            'items_id' => $periph_1_id
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'items_id_peripheral' => $periph_1_id
         ]);
         $this->assertGreaterThan(0, $item_periph_1_id);
 
@@ -205,9 +212,10 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $periph_2_id);
 
         $item_periph_2_id = $item_periph->add([
-            'computers_id' => $computers_id,
-            'items_id' => $periph_2_id,
-            'itemtype'     => \Peripheral::class
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'items_id_peripheral' => $periph_2_id
         ]);
         $this->assertGreaterThan(0, $item_periph_2_id);
 
@@ -224,13 +232,18 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $periph_3_id);
 
         $item_periph_3_id = $item_periph->add([
-            'computers_id' => $computers_id,
-            'items_id' => $periph_3_id,
-            'itemtype' => \Peripheral::class
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'items_id_peripheral' => $periph_3_id
         ]);
         $this->assertGreaterThan(0, $item_periph_3_id);
 
-        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(3, $periphs);
         foreach ($periphs as $p) {
             $this->assertEquals(0, $p['is_dynamic']);
@@ -258,15 +271,29 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertCount(3, $periphs);
 
         //we still have 3 peripherals items linked to the computer
-        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(3, $periphs);
 
         //peripherals present in the inventory source are now dynamic
-        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(2, $periphs);
 
         //peripheral not present in the inventory is still not dynamic
-        $periphs = $item_periph->find(['itemtype' => \Peripheral::class, 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 0
+        ]);
         $this->assertCount(1, $periphs);
 
         //Redo inventory, but with removed "Smartcard reader" peripheral
@@ -314,16 +341,29 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertCount(3, $periphs);
 
         //we now have 2 peripherals linked to computer only
-        $periphs = $item_periph->find();
-        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(2, $periphs);
 
         //peripheral present in the inventory source is still dynamic
-        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $periphs);
 
         //peripheral not present in the inventory is still not dynamic
-        $periphs = $item_periph->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $periphs = $item_periph->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 0
+        ]);
         $this->assertCount(1, $periphs);
     }
 
@@ -332,7 +372,7 @@ class PeripheralTest extends AbstractInventoryAsset
         global $DB;
 
         $peripheral = new \Peripheral();
-        $item_peripheral = new \Computer_Item();
+        $item_peripheral = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -385,11 +425,20 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we have 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral present in the inventory source is dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //same inventory again
@@ -416,7 +465,11 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we still have only 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //same peripheral, but on another computer
@@ -467,15 +520,28 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //no longer linked on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(0, $peripherals);
 
         //but now linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //replay first computer inventory, peripheral is back \o/
@@ -499,15 +565,28 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //linked again on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //no longer linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(0, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
     }
 
@@ -516,7 +595,7 @@ class PeripheralTest extends AbstractInventoryAsset
         global $DB;
 
         $peripheral = new \Peripheral();
-        $item_peripheral = new \Computer_Item();
+        $item_peripheral = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -569,11 +648,20 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we have 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral present in the inventory source is dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //same inventory again
@@ -600,11 +688,15 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we still have only 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //set to global management
-        $this->assertTrue($peripheral->getFromDB(current($peripherals)['items_id']));
+        $this->assertTrue($peripheral->getFromDB(current($peripherals)['items_id_peripheral']));
         $this->assertTrue($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same peripheral, but on another computer
@@ -655,17 +747,35 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //still linked on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //also linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
     }
 
@@ -674,7 +784,7 @@ class PeripheralTest extends AbstractInventoryAsset
         global $DB;
 
         $peripheral = new \Peripheral();
-        $item_peripheral = new \Computer_Item();
+        $item_peripheral = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -737,11 +847,20 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we have 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral present in the inventory source is dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //same peripheral, but on another computer
@@ -802,17 +921,35 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //still linked on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //also linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
     }
 
@@ -821,7 +958,7 @@ class PeripheralTest extends AbstractInventoryAsset
         global $DB;
 
         $peripheral = new \Peripheral();
-        $item_peripheral = new \Computer_Item();
+        $item_peripheral = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -883,11 +1020,20 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertCount(1, $peripherals);
 
         //we have 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral present in the inventory source is dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //same inventory again
@@ -914,11 +1060,15 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //we still have only 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //set to global management
-        $this->assertTrue($peripheral->getFromDB(current($peripherals)['items_id']));
+        $this->assertTrue($peripheral->getFromDB(current($peripherals)['items_id_peripheral']));
         $this->assertTrue($peripheral->update(['id' => $peripheral->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same peripheral, but on another computer
@@ -979,15 +1129,28 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //no longer linked on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(0, $peripherals);
 
         //but now linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
 
         //change default configuration to unit management
@@ -1021,15 +1184,28 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertSame($manufacturers_id, current($peripherals)['manufacturers_id']);
 
         //linked again on first computer inventoried
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //no longer linked on last inventoried computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_2_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(0, $peripherals);
 
         //peripheral is still dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
     }
 
@@ -1038,7 +1214,7 @@ class PeripheralTest extends AbstractInventoryAsset
         global $DB;
 
         $peripheral = new \Peripheral();
-        $item_peripheral = new \Computer_Item();
+        $item_peripheral = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -1124,11 +1300,20 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertCount(1, $peripherals);
 
         //we have 1 peripheral items linked to the computer
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral'
+        ]);
         $this->assertCount(1, $peripherals);
 
         //peripheral present in the inventory source is dynamic
-        $peripherals = $item_peripheral->find(['itemtype' => 'Peripheral', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Peripheral',
+            'is_dynamic' => 1
+        ]);
         $this->assertCount(1, $peripherals);
     }
 }

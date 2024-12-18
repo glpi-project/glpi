@@ -38,10 +38,11 @@ namespace tests\units;
 use Change;
 use CommonITILActor;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\Search\SearchEngine;
 use ITILFollowup as CoreITILFollowup;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
-use QueryExpression;
 use Search;
 use Ticket;
 use Ticket_User;
@@ -332,9 +333,7 @@ class ITILFollowupTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testIsFromSupportAgentProvider
-     */
+    #[DataProvider('testIsFromSupportAgentProvider')]
     public function testIsFromSupportAgent(
         array $roles,
         string $profile,
@@ -426,11 +425,10 @@ class ITILFollowupTest extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a followup',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -455,11 +453,10 @@ HTML
         copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -564,7 +561,7 @@ HTML
         ]);
         $this->assertGreaterThan(0, $fups_id);
 
-        $this->assertEquals(Sanitizer::sanitize('<p>test template</p>', false), $fup->fields['content']);
+        $this->assertEquals('<p>test template</p>', $fup->fields['content']);
         $this->assertEquals(1, $fup->fields['is_private']);
 
         $fups_id = $fup->add([
@@ -644,6 +641,62 @@ HTML
                 $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
             );
         }
+    }
+
+    public function testParentMetaSearchOptions()
+    {
+        $this->login();
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $change = $this->getNewITILObject('Change', true);
+        $followup = new CoreITILFollowup();
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket->fields['id'],
+                'content'  => 'Test followup',
+            ])
+        );
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype' => 'Change',
+                'items_id' => $change->fields['id'],
+                'content'  => 'Test followup',
+            ])
+        );
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Ticket',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Ticket title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals('Ticket title', $data['data']['rows'][0]['Ticket_1'][0]['name']);
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Change',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Change title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->assertEquals('Change title', $data['data']['rows'][0]['Change_1'][0]['name']);
     }
 
     public function testAddDefaultWhereTakeEntitiesIntoAccount(): void

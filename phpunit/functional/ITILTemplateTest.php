@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/itiltemplate.class.php */
 class ITILTemplateTest extends DbTestCase
@@ -49,9 +50,7 @@ class ITILTemplateTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testTemplateUsage($itiltype)
     {
         $this->login();
@@ -156,9 +155,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertGreaterThan(0, $tid);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetAllowedFields($itiltype)
     {
         $class = $itiltype . 'Template';
@@ -218,8 +215,8 @@ class ITILTemplateTest extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
@@ -234,7 +231,6 @@ class ITILTemplateTest extends DbTestCase
                     180 => 'Internal time to resolve',
                     185 => 'Internal time to own',
                     193 => 'Contract',
-                    14 => 'Type',
                 ]
             ], [
                 'Change',
@@ -253,12 +249,13 @@ class ITILTemplateTest extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    18 => 'Time to resolve',
                     83 => 'Location',
                     60 => 'Analysis impact',
                     61 => 'Control list',
@@ -283,8 +280,8 @@ class ITILTemplateTest extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
@@ -298,9 +295,7 @@ class ITILTemplateTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider fieldsProvider
-     * */
+    #[DataProvider('fieldsProvider')]
     public function testGetMandatoryFields($itemtype, $fields)
     {
         $tpl_class = '\\' . $itemtype . 'Template';
@@ -311,9 +306,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertSame($fields, $result);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetTabNameForItem($itiltype)
     {
         $this->login();
@@ -321,25 +314,13 @@ class ITILTemplateTest extends DbTestCase
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
 
-        switch ($itiltype) {
-            case 'Ticket':
-                $expected = [
-                    1 => 'Standard interface',
-                    2 => 'Simplified interface'
-                ];
-                break;
-            default:
-                $expected = [
-                    1 => 'Preview'
-                ];
-                break;
-        }
+        $expected = [
+            1 => 'Preview'
+        ];
         $this->assertSame($expected, $tpl->getTabNameForItem($tpl));
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testTasks($itiltype)
     {
         $this->login();
@@ -435,9 +416,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertCount(2, $iterator);
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testGetITILTemplateToUse($itiltype)
     {
         $this->login('tech', 'tech');
@@ -532,9 +511,8 @@ class ITILTemplateTest extends DbTestCase
 
     /**
      * Check that all predefined fields are set in the default values
-     *
-     * @dataProvider itilProvider
      */
+    #[DataProvider('itilProvider')]
     public function testGetDefaultValues($itiltype)
     {
         $itemtype       = '\\' . $itiltype;

@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */
 
@@ -77,7 +78,7 @@ class NotificationEventAjaxTest extends DbTestCase
         $this->assertFalse(\NotificationEventAjax::send([]));
         $this->hasPhpLogRecordThatContains(
             'NotificationEventAjax::send should not be called!',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -219,6 +220,9 @@ TEXT,
             'documents' => '',
             'mode' => 'ajax',
             'event' => 'new',
+            'attach_documents' => 0,
+            'itemtype_trigger' => null,
+            'items_id_trigger' => 0,
         ];
         $this->assertSame($expected, $data);
 

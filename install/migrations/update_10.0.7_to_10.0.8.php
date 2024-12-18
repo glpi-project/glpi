@@ -36,7 +36,7 @@
 /**
  * Update from 10.0.7 to 10.0.8
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update1007to1008()
 {

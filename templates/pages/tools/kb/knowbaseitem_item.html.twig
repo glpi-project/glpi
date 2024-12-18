@@ -1,0 +1,63 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
+    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+    {% if get_class(item) == 'KnowbaseItem' %}
+        {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
+    {% else %}
+        {{ inputs.hidden('items_id', item.getID()) }}
+        {{ inputs.hidden('itemtype', get_class(item)) }}
+    {% endif %}
+    <div class="d-flex">
+        {% if get_class(item) == 'KnowbaseItem' %}
+            {# TODO pass used array to restrict visible items in list #}
+            {% set dropdown %}
+                {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
+            {% endset %}
+            {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
+        {% else %}
+            {{ 'KnowbaseItem'|itemtype_dropdown({
+                'entity': item.getEntity(),
+                'used': used_knowbase_items,
+                'condition': visibility_condition
+            }) }}
+        {% endif %}
+    </div>
+    <div class="d-flex flex-row-reverse pe-2">
+        {{ inputs.submit('add', _x('button', 'Add'), 1) }}
+    </div>
+</form>

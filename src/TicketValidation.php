@@ -56,6 +56,10 @@ class TicketValidation extends CommonITILValidation
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
     }
 
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Ticket approval', 'Ticket approvals', $nb);
+    }
 
     public static function getValidateRights()
     {
@@ -66,7 +70,7 @@ class TicketValidation extends CommonITILValidation
     /**
      * @since 0.85
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if ($this->canChildItem('canViewItem', 'canView')) {

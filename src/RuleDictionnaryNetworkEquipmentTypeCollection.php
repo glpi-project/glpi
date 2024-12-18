@@ -38,9 +38,6 @@ class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropd
     public $item_table  = "glpi_networkequipmenttypes";
     public $menu_option = "type.networking";
 
-    /**
-     * @see RuleCollection::getTitle()
-     **/
     public function getTitle()
     {
         return __('Dictionary of network equipment types');

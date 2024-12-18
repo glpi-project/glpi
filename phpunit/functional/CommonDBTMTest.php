@@ -40,8 +40,10 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
-use Glpi\Toolbox\Sanitizer;
-use Monolog\Logger;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use SoftwareVersion;
 
 /* Test for inc/commondbtm.class.php */
@@ -150,7 +152,7 @@ class CommonDBTMTest extends DbTestCase
         ]);
         $this->hasPhpLogRecordThatContains(
             'getFromDBByRequest expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".',
-            Logger::WARNING
+            LogLevel::WARNING
         );
         $this->assertFalse($result);
         // the instance must not be populated
@@ -217,9 +219,9 @@ class CommonDBTMTest extends DbTestCase
     /**
      * Test CommonDBTM::getTable() method.
      *
-     * @dataProvider getTableProvider
      * @return void
      */
+    #[DataProvider('getTableProvider')]
     public function testGetTable($classname, $tablename)
     {
         $this->assertSame($tablename, $classname::getTable());
@@ -331,7 +333,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         //multiple update case
-        $res = $DB->updateOrInsert(
+        $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
+        $DB->updateOrInsert(
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
@@ -340,11 +343,6 @@ class CommonDBTMTest extends DbTestCase
             [
                 'name'   => 'serial-to-change'
             ]
-        );
-        $this->assertFalse($res);
-        $this->hasPhpLogRecordThatContains(
-            'Update would change too many rows!',
-            Logger::WARNING
         );
     }
 
@@ -410,7 +408,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($res);
 
         //multiple update case
-        $res = $DB->updateOrInsert(
+        $this->expectExceptionObject(new \RuntimeException('Update would change too many rows!'));
+        $DB->updateOrInsert(
             \Computer::getTable(),
             [
                 'serial' => 'serial-changed'
@@ -418,11 +417,6 @@ class CommonDBTMTest extends DbTestCase
             [
                 'name'   => 'serial-to-change'
             ]
-        );
-        $this->assertFalse($res);
-        $this->hasPhpLogRecordThatContains(
-            'Update would change too many rows!',
-            Logger::WARNING
         );
     }
 
@@ -471,7 +465,7 @@ class CommonDBTMTest extends DbTestCase
         // Super admin
         $this->login('glpi', 'glpi');
         $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-        $this->assertEquals(255, $_SESSION['glpiactiveprofile']['printer']);
+        $this->assertEquals(4095, $_SESSION['glpiactiveprofile']['printer']);
 
         // See all
         $this->assertTrue(\Session::changeActiveEntities('all'));
@@ -492,12 +486,12 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($printer->can($id[0], READ), "Fail can read Printer 1");
         $this->assertTrue($printer->can($id[1], READ), "Fail can read Printer 2");
         $this->assertFalse($printer->can($id[2], READ), "Fail can't read Printer 3");
-        $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 1");
+        $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 4");
 
         $this->assertTrue($printer->canEdit($id[0]), "Fail can write Printer 1");
         $this->assertTrue($printer->canEdit($id[1]), "Fail can write Printer 2");
-        $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 1");
-        $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 1");
+        $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 3");
+        $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 4");
 
         // See only in child entity 1 + parent if recursive
         $this->assertTrue(\Session::changeActiveEntities($ent1));
@@ -508,9 +502,9 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 4");
 
         $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
-        $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
-        $this->assertTrue($printer->canEdit($id[2]), "Fail can write Printer 2");
-        $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 2");
+        $this->assertTrue($printer->canEdit($id[1]), "Fail can't write Printer 2");
+        $this->assertTrue($printer->canEdit($id[2]), "Fail can write Printer 3");
+        $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 4");
 
         // See only in child entity 2 + parent if recursive
         $this->assertTrue(\Session::changeActiveEntities($ent2));
@@ -521,7 +515,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($printer->can($id[3], READ), "Fail can read Printer 4");
 
         $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
-        $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
+        $this->assertTrue($printer->canEdit($id[1]), "Fail can't write Printer 2");
         $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 3");
         $this->assertTrue($printer->canEdit($id[3]), "Fail can write Printer 4");
     }
@@ -855,12 +849,12 @@ class CommonDBTMTest extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
        //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
         $this->assertGreaterThan(0, $computerID);
@@ -873,10 +867,10 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
         //test with default date
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
         $this->assertGreaterThan(0, $computerID);
@@ -899,12 +893,12 @@ class CommonDBTMTest extends DbTestCase
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
         //test with date set
-        $computerID = $computer->add(\Toolbox::addslashes_deep([
+        $computerID = $computer->add([
             'name'            => 'Computer01',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
             'entities_id'     => $ent0
-        ]));
+        ]);
         $this->assertSame("Computer01", $computer->fields['name']);
 
         $this->assertGreaterThan(0, $computerID);
@@ -914,7 +908,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame("Computer01", $computer->fields['name']);
 
         $this->assertTrue(
-            $computer->update(['id' => $computerID, 'name' => \Toolbox::addslashes_deep('Computer01 \'')])
+            $computer->update(['id' => $computerID, 'name' => 'Computer01 \''])
         );
         $this->assertSame('Computer01 \'', $computer->fields['name']);
         $this->assertTrue($computer->getFromDB($computerID));
@@ -935,6 +929,18 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame('renamed', $computer->fields['name']);
     }
 
+    public function testEmptyUpdateInDB()
+    {
+        // Simulate a call to `updateInDB()` that pass an invalid list of fields.
+        // This is only possible if `pre_updateInDB()` modifies the entries of either `$this->updates` and `$this->fields`
+        // and results in having an entry in `$this->updates` that does not corresponds to a valid key of `$this->fields`.
+        $computer = getItemByTypeName(\Computer::class, '_test_pc01');
+        $this->assertFalse($computer->updateInDB(['_not_a_real_field']));
+        $this->hasPhpLogRecordThatContains(
+            'The `_not_a_real_field` field cannot be updated as its value is not defined.',
+            LogLevel::WARNING
+        );
+    }
     public function testTimezones()
     {
         global $DB;
@@ -1029,9 +1035,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider relationConfigProvider
-     */
+    #[DataProvider('relationConfigProvider')]
     public function testCleanRelationTableBasedOnConfiguredTypes(
         $relation_itemtype,
         $config_name,
@@ -1273,9 +1277,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider testCheckTemplateEntityProvider
-     */
+    #[DataProvider('testCheckTemplateEntityProvider')]
     public function testCheckTemplateEntity(
         array $data,
         $parent_id,
@@ -1347,7 +1349,7 @@ class CommonDBTMTest extends DbTestCase
         // value that have a `\` as 255th char
         yield [
             'value'     => str_repeat('a', 254) . '\\abcdefg',
-            'truncated' => str_repeat('a', 254),
+            'truncated' => str_repeat('a', 254) . '\\',
             'length'    => 262,
         ];
 
@@ -1378,9 +1380,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider textValueProvider
-     */
+    #[DataProvider('textValueProvider')]
     public function testTextValueTuncation(string $value, string $truncated, int $length)
     {
         $computer = new \Computer();
@@ -1394,7 +1394,7 @@ class CommonDBTMTest extends DbTestCase
                     $value,
                     $length
                 ),
-                Logger::WARNING
+                LogLevel::WARNING
             );
         }
     }
@@ -1440,7 +1440,7 @@ class CommonDBTMTest extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]));
 
-        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $err_msg = 'Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a href="/glpi/front/computer.form.php?id=' . $computers_id1 . '" title="testCheckUnicity01">testCheckUnicity01</a> - ID: ' . $computers_id1 . ' - Serial number:  - Entity: Root entity &gt; _test_root_entity]';
         $this->hasSessionMessages(1, [$err_msg]);
 
         $this->assertFalse($computer->add([
@@ -1749,21 +1749,386 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider updatedInputProvider
-     */
+    #[DataProvider('updatedInputProvider')]
     public function testUpdatedFields(string $itemtype, array $add_input, array $update_input, array $expected_updates): void
     {
         $item = new $itemtype();
 
-        $item_id = $item->add(Sanitizer::sanitize($add_input));
+        $item_id = $item->add($add_input);
         $this->assertGreaterThan(0, $item_id);
 
-        $updated = $item->update(['id' => $item_id] + Sanitizer::sanitize($update_input));
+        $updated = $item->update(['id' => $item_id] + $update_input);
         $this->assertTrue($updated, 0);
 
         sort($item->updates);
         sort($expected_updates);
         $this->assertEquals($expected_updates, $item->updates);
+    }
+
+    public static function assignableItemsProvider(): iterable
+    {
+        return [
+            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+        ];
+    }
+
+    #[DataProvider('assignableItemsProvider')]
+    public function testCanViewAssignableItems($itemtype)
+    {
+        $this->login();
+
+        $this->assertTrue($itemtype::canView());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->assertTrue($itemtype::canView());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->assertTrue($itemtype::canView());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+        $this->assertFalse($itemtype::canView());
+    }
+
+    #[DataProvider('assignableItemsProvider')]
+    public function testCanViewItemAssignableItems($itemtype)
+    {
+        $this->login();
+
+        // Add the user to a test group
+        $group = new \Group();
+        $this->assertGreaterThan(
+            0,
+            $groups_id = $group->add([
+                'name' => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_recursive' => 1
+            ])
+        );
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
+        );
+        \Session::loadGroups();
+
+        // Create the item
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => 'test',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        // User cannot access the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->assertFalse($item->canViewItem());
+
+        // User can access the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ;
+        $this->assertTrue($item->canViewItem());
+
+        // User can access the item with the assigned right, but only if item is assigned to himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->assertFalse($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->assertTrue($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+        ]));
+        $this->assertFalse($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->assertTrue($item->canViewItem());
+
+        // User can access the item with the own right, but only if item is owned by himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->assertFalse($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->assertTrue($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->assertFalse($item->canViewItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'groups_id' => $groups_id,
+        ]));
+        $this->assertTrue($item->canViewItem());
+    }
+
+    #[DataProvider('assignableItemsProvider')]
+    public function testCanUpdateAssignableItems($itemtype)
+    {
+        $this->login();
+
+        $this->assertTrue($itemtype::canUpdate());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->assertTrue($itemtype::canUpdate());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->assertTrue($itemtype::canUpdate());
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+        $this->assertFalse($itemtype::canUpdate());
+    }
+
+    #[DataProvider('assignableItemsProvider')]
+    public function testCanUpdateItemAssignableItems($itemtype)
+    {
+        $this->login();
+
+        // Add the user to a test group
+        $group = new \Group();
+        $this->assertGreaterThan(
+            0,
+            $groups_id = $group->add([
+                'name' => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_recursive' => 1
+            ])
+        );
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(0, $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]));
+        \Session::loadGroups();
+
+        // Create the item
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->assertGreaterThan(
+            0,
+            $item->add([
+                'name' => 'test',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        // User cannot update the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->assertFalse($item->canUpdateItem());
+
+        // User can update the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE;
+        $this->assertTrue($item->canUpdateItem());
+
+        // User can update the item with the assigned right, but only if item is assigned to himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->assertFalse($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->assertTrue($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+        ]));
+        $this->assertFalse($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->assertTrue($item->canUpdateItem());
+
+        // User can update the item with the own right, but only if item is owned by himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->assertFalse($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->assertTrue($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->assertFalse($item->canUpdateItem());
+
+        $this->assertTrue($item->update([
+            'id' => $item->getID(),
+            'groups_id' => $groups_id,
+        ]));
+        $this->assertTrue($item->canUpdateItem());
+    }
+
+    public static function checkProvider(): iterable
+    {
+        $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => new AccessDeniedHttpException(
+                sprintf(
+                    'User failed a can* method check for right 4 (CREATE) on item Type: Computer ID: %d',
+                    $computer_id
+                )
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+    }
+
+    #[DataProvider('checkProvider')]
+    public function testCheck(array $credentials, string $itemtype, int $items_id, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // no return value to check, we just ensure that there is no exception thrown
+        }
+
+        $item = new $itemtype();
+        $item->check($items_id, CREATE);
+    }
+
+    public static function checkGlobalProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'exception'   => new AccessDeniedHttpException(
+                'User failed a global can* method check for right 4 (CREATE) on item Type: Computer'
+            ),
+        ];
+    }
+
+    #[DataProvider('checkGlobalProvider')]
+    public function testCheckGlobal(array $credentials, string $itemtype, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // no return value to check, we just ensure that there is no exception thrown
+        }
+
+        $item = new $itemtype();
+        $item->checkGlobal(CREATE);
+    }
+
+
+    public static function displayFullPageForItemProvider(): iterable
+    {
+        $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => -1,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => -1,
+            'exception'   => new AccessDeniedHttpException(
+                'Missing CREATE right. Cannot view the new item form.'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => $computer_id,
+            'exception'   => new AccessDeniedHttpException(
+                'Missing READ right. Cannot view the item.'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'itemtype'    => Computer::class,
+            'items_id'    => 999999,
+            'exception'   => new NotFoundHttpException(),
+        ];
+    }
+
+    #[DataProvider('displayFullPageForItemProvider')]
+    public function testDisplayFullPageForItem(array $credentials, string $itemtype, int $items_id, ?\Throwable $exception): void
+    {
+        $_SERVER['REQUEST_URI'] = $itemtype::getFormURLWithID($items_id);
+        $_GET["id"]             = $items_id;
+
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->expectExceptionObject($exception);
+        } else {
+            // Tests that something is sent to output
+            $this->expectOutputRegex('/.+/');
+        }
+
+        $item = new $itemtype();
+        $item->displayFullPageForItem($items_id);
+    }
+
+    public function testGetFormFields()
+    {
+        $computer = new \Computer();
+        $this->assertTrue(!array_diff(['name', 'serial', '_template_is_active'], $computer->getFormFields()));
     }
 }

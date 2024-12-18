@@ -37,14 +37,11 @@
  * @since 0.85
  */
 
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 header('Content-type: application/json');
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 if (isset($_POST['data'])) {
     $response = [];

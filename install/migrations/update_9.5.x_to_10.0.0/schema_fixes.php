@@ -750,14 +750,14 @@ $tables = [
 foreach ($tables as $table) {
     $migration->addField($table, 'no_entity_restriction', 'boolean', ['update' => 0]);
     $migration->migrationOneTable($table); // Ensure 'no_entity_restriction' is created
-    $DB->updateOrDie(
+    $DB->update(
         $table,
         ['entities_id' => 0, 'no_entity_restriction' => 1],
         ['entities_id' => -1]
     );
     $migration->changeField($table, 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT NULL");
     $migration->migrationOneTable($table); // Ensure 'entities_id' is nullable
-    $DB->updateOrDie(
+    $DB->update(
         $table,
         ['entities_id' => 'NULL'],
         ['no_entity_restriction' => 1]
@@ -765,7 +765,7 @@ foreach ($tables as $table) {
 }
 
 // Replace -1 default values on glpi_rules.entities_id
-$DB->updateOrDie(
+$DB->update(
     'glpi_rules',
     ['entities_id' => 0],
     ['entities_id' => -1]
@@ -781,7 +781,7 @@ foreach ($tables as $table) {
 }
 
 // Replace -1 default values on glpi_queuednotifications.items_id
-$DB->updateOrDie(
+$DB->update(
     'glpi_queuednotifications',
     ['items_id' => 0],
     ['items_id' => -1]

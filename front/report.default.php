@@ -33,14 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
 Report::title();
-
 Report::showDefaultReport();
-
 Html::footer();

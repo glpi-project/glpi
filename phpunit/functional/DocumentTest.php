@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/document.class.php */
 
@@ -63,15 +64,13 @@ class DocumentTest extends DbTestCase
                 'item'   => 'Config',
                 'can'    => false
             ], [
-                'item'   => 'Pdu_Plug',
+                'item'   => 'Item_Plug',
                 'can'    => false
             ]
         ];
     }
 
-    /**
-     * @dataProvider canApplyOnProvider
-     */
+    #[DataProvider('canApplyOnProvider')]
     public function testCanApplyOn($item, $can)
     {
         $doc = new \Document();
@@ -93,12 +92,13 @@ class DocumentTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Document$main'   => 'Document',
-            'Document_Item$1' => 'Associated items',
-            'Document_Item$2' => 'Documents',
+            'Document$main'   => "Document",
+            'Document_Item$1' => "Associated items",
+            'Document_Item$2' => "Documents",
         ];
         $doc = new \Document();
-        $this->assertSame($expected, $doc->defineTabs());
+        $tabs = array_map('strip_tags', $doc->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testPrepareInputForAdd()
@@ -156,7 +156,7 @@ class DocumentTest extends DbTestCase
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
-        $this->assertSame('Document: Computer - Documented Computer', $prepare['name']);
+        $this->assertSame('A_name.pdf', $prepare['name']);
     }
 
     /** Cannot work without a real document uploaded.
@@ -183,9 +183,8 @@ class DocumentTest extends DbTestCase
      * $doc_item = new \Document_Item();
      * $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
      *
-     * $this->array($doc_item->fields)
-     * ->string['itemtype']->isIdenticalTo('Computer')
-     * ->variable['items_id']->isEqualTo($cid);
+     * $this->assertSame(Computer::class, $doc_item->fields['itemtype']);
+     * $this->assertEquals($cid, $doc_item->fields['items_id']);
      * }*/
 
 
@@ -328,9 +327,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider validDocProvider
-     */
+    #[DataProvider('validDocProvider')]
     public function testIsValidDoc($filename, $expected)
     {
         $this->assertSame($expected, \Document::isValidDoc($filename));
@@ -362,17 +359,15 @@ class DocumentTest extends DbTestCase
     {
         return [
             [__FILE__, false],
-            [__DIR__ . "/../../pics/add_dropdown.png", true],
-            [__DIR__ . "/../../pics/corners.gif", true],
-            [__DIR__ . "/../../pics/PICS-AUTHORS.txt", false],
+            [__DIR__ . "/../../public/pics/add_dropdown.png", true],
+            [__DIR__ . "/../../public/pics/corners.gif", true],
+            [__DIR__ . "/../../public/pics/PICS-AUTHORS.txt", false],
             [__DIR__ . "/../notanimage.jpg", false],
             [__DIR__ . "/../notafile.jpg", false]
         ];
     }
 
-    /**
-     * @dataProvider isImageProvider
-     */
+    #[DataProvider('isImageProvider')]
     public function testIsImage($file, $expected)
     {
         $this->assertSame($expected, \Document::isImage($file));
@@ -662,9 +657,8 @@ class DocumentTest extends DbTestCase
 
     /**
      * Check visibility of document attached to ITIL objects.
-     *
-     * @dataProvider itilTypeProvider
      */
+    #[DataProvider('itilTypeProvider')]
     public function testCanViewItilFile($itemtype)
     {
 
@@ -797,9 +791,8 @@ class DocumentTest extends DbTestCase
 
     /**
      * Check visibility of document inlined in ITIL followup, tasks, solutions.
-     *
-     * @dataProvider ticketChildClassProvider
      */
+    #[DataProvider('ticketChildClassProvider')]
     public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype)
     {
 

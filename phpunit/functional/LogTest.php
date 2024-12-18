@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/log.class.php */
 
@@ -422,9 +423,7 @@ class LogTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataLogToAffectedField
-     */
+    #[DataProvider('dataLogToAffectedField')]
     public function testValuesComputationForGetDistinctAffectedFieldValuesInItemLog($log_data, $expected_result)
     {
         $computer = $this->createComputer();
@@ -488,17 +487,13 @@ class LogTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataLinkedActionLabel
-     */
+    #[DataProvider('dataLinkedActionLabel')]
     public function testGetLinkedActionLabel($linked_action, $expected_label)
     {
         $this->assertSame($expected_label, \Log::getLinkedActionLabel($linked_action));
     }
 
-    /**
-     * @dataProvider dataLinkedActionLabel
-     */
+    #[DataProvider('dataLinkedActionLabel')]
     public function testValuesComputationForGetDistinctLinkedActionValuesInItemLog($linked_action, $expected_value)
     {
         $computer = $this->createComputer();
@@ -735,9 +730,7 @@ class LogTest extends DbTestCase
     }
 
 
-    /**
-     * @dataProvider dataFiltersValuesToSqlCriteria
-     */
+    #[DataProvider('dataFiltersValuesToSqlCriteria')]
     public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result)
     {
         $this->assertSame($expected_result, \Log::convertFiltersValuesToSqlCriteria($filters_values));
@@ -751,9 +744,7 @@ class LogTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider userNameFormattingProvider
-     */
+    #[DataProvider('userNameFormattingProvider')]
     public function testUserNameFormatting(string $username, string $password, string $expected_name)
     {
         global $DB, $CFG_GLPI;
@@ -797,5 +788,42 @@ class LogTest extends DbTestCase
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
         $CFG_GLPI['names_format'] = \User::REALNAME_BEFORE;
         $this->assertSame($expected_name . " ($user_id)", $log_event()['user_name']);
+    }
+
+    /**
+     * `Log::getHistoryData` should return `date_mod` properties as-is without formatting them based on the current user's preference.
+     * @return void
+     */
+    public function testGetHistoryDataRawTimestamp()
+    {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2023-11-01 00:00:00';
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id = $computer->add([
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'name' => __FUNCTION__
+            ])
+        );
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);
+        }
+
+        // Test DD-MM-YYYY format
+        $_SESSION["glpidate_format"] = 1;
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);
+        }
+
+        // Test MM-DD-YYYY format
+        $_SESSION["glpidate_format"] = 2;
+        $data = \Log::getHistoryData($computer);
+        foreach ($data as $entry) {
+            $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);
+        }
     }
 }

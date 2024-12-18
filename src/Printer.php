@@ -34,6 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
 
 /**
@@ -43,6 +46,11 @@ class Printer extends CommonDBTM
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
+    use Glpi\Features\AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -63,7 +71,7 @@ class Printer extends CommonDBTM
             NetworkPort::class,
             Contract_Item::class,
             Document_Item::class,
-            Computer_Item::class,
+            Asset_PeripheralAsset::class,
             KnowbaseItem_Item::class,
         ];
     }
@@ -78,6 +86,15 @@ class Printer extends CommonDBTM
         return _n('Printer', 'Printers', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
 
     /**
      * @see CommonDBTM::useDeletedToLockIfDynamic()
@@ -101,17 +118,19 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Cartridge', $ong, $options);
         $this->addStandardTab('PrinterLog', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
-        $this->addStandardTab('Computer_Item', $ong, $options);
+        $this->addStandardTab(Asset_PeripheralAsset::class, $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
         $this->addStandardTab(Socket::class, $ong, $options);
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
+        $this->addStandardTab('Item_Project', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
         $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
@@ -165,7 +184,11 @@ class Printer extends CommonDBTM
             $criteria = [
                 'SELECT'       => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',
                 'INNER JOIN'   => [
@@ -212,7 +235,6 @@ class Printer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -230,13 +252,13 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = $input['init_pages_counter'];
         }
 
+        $input = $this->prepareInputForAddAssignableItem($input);
         return $input;
     }
 
 
     public function prepareInputForUpdate($input)
     {
-
         if (isset($input['init_pages_counter'])) {
             $input['init_pages_counter'] = intval($input['init_pages_counter']);
         }
@@ -244,6 +266,7 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = intval($input['last_pages_counter']);
         }
 
+        $input = $this->prepareInputForUpdateAssignableItem($input);
         return $input;
     }
 
@@ -294,7 +317,7 @@ class Printer extends CommonDBTM
 
 
     /**
-     * Return the linked items (in computers_items)
+     * Return the linked items (`Asset_PeripheralAsset` relations)
      *
      * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
@@ -305,34 +328,32 @@ class Printer extends CommonDBTM
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => 'computers_id',
-            'FROM'   => 'glpi_computers_items',
+            'SELECT' => [
+                'itemtype_asset',
+                'items_id_asset'
+            ],
+            'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype'  => $this->getType(),
-                'items_id'  => $this->fields['id']
+                'itemtype_peripheral' => $this->getType(),
+                'items_id_peripheral' => $this->fields['id']
             ]
         ]);
         $tab = [];
         foreach ($iterator as $data) {
-            $tab['Computer'][$data['computers_id']] = $data['computers_id'];
+            $tab[$data['itemtype_asset']][$data['items_id_asset']] = $data['items_id_asset'];
         }
         return $tab;
     }
 
-
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
-            Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
+            Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _x('button', 'Add a license')
+                  _sx('button', 'Add a license')
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
@@ -373,11 +394,11 @@ class Printer extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_printer' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -427,6 +448,17 @@ class Printer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -611,9 +643,20 @@ class Printer extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -667,7 +710,7 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd());
 
@@ -691,7 +734,7 @@ class Printer extends CommonDBTM
 
         $tab[] = [
             'id'                 => '1431',
-            'table'              => 'glpi_computers_items',
+            'table'              => Asset_PeripheralAsset::getTable(),
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of printers'),
             'forcegroupby'       => true,
@@ -699,8 +742,10 @@ class Printer extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.itemtype' => 'Printer']
+                'jointype'                  => 'itemtype_item',
+                'specific_items_id_column'  => 'items_id_asset',
+                'specific_itemtype_column'  => 'itemtype_asset',
+                'condition'                 => ['NEWTABLE.' . 'itemtype_peripheral' => 'Printer']
             ]
         ];
 
@@ -711,8 +756,8 @@ class Printer extends CommonDBTM
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param $name          the printer's name (need to be addslashes)
-     * @param $manufacturer  the software's manufacturer (need to be addslashes)
+     * @param $name          the printer's name
+     * @param $manufacturer  the software's manufacturer
      * @param $entity        the entity in which the software must be added
      * @param $comment       comment (default '')
      **/
@@ -755,8 +800,8 @@ class Printer extends CommonDBTM
     /**
      * Create a new printer
      *
-     * @param string  $name         the printer's name (need to be addslashes)
-     * @param string  $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param string  $name         the printer's name
+     * @param string  $manufacturer the printer's manufacturer
      * @param integer $entity       the entity in which the printer must be added
      * @param string  $comment      (default '')
      *
@@ -806,7 +851,6 @@ class Printer extends CommonDBTM
     {
         return $this->restore(["id" => $ID]);
     }
-
 
     public static function getIcon()
     {

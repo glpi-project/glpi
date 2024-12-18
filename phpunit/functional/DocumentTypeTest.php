@@ -49,10 +49,10 @@ class DocumentTypeTest extends DbTestCase
        // Clear types to prevent test to be impacted by potential default types changes
         $this->assertTrue($doctype->deleteByCriteria(['1']));
 
-        $this->assertGreaterThan(0, (int)$doctype->add(Toolbox::addslashes_deep(['name' => 'JPG' ,'ext' => '/\.jpe?g$/'])));
-        $this->assertGreaterThan(0, (int)$doctype->add(Toolbox::addslashes_deep(['name' => 'DOC' ,'ext' => 'doc'])));
-        $this->assertGreaterThan(0, (int)$doctype->add(Toolbox::addslashes_deep(['name' => 'XML' ,'ext' => 'xml'])));
-        $this->assertGreaterThan(0, (int)$doctype->add(Toolbox::addslashes_deep(['name' => 'Tarball' ,'ext' => 'tar.gz'])));
+        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'JPG' ,'ext' => '/\.jpe?g$/']));
+        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'DOC' ,'ext' => 'doc']));
+        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'XML' ,'ext' => 'xml']));
+        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'Tarball' ,'ext' => 'tar.gz']));
 
        // Validate generated pattern
         $pattern = \DocumentType::getUploadableFilePattern();

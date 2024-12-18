@@ -37,7 +37,6 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 use ProjectState;
 use ProjectTask;
 use ProjectTeam;
@@ -463,29 +462,16 @@ class ProjectTest extends DbTestCase
             ]
         );
 
-        $raw_description = <<<PLAINTEXT
+        $description = <<<PLAINTEXT
             > a
             > multiline
             > description
 PLAINTEXT;
 
-        $sanitized_description = <<<PLAINTEXT
-            &#62; a
-            &#62; multiline
-            &#62; description
-PLAINTEXT;
-
-        // Clone with raw input
-        $projects_id_clone = $project->clone(['content' => $raw_description]);
+        $projects_id_clone = $project->clone(['content' => $description]);
         $project_clone = new \Project();
         $this->assertTrue($project_clone->getFromDB($projects_id_clone));
-        $this->assertEquals($sanitized_description, $project_clone->fields['content']);
-
-        // Clone with already sanitized input
-        $projects_id_clone = $project->clone(Sanitizer::sanitize(['content' => $raw_description]));
-        $project_clone = new \Project();
-        $this->assertTrue($project_clone->getFromDB($projects_id_clone));
-        $this->assertEquals($sanitized_description, $project_clone->fields['content']);
+        $this->assertEquals($description, $project_clone->fields['content']);
     }
 
     /**
@@ -536,5 +522,127 @@ PLAINTEXT;
         $this->assertEquals(1, substr_count($html, "background-color: #000001;"));
         $this->assertEquals(2, substr_count($html, "background-color: #000002;"));
         $this->assertEquals(3, substr_count($html, "background-color: #000003;"));
+    }
+
+    public function testGetActiveProjectIDsForUser(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create a user
+        $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
+
+        // Check if a user with no projects returns an empty array
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()]));
+
+        // Create a project
+        $project = $this->createItem(\Project::getType(), [
+            'name'         => 'project',
+            'entities_id'  => $entity,
+            'users_id'     => $user->getID(),
+        ]);
+
+        // Check if a user with a project, assigned to him, returns the project id
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
+
+        // Create a group
+        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+
+        // Link user to group
+        $group_user = $this->createItem(\Group_User::getType(), [
+            'users_id' => $user->getID(),
+            'groups_id' => $group->getID(),
+        ]);
+
+        // Link project to group
+        $this->updateItem(\Project::getType(), $project->getID(), [
+            'users_id' => 0, // Remove user from project
+            'groups_id' => $group->getID()
+        ]);
+
+        // Check if a user with a project, assigned to a group he is in, returns the project id when $search_in_groups is true
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForUser([$user->getID()])
+        );
+
+
+        // Check if a user with a project, assigned to a group he is in, returns an empty array when $search_in_groups is false
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false));
+
+        // Create a user team
+        $user_team = $this->createItem(\ProjectTeam::getType(), [
+            'projects_id' => $project->getID(),
+            'itemtype'    => \User::class,
+            'items_id'    => $user->getID(),
+        ]);
+
+        // Check if a user with a project, assigned to a user project team, returns the project id when $search_in_team is true
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
+
+        // Check if a user with a project, assigned to a user project team, returns an empty array when $search_in_team is false
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
+
+        // Create a group team
+        $group_team = $this->createItem(\ProjectTeam::getType(), [
+            'projects_id' => $project->getID(),
+            'itemtype'    => \Group::class,
+            'items_id'    => $group->getID(),
+        ]);
+
+        // Delete user team
+        $this->deleteItem(\ProjectTeam::getType(), $user_team->getID());
+
+        // Check if a user with a project, assigned to a group project team, returns the project id when $search_in_team and $search_in_groups are true
+        $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
+
+        // Check if a user with a project, assigned to a group project team, returns an empty array when $search_in_team or $search_in_groups are false
+        $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
+    }
+
+    public function testGetActiveProjectIDsForGroup(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create a group
+        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+
+        // Check if a group with no projects returns an empty array
+        $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()]));
+
+        // Create a project
+        $project = $this->createItem(\Project::getType(), [
+            'name'         => 'project',
+            'entities_id'  => $entity,
+            'groups_id'    => $group->getID(),
+        ]);
+
+        // Check if a group with a project, assigned to him, returns the project id
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForGroup([$group->getID()])
+        );
+
+        // Create a group team
+        $group_team = $this->createItem(\ProjectTeam::getType(), [
+            'projects_id' => $project->getID(),
+            'itemtype'    => \Group::class,
+            'items_id'    => $group->getID(),
+        ]);
+
+        // Remove group from project
+        $this->updateItem(\Project::getType(), $project->getID(), [
+            'groups_id' => 0,
+        ]);
+
+        // Check if a group with a project, assigned to a group project team, returns the project id when $search_in_team is true
+        $this->assertEquals(
+            [['id' => $project->getID()]],
+            \Project::getActiveProjectIDsForGroup([$group->getID()])
+        );
+
+        // Check if a group with a project, assigned to a group project team, returns an empty array when $search_in_team is false
+        $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()], false));
     }
 }

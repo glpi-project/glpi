@@ -38,7 +38,7 @@ namespace tests\units;
 use DbTestCase;
 use Glpi\Plugin\Hooks;
 use Log;
-use PHPMailer\PHPMailer\PHPMailer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Session;
 
@@ -91,44 +91,49 @@ class ConfigTest extends DbTestCase
     public function testDefineTabs()
     {
         $expected = [
-            'Config$1'      => 'General setup',
-            'Config$2'      => 'Default values',
-            'Config$3'      => 'Assets',
-            'Config$4'      => 'Assistance',
-            'Config$12'     => 'Management',
-            'GLPINetwork$1' => 'GLPI Network',
+            'Config$1'      => "General setup",
+            'Config$2'      => "Default values",
+            'Config$3'      => "Assets",
+            'Config$4'      => "Assistance",
+            'Config$12'     => "Management",
+            'DisplayPreference$1' => "Search result display",
+            'GLPINetwork$1' => "GLPI Network",
         ];
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
 
         //Standards users do not have extra tabs
         $auth = new \Auth();
         $this->assertTrue((bool)$auth->login('tech', 'tech', true));
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
 
         //check extra tabs from superadmin profile
         $this->login();
         $expected = [
-            'Config$1'      => 'General setup',
-            'Config$2'      => 'Default values',
-            'Config$3'      => 'Assets',
-            'Config$4'      => 'Assistance',
-            'Config$12'     => 'Management',
-            'Config$9'      => 'Logs purge',
-            'Config$5'      => 'System',
-            'Config$10'     => 'Security',
-            'Config$7'      => 'Performance',
-            'Config$8'      => 'API',
-            'Config$11'      => \Impact::getTypeName(),
-            'GLPINetwork$1' => 'GLPI Network',
-            'Log$1'         => 'Historical',
+            'Config$1'      => "General setup",
+            'Config$2'      => "Default values",
+            'Config$3'      => "Assets",
+            'Config$4'      => "Assistance",
+            'Config$12'     => "Management",
+            'Config$9'      => "Logs purge",
+            'Config$5'      => "System",
+            'Config$10'     => "Security",
+            'Config$7'      => "Performance",
+            'Config$8'      => "API",
+            'Config$11'      => "Impact analysis",
+            'DisplayPreference$1' => "Search result display",
+            'GLPINetwork$1' => "GLPI Network",
+            'Log$1'         => "Historical",
         ];
 
         $instance = new \Config();
-        $this->assertSame($expected, $instance->defineTabs());
+        $tabs = array_map('strip_tags', $instance->defineTabs());
+        $this->assertSame($expected, $tabs);
     }
 
     public function testUnsetUndisclosedFields()
@@ -166,75 +171,6 @@ class ConfigTest extends DbTestCase
         $this->assertSame($expected, $input);
     }
 
-    public function testValidatePassword()
-    {
-        global $CFG_GLPI;
-        $this->assertFalse((bool)$CFG_GLPI['use_password_security']);
-
-        $this->assertTrue(\Config::validatePassword('mypass'));
-
-        $CFG_GLPI['use_password_security'] = 1;
-        $this->assertSame(8, (int)$CFG_GLPI['password_min_length']);
-        $this->assertSame(1, (int)$CFG_GLPI['password_need_number']);
-        $this->assertSame(1, (int)$CFG_GLPI['password_need_letter']);
-        $this->assertSame(1, (int)$CFG_GLPI['password_need_caps']);
-        $this->assertSame(1, (int)$CFG_GLPI['password_need_symbol']);
-        $this->assertFalse(\Config::validatePassword(''));
-
-        $expected = [
-            'Password too short!',
-            'Password must include at least a digit!',
-            'Password must include at least a lowercase letter!',
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-        ];
-        $this->hasSessionMessages(ERROR, $expected);
-        $expected = [
-            'Password must include at least a digit!',
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-        ];
-        $this->assertFalse(\Config::validatePassword('mypassword'));
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $CFG_GLPI['password_min_length'] = strlen('mypass');
-        $this->assertFalse(\Config::validatePassword('mypass'));
-        $CFG_GLPI['password_min_length'] = 8; //reset
-
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $expected = [
-            'Password must include at least a uppercase letter!',
-            'Password must include at least a symbol!'
-        ];
-        $this->assertFalse(\Config::validatePassword('my1password'));
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $CFG_GLPI['password_need_number'] = 0;
-        $this->assertFalse(\Config::validatePassword('mypassword'));
-        $CFG_GLPI['password_need_number'] = 1; //reset
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $expected = [
-            'Password must include at least a symbol!'
-        ];
-        $this->assertFalse(\Config::validatePassword('my1paSsword'));
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $CFG_GLPI['password_need_caps'] = 0;
-        $this->assertFalse(\Config::validatePassword('my1password'));
-        $CFG_GLPI['password_need_caps'] = 1; //reset
-        $this->hasSessionMessages(ERROR, $expected);
-
-        $this->assertTrue(\Config::validatePassword('my1paSsw@rd'));
-        $this->hasNoSessionMessage(ERROR);
-
-        $CFG_GLPI['password_need_symbol'] = 0;
-        $this->assertTrue(\Config::validatePassword('my1paSsword'));
-        $CFG_GLPI['password_need_symbol'] = 1; //reset
-        $this->hasNoSessionMessage(ERROR);
-    }
-
     public function testGetLibraries()
     {
         $actual = $expected = [];
@@ -256,7 +192,18 @@ class ConfigTest extends DbTestCase
         }
         sort($expected);
         $this->assertNotEmpty($expected);
-        $this->assertSame($expected, $actual);
+
+        $unexpected_libs = array_diff($actual, $expected);
+        $missing_libs    = array_diff($expected, $actual);
+
+        $this->assertEmpty(
+            $unexpected_libs,
+            'Unexpected libs returned by Config::getLibraries(): ' . implode(', ', $unexpected_libs)
+        );
+        $this->assertEmpty(
+            $missing_libs,
+            'Missing libs in Config::getLibraries() return value: ' . implode(', ', $missing_libs)
+        );
     }
 
     public function testGetLibraryDir()
@@ -264,11 +211,11 @@ class ConfigTest extends DbTestCase
         $this->assertFalse(\Config::getLibraryDir(''));
         $this->assertFalse(\Config::getLibraryDir('abcde'));
 
-        $expected = realpath(__DIR__ . '/../../vendor/phpmailer/phpmailer/src');
+        $expected = realpath(__DIR__ . '/../../vendor/symfony/console');
         if (is_dir($expected)) { // skip when system library is used
-            $this->assertSame($expected, \Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'));
+            $this->assertSame($expected, \Config::getLibraryDir('Symfony\Component\Console\Application'));
 
-            $mailer = new PHPMailer();
+            $mailer = new \Symfony\Component\Console\Application();
             $this->assertSame($expected, \Config::getLibraryDir($mailer));
         }
 
@@ -442,22 +389,22 @@ class ConfigTest extends DbTestCase
     public function testGetPalettes()
     {
         $expected = [
-            'aerialgreen'     => 'Aerialgreen',
+            'aerialgreen'     => 'Aerial Green',
             'auror'           => 'Auror',
-            'auror_dark'      => 'Auror_dark',
-            'automn'          => 'Automn',
+            'auror_dark'      => 'Dark Auror',
+            'automn'          => 'Autumn',
             'classic'         => 'Classic',
-            'clockworkorange' => 'Clockworkorange',
+            'clockworkorange' => 'Clockwork Orange',
             'dark'            => 'Dark',
             'darker'          => 'Darker',
             'flood'           => 'Flood',
-            'greenflat'       => 'Greenflat',
+            'greenflat'       => 'Green Flat',
             'hipster'         => 'Hipster',
-            'icecream'        => 'Icecream',
-            'lightblue'       => 'Lightblue',
+            'icecream'        => 'Ice Cream',
+            'lightblue'       => 'Light Blue',
             'midnight'        => 'Midnight',
-            'premiumred'      => 'Premiumred',
-            'purplehaze'      => 'Purplehaze',
+            'premiumred'      => 'Premium Red',
+            'purplehaze'      => 'Purple Haze',
             'teclib'          => 'Teclib',
             'vintage'         => 'Vintage',
         ];
@@ -481,18 +428,22 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '10.2.14-MariaDB',
                 'version'   => '10.2.14',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.3.28-MariaDB',
                 'version'   => '10.3.28',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
                 'version'   => '10.4.8',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '10.5.9-MariaDB',
                 'version'   => '10.5.9',
+                'compat'    => true
+            ], [
+                'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
+                'version'   => '10.6.7',
                 'compat'    => true
             ], [
                 'raw'       => '5.6.38-log',
@@ -501,7 +452,7 @@ class ConfigTest extends DbTestCase
             ],  [
                 'raw'       => '5.7.50-log',
                 'version'   => '5.7.50',
-                'compat'    => true
+                'compat'    => false
             ], [
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',
@@ -510,9 +461,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider dbEngineProvider
-     */
+    #[DataProvider('dbEngineProvider')]
     public function testCheckDbEngine($raw, $version, $compat)
     {
         global $DB;
@@ -574,9 +523,8 @@ class ConfigTest extends DbTestCase
      *
      * @param string $key
      * @param string $itemtype
-     *
-     * @dataProvider itemtypeLinkedToConfigurationProvider
      */
+    #[DataProvider('itemtypeLinkedToConfigurationProvider')]
     public function testCleanRelationDataOfLinkedItems($key, $itemtype)
     {
 
@@ -792,10 +740,6 @@ class ConfigTest extends DbTestCase
 
     public static function logConfigChangeProvider()
     {
-        global $PLUGIN_HOOKS;
-
-        $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
-
         return [
             [
                 'context'          => 'core',
@@ -837,11 +781,13 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider logConfigChangeProvider
-     */
+    #[DataProvider('logConfigChangeProvider')]
     public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix, string $itemtype)
     {
+        global $PLUGIN_HOOKS;
+
+        $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS]['tester'] = ['passwd'];
+
         $history_crit = ['itemtype' => $itemtype, 'old_value' => ['LIKE', $name . ' %']];
 
         $expected_history = [];
@@ -939,38 +885,6 @@ class ConfigTest extends DbTestCase
         }
     }
 
-    public function testDetectRooDoc(): void
-    {
-        global $CFG_GLPI;
-        $bkp_root_doc = $CFG_GLPI['root_doc'];
-
-        $uri_to_scriptname = [
-            '/'                        => '/index.php',
-            '/front/index.php?a=b'     => '/front/index.php',
-            '/api.php/endpoint/method' => '/api.php',
-            '//whatever/path/is'       => '/index.php', // considered as `path=/` + `pathinfo=/whatever/path/is` by GLPI router
-        ];
-
-        foreach (['', '/glpi', '/whatever/alias/is'] as $prefix) {
-            foreach ($uri_to_scriptname as $uri => $script_name) {
-                unset($CFG_GLPI['root_doc']);
-
-                chdir(GLPI_ROOT . dirname($script_name)); // cwd is expected to be the executed script dir
-
-                $server_bck = $_SERVER;
-                $_SERVER['REQUEST_URI'] = $prefix . $uri;
-                $_SERVER['SCRIPT_NAME'] = $prefix . $script_name;
-                \Config::detectRootDoc();
-                $_SERVER = $server_bck;
-
-                $this->assertEquals($prefix, $CFG_GLPI['root_doc']);
-            }
-        }
-
-        //reset root_doc
-        $CFG_GLPI['root_doc'] = $bkp_root_doc;
-    }
-
     public function testConfigLogNotEmpty()
     {
         $itemtype = 'Config';
@@ -1002,7 +916,7 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
-            "The specified profile doesn't exist or is not allowed to access the central interface."
+            "The specified profile doesn&#039;t exist or is not allowed to access the central interface."
         ]);
 
         // Invalid profile 2: doesn't exist
@@ -1011,7 +925,7 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
-            "The specified profile doesn't exist or is not allowed to access the central interface."
+            "The specified profile doesn&#039;t exist or is not allowed to access the central interface."
         ]);
 
         // Valid profile

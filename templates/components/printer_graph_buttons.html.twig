@@ -1,0 +1,249 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set options = {
+    'rand': random()
+} %}
+
+{% if not timerange_presets %}
+    {% set timerange_presets = {
+        'P1D': __('Last day'),
+        'P1W': __('Last 7 days'),
+        'P1M': __('Last 30 days'),
+        'P3M': __('Last quarter'),
+        'P1Y': __('Last year'),
+        'P1000Y': __('All time'),
+    } %}
+{% endif %}
+
+{% if not format_presets %}
+    {% set format_presets = {
+        'dynamic': __('Dynamic distribution'),
+        'daily': __('Daily'),
+        'weekly': __('Weekly'),
+        'monthly': __('Monthly'),
+        'yearly': __('Yearly'),
+    } %}
+{% endif %}
+
+<style>
+    .rotate-45 {
+        transform: rotate(45deg);
+        transition: transform 0.2s ease-in-out;
+    }
+    .rotate-90 {
+        transform: rotate(90deg);
+        transition: transform 0.2s ease-in-out;
+    }
+</style>
+
+<div class="d-flex gap-2 w-full">
+    <div id="select_range_dropdown" class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ti ti-calendar me-2"></i>
+            {{ start_date and end_date ? __('Custom range') ~ ': ' ~ start_date|split('T')[0] ~ ' - ' ~ end_date|split('T')[0] : timerange_presets[interval] }}
+        </button>
+        <ul class="dropdown-menu">
+            {% for key, value in timerange_presets %}
+                <li>
+                    <span class="dropdown-item {{ interval == key and (not start_date or not end_date) ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_date_preset_{{ options['rand'] }}(this)">{{ value }}</span>
+                </li>
+            {% endfor %}
+            <li><hr class="dropdown-divider"></li>
+            <li id="show_custom_range" class="d-flex align-items-center">
+                <span class="dropdown-item {{ start_date and end_date ? 'active' }}" href="#">
+                    <i class="ti ti-plus {{ start_date and end_date ? 'rotate-45' : 'rotate-90' }}"></i>
+                    {{ __('Custom range') }}
+                </span>
+            </li>
+            <li id="date_range_input" class="px-2 {{ not start_date or not end_date ? 'd-none' }}" style="width:11rem">
+                {{ fields.dateField('range_date', '', '', options|merge({
+                    'no_label': true,
+                    'full_width': true,
+                    'mb': 'my-2',
+                })) }}
+                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_custom_date_range_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+            </li>
+        </ul>
+    </div>
+    <div id="select_format_dropdown" class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ti ti-chart-dots-3 me-2"></i>
+            {{ format_presets[format] }}
+        </button>
+        <ul class="dropdown-menu">
+            {% for key, value in format_presets %}
+                <li>
+                    <span class="dropdown-item {{ format_presets[format] == value ? 'active' }}" href="#" data-key="{{ key }}" onclick="update_format_{{ options['rand'] }}(this)">{{ value }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="compare_printers_dropdown" class="dropdown">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <i class="ti ti-git-compare me-2"></i>
+            {{ __('Compare') }}
+        </button>
+        <ul class="dropdown-menu">
+            <li class="mx-2">
+                {{ fields.dropdownField('Printer', 'compare_printer', compare_printers, __('Select printers to compare'), options|merge({
+                    'full_width': true,
+                    'multiple': true,
+                    'is_horizontal': false,
+                    'mb': '',
+                })) }}
+                {{ fields.dropdownArrayField('compare_printer_stat', compare_printer_stat, {
+                    'total_pages' : __('Total pages'),
+                    'bw_pages' : __('Black and white pages'),
+                    'color_pages' : __('Color pages'),
+                }, __('Select a statistic to compare'), options|merge({
+                    'full_width': true,
+                    'is_horizontal': false,
+                })) }}
+                <button class="btn btn-primary w-full mb-1" type="button" onclick="update_compare_printers_{{ options['rand'] }}()">{{ __('Apply') }}</button>
+            </li>
+        </ul>
+    </div>
+    <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export data in CSV') }}">
+         <i class="ti fa-lg ti-file-download"></i>
+      </a>
+</div>
+
+<script>
+    var date_range_data = {
+        'format': {{ format|json_encode|raw }},
+        'interval': {{ interval|json_encode|raw }},
+        'start_date': {{ start_date|json_encode|raw }},
+        'end_date': {{ end_date|json_encode|raw }},
+    }
+
+    var compare_printers_data = {
+        'compare_printers': {{ compare_printers|json_encode|raw }},
+        'compare_printer_stat': {{ compare_printer_stat|json_encode|raw }},
+    }
+
+    function reloadTab_{{ options['rand'] }}() {
+        params = 'date_format=' + date_range_data['format'];
+
+        if(date_range_data['start_date'] && date_range_data['end_date']) {
+            params += '&date_start=' + date_range_data['start_date'] + '&date_end=' + date_range_data['end_date'];
+        } else {
+            params += '&date_interval=' + date_range_data['interval'];
+        }
+
+        if (compare_printers_data['compare_printers']) {
+            params += '&compare_printers=' + compare_printers_data['compare_printers'].join(',');
+        }
+        if (compare_printers_data['compare_printer_stat']) {
+            params += '&compare_printer_stat=' + compare_printers_data['compare_printer_stat'];
+        }
+
+        reloadTab(params);
+    }
+
+    function update_date_preset_{{ options['rand'] }}(element) {
+        if (!$(element).hasClass('active')) {
+            date_range_data['interval'] = element.dataset.key;
+            date_range_data['start_date'] = null;
+            date_range_data['end_date'] = null;
+
+            $('#select_range_dropdown button.dropdown-toggle').html(element.innerHTML);
+            reloadTab_{{ options['rand'] }}();
+        }
+    }
+    function update_format_{{ options['rand'] }}(element) {
+        date_range_data['format'] = element.dataset.key;
+
+        $('#select_format_dropdown button.dropdown-toggle').html(element.innerHTML);
+        reloadTab_{{ options['rand'] }}();
+    }
+    function update_custom_date_range_{{ options['rand'] }}() {
+        let range_date = $('#range-date_{{ options['rand'] }}')[0];
+        let start_date = range_date._flatpickr.selectedDates[0];
+        let end_date = range_date._flatpickr.selectedDates[1];
+
+        if (start_date && end_date) {
+            // Igore timezone offset
+            date_range_data['start_date'] = new Date(start_date.getTime() - (start_date.getTimezoneOffset() * 60000)).toISOString();
+            date_range_data['end_date'] = new Date(end_date.getTime() - (end_date.getTimezoneOffset() * 60000)).toISOString();
+            date_range_data['interval'] = null;
+
+            let label = __('Custom Range') + ': ';
+            label += date_range_data['start_date'].split('T')[0];
+            label += ' - ' + date_range_data['end_date'].split('T')[0];
+            $('#select_range_dropdown button.dropdown-toggle').html(label);
+            reloadTab_{{ options['rand'] }}();
+        }
+    }
+    function update_compare_printers_{{ options['rand'] }}() {
+        let compare_printers = $('#dropdown_compare_printer__{{ options['rand'] }}').val();
+        let compare_printer_stat = $('#dropdown_compare_printer_stat{{ options['rand'] }}').val();
+
+        compare_printers_data['compare_printers'] = compare_printers;
+        compare_printers_data['compare_printer_stat'] = compare_printer_stat;
+
+        reloadTab_{{ options['rand'] }}();
+    }
+
+    $(document).ready(function () {
+        let range_date = $('#range-date_{{ options['rand'] }}')[0];
+        let dropdownInst = new bootstrap.Dropdown($('#select_range_dropdown button.dropdown-toggle'));
+
+        $('#show_custom_range').click(function () {
+            event.stopPropagation();
+            $('#date_range_input').toggleClass('d-none');
+
+            if ($('#show_custom_range span i.ti-plus').hasClass('rotate-45')) {
+                $('#show_custom_range span i.ti-plus').addClass('rotate-90');
+                $('#show_custom_range span i.ti-plus').removeClass('rotate-45');
+            } else {
+                $('#show_custom_range span i.ti-plus').removeClass('rotate-90');
+                $('#show_custom_range span i.ti-plus').addClass('rotate-45');
+            }
+        });
+
+        range_date._flatpickr.config.mode = 'range';
+        range_date._flatpickr.config.onOpen.push(function () {
+            dropdownInst._config.autoClose = false
+        });
+        range_date._flatpickr.config.onClose.push(function () {
+            dropdownInst._config.autoClose = true
+        });
+
+        {% if start_date and end_date %}
+            range_date._flatpickr.setDate([new Date({{ start_date|json_encode|raw }}), new Date({{ end_date|json_encode|raw }})]);
+        {% endif %}
+    });
+</script>

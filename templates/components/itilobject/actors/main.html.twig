@@ -56,8 +56,10 @@
 {# TODO check allow_email params #}
 
 {% if 'requester' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_requester') or not itiltemplate.isHiddenField('_groups_id_requester')) %}
+   {% set rand = random() %}
    {% set requester_field %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
@@ -65,6 +67,7 @@
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
+         'cancreateuser': cancreateuser,
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
@@ -76,7 +79,8 @@
          requester_field,
          _n('Requester', 'Requesters', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester')
+            required: itiltemplate.isMandatoryField('_users_id_requester') or itiltemplate.isMandatoryField('_groups_id_requester'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}
@@ -85,8 +89,10 @@
 {% endif %}
 
 {% if 'observer' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_observer') or not itiltemplate.isHiddenField('_groups_id_observer')) %}
+   {% set rand = random() %}
    {% set observer_field %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
@@ -94,6 +100,7 @@
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
+         'cancreateuser': cancreateuser,
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
@@ -103,9 +110,10 @@
       {{ fields.field(
          'observer',
          observer_field,
-         __('Observer'),
+         _n('Observer', 'Observers', 1),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer')
+            required: itiltemplate.isMandatoryField('_users_id_observer') or itiltemplate.isMandatoryField('_groups_id_observer'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}
@@ -115,7 +123,9 @@
 
 {% if 'assign' in display_actortypes and (not itiltemplate.isHiddenField('_users_id_assign') or not itiltemplate.isHiddenField('_groups_id_assign') or not itiltemplate.isHiddenField('_supplier_id_assign')) %}
    {% set assign_field %}
+      {% set rand = random() %}
       {{ include('components/itilobject/actors/field.html.twig', {
+         'rand': rand,
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
@@ -135,7 +145,8 @@
          assign_field,
          __('Assigned to'),
          actor_options|merge({
-            required: itiltemplate.isMandatoryField('_users_id_assign') or itiltemplate.isMandatoryField('_groups_id_assign') or itiltemplate.isMandatoryField('_supplier_id_assign')
+            required: itiltemplate.isMandatoryField('_users_id_assign') or itiltemplate.isMandatoryField('_groups_id_assign') or itiltemplate.isMandatoryField('_supplier_id_assign'),
+            id: "actor_" ~ rand,
          })
       ) }}
    {% else %}
@@ -168,6 +179,18 @@
             <div class="form-check form-switch">
                <input class="form-check-input" type="checkbox" id="use_notification" name="_notifications_use_notification" />
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
+            </div>
+            <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
+               <i class='fas fa-info-circle fa-xl'></i>
+               <span class='ms-2'>
+                  {{ __('Notifications are disabled because:') }}
+                  <ul>
+                     <li>{{ __('User does not have an email address.') }}</li>
+                     <li>{{ __('User has disabled notifications from its preferences.') }}</li>
+                     <li>{{ __('Notifications are disabled in this entity.') }}</li>
+                  </ul>
+                  {{ __('However, you can reactivate the notifications for this ticket.') }}
+               </span>
             </div>
             <input type="email" class="form-control" id="alternative_email" name="_notifications_alternative_email" />
          </div>
@@ -238,6 +261,7 @@
       modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
       modal.find("input[name=_notifications_alternative_email]").attr('placeholder', actor.default_email);
       modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
+      modal.find("#alert_notification_disable").toggleClass('d-none', parseInt(actor.use_notification) == true);
 
       editActorNotifySettings_modal.show();
    }

@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Agent\Communication\Headers;
 
 use GLPITestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/glpi/agent/communication/headers/common.class.php */
 
@@ -63,9 +64,7 @@ class CommonTest extends GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider namesProvider
-     */
+    #[DataProvider('namesProvider')]
     public function testHeaders($propname, $headername)
     {
         $instance = new \Glpi\Agent\Communication\Headers\Common();

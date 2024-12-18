@@ -78,7 +78,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
             '_system_category' => 'dev'
         ];
         $result = $categoryCollection->processAllRules(null, null, $input);
-        $this->assertSame(["_no_rule_matches" => '1'], $result);
+        $this->assertSame(["_no_rule_matches" => true], $result);
     }
 
     public function testRuleMatchImport()
@@ -112,7 +112,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "_import_category" => '1',
-                "_ruleid"          => (string) $myrule['id']
+                "_ruleid"          => $myrule['id']
             ],
             $result
         );
@@ -186,7 +186,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "softwarecategories_id" => "$categories_id",
-                "_ruleid"               => "$rules_id"
+                "_ruleid"               => $rules_id
             ],
             $result
         );
@@ -267,7 +267,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "_ignore_import" => '1',
-                "_ruleid"        => "$rules_id"
+                "_ruleid"        => $rules_id
             ],
             $result
         );

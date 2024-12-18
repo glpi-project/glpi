@@ -44,11 +44,11 @@
       {% if not search['_error'] %}
           <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
              class="d-block saved-searches-link text-truncate">
-             {{ search['name']|verbatim_value }}
+             {{ search['name'] }}
           </a>
       {% else %}
           <span class="d-block text-truncate">
-              {{ search['name']|verbatim_value }}
+              {{ search['name'] }}
           </span>
       {% endif %}
       <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
@@ -64,7 +64,7 @@
          <i class="ti ti-lock fa-xs text-muted me-1" title="{{ __('private') }}"
             data-bs-toggle="tooltip" data-bs-placement="right"></i>
          {% endif %}
-         <span class="badge">
+         <span class="badge bg-secondary text-secondary-fg">
             {{ search['count']|raw }}
          </span>
       </div>

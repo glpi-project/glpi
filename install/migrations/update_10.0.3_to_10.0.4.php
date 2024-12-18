@@ -36,7 +36,7 @@
 /**
  * Update from 10.0.3 to 10.0.4
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update1003to1004()
 {
@@ -72,25 +72,21 @@ function update1003to1004()
                 [
                     'rank'      => $rank++
                 ],
-                Toolbox::addslashes_deep(
-                    [
-                        'users_id'  => "0",
-                        'itemtype'  => $type,
-                        'num'       => $newval,
-                    ]
-                )
+                [
+                    'users_id'  => "0",
+                    'itemtype'  => $type,
+                    'num'       => $newval,
+                ]
             );
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
-        $DB->deleteOrDie(
+        $DB->delete(
             'glpi_displaypreferences',
-            Toolbox::addslashes_deep(
-                [
-                    'itemtype'  => $type,
-                    'num'       => $tab
-                ]
-            )
+            [
+                'itemtype'  => $type,
+                'num'       => $tab
+            ]
         );
     }
 

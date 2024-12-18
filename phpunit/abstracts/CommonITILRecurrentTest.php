@@ -656,7 +656,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 ]
             );
             $created_item = null;
-            $this->assertTrue($instance->createItem($created_item));
+            $this->assertTrue($instance->createItem([], $created_item));
 
             // Validates created item fields
             $this->assertInstanceOf(\CommonITILObject::class, $created_item);

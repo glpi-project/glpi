@@ -35,9 +35,7 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
-Session::checkRight("networking", READ);
+Session::checkRightsOr(NetworkEquipment::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

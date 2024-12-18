@@ -35,12 +35,13 @@
 
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
+// Keep in sync with the dynamicConstantNames config option in the PHPStan config file
 
 // Directories constants
 define('GLPI_CACHE_DIR', null);
+define('GLPI_CONFIG_DIR', null);
 define('GLPI_CRON_DIR', null);
 define('GLPI_DOC_DIR', null);
-define('GLPI_DUMP_DIR', null);
 define('GLPI_GRAPH_DIR', null);
 define('GLPI_INVENTORY_DIR', null);
 define('GLPI_LOCAL_I18N_DIR', null);
@@ -51,6 +52,7 @@ define('GLPI_PICTURE_DIR', null);
 define('GLPI_PLUGIN_DOC_DIR', null);
 define('GLPI_RSS_DIR', null);
 define('GLPI_SESSION_DIR', null);
+define('GLPI_THEMES_DIR', null);
 define('GLPI_TMP_DIR', null);
 define('GLPI_UPLOAD_DIR', null);
 define('GLPI_VAR_DIR', null);
@@ -65,11 +67,10 @@ define('GLPI_STRICT_DEPRECATED', null);
 define('GLPI_AJAX_DASHBOARD', null);
 define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', null);
 define('GLPI_CALDAV_IMPORT_STATE', null);
-define('GLPI_CSRF_EXPIRES', null);
-define('GLPI_CSRF_MAX_TOKENS', null);
-define('GLPI_DEMO_MODE', null);
+define('GLPI_CENTRAL_WARNINGS', null);
+define('GLPI_DOCUMENTATION_ROOT_URL', null);
 define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', null);
-define('GLPI_IDOR_EXPIRES', null);
+define('GLPI_ENVIRONMENT_TYPE', null);
 define('GLPI_INSTALL_MODE', null);
 define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', null);
 define('GLPI_MARKETPLACE_ENABLE', null);
@@ -79,10 +80,9 @@ define('GLPI_MARKETPLACE_PRERELEASES', null);
 define('GLPI_NETWORK_REGISTRATION_API_URL', null);
 define('GLPI_NETWORK_MAIL', null);
 define('GLPI_NETWORK_SERVICES', null);
-define('GLPI_SERVERSIDE_URL_ALLOWLIST', null);
+define('GLPI_SERVERSIDE_URL_ALLOWLIST', []);
 define('GLPI_TELEMETRY_URI', null);
-define('GLPI_USE_CSRF_CHECK', null);
-define('GLPI_USE_IDOR_CHECK', null);
-define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
-define('GLPI_CENTRAL_WARNINGS', null);
 define('GLPI_TEXT_MAXSIZE', null);
+define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
+define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', 0);
+define('PLUGINS_DIRECTORIES', ['/a', '/b', '/c']);

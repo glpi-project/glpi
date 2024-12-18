@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use InventoryTestCase;
 use Item_OperatingSystem;
 use Lockedfield;
@@ -510,10 +511,11 @@ JSON;
         ]);
         $this->assertCount(0, $peripherals);
         $item_peripherals = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Peripheral::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Peripheral::class
             ]
         ]);
         $this->assertCount(0, $item_peripherals);
@@ -539,10 +541,11 @@ JSON;
         ]);
         $this->assertCount(1, $peripherals);
         $item_peripherals = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Peripheral::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Peripheral::class
             ]
         ]);
         $this->assertCount(1, $item_peripherals);
@@ -584,10 +587,11 @@ JSON;
         ]);
         $this->assertCount(0, $monitors);
         $item_devices = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Monitor::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Monitor::class
             ]
         ]);
         $this->assertCount(0, $item_devices);
@@ -613,10 +617,11 @@ JSON;
         ]);
         $this->assertCount(1, $monitors);
         $item_devices = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Monitor::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Monitor::class
             ]
         ]);
         $this->assertCount(1, $item_devices);
@@ -658,10 +663,11 @@ JSON;
         ]);
         $this->assertCount(0, $printers);
         $item_devices = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Printer::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class
             ]
         ]);
         $this->assertCount(0, $item_devices);
@@ -687,10 +693,11 @@ JSON;
         ]);
         $this->assertCount(1, $printers);
         $item_devices = $DB->request([
-            'FROM' => \Computer_Item::getTable(),
+            'FROM' => Asset_PeripheralAsset::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID(),
-                'itemtype' => \Printer::class
+                'itemtype_asset'      => 'Computer',
+                'items_id_asset'      => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class
             ]
         ]);
         $this->assertCount(1, $item_devices);
@@ -802,9 +809,10 @@ JSON;
 
         //check no antivirus has been created
         $item_av = $DB->request([
-            'FROM' => \ComputerAntivirus::getTable(),
+            'FROM' => \ItemAntivirus::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID()
+                'itemtype' => \Computer::class,
+                'items_id' => $computer->getID()
             ]
         ]);
         $this->assertCount(0, $item_av);
@@ -823,9 +831,10 @@ JSON;
 
         //check antivirus has been created
         $item_av = $DB->request([
-            'FROM' => \ComputerAntivirus::getTable(),
+            'FROM' => \ItemAntivirus::getTable(),
             'WHERE' => [
-                'computers_id' => $computer->getID()
+                'itemtype' => \Computer::class,
+                'items_id' => $computer->getID()
             ]
         ]);
         $this->assertCount(1, $item_av);

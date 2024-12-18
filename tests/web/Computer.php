@@ -35,9 +35,6 @@
 
 namespace tests\units;
 
-use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
-
 class Computer extends \FrontBaseClass
 {
     public function testComputerCreate()
@@ -62,6 +59,6 @@ class Computer extends \FrontBaseClass
 
         $computer = new \Computer();
         $this->boolean($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']))->isTrue();
-        $this->string(Sanitizer::unsanitize($computer->fields['name'], false))->isIdenticalTo('A test > computer & name');
+        $this->string($computer->fields['name'])->isIdenticalTo('A test > computer & name');
     }
 }

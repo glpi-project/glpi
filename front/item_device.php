@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
 
 if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
     throw new \RuntimeException(
@@ -48,7 +48,7 @@ if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
 $itemDevice = getItemForItemtype($_GET['itemtype']);
 if (!$itemDevice->canView()) {
     Session::redirectIfNotLoggedIn();
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {

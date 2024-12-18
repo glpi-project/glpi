@@ -56,7 +56,6 @@
          {% set rand_side = random() %}
          {% set side_options = field_options|merge({
             'full_width': true,
-            'full_width_adapt_column': false,
             'rand': rand_side,
          }) %}
          {% set html_side %}
@@ -133,17 +132,16 @@
                               'itemtype': item.fields['itemtype_endpoint_' ~ side],
                               'items_id': item.fields['items_id_endpoint_' ~ side]
                            },
-                           'used': item.fields['items_id_endpoint_' ~ side] is not empty ? call('Glpi\\Socket::getSocketAlreadyLinked', [item.fields['itemtype_endpoint_' ~ side], item.fields['items_id_endpoint_' ~ side]]) : []
+                           'used': item.fields['items_id_endpoint_' ~ side] > 0 ? call('Glpi\\Socket::getSocketAlreadyLinked', [item.fields['itemtype_endpoint_' ~ side], item.fields['items_id_endpoint_' ~ side]]) : []
                         })
                   ) }}
 
                   {% set asset_breadcrumb %}
                      <span id="show_{{ side }}_asset_breadcrumb">
                         {% if item.fields['items_id_endpoint_' ~ side]|length > 0 %}
-                           {% set breadcrumb = call(item.fields['itemtype_endpoint_' ~ side] ~ '::getDcBreadcrumbSpecificValueToDisplay', [
-                              item.fields['items_id_endpoint_' ~ side],
-                           ]) %}
-                           {{ breadcrumb|raw }}
+                           {{ call(item.fields['itemtype_endpoint_' ~ side] ~ '::renderDcBreadcrumb', [
+                              item.fields['items_id_endpoint_' ~ side]
+                           ])|raw }}
                         {% endif %}
                      </span>
 

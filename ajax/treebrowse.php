@@ -33,7 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -48,6 +49,7 @@ switch ($_REQUEST['action']) {
             'criteria'           => $_REQUEST['criteria'],
             'sort'               => $_REQUEST['sort'] ?? [],
             'order'              => $_REQUEST['order'] ?? [],
+            'unpublished'        => $_REQUEST['unpublished'],
         ];
 
         $itemtype = $_REQUEST['itemtype'];
@@ -76,5 +78,5 @@ switch ($_REQUEST['action']) {
         Search::showList($itemtype, $params);
         return;
 }
-http_response_code(400);
-return;
+
+throw new BadRequestHttpException();

@@ -36,7 +36,9 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
+use Glpi\Asset\Asset_PeripheralAsset;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
 /* Test for inc/computer.class.php */
 
@@ -57,7 +59,7 @@ class ComputerTest extends DbTestCase
         unset($fields['date_creation']);
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
-        $this->assertGreaterThan(0, (int)$computer->add(\Toolbox::addslashes_deep($fields)));
+        $this->assertGreaterThan(0, (int)$computer->add($fields));
         return $computer;
     }
 
@@ -69,32 +71,38 @@ class ComputerTest extends DbTestCase
         unset($pfields['date_creation']);
         unset($pfields['date_mod']);
         $pfields['name'] = $this->getUniqueString();
-        $this->assertGreaterThan(0, (int)$printer->add(\Toolbox::addslashes_deep($pfields)));
+        $this->assertGreaterThan(0, (int)$printer->add($pfields));
         return $printer;
     }
 
     public function testUpdate()
     {
-        global $CFG_GLPI;
-        $saveconf = $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
         $printer  = $this->getNewPrinter();
 
        // Create the link
-        $link = new \Computer_Item();
-        $in = ['computers_id' => $computer->getField('id'),
-            'itemtype'     => $printer->getType(),
-            'items_id'     => $printer->getID(),
+        $link = new Asset_PeripheralAsset();
+        $in = [
+            'itemtype_asset' => $computer->getType(),
+            'items_id_asset' => $computer->getField('id'),
+            'itemtype_peripheral' => $printer->getType(),
+            'items_id_peripheral' => $printer->getID(),
         ];
         $this->assertGreaterThan(0, (int)$link->add($in));
 
        // Change the computer
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]));
         $in = ['id'           => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -103,15 +111,20 @@ class ComputerTest extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->assertTrue($computer->update(\Toolbox::addslashes_deep($in)));
+        $this->assertTrue($computer->update($in));
         $this->assertTrue($computer->getFromDB($computer->getID()));
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k));
+            $this->assertEquals($expected, $printer->getField($k), $k);
         }
 
        //reset values
@@ -128,18 +141,27 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k));
+            $this->assertEquals($expected, $printer->getField($k));
         }
 
        // Change the computer again
-        $CFG_GLPI['is_contact_autoupdate']  = 0;
-        $CFG_GLPI['is_user_autoupdate']     = 0;
-        $CFG_GLPI['is_group_autoupdate']    = 0;
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 0,
+            'is_user_autoupdate'     => 0,
+            'is_group_autoupdate'    => 0,
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]));
+        $this->login();
         $in2 = ['id'          => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -148,20 +170,26 @@ class ComputerTest extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->assertTrue($computer->update(\Toolbox::addslashes_deep($in2)));
+        $this->assertTrue($computer->update($in2));
         $this->assertTrue($computer->getFromDB($computer->getID()));
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
+            $expected = $v;
+            $old_value = $in[$k];
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+                $old_value = $old_value === 0 ? [] : [$old_value];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation DOES NOT occurs
-            $this->assertEquals($in[$k], $printer->getField($k));
+            $this->assertEquals($old_value, $printer->getField($k));
         }
 
        // Restore configuration
         $computer = $this->getNewComputer();
-        $CFG_GLPI = $saveconf;
 
        //update devices
         $cpu = new \DeviceProcessor();
@@ -188,8 +216,11 @@ class ComputerTest extends DbTestCase
         $this->assertGreaterThan(0, (int)$linkid);
 
        // Change the computer
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]));
         $in = ['id'           => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -199,10 +230,15 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($link->getFromDB($link->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $link->getField($k));
+            $this->assertEquals($expected, $link->getField($k));
         }
 
        //reset
@@ -222,8 +258,11 @@ class ComputerTest extends DbTestCase
         }
 
        // Change the computer again
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]));
         $in2 = ['id'          => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -233,14 +272,18 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($link->getFromDB($link->getID()));
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
+            $old_value = $in[$k];
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+                $old_value = [$old_value];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation DOES NOT occurs
-            $this->assertEquals($in[$k], $link->getField($k));
+            $this->assertEquals($old_value, $link->getField($k));
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     /**
@@ -250,16 +293,20 @@ class ComputerTest extends DbTestCase
      */
     public function testCreateLinks()
     {
-        global $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
-        $saveconf = $CFG_GLPI;
 
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->assertTrue($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]));
 
        // Change the computer
         $in = ['id'           => $computer->getField('id'),
@@ -270,7 +317,7 @@ class ComputerTest extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->assertTrue($computer->update(\Toolbox::addslashes_deep($in)));
+        $this->assertTrue($computer->update($in));
         $this->assertTrue($computer->getFromDB($computer->getID()));
 
         $printer = new \Printer();
@@ -284,20 +331,27 @@ class ComputerTest extends DbTestCase
         $this->assertGreaterThan(0, (int)$pid);
 
        // Create the link
-        $link = new \Computer_Item();
-        $in2 = ['computers_id' => $computer->getField('id'),
-            'itemtype'     => $printer->getType(),
-            'items_id'     => $printer->getID(),
+        $link = new Asset_PeripheralAsset();
+        $in2 = [
+            'itemtype_asset' => $computer->getType(),
+            'items_id_asset' => $computer->getField('id'),
+            'itemtype_peripheral' => $printer->getType(),
+            'items_id_peripheral' => $printer->getID(),
         ];
         $this->assertGreaterThan(0, (int)$link->add($in2));
 
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k));
+            $this->assertEquals($expected, $printer->getField($k));
         }
 
        //create devices
@@ -333,9 +387,6 @@ class ComputerTest extends DbTestCase
            // Check the printer and test propagation occurs
             $this->assertEquals($v, $link->getField($k));
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     public function testGetFromIter()
@@ -360,7 +411,7 @@ class ComputerTest extends DbTestCase
         $this->assertFalse($comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]));
         $this->hasPhpLogRecordThatContains(
             'getFromDBByCrit expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".',
-            Logger::WARNING
+            LogLevel::WARNING
         );
     }
 
@@ -450,8 +501,8 @@ class ComputerTest extends DbTestCase
         );
 
         //add antivirus
-        $antivirus = new \ComputerAntivirus();
-        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'computers_id' => $id]);
+        $antivirus = new \ItemAntivirus();
+        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'itemtype' => 'Computer', 'items_id' => $id]);
         $this->assertGreaterThan(0, $antivirus_id);
 
        //clone!
@@ -507,7 +558,7 @@ class ComputerTest extends DbTestCase
         }
 
         //check antivirus
-        $this->assertTrue($antivirus->getFromDBByCrit(['computers_id' => $clonedComputer->fields['id']]));
+        $this->assertTrue($antivirus->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $clonedComputer->fields['id']]));
 
         //check processor has been cloned
         $this->assertTrue($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]));
@@ -646,6 +697,57 @@ class ComputerTest extends DbTestCase
         $this->assertEquals('testCloneWithAutoName (copy)', $computer->fields['name']);
     }
 
+    /**
+     * Test cloning a computer template to a new template
+     * @return void
+     */
+    public function testCloneTemplate()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'is_template' => 1,
+            'template_name' => 'testCloneTemplate'
+        ]);
+
+        $clone_id = $computer->clone(clone_as_template: true);
+        $this->assertGreaterThan(0, $clone_id);
+
+        $clonedComputer = new \Computer();
+        $this->assertTrue($clonedComputer->getFromDB($clone_id));
+        $this->assertEquals(1, $clonedComputer->fields['is_template']);
+        $this->assertEquals('testCloneTemplate (copy)', $clonedComputer->fields['template_name']);
+    }
+
+    /**
+     * Test creating a template from an item using the clone feature
+     * @return void
+     */
+    public function testCreateTemplateFromItem()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $computer = $this->getNewComputer();
+        $computer->update([
+            'id' => $computer->fields['id'],
+            'name' => 'testCreateTemplateFromItem'
+        ]);
+
+        $template_id = $computer->clone([
+            'template_name' => 'my_template'
+        ], true, true);
+        $this->assertGreaterThan(0, $template_id);
+
+        $template = new \Computer();
+        $this->assertTrue($template->getFromDB($template_id));
+        $this->assertEquals(1, $template->fields['is_template']);
+        $this->assertEquals('my_template', $template->fields['template_name']);
+    }
+
     public function testTransfer()
     {
         $this->login();
@@ -716,7 +818,7 @@ class ComputerTest extends DbTestCase
 
         // Check that there is no saveInput already
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+            $this->assertArrayNotHasKey(\Computer::class, $_SESSION['saveInput']);
         }
         $computer = $this->getNewComputer();
         $cid = $computer->fields['id'];
@@ -729,7 +831,7 @@ class ComputerTest extends DbTestCase
 
         // Check that there is no savedInput after update
         if (isset($_SESSION['saveInput']) && is_array($_SESSION['saveInput'])) {
-            $this->array($_SESSION['saveInput'])->notHasKey('Computer');
+            $this->assertArrayNotHasKey(\Computer::class, $_SESSION['saveInput']);
         }
     }
 
@@ -738,20 +840,22 @@ class ComputerTest extends DbTestCase
         $computer = $this->getNewComputer();
         $printer1 = $this->getNewPrinter();
         $this->createItem(
-            \Computer_Item::class,
+            Asset_PeripheralAsset::class,
             [
-                'computers_id' => $computer->fields['id'],
-                'itemtype'     => \Printer::class,
-                'items_id'     => $printer1->fields['id'],
+                'itemtype_asset' => $computer->getType(),
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class,
+                'items_id_peripheral' => $printer1->fields['id'],
             ]
         );
         $printer2 = $this->getNewPrinter();
         $this->createItem(
-            \Computer_Item::class,
+            Asset_PeripheralAsset::class,
             [
-                'computers_id' => $computer->fields['id'],
-                'itemtype'     => \Printer::class,
-                'items_id'     => $printer2->fields['id'],
+                'itemtype_asset' => $computer->getType(),
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class,
+                'items_id_peripheral' => $printer2->fields['id'],
             ]
         );
 
@@ -824,5 +928,70 @@ class ComputerTest extends DbTestCase
         $printer1_agent = $printer1->getInventoryAgent();
         $this->assertInstanceOf(\Agent::class, $printer1_agent);
         $this->assertEquals($printer1_agent->fields, $computer_agent->fields);
+    }
+
+    /**
+     * Data provider for the testFormatSessionMessageAfterAction method
+     *
+     * @return iterable
+     */
+    public static function formatSessionMessageAfterActionProvider(): iterable
+    {
+        // Test message with link to item
+        yield [
+            "C1",
+            "Test",
+            'Test: <a href="/glpi/front/computer.form.php?id=CID" title="Computer 1">Computer 1</a>'
+        ];
+        yield [
+            "C2",
+            "Test",
+            'Test: <a href="/glpi/front/computer.form.php?id=CID" title="Computer 2">Computer 2</a>'
+        ];
+
+        // Test message without link
+        yield [
+            "C3",
+            "Test",
+            "Test: Computer 3"
+        ];
+    }
+
+    /**
+     * Test the formatSessionMessageAfterAction method
+     *
+     * @param string $item                       Item string to create
+     * @param string $raw_message                Raw message to format
+     * @param string $expected_formatted_message Expected formatted message
+     *
+     * @return void
+     */
+    #[DataProvider('formatSessionMessageAfterActionProvider')]
+    public function testFormatSessionMessageAfterAction(
+        string $item_str,
+        string $raw_message,
+        string $expected_formatted_message
+    ): void {
+        $this->login();
+        $entity = $this->getTestRootEntity();
+
+        switch ($item_str) {
+            case 'C1':
+                $item = $this->createItem(\Computer::class, ['name' => 'Computer 1', 'entities_id' => $entity->fields['id']]);
+                break;
+            case 'C2':
+                $item = $this->createItem(\Computer::class, ['name' => 'Computer 2', 'entities_id' => $entity->fields['id']]);
+                break;
+            case 'C3':
+                $item = $this->createItem(\Computer::class, ['name' => 'Computer 3', 'entities_id' => $entity->fields['id']]);
+                $item->input["_no_message_link"] = true;
+                break;
+            default:
+                throw new \InvalidArgumentException("Unknown item string: $item_str");
+        }
+        $expected_formatted_message = str_replace('CID', $item->getID(), $expected_formatted_message);
+
+        $message = $item->formatSessionMessageAfterAction($raw_message);
+        $this->assertSame($expected_formatted_message, $message);
     }
 }

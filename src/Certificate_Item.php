@@ -83,13 +83,11 @@ class Certificate_Item extends CommonDBRelation
                 $item->getType() == 'Certificate'
                 && count(Certificate::getTypes(false))
             ) {
+                $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(
-                        _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                        self::countForMainItem($item)
-                    );
+                    $nb = self::countForMainItem($item);
                 }
-                return _n('Associated item', 'Associated items', Session::getPluralNumber());
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
             } else if (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()
@@ -228,7 +226,7 @@ class Certificate_Item extends CommonDBRelation
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
             echo "<th colspan='" . ($canedit ? (5 + $colsup) : (4 + $colsup)) . "'>" .
-               __('Add an item') . "</th></tr>";
+               __s('Add an item') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td colspan='" . (3 + $colsup) . "' class='center'>";
             Dropdown::showSelectItemFromItemtypes(
@@ -266,13 +264,13 @@ class Certificate_Item extends CommonDBRelation
             Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
         }
 
-        echo "<th>" . _n('Type', 'Types', 1) . "</th>";
-        echo "<th>" . __('Name') . "</th>";
+        echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
+        echo "<th>" . __s('Name') . "</th>";
         if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
+            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         }
-        echo "<th>" . __('Serial number') . "</th>";
-        echo "<th>" . __('Inventory number') . "</th>";
+        echo "<th>" . __s('Serial number') . "</th>";
+        echo "<th>" . __s('Inventory number') . "</th>";
         echo "</tr>";
 
         foreach ($types_iterator as $type_row) {
@@ -296,7 +294,7 @@ class Certificate_Item extends CommonDBRelation
                         }
 
                         $link = $itemtype::getFormURLWithID($data["id"]);
-                        $name = "<a href=\"" . $link . "\">" . $data["name"] . "$ID</a>";
+                        $name = "<a href=\"" . $link . "\">" . htmlescape($data["name"]) . "$ID</a>";
 
                         echo "<tr class='tab_bg_1'>";
 
@@ -305,17 +303,17 @@ class Certificate_Item extends CommonDBRelation
                             Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                             echo "</td>";
                         }
-                        echo "<td class='center'>" . $item->getTypeName(1) . "</td>";
+                        echo "<td class='center'>" . htmlescape($item->getTypeName(1)) . "</td>";
                         echo "<td class='center' " . (isset($data['is_deleted']) && $data['is_deleted'] ? "class='tab_bg_2_2'" : "") .
                         ">" . $name . "</td>";
                         if (Session::isMultiEntitiesMode()) {
                             $entity = ($item->isEntityAssign() ?
                             Dropdown::getDropdownName("glpi_entities", $data['entity']) :
                             '-');
-                             echo "<td class='center'>" . $entity . "</td>";
+                             echo "<td class='center'>" . htmlescape($entity) . "</td>";
                         }
-                        echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-                        echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                        echo "<td class='center'>" . (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") . "</td>";
+                        echo "<td class='center'>" . (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
                         echo "</tr>";
                     }
                 }
@@ -434,7 +432,7 @@ class Certificate_Item extends CommonDBRelation
                  ]);
 
                  echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
+                 echo Html::submit(_x('button', 'Associate'), ['name' => 'add']);
                  echo "</td>";
                  echo "</tr>";
                  echo "</table>";
@@ -460,14 +458,14 @@ class Certificate_Item extends CommonDBRelation
         }
         echo "<th>" . __('Name') . "</th>";
         if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
+            echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         }
-        echo "<th>" . _n('Type', 'Types', 1) . "</th>";
-        echo "<th>" . __('DNS name') . "</th>";
-        echo "<th>" . __('DNS suffix') . "</th>";
-        echo "<th>" . __('Creation date') . "</th>";
-        echo "<th>" . __('Expiration date') . "</th>";
-        echo "<th>" . __('Status') . "</th>";
+        echo "<th>" . _sn('Type', 'Types', 1) . "</th>";
+        echo "<th>" . __s('DNS name') . "</th>";
+        echo "<th>" . __s('DNS suffix') . "</th>";
+        echo "<th>" . __s('Creation date') . "</th>";
+        echo "<th>" . __s('Expiration date') . "</th>";
+        echo "<th>" . __s('Status') . "</th>";
         echo "</tr>";
 
         $used = [];
@@ -511,8 +509,8 @@ class Certificate_Item extends CommonDBRelation
                     $data["certificatetypes_id"]
                 );
                  echo "</td>";
-                 echo "<td class='center'>" . $data["dns_name"] . "</td>";
-                 echo "<td class='center'>" . $data["dns_suffix"] . "</td>";
+                 echo "<td class='center'>" . htmlescape($data["dns_name"]) . "</td>";
+                 echo "<td class='center'>" . htmlescape($data["dns_suffix"]) . "</td>";
                  echo "<td class='center'>" . Html::convDate($data["date_creation"]) . "</td>";
                 if (
                     $data["date_expiration"] <= date('Y-m-d')
@@ -522,7 +520,7 @@ class Certificate_Item extends CommonDBRelation
                      echo "<div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div>";
                      echo "</td>";
                 } else if (empty($data["date_expiration"])) {
-                    echo "<td class='center'>" . __('Does not expire') . "</td>";
+                    echo "<td class='center'>" . __s('Does not expire') . "</td>";
                 } else {
                     echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";
                 }

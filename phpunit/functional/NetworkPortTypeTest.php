@@ -57,7 +57,6 @@ class NetworkPortTypeTest extends DbTestCase
             'FROM'   => \NetworkPortType::getTable(),
             'WHERE'  => ['is_importable' => true]
         ]);
-        $this->assertSame(7, count($iterator));
 
         $expecteds = [
             [
@@ -102,8 +101,16 @@ class NetworkPortTypeTest extends DbTestCase
                 'comment' => 'Multirate HDSL2 [Bob_Ray]',
                 'is_importable' => 1,
                 'instantiation_type' => 'NetworkPortEthernet',
+            ], [
+                'value_decimal' => 188,
+                'name' => 'radioMAC',
+                'comment' => 'MAC layer over radio links [Daniele_Behar]',
+                'is_importable' => 1,
+                'instantiation_type' => 'NetworkPortWifi',
             ]
         ];
+
+        $this->assertCount(count($expecteds), $iterator);
 
         foreach ($iterator as $row) {
             $expected = array_shift($expecteds);

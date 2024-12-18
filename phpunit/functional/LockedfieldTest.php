@@ -613,7 +613,7 @@ class LockedfieldTest extends DbTestCase
         $cos = new \Item_OperatingSystem();
         $aos = new \OperatingSystemArchitecture();
         $manufacturer = new \Manufacturer();
-        $iav = new \ComputerAntivirus();
+        $iav = new \ItemAntivirus();
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -681,7 +681,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame($archs_id, $cos->fields['operatingsystemarchitectures_id']);
 
         //check antivirus manufacturer
-        $this->assertTrue($iav->getFromDBByCrit(['computers_id' => $computers_id]));
+        $this->assertTrue($iav->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]));
         $this->assertTrue($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']));
         $manufacturers_id = $manufacturer->fields['id'];
         $this->assertSame($manufacturers_id, $iav->fields['manufacturers_id']);
@@ -728,7 +728,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame(['operatingsystemarchitectures_id' => 'x86_64'], $lockedfield->getLockedValues($cos->getType(), $cos->fields['id']));
 
         //make sure manufacturer is still the correct one
-        $this->assertTrue($iav->getFromDBByCrit(['computers_id' => $computers_id]));
+        $this->assertTrue($iav->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]));
         $this->assertSame($newmanufacturers_id, $iav->fields['manufacturers_id']);
 
         $this->assertSame(['manufacturers_id' => 'Microsoft Corporation'], $lockedfield->getLockedValues($iav->getType(), $iav->fields['id']));

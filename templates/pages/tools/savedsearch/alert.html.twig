@@ -1,0 +1,63 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      {% if item.isNewItem() %}
+         {{ inputs.hidden('savedsearches_id', item.fields['savedsearches_id']) }}
+      {% endif %}
+      {% set search_link_field %}
+         {{ search_link|raw }}
+         {% if count %}
+            <span class="badge bg-primary text-primary-fg">{{ count }}</span>
+         {% endif %}
+      {% endset %}
+
+      {{ fields.htmlField('', search_link_field, 'SavedSearch'|itemtype_name(1)) }}
+      {{ fields.textField('name', item.fields['name'], __('Name')) }}
+      {{ fields.dropdownArrayField('operator', item.fields['operator'], operators, __('Operator'), {
+         helper: __('Compare number of results the search returns against the specified value with selected operator')
+      }) }}
+      {{ fields.numberField('value', item.fields['value'], __('Value'), {
+         min: 0,
+         required: true,
+      }) }}
+      {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+      {{ fields.dropdownFrequency('frequency', item.fields['frequency'], __('Notification frequency')) }}
+   {% endblock %}
+{% endblock %}

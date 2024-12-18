@@ -33,10 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
-Session::checkLoginUser();
-
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
 } else {

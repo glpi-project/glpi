@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var \DBmysql $DB
  * @var \Migration $migration
@@ -46,7 +48,7 @@ $migration->addField('glpi_users', 'user_dn_hash', 'varchar(32)', [
 $migration->addPostQuery($DB->buildUpdate(
     'glpi_users',
     [
-        'user_dn_hash' => new \QueryExpression('MD5(`user_dn`)'),
+        'user_dn_hash' => new QueryExpression('MD5(`user_dn`)'),
     ],
     [
         'NOT' => [

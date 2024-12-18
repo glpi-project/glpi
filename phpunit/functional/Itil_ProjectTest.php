@@ -86,9 +86,10 @@ class Itil_ProjectTest extends DbTestCase
             );
 
             // Count displayed in tab name should be equal to count of ITIL items linked to project
-            $this->assertEquals(
-                count($items),
-                (int)preg_replace('/[^\d]*(\d+)[^\d]*/', '$1', $itil_project->getTabNameForItem($project))
+            $item_count = count($items);
+            $this->assertSame(
+                "Itil items {$item_count}",
+                strip_tags($itil_project->getTabNameForItem($project))
             );
         }
 

@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 
 //Html::back();
@@ -68,7 +66,7 @@ if (isset($_POST["add"])) {
         $params['notifications_id'] = $_GET['notifications_id'];
     }
 
-    $menus = ["config", "notification", "notifications_notificationtemplates"];
+    $menus = ["config", "notification", "Notification_NotificationTemplate"];
     Notification_NotificationTemplate::displayFullPageForItem(
         $_GET['id'],
         $menus,

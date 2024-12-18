@@ -34,22 +34,10 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', dirname(dirname(__DIR__)));
-define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests/config');
-define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
-define(
-   'PLUGINS_DIRECTORIES',
-   [
-      GLPI_ROOT . '/plugins',
-      GLPI_ROOT . '/tests/fixtures/plugins',
-   ]
-);
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-include_once(GLPI_ROOT . '/inc/based_config.php');
-
-\Glpi\Tests\BootstrapUtils::initVarDirectories();
-
-include_once(GLPI_ROOT . '/inc/includes.php');
+$kernel = new \Glpi\Kernel\Kernel('testing');
+$kernel->loadCommonGlobalConfig();
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 

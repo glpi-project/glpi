@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Cache;
 
 use Glpi\Toolbox\ArrayNormalizer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ArrayNormalizerTest extends \GLPITestCase
 {
@@ -102,9 +103,7 @@ class ArrayNormalizerTest extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider valuesProvider
-     */
+    #[DataProvider('valuesProvider')]
     public function testNormalizeValues(
         array $array,
         callable $values_normalizer,

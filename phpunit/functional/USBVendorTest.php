@@ -85,7 +85,7 @@ class USBVendorTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $vendors->add([
-                'name'  => addslashes("Farnsworth's Electronics"),
+                'name'  => "Farnsworth's Electronics",
                 'vendorid'  => '0001'
             ])
         );

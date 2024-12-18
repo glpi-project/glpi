@@ -112,7 +112,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
             $kb1->update(
                 [
                     'id'     => $kb1->getID(),
-                    'answer' => \Toolbox::addslashes_deep('Don\'t use paths with spaces, like C:\\Program Files\\MyApp')
+                    'answer' => 'Don\'t use paths with spaces, like C:\\Program Files\\MyApp'
                 ]
             )
         );
@@ -133,7 +133,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertEquals(4, $nb);
 
         $data = $DB->request([
-            'SELECT' => new \QueryExpression('MAX(id) AS id'),
+            'SELECT' => new \Glpi\DBAL\QueryExpression('MAX(id) AS id'),
             'FROM'   => 'glpi_knowbaseitems_revisions'
         ])->current();
         $nrev_id = $data['id'];
@@ -178,7 +178,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame('Revision <span class=\'badge\'>1</span>', $name);
+        $this->assertSame("Revision 1", strip_tags($name));
 
         $this->assertTrue(
             $kb1->update(
@@ -190,11 +190,11 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         );
 
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame('Revisions <span class=\'badge\'>2</span>', $name);
+        $this->assertSame("Revisions 2", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame('Revisions', $name);
+        $this->assertSame("Revisions", strip_tags($name));
     }
 
     private function getNewKbItem()

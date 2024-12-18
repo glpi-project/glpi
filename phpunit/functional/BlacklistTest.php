@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/blacklist.class.php */
 
@@ -103,7 +104,7 @@ class BlacklistTest extends DbTestCase
         ];
     }
 
-    /** @dataProvider processProvider */
+    #[DataProvider('processProvider')]
     public function testProcess($input, $expected)
     {
         $blacklist = new \Blacklist();

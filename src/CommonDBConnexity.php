@@ -48,7 +48,7 @@
  *            (May be disable using $disableAutoEntityForwarding)
  * - Log:    when we create, update or delete an item, we update its parent(s)'s histories to
  *           notify them of the creation, update or deletion
- * - Flying items : some items can be on the stock. For instance, before beeing plugged inside a
+ * - Flying items : some items can be on the stock. For instance, before being plugged inside a
  *                  computer, an Item_DeviceProcessor can be without any parent. It is now possible
  *                  to define such items and transfer them from parent to parent.
  *
@@ -142,7 +142,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param boolean $getEmpty          else : do we have to load an empty item ?
      * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
      *
-     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public function getConnexityItem(
         $itemtype,
@@ -179,7 +179,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
 
         foreach ($iterator as $row) {
-            $input = Toolbox::addslashes_deep($row);
+            $input = $row;
             $item = new static();
             $item->getFromDB($input[static::getIndexName()]);
             $res[] = $item;
@@ -195,7 +195,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param string  $itemtype          the type of the item we want the resulting items to be associated to
      * @param string  $items_id          the name of the item we want the resulting items to be associated to
      *
-     * @return array the items associated to the given one (empty if none was found)
+     * @return DBmysqlIterator the items associated to the given one (empty if none was found)
      */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
@@ -223,7 +223,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param boolean $getEmpty          else : do we have to load an empty item ?
      * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
      *
-     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public static function getItemFromArray(
         $itemtype,
@@ -317,12 +317,13 @@ abstract class CommonDBConnexity extends CommonDBTM
             ) {
                 return true;
             }
+
             Session::addMessageAfterRedirect(
-                sprintf(
+                htmlescape(sprintf(
                     __('Cannot update item %s #%s: not enough right on the parent(s) item(s)'),
                     $new_item->getTypeName(),
                     $new_item->getID()
-                ),
+                )),
                 INFO,
                 true
             );
@@ -447,7 +448,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @since 0.84
      *
      * Get the change values for history when only the fields of the CommonDBChild are updated
-     * @warning can be call as many time as fields are updated
+     * @warning can be call as many times as fields are updated
      *
      * @param string $field the name of the field that has changed
      *
@@ -457,7 +458,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     public function getHistoryChangeWhenUpdateField($field)
     {
 
-        return ['0', addslashes($this->oldvalues[$field] ?? ''), addslashes($this->fields[$field] ?? '')];
+        return ['0', ($this->oldvalues[$field] ?? ''), ($this->fields[$field] ?? '')];
     }
 
 
@@ -516,23 +517,19 @@ abstract class CommonDBConnexity extends CommonDBTM
     public static function getConnexityMassiveActionsSpecificities()
     {
 
-        return ['reaffect'      => false,
+        return [
+            'reaffect'      => false,
             'itemtypes'     => [],
             'normalized'    => ['affect'   => ['affect'],
                 'unaffect' => ['unaffect']
             ],
-            'action_name'   => ['affect'   => _x('button', 'Associate'),
-                'unaffect' => _x('button', 'Dissociate')
+            'action_name'   => [
+                'affect'   => _sx('button', 'Associate'),
+                'unaffect' => _sx('button', 'Dissociate')
             ]
         ];
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getMassiveActionsForItemtype()
-     **/
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -640,13 +637,13 @@ abstract class CommonDBConnexity extends CommonDBTM
                                 $itemtype_2 = $itemtype::$itemtype_2;
                                 $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
                             }
-                            echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
+                            echo htmlescape(sprintf(__('Select a peer for %s:'), $itemtype::getTypeName()));
                             Dropdown::showFromArray($peer_field, $values);
                             echo "<br>\n";
                         } else if (!$itemtype::$mustBeAttached_1) {
-                              echo "<input type='hidden' name='$peer_field' value='0'>";
+                              echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='0'>";
                         } else if (!$itemtype::$mustBeAttached_2) {
-                            echo "<input type='hidden' name='$peer_field' value='1'>";
+                            echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='1'>";
                         }
                     }
                 }
@@ -677,8 +674,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                 }
                 $peertypes = array_unique($peertypes);
                 if (count($peertypes) == 0) {
-                    echo __('Unable to reaffect given elements!');
-                    exit();
+                    echo __s('Unable to reaffect given elements!');
+                    return false;
                 }
                 $options = [];
                 if (count($peertypes) == 1) {
@@ -699,6 +696,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 return true;
         }
 
+        // @phpstan-ignore deadCode.unreachable (defensive programming)
         return parent::showMassiveActionsSubForm($ma);
     }
 
@@ -867,6 +865,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 return;
         }
 
+        // @phpstan-ignore deadCode.unreachable (defensive programming)
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }

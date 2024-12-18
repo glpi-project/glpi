@@ -45,8 +45,11 @@
    <a href="{{ user.getLinkURL() }}" class="d-flex align-items-center">
 {% endif %}
 
+{% set bg_color = user.getUserInitialsBgColor() %}
+{% set fg_color = call('Toolbox::getFgColor', [bg_color, 60]) %}
 <span class="avatar {{ avatar_size }} rounded"
-      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); background-color: inherit; {% else %} background-color: {{ user.getUserInitialsBgColor() }}{% endif %}">
+      style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); background-color: inherit; {% else %} background-color: {{ bg_color }};{% endif %}
+             color: {{ fg_color }}">
    {% if user_thumbnail is null %}
          {{ user.getUserInitials(enable_anonymization) }}
    {% endif %}

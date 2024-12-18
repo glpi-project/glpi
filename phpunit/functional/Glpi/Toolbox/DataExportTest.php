@@ -35,7 +35,7 @@
 
 namespace tests\units\Glpi\Toolbox;
 
-use Glpi\Toolbox\Sanitizer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
@@ -67,7 +67,7 @@ HTML,
 
         // Ticket title column
         yield [
-            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
+            'value'           => <<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">
@@ -79,15 +79,15 @@ $(function(){\$('#Ticket1').qtip({
 
 //]]>
 </script>
-HTML),
+HTML,
             'expected_result' => 'Ticket title',
         ];
 
         // Ticket status
         yield [
-            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
+            'value'           => <<<HTML
 <i class="itilstatus far fa-circle assigned me-1" title="" data-bs-toggle="tooltip" data-bs-original-title="Processing (assigned)" aria-label="Processing (assigned)"></i>&nbsp;Processing (assigned)</span>
-HTML),
+HTML,
             'expected_result' => 'Processing (assigned)',
         ];
 
@@ -135,9 +135,7 @@ HTML),
         ];
     }
 
-    /**
-     * @dataProvider normalizeValueForTextExportProvider
-     */
+    #[DataProvider('normalizeValueForTextExportProvider')]
     public function testNormalizeValueForTextExport(string $value, string $expected_result)
     {
         $dataexport = new \Glpi\Toolbox\DataExport();

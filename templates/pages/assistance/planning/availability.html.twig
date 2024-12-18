@@ -1,0 +1,172 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set begin_hour = config('planning_begin')|split(':', 2)[0] %}
+{% set end_hour = config('planning_end')|split(':', 2)[0] %}
+{% set real_begin = begin ~ ' ' ~ config('planning_begin') %}
+{% set real_end = end ~ ' ' ~ (config('planning_end') == '24:00' ? '23:59:59' : config('planning_end')) %}
+
+{% set col_size = (100 - 15) // (end_hour - begin_hour) %}
+
+<div class="text-center">
+    <form method="get" action="planning.php">
+        <div class="d-flex flex-wrap">
+            {{ fields.datetimeField('begin', begin, __('Start'), {
+                field_class: 'col-12 col-sm-6 col-lg-4',
+                is_horizontal: false
+            }) }}
+            {{ fields.datetimeField('end', end, __('End'), {
+                field_class: 'col-12 col-sm-6 col-lg-4',
+                is_horizontal: false
+            }) }}
+            {% if users|length > 1 %}
+                {{ fields.dropdownArrayField('limitto', params.limitto, {0: __('All')} + users, null, {
+                    nolabel: true,
+                    field_class: 'col-12 col-sm-6 col-lg-4 align-self-end',
+                    input_class: 'col-xxl-7 mt-3',
+                    is_horizontal: false
+                }) }}
+            {% endif %}
+        </div>
+        <input type="hidden" name="{{ item|itemtype_foreign_key }}" value="{{ item.getID() }}">
+        <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
+        <div class="d-flex flex-row-reverse">
+            {{ inputs.submit('checkavailability', _x('button', 'Search'), 1) }}
+        </div>
+    </form>
+    {% for user_id, user_display_name in displayed_users %}
+        {% set interv = {} %}
+        {% for itemtype in config('planning_types') %}
+            {% set interv = interv|merge(call([itemtype, 'populatePlanning'], [{
+                who: user_id,
+                whogroup: 0,
+                begin: real_begin,
+                end: real_end,
+            }])) %}
+            {% set interv = interv|merge(call([itemtype, 'populateNotPlanned'], [{
+                who: user_id,
+                whogroup: 0,
+                begin: real_begin,
+                end: real_end,
+            }])|default({})) %}
+        {% endfor %}
+        <div class="flex-row text-start">
+            <table class="table">
+                <thead>
+                    <tr><th class="fs-4" colspan="{{ ((end_hour - begin_hour) * 4) + 1 }}">{{ user_display_name }}</th></tr>
+                    <tr>
+                        <th></th>
+                        {% for hour in range(begin_hour, end_hour - 1) %}
+                            <th class="text-center" colspan="4" style="width: {{ col_size }}%">{{ '%02d'|format(hour) ~ ':00' }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set day_begin = date(real_begin).getTimestamp() %}
+                    {% set day_end = date(real_end).getTimestamp() %}
+                    {% set day_step = min(constant('DAY_TIMESTAMP'), day_end - day_begin) %}
+                    {# used days are tracked as a workaround to Twig not letting the range step be over the (max - range) #}
+                    {% set used_days = [] %}
+                    {% for time in range(day_begin, day_end, day_step) %}
+                        {% set begin_quarter = begin_hour * 4 %}
+                        {% set end_quarter = end_hour * 4 %}
+                        {% set current_day = time|date('Y-m-d') %}
+                        {% if current_day not in used_days %}
+                            {% set used_days = used_days + [current_day] %}
+                            <tr>
+                                <th>{{ current_day|formatted_datetime }}</th>
+                                {% for i in begin_quarter..(end_quarter - 1) %}
+                                    {% set begin_time = date(current_day.getTimestamp() + i * constant("HOUR_TIMESTAMP") / 4)|date('Y-m-d H:i:s') %}
+                                    {% set end_time = date(current_day.getTimestamp() + (i + 1) * constant("HOUR_TIMESTAMP") / 4)|date('Y-m-d H:i:s') %}
+                                    {% set interv_toremove = [] %}
+                                    {% set begin_act = end_time %}
+                                    {% set end_act = begin_time %}
+
+                                    {% for k, data in interv %}
+                                        {% if data['begin'] >= begin_time and data['end'] <= end_time %}
+                                            {# IN #}
+                                            {% set begin_act = min(begin_act, data['begin']) %}
+                                            {% set end_act = min(end_act, data['end']) %}
+                                            {% set interv_toremove = interv_toremove + k %}
+                                        {% elseif data['begin'] < begin_time and data['end'] > end_time %}
+                                            {# THROUGH #}
+                                            {% set begin_act = begin_time %}
+                                            {% set end_act = end_time %}
+                                        {% elseif data['begin'] >= begin_time and data['begin'] < end_time %}
+                                            {# BEGIN #}
+                                            {% set end_act = end_time %}
+                                        {% elseif data['end'] > begin_time and data['end'] <= end_time %}
+                                            {# END #}
+                                            {% set begin_act = begin_time %}
+                                            {% set end_act = min(end_act, data['end']) %}
+                                            {% set interv_toremove = interv_toremove + k %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# Remove keys from interv if needed #}
+                                    {% set interv = interv|filter((v, k) => k not in interv_toremove) %}
+
+                                    {% if begin_act < end_act %}
+                                        {% if begin_act <= begin_time and end_act >= end_time %}
+                                            {# Activity in quarter #}
+                                            <td class="bg-red-lt p-1"></td>
+                                        {% else %}
+                                            {# Activity in part of the quarter #}
+                                            {% if begin_act <= begin_time %}
+                                                <td class="partialavailableend p-1"></td>
+                                            {% else %}
+                                                <td class="partialavailablebegin p-1"></td>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        {# No Activity #}
+                                        <td class="bg-green-lt p-1"></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+    <div class="d-flex justify-content-center">
+        <div class="flex-column">
+            <span class="fw-bold p-2">{{ __('Caption') }}</span>
+            <span class="bg-green-lt p-2">{{ __('Available') }}</span>
+            <span class="bg-red-lt p-2">{{ __('Unavailable') }}</span>
+        </div>
+    </div>
+</div>

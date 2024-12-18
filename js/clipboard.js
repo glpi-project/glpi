@@ -31,22 +31,22 @@
  * ---------------------------------------------------------------------
  */
 
-$(function() {
+$(() => {
     // set a function to track drag hover event
-    $(document).on("click", ".copy_to_clipboard_wrapper", function(event) {
+    $(document).on("click", ".copy_to_clipboard_wrapper", (event) => {
 
         // find the good element
-        var target = $(event.target);
+        let target = $(event.target);
         if (target.attr('class') == 'copy_to_clipboard_wrapper') {
             target = target.find('*');
         }
 
         // copy text
         target.select();
-        var succeed;
+        let succeed;
         try {
             succeed = document.execCommand("copy");
-        } catch (e) {
+        } catch {
             succeed = false;
         }
         target.blur();
@@ -59,6 +59,17 @@ $(function() {
             target.parent('.copy_to_clipboard_wrapper').addClass('copyfail');
         }
     });
+
+    /**
+     * For each input of type text with name 'name'
+     * if the input get a paste event, the text is trimmed before being pasted
+     */
+    $(document).on("paste", "input[type='text'][name='name']", (event) => {
+        event.preventDefault();
+        const pastedData = event.originalEvent.clipboardData || window.clipboardData;
+        const pastedText = pastedData.getData('text');
+        document.execCommand('insertText', false, pastedText.trim());
+    });
 });
 
 /**
@@ -68,12 +79,12 @@ $(function() {
  *
  * @return {void}
  */
-function copyTextToClipboard (text) {
+function copyTextToClipboard(text) {
     // Create a textarea to be able to select its content
-    var textarea = document.createElement('textarea');
+    const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.setAttribute('readonly', ''); // readonly to prevent focus
-    textarea.style = {position: 'absolute', visibility: 'hidden'};
+    textarea.style = { position: 'absolute', visibility: 'hidden' };
     document.body.appendChild(textarea);
 
     // Select and copy text to clipboard

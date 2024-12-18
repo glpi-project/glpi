@@ -1,0 +1,104 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set lang = lang|default(null) %}
+{% set comment_id = comment_id|default(false) %}
+{% set parent_comment_id = parent_comment_id|default(false) %}
+{% set rand = random() %}
+{% set edit = edit|default(false) %}
+{% set comment_style = (edit == false or parent_comment_id != false) %}
+
+<div class="d-flex flex-wrap align-items-start {{ comment_style ? "mt-3" : "" }}">
+    {% if comment_style %}
+        <a href="" class="me-3 mt-n2 ms-n2">
+            {{ include('components/user/picture.html.twig', {
+                'users_id': session('glpiID'),
+                'with_link': false,
+            }, with_context = false) }}
+        </a>
+    {% endif %}
+    <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column pt-3" : "w-100" }}">
+        <form name="kbcomment_form{{ rand }}" id="kbcomment_form{{ rand }}" class="comment_form" method="post"
+            action="{{ 'KnowbaseItem_Comment'|itemtype_form_path }}" data-submit-once data-track-changes="true">
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.hidden('knowbaseitems_id', kbitem_id) }}
+            {% if lang is not null %}
+                {{ inputs.hidden('language', lang) }}
+            {% endif %}
+            {% if parent_comment_id %}
+                {{ inputs.hidden('parent_comment_id', parent_comment_id) }}
+            {% endif %}
+            {% if comment_id %}
+                {{ inputs.hidden('id', comment_id) }}
+            {% endif %}
+
+            {% set btn %}
+                <div class="d-flex pe-2 mt-2 ms-auto">
+                    {% if comment_id or parent_comment_id %}
+                        <div class="ms-2">
+                            {{ inputs.button('cancel', __('Cancel'), 'reset', 1, {
+                                class: 'btn btn-ghost-secondary'
+                            }) }}
+                        </div>
+                    {% endif %}
+                    <div class="ms-2">
+                        {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1) }}
+                    </div>
+                    <script>
+                        $(`#kbcomment_form{{ rand }}`).on('click', 'button[name="cancel"]', (e) => {
+                            const btn = $(e.currentTarget);
+                            btn.closest('.comment').find('.displayed_content').show();
+                            $(`#kbcomment_form{{ rand }}`).closest('.newcomment, .editcomment').remove();
+                        });
+                    </script>
+                </div>
+            {% endset %}
+
+            {% if comment_id %}
+                <br>
+            {% endif %}
+            <div class="px-2" style="min-width: 400px;">
+                {{ fields.textareaField('comment', comment, null, {
+                    no_label: true,
+                    full_width: true,
+                    add_field_html: btn,
+                    add_field_class: 'd-flex flex-column',
+                    required: true,
+                }) }}
+            </div>
+        </form>
+    </div>
+</div>

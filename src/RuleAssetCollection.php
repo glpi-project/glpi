@@ -35,7 +35,7 @@
 
 class RuleAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = false;
     public static $rightname           = 'rule_asset';
     public $menu_option         = 'ruleasset';
@@ -45,10 +45,8 @@ class RuleAssetCollection extends RuleCollection
         return __('Business rules for assets');
     }
 
-
     public function cleanTestOutputCriterias(array $output)
     {
-
         if (isset($output["_rule_process"])) {
             unset($output["_rule_process"]);
         }

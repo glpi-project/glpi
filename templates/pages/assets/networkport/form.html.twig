@@ -1,0 +1,77 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
+    <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+    <input type="hidden" name="_create_children" value="1">
+    <input type="hidden" name="instantiation_type" value="{{ item.fields['instantiation_type'] }}">
+
+    {% set type_label = call('NetworkPort::displayRecursiveItems', [recursive_items, 'Type', false]) %}
+    {% set type_value = call('NetworkPort::displayRecursiveItems', [recursive_items, 'Link', false]) %}
+    {{ fields.htmlField('', type_value, type_label) }}
+
+    {% if not params.several %}
+        {{ fields.numberField('logical_number', item.fields['logical_number'], _n('Port number', 'Port number', 1)) }}
+    {% else %}
+        {% set logical_num_field %}
+            <div class="d-flex">
+                {{ fields.numberField('from_logical_number', 0, null, {
+                    no_label: true,
+                    mb: ''
+                }) }}
+                <span class="mx-1 mt-2 text-nowrap">--></span>
+                {{ fields.numberField('to_logical_number', 0, null, {
+                    no_label: true,
+                    mb: ''
+                }) }}
+            </div>
+        {% endset %}
+        {{ fields.htmlField('', logical_num_field, _n('Port number', 'Port number', 1)) }}
+    {% endif %}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
+
+    {% if instantiation != false %}
+        {{ fields.smallTitle(get_class(instantiation)|itemtype_name) }}
+        {{ call([instantiation, 'showInstantiationForm'], [item, params, recursive_items]) }}
+    {% endif %}
+
+    {% if not params.several %}
+        {{ call('NetworkName::showFormForNetworkPort', [item.getID()]) }}
+    {% endif %}
+{% endblock %}

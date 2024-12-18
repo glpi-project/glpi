@@ -2,64 +2,10 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between class\\-string\\<CommonDBTM\\> and \'Planning\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
+	'message' => '#^Call to function is_array\\(\\) with array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\} will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/ajax/central.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' on \\*NEVER\\* in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' on array\\{comment\\: string\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/common.tabs.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 2,
 	'path' => __DIR__ . '/ajax/dropdownItilActors.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'id\' to string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/impact.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'impactcontexts_id\' to string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/impact.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'node_id\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/impact.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type null\\.$#',
@@ -68,52 +14,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/kanban.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/reservations.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/ajax/searchoptionvalue.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 2,
-	'path' => __DIR__ . '/ajax/timeline.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/transfers.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/updateTrackingDeviceType.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/viewsubitem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonITILCost and CommonITILCost will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/front/commonitilcost.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between CommonItilObject_Item and CommonItilObject_Item will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonITILTask and CommonITILTask will always evaluate to true\\.$#',
@@ -128,8 +50,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/css.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/dropdown.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/dropdown.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/front/dropdown.common.form.php',
 ];
@@ -140,10 +80,40 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/dropdown.common.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/front/inventory.php',
+	'path' => __DIR__ . '/front/dropdown.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/dropdown.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^The overwriting exit point is on this line\\.$#',
+	'identifier' => 'finally.exitPoint',
+	'count' => 1,
+	'path' => __DIR__ . '/front/form/access_control.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^This throw is overwritten by a different one in the finally block below\\.$#',
+	'identifier' => 'finally.exitPoint',
+	'count' => 2,
+	'path' => __DIR__ . '/front/form/access_control.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^The overwriting exit point is on this line\\.$#',
+	'identifier' => 'finally.exitPoint',
+	'count' => 1,
+	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^This throw is overwritten by a different one in the finally block below\\.$#',
+	'identifier' => 'finally.exitPoint',
+	'count' => 6,
+	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
@@ -152,16 +122,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_device.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.expr',
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/front/logout.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'staticMethod.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notification.tags.php',
+	'path' => __DIR__ . '/front/locale.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
@@ -170,64 +134,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
-	'identifier' => 'greater.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/front/report.infocom.conso.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
-	'identifier' => 'greater.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/front/report.infocom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
+	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
+	'identifier' => 'match.unhandled',
 	'count' => 1,
-	'path' => __DIR__ . '/front/user.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/autoload.function.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "CAS\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/autoload.function.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between Laminas\\\\I18n\\\\Translator\\\\TranslatorInterface and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/inc/autoload.function.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/based_config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function getDateCriteria\\(\\) should return string but returns array\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/db.function.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/inc/includes.php',
+	'path' => __DIR__ . '/front/stat.graph.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/install/empty_data.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'testing\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/install/empty_data.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Ternary operator condition is always false\\.$#',
+	'identifier' => 'ternary.alwaysFalse',
 	'count' => 2,
-	'path' => __DIR__ . '/install/install.php',
+	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type DBmysql is not subtype of native type DB\\.$#',
@@ -236,130 +164,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset string on array\\{\\} in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
+	'message' => '#^Strict comparison using \\!\\=\\= between mixed~\'\' and \'\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.80.x_to_0.83.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.83.0_to_0.83.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.83.0_to_0.83.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.83.1_to_0.83.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.83.1_to_0.83.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.83.x_to_0.84.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.83.x_to_0.84.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.84.0_to_0.84.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.0_to_0.84.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.84.1_to_0.84.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.1_to_0.84.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.84.3_to_0.84.4.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.3_to_0.84.4.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.5_to_0.84.6.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.5_to_0.84.6.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.x_to_0.85.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.84.x_to_0.85.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.85.0_to_0.85.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.85.0_to_0.85.3.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.85.3_to_0.85.5.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.85.3_to_0.85.5.php',
+	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
@@ -442,6 +250,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
+	'count' => 3,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between \'11\\.0\\.0\\-dev\' and \'11\\.0\\.0\\-dev\' will always evaluate to true\\.$#',
+	'identifier' => 'equal.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Empty array passed to foreach\\.$#',
+	'identifier' => 'foreach.emptyArray',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.1.0_to_9.1.1.php',
 ];
@@ -462,6 +282,12 @@ $ignoreErrors[] = [
 	'identifier' => 'if.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.1.1_to_9.1.3.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Migration\\:\\:addPostQuery\\(\\) invoked with 4 parameters, 1\\-2 required\\.$#',
+	'identifier' => 'arguments.count',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
@@ -486,12 +312,6 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/itemtype_pictures.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/update.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method APIClient\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
@@ -536,24 +356,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:\\$response \\(DOMDocument\\) does not accept array\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
 	'count' => 1,
@@ -572,172 +374,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
-	'identifier' => 'catch.neverThrown',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:applyMassiveAction\\(\\) with return type void returns array\\|null but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<int\\|string, mixed\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:getActiveProfile\\(\\) should return int but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/inc/downstream\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:getItemtype\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\<int\\|string, array\\<mixed\\>\\|string\\>\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) should be compatible with return type \\(string\\) of method Glpi\\\\Api\\\\API\\:\\:parseIncomingParams\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between false and array will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Appliance\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIXmlrpc.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIXmlrpc.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Computer_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Computer_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Netpoint.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/TicketFollowup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Appliance.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Appliance\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Appliance_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Psr\\\\Log\\\\LoggerInterface and Psr\\\\Log\\\\LoggerInterface will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'Code\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'Message\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$last_fatal_trace \\(string\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$reserved_memory \\(string\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$reserved_memory is never read, only written\\.$#',
-	'identifier' => 'property.onlyWritten',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/View/Extension/FrontEndAssetsExtension.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/View/Extension/ItemtypeExtension.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and 2 will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Application/View/TemplateRenderer.php',
+	'path' => __DIR__ . '/src/Appliance.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -752,18 +398,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:connection_ldap\\(\\) never assigns null to &\\$error so it can be removed from the by\\-ref type\\.$#',
 	'identifier' => 'parameterByRef.unusedType',
 	'count' => 1,
@@ -771,6 +405,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:login\\(\\) should return bool but returns int\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Auth\\:\\:validateLogin\\(\\) should return bool but returns int\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
@@ -788,12 +428,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'host\' on string in empty\\(\\) does not exist\\.$#',
-	'identifier' => 'empty.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept bool\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -802,7 +436,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 5,
+	'count' => 8,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
@@ -824,27 +458,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between 2\\|3\\|4 and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
+	'message' => '#^Strict comparison using \\=\\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
+	'identifier' => 'identical.alwaysTrue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 5,
+	'count' => 3,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on object\\|false\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\>" between array\\|int and 0 results in an error\\.$#',
+	'identifier' => 'greater.invalid',
+	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -856,12 +496,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
@@ -902,8 +536,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between bool and 0 will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between bool and 0 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 2,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
@@ -914,20 +560,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthMail\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Offset \'connect_string\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthMail.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'connect_string\' on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
+	'message' => '#^Offset \'connect_string\' on string in empty\\(\\) does not exist\\.$#',
+	'identifier' => 'empty.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthMail.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
+	'message' => '#^Offset \'id\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthMail.php',
 ];
@@ -944,8 +590,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Blacklist.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Budget\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between Change\\|Contract\\|Problem\\|Project\\|Ticket and Item_Devices will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Budget.php',
 ];
@@ -962,189 +608,51 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Budget.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Cable\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Cable.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Cable\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Cable.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Cable.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CableStrand\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CableStrand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
+	'message' => '#^If condition is always false\\.$#',
+	'identifier' => 'if.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Cache/CacheManager.php',
+	'path' => __DIR__ . '/src/Central.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Certificate\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Cache/CacheManager.php',
+	'path' => __DIR__ . '/src/Certificate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Certificate\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:\\$fields\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 5,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:add\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:can\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:delete\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getType\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isField\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isNewItem\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:update\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Calendar.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:getPrincipalByPath\\(\\) should return array but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Backend/Principal.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Plugin/Acl.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\CalDAV\\\\Plugin\\\\Browser\\:\\:httpGet\\(\\) should return bool but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CalDAV/Plugin/CalDAV.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CartridgeItem\\:\\:cronCartridge\\(\\) with return type void returns int but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CartridgeItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Central\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$checkitem \\(null\\) of method Certificate\\:\\:getSpecificMassiveActions\\(\\) should be compatible with parameter \\$checkitem \\(object\\) of method CommonDBTM\\:\\:getSpecificMassiveActions\\(\\)$#',
-	'identifier' => 'method.childParameterType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
@@ -1160,6 +668,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Change.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Change.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\!\\= between \'\' and \'\' will always evaluate to false\\.$#',
 	'identifier' => 'notEqual.alwaysFalse',
 	'count' => 1,
@@ -1172,8 +692,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Change.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Change\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
+	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Change.php',
 ];
@@ -1184,33 +704,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Change.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Cluster\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Cluster.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Cluster\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Cluster.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Cluster.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 4,
 	'path' => __DIR__ . '/src/CommonDBChild.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBChild\\:\\:showChildsForItemForm\\(\\) should return bool\\|void but returns string\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBChild.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBConnexity\\:\\:getItemsAssociationRequest\\(\\) should return array but returns DBmysqlIterator\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, bool\\|CommonDBTM given\\.$#',
+	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBConnexity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
 	'path' => __DIR__ . '/src/CommonDBConnexity.php',
 ];
 $ignoreErrors[] = [
@@ -1232,12 +758,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 6,
@@ -1245,6 +765,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_numeric\\(\\) with int will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -1258,12 +784,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always false\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#',
-	'identifier' => 'equal.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
@@ -1298,27 +818,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:restoreInput\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -1376,14 +878,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always false\\.$#',
-	'identifier' => 'ternary.alwaysFalse',
+	'message' => '#^Strict comparison using \\=\\=\\= between numeric\\-string and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Yield can be used only with these return types\\: Generator, Iterator, Traversable, iterable\\.$#',
-	'identifier' => 'generator.returnType',
+	'message' => '#^Ternary operator condition is always false\\.$#',
+	'identifier' => 'ternary.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
@@ -1391,18 +893,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method CommonDBVisible\\:\\:showVisibility\\(\\) with return type void returns true but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBVisible.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonDBVisible.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 3,
 	'path' => __DIR__ . '/src/CommonDBVisible.php',
 ];
 $ignoreErrors[] = [
@@ -1436,20 +926,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonGLPI\\:\\:getDisplayOptions\\(\\) with return type void returns mixed but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Unsafe call to private method CommonGLPI\\:\\:getTabIconClass\\(\\) through static\\:\\:\\.$#',
+	'identifier' => 'staticClassAccess.privateMethod',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILActor\\:\\:showSupplierNotificationForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILActor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILActor\\:\\:showUserNotificationForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Comparison operation "\\<\\=" between int\\<1, max\\> and 0 is always false\\.$#',
+	'identifier' => 'smallerOrEqual.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILActor.php',
 ];
@@ -1460,6 +944,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILActor.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$withtemplate \\(int\\) of method CommonITILCost\\:\\:showForObject\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILCost.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 6,
@@ -1468,12 +958,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<mixed, mixed\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_null\\(\\) with int\\|string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
@@ -1490,6 +974,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$params \\(array\\{\\}\\) of method CommonITILObject\\:\\:getCommonDatatableColumns\\(\\) is incompatible with type array\\{ticket_stats\\: bool\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$params \\(array\\{\\}\\) of method CommonITILObject\\:\\:getDatatableEntries\\(\\) is incompatible with type array\\{ticket_stats\\: bool\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
@@ -1497,24 +993,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:computePriority\\(\\) should return int but returns float\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:getDefaultActor\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:getDefaultActorRightSearch\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:prepareInputForAdd\\(\\) should return array\\|false but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -1532,18 +1010,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'_auto_import\' on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset string on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type null\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 3,
@@ -1556,19 +1022,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 2,
+	'message' => '#^Strict comparison using \\=\\=\\= between CommonDBTM and \'User\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between CommonDBTM and \'User\' will always evaluate to false\\.$#',
+	'message' => '#^Strict comparison using \\=\\=\\= between false and int\\|string\\|null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -1580,28 +1046,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 4,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonITILRecurrent\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to an undefined static method CommonDBRelation\\:\\:getLinkedTo\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
+	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILRecurrent is not subtype of native type RecurrentChange\\|TicketRecurrent\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrentCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#',
+	'identifier' => 'function.impossibleType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
@@ -1670,79 +1142,103 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILValidation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILValidation\\:\\:dropdownValidator\\(\\) with return type void returns mixed but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^If condition is always true\\.$#',
+	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILValidation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILValidation\\:\\:dropdownValidator\\(\\) with return type void returns string but should not return anything\\.$#',
+	'message' => '#^Method CommonITILValidation\\:\\:getItilObjectItemType\\(\\) invoked with 1 parameter, 0 required\\.$#',
+	'identifier' => 'arguments.count',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILValidationCron.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getClosedStatusArray\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
+	'identifier' => 'greater.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#3 \\$itemtype \\(int\\) of method CommonItilObject_Item\\:\\:dropdownMyDevices\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method CommonItilObject_Item\\:\\:displayItemAddForm\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILValidation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Computer\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Computer.php',
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Computer\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Method CommonItilObject_Item\\:\\:dropdown\\(\\) should return int\\|string\\|false but empty return statement found\\.$#',
+	'identifier' => 'return.empty',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param has invalid value \\(integer type \\$obj_id ITIL object on which the used item are attached\\)\\: Unexpected token "type", expected variable at offset 76 on line 4$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Computer\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Computer\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Computer\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'contact\' on array\\{\\}\\|array\\{states_id\\?\\: string, locations_id\\?\\: string\\} in isset\\(\\) does not exist\\.$#',
+	'message' => '#^Instanceof between static\\(Computer\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'contact\' on array\\{\\}\\|array\\{states_id\\?\\: mixed, locations_id\\?\\: mixed\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'contact_num\' on array\\{\\}\\|array\\{states_id\\?\\: string, locations_id\\?\\: string\\} in isset\\(\\) does not exist\\.$#',
+	'message' => '#^Offset \'contact_num\' on array\\{\\}\\|array\\{states_id\\?\\: mixed, locations_id\\?\\: mixed\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'groups_id\' on array\\{\\}\\|array\\{states_id\\?\\: string, locations_id\\?\\: string\\} in isset\\(\\) does not exist\\.$#',
+	'message' => '#^Offset \'groups_id\' on array\\{\\}\\|array\\{states_id\\?\\: mixed, locations_id\\?\\: mixed\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'users_id\' on array\\{\\}\\|array\\{states_id\\?\\: string, locations_id\\?\\: string\\} in isset\\(\\) does not exist\\.$#',
+	'message' => '#^Offset \'users_id\' on array\\{\\}\\|array\\{states_id\\?\\: mixed, locations_id\\?\\: mixed\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
@@ -1760,130 +1256,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(integer\\: count\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 199 on line 9$#',
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$expanded_info \\? array\\<string, \\{name\\: string, dark\\: boolean\\}\\> \\: array\\<string, string\\>\\)\\: Unexpected token "\\$expanded_info", expected type at offset 154 on line 6$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Computer_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Config\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Consumable\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
+	'path' => __DIR__ . '/src/Consumable.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always true\\.$#',
-	'identifier' => 'booleanOr.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(ConsumableItem\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Console/AbstractCommand.php',
+	'path' => __DIR__ . '/src/ConsumableItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/AbstractCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Console\\\\AbstractCommand\\:\\:\\$progress_bar \\(Symfony\\\\Component\\\\Console\\\\Helper\\\\ProgressBar\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/AbstractCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(ConsumableItem\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Application.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\Application\\) and \'db\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Application.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Console/Application.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Console\\\\Application\\:\\:\\$db \\(DBmysql\\) does not accept DB\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Application.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/CommandLoader.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\InstallCommand\\:\\:shouldSetDBConfig\\(\\) is unused\\.$#',
-	'identifier' => 'method.unused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getFallbackRoomId\\(\\) never returns float so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) is unused\\.$#',
-	'identifier' => 'method.unused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) never returns float so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:isAlreadyInstalled\\(\\) should return array but returns bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Plugin/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Plugin/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/System/CheckRequirementsCommand.php',
+	'path' => __DIR__ . '/src/ConsumableItem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -1892,64 +1292,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Contract\\:\\:dropdown\\(\\) should return int\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
+	'message' => '#^Return type \\(void\\) of method ContractCost\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
+	'identifier' => 'method.childReturnType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Contract.php',
+	'path' => __DIR__ . '/src/ContractCost.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
+	'message' => '#^Default value of the parameter \\#4 \\$options \\(array\\{\\}\\) of method CronTask\\:\\:register\\(\\) is incompatible with type array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
+	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
+	'message' => '#^Match arm comparison between 0 and 0 is always true\\.$#',
+	'identifier' => 'match.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Item.php',
+	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function sprintf\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'function.resultUnused',
+	'message' => '#^Match arm comparison between 2 and 2 is always true\\.$#',
+	'identifier' => 'match.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Supplier.php',
+	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CronTaskLog\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Offset \'allowmode\'\\|\'comment\'\\|\'hourmax\'\\|\'hourmin\'\\|\'logs_lifetime\'\\|\'mode\'\\|\'param\'\\|\'state\' on array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CronTaskLog.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Csv/StatCsvExport.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Csv/StatCsvExport.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to property \\$connected on an unknown class DB\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to property \\$connected on an unknown class DBSlave\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method request\\(\\) on an unknown class DBSlave\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DBConnection.php',
+	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$first_connection on null\\.$#',
@@ -1958,32 +1328,38 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 4,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBConnection\\:\\:getDBSlaveConf\\(\\) should return DBmysql\\|void but returns DBSlave\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DBConnection\\:\\:getReadConnection\\(\\) should return DBmysql but returns DBSlave\\.$#',
-	'identifier' => 'return.type',
-	'count' => 5,
+	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/config/config_db_slave\\.php" is not a file or it does not exist\\.$#',
-	'identifier' => 'includeOnce.fileNotFound',
-	'count' => 4,
+	'message' => '#^Default value of the parameter \\#3 \\$config_dir \\(null\\) of method DBConnection\\:\\:updateConfigProperties\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
+	'message' => '#^Default value of the parameter \\#4 \\$config_dir \\(null\\) of method DBConnection\\:\\:updateConfigProperty\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBConnection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DBConnection\\:\\:showAllReplicateDelay\\(\\) should return string\\|null but return statement is missing\\.$#',
+	'identifier' => 'return.missing',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBConnection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$no_display \\? string \\: null\\)\\: Unexpected token "\\$no_display", expected type at offset 236 on line 6$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
@@ -1994,13 +1370,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between string and QueryExpression will always evaluate to false\\.$#',
+	'message' => '#^Instanceof between string and Glpi\\\\DBAL\\\\QueryExpression will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
@@ -2036,19 +1406,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between array\\|string and QueryExpression will always evaluate to false\\.$#',
+	'message' => '#^Instanceof between array\\|string and Glpi\\\\DBAL\\\\QueryExpression will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between string and QueryExpression will always evaluate to false\\.$#',
+	'message' => '#^Instanceof between string and Glpi\\\\DBAL\\\\QueryExpression will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between string and QuerySubQuery will always evaluate to false\\.$#',
+	'message' => '#^Instanceof between string and Glpi\\\\DBAL\\\\QuerySubQuery will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
@@ -2060,58 +1430,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always true\\.$#',
-	'identifier' => 'ternary.alwaysTrue',
+	'message' => '#^Loose comparison using \\=\\= between null and true will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 4,
+	'message' => '#^Result of && is always false\\.$#',
+	'identifier' => 'booleanAnd.alwaysFalse',
+	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DCRoom\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DCRoom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DCRoom\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(DCRoom\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DCRoom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DCRoom\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DCRoom.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(DatabaseInstance\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Dashboard/Filters/DatesModFilter.php',
+	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
-	'identifier' => 'staticMethod.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dashboard/Provider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\<" between 0 and 1 is always true\\.$#',
-	'identifier' => 'smaller.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Dashboard/Provider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(DatabaseInstance\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DatabaseInstance.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DatabaseInstance.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_int\\(\\) with int will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
@@ -2120,15 +1478,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with DBmysql and \'close\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot use array destructuring on string\\.$#',
 	'identifier' => 'offsetAccess.nonArray',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
@@ -2144,7 +1496,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getTreeValueCompleteName\\(\\) should return string but returns array\\<string, string\\>\\.$#',
+	'message' => '#^Method DbUtils\\:\\:getTreeValueCompleteName\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -2162,12 +1514,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between DBmysql and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 2,
@@ -2180,13 +1526,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\|string and null will always evaluate to false\\.$#',
+	'message' => '#^Strict comparison using \\=\\=\\= between bool and \'auto\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between bool and \'auto\' will always evaluate to false\\.$#',
+	'message' => '#^Strict comparison using \\=\\=\\= between int\\<1, max\\> and 0 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<int\\>\\|int\\|numeric\\-string and null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -2198,74 +1550,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between int and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Debug/ProfilerSection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceGraphicCard\\:\\:prepareInputForAdd\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceGraphicCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceGraphicCard\\:\\:prepareInputForUpdate\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceGraphicCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceHardDrive\\:\\:prepareInputForAdd\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceHardDrive.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceHardDrive\\:\\:prepareInputForUpdate\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceHardDrive.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceMemory\\:\\:prepareInputForAdd\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceMemory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceMemory\\:\\:prepareInputForUpdate\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceMemory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceProcessor\\:\\:prepareInputForAdd\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceProcessor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DeviceProcessor\\:\\:prepareInputForUpdate\\(\\) should return array\\|false but returns float\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DeviceProcessor.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DisplayPreference.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DisplayPreference.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DisplayPreference\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^PHPDoc tag @return with type array\\|null is incompatible with native type bool\\.$#',
+	'identifier' => 'return.phpDocType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DisplayPreference.php',
 ];
@@ -2294,14 +1586,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Document\\:\\:dropdown\\(\\) should return int\\|string but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Document\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$return_response \\? Response \\: void\\)\\: Unexpected token "\\$return_response", expected type at offset 137 on line 6$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
 ];
@@ -2318,18 +1604,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Document_Item\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Document_Item\\:\\:getTypeItemsQueryParams\\(\\) should return DBmysqlIterator but returns array\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Document_Item\\:\\:showForDocument\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -2342,6 +1616,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Domain\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Domain.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Domain\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Domain.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Domain\\:\\:dropdownDomains\\(\\) with return type void returns int\\<0, max\\> but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -2351,12 +1637,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Domain\\:\\:dropdownDomains\\(\\) with return type void returns int\\|string but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Domain.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Domain.php',
 ];
 $ignoreErrors[] = [
@@ -2372,14 +1652,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DomainRecordType.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Domain_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always true\\.$#',
-	'identifier' => 'ternary.alwaysTrue',
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Domain_Item.php',
 ];
@@ -2408,12 +1682,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:getDropdownName\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Dropdown\\:\\:getDropdownUsers\\(\\) should return array\\|string but empty return statement found\\.$#',
 	'identifier' => 'return.empty',
 	'count' => 1,
@@ -2438,12 +1706,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'max\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -2453,12 +1715,6 @@ $ignoreErrors[] = [
 	'message' => '#^Offset \'min\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
@@ -2474,44 +1730,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type string supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'field\' on bool\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'items_id\' on bool\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'itemtype\' on bool\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'language\' on bool\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DropdownTranslation\\:\\:getTranslationsForAnItem\\(\\) should return string but returns array\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DropdownTranslation\\:\\:hasItemtypeATranslation\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getAdditionalField\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
@@ -2522,26 +1742,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 140 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DropdownTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Enclosure\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Enclosure.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Enclosure\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Enclosure\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Enclosure.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Enclosure\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Enclosure\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Enclosure.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between static\\(Enclosure\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Enclosure.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Enclosure.php',
 ];
@@ -2552,50 +1772,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Entity\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Entity\\:\\:isRecursive\\(\\) should return int but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Entity\\:\\:showUiCustomizationOptions\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\=\\=\\= null \\? array\\<int\\|string, string\\> \\: string\\)\\: Unexpected token "\\$val", expected type at offset 275 on line 9$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(int\\) of method Entity\\:\\:isRecursive\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:isRecursive\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
+	'message' => '#^Strict comparison using \\=\\=\\= between int\\<0, max\\> and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/FieldUnicity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/FieldUnicity.php',
 ];
@@ -2612,9 +1808,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 2,
+	'message' => '#^Property GLPI\\:\\:\\$error_handler is unused\\.$#',
+	'identifier' => 'property.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPI.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$config_dir \\(null\\) of method GLPIKey\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIKey.php',
 ];
 $ignoreErrors[] = [
@@ -2622,6 +1824,24 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Mime\\\\Header\\\\HeaderInterface\\:\\:getAddresses\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 4,
+	'path' => __DIR__ . '/src/GLPIMailer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.expr',
+	'count' => 3,
+	'path' => __DIR__ . '/src/GLPIMailer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot cast list\\<string\\>\\|null to string\\.$#',
@@ -2636,34 +1856,1672 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
+	'identifier' => 'catch.neverThrown',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:applyMassiveAction\\(\\) with return type void returns array\\|null but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<int\\|string, mixed\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:getActiveProfile\\(\\) should return int but returns array\\<string, mixed\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:getItemtype\\(\\) should return bool but returns string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) with return type void returns string but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\<int\\|string, array\\<mixed\\>\\|string\\>\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Return type \\(void\\) of method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) should be compatible with return type \\(string\\) of method Glpi\\\\Api\\\\API\\:\\:parseIncomingParams\\(\\)$#',
+	'identifier' => 'method.childReturnType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between false and array will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerAntivirus.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerVirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareVersion.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Netpoint.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Pdu_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/TicketFollowup.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:authorize\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:token\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var has invalid value \\(\\{name\\: string, default\\: mixed\\}\\[\\] \\$allowed_keys_mapping\\)\\: Unexpected token "\\{", expected type at offset 9 on line 1$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemLinkFields\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemSchemaFor\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between 0 and 0 will always evaluate to true\\.$#',
+	'identifier' => 'identical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method getModelClass\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method getTypeClass\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method isEntityAssign\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method isField\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method maybeDeleted\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ManagementController\\:\\:getManagementTypes\\(\\) has invalid return type Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'label\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'schema_name\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'version_introduced\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'fields\' on string on left side of \\?\\? does not exist\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchema\\(\\) should return array\\{x\\-subtypes\\: array\\{schema_name\\: string, itemtype\\: string\\}, type\\: \'object\', properties\\: array\\} but returns array\\{x\\-subtypes\\: non\\-empty\\-list\\<array\\{schema_name\\: string, itemtype\\: mixed\\}\\>, type\\: \'object\', properties\\: mixed\\}\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:validateTypeAndFormat\\(\\) should return bool but returns string\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type string is not subtype of native type bool\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between array and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/SchemaReference.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Right side of && is always false\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugRequestMiddleware.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\} is not subtype of native type array\\{type\\: \'integer\', pattern\\: \'\\\\\\\\d\\+\'\\}\\|array\\{type\\: \'string\', pattern\\: mixed\\}\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\<" between 0 and 0 is always false\\.$#',
+	'identifier' => 'smaller.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Lexer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between Glpi\\\\Api\\\\HL\\\\Doc\\\\Route and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression "\\$action\\(\\$input\\)" on a separate line does not do anything\\.$#',
+	'identifier' => 'expr.resultUnused',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Router\\:\\:doRequestMiddleware\\(\\) never returns Glpi\\\\Http\\\\Response so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Router\\:\\:resumeSession\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\Router\\:\\:\\$final_request \\(Glpi\\\\Http\\\\Request\\|null\\) is never assigned null so it can be removed from the property type\\.$#',
+	'identifier' => 'property.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\Router\\:\\:\\$original_request \\(Glpi\\\\Http\\\\Request\\|null\\) is never assigned null so it can be removed from the property type\\.$#',
+	'identifier' => 'property.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 0 does not exist on array\\<class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, string\\>\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 1 does not exist on array\\<class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, string\\>\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$env \\(null\\) of method Glpi\\\\Application\\\\ErrorHandler\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between Psr\\\\Log\\\\LoggerInterface and Psr\\\\Log\\\\LoggerInterface will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'Code\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'Message\' does not exist on string\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$exit_code is never read, only written\\.$#',
+	'identifier' => 'property.onlyWritten',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$cachedir \\(null\\) of method Glpi\\\\Application\\\\View\\\\TemplateRenderer\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'production\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and 2 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Asset\\\\Asset\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Asset\\\\Asset\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetModel is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetType is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type SplFileObject is not subtype of native type DirectoryIterator\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetModel\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetModel\\)\\|false but returns Glpi\\\\Asset\\\\AssetModel\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetModel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\AssetType\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\AssetType\\)\\|false but returns Glpi\\\\Asset\\\\AssetType\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset_PeripheralAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$source_itemtype$#',
+	'identifier' => 'parameter.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/AbstractCapacity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$classname$#',
+	'identifier' => 'parameter.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/CapacityInterface.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$config_dir \\(null\\) of method Glpi\\\\Cache\\\\CacheManager\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$cache_dir \\(null\\) of method Glpi\\\\Cache\\\\CacheManager\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:\\$fields\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:add\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:can\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:delete\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getType\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isField\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:isNewItem\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:update\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\CalDAV\\\\Backend\\\\Principal\\:\\:getPrincipalByPath\\(\\) should return array but empty return statement found\\.$#',
+	'identifier' => 'return.empty',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\CalDAV\\\\Plugin\\\\Browser\\:\\:httpGet\\(\\) should return bool but empty return statement found\\.$#',
+	'identifier' => 'return.empty',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Console\\\\AbstractCommand\\:\\:\\$progress_bar \\(Symfony\\\\Component\\\\Console\\\\Helper\\\\ProgressBar\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\Application\\) and \'db\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Console\\\\Application\\:\\:\\$error_handler is unused\\.$#',
+	'identifier' => 'property.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/GenerateCodeManifestCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\InstallCommand\\:\\:shouldSetDBConfig\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
+	'identifier' => 'match.unhandled',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getFallbackRoomId\\(\\) never returns float so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getImportErrorsVerbosity\\(\\) never returns float so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:isAlreadyInstalled\\(\\) should return array but returns bool\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Security/DisableTFACommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/User/AbstractUserCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/User/GrantCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.expr',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/ErrorController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Controller\\\\LegacyFileLoadController\\:\\:getRequest\\(\\) never returns null so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/LegacyFileLoadController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
+	'path' => __DIR__ . '/src/Glpi/Controller/StatusController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and null will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIPDF.php',
+	'path' => __DIR__ . '/src/Glpi/Csv/StatCsvExport.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of && is always false\\.$#',
+	'identifier' => 'booleanAnd.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Csv/StatCsvExport.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/DBAL/QueryExpression.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param for parameter \\$interval_unit with type Glpi\\\\DBAL\\\\QueryExpression\\|int\\|string is not subtype of native type string\\.$#',
+	'identifier' => 'parameter.phpDocType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match expression does not handle remaining value\\: string$#',
+	'identifier' => 'match.unhandled',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/DatesModFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\<" between 0 and 1 is always true\\.$#',
+	'identifier' => 'smaller.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Static method Glpi\\\\Dashboard\\\\Provider\\:\\:getSearchOptionID\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between int and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Debug/ProfilerSection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Dropdown\\\\Dropdown\\:\\:getById\\(\\) should return static\\(Glpi\\\\Dropdown\\\\Dropdown\\)\\|false but returns object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:prepareConfigInput\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:prepareInputForUpdate\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\AnswersSet\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getItem\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractFormDestinationType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\LocationFieldConfig\\:\\:getSpecificLocationID\\(\\) never returns null so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/LocationFieldConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method class\\-string\\<Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\>\\|Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\:\\:getById\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\FormDestination\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\FormDestination\\:\\:prepareInputForAdd\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\FormDestination\\:\\:prepareInputForUpdate\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Glpi\\\\Form\\\\Form\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Form\\:\\:prepareInputForUpdate\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getItem\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @return with type int is incompatible with native type array\\.$#',
+	'identifier' => 'return.phpDocType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeDropdown\\:\\:getExtraDataConfigClass\\(\\) never returns null so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeDropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeUserDevice\\:\\:getExtraDataConfigClass\\(\\) never returns null so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type SplFileObject is not subtype of native type DirectoryIterator\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypesManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalog\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalog.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type Item_Devices is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Device.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Environment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\Environment\\:\\:\\$conf is never read, only written\\.$#',
+	'identifier' => 'property.onlyWritten',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Environment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) does not accept Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\Asset\\\\NetworkEquipment\\) and \'getManagementPorts\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.expr',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\Asset\\\\NetworkPort\\) and \'handleAggregations\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\>" between 0 and 1 is always false\\.$#',
+	'identifier' => 'greater.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Empty array passed to foreach\\.$#',
+	'identifier' => 'foreach.emptyArray',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always false\\.$#',
+	'identifier' => 'if.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between 0 and 1 will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between 0 and 2 will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'Computer\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'NetworkEquipment\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'Phone\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of && is always false\\.$#',
+	'identifier' => 'booleanAnd.alwaysFalse',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between string and true will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIPDF.php',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Group\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Process.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/RemoteManagement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Left side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$ports_id \\(array\\) of method Glpi\\\\Inventory\\\\Asset\\\\Unmanaged\\:\\:rulepassed\\(\\) should be compatible with parameter \\$ports_id \\(int\\) of method Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:rulepassed\\(\\)$#',
+	'identifier' => 'method.childParameterType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always false\\.$#',
+	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Volume.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$enabled_inventory\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array\\<array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\}\\> will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_callable\\(\\) with callable\\(\\)\\: mixed will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'label\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'render_callback\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always true\\.$#',
+	'identifier' => 'if.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\Inventory\\:\\:cronCleanorphans\\(\\) with return type void returns int but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Inventory\\\\Inventory\\:\\:cronCleantemp\\(\\) with return type void returns int but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @return has invalid value \\(void;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 73 on line 4$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Inventory\\:\\:\\$inventory_content \\(string\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Inventory\\:\\:\\$mainasset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
+	'identifier' => 'isset.property',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function in_array\\(\\) with arguments null, array\\{\'development\', \'testing\'\\} and true will always evaluate to false\\.$#',
+	'identifier' => 'function.impossibleType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Kernel\\\\Kernel\\:\\:getLogDir\\(\\) should return string but returns null\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always true\\.$#',
+	'identifier' => 'booleanNot.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Left side of && is always false\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of && is always false\\.$#',
+	'identifier' => 'booleanAnd.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between int and false will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between 0 and 1 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between 0 and 2 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Right side of && is always false\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between null and \'CLOUD\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\{client_id\\: string, user_id\\: string, scopes\\: string\\[\\]\\}\\)\\: Unexpected token "\\{", expected type at offset 79 on line 4$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always false\\.$#',
+	'identifier' => 'if.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\CriteriaFilter\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/CriteriaFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$itemtype \\(string\\) of method Glpi\\\\Search\\\\Input\\\\QueryBuilder\\:\\:findCriteriaInSession\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$itemtype \\(string\\) of method Glpi\\\\Search\\\\Input\\\\QueryBuilder\\:\\:getDefaultCriteria\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always true\\.$#',
+	'identifier' => 'booleanNot.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\:\\:setOrientation\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Search\\\\Output\\\\Spreadsheet\\:\\:\\$writer \\(PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\BaseWriter\\) does not accept PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Negated boolean expression is always true\\.$#',
+	'identifier' => 'booleanNot.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to static method getAssignableVisiblityCriteria\\(\\) on an unknown class Glpi\\\\Features\\\\AssignableItem\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#4 \\$meta \\(int\\) of method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:giveItem\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#4 \\$meta_type \\(string\\) of method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getSelectCriteria\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#7 \\$meta_type \\(string\\) of method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getLeftJoinCriteria\\(\\) is incompatible with type class\\-string\\<CommonDBTM\\>\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.expr',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always true\\.$#',
+	'identifier' => 'if.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Left side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysTrue',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between 2 and 2 will always evaluate to true\\.$#',
+	'identifier' => 'equal.alwaysTrue',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:explodeWithID\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getHavingCriteria\\(\\) should return array but returns false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getSelectCriteria\\(\\) should return array but returns Glpi\\\\DBAL\\\\QueryExpression\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getWhereCriteria\\(\\) should return array\\|null but returns Glpi\\\\DBAL\\\\QueryExpression\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:giveItem\\(\\) should return string but returns int\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 2 on array\\{0\\: string, 1\\: string, 2\\: string, 3\\: numeric\\-string, 4\\?\\: string, 5\\?\\: non\\-empty\\-string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param for parameter \\$NOT with type string is incompatible with native type bool\\.$#',
+	'identifier' => 'parameter.phpDocType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @return with type string is incompatible with native type array\\.$#',
+	'identifier' => 'return.phpDocType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var for variable \\$itemtype has invalid type Glpi\\\\Features\\\\AssignableItem\\.$#',
+	'identifier' => 'varTag.trait',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type Glpi\\\\Features\\\\AssignableItem is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between 100\\|float\\|string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between CommonDBTM\\|false and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between int\\|string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
+	'identifier' => 'identical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between 2 and 2 will always evaluate to true\\.$#',
+	'identifier' => 'identical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between class\\-string\\<CommonDBTM\\> and \'AllAssets\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method CommonGLPI\\:\\:showBrowseView\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Input\\\\SearchInputInterface\\:\\:cleanParams\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Input\\\\SearchInputInterface\\:\\:manageParams\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Input\\\\SearchInputInterface\\:\\:showGenericSearch\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Provider\\\\SearchProviderInterface\\:\\:constructData\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined static method Glpi\\\\Search\\\\Provider\\\\SearchProviderInterface\\:\\:constructSQL\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Socket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Socket\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Socket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\System\\\\Diagnostic\\\\SourceCodeIntegrityChecker\\:\\:getBaselineManifest\\(\\) never returns null so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$directory \\(null\\) of method Glpi\\\\System\\\\Log\\\\LogParser\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\System\\\\Log\\\\LogViewer\\:\\:getMenuContent\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogViewer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/RequirementsManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\UI\\\\ThemeManager\\:\\:getCustomThemesDirectory\\(\\) should return string but returns null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Group\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Group.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between HTMLTableHeader and HTMLTableHeader will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
+	'message' => '#^Left side of && is always false\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/HTMLTableBase.php',
+	'path' => __DIR__ . '/src/Group.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Return type \\(void\\) of method Group\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDropdown\\:\\:showForm\\(\\)$#',
+	'identifier' => 'method.childReturnType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Group.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
@@ -2692,7 +3550,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 7,
+	'count' => 9,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -2704,7 +3562,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
-	'count' => 3,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -2720,15 +3578,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.expr',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 2,
+	'message' => '#^Default value of the parameter \\#2 \\$http_response_code \\(int\\) of method Html\\:\\:redirect\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -2738,43 +3590,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:cleanPostForTextArea\\(\\) should return string but returns array\\<string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:closeForm\\(\\) should return string but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:getScssCompilePath\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:showTimeField\\(\\) with return type void returns mixed but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:showTimeField\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:uploadedFiles\\(\\) never returns void so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Html\\:\\:uploadedFiles\\(\\) should return string\\|void but returns true\\.$#',
+	'message' => '#^Method Html\\:\\:getMenuFuzzySearchList\\(\\) should return array\\{url\\: string, title\\: string\\} but returns list\\<array\\{url\\: mixed, title\\: mixed\\}\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -2786,15 +3602,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 3,
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 656 on line 13$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display is true \\? true \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 9$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between float and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between float and \'\\-\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<int\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
@@ -2816,14 +3656,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method IPNetmask\\:\\:setNetmaskFromString\\(\\) should return false but returns true\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Property IPAddress\\:\\:\\$binary \\(array\\<int\\>\\) does not accept string\\.$#',
+	'identifier' => 'assign.propertyType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetmask.php',
+	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
+	'message' => '#^Strict comparison using \\!\\=\\= between array\\<int\\> and \'\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/IPAddress.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
+	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
@@ -2858,40 +3704,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of \\|\\| is always false\\.$#',
-	'identifier' => 'booleanOr.rightAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/IPNetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method ITILCategory\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILCategory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ITILFollowup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ITILSolution.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method ITILTemplate\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method ITILTemplate\\:\\:showCentralPreview\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -2900,33 +3716,27 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ITILTemplateHiddenField\\:\\:showForITILTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILTemplateHiddenField.php',
+	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 3,
+	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ITILTemplateMandatoryField\\:\\:showForITILTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
+	'message' => '#^Method ITILTemplateField\\:\\:showForITILTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/ITILTemplateMandatoryField.php',
+	'path' => __DIR__ . '/src/ITILTemplateField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ITILTemplatePredefinedField\\:\\:showForITILTemplate\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method ITILValidationTemplate\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/ITILTemplatePredefinedField.php',
+	'path' => __DIR__ . '/src/ITILValidationTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Impact.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type TKey of int\\|string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
@@ -2942,12 +3752,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ImpactItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Infocom\\:\\:Amort\\(\\) should return array\\|float but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Infocom.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Infocom\\:\\:showTco\\(\\) should return float but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 4,
@@ -2960,368 +3764,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Cartridge.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/InventoryAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) does not accept Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/InventoryAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Asset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\Asset\\\\NetworkEquipment\\) and \'getManagementPorts\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\Asset\\\\NetworkPort\\) and \'handleAggregations\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between 0 and 1 is always false\\.$#',
-	'identifier' => 'greater.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\!\\= between 0 and 1 will always evaluate to true\\.$#',
-	'identifier' => 'notEqual.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between 0 and 2 will always evaluate to false\\.$#',
-	'identifier' => 'equal.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'Computer\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'NetworkEquipment\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'Phone\' on array\\{\\} in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between string and true will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/RemoteManagement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$ports_id \\(array\\) of method Glpi\\\\Inventory\\\\Asset\\\\Unmanaged\\:\\:rulepassed\\(\\) should be compatible with parameter \\$ports_id \\(int\\) of method Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:rulepassed\\(\\)$#',
-	'identifier' => 'method.childParameterType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\Asset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always false\\.$#',
-	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Asset/Volume.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property Glpi\\\\Inventory\\\\Conf\\:\\:\\$enabled_inventory\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\}\\> will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_callable\\(\\) with callable\\(\\)\\: mixed will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Conf\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'label\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'render_callback\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Inventory\\:\\:cronCleanorphans\\(\\) with return type void returns int but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Inventory\\:\\:cronCleantemp\\(\\) with return type void returns int but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(void;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 73 on line 4$#',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 264 on line 9$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
+	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Inventory\\:\\:\\$inventory_content \\(string\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
+	'path' => __DIR__ . '/src/ItemAntivirus.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Inventory\\:\\:\\$mainasset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Inventory/Inventory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Request.php',
+	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Item_Cluster\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Cluster.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Cluster.php',
 ];
@@ -3338,20 +3800,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_DeviceCamera_ImageResolution.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_DeviceSimcard.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
@@ -3362,22 +3818,58 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Disk.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between 0\\|1\\|2 and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Disk.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_Enclosure\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Enclosure.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Enclosure.php',
+	'path' => __DIR__ . '/src/Item_Environment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Item_Environment\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Environment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method forceGlobalState\\(\\) on an unknown class Glpi\\\\Features\\\\Kanban\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to method getFromDB\\(\\) on an unknown class Glpi\\\\Features\\\\Kanban\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Item_Kanban\\:\\:loadStateForItem\\(\\) should return array but returns null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var for variable \\$item has invalid type Glpi\\\\Features\\\\Kanban\\.$#',
+	'identifier' => 'varTag.trait',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Item_Line\\:\\:prepareInput\\(\\) should return array but returns false\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Line.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
@@ -3392,16 +3884,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
+	'path' => __DIR__ . '/src/Item_Plug.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Problem\\:\\:showForProblem\\(\\) with return type void returns false but should not return anything\\.$#',
+	'message' => '#^Method Item_Plug\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Problem.php',
+	'path' => __DIR__ . '/src/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Process.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
@@ -3428,24 +3926,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Rack.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_RemoteManagement\\:\\:showForItem\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_RemoteManagement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareLicense\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicense\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -3458,32 +3938,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareVersion\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
+	'message' => '#^Method Item_Ticket\\:\\:displayTabContentForItem\\(\\) should return bool but returns string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Ticket\\:\\:dropdown\\(\\) should return int\\|string\\|false but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Ticket\\:\\:itemAddForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Ticket\\:\\:showForTicket\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Ticket.php',
 ];
@@ -3500,50 +3956,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Itil_Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Knowbase\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Knowbase.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'ASC\' and \'ASC\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:searchForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:showBrowseForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:showForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:showManageForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
@@ -3554,31 +3968,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method KnowbaseItemTranslation\\:\\:showVisibility\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItemTranslation\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItemTranslation\\:\\:showFull\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItemTranslation\\:\\:showFull\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 133 on line 6$#',
+	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 126 on line 6$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
@@ -3590,15 +3980,93 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getFromDBForTicket\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method LevelAgreement\\:\\:getNextActionForTicket\\(\\) should return OlaLevel_Ticket\\|SlaLevel_Ticket\\|false but returns CommonDBTM\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Static property LevelAgreement\\:\\:\\$levelclass \\(class\\-string\\<LevelAgreementLevel\\>\\) does not accept default value of type string\\.$#',
+	'identifier' => 'property.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Static property LevelAgreement\\:\\:\\$levelticketclass \\(class\\-string\\<CommonDBTM\\>\\) does not accept default value of type string\\.$#',
+	'identifier' => 'property.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type OlaLevel\\|SlaLevel is not subtype of native type static\\(LevelAgreementLevel\\)\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreementLevel.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Link\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Line\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Line.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Line.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$params \\(array\\{\\}\\) of method Link\\:\\:getAllLinksFor\\(\\) is incompatible with type array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'data\' on array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'id\' on array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'link\' on array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'name\' on array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(array\\<int, \\{name\\: string, type\\: string\\}\\>\\)\\: Unexpected token "\\{", expected type at offset 119 on line 5$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
@@ -3608,27 +4076,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Link.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Link_Itemtype\\:\\:showForLink\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Link_Itemtype.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Location\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Location.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Location\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Location.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
+	'message' => '#^Strict comparison using \\=\\=\\= between CommonDBTM and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
@@ -3660,12 +4116,6 @@ $ignoreErrors[] = [
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OAuthTokenProvider\\:\\:getOauthToken\\(\\) never returns null so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Mail/SMTP/OAuthTokenProvider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property Laminas\\\\Mail\\\\Storage\\\\Message\\:\\:\\$date\\.$#',
@@ -3740,50 +4190,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ManualLink.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between int and false will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Marketplace\\\\View\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between \'GIT\' and \'CLOUD\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<int\\|string, mixed\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with int will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
@@ -3791,12 +4199,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_countable\\(\\) with array\\<int\\|string, array\\<int\\|string, mixed\\>\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTime\\(\\) on int\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
@@ -3814,18 +4216,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property MassiveAction\\:\\:\\$remainings \\(array\\) on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property MassiveAction\\:\\:\\$timer \\(int\\) does not accept Timer\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
@@ -3854,50 +4244,38 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Monitor\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Monitor\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Monitor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Monitor\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Monitor\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Monitor\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(Monitor\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkAlias\\:\\:showForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkAlias.php',
+	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkAlias\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(NetworkEquipment\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkAlias.php',
+	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method NetworkAlias\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkAlias.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(NetworkEquipment\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
@@ -3908,28 +4286,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkEquipment\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkEquipment\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(NetworkEquipment\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkEquipment\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkName\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method NetworkName\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
@@ -3938,74 +4304,32 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkPort\\:\\:switchInstantiationType\\(\\) should return bool but returns NetworkPortInstantiation\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property NetworkPort\\:\\:\\$input_for_NetworkName \\(array\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:isDynamic\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property NetworkPort\\:\\:\\$input_for_NetworkPortConnect \\(array\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
+	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type class\\-string\\.$#',
+	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property NetworkPort\\:\\:\\$input_for_instantiation \\(array\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkPortDialup\\:\\:getInstantiationHTMLTable\\(\\) should return null but returns HTMLTableCell\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortDialup.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkPortEthernet\\:\\:getInstantiationHTMLTable\\(\\) should return null but returns HTMLTableCell\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 218 on line 7$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkPortEthernet\\:\\:getInstantiationHTMLTableHeaders\\(\\) should return null but returns HTMLTableHeader\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 220 on line 7$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NetworkPortFiberchannel\\:\\:getInstantiationHTMLTable\\(\\) should return null but returns HTMLTableCell\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortFiberchannel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method NetworkPortFiberchannel\\:\\:getInstantiationHTMLTableHeaders\\(\\) should return null but returns HTMLTableHeader\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortFiberchannel.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
@@ -4016,40 +4340,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
+	'message' => '#^Strict comparison using \\=\\=\\= between mixed~\'NetworkEquipment\' and \'NetworkEquipment\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
+	'path' => __DIR__ . '/src/NetworkPort_NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPortMigration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always true\\.$#',
-	'identifier' => 'booleanOr.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/NetworkPortMigration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and null will always evaluate to false\\.$#',
-	'identifier' => 'notIdentical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/NetworkPortMigration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and null will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/NetworkPortMigration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Notification.php',
+	'path' => __DIR__ . '/src/Notepad.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -4058,14 +4358,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationEvent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'label\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationEvent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always true\\.$#',
+	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
@@ -4076,10 +4376,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NotificationSetting\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Static property NotificationEventMailing\\:\\:\\$mailer \\(GLPIMailer\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationSetting.php',
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method NotificationTarget\\:\\:showForGroup\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -4088,20 +4388,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTarget.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Left side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method NotificationTargetCommonITILObject\\:\\:addAdditionnalUserInfo\\(\\) should return 0\\|0\\.0\\|\'\'\\|\'0\'\\|array\\{\\}\\|false\\|null but returns array\\{show_private\\: mixed, is_self_service\\: mixed\\}\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'name\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
@@ -4116,12 +4410,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplateTranslation.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -4148,94 +4436,70 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'from\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'label\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 144 on line 7$#',
+	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 96 on line 5$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\: true if locked\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 290 on line 6$#',
+	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\|ObjectLock\\: returns ObjectLock if locked, else false\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 104 on line 5$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\: true if object is locked, and \\$this is filled with record from DB\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 68 on line 4$#',
-	'identifier' => 'phpDoc.parseError',
+	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$type$#',
+	'identifier' => 'parameter.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
+	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\: true if read\\-only profile lock has been set\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 90 on line 5$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(bool\\|ObjectLock\\: returns ObjectLock if locked, else false\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 123 on line 7$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ObjectLock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method PDU\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PDU.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method PDU\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PDU\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method PDU\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PDU\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method PassiveDCEquipment\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(PDU\\) and PDU will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PassiveDCEquipment\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PassiveDCEquipment\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between static\\(PassiveDCEquipment\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 2,
 	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method PassiveDCEquipment\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method PassiveDCEquipment\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Pdu_Plug\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Pdu_Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Pdu_Plug.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
@@ -4256,32 +4520,44 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Peripheral\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Peripheral\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Peripheral.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Peripheral\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Peripheral\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Peripheral\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(Peripheral\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Peripheral.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Phone\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Phone.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Phone\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Phone.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
 ];
@@ -4294,37 +4570,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:checkAvailability\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:showCentral\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:showPlanning\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:showSingleLinePlanningFilter\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
@@ -4354,12 +4600,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\.$#',
 	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
@@ -4430,12 +4670,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
@@ -4454,16 +4688,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 11,
-	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Printer\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Printer\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$printer$#',
+	'identifier' => 'parameter.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PrinterLog.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Printer_CartridgeInfo.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\!\\= between \'\' and \'\' will always evaluate to false\\.$#',
@@ -4472,38 +4718,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Problem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Problem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
+	'identifier' => 'varTag.nativeType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Problem\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Problem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
+	'count' => 6,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between 2 and 2 will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Profile\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
@@ -4526,26 +4754,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile_User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_null\\(\\) with int\\|string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with class\\-string\\<static\\(Project\\)\\> and \'getFormUrl\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Project\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
 ];
@@ -4562,10 +4778,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
+	'message' => '#^Strict comparison using \\=\\=\\= between false and int\\|string\\|null will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$withtemplate \\(int\\) of method ProjectCost\\:\\:showForProject\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProjectCost.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method ProjectCost\\:\\:showForProject\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -4598,10 +4820,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ProjectTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ProjectTask\\:\\:showFor\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to an undefined method CommonDBTM\\:\\:setVolume\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/ProjectTask.php',
+	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -4610,38 +4832,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'from\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 4,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'items_id\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'label\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
+	'path' => __DIR__ . '/src/QueuedWebhook.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RSSFeed.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method RSSFeed\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RSSFeed.php',
 ];
@@ -4652,20 +4850,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Rack\\:\\:getDcBreadcrumbSpecificValueToDisplay\\(\\) should return array but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rack\\:\\:isEnclosurePart\\(\\) should return Enclosure\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rack\\:\\:isRackPart\\(\\) should return Rack\\|false but returns array\\|bool\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Instanceof between static\\(Rack\\) and PDU will always evaluate to false\\.$#',
+	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rack.php',
 ];
@@ -4680,18 +4866,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rack.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RefusedEquipment.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
@@ -4718,22 +4892,124 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Reminder\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 125 on line 6$#',
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 219 on line 8$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
-	'path' => __DIR__ . '/src/ReminderTranslation.php',
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getSystemSQLCriteria\\(\\) on \\(int\\|string\\)\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTypeName\\(\\) on \\(int\\|string\\)\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTypeName\\(\\) on int\\|string\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
+	'identifier' => 'greater.alwaysTrue',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match expression does not handle remaining value\\: string$#',
+	'identifier' => 'match.unhandled',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Report\\:\\:getAssetCounts\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>, array\\<string, array\\>\\> but returns array\\<int\\|string, array\\<string, mixed\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Report\\:\\:getOSInstallCounts\\(\\) should return array\\<string, array\\<int, array\\>\\> but returns array\\<int\\|string, array\\<string, mixed\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @param for parameter \\$by_itemtype contains unresolvable type\\.$#',
+	'identifier' => 'parameter.unresolvableType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @return has invalid value \\(array\\<class\\-string\\<CommonDBTM\\>, array\\<int, array\\>\\)\\: Unexpected token "\\*/", expected \'\\>\' at offset 74 on line 3$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$event \\(array\\{\\}\\) of method Reservation\\:\\:updateEvent\\(\\) is incompatible with type array\\{id\\: int, start\\: string, end\\: string\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method Reservation\\:\\:showForm\\(\\) is incompatible with type array\\{item\\: array\\<int, int\\>, start\\: string, end\\: string\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Reservation\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#3 \\$options \\(array\\{\\}\\) of method Reservation\\:\\:computePeriodicities\\(\\) is incompatible with type array\\{type\\: \'day\'\\|\'month\'\\|\'week\', end\\: string, subtype\\?\\: string, days\\?\\: int\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always false\\.$#',
+	'identifier' => 'if.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Reservation\\:\\:processMassiveActionsForOneItemtype\\(\\) with return type void returns false but should not return anything\\.$#',
+	'identifier' => 'return.void',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'end\' on array\\{type\\: \'day\'\\|\'month\'\\|\'week\', end\\: string, subtype\\?\\: string, days\\?\\: int\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'item\' on array\\{item\\: array\\<int, int\\>, start\\: string, end\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'type\' on array\\{type\\: \'day\'\\|\'month\'\\|\'week\', end\\: string, subtype\\?\\: string, days\\?\\: int\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between ReservationItem and false will always evaluate to false\\.$#',
@@ -4742,33 +5018,21 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ReservationItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Strict comparison using \\=\\=\\= between float and 0 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Binary operation "\\*" between string and 3600 results in an error\\.$#',
+	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ReservationItem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RichText/RichText.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
@@ -4790,14 +5054,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_subclass_of\\(\\) with \'Rule\' and mixed will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#1 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:dropdownActions\\(\\) is incompatible with type array\\{subtype\\: string, name\\: string, field\\: string, value\\?\\: string, alreadyused\\?\\: bool, display\\?\\: bool\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:showForm\\(\\) is incompatible with type array\\{parent\\: Rule\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method RuleAction\\:\\:dropdownActions\\(\\) should return int\\|string but returns false\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
@@ -4808,38 +5084,44 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method RuleCollection\\:\\:exportRulesToXML\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'entity\' on array\\{entity\\: true, criterias\\?\\: non\\-empty\\-list\\<mixed\\>, actions\\?\\: non\\-empty\\-list\\<mixed\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'message' => '#^Offset \'entity\' on non\\-empty\\-array\\{0\\?\\: array\\{entity\\: mixed\\}, criteria\\?\\: non\\-empty\\-list\\<array\\{id\\: mixed, name\\: mixed, label\\: string, pattern\\: mixed\\}\\>, actions\\?\\: non\\-empty\\-list\\<array\\{id\\: mixed, name\\: mixed, label\\: string, value\\: mixed\\}\\>\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 2,
+	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
+	'identifier' => 'function.impossibleType',
+	'count' => 2,
+	'path' => __DIR__ . '/src/RuleCriteria.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>\\=" between int\\<0, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greaterOrEqual.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCriteria.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method RuleCriteria\\:\\:showForm\\(\\) is incompatible with type array\\{parent\\: Rule\\}\\.$#',
+	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCriteria.php',
 ];
@@ -4862,40 +5144,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method RuleImportAsset\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
+	'identifier' => 'return.type',
+	'count' => 3,
+	'path' => __DIR__ . '/src/RuleImportAsset.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Property RuleImportAsset\\:\\:\\$restrict_entity is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleImportAssetCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
+	'message' => '#^Method RuleImportEntity\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
+	'identifier' => 'return.type',
+	'count' => 4,
+	'path' => __DIR__ . '/src/RuleImportEntity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleMailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method RuleRight\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
+	'path' => __DIR__ . '/src/RuleRight.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \\(list\\<string\\>\\|string\\) on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
+	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
+	'path' => __DIR__ . '/src/RuleRight.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleRightCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SNMPCredential.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -4916,12 +5204,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method SavedSearch_Alert\\:\\:showForSavedSearch\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -4934,123 +5216,21 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between 2 and 2 will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:displayData\\(\\) with return type void returns false but should not return anything\\.$#',
+	'message' => '#^Method Search\\:\\:displayData\\(\\) with return type void returns false\\|null but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:displayMetaCriteria\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Strict comparison using \\=\\=\\= between string and 0 will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:displaySearchoption\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:displaySearchoptionValue\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:giveItem\\(\\) should return string but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:outputData\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{0\\: string, 1\\: string, 2\\: string, 3\\: numeric\\-string, 4\\?\\: string, 5\\?\\: non\\-empty\\-string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between 100\\|float\\|string and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between int\\|string and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
@@ -5080,12 +5260,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
 ];
@@ -5126,28 +5300,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type CommonDBTM supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Socket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Software\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Socket.php',
+	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Socket\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Socket.php',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Software\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Socket.php',
+	'message' => '#^Default value of the parameter \\#2 \\$comment \\(string\\) of method Software\\:\\:putInTrash\\(\\) is incompatible with type comment\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'_system_category\' does not exist on array\\{name\\: string, manufacturers_id\\: int, entities_id\\: int, is_recursive\\: 0\\|1, is_helpdesk_visible\\: mixed\\}\\.$#',
@@ -5162,38 +5330,62 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method SoftwareLicense\\:\\:cronSoftware\\(\\) should return 0 but returns 1\\.$#',
-	'identifier' => 'return.type',
+	'message' => '#^Parameter \\$comment of method Software\\:\\:putInTrash\\(\\) has invalid type comment\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(SoftwareLicense\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method SoftwareLicense\\:\\:showForSoftware\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(SoftwareLicense\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SoftwareVersion\\:\\:showForSoftware\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Stat.php',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Stat\\:\\:displayLineGraph\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to an undefined static method CommonGLPI\\:\\:getTypes\\(\\)\\.$#',
+	'identifier' => 'staticMethod.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Stat\\:\\:displayPieGraph\\(\\) with return type void returns string but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#6 \\$value \\(string\\) of method Stat\\:\\:constructEntryValues\\(\\) is incompatible with type array\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 301 on line 10$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 621 on line 16$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 622 on line 16$#',
+	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Stat.php',
 ];
@@ -5202,24 +5394,6 @@ $ignoreErrors[] = [
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Supplier.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Supplier\\:\\:showInfocoms\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Supplier.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between DBmysql and DBmysql will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/System/Requirement/InstallationNotOverriden.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/System/Requirement/MysqliMysqlnd.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Telemetry\\:\\:cronTelemetry\\(\\) with return type void returns int but should not return anything\\.$#',
@@ -5234,38 +5408,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Telemetry.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function array_key_exists\\(\\) with \\(int\\|string\\) and array\\{\\} will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:getDefaultActor\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:getDefaultActorRightSearch\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
@@ -5276,46 +5426,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'_users_id_requester\' on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
 	'identifier' => 'varTag.nativeType',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 3,
+	'message' => '#^Static method Ticket\\:\\:getListForItemSearchOptionsCriteria\\(\\) is unused\\.$#',
+	'identifier' => 'method.unused',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method TicketTemplate\\:\\:showHelpdeskPreview\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/TicketTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between false and array will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket_Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-array will always evaluate to true\\.$#',
@@ -5372,6 +5498,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#2 \\$level \\(string\\) of method Toolbox\\:\\:log\\(\\) is incompatible with type int\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#3 \\$config_dir \\(null\\) of method Toolbox\\:\\:writeConfig\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
@@ -5396,12 +5534,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'function\' on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: \'\\-\\>\'\\|\'\\:\\:\', args\\?\\: array\\<mixed\\>, object\\?\\: object\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -5420,8 +5552,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$return_response \\? Response \\: void\\)\\: Unexpected token "\\$return_response", expected type at offset 498 on line 12$#',
+	'identifier' => 'phpDoc.parseError',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter &\\$curl_info by\\-ref type of method Toolbox\\:\\:callCurl\\(\\) expects array\\|null, \\(array\\<string, array\\<int, array\\<string, string\\>\\>\\|float\\|int\\|string\\|null\\>\\|false\\) given\\.$#',
 	'identifier' => 'parameterByRef.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of && is always false\\.$#',
+	'identifier' => 'booleanAnd.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
@@ -5438,32 +5582,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
+	'message' => '#^Strict comparison using \\=\\=\\= between null and true will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Transfer.php',
+	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Transfer\\:\\:\\$inittype \\(string\\) does not accept default value of type int\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Transfer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
-	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
+	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Update\\:\\:\\$dbversion is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Update.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Update.php',
 ];
@@ -5474,10 +5606,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 18,
-	'path' => __DIR__ . '/src/UploadHandler.php',
+	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -5498,12 +5630,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
@@ -5512,7 +5638,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 5,
+	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
@@ -5522,28 +5648,136 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
+	'message' => '#^Method ValidatorSubstitute\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
+	'path' => __DIR__ . '/src/ValidatorSubstitute.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
+	'message' => '#^Method ValidatorSubstitute\\:\\:prepareInputForUpdate\\(\\) never returns false so it can be removed from the return type\\.$#',
+	'identifier' => 'return.unusedType',
 	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
+	'path' => __DIR__ . '/src/ValidatorSubstitute.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/User.php',
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ValidatorSubstitute.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getSentQueriesSearchParams\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:showCustomHeaders\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:showPayloadEditor\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:showPreviewForm\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:showSecurityForm\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method CommonGLPI\\:\\:showSentQueries\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getKnownSchemas\\(\\) on \\(int\\|string\\)\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call static method getTypeName\\(\\) on int\\|string\\.$#',
+	'identifier' => 'staticMethod.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @return with type bool is incompatible with native type array\\.$#',
+	'identifier' => 'return.phpDocType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^PHPDoc tag @var with type class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\> is not subtype of native type null\\.$#',
+	'identifier' => 'varTag.nativeType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between \\(int\\|string\\) and null will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Variable \\$controller in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$itemtypes, \\$supported_itemtype, \\$type_data$#',
+	'identifier' => 'varTag.differentVariable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Variable \\$list_itemtype in PHPDoc tag @var does not match assigned variable \\$recursive_search\\.$#',
+	'identifier' => 'varTag.differentVariable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to method save_run\\(\\) on an unknown class XHProfRuns_Default\\.$#',
 	'identifier' => 'class.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/XHProf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getDateCriteria\\(\\) should return string but returns array\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/dbutils-aliases.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
+	'identifier' => 'function.impossibleType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/i18n.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between Laminas\\\\I18n\\\\Translator\\\\TranslatorInterface and null will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 2,
+	'path' => __DIR__ . '/src/autoload/i18n.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

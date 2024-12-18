@@ -1,0 +1,118 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+#}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% macro forceUnlockButton(item, check_unlock_right) %}
+    {% set real_profile = session('glpilocksavedprofile')|default(null) %}
+    {% if not check_unlock_right or (real_profile != null and real_profile[item.fields['itemtype']] b-and constant('UNLOCK')) %}
+        <button type="button" class="btn btn-sm btn-primary ms-2 force-unlock-item">
+            <i class="ti ti-lock-open"></i>
+            <span>{{ __('Force unlock %1s #%2s')|format(item.fields['itemtype']|itemtype_name, item.fields['items_id']) }}</span>
+        </button>
+    {% endif %}
+{% endmacro %}
+
+{% if autolock_readmode %}
+    <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
+        <span class="me-3">
+            <i class="ti ti-eye"></i>
+            {{ __('Read-only mode') }}
+        </span>
+        <form method="post" class="d-inline">
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.submit('lockwrite', __('Edit'), 1, {
+                class: 'btn btn-sm btn-primary ms-2',
+                icon: 'ti ti-pencil',
+            }) }}
+        </form>
+    </div>
+{% else %}
+    {% if not new_lock %}
+        <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
+            {% if item.fields['users_id'] != session('glpiID') %}
+                <strong class="nowrap">
+                    {% set locked_by_msg %}
+                        {% set locked_by_link %}
+                            <a href="{{ 'User'|itemtype_form_path(item.fields['users_id']) }}">{{ user_data['name'] }}</a>
+                        {% endset %}
+                        {{ __('Locked: %1$s by %2$s')|e|format(item.fields['date']|relative_datetime, locked_by_link)|raw }}
+                    {% endset %}
+                    {{ fields.htmlField('', locked_by_msg, '', {
+                        no_label: true,
+                        helper: user_data['comment'],
+                        field_class: 'd-inline-block',
+                        wrapper_class: 'd-block',
+                        mb: '',
+                    }) }}
+                </strong>
+                {% if show_ask_unlock %}
+                    <br>
+                    <button type="button" class="btn btn-sm btn-primary ask-unlock-item mt-2 me-2">
+                        <i class="ti ti-lock-open"></i>
+                        <span>{{ __('Ask for unlock') }}</span>
+                    </button>
+                    <div class="d-inline-flex" style="vertical-align: sub">
+                        {{ inputs.label(__('Alert me when unlocked'), 'alertMe', {}, 'form-label mb-0 me-2') }}
+                        {{ inputs.checkbox('alertMe', 0, {
+                            id: 'alertMe'
+                        }) }}
+                    </div>
+                    {{ _self.forceUnlockButton(item, true) }}
+                {% endif %}
+            {% else %}
+                <strong class="nowrap">
+                    {{ __('Locked by you!') }}
+                    {{ _self.forceUnlockButton(item, false) }}
+                </strong>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+<script>
+    import('{{ js_path('js/modules/ObjectLock.js') }}').then((m) => {
+        $(() => {
+            if ($('.navigationheader').length > 0) {
+                $('#message_after_lock').insertAfter('.navigationheader');
+            }
+            new m.initObjectLock({
+                id: {{ item.getID() }},
+                itemtype: '{{ item.fields['itemtype']|e('js') }}',
+                itemtype_name: '{{ item.fields['itemtype']|itemtype_name|e('js') }}',
+                items_id: {{ item.fields['items_id']|e('js') }},
+            }, {{ user_data|json_encode|raw }}, {{ new_lock ? true : false }});
+        });
+    });
+</script>

@@ -73,7 +73,7 @@ class OperatingSystemKernelVersionTest extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemKernelVersion$main' => 'Kernel version',
+            'OperatingSystemKernelVersion$main' => "Kernel version",
         ];
     }
 

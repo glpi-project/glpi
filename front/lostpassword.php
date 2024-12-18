@@ -33,12 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
+use Glpi\Application\View\TemplateRenderer;
+
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
-
-$SECURITY_STRATEGY = 'no_check';
-
-include('../inc/includes.php');
 
 if (
     !$CFG_GLPI['notifications_mailing']
@@ -47,7 +47,15 @@ if (
         ['itemtype' => 'User', 'event' => 'passwordforget', 'is_active' => 1]
     )
 ) {
-    exit();
+    Session::addMessageAfterRedirect(
+        __s('Sending password forget notification is not enabled.'),
+        true,
+        ERROR
+    );
+    TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
+        'messages_only' => true,
+    ]);
+    return;
 }
 
 $user = new User();
@@ -67,5 +75,3 @@ if (isset($_REQUEST['password_forget_token'])) {
         User::showPasswordForgetRequestForm();
     }
 }
-
-exit();

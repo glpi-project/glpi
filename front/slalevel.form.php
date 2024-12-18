@@ -35,9 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
-
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
@@ -103,6 +100,6 @@ if (isset($_POST["update"])) {
 
     Html::back();
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
-    $menus = ["config", "slm", "slalevel"];
+    $menus = ["config", "slm", "SlaLevel"];
     SlaLevel::displayFullPageForItem($_GET["id"], $menus);
 }

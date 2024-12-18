@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Asset_PeripheralAsset;
 
 /* Test for inc/ruleimportlocation.class.php */
 
@@ -408,18 +409,23 @@ class RuleImportEntityTest extends DbTestCase
         $this->assertSame($entities_id_a, $computer->fields['entities_id']);
 
         //get connected items
-        $iterator = $DB->request(\Computer_Item::getTable(), ['computers_id' => $computer->fields['id']]);
-        $this->assertCount(2, $iterator); //1 printer, 1 monitor
+        $iterator = $DB->request([
+            'FROM' => Asset_PeripheralAsset::getTable(),
+            'WHERE' => [
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id']
+            ]
+        ]);
         foreach ($iterator as $item) {
-            $asset = new $item['itemtype']();
-            $this->assertTrue($asset->getFromDb($item['items_id']));
+            $asset = new $item['itemtype_peripheral']();
+            $this->assertTrue($asset->getFromDb($item['items_id_peripheral']));
             $this->assertSame(
                 $entities_id_a,
                 $asset->fields['entities_id'],
                 sprintf(
                     '%s #%s does not have the correct entity (%s expected, got %s)',
-                    $item['itemtype'],
-                    $item['items_id'],
+                    $item['itemtype_peripheral'],
+                    $item['items_id_peripheral'],
                     $entities_id_a,
                     $asset->fields['entities_id']
                 )

@@ -37,6 +37,8 @@ namespace tests\units;
 
 /* Test for inc/planning.class.php */
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class PlanningTest extends \DbTestCase
 {
     public function testCloneEvent()
@@ -201,9 +203,7 @@ class PlanningTest extends \DbTestCase
         return $result;
     }
 
-    /**
-     * @dataProvider getPaletteColorProvider
-     */
+    #[DataProvider('getPaletteColorProvider')]
     public function testGetPaletteColor(string $palette_name, int $index)
     {
         $color = \Planning::getPaletteColor($palette_name, $index);

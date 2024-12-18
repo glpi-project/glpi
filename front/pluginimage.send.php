@@ -43,11 +43,10 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive($_GET["plugin"])) {
     Event::log(
@@ -58,7 +57,7 @@ if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive(
         //TRANS: %s is user name
         sprintf(__('%s makes a bad usage.'), $_SESSION["glpiname"])
     );
-    die("security");
+    throw new AccessDeniedHttpException();
 }
 
 $dir = GLPI_PLUGIN_DOC_DIR . "/" . $_GET["plugin"] . "/";
@@ -80,7 +79,7 @@ if (
         "security",
         sprintf(__('%s tries to use a non standard path.'), $_SESSION["glpiname"])
     );
-    die("security");
+    throw new AccessDeniedHttpException();
 }
 
 // Now send the file with header() magic

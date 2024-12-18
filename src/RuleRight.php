@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  * RuleRight Class
@@ -44,45 +44,7 @@ class RuleRight extends Rule
 {
    // From Rule
     public static $rightname           = 'rule_ldap';
-    public $orderby             = "name";
     public $specific_parameters = true;
-
-    /**
-     * @see Rule::showNewRuleForm()
-     **/
-    public function showNewRuleForm($ID)
-    {
-
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('Entity') . "'>";
-        echo "<table  class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='7'>" . __('Authorizations assignment rules') . "</th></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td><td>";
-        echo Html::input('name', ['value' => '', 'size' => '33']);
-        echo '</td><td>' . __('Description') . "</td><td>";
-        echo Html::input('description', ['value' => '', 'size' => '33']);
-        echo "</td><td>" . __('Logical operator') . "</td><td>";
-        $this->dropdownRulesMatch();
-        echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
-        echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
-        echo "<input type=hidden name='entities_id' value='0'>";
-        echo "<input type=hidden name='affectentity' value='$ID'>";
-        echo "<input type=hidden name='_method' value='AddRule'>";
-        echo "<input type='submit' name='execute' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center'>" . _n('Profile', 'Profiles', 1) . "</td><td>";
-        Profile::dropdown();
-        echo "</td><td>" . __('Recursive') . "</td><td colspan='3'>";
-        Dropdown::showYesNo("is_recursive", 0);
-        echo "</td></tr>\n";
-
-        echo "</table>";
-        Html::closeForm();
-    }
-
 
     public function executeActions($output, $params, array $input = [])
     {
@@ -114,15 +76,15 @@ class RuleRight extends Rule
                                 break;
 
                             case '_profiles_id_default':
-                                     $output['profiles_id'] = $action->fields["value"];
+                                $output['profiles_id'] = $action->fields["value"];
                                 break;
 
                             case 'groups_id':
-                                   $output['groups_id'] = $action->fields["value"];
+                                $output['groups_id'] = $action->fields["value"];
                                 break;
 
                             case 'specific_groups_id':
-                                 $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
+                                $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
                                 break;
 
                             case "is_active":
@@ -155,31 +117,16 @@ class RuleRight extends Rule
                                         $action->fields["value"],
                                         $regex_result
                                     );
-                                    if ($res != null) {
-                                        switch ($action->fields["field"]) {
-                                            case "_affect_entity_by_dn":
-                                                 $entity_found = Entity::getEntityIDByDN(addslashes($res));
-                                                break;
+                                    if ($res !== null) {
+                                        $entity_found = match ($action->fields["field"]) {
+                                            "_affect_entity_by_dn" => Entity::getEntityIDByDN($res),
+                                            "_affect_entity_by_tag" => Entity::getEntityIDByTag($res),
+                                            "_affect_entity_by_domain" => Entity::getEntityIDByDomain($res),
+                                            "_affect_entity_by_completename" => Entity::getEntityIDByCompletename($res),
+                                            default => -1,
+                                        };
 
-                                            case "_affect_entity_by_tag":
-                                                 $entity_found = Entity::getEntityIDByTag(addslashes($res));
-                                                break;
-
-                                            case "_affect_entity_by_domain":
-                                                $entity_found = Entity::getEntityIDByDomain(addslashes($res));
-                                                break;
-
-                                            case "_affect_entity_by_completename":
-                                                $res          = Sanitizer::unsanitize($res);
-                                                $entity_found = Entity::getEntityIDByCompletename(addslashes($res));
-                                                break;
-
-                                            default:
-                                                $entity_found = -1;
-                                                break;
-                                        }
-
-                                         //If an entity was found
+                                        // If an entity was found
                                         if ($entity_found > -1) {
                                             $entity[] = $entity_found;
                                         }
@@ -187,7 +134,7 @@ class RuleRight extends Rule
                                 }
 
                                 if (!count($entity)) {
-                                //Not entity assigned : action processing must be stopped for this rule
+                                    // Not entity assigned : action processing must be stopped for this rule
                                     $continue = false;
                                 }
                                 break;
@@ -198,10 +145,10 @@ class RuleRight extends Rule
         }
 
         if ($continue) {
-           //Nothing to be returned by the function :
-           //Store in session the entity and/or right
+            // Nothing to be returned by the function :
+            // Store in session the entity and/or right
             if (count($entity)) {
-                if ($right != '') {
+                if ($right !== '') {
                     foreach ($entity as $entID) {
                         $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
                             $is_recursive
@@ -212,7 +159,7 @@ class RuleRight extends Rule
                         $output["_ldap_rules"]["rules_entities"][] = [$entID, $is_recursive];
                     }
                 }
-            } else if ($right != '') {
+            } else if ($right !== '') {
                 $output["_ldap_rules"]["rules_rights"][] = $right;
             }
 
@@ -221,16 +168,11 @@ class RuleRight extends Rule
         return $output_src;
     }
 
-
     public function getTitle()
     {
         return __('Automatic user assignment');
     }
 
-
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
         static $criterias = [];
@@ -287,10 +229,9 @@ class RuleRight extends Rule
         return $criterias;
     }
 
-
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        if ($criteria['field'] == 'type') {
+        if ($criteria['field'] === 'type') {
             \Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
@@ -299,7 +240,6 @@ class RuleRight extends Rule
         }
         return false;
     }
-
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
@@ -310,13 +250,8 @@ class RuleRight extends Rule
         return false;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                              = parent::getActions();
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
@@ -385,6 +320,10 @@ class RuleRight extends Rule
         $actions['timezone']['name']                          = __('Timezone');
         $actions['timezone']['type']                          = 'timezone';
 
+        $actions['_deny_login']['name']                       = __('Deny login');
+        $actions['_deny_login']['type']                       = 'yesonly';
+        $actions['_deny_login']['table']                      = '';
+
         return $actions;
     }
 
@@ -408,16 +347,14 @@ class RuleRight extends Rule
         return false;
     }
 
-
-
     /**
      * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
      *
-     * @param &$criteria
+     * @param array &$criteria
+     * @return void
      **/
-    public function addSpecificCriteriasToArray(&$criteria)
+    public function addSpecificCriteriasToArray(array &$criteria): void
     {
-
         $criteria['ldap'] = __('LDAP criteria');
         $all = getAllDataFromTable('glpi_rulerightparameters', [], true);
         foreach ($all as $data) {
@@ -431,5 +368,45 @@ class RuleRight extends Rule
     public static function getIcon()
     {
         return Profile::getIcon();
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $new_item = static::isNewID($ID);
+        if (!$new_item) {
+            $this->check($ID, READ);
+        } else {
+            // Create item
+            $this->checkGlobal(UPDATE);
+        }
+
+        $canedit = $this->canEdit(static::$rightname);
+
+        $add_buttons = [];
+        if (!$new_item && $canedit) {
+            $add_buttons = [
+                [
+                    'text' => _x('button', 'Test'),
+                    'type' => 'button',
+                    'onclick' => "$('#ruletestmodal').modal('show');",
+                ]
+            ];
+        }
+
+        $twig_params = array_merge_recursive([
+            'item' => $this,
+            'match_operators' => $this->getRulesMatch(),
+            'conditions' => static::getConditionsArray(),
+            'rand' => mt_rand(),
+            'test_url' => $CFG_GLPI["root_doc"] . "/front/rule.test.php",
+            'params' => [
+                'canedit' => $canedit,
+                'addbuttons' => $add_buttons,
+            ]
+        ], $options);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/ruleright_form.html.twig', $twig_params);
     }
 }

@@ -41,6 +41,7 @@ class Group_UserTest extends \DbTestCase
 {
     public function testGetGroupUsers()
     {
+        $this->login();
         $group = new \Group();
         $gid = (int)$group->add([
             'name' => 'Test group'
@@ -84,6 +85,7 @@ class Group_UserTest extends \DbTestCase
 
     public function testGetUserGroups()
     {
+        $this->login();
         $uid = (int)getItemByTypeName('User', 'normal', true);
 
         $group = new \Group();
@@ -184,7 +186,6 @@ class Group_UserTest extends \DbTestCase
 
         $this->assertArrayHasKey('linkid', $list_items[$user->getID()]);
         $this->assertArrayHasKey('is_manager', $list_items[$user->getID()]);
-        $this->assertArrayHasKey('is_userdelegate', $list_items[$user->getID()]);
         $this->assertSame(TU_USER, $list_items[$user->getID()]['name']);
 
         $this->assertSame(2, $group_user->countForItem($user));

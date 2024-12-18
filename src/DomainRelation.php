@@ -69,42 +69,6 @@ class DomainRelation extends CommonDropdown
         return $ong;
     }
 
-    /**
-     * Print the form
-     *
-     * @param integer $ID       Integer ID of the item
-     * @param array   $options  Array of possible options:
-     *     - target for the Form
-     *     - withtemplate : template or basic item
-     *
-     * @return void|boolean (display) Returns false if there is a rights error.
-     **/
-    public function showForm($ID, array $options = [])
-    {
-
-        $rowspan = 3;
-        if ($ID > 0) {
-            $rowspan++;
-        }
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-
-        echo "<td>" . __('Comments') . "</td>";
-        echo "<td>
-      <textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
-        return true;
-    }
-
     public static function getDefaults()
     {
         return array_map(
