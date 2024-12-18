@@ -230,8 +230,8 @@ class Group_UserTest extends \DbTestCase
             0,
             (int)$group_user->add(
                 [
-                'groups_id' => $gid,
-                'users_id'  => $user->getID()
+                    'groups_id' => $gid,
+                    'users_id'  => $user->getID()
                 ]
             )
         );
