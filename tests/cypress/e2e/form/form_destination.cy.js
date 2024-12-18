@@ -86,8 +86,9 @@ describe('Form destination', () => {
                 .should('be.checked')
             ;
             cy.get("@content_field").parents().find("#tinymce")
-                .should('have.attr', 'contenteditable', "false")
+                .type('This field is not writable')
             ;
+            cy.get("@content_field").should('have.text', ''); // Nothing was written.
 
             // Ensure auto config values have been loaded for the "content" field
             cy.get("@content_field")
@@ -99,9 +100,8 @@ describe('Form destination', () => {
             // Disable auto config for the "content" field (tinymce)
             cy.get("@content_auto_config_checkbox").uncheck();
             cy.get("@content_field").parents().find("#tinymce")
-                .should('have.attr', 'contenteditable', "true")
+                .type('This field is writable')
             ;
-            cy.get("@content_field").type('Manual content');
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
@@ -113,15 +113,16 @@ describe('Form destination', () => {
 
             // Ensure the manual values are still there
             cy.get("@content_auto_config_checkbox").should('not.be.checked');
-            cy.get("@content_field").should('have.text', 'Manual content');
+            cy.get("@content_field").should('have.text', 'This field is writable');
         });
 
         describe('Revert to auto configurated values', () => {
             // Re-enable auto config for the "content" field
             cy.get("@content_auto_config_checkbox").check();
             cy.get("@content_field").parents().find("#tinymce")
-                .should('have.attr', 'contenteditable', "false")
+                .type('This field is not writable')
             ;
+            cy.get("@content_field").should('have.text', 'This field is writable'); // Previous content, no chane=ges
 
             // Save changes (page reload)
             cy.findByRole('button', {'name': "Update item"}).click();
