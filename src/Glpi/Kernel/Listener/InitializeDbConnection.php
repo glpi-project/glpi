@@ -50,10 +50,6 @@ final readonly class InitializeDbConnection implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        if (isset($_SESSION['is_installing'])) {
-            return;
-        }
-
         if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
             // Inexistent config file is handled in another listener.
             return;

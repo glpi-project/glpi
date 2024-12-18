@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
@@ -45,6 +46,8 @@ use Glpi\Toolbox\Filesystem;
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
 global $CFG_GLPI, $GLPI_CACHE;
+
+$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
@@ -513,11 +516,12 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
     checkConfigFile();
 
-   // Add a flag that will be used to validate that installation can be processed.
-   // This flag is put here just after checking that DB config file does not exist yet.
-   // It is mandatory to validate that `Etape_4` to `Etape_6` are not used outside installation process
-   // to change GLPI base URL without even being authenticated.
+    // Add a flag that will be used to validate that installation can be processed.
+    // This flag is put here just after checking that DB config file does not exist yet.
+    // It is mandatory to validate that installation endpoints are not used outside installation process
+    // to alter the GLPI database or configuration.
     $_SESSION['can_process_install'] = true;
+    $_SESSION['is_installing'] = true;
 
     header_html(__("Select your language"));
     choose_language();
@@ -526,8 +530,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
     }
-
-    $_SESSION['is_installing'] = true;
 
     switch ($_POST["install"]) {
         case "lang_select": // lang ok, go accept licence

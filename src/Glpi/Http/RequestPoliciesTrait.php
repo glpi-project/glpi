@@ -32,36 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Kernel\Listener;
+namespace Glpi\Http;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Kernel\ListenersPriority;
-use Glpi\Kernel\PostBootEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
+use Symfony\Component\HttpFoundation\Request;
 
-final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
+trait RequestPoliciesTrait
 {
-    public static function getSubscribedEvents(): array
+    /**
+     * Indicates whether the DB status should be checked for the given request.
+     */
+    protected function shouldCheckDbStatus(Request $request): bool
     {
-        return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
-        ];
-    }
+        $path = $request->getPathInfo();
 
-    public function onPostBoot(): void
-    {
-        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
-            // Requires the database to be available.
-            return;
+        if (
+            \str_starts_with($path, '/front/css.php')
+            || \str_starts_with($path, '/front/locale.php')
+        ) {
+            // These resources should always be available.
+            return false;
         }
 
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        if (
+            \str_starts_with($path, '/install/')
+            || ($_SESSION['is_installing'] ?? false)
+        ) {
+            // DB status should never be checked when the requested endpoint is part of the install process.
+            return false;
+        }
+
+        return true;
     }
 }

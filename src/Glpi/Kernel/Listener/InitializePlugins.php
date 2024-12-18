@@ -59,10 +59,9 @@ final readonly class InitializePlugins implements EventSubscriberInterface
     public function onPostBoot(): void
     {
         /*
-         * On startup, register all plugins configured for use,
-         * except during the database install/update process.
+         * On startup, register all plugins configured for use.
          */
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             return;
         }
 

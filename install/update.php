@@ -37,8 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
 /**
  * @var \DBmysql|null $DB
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
@@ -50,9 +48,8 @@ global $DB,
        $update,
        $HEADER_LOADED;
 
-if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
-    $DB = new DB();
-}
+$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
 $update = new Update($DB);
@@ -218,6 +215,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             echo "<div class='text-center'>";
             doUpdateDb();
             echo "</div>";
+
+            Session::destroy(); // Remove session data set by web installation
 
             $_SESSION['telemetry_from_install'] = true;
 

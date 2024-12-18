@@ -55,13 +55,6 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
          */
         global $CFG_GLPI;
 
-        if (isset($_SESSION['is_installing'])) {
-            // Force `root_doc` value
-            $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-            $CFG_GLPI['root_doc'] = $request->getBasePath();
-            return;
-        }
-
         Config::loadLegacyConfiguration();
 
         // Override cfg_features by session value

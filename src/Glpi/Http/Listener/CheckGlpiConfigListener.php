@@ -37,6 +37,7 @@ namespace Glpi\Http\Listener;
 use Config;
 use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Http\RequestPoliciesTrait;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -46,16 +47,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class CheckGlpiConfigListener implements EventSubscriberInterface
 {
-    private static bool $skip_db_checks = false;
+    use RequestPoliciesTrait;
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
     ) {
-    }
-
-    public static function skipDbChecks(): bool
-    {
-        return self::$skip_db_checks;
     }
 
     public static function getSubscribedEvents(): array
@@ -76,30 +72,7 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             return;
         }
 
-        $root_doc = $event->getRequest()->getBasePath();
-        $request_uri = $event->getRequest()->getRequestUri();
-
-        self::$skip_db_checks = false;
-        if ($event->getRequest()->server->has('REQUEST_URI')) {
-            if (preg_match('#^' . $root_doc . '/front/(css|locale).php#', $request_uri) === 1) {
-                self::$skip_db_checks  = true;
-            }
-
-            $no_db_checks_scripts = [
-                '#^' . $root_doc . '/install/#i',
-            ];
-            foreach ($no_db_checks_scripts as $pattern) {
-                if (preg_match($pattern, $request_uri) === 1) {
-                    self::$skip_db_checks = true;
-                    break;
-                }
-            }
-        }
-
-        if (
-            self::$skip_db_checks
-            || isset($_SESSION['is_installing'])
-        ) {
+        if (!$this->shouldCheckDbStatus($event->getRequest())) {
             return;
         }
 

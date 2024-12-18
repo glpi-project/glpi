@@ -55,10 +55,6 @@ final readonly class InitializeCache implements EventSubscriberInterface
         global $GLPI_CACHE;
 
         $cache_manager = new CacheManager();
-        if (isset($_SESSION['is_installing'])) {
-            $GLPI_CACHE = $cache_manager->getInstallerCacheInstance();
-        } else {
-            $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
-        }
+        $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
     }
 }

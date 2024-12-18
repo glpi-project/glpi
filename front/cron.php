@@ -51,6 +51,11 @@ if (PHP_SAPI === 'cli') {
     $kernel = new \Glpi\Kernel\Kernel();
     $kernel->boot();
 
+    if ($CFG_GLPI['maintenance_mode'] ?? false) {
+        echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
+        exit();
+    }
+
     if (!($DB instanceof DBmysql)) {
         echo sprintf(
             'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
@@ -69,8 +74,8 @@ if (PHP_SAPI === 'cli') {
         exit();
     }
 
-    if ($CFG_GLPI['maintenance_mode'] ?? false) {
-        echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
+    if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
         exit();
     }
 }

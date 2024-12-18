@@ -36,8 +36,10 @@ namespace Glpi\Config\LegacyConfigurators;
 
 use Config;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Config\ConfigProviderHasRequestTrait;
+use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Http\Listener\CheckGlpiConfigListener;
+use Glpi\Http\RequestPoliciesTrait;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
@@ -46,8 +48,11 @@ use Session;
 use Toolbox;
 use Update;
 
-final readonly class StandardIncludes implements LegacyConfigProviderInterface
+final class StandardIncludes implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
 {
+    use ConfigProviderHasRequestTrait;
+    use RequestPoliciesTrait;
+
     public function execute(): void
     {
         /**
@@ -74,30 +79,19 @@ final readonly class StandardIncludes implements LegacyConfigProviderInterface
             }
 
             if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-                if (isCommandLine()) {
-                    echo __('Service is down for maintenance. It will be back shortly.');
-                    echo "\n";
-                } else {
-                    TemplateRenderer::getInstance()->display('maintenance.html.twig', [
-                        'title'            => "MAINTENANCE MODE",
-                        'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-                    ]);
-                }
+                TemplateRenderer::getInstance()->display('maintenance.html.twig', [
+                    'title'            => "MAINTENANCE MODE",
+                    'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
+                ]);
                 exit();
             }
         }
 
         // Check version
-        if (!isset($_SESSION['is_installing']) && !CheckGlpiConfigListener::skipDbChecks() && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        if ($this->shouldCheckDbStatus($this->getRequest()) && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
             $debug_mode = $_SESSION['glpi_use_mode'];
             Toolbox::setDebugMode(Session::NORMAL_MODE);
-
-            if (isCommandLine()) {
-                echo __('The GLPI codebase has been updated. The update of the GLPI database is necessary.');
-                echo "\n";
-                exit();
-            }
 
             /** @var \DBmysql $DB */
             global $DB;

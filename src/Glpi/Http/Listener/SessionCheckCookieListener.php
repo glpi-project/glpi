@@ -34,8 +34,9 @@
 
 namespace Glpi\Http\Listener;
 
-use Glpi\Kernel\ListenersPriority;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Http\RequestPoliciesTrait;
+use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -43,6 +44,8 @@ use Update;
 
 class SessionCheckCookieListener implements EventSubscriberInterface
 {
+    use RequestPoliciesTrait;
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -57,8 +60,8 @@ class SessionCheckCookieListener implements EventSubscriberInterface
         }
 
         if (
-            \defined('SKIP_UPDATES')
-            || CheckGlpiConfigListener::skipDbChecks()
+            !$this->shouldCheckDbStatus($event->getRequest())
+            || \defined('SKIP_UPDATES')
             || Update::isDbUpToDate()
         ) {
             return;
