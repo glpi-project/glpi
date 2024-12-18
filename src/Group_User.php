@@ -834,7 +834,6 @@ class Group_User extends CommonDBRelation
                 [
                     'id'        => $users_id,
                     'groups_id' => 0,
-                    '_reset_group_id' => true
                 ]
             );
         }
