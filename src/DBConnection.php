@@ -647,29 +647,6 @@ class DBConnection extends CommonDBTM
 
 
     /**
-     *  Display a common mysql connection error
-     **/
-    public static function displayMySQLError()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $fr_msg = "Le serveur Mysql est inaccessible. Vérifiez votre configuration.";
-        $en_msg = "A link to the SQL server could not be established. Please check your configuration.";
-
-        if (!isCommandLine()) {
-            Html::nullHeader("Mysql Error", '');
-            echo "<div class='center'><p class ='b'>$en_msg</p><p class='b'>$fr_msg</p></div>";
-            Html::nullFooter();
-        } else {
-            echo "$en_msg\n$fr_msg\n";
-        }
-
-        exit(1);
-    }
-
-
-    /**
      * @param $name
      **/
     public static function cronInfo($name)

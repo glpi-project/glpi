@@ -35,16 +35,12 @@
 namespace Glpi\Http\Listener;
 
 use Config;
-use DBConnection;
 use DBmysql;
-use Glpi\Http\Listener\LegacyConfigProviderListener;
-use Glpi\Http\Error\DisplayGlpiMisconfiguredPage;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Kernel\ListenersPriority;
-use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -67,13 +63,15 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
         return [
             KernelEvents::REQUEST => [
                 ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
-                ['onAfterLegacyConfigurators', -10 + ListenersPriority::REQUEST_LISTENERS_PRIORITIES[LegacyConfigProviderListener::class]]
             ],
         ];
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        /** @var ?DBmysql $DB */
+        global $DB;
+
         if (!$event->isMainRequest()) {
             return;
         }
@@ -90,8 +88,7 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             $no_db_checks_scripts = [
                 '#^' . $root_doc . '/$#',
                 '#^' . $root_doc . '/index.php#',
-                '#^' . $root_doc . '/install/install.php#',
-                '#^' . $root_doc . '/install/update.php#',
+                '#^' . $root_doc . '/install/#i',
             ];
             foreach ($no_db_checks_scripts as $pattern) {
                 if (preg_match($pattern, $request_uri) === 1) {
@@ -108,43 +105,46 @@ final class CheckGlpiConfigListener implements EventSubscriberInterface
             return;
         }
 
-        // Check if the DB is configured properly
-        if (!\is_file(GLPI_CONFIG_DIR . '/config_db.php')) {
-            Session::loadLanguage('', false);
+        $response = null;
+        if (!($DB instanceof DBmysql)) {
+            $show_link = file_exists($this->projectDir . '/install/install.php');
 
-            $event->setResponse(new StreamedResponse(new DisplayGlpiMisconfiguredPage($this->projectDir), 500));
+            $response = $this->getErrorResponse(
+                message: sprintf(
+                    __('The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.'),
+                    GLPI_CONFIG_DIR . '/config_db.php'
+                ),
+                link_url: $show_link ? $event->getRequest()->getBasePath() . '/install/install.php' : null,
+                link_text: $show_link ? __('Go to install page') : null,
+            );
+        } elseif (!$DB->connected) {
+            $response = $this->getErrorResponse(
+                message: __('The connection to the SQL server could not be established. Please check your configuration.'),
+            );
+        } elseif (!Config::isLegacyConfigurationLoaded()) {
+            $response = $this->getErrorResponse(
+                message: __('Unable to load the GLPI configuration from the database.'),
+            );
+        }
+
+        if ($response !== null) {
+            $event->setResponse($response);
         }
     }
 
-    public function onAfterLegacyConfigurators(RequestEvent $event): void
+    private function getErrorResponse(string $message, ?string $link_url = null, ?string $link_text = null): Response
     {
-        if (!$event->isMainRequest()) {
-            return;
-        }
+        $content = TemplateRenderer::getInstance()->render(
+            'error_page.html.twig',
+            [
+                'header_method' => 'nullHeader',
+                'page_title'    => _n('Error', 'Errors', 1),
+                'message'       => $message,
+                'link_url'      => $link_url,
+                'link_text'     => $link_text,
+            ]
+        );
 
-        if (
-            self::$skip_db_checks
-            || isset($_SESSION['is_installing'])
-        ) {
-            return;
-        }
-
-        /** @var ?DBmysql $DB */
-        global $DB;
-
-        if ($DB instanceof DBmysql) {
-            //Database connection
-            if (!$DB->connected) {
-                $event->setResponse(new StreamedResponse(fn () => DBConnection::displayMySQLError(), 500));
-                return;
-            }
-
-            //Options from DB, do not touch this part.
-            if (!Config::isLegacyConfigurationLoaded()) {
-                $event->setResponse(new Response('Error accessing config table', 500));
-            }
-        } else {
-            $event->setResponse(new StreamedResponse(new DisplayGlpiMisconfiguredPage($this->projectDir), 500));
-        }
+        return new Response($content, 500);
     }
 }
