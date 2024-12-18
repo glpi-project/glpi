@@ -361,6 +361,7 @@ $empty_data_builder = new class
             'projecttask_unstarted_states_id' => 0,
             'projecttask_inprogress_states_id' => 0,
             'projecttask_completed_states_id' => 0,
+            'add_solution_invalid_tickets' => 1
         ];
 
         $tables['glpi_configs'] = [];

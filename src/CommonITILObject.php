@@ -1866,16 +1866,19 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
-        if (count($tt->mandatory)) {
+        if (!self::checkEmptyMandatoryFields($this, $tt)) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    public static function checkEmptyMandatoryFields(CommonDBTM $item, ITILTemplate $item_template) {
+        if (count($item_template->mandatory)) {
             $mandatory_missing = [];
-            $fieldsname        = $tt->getAllowedFieldsNames(true);
-            foreach ($tt->mandatory as $key => $val) {
-                if (
-                    (!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
-                    && (isset($input[$key])
-                    && (empty($input[$key]) || ($input[$key] == 'NULL'))
-                    )
-                ) {
+            $fieldsname        = $item_template->getAllowedFieldsNames(true);
+            foreach ($item_template->mandatory as $key => $val) {
+                if (empty($item->fields[$key]) || ($item->fields[$key] == 'NULL')) {
                     $mandatory_missing[$key] = $fieldsname[$val];
                 }
             }
@@ -1885,12 +1888,10 @@ abstract class CommonITILObject extends CommonDBTM
                     __('Mandatory fields are not filled. Please correct: %s'),
                     implode(", ", $mandatory_missing)
                 );
-                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+                Session::addMessageAfterRedirect($message, false, ERROR);
                 return false;
             }
         }
-
-        return $input;
     }
 
     protected function manageITILObjectLinkInput($input)

@@ -189,6 +189,9 @@ class ITILSolution extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php') !== false)) {
             $input['users_id'] = Session::getLoginUserID();
         }
@@ -199,6 +202,16 @@ class ITILSolution extends CommonDBChild
         ) {
             $this->item = new $input['itemtype']();
             $this->item->getFromDB($input['items_id']);
+        }
+
+        // Check ticket mandatory fields
+        if (!$CFG_GLPI['add_solution_invalid_tickets']) {
+            $ticket = $this->item;
+            $tt = $ticket->getITILTemplateToUse(0, $ticket->fields['type'] ?? '', $ticket->fields['itilcategories_id'] ?? '', $ticket->fields['entities_id'] ?? '');
+
+            if (!CommonITILObject::checkEmptyMandatoryFields($ticket, $tt)) {
+                return false;
+            }
         }
 
         // Handle template
