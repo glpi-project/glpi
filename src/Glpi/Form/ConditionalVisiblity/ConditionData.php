@@ -79,6 +79,6 @@ final class ConditionData
     {
         // No follback here as an empty value is valid if the condition is not
         // fully specified yet.
-        return ValueOperator::tryFrom($this->value_operator);
+        return ValueOperator::tryFrom($this->value_operator ?? "");
     }
 }
