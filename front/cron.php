@@ -33,6 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql|null $DB
+ * @var array $CFG_GLPI
+ */
+global $DB, $CFG_GLPI;
+
 if (PHP_SAPI === 'cli') {
     // Check the resources state before trying to instanciate the Kernel.
     // It must be done here as this check must be done even when the Kernel
@@ -44,12 +50,30 @@ if (PHP_SAPI === 'cli') {
 
     $kernel = new \Glpi\Kernel\Kernel();
     $kernel->boot();
-}
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+    if (!($DB instanceof DBmysql)) {
+        echo sprintf(
+            'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
+            GLPI_CONFIG_DIR . '/config_db.php'
+        ) . PHP_EOL;
+        exit();
+    }
+
+    if (!$DB->connected) {
+        echo 'ERROR: The connection to the SQL server could not be established. Please check your configuration.' . PHP_EOL;
+        exit();
+    }
+
+    if (!Config::isLegacyConfigurationLoaded()) {
+        echo 'ERROR: Unable to load the GLPI configuration from the database.' . PHP_EOL;
+        exit();
+    }
+
+    if ($CFG_GLPI['maintenance_mode'] ?? false) {
+        echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
+        exit();
+    }
+}
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
