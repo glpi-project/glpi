@@ -104,13 +104,11 @@ class Application extends BaseApplication
      */
     private $output;
 
-    private Kernel $kernel;
-
-    public function __construct()
+    public function __construct(private Kernel $kernel)
     {
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
-        $this->initKernel();
+        $this->kernel->boot();
 
         if (class_exists('DB', false) && class_exists('mysqli', false)) {
             /** @var \DBmysql $DB */
@@ -339,28 +337,6 @@ class Application extends BaseApplication
         }
 
         return $result;
-    }
-
-    /**
-     * Initalize GLPI.
-     */
-    private function initKernel(): void
-    {
-        /** @var Kernel|null $kernel */
-        global $kernel;
-
-        if ($kernel) {
-            $this->kernel = $kernel;
-            $getter = (fn() => $this->booted)->bindTo($kernel, $kernel::class);
-            $is_booted = $getter->call($kernel);
-            if (!$is_booted) {
-                $this->kernel->boot();
-            }
-            return;
-        }
-
-        $this->kernel = new Kernel();
-        $this->kernel->boot();
     }
 
     /**
