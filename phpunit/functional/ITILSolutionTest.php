@@ -646,15 +646,15 @@ HTML,
 
         // Create a ticket with category
         $ticket = $this->createItem('Ticket', [
-            'name'                  => 'Ticket Mandatory Fields',
-            'content'               => 'Ticket Mandatory Fields description',
+            'name'                  => 'Ticket1 Mandatory Fields',
+            'content'               => 'Ticket1 Mandatory Fields description',
             'itilcategories_id'     => $category->getID(),
         ]);
 
         // Create a ticket without category
         $ticket2 = $this->createItem('Ticket', [
-            'name'                  => 'Ticket Mandatory Fields',
-            'content'               => 'Ticket Mandatory Fields description',
+            'name'                  => 'Ticket2 Mandatory Fields',
+            'content'               => 'Ticket2 Mandatory Fields description',
         ]);
 
         // Add a mandatory field (category) to the default template ticket
@@ -670,14 +670,21 @@ HTML,
             'content'            => 'Ticket1 Mandatory Fields solution',
         ]);
 
+        \Config::setConfigurationValues('core', ['add_solution_invalid_tickets' => 0]);
+        $conf = \Config::getConfigurationValues('core', ['add_solution_invalid_tickets']);
+
+        $this->assertEquals($conf['add_solution_invalid_tickets'], 0);
+
         // Failed solution addition because ticket category is not filled
         $solution = new \ITILSolution();
-        $solution->add([
+        $result = $solution->add([
             'itemtype'           => $ticket2::getType(),
             'items_id'           => $ticket2->getID(),
             'content'            => 'Ticket2 Mandatory Fields solution',
         ]);
 
         $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Category']);
+
+        $this->assertFalse($result);
     }
 }
