@@ -36,7 +36,6 @@ namespace Glpi\Kernel;
 
 use GLPI;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
 use Glpi\Config\ConfigProviderWithRequestInterface;
 use Glpi\Config\LegacyConfigProviders;
 use Glpi\Http\Listener\PluginsRouterListener;
@@ -119,33 +118,6 @@ final class Kernel extends BaseKernel
 
         if ($dispatch_postboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
-        }
-    }
-
-    public function loadCommonGlobalConfig(): void
-    {
-        $this->boot();
-
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderWithRequestInterface) {
-                continue;
-            }
-            $provider->execute();
-        }
-    }
-
-    public function loadCliConsoleOnlyConfig(): void
-    {
-        $this->boot();
-
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
-                $provider->execute();
-            }
         }
     }
 
