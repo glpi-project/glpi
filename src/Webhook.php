@@ -479,7 +479,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $router->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
         $path = rtrim($path, '/');
         $request = new Request('GET', $path);
-        $response = $router->handleRequest($request);
+        $response = Session::callAsSystem(static fn () => $router->handleRequest($request));
         if ($response->getStatusCode() === 200) {
             $body = (string)$response->getBody();
             try {
