@@ -45,7 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class CheckGlpiConfigListener implements EventSubscriberInterface
+final class CheckDatabaseStatusListener implements EventSubscriberInterface
 {
     use RequestPoliciesTrait;
 

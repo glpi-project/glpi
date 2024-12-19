@@ -57,21 +57,21 @@ final class ListenersPriority
     public const REQUEST_LISTENERS_PRIORITIES = [
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
-        HttpListener\LegacyAssetsListener::class         => 500,
+        HttpListener\LegacyAssetsListener::class        => 500,
 
-        HttpListener\SessionCheckCookieListener::class   => 550,
+        HttpListener\SessionCheckCookieListener::class  => 550,
 
-        HttpListener\LegacyRouterListener::class         => 400,
+        HttpListener\LegacyRouterListener::class        => 400,
 
         // Legacy URLs redirections does not require any complex logic. It can be done prior to
         // GLPI config and plugins initialization.
-        HttpListener\RedirectLegacyRouteListener::class  => 375,
+        HttpListener\RedirectLegacyRouteListener::class => 375,
 
-        HttpListener\CheckGlpiConfigListener::class      => 360,
+        HttpListener\CheckDatabaseStatusListener::class => 360,
 
         // Config providers may still expect some `$_SERVER` variables to be redefined.
         // They must therefore be executed after the `LegacyRouterListener`.
-        LegacyConfigProviderListener::class => 350,
+        LegacyConfigProviderListener::class             => 350,
 
         // Plugins itemtypes requires plugins to be initialized, therefore config must be already set.
         // Also, keep it after the `LegacyRouterListener` to not map to the generic controller if a
