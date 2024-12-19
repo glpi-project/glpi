@@ -39,13 +39,11 @@ use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
 use Glpi\Console\Command\ConfigurationCommandInterface;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
-use Plugin;
 use Session;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Command\Command;
@@ -117,16 +115,8 @@ class Application extends BaseApplication
 
         $this->computeAndLoadOutputLang();
 
-       // Load core commands only to check if called command prevent or not usage of plugins
-       // Plugin commands will be loaded later
-        $loader = new CommandLoader(false);
+        $loader = new CommandLoader();
         $this->setCommandLoader($loader);
-
-        if ($this->usePlugins()) {
-            $plugin = new Plugin();
-            $plugin->init(true);
-            $loader->setIncludePlugins(true);
-        }
     }
 
     protected function getDefaultInputDefinition(): InputDefinition
@@ -195,12 +185,6 @@ class Application extends BaseApplication
                     null,
                     InputOption::VALUE_OPTIONAL,
                     __('Configuration directory to use. Deprecated option')
-                ),
-                new InputOption(
-                    '--no-plugins',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Disable GLPI plugins (unless commands forces plugins loading)')
                 ),
                 new InputOption(
                     '--lang',
@@ -365,9 +349,11 @@ class Application extends BaseApplication
             $lang = 'en_GB';
         }
 
-        $_SESSION['glpilanguage'] = $lang;
+        if ($lang !== $_SESSION['glpilanguage']) {
+            $_SESSION['glpilanguage'] = $lang;
 
-        Session::loadLanguage('', $this->usePlugins());
+            Session::loadLanguage();
+        }
     }
 
     /**
@@ -382,32 +368,6 @@ class Application extends BaseApplication
         return is_array($this->config)
          && array_key_exists('languages', $this->config)
          && array_key_exists($language, $this->config['languages']);
-    }
-
-    /**
-     * Whether or not plugins have to be used.
-     *
-     * @return boolean
-     */
-    private function usePlugins()
-    {
-        if (!($this->db instanceof DBmysql) || !$this->db->connected) {
-            return false;
-        }
-
-        $input = new ArgvInput();
-
-        try {
-            $command = $this->find($this->getCommandName($input) ?? '');
-            if ($command instanceof ForceNoPluginsOptionCommandInterface) {
-                return !$command->getNoPluginsOptionValue();
-            }
-        } catch (\Symfony\Component\Console\Exception\CommandNotFoundException $e) {
-           // Command will not be found at this point if it is a plugin command
-            $command = null; // Say hello to CS checker
-        }
-
-        return !$input->hasParameterOption('--no-plugins', true);
     }
 
     /**
