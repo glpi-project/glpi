@@ -39,16 +39,25 @@ use Symfony\Component\HttpFoundation\Request;
 trait RequestPoliciesTrait
 {
     /**
+     * Indicates the requested resource is made on a front-end asset endpoint.
+     */
+    protected function isFrontEndAssetEndpoint(Request $request): bool
+    {
+        $path = $request->getPathInfo();
+
+        return \str_starts_with($path, '/js/')
+            || \str_starts_with($path, '/front/css.php')
+            || \str_starts_with($path, '/front/locale.php');
+    }
+
+    /**
      * Indicates whether the DB status should be checked for the given request.
      */
     protected function shouldCheckDbStatus(Request $request): bool
     {
         $path = $request->getPathInfo();
 
-        if (
-            \str_starts_with($path, '/front/css.php')
-            || \str_starts_with($path, '/front/locale.php')
-        ) {
+        if ($this->isFrontEndAssetEndpoint($request)) {
             // These resources should always be available.
             return false;
         }

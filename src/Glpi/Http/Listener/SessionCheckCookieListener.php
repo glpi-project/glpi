@@ -40,7 +40,6 @@ use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Update;
 
 class SessionCheckCookieListener implements EventSubscriberInterface
 {
@@ -59,11 +58,7 @@ class SessionCheckCookieListener implements EventSubscriberInterface
             return;
         }
 
-        if (
-            !$this->shouldCheckDbStatus($event->getRequest())
-            || \defined('SKIP_UPDATES')
-            || Update::isDbUpToDate()
-        ) {
+        if ($this->isFrontEndAssetEndpoint($event->getRequest())) {
             return;
         }
 

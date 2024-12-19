@@ -60,17 +60,9 @@ final class StandardIncludes implements LegacyConfigProviderInterface, ConfigPro
          */
         global $CFG_GLPI;
 
-        $skip_maintenance_checks = false;
-        if (
-            array_key_exists('REQUEST_URI', $_SERVER)
-            && preg_match('#^' . $CFG_GLPI['root_doc'] . '/front/(css|locale).php#', $_SERVER['REQUEST_URI']) === 1
-        ) {
-            $skip_maintenance_checks = true;
-        }
-
         // Check maintenance mode
         if (
-            !$skip_maintenance_checks
+            !$this->isFrontEndAssetEndpoint($this->getRequest())
             && isset($CFG_GLPI["maintenance_mode"])
             && $CFG_GLPI["maintenance_mode"]
         ) {
