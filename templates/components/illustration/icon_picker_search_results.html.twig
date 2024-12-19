@@ -42,7 +42,7 @@
     {% if icon_ids|length %}
         <div class="row g-3 mb-4 align-items-start">
             {% for icon_id in icon_ids %}
-                <div class="col-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
+                <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
                     <div class="card border-secondary-hover cursor-pointer rounded">
                         <div class="card-body h-100 aspect-ratio-1">
                             {{ render_illustration(icon_id) }}
