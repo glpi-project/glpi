@@ -51,6 +51,15 @@ if (PHP_SAPI === 'cli') {
     $kernel = new \Glpi\Kernel\Kernel();
     $kernel->boot();
 
+    // Handle the `--debug` argument
+    $debug = array_search('--debug', $_SERVER['argv']);
+    if ($debug) {
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        unset($_SERVER['argv'][$debug]);
+        $_SERVER['argv'] = array_values($_SERVER['argv']);
+        $_SERVER['argc']--;
+    }
+
     if ($CFG_GLPI['maintenance_mode'] ?? false) {
         echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
         exit();

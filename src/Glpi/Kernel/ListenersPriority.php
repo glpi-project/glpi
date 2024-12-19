@@ -43,7 +43,6 @@ final class ListenersPriority
     public const POST_BOOT_LISTENERS_PRIORITIES = [
         KernelListener\SessionStart::class =>                        200,
         KernelListener\ProfilerStart::class =>                       190,
-        KernelListener\DebugMode::class =>                           180,
         KernelListener\InitializeDbConnection::class =>              160,
         KernelListener\InitializeCache::class =>                     150,
         KernelListener\LoadLegacyConfiguration::class =>             140,
