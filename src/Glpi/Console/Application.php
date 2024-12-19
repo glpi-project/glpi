@@ -35,8 +35,6 @@
 
 namespace Glpi\Console;
 
-use Config;
-use DB;
 use DBmysql;
 use GLPI;
 use Glpi\Application\ErrorHandler;
@@ -101,19 +99,17 @@ class Application extends BaseApplication
 
     public function __construct(private Kernel $kernel)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
+
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
         $this->kernel->boot();
 
-        if (class_exists('DB', false) && class_exists('mysqli', false)) {
-            /** @var \DBmysql $DB */
-            global $DB;
-
-            $this->db = $DB;
-        }
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        $this->db = $DB;
         $this->config = &$CFG_GLPI;
 
         // Force the current "username"
@@ -424,11 +420,9 @@ class Application extends BaseApplication
     private function checkCoreMandatoryRequirements(
         array $command_specific_requirements
     ): bool {
-        $db = $this->db;
-
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
-            $db instanceof DBmysql && $db->connected ? $db : null
+            $this->db instanceof DBmysql && $this->db->connected ? $this->db : null
         );
 
         // Some commands might specify some extra requirements
