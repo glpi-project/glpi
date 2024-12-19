@@ -115,7 +115,7 @@ class Application extends BaseApplication
 
         $this->computeAndLoadOutputLang();
 
-        $loader = new CommandLoader();
+        $loader = new CommandLoader(include_plugins: $this->db instanceof DBmysql && $this->db->connected);
         $this->setCommandLoader($loader);
     }
 
