@@ -561,27 +561,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-    public function post_purgeItem()
-    {
-        parent::post_deleteItem();
-        $this->addNotificationTargets($this->entity);
-        if (
-            count($this->target) == 0 &&
-            Session::haveRight("config", UPDATE) &&
-            isset($this->notification_targets["1_1"]) &&
-            $this->notification_targets["1_1"] === "1_" . __("Administrator")
-        ) {
-            $notification = new Notification();
-            $notification->getFromDB($this->fields['notifications_id']);
-            self::updateTargets([
-                'notifications_id' => $this->fields['notifications_id'],
-                '_targets'         => ["1_1"],
-                'itemtype'         => $notification->fields['itemtype']
-            ]);
-        }
-    }
-
-
     public function addAdditionnalInfosForTarget()
     {
     }

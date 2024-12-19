@@ -650,47 +650,41 @@ class NotificationTargetTest extends DbTestCase
 
         $tables = require(GLPI_ROOT . '/install/empty_data.php');
         foreach ($notifications as $notification) {
-            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype']);
+            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype'], $notification['event']);
             $notification_target->addNotificationTargets(0);
-
+            $filtered = array_filter(
+                $tables["glpi_notificationtargets"],
+                function ($empty_data_array) use ($notification) {
+                    return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
+                        $empty_data_array['items_id'] === '1' &&
+                        $empty_data_array['notifications_id'] === strval($notification['id']);
+                }
+            );
             if (isset($notification_target->notification_targets["1_1"]) && $notification_target->notification_targets["1_1"] === "1_" . __("Administrator")) {
-                $filtered = array_filter(
-                    $tables["glpi_notificationtargets"],
-                    function ($empty_data_array) use ($notification) {
-                        return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
-                            $empty_data_array['items_id'] === '1' &&
-                            $empty_data_array['notifications_id'] === strval($notification['id']);
-                    }
-                );
                 $this->assertNotEmpty($filtered);
+            } else {
+                $this->assertEmpty($filtered);
             }
         }
     }
 
-    public function testNotificationHaveDefaultRecipient()
+    public function testTargetInstall()
     {
         $this->login();
 
         $notification = new \Notification();
         $notifications = $notification->find();
 
+        $tables = require(GLPI_ROOT . '/install/empty_data.php');
         foreach ($notifications as $notification) {
-            $notification_target = NotificationTarget::getInstanceByType($notification['itemtype']);
-
-            $notification_target->deleteByCriteria([
-                'notifications_id' => $notification['id'],
-            ]);
-
-            $notification_target->addNotificationTargets(0);
-            $target_find = $notification_target->getFromDBByCrit([
-                'notifications_id' => $notification['id'],
-                'items_id' => 1,
-            ]);
-            if (isset($notification_target->notification_targets["1_1"]) && $notification_target->notification_targets["1_1"] === "1_" . __("Administrator")) {
-                $this->assertTrue($target_find);
-            } else {
-                $this->assertFalse($target_find);
-            }
+            $filtered = array_filter(
+                $tables["glpi_notificationtargets"],
+                function ($empty_data_array) use ($notification) {
+                    return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
+                        $empty_data_array['notifications_id'] === strval($notification['id']);
+                }
+            );
+            $this->assertNotEmpty($filtered);
         }
     }
 }
