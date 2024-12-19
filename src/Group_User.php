@@ -954,10 +954,21 @@ class Group_User extends CommonDBRelation
 
        // remove user from plannings
         $groups_id  = $this->fields['groups_id'];
+        $users_id = $this->fields['users_id'];
         $planning_k = 'group_' . $groups_id . '_users';
 
-       // find users with the current group in their plannings
+        // If user's default group is affected, remove it from user
         $user_inst = new User();
+        if ($user_inst->getFromDB($users_id) && $user_inst->fields['groups_id'] == $groups_id) {
+            $user_inst->update(
+                [
+                    'id'        => $users_id,
+                    'groups_id' => 0,
+                ]
+            );
+        }
+
+       // find users with the current group in their plannings
         $users = $user_inst->find([
             'plannings' => ['LIKE', "%$planning_k%"]
         ]);
