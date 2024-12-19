@@ -44,27 +44,33 @@
         action="{{ form.getFormURL() }}"
         data-submit-once
     >
-        {{ fields.textField(
-            'illustration',
-            form.fields.illustration,
-            __('Illustration'),
-            {
-                'is_horizontal': false,
-                'full_width' : true,
-            }
-        ) }}
+        <div class="row">
+            <div class="col-lg-9 col-12">
+                {{ fields.textareaField(
+                    'description',
+                    form.fields.description,
+                    __('Description'),
+                    {
+                        'is_horizontal': false,
+                        'full_width' : true,
+                        'enable_richtext': true,
+                        'enable_images': false,
+                    }
+                ) }}
+            </div>
 
-        {{ fields.textareaField(
-            'description',
-            form.fields.description,
-            __('Description'),
-            {
-                'is_horizontal': false,
-                'full_width' : true,
-                'enable_richtext': true,
-                'enable_images': false,
-            }
-        ) }}
+            <div class="col-lg-3 col-12">
+              {{ fields.illustrationField(
+                    'illustration',
+                    form.getServiceCatalogItemIllustration(),
+                    __('Illustration'),
+                    {
+                        'is_horizontal': false,
+                        'full_width' : true,
+                    }
+                ) }}
+            </div>
+        </div>
 
         {{ fields.dropdownField(
             'Glpi\\Form\\Category',

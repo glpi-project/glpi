@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Application\View\Extension;
+namespace Glpi\Controller\UI\Illustration;
 
-use Glpi\UI\IllustrationManager;
-use Override;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use Glpi\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-class IllustrationExtension extends AbstractExtension
+final class SearchController extends AbstractController
 {
-    private IllustrationManager $illustration_manager;
-
-    public function __construct()
+    #[Route(
+        "/UI/Illustration/Search",
+        name: "glpi_ui_illustration_search",
+    )]
+    public function __invoke(Request $request): Response
     {
-        $this->illustration_manager = new IllustrationManager();
-    }
+        // Read parameters
+        $filter    = $request->query->getString('filter', "");
+        $page      = $request->query->getInt('page', 1);
+        $page_size = $request->query->getInt('page_size', 30);
 
-    #[Override]
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('render_illustration', [$this, 'renderIllustration'], [
-                'is_safe' => ['html'],
-            ]),
-            new TwigFunction(
-                'searchIcons',
-                [$this->illustration_manager, 'searchIcons'],
-            ),
-            new TwigFunction(
-                'countIcons',
-                [$this->illustration_manager, 'countIcons'],
-            ),
-        ];
-    }
-
-    public function renderIllustration(string $filename, ?int $size = null): string
-    {
-        return $this->illustration_manager->renderIcon($filename, $size);
+        // Output modal body
+        return $this->render(
+            'components/illustration/icon_picker_search_results.html.twig',
+            [
+                'filter'    => $filter,
+                'page'      => $page,
+                'page_size' => $page_size,
+            ]
+        );
     }
 }

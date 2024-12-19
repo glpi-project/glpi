@@ -446,7 +446,7 @@ $break_s_screen: 1400px;
                     padding: 8px 10px;
                 }
 
-                &:not(.current):not(.nb_plugin):not(.nav-disabled):hover {
+                &:not(.current, .nb_plugin, .nav-disabled):hover {
                     background-color: #ddd;
                     cursor: pointer;
                 }
