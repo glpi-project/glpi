@@ -66,7 +66,7 @@ final readonly class SessionStart implements EventSubscriberInterface
             if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
                 // API clients must not use cookies, as the session token is expected to be passed in headers.
                 $use_cookies = false;
-                // The API endpoint is strating the session manually.
+                // The API endpoint is starting the session manually.
                 $start_session = false;
             } elseif (\str_starts_with($path, '/caldav.php')) {
                 // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.

@@ -58,10 +58,8 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /*
-         * On startup, register all plugins configured for use.
-         */
         if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+            // Requires the database to be available.
             return;
         }
 
@@ -69,6 +67,7 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
         $plugin = new Plugin();
         $plugin->init(true);
+
         $this->pluginContainer->initializeContainer();
 
         Profiler::getInstance()->stop('InitializePlugins::execute');

@@ -60,7 +60,7 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 
         Config::loadLegacyConfiguration();
 
-        // Override cfg_features by session value
+        // Copy the configuration defaults to the session
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
             if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
