@@ -55,6 +55,9 @@ class Enclosure extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
+            Contract_Item::class,
+            Document_Item::class,
+            Infocom::class,
             Item_Enclosure::class,
             Item_Devices::class,
             NetworkPort::class

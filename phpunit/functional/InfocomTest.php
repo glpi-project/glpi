@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,12 +34,60 @@
 
 namespace tests\units;
 
-/* Test for inc/infocom.class.php */
-
+use CommonDBRelation;
+use DbTestCase;
+use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Features\Clonable;
+use Infocom;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Toolbox;
 
-class InfocomTest extends \GLPITestCase
+class InfocomTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasInfocomCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+            if (
+                \is_a($itemtype, CommonDBRelation::class, true)
+                && in_array($itemtype::$itemtype_1, Infocom::getExcludedTypes(), true)
+            ) {
+                continue;
+            }
+
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Infocom$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasInfocomCapacity::class]);
+
+        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Infocom::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public static function dataLinearAmortise()
     {
         return [

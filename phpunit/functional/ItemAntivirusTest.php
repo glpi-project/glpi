@@ -32,33 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi;
+namespace tests\units;
 
 use DbTestCase;
-use Glpi\Asset\Capacity\HasSocketCapacity;
+use Glpi\Asset\Capacity\HasAntivirusCapacity;
 use Glpi\Features\Clonable;
-use Glpi\Socket;
+use ItemAntivirus;
 use Toolbox;
 
-class SocketTest extends DbTestCase
+class ItemAntivirusTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+        $this->initAssetDefinition(capacities: [HasAntivirusCapacity::class]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
-        foreach ($CFG_GLPI['socket_types'] as $itemtype) {
+        foreach ($CFG_GLPI['itemantivirus_types'] as $itemtype) {
             $item = $this->createItem(
                 $itemtype,
                 $this->getMinimalCreationInput($itemtype)
             );
 
             $tabs = $item->defineAllTabs();
-            $this->assertArrayHasKey('Glpi\\Socket$1', $tabs, $itemtype);
+            $this->assertArrayHasKey('ItemAntivirus$1', $tabs, $itemtype);
         }
     }
 
@@ -67,28 +67,15 @@ class SocketTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+        $this->initAssetDefinition(capacities: [HasAntivirusCapacity::class]);
 
-        foreach ($CFG_GLPI['socket_types'] as $itemtype) {
+        foreach ($CFG_GLPI['itemantivirus_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
                 continue;
             }
 
             $item = \getItemForItemtype($itemtype);
-            $this->assertContains(Socket::class, $item->getCloneRelations(), $itemtype);
+            $this->assertContains(ItemAntivirus::class, $item->getCloneRelations(), $itemtype);
         }
-    }
-
-    public function testCreateNoItem()
-    {
-        $socket = new \Glpi\Socket();
-        $sockets_id = $socket->add([
-            'name' => __FUNCTION__,
-            'items_id' => '',
-            'itemtype' => 'Computer',
-        ]);
-        $this->assertTrue($socket->getFromDB($sockets_id));
-        $this->assertSame(null, $socket->fields['itemtype']);
-        $this->assertSame(0, $socket->fields['items_id']);
     }
 }

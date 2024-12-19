@@ -56,7 +56,8 @@ class Budget extends CommonDropdown
     public function getCloneRelations(): array
     {
         return [
-            Document_Item::class
+            Document_Item::class,
+            KnowbaseItem_Item::class,
         ];
     }
 

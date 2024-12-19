@@ -72,6 +72,9 @@ class Printer extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Asset_PeripheralAsset::class,
+            Item_Disk::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
             KnowbaseItem_Item::class,
         ];
     }
