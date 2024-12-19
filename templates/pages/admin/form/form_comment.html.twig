@@ -44,8 +44,8 @@
     'no_label'     : true,
 } %}
 
-<div
-    class="mb-3"
+<section
+    role="option"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
     data-glpi-draggable-item
@@ -53,7 +53,7 @@
     <section
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-comment-details
-        class="card"
+        class="card flex-grow-1"
         aria-label="{{ __("Comment details") }}"
     >
         <div
@@ -119,7 +119,7 @@
             </div>
 
             <div
-                class="d-flex flex-row-reverse align-items-center"
+                class="d-flex flex-row-reverse align-items-center mt-2"
                 data-glpi-form-editor-comment-extra-details
             >
                 <button
@@ -146,14 +146,21 @@
         />
         <input
             type="hidden"
-            name="rank"
-            value="{{ comment is not null ? comment.fields.rank : 0 }}"
+            name="vertical_rank"
+            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="horizontal_rank"
+            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
         />
     </section>
     <div data-glpi-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
-            'can_update': can_update,
-            'form': form,
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': false
         }, with_context = false) }}
     </div>
-</div>
+    <div data-glpi-form-editor-question-drag-merge></div>
+</section>
