@@ -44,7 +44,6 @@ final class ListenersPriority
         KernelListener\SessionStart::class =>                        200,
         KernelListener\ProfilerStart::class =>                       190,
         KernelListener\DebugMode::class =>                           180,
-        KernelListener\RootDoc::class =>                             170,
         KernelListener\InitializeDbConnection::class =>              160,
         KernelListener\InitializeCache::class =>                     150,
         KernelListener\LoadLegacyConfiguration::class =>             140,
