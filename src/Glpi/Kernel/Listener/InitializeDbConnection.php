@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use DBConnection;
+use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -50,17 +51,16 @@ final readonly class InitializeDbConnection implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-            // Inexistent config file is handled in another listener.
-            return;
+        Profiler::getInstance()->start('InitializeDbConnection::execute', Profiler::CATEGORY_BOOT);
+
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+            include_once(GLPI_CONFIG_DIR . '/config_db.php');
+
+            if (\class_exists('DB', false)) {
+                DBConnection::establishDBConnection(false, false);
+            }
         }
 
-        include_once(GLPI_CONFIG_DIR . '/config_db.php');
-
-        if (!\class_exists('DB', false)) {
-            return;
-        }
-
-        DBConnection::establishDBConnection(false, false);
+        Profiler::getInstance()->stop('InitializeDbConnection::execute');
     }
 }

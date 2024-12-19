@@ -66,9 +66,11 @@ final readonly class InitializePlugins implements EventSubscriberInterface
         }
 
         Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
+
         $plugin = new Plugin();
         $plugin->init(true);
         $this->pluginContainer->initializeContainer();
+
         Profiler::getInstance()->stop('InitializePlugins::execute');
     }
 }

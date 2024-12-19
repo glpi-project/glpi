@@ -59,9 +59,11 @@ final readonly class CustomObjectsAutoloaderRegistration implements EventSubscri
             return;
         }
 
-        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
+        Profiler::getInstance()->start('CustomObjectsAutoloaderRegistration::execute', Profiler::CATEGORY_BOOT);
+
         AssetDefinitionManager::getInstance()->registerAutoload();
         DropdownDefinitionManager::getInstance()->registerAutoload();
-        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
+
+        Profiler::getInstance()->stop('CustomObjectsAutoloaderRegistration::execute');
     }
 }

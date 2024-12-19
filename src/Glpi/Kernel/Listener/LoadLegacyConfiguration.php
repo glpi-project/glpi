@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use Config;
+use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -55,6 +56,8 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
          */
         global $CFG_GLPI;
 
+        Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);
+
         Config::loadLegacyConfiguration();
 
         // Override cfg_features by session value
@@ -63,5 +66,7 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }
+
+        Profiler::getInstance()->stop('LoadLegacyConfiguration::execute');
     }
 }

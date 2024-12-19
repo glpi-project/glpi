@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener;
 
+use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Session;
@@ -50,6 +51,10 @@ final readonly class LoadLanguage implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
+        Profiler::getInstance()->start('LoadLanguage::execute', Profiler::CATEGORY_BOOT);
+
         Session::loadLanguage();
+
+        Profiler::getInstance()->stop('LoadLanguage::execute');
     }
 }

@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use Glpi\Cache\CacheManager;
+use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Psr\SimpleCache\CacheInterface;
@@ -54,7 +55,11 @@ final readonly class InitializeCache implements EventSubscriberInterface
         /** @var CacheInterface|null $GLPI_CACHE */
         global $GLPI_CACHE;
 
+        Profiler::getInstance()->start('InitializeCache::execute', Profiler::CATEGORY_BOOT);
+
         $cache_manager = new CacheManager();
         $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
+
+        Profiler::getInstance()->stop('InitializeCache::execute');
     }
 }

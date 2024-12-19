@@ -36,8 +36,6 @@ namespace Glpi\Kernel;
 
 use GLPI;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviders;
 use Glpi\Http\Listener\PluginsRouterListener;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;

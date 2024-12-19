@@ -60,8 +60,10 @@ final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
         }
 
         Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
+
         AssetDefinitionManager::getInstance()->bootstrapDefinitions();
         DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+
         Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }
