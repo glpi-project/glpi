@@ -65,8 +65,7 @@ class SessionCheckCookieListener implements EventSubscriberInterface
         // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
         // throw an exception
         $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
-        if ($is_https_request === false && $cookie_secure === true) {
+        if ($event->getRequest()->isSecure() === false && $cookie_secure === true) {
             $exception = new BadRequestHttpException();
             $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
             throw $exception;
