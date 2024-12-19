@@ -32,35 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
-use Glpi\Config\LegacyConfigProviderInterface;
+use Config;
 use Glpi\Debug\Profiler;
-use Glpi\DependencyInjection\PluginContainer;
-use Plugin;
-use Update;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class InitializePlugins implements LegacyConfigProviderInterface
+final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 {
-    public function __construct(private PluginContainer $pluginContainer)
+    public static function getSubscribedEvents(): array
     {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
     }
 
-    public function execute(): void
+    public function onPostBoot(): void
     {
-        /*
-         * On startup, register all plugins configured for use,
-         * except during the database install/update process.
+        /**
+         * @var array $CFG_GLPI
          */
-        if (isset($_SESSION['is_installing']) || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
-            return;
+        global $CFG_GLPI;
+
+        Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);
+
+        Config::loadLegacyConfiguration();
+
+        // Copy the configuration defaults to the session
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
         }
 
-        Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
-        $plugin = new Plugin();
-        $plugin->init(true);
-
-        $this->pluginContainer->initializeContainer();
-        Profiler::getInstance()->stop('InitializePlugins::execute');
+        Profiler::getInstance()->stop('LoadLegacyConfiguration::execute');
     }
 }

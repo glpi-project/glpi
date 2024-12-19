@@ -32,36 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Http\Listener;
+namespace Glpi\Kernel\Listener;
 
+use DBConnection;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Debug\Profiler;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Update;
 
-final readonly class RedirectLegacyRouteListener implements EventSubscriberInterface
+final readonly class CustomObjectsAutoloaderRegistration implements EventSubscriberInterface
 {
-    private const URLS_MAPPING = [
-        '/front/helpdesk.public.php' => '/Helpdesk',
-    ];
-
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onPostBoot(): void
     {
-        if (!$event->isMainRequest()) {
+        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+            // Requires the database to be available.
             return;
         }
-        $request = $event->getRequest();
 
-        if (\array_key_exists($request->getPathInfo(), self::URLS_MAPPING)) {
-            $event->setResponse(new RedirectResponse($request->getBasePath() . self::URLS_MAPPING[$request->getPathInfo()]));
-        }
+        Profiler::getInstance()->start('CustomObjectsAutoloaderRegistration::execute', Profiler::CATEGORY_BOOT);
+
+        AssetDefinitionManager::getInstance()->registerAutoload();
+        DropdownDefinitionManager::getInstance()->registerAutoload();
+
+        Profiler::getInstance()->stop('CustomObjectsAutoloaderRegistration::execute');
     }
 }

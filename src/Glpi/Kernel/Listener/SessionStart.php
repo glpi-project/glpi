@@ -32,15 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
 use Session;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final class SessionStart implements LegacyConfigProviderInterface
+final readonly class SessionStart implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
     {
         // The session must be started even in CLI context.
         // The GLPI code refers to the session in many places
@@ -57,7 +66,7 @@ final class SessionStart implements LegacyConfigProviderInterface
             if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
                 // API clients must not use cookies, as the session token is expected to be passed in headers.
                 $use_cookies = false;
-                // The API endpoint is strating the session manually.
+                // The API endpoint is starting the session manually.
                 $start_session = false;
             } elseif (\str_starts_with($path, '/caldav.php')) {
                 // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.

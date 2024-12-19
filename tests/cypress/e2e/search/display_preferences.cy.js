@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Display preferences', {retries: {runMode: 5}}, () => {
+describe('Display preferences', () => {
     before(() => {
         // Create at least one ticket as we will be displaying the ticket list
         // to validate that the right columns are displayed
@@ -47,7 +47,7 @@ describe('Display preferences', {retries: {runMode: 5}}, () => {
         openDisplayPreferences();
 
         // Add a new column to the global view
-        goToTab('Global View');
+        goToTab('Global View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
@@ -86,7 +86,7 @@ describe('Display preferences', {retries: {runMode: 5}}, () => {
         openDisplayPreferences();
 
         // Add a new column to the global view
-        goToTab('Helpdesk View');
+        goToTab('Helpdesk View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
@@ -135,11 +135,23 @@ describe('Display preferences', {retries: {runMode: 5}}, () => {
         ;
     }
 
-    function goToTab(name) {
+    function goToTab(name, wait = false) {
+        if (wait) {
+            // When changing tabs for the first time, we must wait for the
+            // js hanlder to be loaded.
+            // Sadly, there is no easy way to determine this without waiting
+            // an arbitrary amount of time.
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(250);
+        }
+
+        cy.intercept('GET', '/ajax/common.tabs.php?*').as('refresh_tab_request');
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
+        cy.wait('@refresh_tab_request');
     }
 
     function addDisplayPeference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .getDropdownByLabelText('Select an option to add')
             .click()
@@ -152,15 +164,18 @@ describe('Display preferences', {retries: {runMode: 5}}, () => {
             .findByRole('button', {'name': 'Add'})
             .click()
         ;
+        cy.wait('@update_request');
     }
 
     function deletePreference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .findByRole('list')
             .findByRole('option', {'name': name}) // Should be listitem instead of option, our DOM is wrong
             .findByRole('button', {'name': "Delete permanently"})
             .click()
         ;
+        cy.wait('@update_request');
     }
 
     function validateThatDisplayPreferenceExist(name) {

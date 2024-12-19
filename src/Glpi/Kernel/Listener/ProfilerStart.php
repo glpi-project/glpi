@@ -32,26 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Kernel\Listener;
 
-use DBConnection;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Session;
+use Glpi\Debug\Profile;
 use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class CustomObjectsAutoloader implements LegacyConfigProviderInterface
+final readonly class ProfilerStart implements EventSubscriberInterface
 {
-    public function execute(): void
+    public static function getSubscribedEvents(): array
     {
-        if (isset($_SESSION['is_installing']) || !DBConnection::isDbAvailable()) {
-            // Requires the database to be available.
-            return;
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        if (isCommandLine()) {
+            Profiler::getInstance()->disable();
+        } else {
+            Profiler::getInstance()->start('php_request');
         }
 
-        Profiler::getInstance()->start('CustomObjectsAutoloader::execute', Profiler::CATEGORY_BOOT);
-        AssetDefinitionManager::getInstance()->registerAutoload();
-        DropdownDefinitionManager::getInstance()->registerAutoload();
-        Profiler::getInstance()->stop('CustomObjectsAutoloader::execute');
+        if (
+            isset($_SESSION['glpi_use_mode'])
+            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+        ) {
+            // Start the debug profile
+            Profile::getCurrent();
+        }
     }
 }
