@@ -7,38 +7,31 @@
             type: Number,
             default: -1,
         },
-        label_classes: {
-            type: String,
-            default: 'col-form-label cursor-grab col-xxl-5 text-xxl-end',
+        field_options: {
+            type: Object,
+            default: () => ({}),
         },
-        field_classes: {
-            type: String,
-            default: 'col-xxl-7 field-container btn-group shadow-none',
+        is_active: {
+            type: Boolean,
+            default: true,
         },
-        wrapper_classes: {
-            type: String,
-            default: 'form-field row flex-grow-1',
-        },
-    });
-
-    const sortable_classes = computed(() => {
-        return props.wrapper_classes.split(' ').filter((cls) => cls.startsWith('col-')).join(' ');
     });
 </script>
 
 <template>
-    <div :class="`sortable-field align-items-center p-1 ${(!!$slots.field_preview) ? sortable_classes : 'col-12 col-sm-6'}`"
-         :data-key="field_key" :data-customfield-id="customfields_id" :style="`display: ${(!!$slots.field_preview) ? 'flex' : 'none'};`">
+    <div :class="`sortable-field align-items-center ${field_options.full_width ? 'col-12' : 'col-12 col-sm-6'}`"
+         :data-key="field_key" :data-customfield-id="customfields_id">
         <input type="hidden" name="fields_display[]" :value="field_key" />
         <slot name="field_options"></slot>
-        <div :class="wrapper_classes">
-            <label :class="label_classes">
-                <slot name="field_label"></slot>
+        <div :class="`form-field row flex-grow-1 m-2`">
+            <div class="col-auto align-content-center">
+                <i class="ti ti-grip-vertical sort-handle"></i>
+            </div>
+            <div class="col py-2">
                 <slot name="field_markers"></slot>
-                <i class="ti ti-grip-vertical sort-handle align-middle"></i>
-            </label>
-            <div :class="field_classes">
-                <slot name="field_preview"></slot>
+                <slot name="field_label"></slot>
+            </div>
+            <div v-if="is_active" class="col-auto btn-group shadow-none field-actions">
                 <button type="button" class="btn btn-ghost-secondary btn-sm edit-field" :title="__('Edit')">
                     <i class="ti ti-pencil"></i>
                 </button>
@@ -51,8 +44,19 @@
 </template>
 
 <style scoped>
-    .sortable-field .btn-group .select2-container {
-        flex-basis: auto;
-        width: 100% !important;
+    .form-field {
+        border: var(--tblr-border-width) solid var(--tblr-border-color);
+        border-radius: var(--tblr-border-radius);
+
+        & > .col {
+            border-left: 1px solid var(--tblr-border-color);
+        }
+
+        & > .field-actions {
+            visibility: hidden;
+        }
+        &:hover > .field-actions {
+            visibility: visible;
+        }
     }
 </style>
