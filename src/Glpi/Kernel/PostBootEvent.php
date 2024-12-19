@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2024 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Command;
+namespace Glpi\Kernel;
 
-interface ForceNoPluginsOptionCommandInterface
+class PostBootEvent
 {
-    /**
-     * Defines whether or not command prevents plugins to be loaded.
-     *
-     * @return boolean
-     */
-    public function getNoPluginsOptionValue();
 }

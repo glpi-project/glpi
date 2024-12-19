@@ -36,14 +36,13 @@
 namespace Glpi\Console\Plugin;
 
 use Glpi\Console\AbstractCommand;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+abstract class AbstractPluginCommand extends AbstractCommand
 {
     /**
      * Wildcard value to target all directories.
@@ -111,13 +110,6 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
                 $input->setArgument('directory', $answer);
             }
         }
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-
-       // Force no loading on plugins in plugin install process
-        return true;
     }
 
     /**

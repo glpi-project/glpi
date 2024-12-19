@@ -39,7 +39,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class RedirectExceptionListener implements EventSubscriberInterface
+final readonly class RedirectExceptionListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

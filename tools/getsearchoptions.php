@@ -43,7 +43,7 @@ if (PHP_SAPI != 'cli') {
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel();
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 if (isset($_SERVER['argv'])) {
     for ($i = 1; $i < $_SERVER['argc']; $i++) {

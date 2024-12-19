@@ -38,7 +38,6 @@ use Glpi\Cache\I18nCache;
 use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
@@ -267,6 +266,11 @@ class Session
         // Define session default mode
         if (!isset($_SESSION['glpi_use_mode'])) {
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        }
+
+        // Define default language
+        if (!isset($_SESSION['glpilanguage'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
         }
     }
 
@@ -1001,23 +1005,6 @@ class Session
 
         if (!self::isAuthenticated()) {
             Html::redirectToLogin();
-        }
-    }
-
-    /**
-     * Check the `session.cookie_secure` configuration and throw an exception if the
-     * current request context is not allowed to use session cookies.
-     */
-    public static function checkCookieSecureConfig(): void
-    {
-        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // throw an exception
-        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
-        if ($is_https_request === false && $cookie_secure === true) {
-            $exception = new BadRequestHttpException();
-            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
-            throw $exception;
         }
     }
 

@@ -35,7 +35,6 @@
 namespace Glpi\Config\LegacyConfigurators;
 
 use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Debug\Profiler;
 use Session;
 
 final readonly class ConfigRest implements LegacyConfigProviderInterface
@@ -45,21 +44,9 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         /**
          * @var array $CFG_GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var bool $FOOTER_LOADED
-         * @var bool $HEADER_LOADED
-         * @var string $CURRENTCSRFTOKEN
          */
-        global $CFG_GLPI,
-               $GLPI_CACHE,
-               $FOOTER_LOADED, $HEADER_LOADED,
-               $CURRENTCSRFTOKEN
-               ;
+        global $CFG_GLPI, $GLPI_CACHE;
 
-        // Mark if Header is loaded or not :
-        $HEADER_LOADED = false;
-        $FOOTER_LOADED = false;
-
-        Profiler::getInstance()->start('ConfigRest::execute', Profiler::CATEGORY_BOOT);
         // Security : check CSRF token
         if (!isAPI() && count($_POST) > 0) {
             if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
@@ -73,8 +60,6 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
                 Session::checkCSRF($_POST);
             }
         }
-        // SET new global Token
-        $CURRENTCSRFTOKEN = '';
 
         // Manage profile change
         if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $_REQUEST["force_profile"]) {
@@ -105,6 +90,5 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         ) {
             Session::loadGroups();
         }
-        Profiler::getInstance()->stop('ConfigRest::execute');
     }
 }
