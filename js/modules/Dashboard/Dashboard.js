@@ -566,8 +566,10 @@ class GLPIDashboard {
         // prepare options
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
+        form_data.card_options.palette      = form_data.palette || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
         form_data.card_options.point_labels = form_data.point_labels || 0;
+        form_data.card_options.legend       = form_data.legend || 0;
         form_data.card_options.limit        = form_data.limit || 7;
 
         // specific case for markdown
