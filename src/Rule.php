@@ -1716,7 +1716,13 @@ class Rule extends CommonDBTM
         $partial_regex_result = [];
        // Undefine criteria field : set to blank
         if (!isset($input[$criteria->fields["criteria"]])) {
-            $input[$criteria->fields["criteria"]] = '';
+            if (isset($input['itemtype'])) {
+                $itemtype = new $input['itemtype']();
+                $item = $itemtype->getById($input['id']);
+                $input[$criteria->fields["criteria"]] = $item->fields[$criteria->fields["criteria"]];
+            } else {
+                $input[$criteria->fields["criteria"]] = '';
+            }
         }
 
        //If the value is not an array
