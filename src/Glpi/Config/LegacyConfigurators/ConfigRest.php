@@ -44,19 +44,8 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
         /**
          * @var array $CFG_GLPI
          * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         * @var bool $FOOTER_LOADED
-         * @var bool $HEADER_LOADED
-         * @var string $CURRENTCSRFTOKEN
          */
-        global $CFG_GLPI,
-               $GLPI_CACHE,
-               $FOOTER_LOADED, $HEADER_LOADED,
-               $CURRENTCSRFTOKEN
-               ;
-
-        // Mark if Header is loaded or not :
-        $HEADER_LOADED = false;
-        $FOOTER_LOADED = false;
+        global $CFG_GLPI, $GLPI_CACHE;
 
         // Security : check CSRF token
         if (!isAPI() && count($_POST) > 0) {
@@ -71,8 +60,6 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
                 Session::checkCSRF($_POST);
             }
         }
-        // SET new global Token
-        $CURRENTCSRFTOKEN = '';
 
         // Manage profile change
         if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $_REQUEST["force_profile"]) {
