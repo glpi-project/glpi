@@ -60,26 +60,6 @@ final class StandardIncludes implements LegacyConfigProviderInterface, ConfigPro
          */
         global $CFG_GLPI;
 
-        // Check maintenance mode
-        if (
-            !$this->isFrontEndAssetEndpoint($this->getRequest())
-            && !$this->isSymfonyProfilerEndpoint($this->getRequest())
-            && isset($CFG_GLPI["maintenance_mode"])
-            && $CFG_GLPI["maintenance_mode"]
-        ) {
-            if (isset($_GET['skipMaintenance']) && $_GET['skipMaintenance']) {
-                $_SESSION["glpiskipMaintenance"] = 1;
-            }
-
-            if (!isset($_SESSION["glpiskipMaintenance"]) || !$_SESSION["glpiskipMaintenance"]) {
-                TemplateRenderer::getInstance()->display('maintenance.html.twig', [
-                    'title'            => "MAINTENANCE MODE",
-                    'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-                ]);
-                exit();
-            }
-        }
-
         // Check version
         if ($this->shouldCheckDbStatus($this->getRequest()) && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
             // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
