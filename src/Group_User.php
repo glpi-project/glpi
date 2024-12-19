@@ -969,7 +969,6 @@ class Group_User extends CommonDBRelation
         }
 
        // find users with the current group in their plannings
-        $user_inst = new User();
         $users = $user_inst->find([
             'plannings' => ['LIKE', "%$planning_k%"]
         ]);
