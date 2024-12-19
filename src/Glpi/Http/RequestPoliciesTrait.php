@@ -51,13 +51,24 @@ trait RequestPoliciesTrait
     }
 
     /**
+     * Indicates the requested resource is made on the Symfony profiler resources.
+     */
+    protected function isSymfonyProfilerEndpoint(Request $request): bool
+    {
+        $path = $request->getPathInfo();
+
+        return \str_starts_with($path, '/_profiler/')
+            || \str_starts_with($path, '/_wdt/');
+    }
+
+    /**
      * Indicates whether the DB status should be checked for the given request.
      */
     protected function shouldCheckDbStatus(Request $request): bool
     {
         $path = $request->getPathInfo();
 
-        if ($this->isFrontEndAssetEndpoint($request)) {
+        if ($this->isFrontEndAssetEndpoint($request) || $this->isSymfonyProfilerEndpoint($request)) {
             // These resources should always be available.
             return false;
         }

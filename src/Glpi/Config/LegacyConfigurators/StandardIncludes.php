@@ -63,6 +63,7 @@ final class StandardIncludes implements LegacyConfigProviderInterface, ConfigPro
         // Check maintenance mode
         if (
             !$this->isFrontEndAssetEndpoint($this->getRequest())
+            && !$this->isSymfonyProfilerEndpoint($this->getRequest())
             && isset($CFG_GLPI["maintenance_mode"])
             && $CFG_GLPI["maintenance_mode"]
         ) {
