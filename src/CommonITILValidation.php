@@ -453,8 +453,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     'id'                    => $this->fields[static::$items_id],
                     'global_validation'     => self::computeValidationStatus($item),
                     '_from_itilvalidation'  => true,
-                    'itemtype'              => static::$itemtype
-                ];
+                ] + $item->fields;
                 $item->update($input);
             }
         }
