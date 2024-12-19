@@ -147,6 +147,10 @@ describe('Dropdown form question type', () => {
         // Click on the question
         cy.get("@question").click('top');
 
+        // TODO: Investigate why this 'wait' is needed and fix it.
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(200);
+
         // Check selected options and option labels
         checkSelectedOptions([2]);
         checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
