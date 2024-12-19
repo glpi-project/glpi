@@ -2288,6 +2288,7 @@ JAVASCRIPT;
         $param['init']                = true;
         $param['aria_label']          = '';
         $param['add_data_attributes'] = '';
+        $param['dropdownCssClass']    = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2488,6 +2489,7 @@ JAVASCRIPT;
            // Width set on select
             $adapt_params = [
                 'width'             => $param["width"],
+                'dropdownCssClass'  => $param["dropdownCssClass"],
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
                 'init'              => $param["init"],

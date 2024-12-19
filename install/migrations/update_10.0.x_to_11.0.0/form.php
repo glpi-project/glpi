@@ -329,6 +329,18 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
     $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
+
+    // Questions can now be displayed horizontally
+    $migration->changeField("glpi_forms_questions", "rank", "vertical_rank", "int");
+    $migration->addField("glpi_forms_questions", "horizontal_rank", "int DEFAULT NULL", [
+        'after' => 'vertical_rank'
+    ]);
+
+    // Comments can now be displayed horizontally
+    $migration->changeField("glpi_forms_comments", "rank", "vertical_rank", "int");
+    $migration->addField("glpi_forms_comments", "horizontal_rank", "int DEFAULT NULL", [
+        'after' => 'vertical_rank'
+    ]);
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
