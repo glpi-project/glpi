@@ -73,13 +73,13 @@ class TitleField extends AbstractConfigField
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {% set rand = random() %}
-
             {{ fields.textareaField(
                 input_name,
                 value,
-                label,
+                '',
                 options|merge({
+                    'field_class'      : '',
+                    'no_label'         : true,
                     'enable_richtext'  : true,
                     'enable_images'    : false,
                     'enable_form_tags' : true,
@@ -87,13 +87,12 @@ class TitleField extends AbstractConfigField
                     'toolbar'          : false,
                     'editor_height'    : 0,
                     'statusbar'        : false,
-                    'rand'             : rand,
                 })
             ) }}
 
             <script>
                 tinymce.on('AddEditor', (e) => {
-                    if (e.editor.id === '{{ input_name ~ '_' ~ rand }}') {
+                    if (e.editor.id === '{{ input_name ~ '_' ~ options.rand }}') {
                         e.editor.on('keydown', (e) => {
                             if (e.keyCode === 13) {
                                 e.preventDefault();
@@ -107,7 +106,6 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'form_id'    => $form->fields['id'],
-            'label'      => $this->getLabel(),
             'value'      => $config->getValue(),
             'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,

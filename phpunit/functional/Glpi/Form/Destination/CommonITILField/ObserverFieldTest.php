@@ -61,7 +61,7 @@ final class ObserverFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $from_template_config = new ObserverFieldConfig(
-            ITILActorFieldStrategy::FROM_TEMPLATE
+            [ITILActorFieldStrategy::FROM_TEMPLATE]
         );
 
         // The default GLPI's template doesn't have a predefined location
@@ -106,7 +106,7 @@ final class ObserverFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $form_filler_config = new ObserverFieldConfig(
-            ITILActorFieldStrategy::FORM_FILLER
+            [ITILActorFieldStrategy::FORM_FILLER]
         );
 
         // The default GLPI's template doesn't have a predefined location
@@ -140,7 +140,7 @@ final class ObserverFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID()
                 ]
@@ -153,7 +153,7 @@ final class ObserverFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_VALUES,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
                     Group::getForeignKeyField() . '-' . $group->getID()
@@ -176,7 +176,7 @@ final class ObserverFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "Observer 1")]
             ),
             answers: [
@@ -195,7 +195,7 @@ final class ObserverFieldTest extends DbTestCase
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $this->getQuestionId($form, "Observer 1"),
                     $this->getQuestionId($form, "Observer 2")
@@ -218,7 +218,7 @@ final class ObserverFieldTest extends DbTestCase
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $last_valid_answer_config = new ObserverFieldConfig(
-            ITILActorFieldStrategy::LAST_VALID_ANSWER
+            [ITILActorFieldStrategy::LAST_VALID_ANSWER]
         );
 
         $user1 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User']);
@@ -285,6 +285,38 @@ final class ObserverFieldTest extends DbTestCase
             config: $last_valid_answer_config,
             answers: [],
             expected_actors_ids: [$user1->getID()]
+        );
+    }
+
+    public function testMultipleStrategies(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $user1 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 1']);
+        $user2 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 2']);
+        $group = $this->createItem(Group::class, ['name' => 'testMultipleStrategies Group']);
+
+        // Set the user as default observer using predefined fields
+        $this->createItem(TicketTemplatePredefinedField::class, [
+            'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, "Default", true),
+            'num' => 66, // User observer
+            'value' => $user1->getID(),
+        ]);
+
+        // Multiple strategies: FROM_TEMPLATE and SPECIFIC_VALUES
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::FROM_TEMPLATE, ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    User::getForeignKeyField() . '-' . $user2->getID(),
+                    Group::getForeignKeyField() . '-' . $group->getID()
+                ]
+            ),
+            answers: [],
+            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID()]
         );
     }
 

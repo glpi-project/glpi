@@ -67,7 +67,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::NO_VALIDATION
+                strategies: [ValidationFieldStrategy::NO_VALIDATION]
             ),
             answers: [],
             expected_validations: [],
@@ -78,7 +78,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::NO_VALIDATION,
+                strategies: [ValidationFieldStrategy::NO_VALIDATION],
                 specific_actors: [
                     'users_id-' . $users[0]->getID(),
                     'users_id-' . $users[1]->getID(),
@@ -94,7 +94,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::NO_VALIDATION
+                strategies: [ValidationFieldStrategy::NO_VALIDATION]
             ),
             answers: [
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
@@ -111,7 +111,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::NO_VALIDATION,
+                strategies: [ValidationFieldStrategy::NO_VALIDATION],
                 specific_actors: [
                     'users_id-' . $users[0]->getID(),
                     'users_id-' . $users[1]->getID(),
@@ -142,7 +142,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                 specific_actors: [
                     'users_id-' . $users[0]->getID(),
                     'users_id-' . $users[1]->getID(),
@@ -171,7 +171,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                 specific_actors: [
                     'users_id-' . $users[0]->getID(),
                     'users_id-' . $users[1]->getID(),
@@ -215,7 +215,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "Assignee")]
             ),
             answers: [
@@ -238,7 +238,7 @@ final class ValidationFieldTest extends DbTestCase
         $this->sendFormAndAssertValidations(
             form: $form,
             config: new ValidationFieldConfig(
-                strategy: ValidationFieldStrategy::SPECIFIC_ANSWERS,
+                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "GLPI User")]
             ),
             answers: [
@@ -252,6 +252,57 @@ final class ValidationFieldTest extends DbTestCase
                 [
                     'itemtype_target' => 'User',
                     'items_id_target' => $users[1]->getID(),
+                ],
+            ],
+            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+        );
+    }
+
+    public function testMultipleStrategies(): void
+    {
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $users = $this->createAndGetUserActors();
+        $groups = $this->createAndGetGroupActors();
+
+        // Multiple strategies: SPECIFIC_ACTORS and SPECIFIC_ANSWERS
+        $this->sendFormAndAssertValidations(
+            form: $form,
+            config: new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS, ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                specific_actors: [
+                    'users_id-' . $users[0]->getID(),
+                    'groups_id-' . $groups[0]->getID(),
+                ],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Assignee"),
+                    $this->getQuestionId($form, "GLPI User"),
+                ]
+            ),
+            answers: [
+                "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
+                "GLPI User" => [
+                    'itemtype' => User::class,
+                    'items_id' => $users[1]->getID(),
+                ],
+            ],
+            expected_validations: [
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[0]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'User',
+                    'items_id_target' => $users[1]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[0]->getID(),
+                ],
+                [
+                    'itemtype_target' => 'Group',
+                    'items_id_target' => $groups[1]->getID(),
                 ],
             ],
             keys_to_be_considered: ['itemtype_target', 'items_id_target']

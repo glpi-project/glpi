@@ -76,7 +76,7 @@ class ObserverField extends ITILActorField
     public function getDefaultConfig(Form $form): ObserverFieldConfig
     {
         return new ObserverFieldConfig(
-            ITILActorFieldStrategy::FROM_TEMPLATE,
+            [ITILActorFieldStrategy::FROM_TEMPLATE],
         );
     }
 }

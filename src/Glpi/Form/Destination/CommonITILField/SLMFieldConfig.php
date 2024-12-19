@@ -36,10 +36,14 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Override;
 
-abstract class SLMFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+abstract class SLMFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -60,9 +64,18 @@ abstract class SLMFieldConfig implements JsonFieldInterface, ConfigWithForeignKe
         ];
     }
 
-    public function getStrategy(): SLMFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<SLMFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificSLMID(): ?int
