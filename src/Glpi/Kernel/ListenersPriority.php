@@ -43,13 +43,13 @@ final class ListenersPriority
     public const POST_BOOT_LISTENERS_PRIORITIES = [
         KernelListener\SessionStart::class =>                        200,
         KernelListener\ProfilerStart::class =>                       190,
-        KernelListener\InitializeDbConnection::class =>              160,
-        KernelListener\InitializeCache::class =>                     150,
-        KernelListener\LoadLegacyConfiguration::class =>             140,
-        KernelListener\CustomObjectsAutoloaderRegistration::class => 130,
-        KernelListener\InitializePlugins::class =>                   120,
-        KernelListener\CustomObjectsBootstrap::class =>              110,
-        KernelListener\LoadLanguage::class =>                        100,
+        KernelListener\InitializeDbConnection::class =>              180,
+        KernelListener\InitializeCache::class =>                     170,
+        KernelListener\LoadLegacyConfiguration::class =>             160,
+        KernelListener\CustomObjectsAutoloaderRegistration::class => 150,
+        KernelListener\InitializePlugins::class =>                   140,
+        KernelListener\CustomObjectsBootstrap::class =>              130,
+        KernelListener\LoadLanguage::class =>                        120,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [
@@ -57,24 +57,29 @@ final class ListenersPriority
         // Keep them on top priority.
         HttpListener\LegacyAssetsListener::class        => 500,
 
-        HttpListener\SessionCheckCookieListener::class  => 550,
+        // This listener will ensure that the request is made on a secure context (HTTPS) when the
+        // cookies are available only on a secure context (`session.cookie_secure=on`).
+        // It must be executed before trying to serve any statefull endpoint.
+        HttpListener\SessionCheckCookieListener::class  => 475,
 
+        // This listener will ensure that the database connection is configured and available.
+        // It must be executed before executing any controller (except controllers related to front-end assets).
+        HttpListener\CheckDatabaseStatusListener::class => 450,
+
+        // Legacy config providers.
+        // FIXME: Reorganize them and transform them into HTTP request listeners to register them here directly.
+        LegacyConfigProviderListener::class             => 425,
+
+        // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
+        // requested URI matches an existing file.
         HttpListener\LegacyRouterListener::class        => 400,
 
-        // Legacy URLs redirections does not require any complex logic. It can be done prior to
-        // GLPI config and plugins initialization.
-        HttpListener\RedirectLegacyRouteListener::class => 375,
+        // Map legacy scripts URLS (e.g. `/front/computer.php`) to modern controllers.
+        // Must be executed after the `LegacyRouterListener` to ensure to use the legacy script if it exists.
+        HttpListener\LegacyItemtypeRouteListener::class => 375,
 
-        HttpListener\CheckDatabaseStatusListener::class => 360,
-
-        // Config providers may still expect some `$_SERVER` variables to be redefined.
-        // They must therefore be executed after the `LegacyRouterListener`.
-        LegacyConfigProviderListener::class             => 350,
-
-        // Plugins itemtypes requires plugins to be initialized, therefore config must be already set.
-        // Also, keep it after the `LegacyRouterListener` to not map to the generic controller if a
-        // legacy script exists for the requested URI.
-        HttpListener\LegacyItemtypeRouteListener::class => 300,
+        // Legacy URLs redirections.
+        HttpListener\RedirectLegacyRouteListener::class => 350,
 
         // This listener allows matching plugins routes at runtime,
         //   that's why it's executed right after Symfony's Router,
