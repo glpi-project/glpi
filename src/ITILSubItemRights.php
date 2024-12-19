@@ -45,6 +45,8 @@ trait ITILSubItemRights
     public const ADD_AS_OBSERVER    = 16384;
     public const ADD_AS_TECHNICIAN  = 32768;
 
+    public const SEEPRIVATEGROUPS         = 65536;
+
     public function getRights($interface = 'central')
     {
 
@@ -55,6 +57,7 @@ trait ITILSubItemRights
             $values[self::UPDATEALL] = __('Update all');
             $values[self::ADDALLITEM] = __('Add to all items');
             $values[self::SEEPRIVATE] = __('See private ones');
+            $values[self::SEEPRIVATEGROUPS] = __('See private of my groups');
         }
 
         $values[self::ADD_AS_GROUP] = [
