@@ -46,6 +46,12 @@ class Hooks
     const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
     const ADD_HEADER_TAG        = 'add_header_tag';
 
+    // File hooks for anonymous pages
+    const ADD_CSS_ANONYMOUS_PAGE               = 'add_css_anonymous_page';
+    const ADD_JAVASCRIPT_ANONYMOUS_PAGE        = 'add_javascript_anonymous_page';
+    const ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE = 'add_javascript_module_anonymous_page';
+    const ADD_HEADER_TAG_ANONYMOUS_PAGE        = 'add_header_tag_anonymous_page';
+
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
     const CHANGE_PROFILE              = 'change_profile';
