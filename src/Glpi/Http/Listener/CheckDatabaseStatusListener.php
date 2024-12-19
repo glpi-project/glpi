@@ -91,6 +91,8 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             $exception->setMessageToDisplay(
                 __('The connection to the SQL server could not be established. Please check your configuration.')
             );
+            $exception->setLinkText(__('Try again'));
+            $exception->setLinkUrl($event->getRequest()->getRequestUri());
             throw $exception;
         }
 
@@ -99,6 +101,8 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             $exception->setMessageToDisplay(
                 __('Unable to load the GLPI configuration from the database.')
             );
+            $exception->setLinkText(__('Try again'));
+            $exception->setLinkUrl($event->getRequest()->getRequestUri());
             throw $exception;
         }
     }
