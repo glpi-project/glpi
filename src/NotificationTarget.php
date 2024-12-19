@@ -561,7 +561,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     public function addAdditionnalInfosForTarget()
     {
     }
