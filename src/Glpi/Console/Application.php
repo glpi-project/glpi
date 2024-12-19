@@ -106,6 +106,7 @@ class Application extends BaseApplication
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
         $this->kernel->boot();
+        $this->setDispatcher($this->kernel->getContainer()->get('event_dispatcher'));
 
         $this->db = $DB;
         $this->config = &$CFG_GLPI;

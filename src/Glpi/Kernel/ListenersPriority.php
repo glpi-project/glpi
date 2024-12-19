@@ -66,6 +66,8 @@ final class ListenersPriority
         // It must be executed before executing any controller (except controllers related to front-end assets).
         HttpListener\CheckDatabaseStatusListener::class => 450,
 
+        HttpListener\CheckMaintenanceListener::class    => 425,
+
         // Legacy config providers.
         // FIXME: Reorganize them and transform them into HTTP request listeners to register them here directly.
         LegacyConfigProviderListener::class             => 425,
