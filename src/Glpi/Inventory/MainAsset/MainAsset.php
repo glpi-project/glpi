@@ -34,14 +34,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
 use Auth;
 use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
-use Glpi\Inventory\Asset\Printer as AssetPrinter;
+use Glpi\Inventory\Asset\Firmware;
+use Glpi\Inventory\Asset\InventoryAsset;
+use Glpi\Inventory\Asset\InventoryNetworkPort;
+use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
@@ -858,7 +861,7 @@ abstract class MainAsset extends InventoryAsset
                 ||
                 (
                 $itemtype == Printer::getType()
-                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                && !MainAssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
                 )
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id

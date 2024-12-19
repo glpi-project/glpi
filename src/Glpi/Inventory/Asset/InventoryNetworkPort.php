@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;

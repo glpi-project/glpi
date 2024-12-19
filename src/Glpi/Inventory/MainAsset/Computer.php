@@ -33,20 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
-use PhoneModel;
-use PhoneType;
+use ComputerModel;
+use ComputerType;
 
-class Phone extends MainAsset
+class Computer extends MainAsset
 {
     protected function getModelsFieldName(): string
     {
-        return PhoneModel::getForeignKeyField();
+        return ComputerModel::getForeignKeyField();
     }
 
     protected function getTypesFieldName(): string
     {
-        return PhoneType::getForeignKeyField();
+        return ComputerType::getForeignKeyField();
     }
 }

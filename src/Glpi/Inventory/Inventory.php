@@ -40,7 +40,7 @@ use CommonDBTM;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\InventoryAsset;
-use Glpi\Inventory\Asset\MainAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Lockedfield;
 use RefusedEquipment;
 use Session;
@@ -568,7 +568,7 @@ class Inventory
     public function getMainClass()
     {
         $agent = $this->getAgent();
-        $class_ns = '\Glpi\Inventory\Asset\\';
+        $class_ns = '\Glpi\Inventory\MainAsset\\';
         $main_class = $class_ns . $agent->fields['itemtype'];
         if (class_exists($main_class)) {
             return $main_class;

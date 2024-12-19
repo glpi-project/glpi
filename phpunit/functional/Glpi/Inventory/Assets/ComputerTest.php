@@ -187,7 +187,7 @@ class ComputerTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Computer($computer, $json);
         $main->setExtraData((array)$json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
@@ -590,7 +590,7 @@ class ComputerTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertGreaterThan(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Computer($computer, $json);
         $main->setAgent($agent)->setExtraData($data)->checkConf($conf);
         $result = $main->prepare();
         $this->assertCount(1, $result);

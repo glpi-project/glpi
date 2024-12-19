@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;

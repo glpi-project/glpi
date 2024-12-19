@@ -34,9 +34,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\Asset;
+namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
+use Glpi\Inventory\Asset\NetworkPort;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
