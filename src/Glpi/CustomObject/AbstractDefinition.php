@@ -434,7 +434,7 @@ abstract class AbstractDefinition extends CommonDBTM
         $has_errors = false;
 
         if (array_key_exists('system_name', $input)) {
-            if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
+            if (!is_string($input['system_name']) || preg_match('/^[a-z]+$/i', $input['system_name']) !== 1) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
