@@ -36,18 +36,27 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Override;
 
-abstract class ITILActorFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+abstract class ITILActorFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY                = 'strategy';
+    public const STRATEGIES              = 'strategies';
     public const SPECIFIC_ITILACTORS_IDS = 'specific_itilactors_ids';
     public const SPECIFIC_QUESTION_IDS   = 'specific_question_ids';
 
+    /**
+     * @param array<ITILActorFieldStrategy> $strategies
+     * @param array<int>                   $specific_itilactors_ids
+     * @param array<int>                   $specific_question_ids
+     */
     public function __construct(
-        private ITILActorFieldStrategy $strategy,
+        private array $strategies,
         private array $specific_itilactors_ids = [],
         private array $specific_question_ids = [],
     ) {
@@ -57,15 +66,25 @@ abstract class ITILActorFieldConfig implements JsonFieldInterface, ConfigWithFor
     public function jsonSerialize(): array
     {
         return [
-            self::STRATEGY => $this->strategy->value,
+            self::STRATEGIES              => array_map(
+                fn (ITILActorFieldStrategy $strategy) => $strategy->value,
+                $this->strategies
+            ),
             self::SPECIFIC_ITILACTORS_IDS => $this->specific_itilactors_ids,
-            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
+            self::SPECIFIC_QUESTION_IDS   => $this->specific_question_ids,
         ];
     }
 
-    public function getStrategy(): ITILActorFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGIES;
+    }
+
+    #[Override]
+    public function getStrategies(): array
+    {
+        return $this->strategies;
     }
 
     public function getSpecificITILActorsIds(): ?array
