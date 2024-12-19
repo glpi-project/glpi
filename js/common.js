@@ -1975,3 +1975,21 @@ window.displaySessionMessages = () => {
         });
     });
 };
+
+// Add/remove a special data attribute to bootstrap's modals when they are
+// displayed/hidden.
+// This is needed for e2e testing as bootstrap have some compatibility issues
+// with cypress.
+// See https://github.com/cypress-io/cypress/issues/25202.
+document.addEventListener('shown.bs.modal', (e) => {
+    const modal = e.target.closest('.modal');
+    if (modal) {
+        modal.setAttribute('data-cy-shown', 'true');
+    }
+});
+document.addEventListener('hidden.bs.modal', (e) => {
+    const modal = e.target.closest('.modal');
+    if (modal) {
+        modal.setAttribute('data-cy-shown', 'false');
+    }
+});

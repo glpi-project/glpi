@@ -331,7 +331,7 @@ $break_tablet: 1400px;
         .edit-dashboard-properties {
             display: none;
 
-            input.dashboard-name:not(.submit):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not(.select2-search__field) {
+            input.dashboard-name:not(.submit, [type="submit"], [type="reset"], [type="checkbox"], [type="radio"], .select2-search__field) {
                 min-width: 200px;
                 resize: horizontal;
             }
