@@ -481,3 +481,21 @@ Cypress.Commands.add('checkAndCloseAlert', (text) => {
     cy.get('@alert').should('contain.text', text);
     cy.get('@alert').findByRole('button', {name: 'Close'}).click();
 });
+
+Cypress.Commands.add('validateBreadcrumbs', (breadcrumbs) => {
+    cy.findByRole('banner').findAllByRole('list').eq(0).as('breadcrumbs');
+    breadcrumbs.forEach((expected_breadcrumb, i) => {
+        cy.get('@breadcrumbs')
+            .findAllByRole('link')
+            .eq(i)
+            .should('contains.text', expected_breadcrumb)
+        ;
+    });
+});
+
+Cypress.Commands.add('validateMenuIsActive', (name) => {
+    cy.findByRole('complementary')
+        .findByRole('link', {'name': name})
+        .should('have.class', 'active')
+    ;
+});

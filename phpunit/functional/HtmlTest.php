@@ -282,6 +282,7 @@ class HtmlTest extends \GLPITestCase
 
         $expected = [
             'Ticket',
+            'Glpi\Form\ServiceCatalog\ServiceCatalog',
             'Problem',
             'Change',
             'Planning',

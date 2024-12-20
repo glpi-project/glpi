@@ -37,7 +37,7 @@ namespace Glpi\Controller\ServiceCatalog;
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
-use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -48,15 +48,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
 {
+    private string $interface;
     private ServiceCatalogManager $service_catalog_manager;
 
     public function __construct()
     {
         // TODO: replace by autowiring once dependency injection is fully implemented.
         $this->service_catalog_manager = new ServiceCatalogManager();
+        $this->interface = Session::getCurrentInterface();
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(
         "/ServiceCatalog",
         name: "glpi_service_catalog",
@@ -76,7 +78,10 @@ final class IndexController extends AbstractController
 
         return $this->render('pages/self-service/service_catalog.html.twig', [
             'title' => __("New ticket"),
-            'menu'  => ["create_ticket"],
+            'menu'  => $this->interface == "central"
+                ? ["helpdesk", ServiceCatalog::class]
+                : ["create_ticket"]
+            ,
             'items' => $items,
         ]);
     }

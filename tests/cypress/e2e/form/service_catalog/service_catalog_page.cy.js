@@ -141,4 +141,38 @@ describe('Service catalog page', () => {
         cy.get('@child_category').click();
         cy.findByRole('region', {'name': form_name}).should('exist');
     });
+
+    it('can use the service catalog on the central interface', () => {
+        cy.changeProfile('Super-Admin');
+
+        // Create a simple form
+        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+        createActiveForm(form_name);
+        cy.get('@form_id').visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type('Question 1');
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully updated')
+        ;
+
+        // Go to service catalog
+        cy.visit('/ServiceCatalog');
+        cy.validateBreadcrumbs(['Home', 'Assistance', 'Service catalog']);
+        cy.validateMenuIsActive('Service catalog');
+
+        // Go to our form
+        cy.findByRole('region', {'name': form_name}).as('form');
+        cy.get('@form').click();
+        cy.url().should('include', '/Form/Render');
+        cy.validateBreadcrumbs(['Home', 'Assistance', 'Service catalog']);
+        cy.validateMenuIsActive('Service catalog');
+
+        // Submit the form
+        cy.findByRole('textbox', {'name': 'Question 1'}).type('Answer 1');
+        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully created')
+        ;
+    });
 });
