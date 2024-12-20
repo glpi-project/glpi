@@ -85,7 +85,11 @@ final class ListenersPriority
         HttpListener\LegacyItemtypeRouteListener::class => 375,
 
         // Legacy URLs redirections.
-        HttpListener\RedirectLegacyRouteListener::class => 350,
+        // Must be executed before the Symfony router, to prevent `NotFoundHttpException` to be thrown.
+        //
+        // Symfony's Router priority is 32.
+        // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
+        HttpListener\RedirectLegacyRouteListener::class => 33,
 
         // This listener allows matching plugins routes at runtime,
         //   that's why it's executed right after Symfony's Router,
@@ -93,7 +97,11 @@ final class ListenersPriority
         //
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        HttpListener\PluginsRouterListener::class => 31,
+        HttpListener\PluginsRouterListener::class       => 31,
+
+        // Update session variables according to request parameters.
+        // Must be called as late as possible, just before controllers execution.
+        HttpListener\SessionVariables::class            => 0,
     ];
 
     private function __construct()
