@@ -35,7 +35,7 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Html::popHeader(__('List of available tags'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('List of available tags'));
 
 if (isset($_GET["sub_type"])) {
     Session::checkCentralAccess();

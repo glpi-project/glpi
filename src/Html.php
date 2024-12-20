@@ -1635,7 +1635,7 @@ TWIG,
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-            return self::popHeader($title, $url, false, $sector, $item, $option);
+            return self::popHeader($title, '', false, $sector, $item, $option);
         }
         // Print a nice HTML-head for every page
         if ($HEADER_LOADED) {

@@ -61,7 +61,7 @@ if ($rulecollection->isRuleRecursive()) {
 }
 $rulecollection->checkGlobal(READ);
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'));
 
 $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
 

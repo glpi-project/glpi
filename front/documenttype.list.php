@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'));
 
 $params = Search::manageParams('DocumentType', $_GET);
 
