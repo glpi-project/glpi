@@ -72,6 +72,8 @@ final class ListenersPriority
 
         HttpListener\CheckMaintenanceListener::class    => 425,
 
+        HttpListener\LoadSessionEntitiesListener::class => 410,
+
         // Legacy config providers.
         // FIXME: Reorganize them and transform them into HTTP request listeners to register them here directly.
         LegacyConfigProviderListener::class             => 425,
