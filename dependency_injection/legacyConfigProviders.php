@@ -55,7 +55,6 @@ return static function (ContainerConfigurator $container): void {
      * ⚠ Here, ORDER of definition matters!
      */
 
-    $services->set(LegacyConfigurators\StandardIncludes::class)->tag($tagName, ['priority' => 160]);
     $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
     $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
