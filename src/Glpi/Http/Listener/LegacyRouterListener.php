@@ -96,14 +96,6 @@ final class LegacyRouterListener implements EventSubscriberInterface
         // use `@` to silence errors on unit tests (`chdir` does not work on streamed mocked dir)
         @chdir(dirname($target_file));
 
-        // (legacy) Redefine some $_SERVER variables to have same values whenever scripts are called directly
-        // or through current router.
-        $target_path = $uri_prefix . $path;
-        $_SERVER['PHP_SELF']  = $target_path;
-
-        // New server overrides:
-        $request->server->set('PHP_SELF', $target_path);
-
         /**
          * This will force Symfony to consider that routing was resolved already.
          * @see \Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest

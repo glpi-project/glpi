@@ -32,22 +32,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
-use Glpi\Config\ConfigProviderHasRequestTrait;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Kernel\ListenersPriority;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-final class CleanPHPSelfParam implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
+final class OverridePHPSelfParam implements EventSubscriberInterface
 {
-    use ConfigProviderHasRequestTrait;
-
-    public function execute(): void
+    public static function getSubscribedEvents(): array
     {
-        // Security of PHP_SELF
-        $self = \Html::cleanParametersURL($this->getRequest()->server->get('PHP_SELF'));
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
 
-        $_SERVER['PHP_SELF'] = $self;
-        $this->getRequest()->server->set('PHP_SELF', $self);
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        $current_path = $event->getRequest()->getBasePath() . $event->getRequest()->getPathInfo();
+
+        $_SERVER['PHP_SELF'] = $current_path;
+        $event->getRequest()->server->set('PHP_SELF', $current_path);
     }
 }
