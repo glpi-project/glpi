@@ -70,11 +70,13 @@ final class ListenersPriority
         // Must also be executed before other controllers, since it defines its own controller.
         HttpListener\CheckIfUpdateNeededListener::class => 440,
 
-        HttpListener\CheckMaintenanceListener::class    => 425,
+        HttpListener\CheckMaintenanceListener::class    => 430,
+
+        HttpListener\CheckCsrfListener::class           => 420,
 
         // Legacy config providers.
         // FIXME: Reorganize them and transform them into HTTP request listeners to register them here directly.
-        LegacyConfigProviderListener::class             => 425,
+        LegacyConfigProviderListener::class             => 410,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.

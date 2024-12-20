@@ -47,20 +47,6 @@ final readonly class ConfigRest implements LegacyConfigProviderInterface
          */
         global $CFG_GLPI, $GLPI_CACHE;
 
-        // Security : check CSRF token
-        if (!isAPI() && count($_POST) > 0) {
-            if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
-                // Keep CSRF token as many AJAX requests may be made at the same time.
-                // This is due to the fact that read operations are often made using POST method (see #277).
-                define('GLPI_KEEP_CSRF_TOKEN', true);
-
-                // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
-                Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
-            } else {
-                Session::checkCSRF($_POST);
-            }
-        }
-
         // Manage profile change
         if (isset($_REQUEST["force_profile"]) && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $_REQUEST["force_profile"]) {
             if (isset($_SESSION['glpiprofiles'][$_REQUEST["force_profile"]])) {
