@@ -203,6 +203,11 @@
 
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
+    {# Include direct access token if supplied #}
+    {% if token %}
+        <input type="hidden" name="token" value="{{ token }}" />
+    {% endif %}
+
     <script>
         import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {
             new m.GlpiFormRendererController($('#forms_form_answers'));

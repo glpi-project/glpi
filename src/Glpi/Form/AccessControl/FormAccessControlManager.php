@@ -121,6 +121,10 @@ final class FormAccessControlManager
             return true;
         }
 
+        if (!$form->isActive()) {
+            return false;
+        }
+
         $access_controls_policies = $this->getActiveAccessControlsForForm($form);
         if (count($access_controls_policies) === 0) {
             // Refuse access if no access controls are configured.

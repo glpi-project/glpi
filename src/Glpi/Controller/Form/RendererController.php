@@ -68,6 +68,10 @@ final class RendererController extends AbstractController
             'menu' => ['admin', Form::getType()],
             'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
+
+            // Direct access token must be included in the form data as it will
+            // be checked in the submit answers controller.
+            'token' => $request->query->getString('token'),
         ]);
     }
 
