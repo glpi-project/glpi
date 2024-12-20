@@ -42,6 +42,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
@@ -90,7 +91,7 @@ final class RendererController extends AbstractController
 
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
-            'menu' => ['admin', Form::getType()],
+            'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),

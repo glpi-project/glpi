@@ -43,6 +43,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -1298,7 +1299,7 @@ TWIG,
             'helpdesk' => [
                 'title' => __('Assistance'),
                 'types' => [
-                    'Ticket', 'Problem', 'Change',
+                    'Ticket', ServiceCatalog::class, 'Problem', 'Change',
                     'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
                 ],
                 'icon'    => 'ti ti-headset'
@@ -1502,7 +1503,7 @@ TWIG,
 
         if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-                'default' => '/ServiceCatalog',
+                'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
                 'icon'    => 'ti ti-plus',
             ];
@@ -1527,7 +1528,7 @@ TWIG,
             ];
 
             if (Session::haveRight("ticket", CREATE)) {
-                $menu['tickets']['content']['ticket']['links']['add'] = '/ServiceCatalog';
+                $menu['tickets']['content']['ticket']['links']['add'] = ServiceCatalog::getSearchURL(false);
             }
         }
 

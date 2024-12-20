@@ -39,5 +39,7 @@ declare namespace Cypress {
         checkAndCloseAlert(text: string): Chainable<any>
         getCsrfToken(): Chainable<any>
         changeEntity(entity: string|number, is_recursive: boolean): Chainable<any>
+        validateBreadcrumbs(breadcrumbs: array): Chainable<any>
+        validateMenuIsActive(name: string): Chainable<any>
     }
 }
