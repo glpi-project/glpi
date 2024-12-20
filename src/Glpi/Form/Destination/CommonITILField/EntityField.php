@@ -79,14 +79,6 @@ class EntityField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select an entity..."),
@@ -114,8 +106,11 @@ class EntityField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $entity_id = $config->getStrategy()->getEntityID($config, $answers_set);
+        $entity_id = $strategy->getEntityID($config, $answers_set);
 
         // Do not edit input if invalid value was found
         if (Entity::getById($entity_id) === false) {
@@ -150,7 +145,7 @@ class EntityField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (EntityFieldStrategy::cases() as $strategies) {

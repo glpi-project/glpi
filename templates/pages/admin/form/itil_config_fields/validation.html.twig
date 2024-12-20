@@ -33,20 +33,11 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{{ fields.dropdownArrayField(
-    main_config_field.input_name,
-    main_config_field.value,
-    main_config_field.possible_values,
-    main_config_field.label,
-    options
-) }}
-
 <div
     {% if main_config_field.value != CONFIG_SPECIFIC_ACTORS %}
         class="d-none"
     {% endif %}
-    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ACTORS }}"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ACTORS }}"
 >
     {% set actors_dropdown = call('Glpi\\Form\\Dropdown\\FormActorsDropdown::show', [
         specific_values_extra_field.input_name,
@@ -63,8 +54,9 @@
         actors_dropdown,
         '',
         {
+            field_class: '',
+            mb: '',
             no_label: true,
-            mb: 'mb-2',
             wrapper_class: ''
         }
     ) }}
@@ -74,8 +66,7 @@
     {% if main_config_field.value != CONFIG_SPECIFIC_ANSWERS %}
         class="d-none"
     {% endif %}
-    data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-    data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
+    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
 >
     {{ fields.dropdownArrayField(
         specific_answers_extra_field.input_name,
@@ -83,6 +74,8 @@
         specific_answers_extra_field.possible_values,
         "",
         options|merge({
+            field_class: '',
+            mb: '',
             no_label: true,
             display_emptychoice: true,
             multiple: true,

@@ -36,13 +36,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use ITILFollowupTemplate;
 use Override;
 
-final class ITILFollowupFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class ITILFollowupFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -86,9 +90,18 @@ final class ITILFollowupFieldConfig implements JsonFieldInterface, ConfigWithFor
         ];
     }
 
-    public function getStrategy(): ITILFollowupFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<ITILFollowupFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificITILFollowupTemplatesIds(): ?array

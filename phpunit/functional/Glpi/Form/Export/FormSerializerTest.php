@@ -509,7 +509,7 @@ final class FormSerializerTest extends \DbTestCase
             specific_question_id: $this->getQuestionId($form, "My ITIL Category question")
         );
         $associated_items_config = new AssociatedItemsFieldConfig(
-            AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
+            strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
             specific_associated_items: [
                 Computer::class => [
                     $computer->getID()
