@@ -32,32 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Http\Listener;
 
-use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Config\LegacyConfigurators;
+use Glpi\Controller\NeedsUpdateController;
+use Glpi\Http\RequestPoliciesTrait;
+use Glpi\Kernel\ListenersPriority;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Update;
 
-return static function (ContainerConfigurator $container): void {
-    $services = $container->services();
+final readonly class CheckIfUpdateNeededListener implements EventSubscriberInterface
+{
+    use RequestPoliciesTrait;
 
-    $services
-        ->defaults()
-        ->autowire()
-        ->autoconfigure()
-    ;
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => [
+                ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+            ],
+        ];
+    }
 
-    $services->set('glpi_db')->synthetic();
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
 
-    $tagName = LegacyConfigProviderInterface::TAG_NAME;
+        if (
+            \defined('SKIP_UPDATES')
+            || Update::isDbUpToDate()
+            || !$this->shouldCheckDbStatus($event->getRequest())
+        ) {
+            return;
+        }
 
-    /*
-     * ⚠ Warning!
-     * ⚠ Here, ORDER of definition matters!
-     */
-
-    $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
-    $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
-
-    // FIXME: This class MUST stay at the end until the entire config is revamped.
-    $services->set(LegacyConfigurators\ConfigRest::class)->tag($tagName, ['priority' => 10]);
-};
+        $event->getRequest()->attributes->set('_controller', NeedsUpdateController::class);
+    }
+}

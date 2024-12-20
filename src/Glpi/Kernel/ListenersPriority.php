@@ -66,6 +66,10 @@ final class ListenersPriority
         // It must be executed before executing any controller (except controllers related to front-end assets).
         HttpListener\CheckDatabaseStatusListener::class => 450,
 
+        // This listener will ensure that GLPI is not being updated, or does not need a database update.
+        // Must also be executed before other controllers, since it defines its own controller.
+        HttpListener\CheckIfUpdateNeededListener::class => 440,
+
         HttpListener\CheckMaintenanceListener::class    => 425,
 
         // Legacy config providers.

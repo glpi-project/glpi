@@ -32,64 +32,60 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Controller;
 
 use Config;
+use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Config\ConfigProviderHasRequestTrait;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviderInterface;
-use Glpi\Http\RequestPoliciesTrait;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
 use Html;
 use Session;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Toolbox;
-use Update;
 
-final class StandardIncludes implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
+class NeedsUpdateController extends AbstractController
 {
-    use ConfigProviderHasRequestTrait;
-    use RequestPoliciesTrait;
-
-    public function execute(): void
+    public function __invoke(string $key): Response
     {
-        /**
-         * @var array $CFG_GLPI
-         */
+        return new StreamedResponse($this->display(...));
+    }
+
+    public function display(): void
+    {
+        // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
+        $debug_mode = $_SESSION['glpi_use_mode'];
+        Toolbox::setDebugMode(Session::NORMAL_MODE);
+
+        /** @var DBmysql $DB */
+        global $DB;
+
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        // Check version
-        if ($this->shouldCheckDbStatus($this->getRequest()) && !defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
-            // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
-            $debug_mode = $_SESSION['glpi_use_mode'];
-            Toolbox::setDebugMode(Session::NORMAL_MODE);
+        $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+        $requirements->add(new DatabaseTablesEngine($DB));
 
-            /** @var \DBmysql $DB */
-            global $DB;
+        $twig_params = [
+            'core_requirements' => $requirements,
+            'try_again'         => __('Try again'),
+            'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
+            'upgrade'           => _sx('button', 'Upgrade'),
+            'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
+            'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
+            'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
+            'outdated'          => version_compare(
+                VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
+                VersionParser::getNormalizedVersion(GLPI_VERSION),
+                '>'
+            )
+        ];
 
-            $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
-            $requirements->add(new DatabaseTablesEngine($DB));
-
-            $twig_params = [
-                'core_requirements' => $requirements,
-                'try_again'         => __('Try again'),
-                'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
-                'upgrade'           => _sx('button', 'Upgrade'),
-                'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
-                'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
-                'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
-                'outdated'          => version_compare(
-                    VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
-                    VersionParser::getNormalizedVersion(GLPI_VERSION),
-                    '>'
-                )
-            ];
-
-            Html::nullHeader(__('Update needed'), $CFG_GLPI["root_doc"]);
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        Html::nullHeader(__('Update needed'));
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class="container-fluid mb-4">
                 <div class="row justify-content-evenly">
                     <div class="col-12 col-xxl-6">
@@ -127,9 +123,7 @@ final class StandardIncludes implements LegacyConfigProviderInterface, ConfigPro
                 </div>
             </div>
 TWIG, $twig_params);
-            Html::nullFooter();
-            $_SESSION['glpi_use_mode'] = $debug_mode;
-            exit();
-        }
+        Html::nullFooter();
+        $_SESSION['glpi_use_mode'] = $debug_mode;
     }
 }
