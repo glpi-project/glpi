@@ -127,6 +127,14 @@
         sortable_fields.delete(key);
     }
 
+    function getPreviewDisplayStyle(preview_html) {
+        const preview = $(`<div>${preview_html}</div>`);
+        if (preview.find('.fileupload').length > 0) {
+            return 'block';
+        }
+        return 'contents';
+    }
+
     onMounted(() => {
         //for each field in fields_display, add it to the list using the template and slot
         appendField(fields_display.map((field) => field.key));
@@ -270,7 +278,7 @@
                             </template>
                         </template>
                         <template v-slot:field_preview v-if="sortable_field.preview_html">
-                            <div v-html="sortable_field.preview_html" style="display: contents"></div>
+                            <div v-html="sortable_field.preview_html" :style="`display: ${getPreviewDisplayStyle(sortable_field.preview_html)}`"></div>
                         </template>
                     </Field>
                 </div>
