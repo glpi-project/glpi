@@ -494,7 +494,14 @@ abstract class CommonITILObject extends CommonDBTM
        // load existing actors (from existing itilobject)
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
-                $name = getUserName($user['users_id']);
+                $disable_anonymize = false;
+                if (
+                    $actortype == CommonITILActor::REQUESTER
+                    || $actortype == CommonITILActor::OBSERVER
+                ) {
+                    $disable_anonymize = true;
+                }
+                $name = getUserName($user['users_id'], 0, $disable_anonymize);
                 $actors[] = [
                     'id'                => $user['id'],
                     'items_id'          => $user['users_id'],
