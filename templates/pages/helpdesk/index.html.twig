@@ -34,7 +34,10 @@
 {% extends "layout/page_skeleton.html.twig" %}
 
 {% block content %}
-    <div class="d-flex flex-column helpdesk-home-container">
+    {# We override the parent width using .force-full-width because we need our background images and colors to bleed
+       through and use all the available width. The content is still using the correct width by redefining manually the
+       container size for each sections of the page using container-xl/container-narrow classes#}
+    <div class="d-flex flex-column helpdesk-home-container force-full-width">
         <div class="search-banner">
             <div class="container-narrow">
                 <h1 class="text-dark text-center">

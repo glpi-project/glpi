@@ -54,3 +54,8 @@
 .w-fit-content {
     width: fit-content !important;
 }
+
+.force-full-width {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
