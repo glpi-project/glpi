@@ -686,5 +686,14 @@ HTML,
         $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Category']);
 
         $this->assertFalse($result);
+
+        \Config::setConfigurationValues('core', ['add_solution_invalid_tickets' => 1]);
+        $conf = \Config::getConfigurationValues('core', ['add_solution_invalid_tickets']);
+
+        $this->createItem('ITILSolution', [
+            'itemtype'           => $ticket::getType(),
+            'items_id'           => $ticket->getID(),
+            'content'            => 'Ticket3 Mandatory Fields solution',
+        ]);
     }
 }
