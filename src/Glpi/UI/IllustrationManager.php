@@ -38,8 +38,9 @@ use Glpi\Application\View\TemplateRenderer;
 
 final class IllustrationManager
 {
-    public string $icons_definition_file;
-    public string $icons_sprites_path;
+    private string $icons_definition_file;
+    private string $icons_sprites_path;
+    private ?array $icons_definitions = null;
 
     public function __construct(
         ?string $icons_definition_file = null,
@@ -60,24 +61,73 @@ final class IllustrationManager
      */
     public function renderIcon(string $icon_id, ?int $size = null): string
     {
+        $icons = $this->getIconsDefinitions();
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
             'file_path' => $this->icons_sprites_path,
             'icon_id'   => $icon_id,
             'size'      => $this->computeSize($size),
+            'title'     => $icons[$icon_id]['title'] ?? "",
         ]);
     }
 
     /** @return string[] */
     public function getAllIconsIds(): array
     {
-        $json = file_get_contents($this->icons_definition_file);
-        if ($json === false) {
-            throw new \RuntimeException();
-        }
-        $definition = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
+        return array_keys($this->getIconsDefinitions());
+    }
 
-        return array_keys($definition);
+    public function countIcons(string $filter = ""): int
+    {
+        if ($filter == "") {
+            return count($this->getIconsDefinitions());
+        }
+
+        $icons = array_filter(
+            $this->getIconsDefinitions(),
+            fn ($icon) => str_contains(
+                strtolower($icon['title']),
+                strtolower($filter),
+            )
+        );
+
+        return count($icons);
+    }
+
+    /** @return string[] */
+    public function searchIcons(
+        string $filter = "",
+        int $page = 1,
+        int $page_size = 30,
+    ): array {
+        $icons = array_filter(
+            $this->getIconsDefinitions(),
+            fn ($icon) => str_contains(
+                strtolower($icon['title']),
+                strtolower($filter),
+            )
+        );
+
+        $icons = array_slice(
+            array: $icons,
+            offset: ($page - 1) * $page_size,
+            length: $page_size,
+        );
+
+        return array_keys($icons);
+    }
+
+    private function getIconsDefinitions(): array
+    {
+        if ($this->icons_definitions === null) {
+            $json = file_get_contents($this->icons_definition_file);
+            if ($json === false) {
+                throw new \RuntimeException();
+            }
+            $this->icons_definitions = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
+        }
+
+        return $this->icons_definitions;
     }
 
     private function computeSize(?int $size = null): string
