@@ -100,7 +100,7 @@ final class SubmitAnswerController extends AbstractController
             // Load current user session info and URL parameters.
             $parameters = new FormAccessParameters(
                 session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
+                url_parameters: $request->request->all(),
             );
         }
 
