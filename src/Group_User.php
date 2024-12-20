@@ -952,12 +952,23 @@ class Group_User extends CommonDBRelation
 
         parent::post_purgeItem();
 
-       // remove user from plannings
         $groups_id  = $this->fields['groups_id'];
-        $planning_k = 'group_' . $groups_id . '_users';
+        $users_id = $this->fields['users_id'];
 
-       // find users with the current group in their plannings
         $user_inst = new User();
+
+        // If user's default group is affected, remove it from user
+        if ($user_inst->getFromDB($users_id) && $user_inst->fields['groups_id'] == $groups_id) {
+            $user_inst->update(
+                [
+                    'id'        => $users_id,
+                    'groups_id' => 0,
+                ]
+            );
+        }
+
+        // remove user from plannings
+        $planning_k = 'group_' . $groups_id . '_users';
         $users = $user_inst->find([
             'plannings' => ['LIKE', "%$planning_k%"]
         ]);
