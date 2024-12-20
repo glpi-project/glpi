@@ -70,6 +70,8 @@ final class ListenersPriority
         // Must also be executed before other controllers, since it defines its own controller.
         HttpListener\CheckIfUpdateNeededListener::class => 440,
 
+        HttpListener\SessionConfig::class               => 430,
+
         HttpListener\CheckMaintenanceListener::class    => 425,
 
         // Legacy config providers.

@@ -32,41 +32,52 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Config\LegacyConfigurators;
+namespace Glpi\Http\Listener;
 
-use Glpi\Config\ConfigProviderHasRequestTrait;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviderInterface;
+use Glpi\Kernel\ListenersPriority;
 use Glpi\Toolbox\URL;
 use Session;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-final class SessionConfig implements LegacyConfigProviderInterface, ConfigProviderWithRequestInterface
+final class SessionConfig implements EventSubscriberInterface
 {
-    use ConfigProviderHasRequestTrait;
-
-    public function execute(): void
+    public static function getSubscribedEvents(): array
     {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
         if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
             $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
         }
 
-        $request = $this->getRequest();
+        $request = $event->getRequest();
 
         // Manage force tab
         if ($request->query->has('forcetab')) {
             $itemtype = URL::extractItemtypeFromUrlPath($request->getPathInfo());
             if ($itemtype !== null) {
-                Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
+                Session::setActiveTab($itemtype, $event->getRequest()->get('forcetab'));
             }
         }
 
         // Manage tabs
-        if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-            Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
+        if ($event->getRequest()->get('glpi_tab') && $event->getRequest()->get('itemtype')) {
+            Session::setActiveTab($event->getRequest()->get('itemtype'), $event->getRequest()->get('glpi_tab'));
         }
+
         // Override list-limit if choosen
-        if (isset($_REQUEST['glpilist_limit'])) {
-            $_SESSION['glpilist_limit'] = $_REQUEST['glpilist_limit'];
+        if ($event->getRequest()->get('glpilist_limit')) {
+            $_SESSION['glpilist_limit'] = $event->getRequest()->get('glpilist_limit');
         }
     }
 }
