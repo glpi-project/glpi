@@ -1873,7 +1873,8 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-    public static function checkEmptyMandatoryFields(CommonDBTM $item, ITILTemplate $item_template) {
+    public static function checkEmptyMandatoryFields(CommonDBTM $item, ITILTemplate $item_template)
+    {
         if (count($item_template->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $item_template->getAllowedFieldsNames(true);
