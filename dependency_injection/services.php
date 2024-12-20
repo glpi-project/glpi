@@ -54,7 +54,6 @@ return static function (ContainerConfigurator $container): void {
         ->instanceof(PublicService::class)->public()
     ;
 
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
     $services->load('Glpi\Kernel\\Listener\\', $projectDir . '/src/Glpi/Kernel/Listener');

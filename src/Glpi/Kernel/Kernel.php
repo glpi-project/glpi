@@ -124,7 +124,6 @@ final class Kernel extends BaseKernel
         $projectDir = $this->getProjectDir();
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
-        $container->import($projectDir . '/dependency_injection/legacyConfigProviders.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }

@@ -34,7 +34,6 @@
 
 namespace Glpi\Kernel;
 
-use Glpi\Http\Listener\LegacyConfigProviderListener;
 use Glpi\Kernel\Listener as KernelListener;
 use Glpi\Http\Listener as HttpListener;
 
@@ -74,10 +73,6 @@ final class ListenersPriority
 
         HttpListener\CheckCsrfListener::class           => 420,
 
-        // Legacy config providers.
-        // FIXME: Reorganize them and transform them into HTTP request listeners to register them here directly.
-        LegacyConfigProviderListener::class             => 410,
-
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.
         HttpListener\LegacyRouterListener::class        => 400,
@@ -100,6 +95,13 @@ final class ListenersPriority
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
         HttpListener\PluginsRouterListener::class       => 31,
+
+        // Redefine the `$_SERVER['PHP_SELF']` variables that it still used to retrieve the "current path".
+        // Must be called as late as possible, just before controllers execution.
+        //
+        // FIXME: `$_SERVER['PHP_SELF']` should not be altered, `$request()->getBasePath() . $request->getPathInfo()`
+        // should be used instead.
+        HttpListener\OverridePHPSelfParam::class        => 0,
 
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
