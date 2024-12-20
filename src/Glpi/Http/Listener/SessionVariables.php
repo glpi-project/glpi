@@ -52,6 +52,9 @@ final class SessionVariables implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
+        global $GLPI_CACHE;
+
         if (!$event->isMainRequest()) {
             return;
         }
@@ -74,6 +77,49 @@ final class SessionVariables implements EventSubscriberInterface
         // Override list-limit if choosen
         if ($request->get('glpilist_limit')) {
             $_SESSION['glpilist_limit'] = $request->get('glpilist_limit');
+        }
+
+        // Manage forced profile / entity.
+        // This feature permits to craft custom links from an external app/notification that forces a specific profile
+        // and/or a specific entity to be loaded.
+        // see #10074
+        $forced_profile = $request->get('force_profile');
+        $forced_entity  = $request->get('force_entity');
+        $check_entities = true;
+        if (
+            $forced_profile !== null
+            && ($_SESSION['glpiactiveprofile']['id'] ?? -1) != $forced_profile
+            && isset($_SESSION['glpiprofiles'][$forced_profile])
+        ) {
+            Session::changeProfile($forced_profile);
+        }
+        if (
+            $forced_entity !== null
+            && ($_SESSION["glpiactive_entity"] ?? -1) != $forced_entity
+        ) {
+            Session::changeActiveEntities($forced_entity, true);
+            $check_entities = false;
+        }
+
+        // Reload entities if necessary.
+        if ($check_entities && Session::shouldReloadActiveEntities()) {
+            Session::changeActiveEntities(
+                $_SESSION["glpiactive_entity"],
+                $_SESSION["glpiactive_entity_recursive"]
+            );
+        }
+
+        // The user's current groups are stored in his session
+        // If there was any change regarding groups membership and/or configuration, we
+        // need to reset the data stored in his session
+        if (
+            isset($_SESSION['glpigroups'])
+            && (
+                !isset($_SESSION['glpigroups_cache_date'])
+                || $_SESSION['glpigroups_cache_date'] < $GLPI_CACHE->get('last_group_change')
+            )
+        ) {
+            Session::loadGroups();
         }
     }
 }
