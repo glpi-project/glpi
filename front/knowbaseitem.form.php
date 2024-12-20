@@ -170,7 +170,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET["_in_modal"])) {
-        Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
+        Html::popHeader(__('Knowledge base'));
         if ($_GET['id']) {
             $kb->check($_GET["id"], READ);
             $kb->showFull();

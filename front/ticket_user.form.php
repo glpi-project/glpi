@@ -42,7 +42,7 @@ global $CFG_GLPI;
 $link = new Ticket_User();
 $item = new Ticket();
 
-Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Email followup'));
 
 if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);

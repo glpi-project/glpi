@@ -59,7 +59,7 @@ if (!$rule = getItemForItemtype($sub_type)) {
 }
 $rule->checkGlobal(READ);
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'));
 
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);
 
