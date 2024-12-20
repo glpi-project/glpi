@@ -643,48 +643,59 @@ class NotificationTargetTest extends DbTestCase
 
     public function testAdminTargetInstall()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $this->login();
 
         $notification = new \Notification();
         $notifications = $notification->find();
 
-        $tables = require(GLPI_ROOT . '/install/empty_data.php');
         foreach ($notifications as $notification) {
+            $iterator = $DB->request([
+                'FROM' => \NotificationTarget::getTable(),
+                'WHERE' => ['notifications_id' => $notification['id'], 'items_id' => '1'],
+            ]);
+            $has_admin_target = true;
+            if ($notification['itemtype'] === 'PlanningRecall' && $notification['event'] === 'planningrecall') {
+                // Only the user is able to receive its planning recall
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'ObjectLock' && $notification['event'] === 'unlock') {
+                // Only the user is able to receive notification of fields that he has unlocked
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'User' && $notification['event'] === 'passwordforget') {
+                // Only the user is able to receive its password recovery token
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'SavedSearch_Alert' && $notification['event'] === 'alert') {
+                // Only the user is able to receive its save search alert
+                $has_admin_target = false;
+            } elseif ($notification['itemtype'] === 'User' && $notification['event'] === 'passwordinit') {
+                // Only the user is able to receive its first password
+                $has_admin_target = false;
+            }
             $notification_target = NotificationTarget::getInstanceByType($notification['itemtype'], $notification['event']);
             $notification_target->addNotificationTargets(0);
-            $filtered = array_filter(
-                $tables["glpi_notificationtargets"],
-                function ($empty_data_array) use ($notification) {
-                    return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
-                        $empty_data_array['items_id'] === '1' &&
-                        $empty_data_array['notifications_id'] === strval($notification['id']);
-                }
-            );
-            if (isset($notification_target->notification_targets["1_1"]) && $notification_target->notification_targets["1_1"] === "1_" . __("Administrator")) {
-                $this->assertNotEmpty($filtered);
-            } else {
-                $this->assertEmpty($filtered);
-            }
+            $this->assertSame($has_admin_target, $iterator->numrows() > 0);
+            $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
         }
     }
 
     public function testTargetInstall()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         $this->login();
 
         $notification = new \Notification();
         $notifications = $notification->find();
 
-        $tables = require(GLPI_ROOT . '/install/empty_data.php');
         foreach ($notifications as $notification) {
-            $filtered = array_filter(
-                $tables["glpi_notificationtargets"],
-                function ($empty_data_array) use ($notification) {
-                    return isset($empty_data_array['items_id'], $empty_data_array['notifications_id']) &&
-                        $empty_data_array['notifications_id'] === strval($notification['id']);
-                }
-            );
-            $this->assertNotEmpty($filtered);
+            $iterator = $DB->request([
+                'FROM' => \NotificationTarget::getTable(),
+                'WHERE' => ['notifications_id' => $notification['id']],
+            ]);
+            $this->assertTrue($iterator->numrows() > 0);
         }
     }
 }
