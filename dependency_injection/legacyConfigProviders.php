@@ -56,7 +56,6 @@ return static function (ContainerConfigurator $container): void {
      */
 
     $services->set(LegacyConfigurators\CleanPHPSelfParam::class)->tag($tagName, ['priority' => 150]);
-    $services->set(LegacyConfigurators\SessionConfig::class)->tag($tagName, ['priority' => 130]);
 
     // FIXME: This class MUST stay at the end until the entire config is revamped.
     $services->set(LegacyConfigurators\ConfigRest::class)->tag($tagName, ['priority' => 10]);

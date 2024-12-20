@@ -50,13 +50,13 @@ class Session extends \DbTestCase
         $warn_msg = 'There was a warning. Be carefull.';
         $info_msg = 'All goes well. Or not... Who knows ;)';
 
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //test add message in cron mode
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
        //adding a message in "cron mode" does not add anything in the session
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //set not running from cron
         unset($_SESSION['glpicronuserrunning']);

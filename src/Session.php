@@ -272,6 +272,11 @@ class Session
         if (!isset($_SESSION['glpilanguage'])) {
             $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
         }
+
+        // Init messages array
+        if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
+        }
     }
 
 
