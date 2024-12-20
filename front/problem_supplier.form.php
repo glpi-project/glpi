@@ -42,7 +42,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 $link = new Problem_Supplier();
 
-Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Email followup'));
 
 if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);

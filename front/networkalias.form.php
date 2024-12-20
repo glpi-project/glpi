@@ -96,7 +96,7 @@ if (isset($_POST["add"])) {
 }
 
 if (isset($_GET['_in_modal'])) {
-    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
+    Html::popHeader(NetworkAlias::getTypeName(1));
     $alias->showForm($_GET["id"], $_GET);
     Html::popFooter();
 } else {

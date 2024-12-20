@@ -39,7 +39,7 @@ Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
 
 $setupdisplay = new DisplayPreference();
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
+Html::popHeader(__('Setup'), in_modal: true);
 // Datas may come from GET or POST : use REQUEST
 if (isset($_REQUEST["itemtype"])) {
     $setupdisplay->display([

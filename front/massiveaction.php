@@ -42,7 +42,7 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
 } catch (\Throwable $e) {
-    Html::popHeader(__('Bulk modification error'), $_SERVER['PHP_SELF']);
+    Html::popHeader(__('Bulk modification error'));
 
     echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
       __s('Warning') . "'><br><br>";
@@ -53,7 +53,7 @@ try {
     Html::popFooter();
     return;
 }
-Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Bulk modification'));
 
 $results   = $ma->process();
 

@@ -98,7 +98,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_GET['_in_modal'])) {
-    Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], true);
+    Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
 } else if (isset($_POST["replace"])) {
