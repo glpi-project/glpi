@@ -119,6 +119,13 @@
       multiple: true,
    })) }}
 
+   {{ fields.dropdownYesNo(
+      'add_solution_invalid_tickets',
+      config['add_solution_invalid_tickets'],
+      __('Allow solutions for invalid tickets'),
+      field_options
+   ) }}
+
    {{ fields.smallTitle(__('Matrix of calculus for priority')) }}
    {{ inputs.hidden('_matrix', 1) }}
    <table class="table table-borderless table-sm">

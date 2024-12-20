@@ -44,6 +44,7 @@ $migration->addConfig([
     'set_followup_tech' => '0',
     'set_solution_tech' => '0',
     'is_demo_dashboards' => '0',
+    'add_solution_invalid_tickets' => '1'
 ]);
 $migration->addField('glpi_users', 'toast_location', 'string');
 
