@@ -135,7 +135,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'weight')) {
             $options[] = [
-                'id'       => '131',
+                'id'       => '1500',
                 'table'    => $table,
                 'field'    => 'weight',
                 'name'     => __('Weight'),
@@ -145,7 +145,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'required_units')) {
             $options[] = [
-                'id'       => '132',
+                'id'       => '1501',
                 'table'    => $table,
                 'field'    => 'required_units',
                 'name'     => __('Required units'),
@@ -155,7 +155,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'depth')) {
             $options[] = [
-                'id'       => '133',
+                'id'       => '1502',
                 'table'    => $table,
                 'field'    => 'depth',
                 'name'     => __('Depth'),
@@ -164,7 +164,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'power_connections')) {
             $options[] = [
-                'id'       => '134',
+                'id'       => '1503',
                 'table'    => $table,
                 'field'    => 'power_connections',
                 'name'     => __('Power connections'),
@@ -174,7 +174,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'power_consumption')) {
             $options[] = [
-                'id'       => '135',
+                'id'       => '1504',
                 'table'    => $table,
                 'field'    => 'power_consumption',
                 'name'     => __('Power consumption'),
@@ -184,7 +184,77 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
         if ($DB->fieldExists($table, 'is_half_rack')) {
             $options[] = [
-                'id'       => '136',
+                'id'       => '1505',
+                'table'    => $table,
+                'field'    => 'is_half_rack',
+                'name'     => __('Is half rack'),
+                'datatype' => 'bool'
+            ];
+        }
+
+        return $options;
+    }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $options = [];
+        $table   = self::getTable();
+
+        if ($DB->fieldExists($table, 'weight')) {
+            $options[] = [
+                'id'       => '1500',
+                'table'    => $table,
+                'field'    => 'weight',
+                'name'     => __('Weight'),
+                'datatype' => 'decimal'
+            ];
+        }
+
+        if ($DB->fieldExists($table, 'required_units')) {
+            $options[] = [
+                'id'       => '1501',
+                'table'    => $table,
+                'field'    => 'required_units',
+                'name'     => __('Required units'),
+                'datatype' => 'number'
+            ];
+        }
+
+        if ($DB->fieldExists($table, 'depth')) {
+            $options[] = [
+                'id'       => '1502',
+                'table'    => $table,
+                'field'    => 'depth',
+                'name'     => __('Depth'),
+            ];
+        }
+
+        if ($DB->fieldExists($table, 'power_connections')) {
+            $options[] = [
+                'id'       => '1503',
+                'table'    => $table,
+                'field'    => 'power_connections',
+                'name'     => __('Power connections'),
+                'datatype' => 'number'
+            ];
+        }
+
+        if ($DB->fieldExists($table, 'power_consumption')) {
+            $options[] = [
+                'id'       => '1504',
+                'table'    => $table,
+                'field'    => 'power_consumption',
+                'name'     => __('Power consumption'),
+                'datatype' => 'decimal'
+            ];
+        }
+
+        if ($DB->fieldExists($table, 'is_half_rack')) {
+            $options[] = [
+                'id'       => '1505',
                 'table'    => $table,
                 'field'    => 'is_half_rack',
                 'name'     => __('Is half rack'),
