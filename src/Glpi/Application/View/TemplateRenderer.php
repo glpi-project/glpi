@@ -212,4 +212,16 @@ class TemplateRenderer
         }
         return '';
     }
+
+    public function displayFromStringTemplate(string $template, array $variables = []): void
+    {
+        try {
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
+            $this->environment->createTemplate($template)->display($variables);
+        } catch (\Twig\Error\Error $e) {
+            ErrorHandler::getInstance()->handleTwigError($e);
+        } finally {
+            Profiler::getInstance()->stop($template);
+        }
+    }
 }

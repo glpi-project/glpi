@@ -83,7 +83,7 @@ class ConfigTest extends DbTestCase
 
         $this->login();
         $this->assertEquals(
-            ['title', 'page', 'icon', 'options'],
+            ['title', 'page', 'icon', 'options', 'links'],
             array_keys(\Config::getMenuContent())
         );
     }
