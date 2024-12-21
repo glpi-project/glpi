@@ -36,14 +36,18 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
+use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild
+final class Section extends CommonDBChild implements ConditionnableInterface
 {
+    use ConditionnableTrait;
+
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
@@ -92,7 +96,30 @@ final class Section extends CommonDBChild
             $input['uuid'] = Uuid::uuid4();
         }
 
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        return $input;
     }
 
     /**

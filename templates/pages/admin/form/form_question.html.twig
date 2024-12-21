@@ -52,6 +52,7 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').QUESTION.value }}"
     data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
@@ -97,17 +98,64 @@
                     data-glpi-form-editor-question-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                {% if question is null %}
+                    {% set question_strategy = enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+                {% else %}
+                    {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
+                {% endif %}
+
+                {# Visibility dropdown #}
+                {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                    'item': question,
+                    'type': "Glpi\\Form\\Question",
+                }, with_context = false) }}
+
                 {# Duplicate question #}
                 <i
                     role="button"
-                    class="ti ti-copy ms-auto cursor-pointer"
+                    class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate question") }}"
                     data-glpi-form-editor-on-click="duplicate-question"
                     data-glpi-form-editor-question-extra-details
-                    role="button"
                 ></i>
+
+                {# Delete question #}
+                <i
+                    role="button"
+                    class="ti ti-trash ms-3 cursor-pointer"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ __("Delete") }}"
+                    aria-label="{{ __("Delete") }}"
+                    data-glpi-form-editor-on-click="delete-question"
+                    data-glpi-form-editor-question-extra-details
+                ></i>
+
+                {# Extra actions #}
+                <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
+                    <i
+                        class="ti ti-dots-vertical show"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        role="button"
+                        title="{{ __('More actions') }}"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-visibility-dropdown"
+                            >
+                                <i class="ti ti-eye-cog me-2"></i>
+                                <span>{{ __("Configure visiblity") }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             {# Render the specific question type #}
@@ -202,11 +250,11 @@
                 ) }}
 
                 {# Render the specific question options #}
-                <div class="ms-2" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
+                <div class="ms-auto" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
                     {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
                 </div>
 
-                <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
+                <label class="form-check form-switch ms-2 mb-0 cursor-pointer">
                     <input type="hidden" value="0" name="is_mandatory">
                     <input
                         class="form-check-input"
@@ -218,15 +266,6 @@
                     >
                     <span class="form-check-label">{{ __("Mandatory") }}</span>
                 </label>
-
-                <button
-                    class="btn btn-ghost-danger px-2"
-                    type="button"
-                    data-glpi-form-editor-on-click="delete-question"
-                >
-                    <i class="ti ti-trash me-2"></i>
-                    {{ __("Delete") }}
-                </button>
             </div>
         </div>
 
@@ -257,6 +296,7 @@
             value="{{ constant('class', question_type) }}"
         />
     </section>
+
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,
