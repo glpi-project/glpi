@@ -52,7 +52,7 @@
             {% if item.isNotSolved() and default_action_data != false %}
                {% if main_actions_itemtypes|length > 1 %}
                   {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
-                  <div class="{{ btn_class }} me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
+                  <div class="{{ btn_class }} me-2 main-actions">
                {% else %}
                   {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
                   <div class="main-actions" style="display:inline-flex">

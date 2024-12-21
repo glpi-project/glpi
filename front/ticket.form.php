@@ -233,7 +233,7 @@ if (isset($_POST["add"])) {
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
-    $available_options = ['load_kb_sol', '_openfollowup'];
+    $available_options = ['_openfollowup'];
     $options = [];
 
     foreach ($available_options as $key) {
