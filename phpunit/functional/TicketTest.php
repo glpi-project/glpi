@@ -5766,6 +5766,65 @@ HTML
         $this->assertEquals('_test_group_1', $assignees[1]['text']);
     }
 
+    public function testGetActorsForTypeNoDuplicates()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket->getEmpty();
+        $tech_id = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        $params = [
+            '_template_changed'  => true,
+            '_users_id_requester' => $postonly_id,
+            '_users_id_observer'  => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+            '_predefined_fields' => [
+                '_users_id_requester' => $postonly_id,
+                '_users_id_observer'  => $postonly_id,
+                '_users_id_assign'    => $tech_id,
+                '_groups_id_requester' => 1,
+                '_groups_id_observer'  => 1,
+                '_groups_id_assign'    => 1,
+            ],
+        ];
+
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params));
+
+        $ticket->getEmpty();
+        $params = [
+            '_skip_default_actor' => true,
+            '_actors'             => [
+                'requester' => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'observer'  => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                ],
+                'assign'    => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                ],
+            ]
+        ];
+
+        $this->assertCount(3, $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params));
+    }
+
 
     public function testNeedReopen()
     {
