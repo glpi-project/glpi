@@ -9343,6 +9343,34 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
+            $do_not_compute_status = false;
+            foreach ($added as $actor) {
+                if ($actor['type'] === CommonITILActor::ASSIGN) {
+                    $do_not_compute_status = true;
+                }
+            }
+
+            // Process deleted actors
+            foreach ($actor_itemtypes as $actor_itemtype) {
+                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+
+                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
+                    ? $this->input[$actors_deleted_input_key]
+                    : [];
+                foreach ($deleted as $actor) {
+                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                    if ($do_not_compute_status) {
+                        $actor_obj->delete([
+                            'id' => $actor['id'],
+                            '_do_not_compute_status' => $do_not_compute_status,
+                        ]);
+                    } else {
+                        $actor_obj->delete(['id' => $actor['id']]);
+                    }
+                }
+            }
+
             // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
@@ -9375,22 +9403,6 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($updated as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->update($common_actor_input + $actor);
-            }
-        }
-
-        // Process deleted actors
-        foreach ($actor_types as $actor_type) {
-            foreach ($actor_itemtypes as $actor_itemtype) {
-                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
-                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
-
-                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
-                    ? $this->input[$actors_deleted_input_key]
-                    : [];
-                foreach ($deleted as $actor) {
-                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
-                }
             }
         }
 
