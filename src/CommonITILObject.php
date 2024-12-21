@@ -332,6 +332,22 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $actors = [];
 
+        $fn_add_actor = static function (string $itemtype, int $items_id, array $params) use (&$actors) {
+            $already_added = !empty(array_filter($actors, static function ($actor) use ($itemtype, $items_id, $params) {
+                if ($actor['itemtype'] === $itemtype && (int) $actor['items_id'] === 0) {
+                    // Anonymous actors unique based on email
+                    return ($actor['alternative_email'] ?? null) === ($params['alternative_email'] ?? null);
+                }
+                return $actor['itemtype'] === $itemtype && (int) $actor['items_id'] === $items_id;
+            }));
+            if (!$already_added) {
+                $actors[] = [
+                    'itemtype' => $itemtype,
+                    'items_id' => $items_id,
+                ] + $params;
+            }
+        };
+
         $actortypestring = self::getActorFieldNameType($actortype);
 
         if ($this->isNewItem()) {
@@ -357,15 +373,13 @@ abstract class CommonITILObject extends CommonDBTM
                             $userobj->fields["firstname"]
                         );
                         $email = UserEmail::getDefaultForUser($users_id_default);
-                        $actors[] = [
-                            'items_id'          => $users_id_default,
-                            'itemtype'          => 'User',
+                        $fn_add_actor('User', $users_id_default, [
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
                             'default_email'     => $email,
                             'alternative_email' => '',
-                        ];
+                        ]);
                     }
                 }
             }
@@ -385,15 +399,13 @@ abstract class CommonITILObject extends CommonDBTM
                             $userobj->fields["firstname"]
                         );
                         $email = UserEmail::getDefaultForUser($users_id);
-                        $actors[] = [
-                            'items_id'          => $users_id,
-                            'itemtype'          => 'User',
+                        $fn_add_actor('User', $users_id, [
                             'text'              => $name,
                             'title'             => $name,
                             'use_notification'  => $email === '' ? false : $default_use_notif,
                             'default_email'     => $email,
                             'alternative_email' => '',
-                        ];
+                        ]);
                     }
                 }
 
@@ -401,12 +413,10 @@ abstract class CommonITILObject extends CommonDBTM
                 if ($groups_id > 0) {
                     $group_obj = new Group();
                     if ($group_obj->getFromDB($groups_id)) {
-                        $actors[] = [
-                            'items_id' => $group_obj->fields['id'],
-                            'itemtype' => 'Group',
-                            'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
-                            'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
-                        ];
+                        $fn_add_actor('Group', $groups_id, [
+                            'text'  => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
+                            'title' => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
+                        ]);
                     }
                 }
 
@@ -414,15 +424,13 @@ abstract class CommonITILObject extends CommonDBTM
                 if ($suppliers_id > 0) {
                     $supplier_obj = new Supplier();
                     if ($supplier_obj->getFromDB($suppliers_id)) {
-                        $actors[] = [
-                            'items_id'          => $supplier_obj->fields['id'],
-                            'itemtype'          => 'Supplier',
+                        $fn_add_actor('Supplier', $suppliers_id, [
                             'text'              => $supplier_obj->fields['name'],
                             'title'             => $supplier_obj->fields['name'],
                             'use_notification'  => $supplier_obj->fields['email'] === '' ? false : $default_use_notif,
                             'default_email'     => $supplier_obj->fields['email'],
                             'alternative_email' => '',
-                        ];
+                        ]);
                     }
                 }
             }
@@ -451,28 +459,28 @@ abstract class CommonITILObject extends CommonDBTM
                                     $actor_obj->fields["realname"],
                                     $actor_obj->fields["firstname"]
                                 );
-                                $actors[] = $existing_actor + [
+                                $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
                                     'text'          => $name,
                                     'title'         => $name,
                                     'default_email' => UserEmail::getDefaultForUser($actor_obj->fields["id"]),
-                                ];
+                                ]);
                             } elseif ($actor_obj instanceof Supplier) {
-                                $actors[] = $existing_actor + [
+                                $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
                                     'text'          => $actor_obj->fields['name'],
                                     'title'         => $actor_obj->fields['name'],
                                     'default_email' => $actor_obj->fields['email'],
-                                ];
+                                ]);
                             } elseif ($actor_obj instanceof CommonTreeDropdown) {
                                 // Group
-                                $actors[] = $existing_actor + [
+                                $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
                                     'text'  => CommonTreeDropdown::sanitizeSeparatorInCompletename($actor_obj->getName()),
                                     'title' => CommonTreeDropdown::sanitizeSeparatorInCompletename($actor_obj->getRawCompleteName()),
-                                ];
+                                ]);
                             } else {
-                                $actors[] = $existing_actor + [
+                                $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
                                     'text'  => $actor_obj->getName(),
                                     'title' => $actor_obj->getRawCompleteName(),
-                                ];
+                                ]);
                             }
                         } elseif (
                             $actor_obj instanceof User
@@ -480,10 +488,10 @@ abstract class CommonITILObject extends CommonDBTM
                             && strlen($existing_actor['alternative_email']) > 0
                         ) {
                             // direct mail actor
-                            $actors[] = $existing_actor + [
+                            $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
                                 'text'  => $existing_actor['alternative_email'],
                                 'title' => $existing_actor['alternative_email'],
-                            ];
+                            ]);
                         }
                     }
                 }
@@ -495,29 +503,25 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
                 $name = getUserName($user['users_id']);
-                $actors[] = [
+                $fn_add_actor('User', $user['users_id'], [
                     'id'                => $user['id'],
-                    'items_id'          => $user['users_id'],
-                    'itemtype'          => 'User',
                     'text'              => $name,
                     'title'             => $name,
                     'use_notification'  => $user['use_notification'],
                     'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
                     'alternative_email' => $user['alternative_email'],
-                ];
+                ]);
             }
         }
         if (isset($this->groups[$actortype])) {
             foreach ($this->groups[$actortype] as $group) {
                 $group_obj = new Group();
                 if ($group_obj->getFromDB($group['groups_id'])) {
-                    $actors[] = [
+                    $fn_add_actor('Group', $group['groups_id'], [
                         'id'       => $group['id'],
-                        'items_id' => $group['groups_id'],
-                        'itemtype' => 'Group',
                         'text'     => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getName()),
                         'title'    => CommonTreeDropdown::sanitizeSeparatorInCompletename($group_obj->getRawCompleteName()),
-                    ];
+                    ]);
                 }
             }
         }
@@ -525,16 +529,14 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($this->suppliers[$actortype] as $supplier) {
                 $supplier_obj = new Supplier();
                 if ($supplier_obj->getFromDB($supplier['suppliers_id'])) {
-                    $actors[] = [
+                    $fn_add_actor('Supplier', $supplier['suppliers_id'], [
                         'id'                => $supplier['id'],
-                        'items_id'          => $supplier['suppliers_id'],
-                        'itemtype'          => 'Supplier',
                         'text'              => $supplier_obj->fields['name'],
                         'title'             => $supplier_obj->fields['name'],
                         'use_notification'  => $supplier['use_notification'],
                         'default_email'     => $supplier_obj->fields['email'],
                         'alternative_email' => $supplier['alternative_email'],
-                    ];
+                    ]);
                 }
             }
         }
