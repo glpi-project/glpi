@@ -70,4 +70,20 @@
             </section>
         </div>
     {% endif %}
+{% else %}
+    {% if is_default_search %}
+        {# The user is not allowed to see any forms at this time #}
+        {% set empty_title = __("There are no forms available") %}
+        {% set empty_subtitle = __("Please try again later.") %}
+    {% else %}
+        {# The current search filter did not match any forms #}
+        {% set empty_title = __("No forms found") %}
+        {% set empty_subtitle = __("Try different keywords or filters.") %}
+    {% endif %}
+    <div class="empty">
+        <p class="empty-title">{{ empty_title }}</p>
+        <p class="empty-subtitle text-secondary">
+            {{ empty_subtitle }}
+        </p>
+    </div>
 {% endfor %}

@@ -94,7 +94,10 @@ final class ItemsController extends AbstractController
 
         return $this->render(
             'components/helpdesk_forms/service_catalog_items.html.twig',
-            ['items' => $items]
+            [
+                'items' => $items,
+                'is_default_search' => false,
+            ]
         );
     }
 }

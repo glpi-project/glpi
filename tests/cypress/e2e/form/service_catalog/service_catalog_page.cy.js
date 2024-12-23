@@ -94,6 +94,11 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').clear();
         cy.get('@filter_input').type(form_name);
         cy.get('@forms').findByText(form_name).should('exist');
+
+        // Check that an information message is displayed when there are no results
+        cy.get('@filter_input').clear();
+        cy.get('@filter_input').type("aaaaaaaaaaaaaaaaaaaaa");
+        cy.findByText('No forms found').should('be.visible');
     });
 
     it('can pick a category in the service catalog', () => {
