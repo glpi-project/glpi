@@ -35,7 +35,6 @@
 
 namespace test\units\Glpi\Helpdesk;
 
-use Auth;
 use CommonITILActor;
 use Computer;
 use DbTestCase;

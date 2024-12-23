@@ -38,7 +38,7 @@ describe('Default forms', () => {
         cy.visit("/Form/Render/1");
 
         // Fill form
-        cy.getDropdownByLabelText('Urgency').selectDropdownValue('Medium');
+        cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
         cy.findByRole('textbox', {'name': "Title"}).type("My title");
         cy.findByLabelText("Description").awaitTinyMCE().type("My description");
 
@@ -46,6 +46,20 @@ describe('Default forms', () => {
         cy.findByRole('button', {'name': "Send form"}).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created')
+        ;
+
+        // Validate ticket values using API
+        cy.findByRole('alert')
+            .findByRole('link')
+            .invoke("attr", "href")
+            .then((href) => {
+                const id = /\?id=(.*)/.exec(href)[1];
+                cy.getWithAPI('Ticket', id).then((fields) => {
+                    expect(fields.urgency).to.equal(4);
+                    expect(fields.name).to.equal('My title');
+                    expect(fields.content).to.equal('<p>My description</p>');
+                });
+            })
         ;
     });
 
@@ -55,7 +69,7 @@ describe('Default forms', () => {
         cy.visit("/Form/Render/2");
 
         // Fill form
-        cy.getDropdownByLabelText('Urgency').selectDropdownValue('Medium');
+        cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
         cy.findByRole('textbox', {'name': "Title"}).type("My title");
         cy.findByLabelText("Description").awaitTinyMCE().type("My description");
 
@@ -63,6 +77,20 @@ describe('Default forms', () => {
         cy.findByRole('button', {'name': "Send form"}).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created')
+        ;
+
+        // Validate ticket values using API
+        cy.findByRole('alert')
+            .findByRole('link')
+            .invoke("attr", "href")
+            .then((href) => {
+                const id = /\?id=(.*)/.exec(href)[1];
+                cy.getWithAPI('Ticket', id).then((fields) => {
+                    expect(fields.urgency).to.equal(4);
+                    expect(fields.name).to.equal('My title');
+                    expect(fields.content).to.equal('<p>My description</p>');
+                });
+            })
         ;
     });
 });
