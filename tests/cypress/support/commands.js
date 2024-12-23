@@ -181,7 +181,7 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
 Cypress.Commands.add('awaitTinyMCE',  {
     prevSubject: 'element',
 }, (subject) => {
-    cy.wrap(subject).siblings('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
+    cy.wrap(subject).parent().find('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
 });
 
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {

@@ -114,6 +114,10 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
     {
+        if (empty($answer)) {
+            return [];
+        }
+
         if (!is_array($answer)) {
             $answer = [$answer];
         }
