@@ -4207,8 +4207,8 @@ JAVASCRIPT;
 
                         $options['criteria'][2]['field']      = 12; // validation aprobator
                         $options['criteria'][2]['searchtype'] = 'equals';
-                        $options['criteria'][2]['value']      = 'old';
-                        $options['criteria'][2]['link']       = 'AND NOT';
+                        $options['criteria'][2]['value']      = 'notold';
+                        $options['criteria'][2]['link']       = 'AND';
 
                         $options['criteria'][3]['field']      = 52; // global validation status
                         $options['criteria'][3]['searchtype'] = 'equals';
@@ -4658,8 +4658,8 @@ JAVASCRIPT;
 
             $opt['criteria'][2]['field']      = 12; // ticket status
             $opt['criteria'][2]['searchtype'] = 'equals';
-            $opt['criteria'][2]['value']      = Ticket::CLOSED;
-            $opt['criteria'][2]['link']       = 'AND NOT';
+            $opt['criteria'][2]['value']      = 'notold';
+            $opt['criteria'][2]['link']       = 'AND';
 
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
