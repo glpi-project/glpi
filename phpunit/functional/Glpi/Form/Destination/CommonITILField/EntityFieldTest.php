@@ -82,6 +82,30 @@ final class EntityFieldTest extends DbTestCase
         ];
     }
 
+    public function testEntityFormFiller()
+    {
+        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
+        $answers = $this->getAnswers();
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+            answers: $answers['answers'],
+            expected_entity_id: $this->getTestRootEntity(true)
+        );
+
+        $this->setEntity($answers['entities'][0]->getName(), false);
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            ),
+            answers: $answers['answers'],
+            expected_entity_id: $answers['entities'][0]->getId()
+        );
+    }
+
     public function testEntityFromForm()
     {
         $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
