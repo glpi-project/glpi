@@ -130,7 +130,7 @@ class EntityField extends AbstractConfigField
     #[Override]
     public function getDefaultConfig(Form $form): EntityFieldConfig
     {
-        // Returne last valid answer by default and fallback
+        // Return last valid answer by default and fallback
         // to form entity if no valid answer was found
         $valid_answers = array_filter(
             $form->getQuestionsByType(
@@ -141,7 +141,7 @@ class EntityField extends AbstractConfigField
 
         if (count($valid_answers) == 0) {
             return new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FORM
+                EntityFieldStrategy::FORM_FILLER
             );
         }
 

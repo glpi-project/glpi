@@ -68,6 +68,12 @@ describe('Entity configuration', () => {
         cy.get('@config').getDropdownByLabelText('Select an entity...').should('not.exist');
         cy.get('@config').getDropdownByLabelText('Select a question...').should('not.exist');
 
+        // Switch to "Form filler"
+        cy.get('@entity_dropdown').selectDropdownValue('Active entity of the form filler');
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@entity_dropdown').should('have.text', 'Active entity of the form filler');
+
         // Switch to "From form"
         cy.get('@entity_dropdown').selectDropdownValue('From form');
         cy.findByRole('button', { 'name': 'Update item' }).click();
