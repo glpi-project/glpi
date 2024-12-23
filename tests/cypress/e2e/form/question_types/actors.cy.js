@@ -219,4 +219,39 @@ describe('Actor form question type', () => {
             checkActorOptions('@requestor_question', { glpi: true, postOnly: true }, { firstGroup: true, secondGroup: false });
         });
     });
+
+    it('can submit a form with an empty actor question with multiple actors allowed', () => {
+        // Allow multiple actors
+        cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
+
+        // Save
+        cy.findByRole('button', { name: 'Save' }).click();
+
+        // Go to preview
+        cy.findByRole('link', { 'name': "Preview" })
+            .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+            .click();
+
+        // Submit the form
+        cy.findByRole('button', { 'name': 'Send form' }).click();
+
+        // Check the form was submitted
+        cy.checkAndCloseAlert('Item successfully created');
+    });
+
+    it('can submit a form with an empty actor question with simple actor', () => {
+        // Save
+        cy.findByRole('button', { name: 'Save' }).click();
+
+        // Go to preview
+        cy.findByRole('link', { 'name': "Preview" })
+            .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+            .click();
+
+        // Submit the form
+        cy.findByRole('button', { 'name': 'Send form' }).click();
+
+        // Check the form was submitted
+        cy.checkAndCloseAlert('Item successfully created');
+    });
 });
