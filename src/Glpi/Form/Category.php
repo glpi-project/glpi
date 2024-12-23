@@ -74,7 +74,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
         $fields[] = [
             'name'  => 'illustration',
             'label' => __('Illustration'),
-            'type'  => 'text',
+            'type'  => 'illustration',
             'list'  => false,
         ];
 
@@ -96,7 +96,10 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'];
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return $this->fields['illustration'] ?: $CFG_GLPI['default_illustration'];
     }
 
     #[Override]

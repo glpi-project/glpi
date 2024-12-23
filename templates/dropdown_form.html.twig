@@ -114,7 +114,7 @@
                         {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                     {% elseif type == 'textarea' %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                     {% elseif type == 'richtext' %}
+                    {% elseif type == 'richtext' %}
                         {{ fields.textareaField(
                             field['name'],
                             item.fields[field['name']],
@@ -123,6 +123,12 @@
                                 'enable_richtext': true,
                                 'enable_images': false,
                             })
+                        ) }}
+                    {% elseif type == 'illustration' %}
+                        {{ fields.illustrationField(
+                            field['name'],
+                            item.fields[field['name']],
+                            field['label'],
                         ) }}
                     {% elseif type == 'integer' %}
                         {% set fields_params = {
