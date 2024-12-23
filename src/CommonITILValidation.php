@@ -711,7 +711,7 @@ abstract class CommonITILValidation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $row = $DB->request([
+        $it = $DB->request([
             'FROM'   => static::$itemtype::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
@@ -726,12 +726,12 @@ abstract class CommonITILValidation extends CommonDBChild
                     ])
                 ],
                 'NOT' => [
-                    'status' => static::$itemtype::getClosedStatusArray(),
+                    'status' => [...static::$itemtype::getSolvedStatusArray(), ...static::$itemtype::getClosedStatusArray()],
                 ],
             ]
-        ])->current();
+        ]);
 
-        return $row['cpt'];
+        return $it->current()['cpt'];
     }
 
     /**
