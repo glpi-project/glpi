@@ -424,7 +424,8 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
-            &.KnowbaseItemComment {
+            &.KnowbaseItemComment,
+            &.ITILReminder {
                 display: none;
             }
 
