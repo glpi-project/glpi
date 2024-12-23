@@ -122,7 +122,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         if (is_array($answer)) {
             foreach ($answer as $actor) {
                 // The "0" value can occur when the empty label is selected.
-                if ($actor == "0") {
+                if (empty($actor)) {
                     continue;
                 }
 
