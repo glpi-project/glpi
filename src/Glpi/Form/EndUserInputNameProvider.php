@@ -78,6 +78,15 @@ final class EndUserInputNameProvider
      */
     private function filterAnswers(array $answers): array
     {
+        // Remove files; TODO: make sure we don't keep base64 in the generated ticket
+        foreach (array_keys($answers) as $key) {
+            foreach (["_$key", "_prefix_$key", "_tag_$key"] as $extra_file_info) {
+                if (isset($answers[$extra_file_info])) {
+                    unset($answers["_$key"]);
+                }
+            }
+        }
+
         return array_filter(
             $answers,
             function ($key) {
