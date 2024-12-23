@@ -7713,4 +7713,104 @@ HTML
 
         $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
     }
+
+    public function testCanAssign()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_skip_auto_assign' => true,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+
+        // Assigning technician during creation of closed ticket should work
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::CLOSED,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ],
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertEquals(\CommonITILObject::CLOSED, $ticket->fields['status']);
+
+        // Assigning technician in same update as closing should work
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertEquals(\CommonITILObject::CLOSED, $ticket->fields['status']);
+
+        // Assigning technician after ticket is already closed should be blocked
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::CLOSED,
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertFalse($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]));
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+    }
 }
