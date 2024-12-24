@@ -73,6 +73,7 @@ The present file will list all changes made to the project; according to the
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
 - Notifications can now specify exclusions for recipients.
+- Warranty expiration alerts no longer trigger for deleted items.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
