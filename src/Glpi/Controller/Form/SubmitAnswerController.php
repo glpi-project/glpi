@@ -114,16 +114,22 @@ final class SubmitAnswerController extends AbstractController
         Request $request
     ): AnswersSet {
         $post = $request->request->all();
-        $answers = (new EndUserInputNameProvider())->getAnswers($post);
+        $provider = new EndUserInputNameProvider();
+
+        $answers = $provider->getAnswers($post);
+        $files = $provider->getFiles($post, $answers);
         if (empty($answers)) {
             throw new BadRequestHttpException();
         }
 
         $handler = AnswersHandler::getInstance();
-        return $handler->saveAnswers(
+        $answers = $handler->saveAnswers(
             $form,
             $answers,
-            Session::getLoginUserID()
+            Session::getLoginUserID(),
+            $files,
         );
+
+        return $answers;
     }
 }
