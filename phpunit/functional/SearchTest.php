@@ -898,6 +898,11 @@ class SearchTest extends DbTestCase
                     in_array($so['datatype'], $valid_datatypes),
                     sprintf('Unexpected `%s` search option datatype.', $so['datatype'])
                 );
+
+                if ($so['datatype'] === 'count') {
+                    // Must have `usehaving` = true because an aggregate function will be used
+                    $this->assertTrue($so['usehaving'] ?? false);
+                }
             }
         }
     }
