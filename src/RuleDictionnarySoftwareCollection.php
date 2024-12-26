@@ -172,7 +172,7 @@ TWIG, $twig_params);
                 $res_rule = $this->processAllRules($input, [], []);
 
                 if (
-                    (isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($input["name"])))
+                    isset($res_rule["name"]) //software name have bee set
                     || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                     || (isset($res_rule['new_entities_id'])
                     && ($res_rule['new_entities_id'] != $input['entities_id']))
@@ -322,10 +322,10 @@ TWIG, $twig_params);
             return;
         }
 
-        //Software's name has changed or entity
+        //Software's name has been set
         if (
-            (isset($res_rule["name"]) && (strtolower($res_rule["name"]) !== strtolower($name)))
-            //Entity has changed, and new entity is a parent of the current one
+            isset($res_rule["name"])
+            //Or Software's name not changed and Entity has changed, and new entity is a parent of the current one
             || (!isset($res_rule["name"])
               && isset($res_rule['new_entities_id'])
               && in_array(
