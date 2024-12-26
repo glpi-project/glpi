@@ -199,6 +199,10 @@ class ValidationField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
+        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGY])) {
+            return $input;
+        }
+
         // Ensure that question_ids is an array
         if (!is_array($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
             $input[$this->getKey()][ValidationFieldConfig::SPECIFIC_QUESTION_IDS] = null;

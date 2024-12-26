@@ -140,6 +140,10 @@ abstract class ITILActorField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
+        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGY])) {
+            return $input;
+        }
+
         // Ensure that itilactors_ids is an array
         if (!is_array($input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] ?? null)) {
             $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = null;
