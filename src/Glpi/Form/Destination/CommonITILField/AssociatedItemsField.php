@@ -206,6 +206,10 @@ class AssociatedItemsField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
+        if (!isset($input[$this->getKey()][AssociatedItemsFieldConfig::STRATEGY])) {
+            return $input;
+        }
+
         // Ensure that question_ids is an array
         if (!is_array($input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
             $input[$this->getKey()][AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] = null;

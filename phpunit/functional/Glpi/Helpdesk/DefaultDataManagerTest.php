@@ -209,6 +209,9 @@ final class DefaultDataManagerTest extends DbTestCase
             [$computer->getID()],
             array_values($ticket->getLinkedItems()[Computer::class])
         );
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $actor = current($actors);
+        $this->assertEquals(TU_USER, $actor['title']);
     }
 
     public function testRequestFormQuestions(): void
@@ -301,6 +304,9 @@ final class DefaultDataManagerTest extends DbTestCase
             [$computer->getID()],
             array_values($ticket->getLinkedItems()[Computer::class])
         );
+        $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $actor = current($actors);
+        $this->assertEquals(TU_USER, $actor['title']);
     }
 
     public function testIncidentFormShouldBeAccessibleBySelfServiceUsers(): void
