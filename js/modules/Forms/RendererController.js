@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_info, tinymce */
+/* global glpi_toast_info, tinymce, glpi_toast_error */
 
 /**
  * Client code to handle users actions on the form_renderer template
@@ -148,7 +148,9 @@ export class GlpiFormRendererController
                 .addClass("d-none");
 
         } catch {
-            // Failure (TODO)
+            glpi_toast_error(
+                __("Failed to submit form, please contact your administrator.")
+            );
         }
     }
 
