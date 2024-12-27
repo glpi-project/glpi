@@ -59,3 +59,15 @@
     width: 100vw;
     margin-left: calc(50% - 50vw);
 }
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+// Alternative to d-flex, does not includes "!important".
+// This is needed when dealing with libraries that will attempt to hide an item
+// by changing its style to "display: none" (like html5sortable), which will fail
+// if the current property is marked as "!important".
+.d-flex-soft {
+    display: flex;
+}

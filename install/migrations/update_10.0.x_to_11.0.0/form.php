@@ -221,9 +221,11 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
             `profiles_id` int unsigned NOT NULL DEFAULT '0',
             `itemtype` varchar(255) DEFAULT NULL,
             `items_id` int unsigned NOT NULL DEFAULT '0',
+            `rank` int NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            KEY `profiles_id` (`profiles_id`),
-            KEY `item` (`itemtype`,`items_id`)
+            UNIQUE KEY `unicity` (`profiles_id`, `rank`),
+            KEY `item` (`itemtype`,`items_id`),
+            KEY `rank` (`rank`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
@@ -329,6 +331,9 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
     $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
+
+    $migration->addField("glpi_helpdesks_tiles_profiles_tiles", "rank", "int");
+    $migration->addKey("glpi_helpdesks_tiles_profiles_tiles", "rank");
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
