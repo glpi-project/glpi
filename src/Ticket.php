@@ -4321,7 +4321,8 @@ JAVASCRIPT;
             $options['_skip_promoted_fields'] = false;
         }
 
-        if (!$ID) {
+        if (!$ID && !array_key_exists('_glpi_csrf_token', $options['_saved'])) {
+            // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
