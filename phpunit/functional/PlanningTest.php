@@ -282,6 +282,8 @@ class PlanningTest extends \DbTestCase
     public function testAllDayEvents()
     {
         $this->login();
+        \Planning::initSessionForCurrentUser();
+
 
         $event = new \PlanningExternalEvent();
         $event->add([
@@ -313,6 +315,8 @@ class PlanningTest extends \DbTestCase
         $events = \Planning::constructEventsArray([
             'start' => '2020-01-01 00:00:00',
             'end'   => '2020-01-30 00:00:00',
+            'view_name' => 'listFull',
+            'force_all_events' => true
         ]);
         $this->assertCount(3, $events);
         $this->assertEquals(__FUNCTION__, $events[0]['title']);
