@@ -1284,8 +1284,8 @@ class Ticket extends CommonITILObject
             }
 
             $input = $rules->processAllRules(
-                $input,
-                $input,
+                $input + $this->fields,
+                $input + $this->fields,
                 ['recursive'   => true,
                     'entities_id' => $entid
                 ],
