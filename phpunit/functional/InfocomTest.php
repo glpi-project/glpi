@@ -230,11 +230,23 @@ class InfocomTest extends \DBTestCase
             'entities_id' => $root_entity->getID(),
             'is_deleted' => 1,
         ]);
-        $deleted_infocom_id = $infocom->add([
+        $deleted_expired_infocom_id = $infocom->add([
             'itemtype' => 'Computer',
             'items_id' => $deleted_id,
             'warranty_date' => date('Y-m-d', strtotime('-1 year')),
             'warranty_duration' => 10, // 10 months
+        ]);
+
+        $deleted_id2 = $computer->add([
+            'name' => 'Deleted test',
+            'entities_id' => $root_entity->getID(),
+            'is_deleted' => 1,
+        ]);
+        $deleted_infocom_id = $infocom->add([
+            'itemtype' => 'Computer',
+            'items_id' => $deleted_id2,
+            'warranty_date' => date('Y-m-d', strtotime('-1 year')),
+            'warranty_duration' => 14, // 14 months
         ]);
 
         $not_deleted_id = $computer->add([
@@ -252,9 +264,11 @@ class InfocomTest extends \DBTestCase
         \Infocom::cronInfocom();
         $alerts = array_values(getAllDataFromTable(\Alert::getTable(), [
             'itemtype' => 'Infocom',
-            'items_id' => [$deleted_infocom_id, $not_deleted_infocom_id],
+            'items_id' => [$deleted_infocom_id, $deleted_expired_infocom_id, $not_deleted_infocom_id],
         ]));
-        $this->assertCount(1, $alerts);
+
+        $this->assertCount(2, $alerts);
         $this->assertSame($not_deleted_infocom_id, $alerts[0]['items_id']);
+        $this->assertSame($deleted_expired_infocom_id, $alerts[1]['items_id']);
     }
 }
