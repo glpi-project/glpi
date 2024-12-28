@@ -1112,7 +1112,6 @@ TWIG,
 
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
-                Html::requireJs('dashboard');
             }
 
             if (in_array('marketplace', $jslibs)) {
@@ -5949,9 +5948,6 @@ HTML;
                 break;
             case 'fuzzy':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
-                break;
-            case 'dashboard':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
                 break;
             case 'marketplace':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';

@@ -421,64 +421,66 @@ HTML;
 TWIG, $params);
         }
 
-       // display the grid
-        $html = <<<HTML
-      <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
-         <span class='glpi_logo'></span>
-         $toolbars
-         $filters
-         $grid_guide
-         <div class="grid-stack grid-stack-{$this->grid_cols}"
-            id="grid-stack-$rand"
-            gs-column="{$this->grid_cols}"
-            gs-min-row="{$this->grid_rows}"
-            style="width: 100%">
-            $gridstack_items
-         </div>
-      </div>
-HTML;
-
-        if ($mini) {
-            $html = "<div class='card mb-4 d-none d-md-block dashboard-card'>
-            <div class='card-body p-2'>
-               $html
-            </div>
-         </div>";
-        }
-
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
-        $js_params = json_encode([
-            'current'       => $this->current,
-            'cols'          => $this->grid_cols,
-            'rows'          => $this->grid_rows,
-            'cell_margin'   => $this->cell_margin,
-            'rand'          => $rand,
-            'ajax_cards'    => $ajax_cards,
-            'all_cards'     => $cards,
-            'all_widgets'   => $all_widgets,
-            'context'       => $this->context,
-            'cache_key'     => $cache_key,
-            'embed'         => self::$embed,
-            'token'         => $token,
-            'entities_id'   => $_SESSION['glpiactive_entity'],
-            'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
-        ]);
-        $js = <<<JAVASCRIPT
-      $(function () {
-        // Sometimes GLPIDashboard is undefined and it messes with e2e tests
-        // by throwing a blocking error
-        // TODO: investigate why this happens
-        if (typeof GLPIDashboard === 'undefined') {
-          return;
-        }
-        new GLPIDashboard({$js_params})
-      });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
-
-        echo $html . $js;
+        $twig_params = [
+            'mini' => $mini,
+            'embed_class' => $embed_class,
+            'mini_class' => $mini_class,
+            'toolbars' => $toolbars,
+            'filters' => $filters,
+            'grid_guide' => $grid_guide,
+            'gridstack_items' => $gridstack_items,
+            'rand' => $rand,
+            'grid_cols' => $this->grid_cols,
+            'grid_rows' => $this->grid_rows,
+            'js_params' => [
+                'current'       => $this->current,
+                'cols'          => $this->grid_cols,
+                'rows'          => $this->grid_rows,
+                'cell_margin'   => $this->cell_margin,
+                'rand'          => $rand,
+                'ajax_cards'    => $ajax_cards,
+                'all_cards'     => $cards,
+                'all_widgets'   => $all_widgets,
+                'context'       => $this->context,
+                'cache_key'     => $cache_key,
+                'embed'         => self::$embed,
+                'token'         => $token,
+                'entities_id'   => $_SESSION['glpiactive_entity'],
+                'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
+            ]
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% if mini %}
+                <div class='card mb-4 d-none d-md-block dashboard-card'>
+                    <div class='card-body p-2'>
+            {% endif %}
+            <div class="dashboard {{ embed_class }} {{ mini_class }}" id="dashboard-{{ rand }}">
+                <span class='glpi_logo'></span>
+                {{ toolbars|raw }}
+                {{ filters|raw }}
+                {{ grid_guide|raw }}
+                <div class="grid-stack grid-stack-{{ grid_cols }}"
+                    id="grid-stack-{{ rand }}"
+                    gs-column="{{ grid_cols }}"
+                    gs-min-row="{{ grid_rows }}"
+                    style="width: 100%">
+                    {{ gridstack_items|raw }}
+                </div>
+            </div>
+            {% if mini %}
+                    </div>
+                </div>
+            {% endif %}
+            <script type="module">
+                import('{{ js_path('js/modules/Dashboard/Dashboard.js') }}').then((m) => {
+                    new m.GLPIDashboard({{ js_params|json_encode|raw }});
+                });
+            </script>
+TWIG, $twig_params);
     }
 
 
