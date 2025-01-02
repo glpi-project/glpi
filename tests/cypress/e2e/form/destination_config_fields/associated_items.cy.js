@@ -280,7 +280,7 @@ describe('Associated items configuration', () => {
         });
 
         // Add strategy
-        cy.get('@config').findByRole('button', {'name': 'Add strategy'}).click();
+        cy.get('@config').findByRole('button', {'name': 'Combine with another option'}).click();
         cy.get('@config').find('[data-glpi-itildestination-field-config]').eq(1).getDropdownByLabelText('Select strategy...').as('specific_associated_items_strategy_dropdown');
         cy.get('@specific_associated_items_strategy_dropdown').selectDropdownValue('Answer from specific questions');
 

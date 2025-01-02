@@ -147,7 +147,7 @@ describe('Form destination', () => {
 
     it('can define multiple strategies for the same field', () => {
         cy.findByRole('region', {name: 'Requesters configuration'}).as('requesters_config');
-        cy.get('@requesters_config').findByRole('button', {name: 'Add strategy'}).should('exist').as('add_strategy_button');
+        cy.get('@requesters_config').findByRole('button', {name: 'Combine with another option'}).should('exist').as('add_strategy_button');
         cy.getDropdownByLabelText('Requesters').as('first_strategy_dropdown');
 
         // Define first strategy
@@ -178,7 +178,7 @@ describe('Form destination', () => {
         });
 
         // Add a fourth strategy
-        cy.get('@requesters_config').findByRole('button', {name: 'Add strategy'}).click();
+        cy.get('@requesters_config').findByRole('button', {name: 'Combine with another option'}).click();
         cy.findByRole('combobox', {name: '-----'}).as('fourth_strategy_dropdown');
         cy.get('@fourth_strategy_dropdown').selectDropdownValue('User who filled the form');
 
