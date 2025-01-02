@@ -1,6 +1,6 @@
 <script setup>
     /* global hotkeys, typewatch, initTooltips */
-    import {ref} from 'vue';
+    import {onMounted, ref} from 'vue';
     import TreeView from "../Components/TreeView.vue";
 
     const props = defineProps({
@@ -43,6 +43,7 @@
     const clear_search_message = __("Clear search");
     const select_all_message = __("Select all");
     const search_placeholder_message = __("Search entity");
+    const change_entity_url = ref(null);
 
     // when the shortcut for entity form is called
     hotkeys('ctrl+alt+e, option+command+e', async function(e) {
@@ -56,7 +57,7 @@
 
     const entity_data = ref([]);
     $.ajax({
-        url: CFG_GLPI.root_doc + "/ajax/entitytreesons.php",
+        url: window.CFG_GLPI.root_doc + "/ajax/entitytreesons.php",
         type: "GET",
     }).then((data) => {
         entity_data.value = data;
@@ -68,6 +69,10 @@
         folder_open: 'ti ti-stack-2',
         item: 'ti ti-stack',
     };
+
+    onMounted(() => {
+        change_entity_url.value = `${window.CFG_GLPI.root_doc}/Session/ChangeEntity`;
+    })
 </script>
 
 <template>
@@ -87,7 +92,7 @@
                 </span>
             </div>
 
-            <form :id="`switch_to_full_structure_${rand}`" method="post" :action="`${CFG_GLPI.root_doc}/Session/ChangeEntity`">
+            <form :id="`switch_to_full_structure_${rand}`" method="post" :action="change_entity_url">
                 <input type="hidden" name="full_structure" value="true">
                 <input type="hidden" name="_glpi_csrf_token" :value="csrf_token" />
             </form>
