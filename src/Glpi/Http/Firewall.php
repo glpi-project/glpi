@@ -201,11 +201,6 @@ final class Firewall
             return self::FALLBACK_STRATEGY;
         }
 
-        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
-            // Allow anonymous access for embed dashboards.
-            return 'no_check';
-        }
-
         if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
             // Token based access for ical/webcal access can be made anonymously.
             return 'no_check';
