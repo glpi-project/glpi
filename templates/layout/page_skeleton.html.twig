@@ -33,14 +33,21 @@
 {% set interface = get_current_interface() %}
 {% set header_method = interface == 'central' ? 'header' : 'helpHeader' %}
 
-{% do call(['Html', header_method], {
+{% set header_params = {
     title: title,
+    url: '',
     sector: menu[0] ?? 'none',
-    item  : menu[1] ?? 'none',
+    item: menu[1] ?? 'none',
     option: menu[2] ?? '',
-}) %}
+} %}
+
+{% if interface == 'central' %}
+    {% do html_header(...params) %}
+{% else %}
+    {% do html_help_header(...params) %}
+{% endif %}
 
 {% block content %}
 {% endblock content %}
 
-{% do call(['Html', 'footer']) %}
+{% do html_footer() %}

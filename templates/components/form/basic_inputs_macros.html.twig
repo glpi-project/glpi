@@ -139,7 +139,7 @@
 
     {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
         {# Only format number if not a whole number #}
-        {% set value = call('Html::formatNumber', [value, true]) %}
+        {% set value = value|formatted_number(true) %}
     {% endif %}
 
     {{ _self.input(name, value, options|merge({'type': 'number'})) }}
@@ -194,11 +194,7 @@
     {% if options.simple %}
         {{ _self.input(name, value, options|merge({'type': 'file'})) }}
     {% else %}
-        {% do call('Html::file', [
-            options|merge({
-                'name': name,
-            })
-        ]) %}
+        {% do html_file(options|merge({'name': name})) %}
     {% endif %}
 {% endmacro %}
 
@@ -338,7 +334,7 @@
             {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value }}</textarea>
 
     {% if options.enable_richtext %}
-        {% do call('Html::initEditorSystem', [
+        {% do html_init_editor_system(
             options.id,
             options.rand,
             true,
@@ -352,7 +348,7 @@
             options.toolbar,
             options.statusbar,
             options.content_style,
-        ]) %}
+        ) %}
    {% endif %}
 
    {% if options.enable_form_tags %}

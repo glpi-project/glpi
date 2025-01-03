@@ -32,7 +32,7 @@
 
 {% if linknewitil %}
     <div class='mb-3'>
-        {{ call('Html::showSimpleForm', [itemtype_1|itemtype_form_path, '_add_fromitem', __('New %s for this item')|format(itemtype_1|itemtype_name(1)), {'itemtype': item.getType(), 'items_id': item.getID()}]) }}
+        {{ html_show_simple_form(itemtype_1|itemtype_form_path, '_add_fromitem', __('New %s for this item')|format(itemtype_1|itemtype_name(1)), {'itemtype': item.getType(), 'items_id': item.getID()}) }}
     </div>
 {% endif %}
 <div class="mb-3">

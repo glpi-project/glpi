@@ -199,9 +199,9 @@
                                 {% else %}
                                     <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
-                                {% do call('Html::showToolTip', [
+                                {% do html_show_tooltip(
                                     __('This indicates the delay between the primary and the replica for GLPI history (table: glpi_logs, column: date_mod).')
-                                ]) %}
+                                ) %}
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('Binary log GTID:') }}</span>

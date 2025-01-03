@@ -47,21 +47,18 @@
         {% if has_profile_right('user', constant('READ')) %}
             {% set user_fields = user_fields|merge({login: user.fields['name']}) %}
         {% endif %}
-        {% do call(
-            'Html::showToolTip',
-            [
-                include(
-                    'components/user/info_card.html.twig',
-                    {
-                        'user': user_fields,
-                        'user_object': user,
-                    },
-                    with_context = false
-                ),
+        {% do html_show_tooltip(
+            include(
+                'components/user/info_card.html.twig',
                 {
-                    'applyto': "user_" ~ rand
-                }
-            ]
+                    'user': user_fields,
+                    'user_object': user,
+                },
+                with_context = false
+            ),
+            {
+                'applyto': "user_" ~ rand
+            }
         ) %}
     {% endif %}
 {% endif %}

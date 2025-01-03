@@ -38,7 +38,7 @@
         {% if massiveactionparams['specific_actions']|length > 0 %}
         <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
               data-search-itemtype="DisplayPreference" data-submit-once>
-            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            {% do html_show_massive_actions(massiveactionparams) %}
             {% endif %}
             {{ inputs.hidden('users_id', users_id, {
                 'data-glpicore-ma-tags': 'common'
@@ -49,7 +49,7 @@
                     <li class="list-group-item">
                         {% if massiveactionparams['specific_actions']|length > 0 %}
                             <span class="me-2">
-                        {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
+                        {% do html_show_massive_action_checkbox('DisplayPreference', pref['itemtype']) %}
                      </span>
                         {% endif %}
                         <button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button>
@@ -57,9 +57,9 @@
                 {% endfor %}
             </ul>
             {% if massiveactionparams['specific_actions']|length > 0 %}
-            {% do call('Html::showMassiveActions', [massiveactionparams|merge({
+            {% do html_show_massive_actions(massiveactionparams|merge({
                 'ontop': false
-            })]) %}
+            })) %}
         </form>
         {% endif %}
     </div>

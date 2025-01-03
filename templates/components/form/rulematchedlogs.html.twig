@@ -32,7 +32,7 @@
  #}
 
 {% block more_fields %}
-    {% do call('Html::printAjaxPager', ['RuleMatchedLog'|itemtype_name, start, count]) %}
+    {% do html_print_ajax_pager('RuleMatchedLog'|itemtype_name, start, count) %}
 
     <table class="tab_cadre_fixe">
         <tr>
@@ -96,5 +96,5 @@
         {% endfor %}
     </table>
 
-    {% do call('Html::printAjaxPager', ['RuleMatchedLog'|itemtype_name, start, count]) %}
+    {% do html_print_ajax_pager('RuleMatchedLog'|itemtype_name, start, count) %}
 {% endblock %}

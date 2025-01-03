@@ -33,7 +33,7 @@
 
 {% if showmassiveactions and count > 0 %}
     <div class="massiveactions-control card-header search-header ps-3 animate__animated animate__faster d-none">
-        {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+        {% do html_show_massive_actions(massiveactionparams) %}
     </div>
 {% endif %}
 

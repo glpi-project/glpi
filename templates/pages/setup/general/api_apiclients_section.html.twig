@@ -34,7 +34,5 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {{ fields.largeTitle('APIClient'|itemtype_name(get_plural_number()), 'APIClient'|itemtype_icon) }}
-{% do call('Html::displayTitle', ['', '', '', {
-   'apiclient.form.php': __('Add API client')
-}]) %}
+{% do html_display_title('', '', '', { 'apiclient.form.php': __('Add API client') }) %}
 {% do call('Search::show', ['APIClient']) %}

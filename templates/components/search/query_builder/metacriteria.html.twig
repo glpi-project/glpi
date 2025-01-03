@@ -65,7 +65,7 @@
          }) }}
       </div>
       <input type="hidden" name="criteria{{ prefix ~ "[" ~ num ~ "][meta]" }}" value="true">
-      {% set clean_id_prefix = call('Html::cleanId', [prefix]) %}
+      {% set clean_id_prefix = html_clean_id(prefix) %}
       {% set field_id = "dropdown_criteria" ~ clean_id_prefix ~ "[" ~ num ~ "][itemtype]" ~ rand %}
       {% set span_id = "show_" ~ normalized_itemtype ~ "_" ~ clean_id_prefix ~ num ~ "_" ~ rand %}
       {% set params = {

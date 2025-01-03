@@ -51,6 +51,7 @@ use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\TeamExtension;
+use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Debug\Profiler;
 use Plugin;
 use Session;
@@ -118,6 +119,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
+        $this->environment->addExtension(new HtmlExtension());
 
        // add superglobals
         $this->environment->addGlobal('_post', $_POST);

@@ -30,13 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
-{{ call(
-    'Html::popHeader',
-    [
-        call(object.getTypeName(), [1]),
-        '',
-        true,
-    ]
+{{ html_pop_header(
+    call(object.getTypeName(), [1]),
+    '',
+    true,
 ) }}
 
 {{ object.showForm(
@@ -44,4 +41,4 @@
     form_options
 ) }}
 
-{{ call('Html::popFooter') }}
+{{ html_pop_footer() }}

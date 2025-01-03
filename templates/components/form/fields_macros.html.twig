@@ -226,22 +226,22 @@
    {% set add_html = '' %}
    {% if not options.readonly and options.enable_fileupload %}
       {% set add_html %}
-         {% do call('Html::file', [{
+         {% do html_file({
              'editor_id': options.id,
              'multiple': true,
              'uploads': options.uploads,
              'required': options.fields_template.isMandatoryField('_documents_id')
-         }]) %}
+         }) %}
       {% endset %}
    {% elseif not options.readonly and not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
-         {% do call('Html::file', [{
+         {% do html_file({
              'editor_id': options.id,
              'name': name,
              'only_uploaded_files': true,
              'uploads': options.uploads,
              'required': options.fields_template.isMandatoryField('_documents_id')
-         }]) %}
+         }) %}
       {% endset %}
    {% endif %}
 
@@ -348,9 +348,9 @@
          {% set url = options['url'] ?? null %}
          {% set options = options|filter((v, k) => k != 'url' and k != 'clearable') %}
          {% if url is not empty %}
-            <a href="{{ url }}" {{ call('Html::parseAttributes', [link_options])|raw }}>
+            <a href="{{ url }}" {{ html_parse_attributes(link_options)|raw }}>
          {% endif %}
-               <img src="{{ value }}" {{ call('Html::parseAttributes', [options])|raw }} />
+               <img src="{{ value }}" {{ html_parse_attributes(options)|raw }} />
          {% if url is not empty %}
             </a>
          {% endif %}
@@ -732,7 +732,7 @@
     }) %}
     {% set field %}
         {% set ajax_opts = options|filter((v, k) => k in ['templateResult', 'templateSelection', 'rand']) %}
-        {{ call('Html::jsAjaxDropdown', [name, options.id, url, ajax_opts])|raw }}
+        {{ html_js_ajax_dropdown(name, options.id, url, ajax_opts)|raw }}
     {% endset %}
 
     {% if field|trim is not empty %}
@@ -834,7 +834,7 @@
    {% set class = class ~ ' ' ~ options.add_field_class %}
 
    {% if options.add_field_attribs is not empty %}
-      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+      {% set extra_attribs = html_parse_attributes(options.add_field_attribs) %}
    {% else %}
       {% set extra_attribs = '' %}
    {% endif %}
@@ -886,7 +886,7 @@
    {% endif %}
 
    {% if options.add_field_attribs is not empty %}
-      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+      {% set extra_attribs = html_parse_attributes(options.add_field_attribs) %}
    {% else %}
       {% set extra_attribs = '' %}
    {% endif %}
@@ -927,7 +927,7 @@
    {% endif %}
 
    {% if options.add_field_attribs is not empty %}
-      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+      {% set extra_attribs = html_parse_attributes(options.add_field_attribs) %}
    {% else %}
       {% set extra_attribs = '' %}
    {% endif %}

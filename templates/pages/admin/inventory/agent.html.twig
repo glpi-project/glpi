@@ -152,7 +152,7 @@
 
                         {{ fields.htmlField(
                             'last_contact',
-                            call("Html::convDateTime", [item.fields['last_contact']]),
+                            item.fields['last_contact']|formatted_date,
                             __('Last contact'),
                             field_options
                         ) }}

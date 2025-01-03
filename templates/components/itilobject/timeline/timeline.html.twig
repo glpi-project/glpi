@@ -148,14 +148,14 @@
                      }, with_context = false) }}
                   </span>
                   {% if not anonym_user and entry_user.canView() %}
-                     {% do call('Html::showToolTip', [
+                     {% do html_show_tooltip(
                         include('components/user/info_card.html.twig', {
                            'user': user_fields,
                            'user_object': entry_user,
                            'enable_anonymization': false,
                         }, with_context = false), {
                            'applyto': 'timeline-avatar' ~ avatar_rand
-                        }]) %}
+                        }) %}
                   {% endif %}
                {% else %}
                   <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>

@@ -67,7 +67,7 @@
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
             <div class="mb-2">
-                {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
+                {% do html_show_massive_actions(massiveactionparams|default([])) %}
             </div>
         {% endif %}
         <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}">
@@ -159,21 +159,21 @@
                                             {% endfor %}
                                         </select>
                                     {% elseif formatter == "datetime" %}
-                                        {{ call("Html::showDateTimeField", [
+                                        {{ html_show_date_time_field(
                                             "filters[" ~ colkey ~ "]",
                                             {
                                                 'value': filters[colkey],
                                                 'display': false
                                             }
-                                        ])|raw }}
+                                        )|raw }}
                                     {% elseif formatter == "date" %}
-                                        {{ call("Html::showDateField", [
+                                        {{ html_show_date_time_field(
                                             "filters[" ~ colkey ~ "]",
                                             {
                                                 'value': filters[colkey],
                                                 'display': false
                                             }
-                                        ])|raw }}
+                                        )|raw }}
                                     {% elseif formatter starts with "progress" %}
                                         <input type="range" class="form-range"
                                             name="filters[{{ colkey }}]"
@@ -237,11 +237,11 @@
                                                 {{ entry[colkey] }}
                                             </span>
                                         {% elseif formatter starts with "progress" %}
-                                            {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                            {{ html_progress(100, entry[colkey])|raw }}
                                         {% elseif formatter == "date" %}
-                                            {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_date|raw }}
                                         {% elseif formatter == "datetime" %}
-                                            {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_datetime|raw }}
                                         {% elseif formatter == "duration" %}
                                             {{ entry[colkey]|formatted_duration }}
                                         {% elseif formatter == "bytesize" %}

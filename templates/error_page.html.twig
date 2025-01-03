@@ -30,7 +30,15 @@
  # ---------------------------------------------------------------------
  #}
 
-{% do call(['Html', header_method], [page_title]) %}
+{% if header_method == 'simpleHeader' %}
+    {% do html_simple_header(page_title) %}
+{% elseif header_method == 'nullHeader' %}
+    {% do html_null_header(page_title) %}
+{% elseif header_method == 'header' %}
+    {% do html_header(page_title) %}
+{% elseif header_method == 'helpHeader' %}
+    {% do html_help_header(page_title) %}
+{% endif %}
 
 {{ include('error_block.html.twig', {
     message: message,
@@ -39,4 +47,4 @@
     link_text: link_text,
 }, with_context = false) }}
 
-{% do call(['Html', 'footer']) %}
+{% do html_footer() %}
