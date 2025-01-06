@@ -46,7 +46,7 @@ define(
 
 define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
 define('GLPI_MAX_PHP', '8.4'); // Must also be changed in top of public/index.php
-define('GLPI_YEAR', '2024');
+define('GLPI_YEAR', '2025');
 
 //Define a global recipient address for email notifications
 //define('GLPI_FORCE_MAIL', 'me@localhost');
