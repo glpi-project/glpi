@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form;
 
 use Computer;
 use Entity;
+use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
@@ -200,6 +201,8 @@ final class FormSerializerTest extends \DbTestCase
         $fields_to_check = [
             'name',
             'header',
+            'description',
+            'forms_categories_id',
             'entities_id',
             'is_recursive',
         ];
@@ -807,9 +810,12 @@ final class FormSerializerTest extends \DbTestCase
 
     private function createAndGetFormWithBasicPropertiesFilled(): Form
     {
+        $form_category = $this->createItem(Category::class, ['name' => 'My service catalog category']);
         $form_name = "Form with basic properties fully filled " . mt_rand();
         $builder = new FormBuilder($form_name);
         $builder->setHeader("My custom header")
+            ->setDescription("My custom description for the service catalog")
+            ->setCategory($form_category->getID())
             ->setEntitiesId($this->getTestRootEntity(only_id: true))
             ->setIsRecursive(true)
         ;

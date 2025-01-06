@@ -5,6 +5,7 @@
             "id": 0,
             "name": "My valid form",
             "header": "",
+            "description": "",
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
             "sections": [
@@ -41,6 +42,7 @@
             "id": 1,
             "name": "My invalid form",
             "header": "",
+            "description": "",
             "entity_name": "Missing entity",
             "is_recursive": false,
             "sections": [

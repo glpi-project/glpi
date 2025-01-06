@@ -40,6 +40,8 @@ final class FormContentSpecification
     public int $id;
     public string $name;
     public string $header;
+    public string $description;
+    public string $category_name;
     public string $entity_name;
     public bool $is_recursive;
 

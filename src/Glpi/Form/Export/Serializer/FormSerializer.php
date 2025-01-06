@@ -38,6 +38,7 @@ namespace Glpi\Form\Export\Serializer;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -302,11 +303,18 @@ final class FormSerializer extends AbstractFormSerializer
         $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
         $spec->header       = $form->fields['header'] ?? "";
+        $spec->description  = $form->fields['description'] ?? "";
         $spec->is_recursive = $form->fields['is_recursive'];
 
         $entity = Entity::getById($form->fields['entities_id']);
         $spec->entity_name = $entity->fields['name'];
         $spec->addDataRequirement(Entity::class, $entity->fields['name']);
+
+        $category = new Category();
+        if ($category->getFromDB($form->fields[Category::getForeignKeyField()])) {
+            $spec->category_name = $category->fields['name'];
+            $spec->addDataRequirement(Category::class, $category->fields['name']);
+        }
 
         return $spec;
     }
@@ -316,12 +324,17 @@ final class FormSerializer extends AbstractFormSerializer
         DatabaseMapper $mapper,
     ): Form {
         // Get ids from mapper
-        $entities_id = $mapper->getItemId(Entity::class, $spec->entity_name);
+        $entities_id   = $mapper->getItemId(Entity::class, $spec->entity_name);
+        if (!empty($spec->category_name)) {
+            $categories_id = $mapper->getItemId(Category::class, $spec->category_name);
+        }
 
         $form = new Form();
         $id = $form->add([
             'name'                  => $spec->name,
             'header'                => $spec->header,
+            'description'           => $spec->description,
+            'forms_categories_id'   => $categories_id ?? 0,
             'entities_id'           => $entities_id,
             'is_recursive'          => $spec->is_recursive,
             '_do_not_init_sections' => true,
