@@ -650,4 +650,3 @@ $CFG_GLPI['admin_types'] = [
 
 $CFG_GLPI['process_types'] = ['Computer'];
 $CFG_GLPI['environment_types'] = ['Computer'];
-$CFG_GLPI['default_illustration'] = 'request-service';

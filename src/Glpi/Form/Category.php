@@ -38,6 +38,7 @@ use CommonTreeDropdown;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
+use Glpi\UI\IllustrationManager;
 use Override;
 
 final class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
@@ -99,7 +100,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        return $this->fields['illustration'] ?: $CFG_GLPI['default_illustration'];
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]

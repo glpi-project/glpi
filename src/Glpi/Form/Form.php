@@ -48,6 +48,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\UI\IllustrationManager;
 use Html;
 use Log;
 use MassiveAction;
@@ -882,7 +883,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        return $this->fields['illustration'] ?: $CFG_GLPI['default_illustration'];
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]

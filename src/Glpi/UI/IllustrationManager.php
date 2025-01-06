@@ -42,6 +42,8 @@ final class IllustrationManager
     private string $icons_sprites_path;
     private ?array $icons_definitions = null;
 
+    public const DEFAULT_ILLUSTRATION = "request-service";
+
     public function __construct(
         ?string $icons_definition_file = null,
         ?string $icons_sprites_path = null,
