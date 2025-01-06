@@ -338,6 +338,6 @@ body input {
     visibility: hidden !important;
 }
 
-&:-webkit-autofill {
+:-webkit-autofill {
    -webkit-text-fill-color: var(--tblr-body-color);
 }
