@@ -2153,7 +2153,7 @@ abstract class CommonITILObject extends CommonDBTM
        // Check dates change interval due to the fact that second are not displayed in form
         if (
             (($key = array_search('date', $this->updates)) !== false)
-            && (substr($this->fields["date"], 0, 16) == substr($this->oldvalues['date'], 0, 16))
+            && (substr($this->fields["date"], 0, 16) === substr($this->oldvalues['date'], 0, 16))
         ) {
             unset($this->updates[$key]);
             unset($this->oldvalues['date']);
@@ -2162,7 +2162,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             (($key = array_search('closedate', $this->updates)) !== false)
             && isset($this->oldvalues['closedate'])
-            && (substr($this->fields["closedate"], 0, 16) == substr($this->oldvalues['closedate'], 0, 16))
+            && (substr($this->fields["closedate"], 0, 16) === substr($this->oldvalues['closedate'], 0, 16))
         ) {
             unset($this->updates[$key]);
             unset($this->oldvalues['closedate']);
@@ -2171,7 +2171,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             (($key = array_search('time_to_resolve', $this->updates)) !== false)
             && isset($this->oldvalues['time_to_resolve'])
-            && (substr($this->fields["time_to_resolve"], 0, 16) == substr($this->oldvalues['time_to_resolve'], 0, 16))
+            && (substr($this->fields["time_to_resolve"], 0, 16) === substr($this->oldvalues['time_to_resolve'], 0, 16))
         ) {
             unset($this->updates[$key]);
             unset($this->oldvalues['time_to_resolve']);
@@ -2180,7 +2180,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             (($key = array_search('solvedate', $this->updates)) !== false)
             && isset($this->oldvalues['solvedate'])
-            && (substr($this->fields["solvedate"], 0, 16) == substr($this->oldvalues['solvedate'], 0, 16))
+            && (substr($this->fields["solvedate"], 0, 16) === substr($this->oldvalues['solvedate'], 0, 16))
         ) {
             unset($this->updates[$key]);
             unset($this->oldvalues['solvedate']);
