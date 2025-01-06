@@ -97,9 +97,6 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
