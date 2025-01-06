@@ -1042,7 +1042,7 @@ class Rule extends CommonDBTM
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = false, $withactions = false)
     {
 
-        if ($ID == "") {
+        if ($this->isNewID($ID)) {
             return $this->getEmpty();
         }
         if ($this->getFromDB($ID)) {
