@@ -253,6 +253,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of tickets'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -266,6 +267,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of problems'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -279,6 +281,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of changes'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
