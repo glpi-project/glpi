@@ -572,7 +572,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<int\\|string, mixed\\>\\>\\.$#',
+	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<mixed\\>\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Api/API.php',
@@ -1234,6 +1234,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always false\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between non\\-empty\\-string and \'\' will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
@@ -3380,6 +3386,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_RemoteManagement.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between \'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\' and \'_\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3398,6 +3410,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between \'d\'\\|\'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\'\\|\'v\' and \'_\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareVersion\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3406,6 +3424,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between \'Monitor\'\\|\'Peripheral\'\\|\'Phone\'\\|\'Printer\' and \'Software\' will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Ticket.php',
 ];
@@ -3698,7 +3722,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Marketplace/View.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<int\\|string, mixed\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
@@ -3710,7 +3734,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_countable\\(\\) with array\\<int\\|string, array\\<int\\|string, mixed\\>\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_countable\\(\\) with array\\<array\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
@@ -4886,6 +4910,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between numeric\\-string and \'NULL\' will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between numeric\\-string and \'null\' will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Search.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
 	'identifier' => 'equal.alwaysTrue',
 	'count' => 2,
@@ -5003,6 +5039,12 @@ $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between non\\-empty\\-string and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
