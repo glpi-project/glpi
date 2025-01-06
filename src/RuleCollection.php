@@ -1299,7 +1299,7 @@ JAVASCRIPT;
                     ) {
                        //pass root entity and empty array (N/A value)
                         if (
-                            (in_array($action['value'], ['entities_id', 'new_entities_id'], true))
+                            (in_array($action['field'], ['entities_id', 'new_entities_id'], true))
                             && (($action['value'] == 0)
                             || ($action['value'] == ''))
                         ) {
