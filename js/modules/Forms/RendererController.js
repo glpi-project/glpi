@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_info */
+/* global glpi_toast_info, tinymce */
 
 /**
  * Client code to handle users actions on the form_renderer template
@@ -113,6 +113,11 @@ export class GlpiFormRendererController
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
         try {
+            // Update tinymce values
+            tinymce.get().forEach(editor => {
+                editor.save();
+            });
+
             // Submit form using AJAX
             const response = await $.post({
                 url: $(this.#target).prop("action"),

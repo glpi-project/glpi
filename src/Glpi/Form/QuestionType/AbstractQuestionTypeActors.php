@@ -114,37 +114,39 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
     {
+        if (empty($answer)) {
+            return [];
+        }
+
         if (!is_array($answer)) {
             $answer = [$answer];
         }
 
         $actors = [];
-        if (is_array($answer)) {
-            foreach ($answer as $actor) {
-                // The "0" value can occur when the empty label is selected.
-                if (empty($actor)) {
-                    continue;
-                }
-
-                $actor_parts = explode('-', $actor);
-                $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
-                $item_id = $actor_parts[1];
-
-                // Check if the itemtype is allowed
-                if (!in_array($itemtype, $this->getAllowedActorTypes())) {
-                    throw new Exception("Invalid actor type: $itemtype");
-                }
-
-                // Check if the item exists
-                if ($itemtype::getById($item_id) === false) {
-                    throw new Exception("Invalid actor ID: $item_id");
-                }
-
-                $actors[] = [
-                    'itemtype' => $itemtype,
-                    'items_id' => $item_id
-                ];
+        foreach ($answer as $actor) {
+            // The "0" value can occur when the empty label is selected.
+            if (empty($actor)) {
+                continue;
             }
+
+            $actor_parts = explode('-', $actor);
+            $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
+            $item_id = $actor_parts[1];
+
+            // Check if the itemtype is allowed
+            if (!in_array($itemtype, $this->getAllowedActorTypes())) {
+                throw new Exception("Invalid actor type: $itemtype");
+            }
+
+            // Check if the item exists
+            if ($itemtype::getById($item_id) === false) {
+                throw new Exception("Invalid actor ID: $item_id");
+            }
+
+            $actors[] = [
+                'itemtype' => $itemtype,
+                'items_id' => $item_id
+            ];
         }
 
         if (!$this->isMultipleActors($question) && count($actors) > 1) {

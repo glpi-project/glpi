@@ -181,7 +181,7 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
 Cypress.Commands.add('awaitTinyMCE',  {
     prevSubject: 'element',
 }, (subject) => {
-    cy.wrap(subject).siblings('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
+    cy.wrap(subject).parent().find('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
 });
 
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
@@ -334,6 +334,20 @@ Cypress.Commands.add("getMany", (selectors) => {
 /**
  * @memberof Cypress.Chainable.prototype
  * @method createWithAPI
+ * @description Get  an item using the legacy API
+ * @param {string} itemtype
+ * @param {number} id
+ */
+Cypress.Commands.add("getWithAPI", (itemtype, id) => {
+    const url = `${itemtype}/${id}`;
+    return cy.initApi().doApiRequest("GET", url).then(response => {
+        return response.body;
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method createWithAPI
  * @description Create an item using the legacy API
  * @param {string} url API endpoint
  * @param {object} values Values to create the item with
@@ -395,7 +409,7 @@ Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoi
     return cy.request({
         method: method,
         url: `/apirest.php/${encodeURI(endpoint)}`,
-        body: {input: values},
+        body: values !== undefined ? {input: values} : null,
         headers: {
             'Session-Token': token,
         }

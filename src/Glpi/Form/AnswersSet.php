@@ -39,7 +39,6 @@ use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestinationTypeManager;
 use Log;
@@ -55,6 +54,8 @@ final class AnswersSet extends CommonDBChild
 {
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
+
+    public array $files = [];
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -315,6 +316,16 @@ final class AnswersSet extends CommonDBChild
         }
 
         return $links;
+    }
+
+    public function getSubmittedFiles(): array
+    {
+        return $this->files;
+    }
+
+    public function setSubmittedFiles(array $files): void
+    {
+        $this->files = $files;
     }
 
     /**

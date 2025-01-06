@@ -132,6 +132,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             );
         }
 
+        // Add linked items
+        $input = $this->setFilesInput($input, $answers_set);
+
         // Create commonitil object
         $itil_object = new $itemtype();
         if (!($itil_object instanceof CommonITILObject)) {
@@ -254,6 +257,20 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         foreach ($fields as $field => $value) {
             $input[$field] = $value;
         }
+
+        return $input;
+    }
+
+    private function setFilesInput(array $input, AnswersSet $answers_set): array
+    {
+        $files = $answers_set->getSubmittedFiles();
+        if (empty($files) || empty($files['filename'])) {
+            return $input;
+        }
+
+        $input['_filename']        = $files['filename'];
+        $input['_prefix_filename'] = $files['prefix'];
+        $input['_tag_filename']    = $files['tag'];
 
         return $input;
     }
