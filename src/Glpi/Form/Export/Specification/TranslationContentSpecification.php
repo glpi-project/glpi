@@ -33,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Form\Export\Specification;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
-
-interface BlockInterface extends ProvideTranslationsInterface
+final class TranslationContentSpecification implements ContentSpecificationInterface
 {
-    public function displayBlockForEditor(): void;
-    public function getUniqueIDInForm(): string;
+    public string $itemtype;
+    public string $items_id;
+    public string $key;
+    public string $language;
+    public array $translations;
 }

@@ -44,7 +44,9 @@ use Glpi\Form\Condition\FormData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\CommentForeignKeyHandler;
 use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Context\ForeignKey\SectionForeignKeyHandler;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
@@ -58,9 +60,12 @@ use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
+use Glpi\Form\Export\Specification\TranslationContentSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\ItemTranslation\ItemTranslation;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
@@ -220,6 +225,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
         $form_spec = $this->exportDestinations($form, $form_spec);
+        $form_spec = $this->exportTranslations($form, $form_spec);
 
         return $form_spec;
     }
@@ -250,12 +256,13 @@ final class FormSerializer extends AbstractFormSerializer
     ): Form {
         // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);
-        $form = $this->importSections($form, $form_spec);
-        $form = $this->importComments($form, $form_spec);
+        $form = $this->importSections($form, $form_spec, $mapper);
+        $form = $this->importComments($form, $form_spec, $mapper);
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
         $form = $this->importDestinations($form, $form_spec, $mapper);
         $form = $this->importQuestionConditions($form, $form_spec, $mapper);
+        $form = $this->importTranslations($form, $form_spec, $mapper);
 
         return $form;
     }
@@ -373,6 +380,7 @@ final class FormSerializer extends AbstractFormSerializer
     private function importSections(
         Form $form,
         FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
     ): Form {
         /** @var SectionContentSpecification $section_spec */
         foreach ($form_spec->sections as $section_spec) {
@@ -387,6 +395,13 @@ final class FormSerializer extends AbstractFormSerializer
             if (!$id) {
                 throw new RuntimeException("Failed to create section");
             }
+
+            // Sections can be required for other items, so we need to map them
+            $mapper->addMappedItem(
+                Section::class,
+                $section->getUniqueIDInForm(),
+                $id
+            );
         };
 
         // Reload to clear lazy loaded data
@@ -415,6 +430,7 @@ final class FormSerializer extends AbstractFormSerializer
     private function importComments(
         Form $form,
         FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
     ): Form {
         /** @var CommentContentSpecification $comment_spec */
         foreach ($form_spec->comments as $comment_spec) {
@@ -436,6 +452,13 @@ final class FormSerializer extends AbstractFormSerializer
             if (!$id) {
                 throw new RuntimeException("Failed to create comment");
             }
+
+            // Comments can be required for other items, so we need to map them
+            $mapper->addMappedItem(
+                Comment::class,
+                $comment->getUniqueIDInForm(),
+                $id
+            );
         }
 
         // Reload to clear lazy loaded data
@@ -793,6 +816,106 @@ final class FormSerializer extends AbstractFormSerializer
 
             if (!$id) {
                 throw new RuntimeException("Failed to create destination");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    private function exportTranslations(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach (FormTranslation::getTranslationsForForm($form) as $translation) {
+            if ($translation->fields['itemtype'] === Question::class) {
+                $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                    [new QuestionForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+                array_push($form_spec->data_requirements, ...$requirements);
+
+                $translation->fields = $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                    [new QuestionForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+            } elseif ($translation->fields['itemtype'] === Comment::class) {
+                $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                    [new CommentForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+                array_push($form_spec->data_requirements, ...$requirements);
+
+                $translation->fields = $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                    [new CommentForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+            } elseif ($translation->fields['itemtype'] === Section::class) {
+                $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                    [new SectionForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+                array_push($form_spec->data_requirements, ...$requirements);
+
+                $translation->fields = $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                    [new SectionForeignKeyHandler(FormTranslation::$items_id)],
+                    $translation->fields
+                );
+            }
+
+            $translation_spec = new TranslationContentSpecification();
+            $translation_spec->itemtype = $translation->fields['itemtype'];
+            $translation_spec->items_id = $translation->fields['items_id'];
+            $translation_spec->key = $translation->fields['key'];
+            $translation_spec->language = $translation->fields['language'];
+            $translation_spec->translations = json_decode($translation->fields['translations'], true);
+
+            $form_spec->translations[] = $translation_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importTranslations(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($form_spec->translations as $translation_spec) {
+            if ($translation_spec->itemtype === Form::class) {
+                $translation_spec->items_id = (string) $form->getID();
+            } elseif ($translation_spec->itemtype === Question::class) {
+                $translation_spec->items_id = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                    [new QuestionForeignKeyHandler(FormTranslation::$items_id)],
+                    [FormTranslation::$items_id => $translation_spec->items_id],
+                    $mapper
+                )[FormTranslation::$items_id];
+            } elseif ($translation_spec->itemtype === Comment::class) {
+                $translation_spec->items_id = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                    [new CommentForeignKeyHandler(FormTranslation::$items_id)],
+                    [FormTranslation::$items_id => $translation_spec->items_id],
+                    $mapper
+                )[FormTranslation::$items_id];
+            } elseif ($translation_spec->itemtype === Section::class) {
+                $translation_spec->items_id = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                    [new SectionForeignKeyHandler(FormTranslation::$items_id)],
+                    [FormTranslation::$items_id => $translation_spec->items_id],
+                    $mapper
+                )[FormTranslation::$items_id];
+            }
+
+            $translation = new FormTranslation();
+            $id = $translation->add([
+                'itemtype'     => $translation_spec->itemtype,
+                'items_id'     => $translation_spec->items_id,
+                'key'          => $translation_spec->key,
+                'language'     => $translation_spec->language,
+                'translations' => $translation_spec->translations,
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create translation");
             }
         }
 
