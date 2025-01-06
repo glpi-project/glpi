@@ -38,6 +38,7 @@ use CommonTreeDropdown;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
+use Glpi\UI\IllustrationManager;
 use Override;
 
 final class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
@@ -74,7 +75,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
         $fields[] = [
             'name'  => 'illustration',
             'label' => __('Illustration'),
-            'type'  => 'text',
+            'type'  => 'illustration',
             'list'  => false,
         ];
 
@@ -96,7 +97,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'];
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]

@@ -48,6 +48,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\UI\IllustrationManager;
 use Html;
 use Log;
 use MassiveAction;
@@ -879,7 +880,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'] ?: 'request-service';
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
