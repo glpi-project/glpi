@@ -61,7 +61,7 @@ $rule->checkGlobal(READ);
 
 Html::popHeader(__('Setup'));
 
-$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);
+$rule->showRulePreviewCriteriasForm($rules_id);
 
 if (isset($_POST["test_rule"])) {
     $params = [];
@@ -75,7 +75,7 @@ if (isset($_POST["test_rule"])) {
     $input = $rule->prepareAllInputDataForProcess($_POST, $params);
    //$rule->regex_results = array();
     echo "<br>";
-    $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
+    $rule->showRulePreviewResultsForm($input, $params);
 }
 
 Html::popFooter();

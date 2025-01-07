@@ -63,14 +63,14 @@ $rulecollection->checkGlobal(READ);
 
 Html::popHeader(__('Setup'));
 
-$rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
+$rulecollection->showRulesEnginePreviewCriteriasForm($_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {
    //Unset values that must not be processed by the rule
     unset($_POST["sub_type"], $_POST["test_all_rules"]);
 
     echo "<br>";
-    $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST, $condition);
+    $rulecollection->showRulesEnginePreviewResultsForm($_POST, $condition);
 }
 
 Html::popFooter();

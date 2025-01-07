@@ -2081,11 +2081,12 @@ JS
     /**
      * Show preview result of a rule
      *
-     * @param string $target    Not used
      * @param array $input     input data array
      * @param array $params    params used (see addSpecificParamsForPreview)
-     **/
-    public function showRulePreviewResultsForm($target, $input, $params)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulePreviewResultsForm($input, $params)
     {
         $actions       = $this->getAllActions();
         $check_results = [];
@@ -2697,10 +2698,11 @@ JS
     /**
      * Criteria form used to preview rule
      *
-     * @param string  $target   target of the form
      * @param integer $rules_id ID of the rule
-     **/
-    public function showRulePreviewCriteriasForm($target, $rules_id)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulePreviewCriteriasForm($rules_id)
     {
         $criteria = $this->getAllCriteria();
         if (!$this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
@@ -2718,6 +2720,12 @@ JS
                 $already_added_criterias[] = $criterion->fields["criteria"];
             }
         }
+
+        $target = '/front/rule.test.php';
+        if ($plugin = isPluginItemType(static::class)) {
+            $target = '/plugins/' . $plugin['plugin'] . $target;
+        }
+
         TemplateRenderer::getInstance()->display('pages/admin/rules/preview_criteria.html.twig', [
             'criterias' => $unique_criterias,
             'criteria_names' => $criteria_names,
