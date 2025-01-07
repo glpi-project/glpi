@@ -389,6 +389,18 @@
             '{{ get_class(question_type)|e('js') }}',
             {{ question_type.getFormEditorJsOptions()|raw }}
         );
+
+        {% if question_type.getSubTypes() is not empty %}
+            controller.registerQuestionSubTypesOptions(
+                '{{ get_class(question_type)|e('js') }}',
+                {
+                    'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
+                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null) }}',
+                    'field_name'      : '{{ question_type.getSubTypeFieldName() }}',
+                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel() }}',
+                }
+            )
+        {% endif %}
     {% endfor %}
 
     $(container_selector).data('controller', controller);
