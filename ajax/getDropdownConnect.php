@@ -37,9 +37,7 @@
  * @since 0.85
  */
 
-if (strpos($_SERVER['PHP_SELF'], "getDropdownConnect.php")) {
-    header("Content-Type: application/json; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
 
 echo Dropdown::getDropdownConnect($_POST);

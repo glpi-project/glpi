@@ -36,11 +36,8 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 // Non define case
 if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
