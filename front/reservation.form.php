@@ -65,7 +65,6 @@ if (isset($_POST["update"])) {
         Session::haveRight("reservation", UPDATE)
         || (Session::getLoginUserID() == $_POST["users_id"])
     ) {
-        $_POST['_target'] = $_SERVER['PHP_SELF'];
         $_POST['_item']   = key($_POST["items"]);
         $_POST['begin']   = $_POST['resa']["begin"];
         $_POST['end']     = $_POST['resa']["end"];
