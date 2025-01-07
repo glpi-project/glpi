@@ -51,6 +51,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController
 {
+    private string $interface;
+
+    public function __construct()
+    {
+        $this->interface = Session::getCurrentInterface();
+    }
+
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/Render/{id}",
@@ -63,11 +70,30 @@ final class RendererController extends AbstractController
         $form = $this->loadTargetForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
+        $my_tickets_criteria = [
+            "criteria" => [
+                [
+                    "field" => 12, // Status
+                    "searchtype" => "equals",
+                    "value" => "notold", // Not solved
+                ],
+            ],
+        ];
+        if ($this->interface == 'central') {
+            $my_tickets_criteria["criteria"][] = [
+                "link" => "AND",
+                "field" => 4, // Requester
+                "searchtype" => "equals",
+                "value" => 'myself',
+            ];
+        }
+
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
             'menu' => ['admin', Form::getType()],
             'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
+            'my_tickets_url_param' => http_build_query($my_tickets_criteria),
 
             // Direct access token must be included in the form data as it will
             // be checked in the submit answers controller.
