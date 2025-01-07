@@ -203,7 +203,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
-        Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+        Html::header(sprintf(__('%s Kanban'), Problem::getTypeName(1)), '', "helpdesk", "problem");
         $problem::showKanban(0);
         Html::footer();
     } else {

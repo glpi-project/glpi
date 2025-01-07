@@ -52,7 +52,7 @@ if (!$dashboard->canViewCurrent()) {
     throw new AccessDeniedHttpException();
 }
 
-Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");
+Html::header(__('Helpdesk Dashboard'), '', "helpdesk", "dashboard");
 
 $grid = new Glpi\Dashboard\Grid($default);
 $grid->showDefault();

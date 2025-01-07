@@ -40,7 +40,7 @@ Session::checkRight("config", UPDATE);
 $plugin = new Plugin();
 $plugin->checkStates(true);
 
-Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
+Html::header(__('Setup'), '', "config", "plugin");
 
 \Glpi\Marketplace\View::showFeatureSwitchDialog();
 

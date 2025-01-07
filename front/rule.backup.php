@@ -50,7 +50,7 @@ $rulecollection = new RuleCollection();
 $rulecollection->checkGlobal(READ);
 
 if ($action !== "export") {
-    Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "rule", -1);
+    Html::header(Rule::getTypeName(Session::getPluralNumber()), '', "admin", "rule", -1);
 }
 
 switch ($action) {

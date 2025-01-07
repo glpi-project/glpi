@@ -39,7 +39,7 @@ $config = new Config();
 
 Html::header(
     __('External authentication sources'),
-    $_SERVER['PHP_SELF'],
+    '',
     "config",
     "auth",
     "settings"

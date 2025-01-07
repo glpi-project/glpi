@@ -52,7 +52,7 @@ if (!$dashboard->canViewCurrent()) {
     throw new AccessDeniedHttpException();
 }
 
-Html::header(__('Assets Dashboard'), $_SERVER['PHP_SELF'], "assets", "dashboard");
+Html::header(__('Assets Dashboard'), '', "assets", "dashboard");
 
 $grid = new Glpi\Dashboard\Grid($default);
 $grid->showDefault();

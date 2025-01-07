@@ -46,7 +46,7 @@ if (isset($_GET["id"])) {
     Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));
 }
 
-Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+Html::header(KnowbaseItem::getTypeName(1), '', "tools", "knowbaseitem");
 
 // Search a solution
 if (

@@ -35,7 +35,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
-Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "commondropdown");
+Html::header(__('Setup'), '', "config", "commondropdown");
 
 echo "<div class='center'>";
 

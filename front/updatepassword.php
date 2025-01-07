@@ -47,7 +47,7 @@ if (Session::getLoginUserID() === false) {
 
 switch (Session::getCurrentInterface()) {
     case 'central':
-        Html::header(__('Update password'), $_SERVER['PHP_SELF']);
+        Html::header(__('Update password'));
         break;
     case 'helpdesk':
         Html::helpHeader(__('Update password'));

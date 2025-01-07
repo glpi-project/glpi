@@ -37,7 +37,7 @@ Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);
 AuthLDAP::manageRequestValues(false);
 
-Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
+Html::header(__('LDAP directory link'), '', "admin", "group", "ldap");
 
 $authldap = new AuthLDAP();
 $authldap->getFromDB($_REQUEST['authldaps_id'] ?? 0);

@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     $ri->check($_GET["id"], READ);
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
     $ri->showForm($_GET["id"]);
 }
 

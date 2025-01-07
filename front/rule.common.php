@@ -84,7 +84,7 @@ if (isset($_POST["action"])) {
 
     Html::header(
         Rule::getTypeName(Session::getPluralNumber()),
-        $_SERVER['PHP_SELF'],
+        '',
         "admin",
         $rulecollection->menu_type,
         $rulecollection->menu_option
@@ -148,7 +148,7 @@ if (isset($_POST["action"])) {
 
 Html::header(
     Rule::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
+    '',
     'admin',
     $rulecollection->menu_type,
     $rulecollection->menu_option

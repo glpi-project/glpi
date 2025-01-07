@@ -38,7 +38,7 @@ Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'), 'reservation');
 } else {
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
 $res = new ReservationItem();

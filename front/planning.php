@@ -145,7 +145,7 @@ if (isset($_GET['checkavailability'])) {
         }
     }
 } else {
-    Html::header(__('Planning'), $_SERVER['PHP_SELF'], "helpdesk", "planning");
+    Html::header(__('Planning'), '', "helpdesk", "planning");
 
     Session::checkRightsOr('planning', [Planning::READALL, Planning::READMY]);
 

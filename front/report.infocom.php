@@ -36,7 +36,7 @@
 Session::checkRight(Report::$rightname, READ);
 Session::checkRight(Infocom::$rightname, READ);
 
-Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
 
 Report::title();
 Report::showInfocomReport($_GET['date1'] ?? null, $_GET['date2'] ?? null);

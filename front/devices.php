@@ -35,7 +35,7 @@
 
 Session::checkRight("device", READ);
 
-Html::header(_n('Component', 'Components', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "commondevice");
+Html::header(_n('Component', 'Components', Session::getPluralNumber()), '', "config", "commondevice");
 echo "<div class='text-center'>";
 
 $optgroup = Dropdown::getDeviceItemTypes();

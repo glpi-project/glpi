@@ -39,7 +39,7 @@ Session::checkRight("logs", READ);
 
 Html::header(
     LogViewer::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
+    '',
     "admin",
     'glpi\system\log\logviewer'
 );
