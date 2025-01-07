@@ -1371,7 +1371,6 @@ TWIG, $twig_params);
         $params["start"]                     = "0";
         $params["knowbaseitemcategories_id"] = null;
         $params["contains"]                  = "";
-        $params["target"]                    = $_SERVER['PHP_SELF'];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
