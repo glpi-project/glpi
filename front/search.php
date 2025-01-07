@@ -39,7 +39,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 global $CFG_GLPI;
 
 Session::checkCentralAccess();
-Html::header(__('Search'), $_SERVER['PHP_SELF']);
+Html::header(__('Search'));
 
 if (!$CFG_GLPI['allow_search_global']) {
     throw new AccessDeniedHttpException();

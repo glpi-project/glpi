@@ -52,7 +52,7 @@ if (!$itemDevice->canView()) {
 }
 
 if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {
-    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", strtolower($itemDevice->getType()));
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "assets", strtolower($itemDevice->getType()));
 } else {
     Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice->getType());
 }

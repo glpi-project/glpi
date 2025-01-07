@@ -50,7 +50,7 @@ if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
 
 Session::checkCentralAccess();
 
-Html::header(Central::getTypeName(1), $_SERVER['PHP_SELF'], 'central', 'central');
+Html::header(Central::getTypeName(1), '', 'central', 'central');
 
 // Redirect management
 if (isset($_GET["redirect"])) {

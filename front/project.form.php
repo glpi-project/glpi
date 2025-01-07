@@ -123,7 +123,7 @@ if (isset($_POST["add"])) {
     Html::popFooter();
 } else {
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
-        Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
+        Html::header(Project::getTypeName(Session::getPluralNumber()), '', "tools", "project");
         $project->showKanban(0);
         Html::footer();
     } else {

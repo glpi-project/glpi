@@ -6712,7 +6712,7 @@ TWIG, $twig_params);
         \Glpi\Debug\Profiler::getInstance()->start('Html::header');
         Html::header(
             $title,
-            $_SERVER['PHP_SELF'],
+            '',
             $menus[0] ?? 'none',
             $menus[1] ?? 'none',
             $menus[2] ?? '',

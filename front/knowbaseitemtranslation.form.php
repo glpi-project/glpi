@@ -76,7 +76,7 @@ if (isset($_POST['add'])) {
 
     if (Session::getLoginUserID()) {
         if (Session::getCurrentInterface() == "central") {
-            Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitemtranslation");
+            Html::header(KnowbaseItem::getTypeName(1), '', "tools", "knowbaseitemtranslation");
         } else {
             Html::helpHeader(__('FAQ'));
         }

@@ -45,7 +45,7 @@ use Glpi\Stat\Data\Graph\StatDataTicketNumber;
  */
 global $DB;
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 

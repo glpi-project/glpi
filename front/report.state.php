@@ -39,7 +39,7 @@
 
 Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = 0;

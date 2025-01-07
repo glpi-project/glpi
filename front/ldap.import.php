@@ -41,7 +41,7 @@ if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
     $_REQUEST['_in_modal'] = 1;
 }
 
-Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");
+Html::header(__('LDAP directory link'), '', "admin", "user", "ldap");
 
 if (($_REQUEST['action'] ?? 'show') === 'show') {
     $authldap = new AuthLDAP();

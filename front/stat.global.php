@@ -39,7 +39,7 @@ use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Sglobal\StatDataTicketNumber;
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);
 

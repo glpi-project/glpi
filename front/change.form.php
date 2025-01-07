@@ -200,7 +200,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
-        Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
+        Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), '', "helpdesk", "change");
         $change::showKanban(0);
     } else {
         $menus = ["helpdesk", "change"];

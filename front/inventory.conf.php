@@ -37,7 +37,7 @@ use Glpi\Inventory\Conf;
 
 Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
 
-Html::header(__('Inventory'), $_SERVER['PHP_SELF'], "admin", "glpi\inventory\inventory");
+Html::header(__('Inventory'), '', "admin", "glpi\inventory\inventory");
 
 $conf = new Conf();
 

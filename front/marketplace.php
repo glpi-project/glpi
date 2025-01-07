@@ -44,7 +44,7 @@ if (!Glpi\Marketplace\Controller::isWebAllowed()) {
 $plugin = new Plugin();
 $plugin->checkStates(true);
 
-Html::header(__('Marketplace'), $_SERVER['PHP_SELF'], "config", "plugin", "marketplace");
+Html::header(__('Marketplace'), '', "config", "plugin", "marketplace");
 
 $market_view = new \Glpi\Marketplace\View();
 $market_view->display();

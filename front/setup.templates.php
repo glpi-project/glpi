@@ -53,7 +53,7 @@ if (isset($_GET["itemtype"])) {
         }
     }
 
-    Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $itemtype);
+    Html::header(__('Manage templates...'), '', $sector, $itemtype);
 
     CommonDBTM::listTemplates($itemtype, $link, $_GET["add"]);
 

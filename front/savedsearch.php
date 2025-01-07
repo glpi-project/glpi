@@ -36,7 +36,7 @@
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
 } else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
+    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
 }
 
 $savedsearch = new SavedSearch();
