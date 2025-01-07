@@ -125,7 +125,7 @@ final class DropdownFormController extends AbstractController
                 Html::header(
                     ...$dropdown->getHeaderParameters()
                 );
-                $dropdown->showDeleteConfirmForm($request->getPathInfo());
+                $dropdown->showDeleteConfirmForm();
                 Html::footer();
             } else {
                 $dropdown->delete($input, 1);
