@@ -1378,10 +1378,7 @@ JS;
             $dev_ID   = $item->getField('id');
             $ic       = new self();
 
-            if (
-                !strpos($_SERVER['PHP_SELF'], "infocoms-show")
-                && in_array($item->getType(), self::getExcludedTypes())
-            ) {
+            if (in_array($item->getType(), self::getExcludedTypes())) {
                 echo "<div class='firstbloc center'>" .
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
                  "</div>";
