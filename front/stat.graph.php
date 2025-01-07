@@ -71,8 +71,8 @@ if (
     $_GET["date2"] = $tmp;
 }
 
-$cleantarget = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
-$cleantarget = preg_replace("/&*id=(\d+&?)/", "", $cleantarget);
+$target_params = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
+$target_params = preg_replace("/&*id=(\d+&?)/", "", $target_params);
 
 $next    = 0;
 $prev    = 0;
@@ -340,11 +340,11 @@ if ($foundkey >= 0) {
 $stat = new Stat();
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/single_item_pager.html.twig', [
-    'php_self' => $_SERVER['PHP_SELF'],
-    'cleantarget' => $cleantarget,
-    'prev' => $prev,
-    'next' => $next,
-    'title' => $title,
+    'target'        => 'stat.graph.php',
+    'target_params' => $target_params,
+    'prev'          => $prev,
+    'next'          => $next,
+    'title'         => $title,
 ]);
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [

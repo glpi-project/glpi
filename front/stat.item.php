@@ -75,6 +75,6 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig'
     'date2'     => $_POST["date2"],
 ]);
 
-Stat::showItems($_SERVER['PHP_SELF'], $_POST["date1"], $_POST["date2"], $_GET['start'], $_GET["itemtype"] ?? 'Ticket');
+Stat::showItems('stat.item.php', $_POST["date1"], $_POST["date2"], $_GET['start'], $_GET["itemtype"] ?? 'Ticket');
 
 Html::footer();
