@@ -114,9 +114,11 @@ export class GlpiFormRendererController
         // Form will be sumitted using an AJAX request instead
         try {
             // Update tinymce values
-            tinymce.get().forEach(editor => {
-                editor.save();
-            });
+            if (window.tinymce !== undefined) {
+                tinymce.get().forEach(editor => {
+                    editor.save();
+                });
+            }
 
             // Submit form using AJAX
             const response = await $.post({
@@ -147,7 +149,8 @@ export class GlpiFormRendererController
                 `)
                 .addClass("d-none");
 
-        } catch {
+        } catch (e) {
+            console.error(e);
             glpi_toast_error(
                 __("Failed to submit form, please contact your administrator.")
             );
