@@ -33,14 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "subvisibility.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
     $prefix = '';

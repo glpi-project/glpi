@@ -33,11 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strstr($_SERVER['PHP_SELF'], "rulecriteriavalue.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 // Non define case
 /** @var Rule $rule */

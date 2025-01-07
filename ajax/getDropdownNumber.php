@@ -37,10 +37,7 @@
  * @since 0.85
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "getDropdownNumber.php")) {
-    header("Content-Type: application/json; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
 
 echo Dropdown::getDropdownNumber($_POST);

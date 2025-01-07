@@ -33,13 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 // save value and force boolval for security of $_REQUEST['only_number]
 $only_number = boolval($_REQUEST['only_number'] ?? false);

@@ -36,11 +36,8 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 /** @var Rule $rule */
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {

@@ -38,10 +38,8 @@ use Glpi\Application\View\TemplateRenderer;
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
-if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
