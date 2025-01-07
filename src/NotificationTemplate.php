@@ -273,11 +273,15 @@ class NotificationTemplate extends CommonDBTM
                     $css = $this->fields['css'] ?? '';
 
                     $lang['content_html'] =
-                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
-                        'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" .
+
+                     "<!DOCTYPE html>" .
                      "<html>
                         <head>
-                         <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
+                         <meta charset='utf-8' />
+                         {# prevent IE to turn into compatible mode... #}
+                         <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+                         {# auto desktop / mobile viewport #}
+                         <meta name='viewport' content='width=device-width, initial-scale=1' />
                          <title>" . htmlescape($lang['subject']) . "</title>
                          <style type='text/css'>
                            {$css}
