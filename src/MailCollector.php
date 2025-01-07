@@ -1344,7 +1344,7 @@ class MailCollector extends CommonDBTM
         $cleaned_count = 0;
         $itemstoclean = [];
         foreach ($DB->request(BlacklistedMailContent::getTable()) as $data) {
-            $toclean = trim($data['content']);
+            $toclean = trim(Sanitizer::unsanitize($data['content']));
             if (!empty($toclean)) {
                 $itemstoclean[] = str_replace(["\r\n", "\n", "\r"], $br_marker, $toclean);
             }
