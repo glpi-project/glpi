@@ -53,7 +53,9 @@ if (isset($_POST["add"])) {
             "defaultfilter",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
         );
-        Html::redirect($_SERVER['PHP_SELF'] . "?id=$newID");
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($defaultfilter->getLinkURL());
+        }
     }
     Html::back();
 } else if (isset($_POST["purge"])) {
