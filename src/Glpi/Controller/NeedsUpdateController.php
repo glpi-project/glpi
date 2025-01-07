@@ -37,6 +37,8 @@ namespace Glpi\Controller;
 use Config;
 use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
@@ -48,7 +50,8 @@ use Toolbox;
 
 class NeedsUpdateController extends AbstractController
 {
-    public function __invoke(string $key): Response
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function __invoke(): Response
     {
         return new StreamedResponse($this->display(...));
     }
