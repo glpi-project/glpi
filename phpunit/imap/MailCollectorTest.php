@@ -43,6 +43,7 @@ use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
+use Sabre\VObject\Property\Boolean;
 use SoftwareLicense;
 use Ticket;
 use Psr\Log\LogLevel;
@@ -1280,6 +1281,52 @@ PLAINTEXT,
             $this->assertInstanceOf($expected_storage, $storage);
         } else {
             $this->assertNull($storage);
+        }
+    }
+
+
+
+    public static function cleanContentProvider()
+    {
+        return [
+            [
+                'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>',
+                'mail_content' => 'Text before<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>Text after',
+                'filtered' => true,
+            ],
+            [
+                'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local</a>&gt;',
+                'mail_content' => 'Text before<a href="mailto:test2@mail.local%3cmailto:test2@mail.local">test2@mail.local&lt;mailto:test2@mail.local&gt;</a>Text after',
+                'filtered' => false,
+            ],
+        ];
+    }
+
+
+    /**
+     * @dataProvider cleanContentProvider
+     */
+    public function testCleanContent(
+        string $filter,
+        string $mail_content,
+        bool $filtered
+    ) {
+        $this->createItem(
+            'BlacklistedMailContent',
+            [
+                'name' => __METHOD__,
+                'content' => $filter
+            ]
+        );
+
+        $original = $mail_content;
+
+        $mailcollector = new \MailCollector();
+        $result = $mailcollector->cleanContent($original);
+        if ($filtered) {
+            $this->assertNotEquals($result, $original);
+        } else {
+            $this->assertEquals($result, $original);
         }
     }
 }
