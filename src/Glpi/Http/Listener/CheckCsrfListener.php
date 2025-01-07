@@ -62,7 +62,7 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
             return;
         }
 
-        if (preg_match('~' . $request->getPathInfo() . '(/(plugins|marketplace)/[^/]*|)/ajax/~', $request->server->get('REQUEST_URI')) === 1) {
+        if (preg_match('~(/(plugins|marketplace)/[^/]*|)/ajax/~', $request->getPathInfo()) === 1) {
             // Keep CSRF token as many AJAX requests may be made at the same time.
             // This is due to the fact that read operations are often made using POST method (see #277).
             define('GLPI_KEEP_CSRF_TOKEN', true);
