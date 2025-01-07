@@ -278,9 +278,6 @@ class NotificationTemplate extends CommonDBTM
                      "<html>
                         <head>
                          <meta charset='utf-8' />
-                         {# prevent IE to turn into compatible mode... #}
-                         <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                         {# auto desktop / mobile viewport #}
                          <meta name='viewport' content='width=device-width, initial-scale=1' />
                          <title>" . htmlescape($lang['subject']) . "</title>
                          <style type='text/css'>
