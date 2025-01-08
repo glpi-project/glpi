@@ -1598,6 +1598,8 @@ class Toolbox
                         return Reservation::getFormURLWithID($data[1]) . "&$forcetab";
                 }
 
+                break;
+
             case "central":
                 switch (strtolower($data[0])) {
                     case "preference":
@@ -1644,6 +1646,9 @@ class Toolbox
 
                         return null;
                 }
+
+                // @phpstan-ignore deadCode.unreachable (defensive programming)
+                break;
         }
 
         return null;
