@@ -220,6 +220,8 @@ The present file will list all changes made to the project; according to the
 - `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `Migration::updateRight()` renamed to `Migration::replaceRight()`.
 - `Search::getOptions()` no longer returns a reference.
+- The `$target` parameter has been removed from the `AuthLDAP::showLdapGroups()` method.
+- The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

@@ -400,7 +400,7 @@ class RuleLocationTest extends DbTestCase
         // intercepts the output of echo functions
         // as showRulePreviewResultsForm is also in charge of displaying the result (in addition to testing the rule)
         ob_start();
-        $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
+        $rule->showRulePreviewResultsForm($input, $params);
         ob_end_clean();
 
         // check that location was not created

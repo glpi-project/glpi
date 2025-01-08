@@ -48,7 +48,6 @@ if (
     && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
 ) {
     AuthLDAP::showLdapGroups(
-        $_SERVER['PHP_SELF'],
         $_REQUEST['start'] ?? 0,
         0,
         $_REQUEST["ldap_group_filter"] ?? '',

@@ -92,7 +92,7 @@ if (isset($_POST["action"])) {
 
     if (
         !(isset($_POST['replay_confirm']) || isset($_GET['offset']))
-        && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])
+        && $rulecollection->warningBeforeReplayRulesOnExistingDB()
     ) {
         Html::footer();
         return;
@@ -128,6 +128,8 @@ if (isset($_POST["action"])) {
         $start = $_GET["start"];
     }
 
+    $rule_class = $rulecollection->getRuleClassName();
+
     if ($offset < 0) {
        // Work ended
         $duree = round(microtime(true) - $start);
@@ -135,10 +137,10 @@ if (isset($_POST["action"])) {
             __('Task completed in %s'),
             Html::timestampToString($duree)
         ));
-        echo "<a href='" . $_SERVER['PHP_SELF'] . "'>" . __s('Back') . "</a>";
+        echo "<a href='" . htmlescape($rule_class::getSearchURL()) . "'>" . __s('Back') . "</a>";
     } else {
        // Need more work
-        Html::redirect($_SERVER['PHP_SELF'] . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .
+        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .
                      "$manufacturer");
     }
 

@@ -324,11 +324,11 @@ class RuleCollection extends CommonDBTM
      * Is a confirmation needed before replay on DB ?
      * If needed need to send 'replay_confirm' in POST
      *
-     * @param string $target filename : where to go when done
-     *
      * @return boolean true if confirmation is needed, else false
-     **/
-    public function warningBeforeReplayRulesOnExistingDB($target)
+     *
+     * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
+     */
+    public function warningBeforeReplayRulesOnExistingDB()
     {
         return false;
     }
@@ -1478,13 +1478,14 @@ TWIG, $twig_params);
     /**
      * Show form displaying results for rule collection preview
      *
-     * @param string  $target    where to go
      * @param array   $values    array of data
      * @param integer $condition condition to limit rules (default 0)
      *
      * @return array
-     **/
-    public function showRulesEnginePreviewCriteriasForm($target, array $values, $condition = 0)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
     {
         $input = $this->prepareInputDataForTestProcess($condition);
         $rule      = $this->getRuleClass();
@@ -1503,6 +1504,12 @@ TWIG, $twig_params);
                 ];
             }
         }
+
+        $target = '/front/rulesengine.test.php';
+        if ($plugin = isPluginItemType(static::class)) {
+            $target = '/plugins/' . $plugin['plugin'] . $target;
+        }
+
         TemplateRenderer::getInstance()->display('pages/admin/rules/engine_preview_criteria.html.twig', [
             'rule' => $rule,
             'input' => $input,
@@ -1669,13 +1676,14 @@ TWIG, $twig_params);
     /**
      * Show form displaying results for rule engine preview
      *
-     * @param string  $target    where to go
      * @param array   $input     array of data
      * @param integer $condition condition to limit rules (DEFAULT 0)
      *
      * @return void
-     **/
-    public function showRulesEnginePreviewResultsForm($target, array $input, $condition = 0)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

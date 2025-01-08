@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
             "group"
         );
 
-        $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+        $group->showDeleteConfirmForm();
         Html::footer();
     } else {
         $group->delete($_POST, 1);
