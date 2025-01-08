@@ -5522,12 +5522,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 0 on non\\-empty\\-list\\<string\\> in empty\\(\\) always exists and is not falsy\\.$#',
-	'identifier' => 'empty.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$return_response \\? Response \\: void\\)\\: Unexpected token "\\$return_response", expected type at offset 498 on line 12$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
