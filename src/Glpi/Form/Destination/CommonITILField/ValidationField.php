@@ -193,7 +193,7 @@ class ValidationField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
-        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGY])) {
+        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGIES])) {
             return $input;
         }
 

@@ -203,7 +203,7 @@ class AssociatedItemsField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
-        if (!isset($input[$this->getKey()][AssociatedItemsFieldConfig::STRATEGY])) {
+        if (!isset($input[$this->getKey()][AssociatedItemsFieldConfig::STRATEGIES])) {
             return $input;
         }
 

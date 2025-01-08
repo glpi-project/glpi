@@ -130,7 +130,7 @@ abstract class ITILActorField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
-        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGY])) {
+        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGIES])) {
             return $input;
         }
 
