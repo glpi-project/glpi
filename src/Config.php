@@ -2309,4 +2309,9 @@ class Config extends CommonDBTM
         }
         return null;
     }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        return ["`context`" => array_merge(['core', 'inventory'], \Plugin::getPlugins())];
+    }
 }

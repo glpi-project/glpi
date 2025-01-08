@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 class TicketTask extends CommonITILTask
 {
     public static function getTypeName($nb = 0)
@@ -97,5 +99,42 @@ class TicketTask extends CommonITILTask
     public static function buildParentCondition()
     {
         return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        // Filter on is_private
+        $allowed_is_private = [];
+        if (Session::haveRight(self::$rightname, \CommonITILTask::SEEPRIVATE)) {
+            $allowed_is_private[] = 1;
+        }
+        if (Session::haveRight(self::$rightname, \CommonITILTask::SEEPUBLIC)) {
+            $allowed_is_private[] = 0;
+        }
+
+        // If the user can't see public and private
+        if (!count($allowed_is_private)) {
+            return [
+                '0' => '1'
+            ];
+        }
+
+        $criteria = [
+            'OR' => [
+                'glpi_tickettasks.is_private' => $allowed_is_private,
+                // Check for assigned or created tasks
+                'glpi_tickettasks.users_id' => Session::getLoginUserID(),
+                'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
+            ]
+        ];
+
+        // Check for parent item visibility unless the user can see all the
+        // possible parents
+        if (!Session::haveRight('ticket', \Ticket::READALL)) {
+            $criteria[] = [
+                new QueryExpression(self::buildParentCondition())
+            ];
+        }
+        return $criteria;
     }
 }

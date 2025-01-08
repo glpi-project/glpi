@@ -36,9 +36,11 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Form\Form;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
@@ -4398,5 +4400,38 @@ class Profile extends CommonDBTM
         }
 
         return true;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'name') {
+            if ($itemtype === User::class && $opt['id'] === 20) {
+                $addmeta = $meta ? '_' . $meta_type : '';
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            "{$table_ref}.name",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.entities_id",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.is_recursive",
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "glpi_profiles_users{$addmeta}.is_dynamic",
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        }
+
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
     }
 }

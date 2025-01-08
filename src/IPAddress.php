@@ -35,7 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Search\SearchOption;
 
 /**
  * Represent an IPv4 or an IPv6 address. Both textual (ie. human readable)
@@ -1422,5 +1424,43 @@ class IPAddress extends CommonDBChild
                 }
             }
         }
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'name' && preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
+            if ($nott) {
+                if ($regs[1] == '<') {
+                    $regs[1] = '>';
+                } else {
+                    $regs[1] = '<';
+                }
+            }
+            $regs[1] .= $regs[2];
+            return [
+                new QueryExpression(
+                    QueryFunction::inetAton("$table.$field") . " $regs[1] " . QueryFunction::inetAton(new QueryExpression($DB::quoteValue($regs[3])))
+                ),
+            ];
+        }
+
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
+    }
+
+    public static function getSQLOrderByCriteria(string $itemtype, SearchOption $opt, string $order): ?QueryExpression
+    {
+        $field = $opt['field'];
+
+        if ($field === 'name') {
+            return new QueryExpression(QueryFunction::inet6Aton($opt->getTableReference($itemtype) . '.' . $field) . " $order");
+        }
+
+        return parent::getSQLOrderByCriteria($itemtype, $opt, $order);
     }
 }

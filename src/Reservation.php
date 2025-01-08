@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
+use Glpi\Search\Provider\SQLProvider;
 
 /**
  * Reservation Class
@@ -1256,5 +1257,21 @@ JAVASCRIPT;
                 break;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        return getEntitiesRestrictCriteria(\ReservationItem::getTable(), '', '', true);
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        return SQLProvider::getLeftJoinCriteria(
+            static::class,
+            $ref_table,
+            $already_link_tables,
+            \ReservationItem::getTable(),
+            \ReservationItem::getForeignKeyField(),
+        );
     }
 }

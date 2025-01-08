@@ -2142,4 +2142,33 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         ]);
         return count($planned);
     }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'content') {
+            if (is_subclass_of($itemtype, CommonITILObject::class)) {
+                // force ordering by date desc
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            QueryFunction::ifnull("$table_ref.content", new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "$table_ref.id"
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        order_by: "$table_ref.date DESC",
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        }
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
+    }
 }

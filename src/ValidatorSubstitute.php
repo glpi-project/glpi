@@ -236,4 +236,12 @@ final class ValidatorSubstitute extends CommonDBTM
 
         return $success;
     }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (Session::getLoginUserID() !== false) {
+            return ['users_id' => Session::getLoginUserID()];
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
 }

@@ -34,8 +34,10 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Search\Provider\SQLProvider;
 
 /**
  * @since 9.4.0
@@ -1176,5 +1178,114 @@ class ITILFollowup extends CommonDBChild
     final public function setParentItem(CommonITILObject $parent): void
     {
         $this->item = $parent;
+    }
+
+    public static function getSQLSelectCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table_ref = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+
+        if ($field === 'content') {
+            if (is_subclass_of($itemtype, CommonITILObject::class)) {
+                // force ordering by date desc
+                return [
+                    QueryFunction::groupConcat(
+                        expression: QueryFunction::concat([
+                            QueryFunction::ifnull("$table_ref.content", new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
+                            new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
+                            "$table_ref.id"
+                        ]),
+                        separator: \Search::LONGSEP,
+                        distinct: true,
+                        order_by: "$table_ref.date DESC",
+                        alias: $opt->getSelectFieldAlias($itemtype)
+                    ),
+                ];
+            }
+        }
+        return parent::getSQLSelectCriteria($itemtype, $opt, $meta, $meta_type);
+    }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        // Filter on is_private
+        $allowed_is_private = [];
+        if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+            $allowed_is_private[] = 1;
+        }
+        if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
+            $allowed_is_private[] = 0;
+        }
+
+        // If the user can't see public and private
+        if (!count($allowed_is_private)) {
+            return ['0' => '1'];
+        }
+
+
+        $criteria = [
+            'glpi_itilfollowups.is_private' => $allowed_is_private,
+            'OR' => [
+                new QueryExpression(self::buildParentCondition(Ticket::getType())),
+                new QueryExpression(self::buildParentCondition(
+                    Change::getType(),
+                    'changes_id',
+                    "glpi_changes_users",
+                    "glpi_changes_groups"
+                )),
+                new QueryExpression(self::buildParentCondition(
+                    Problem::getType(),
+                    'problems_id',
+                    "glpi_problems_users",
+                    "glpi_problems_groups"
+                )),
+            ]
+        ];
+
+        // Entity restrictions
+        $entity_restrictions = [];
+        foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
+            $entity_restrictions[] = getEntitiesRestrictRequest(
+                '',
+                $itil_itemtype::getTable() . '_items_id_' . SQLProvider::computeComplexJoinID([
+                    'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                ]),
+                'entities_id',
+                ''
+            );
+        }
+        if (!empty($entity_restrictions)) {
+            $criteria[] = ['OR' => $entity_restrictions];
+        }
+        return $criteria;
+    }
+
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $out = [];
+        foreach ($CFG_GLPI['itil_types'] as $itil_itemtype) {
+            $out = array_merge_recursive($out, SQLProvider::getLeftJoinCriteria(
+                static::class,
+                $ref_table,
+                $already_link_tables,
+                $itil_itemtype::getTable(),
+                'items_id',
+                false,
+                '',
+                [
+                    'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                ]
+            ));
+        }
+        return $out;
     }
 }

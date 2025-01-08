@@ -52,6 +52,8 @@ use DBmysqlIterator;
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'GREATEST' function call
+ * @method static QueryExpression inetAton(string|QueryExpression $expression, ?string $alias = null) Build a 'INET_ATON' function call
+ * @method static QueryExpression inet6Aton(string|QueryExpression $expression, ?string $alias = null) Build a 'INET6_ATON' function call
  * @method static QueryExpression jsonContains(array $params, ?string $alias = null) Build a 'JSON_CONTAINS' function call
  * @method static QueryExpression jsonExtract(array $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
  * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
@@ -171,11 +173,11 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to group
      * @param string|null $separator Separator to use (will be automatically quoted as a value)
      * @param bool $distinct Use DISTINCT or not
-     * @param array|string|null $order_by Order by clause
+     * @param array|string|QueryExpression|null $order_by Order by clause
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string|null $order_by = null, ?string $alias = null): QueryExpression
+    public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string|QueryExpression|null $order_by = null, ?string $alias = null): QueryExpression
     {
         /** @var \DBmysql $DB */
         global $DB;

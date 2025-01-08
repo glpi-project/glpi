@@ -1756,8 +1756,10 @@ class SearchTest extends DbTestCase
     {
         $result = \Search::addOrderBy($itemtype, $sort_fields);
         $this->assertEquals($expected, $result);
+    }
 
-        // Complex cases
+    public function testAddOrderByComplex()
+    {
         $table_addtable = 'glpi_users_af1042e23ce6565cfe58c6db91f84692';
         $table_ticket_user = 'glpi_tickets_users_019878060c6d5f06cbe3c4d7c31dec24';
 
@@ -1769,17 +1771,17 @@ class SearchTest extends DbTestCase
             ]
         ]);
         $this->assertEquals(
-            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC",
+            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(" .
+            "IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')" .
+            ") ORDER BY CONCAT(" .
+            "IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC" .
+            ") ASC",
             $user_order_1
         );
         $user_order_2 = \Search::addOrderBy('Ticket', [
@@ -1789,17 +1791,17 @@ class SearchTest extends DbTestCase
             ]
         ]);
         $this->assertEquals(
-            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC",
+            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(" .
+            "IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')" .
+            ") ORDER BY CONCAT(" .
+            "IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC" .
+            ") DESC",
             $user_order_2
         );
 
@@ -1811,17 +1813,17 @@ class SearchTest extends DbTestCase
             ]
         ]);
         $this->assertEquals(
-            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) ASC",
+            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(" .
+            "IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')" .
+            ") ORDER BY CONCAT(" .
+            "IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC" .
+            ") ASC",
             $user_order_3
         );
         $user_order_4 = \Search::addOrderBy('Ticket', [
@@ -1831,17 +1833,17 @@ class SearchTest extends DbTestCase
             ]
         ]);
         $this->assertEquals(
-            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                                ) ORDER BY CONCAT(
-                                    IFNULL(`$table_addtable`.`realname`, ''),
-                                    IFNULL(`$table_addtable`.`firstname`, ''),
-                                    IFNULL(`$table_addtable`.`name`, ''),
-                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                                ) DESC",
+            " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(" .
+            "IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')" .
+            ") ORDER BY CONCAT(" .
+            "IFNULL(`$table_addtable`.`realname`, '')," .
+            " IFNULL(`$table_addtable`.`firstname`, '')," .
+            " IFNULL(`$table_addtable`.`name`, '')," .
+            " IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC" .
+            ") DESC",
             $user_order_4
         );
     }
@@ -2613,7 +2615,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '< 192.168.1.10',
                 'meta' => false,
-                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10'))",
+                'expected' => "AND INET_ATON(`glpi_ipaddresses`.`name`) < INET_ATON('192.168.1.10')",
             ],
             [
                 'link' => ' AND ',
@@ -2623,7 +2625,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '> 192.168.1.10',
                 'meta' => false,
-                'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
+                'expected' => "AND INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10')",
             ],
         ];
     }
@@ -2731,11 +2733,7 @@ class SearchTest extends DbTestCase
             "`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'",
 
             // Check that ORDER applies on corresponding table alias
-            "CONCAT(
-                                    IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                    IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                    IFNULL(`glpi_users_users_id_recipient`.`name`, '')
-                                ) ASC"
+            "CONCAT(IFNULL(`glpi_users_users_id_recipient`.`realname`, ''), IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''), IFNULL(`glpi_users_users_id_recipient`.`name`, '')) ASC"
         ];
         foreach ($contains as $contain) {
             $this->assertStringContainsString($contain, $data['sql']['search']);

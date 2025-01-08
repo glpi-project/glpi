@@ -40,7 +40,7 @@ use Glpi\RichText\RichText;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
-class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface
+class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface, ExtraVisibilityCriteria
 {
     use Glpi\Features\PlanningEvent {
         rawSearchOptions as protected trait_rawSearchOptions;
@@ -286,7 +286,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return $this->trait_rawSearchOptions();
     }
 
-    public static function getVisibilityCriteria(): array
+    public static function getVisibilityCriteria(bool $forceall = false): array
     {
         if (Session::haveRight(Planning::$rightname, Planning::READALL)) {
             return [];

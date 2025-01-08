@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
@@ -6856,6 +6857,91 @@ TWIG, $twig_params);
             return $item;
         }
 
+        return null;
+    }
+
+    /**
+     * Get the default SELECT criteria for the itemtype.
+     * This method is called on the itemtype being searched on.
+     * @return array The SELECT criteria to use
+     */
+    public static function getSQLDefaultSelectCriteria(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the default WHERE criteria for the itemtype.
+     * This method is called on the itemtype being searched on.
+     * @return array The WHERE criteria to use
+     */
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (is_subclass_of(static::class, ExtraVisibilityCriteria::class)) {
+            return static::getVisibilityCriteria()['WHERE'] ?? [];
+        }
+        return [];
+    }
+
+    /**
+     * Get the default JOIN criteria for the itemtype.
+     * This method is called on the itemtype being searched on.
+     * @return array The JOIN criteria to use
+     */
+    public static function getSQLDefaultJoinCriteria(string $ref_table, array &$already_link_tables): array
+    {
+        if (is_subclass_of(static::class, ExtraVisibilityCriteria::class)) {
+            $leftjoin = static::getVisibilityCriteria()['LEFT JOIN'] ?? [];
+            $out = ['LEFT JOIN' => $leftjoin];
+            foreach ($leftjoin as $table => $criteria) {
+                $already_link_tables[] = $table;
+            }
+            return $out;
+        }
+        return [];
+    }
+
+    /**
+     * Get the SELECT criteria for the provided itemtype and search option.
+     * This method is called on the class that the search option belongs to (based on the table).
+     * @param class-string<CommonDBTM> $itemtype The itemtype being searched on
+     * @param SearchOption $opt The search option being handled
+     * @param bool $meta Whether the search option is for a meta field
+     * @param class-string<CommonDBTM>|'' $meta_type The meta itemtype being searched on
+     * @return array|null The SELECT criteria to use, or null to use the default handling
+     */
+    public static function getSQLSelectCriteria(string $itemtype, SearchOption $opt, bool $meta = false, string $meta_type = ''): ?array
+    {
+        return null;
+    }
+
+    /**
+     * Get an array of criteria to handle the search option in a non-standard way.
+     * This method is called on the class that the search option belongs to (based on the table).
+     * @param class-string<CommonDBTM> $itemtype The main itemtype being searched on
+     * @param SearchOption $opt The search option being handled
+     * @param bool $nott Whether the search option is negated
+     * @param string $searchtype The search type (e.g. 'contains')
+     * @param mixed $val The value to search for
+     * @param bool $meta Whether the search option is for a meta field
+     * @param callable $fn_append_with_search A helper function to append a criterion to a criteria array in a standardized way
+     * @phpstan-param callable(array &$criteria, string|QueryFunction $value): void $fn_append_with_search
+     * @return array|null The criteria to use, or null to use the default handling
+     */
+    public static function getSQLWhereCriteria(string $itemtype, SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        return null;
+    }
+
+    /**
+     * Get the ORDER BY criteria for the provided itemtype and search option.
+     * @param class-string<CommonDBTM> $itemtype The main itemtype being searched on
+     * @param SearchOption $opt The search option being handled
+     * @param 'ASC'|'DESC' $order The order direction ('ASC' or 'DESC')
+     * @return QueryExpression|null The ORDER BY criteria to use, or null to use the default handling
+     */
+    public static function getSQLOrderByCriteria(string $itemtype, SearchOption $opt, string $order): ?\Glpi\DBAL\QueryExpression
+    {
         return null;
     }
 }

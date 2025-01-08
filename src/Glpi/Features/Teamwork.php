@@ -61,13 +61,13 @@ trait Teamwork
 
     /**
      * Get all types of team members that are supported by this item type
-     * @return array
+     * @return class-string<CommonDBTM>[]
      */
     abstract public static function getTeamItemtypes(): array;
 
     /**
      * Add a team member to this item
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $items_id
      * @param array $params
      * @return bool
@@ -77,7 +77,7 @@ trait Teamwork
 
     /**
      * Remove a team member to this item
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $items_id
      * @param array $params
      * @return bool

@@ -715,4 +715,35 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
         return $this->fields['allow_response'];
     }
+
+    public static function getSQLDefaultWhereCriteria(): array
+    {
+        if (!\Config::canView()) {
+            return [
+                'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']]
+            ];
+        }
+        return parent::getSQLDefaultWhereCriteria();
+    }
+
+    public static function getSQLWhereCriteria(string $itemtype, \Glpi\Search\SearchOption $opt, bool $nott, string $searchtype, mixed $val, bool $meta, callable $fn_append_with_search): ?array
+    {
+        $table = $opt->getTableReference($itemtype, $meta);
+        $field = $opt['field'];
+        if ($field === 'event') {
+            if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, \Search::SHORTSEP)) {
+                $not = 'notequals' === $searchtype ? 'NOT' : '';
+                [$itemtype_val, $event_val] = explode(\Search::SHORTSEP, $val);
+                $criteria = [
+                    "$table.event" => $event_val,
+                    "$table.itemtype" => $itemtype_val
+                ];
+                if ($not) {
+                    $criteria = ['NOT' => $criteria];
+                }
+                return $criteria;
+            }
+        }
+        return parent::getSQLWhereCriteria($itemtype, $opt, $nott, $searchtype, $val, $meta, $fn_append_with_search);
+    }
 }
