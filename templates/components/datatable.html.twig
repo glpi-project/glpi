@@ -237,11 +237,11 @@
                                                 {{ entry[colkey] }}
                                             </span>
                                         {% elseif formatter starts with "progress" %}
-                                            {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                            {{ progress_bar(entry[colkey]) }}
                                         {% elseif formatter == "date" %}
-                                            {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_date }}
                                         {% elseif formatter == "datetime" %}
-                                            {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_datetime }}
                                         {% elseif formatter == "duration" %}
                                             {{ entry[colkey]|formatted_duration }}
                                         {% elseif formatter == "bytesize" %}
