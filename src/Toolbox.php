@@ -1506,7 +1506,7 @@ class Toolbox
         if ($redirect === null) {
             Session::addMessageAfterRedirect(__s('Redirection failed'));
             if (Session::getCurrentInterface() === "helpdesk") {
-                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
             } else {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
             }
