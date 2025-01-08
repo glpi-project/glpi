@@ -1759,16 +1759,13 @@ class Impact extends CommonGLPI
      */
     public static function getEnabledItemtypes(): array
     {
-       // Get configured values
-        $conf = Config::getConfigurationValues('core');
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        if (!isset($conf[self::CONF_ENABLED])) {
-            return [];
-        }
+        // Get configured values
+        $enabled = $CFG_GLPI[Impact::CONF_ENABLED] ?? [];
 
-        $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
-
-       // Remove any forbidden values
+        // Remove any forbidden values
         return array_filter($enabled, function ($itemtype) {
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
