@@ -1491,50 +1491,61 @@ class Toolbox
      **/
     public static function manageRedirect($where)
     {
-        if (!$where || !($url = self::getManagedRedirectUrl($where))) {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (empty($where) || !Session::getCurrentInterface()) {
             return;
         }
 
-        Html::redirect($url);
+        // redirect to URL : URL must be rawurlencoded
+        $decoded_where = rawurldecode($where);
+
+        $redirect = self::computeRedirect($decoded_where);
+
+        if ($redirect === null) {
+            Session::addMessageAfterRedirect(__s('Redirection failed'));
+            if (Session::getCurrentInterface() === "helpdesk") {
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+            } else {
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+            }
+        } else {
+            Html::redirect($redirect);
+        }
     }
 
-    public static function getManagedRedirectUrl(string $url): ?string
+    /**
+     * Compute the redirection target.
+     *
+     * @param string $where
+     * @return string|null
+     */
+    public static function computeRedirect(string $where): ?string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!Session::getCurrentInterface()) {
-            return null;
-        }
-
-        // redirect to URL : URL must be rawurlencoded
-        $decoded_where = rawurldecode($url);
         $matches = [];
 
         // redirect to full url -> check if it's based on glpi url
-        if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
+        if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $where, $matches)) {
             if ($matches[1] !== $CFG_GLPI['url_base']) {
-                Session::addMessageAfterRedirect(__s('Redirection failed'));
-
-                if (Session::getCurrentInterface() === "helpdesk") {
-                    return $CFG_GLPI["root_doc"] . "/Helpdesk";
-                }
-
-                return $CFG_GLPI["root_doc"] . "/front/central.php";
+                return null;
             }
 
-            return $decoded_where;
+            return $where;
         }
 
         // Redirect to relative url
-        if ($decoded_where[0] === '/') {
+        if ($where[0] === '/') {
             // prevent exploit (//example.com) and force a redirect from glpi root
-            return $CFG_GLPI["root_doc"] . "/" . ltrim($decoded_where, '/');
+            return $CFG_GLPI["root_doc"] . "/" . ltrim($where, '/');
         }
 
         // explode with limit 3 to preserve the last part of the url
         // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
-        $data = explode("_", $url, 3);
+        $data = explode("_", $where, 3);
         $forcetab = '';
         // forcetab for simple items
         if (isset($data[2])) {
@@ -1544,8 +1555,7 @@ class Toolbox
         switch (Session::getCurrentInterface()) {
             case "helpdesk":
                 switch (strtolower($data[0])) {
-                    // Use for compatibility with old name
-                    case "tracking":
+                    case "tracking": // Used for compatibility with old name
                     case "ticket":
                         $data[0] = 'Ticket';
                         // redirect to item
@@ -1577,16 +1587,13 @@ class Toolbox
                             return $searchUrl;
                         }
 
-                        return $CFG_GLPI["root_doc"] . "/Helpdesk";
+                        return null;
 
                     case "preference":
                         return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
 
                     case "reservation":
                         return Reservation::getFormURLWithID($data[1]) . "&$forcetab";
-
-                    default:
-                        return $CFG_GLPI["root_doc"] . "/Helpdesk";
                 }
 
             case "central":
@@ -1594,9 +1601,11 @@ class Toolbox
                     case "preference":
                         return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
 
+                    // Use for compatibility with old name
+                    // no break
                     case "tracking":
                         $data[0] = "Ticket";
-                        //
+                        // var defined, use default case
 
                     default:
                         // redirect to item
@@ -1631,7 +1640,7 @@ class Toolbox
                             return $searchUrl;
                         }
 
-                        return $CFG_GLPI["root_doc"] . "/front/central.php";
+                        return null;
                 }
         }
 

@@ -1566,4 +1566,63 @@ HTML;
         }
         $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
     }
+
+
+    public static function redirectProvider(): iterable
+    {
+        foreach (['helpdesk', 'central'] as $interface) {
+            // Redirect to absolute URLs.
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://notglpi/',
+                'result'    => null,
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://localhost:80/',
+                'result'    => 'http://localhost:80/',
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://localhost:80/front/computer.php?id=15',
+                'result'    => 'http://localhost:80/front/computer.php?id=15',
+            ];
+
+            // Redirect to relative URLs.
+            yield [
+                'interface' => $interface,
+                'where'     => '/',
+                'result'    => '/glpi/',
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => '/front/computer.php?id=15',
+                'result'    => '/glpi/front/computer.php?id=15',
+            ];
+
+            // Redirect to a ticket.
+            yield [
+                'interface' => $interface,
+                'where'     => 'ticket_35341',
+                'result'    => '/glpi/front/ticket.form.php?id=35341&',
+            ];
+
+            // Redirect to a ticket tab.
+            yield [
+                'interface' => $interface,
+                'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
+                'result'    => '/glpi/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
+            ];
+        }
+    }
+
+    #[DataProvider('redirectProvider')]
+    public function testComputeRedirect(string $interface, string $where, ?string $result): void
+    {
+        $_SESSION['glpiactiveprofile']['interface'] = $interface;
+
+        $instance = new \Toolbox();
+
+        $this->assertSame($result, $instance->computeRedirect($where));
+    }
 }
