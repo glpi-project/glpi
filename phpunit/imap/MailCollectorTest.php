@@ -43,7 +43,6 @@ use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
 use NotificationTargetTicket;
-use Sabre\VObject\Property\Boolean;
 use SoftwareLicense;
 use Ticket;
 use Psr\Log\LogLevel;
