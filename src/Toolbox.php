@@ -1556,6 +1556,8 @@ class Toolbox
             case "helpdesk":
                 switch (strtolower($data[0])) {
                     case "tracking": // Used for compatibility with old name
+                        // similar to "ticket" case
+
                     case "ticket":
                         $data[0] = 'Ticket';
                         // redirect to item
