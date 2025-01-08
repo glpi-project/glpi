@@ -33,14 +33,19 @@
 
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
-{% set datatable_id = datatable_id|default('datatable' ~ random()) %}
+{% set datatable_id      = datatable_id|default('datatable' ~ random()) %}
+{% set filters           = filters|default([]) %}
+{% set footers           = footers|default([]) %}
+{% set sort              = sort|default(null) %}
+{% set additional_params = additional_params|default('') %}
+
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
         {% if super_header is defined and super_header is not empty %}
             {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
             {% if super_header_label is not empty %}
-                {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
+                {% set super_header_raw = super_header is array ? super_header['is_raw']|default('false') : false %}
                 <tr>
                     <th colspan="1">
                         {{ super_header_raw ? super_header_label|raw : super_header_label }}
@@ -78,7 +83,7 @@
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
-                    {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
+                    {% set super_header_raw = super_header is array ? super_header['is_raw']|default(false) : false %}
                     <tr>
                         {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
@@ -120,21 +125,13 @@
                             </th>
                         {% endfor %}
 
-                       {% if nofilter is not defined or csv_url|length %}
+                       {% if nofilter is not defined %}
                            <th>
                                <span class="float-end log-toolbar mb-0">
-                                   {% if nofilter is not defined %}
-                                       <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                           <i class="fas fa-filter"></i>
-                                           <span class="d-none d-xl-block">{{ __('Filter') }}</span>
-                                       </button>
-                                   {% endif %}
-                                   {% if csv_url|length %}
-                                       <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                           <i class="fas fa-file-download"></i>
-                                           <span class="d-none d-xl-block">{{ __('Export') }}</span>
-                                       </a>
-                                   {% endif %}
+                                   <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                                       <i class="fas fa-filter"></i>
+                                       <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                                   </button>
                                </span>
                            </th>
                          {% endif %}
@@ -309,7 +306,7 @@
                     </tr>
                 {% endif %}
             </tbody>
-            {% if footers %}
+            {% if footers|length > 0 %}
                 <tfoot class="{{ footer_class|default('') }}">
                     {% for footer in footers %}
                         <tr>

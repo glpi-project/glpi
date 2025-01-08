@@ -31,7 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set enable_anonymization = enable_anonymization ?? false %}
+{% set enable_anonymization = enable_anonymization|default(false) %}
+{% set can_edit = can_edit|default(false) %}
 
 <div class="p-0 user-info-card">
    <div class="row">
@@ -39,7 +40,7 @@
          {% if user['id'] %}
             {{ include('components/user/picture.html.twig', {
                'users_id': user['id'],
-               'user_object': user_object,
+               'user_object': user_object|default(null),
                'enable_anonymization': enable_anonymization
             }) }}
          {% endif %}

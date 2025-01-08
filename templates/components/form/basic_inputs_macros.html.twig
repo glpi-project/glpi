@@ -41,16 +41,17 @@
         'disabled': false,
         'multiple': false,
         'required': false,
+        'maxlength': null,
         'is_disclosable': false,
         'is_copyable': false,
         'clearable': false,
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = options|merge({'required': true}) %}
     {% endif %}
 
-    {% if options.fields_template.isReadonlyField(name) %}
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
@@ -118,6 +119,10 @@
 
 
 {% macro text(name, value, options = {}) %}
+    {% set options = {
+        'copyable': false,
+    }|merge(options) %}
+
     {% if options.copyable %}
         <div class="copy_to_clipboard_wrapper">
     {% endif %}
@@ -212,8 +217,10 @@
     {% set options = {
         'rand': random(),
         'enableTime': false,
-        'checkIsExpired ': false,
-        'clearable': false,
+        'checkIsExpired': false,
+        'clearable': options['maybeempty']|default(false),
+        'readonly': false,
+        'input_addclass': '',
     }|merge(options) %}
 
     {% set options = {
@@ -251,8 +258,7 @@
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Show date picker') }}">
                 <i class="{{ calendar_icon }}"></i>
             </button>
-            {# maybeempty has no distinct purpose, but it was here first #}
-            {% if options.clearable or options.maybeempty %}
+            {% if options.clearable %}
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Clear') }}">
                     <i class="ti ti-circle-x" data-clear></i>
                 </button>
@@ -321,9 +327,10 @@
         'aria_label': "",
         'statusbar': true,
         'content_style': "",
+        'input_addclass': '',
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = {'required': true}|merge(options) %}
     {% endif %}
     {% set options = options|merge({
@@ -441,11 +448,13 @@
     {% set options = {
         locked: false,
         locked_value: null,
-        tpl_mark: null
+        tpl_mark: null,
+        helper: null,
+        required: false,
     }|merge(options) %}
 
     {% set required_mark = '' %}
-    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+    {% if options.name is defined and options.fields_template.isMandatoryField(options.name)|default(false) or options.required %}
         {% set required_mark = '<span class="required">*</span>' %}
     {% endif %}
 

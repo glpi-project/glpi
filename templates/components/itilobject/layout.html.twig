@@ -37,8 +37,8 @@
 {% set show_extra_fields = not is_helpdesk or show_tickets_properties_on_helpdesk %}
 
 {% set itil_layout = user_pref('itil_layout', true) %}
-{% set is_collapsed = itil_layout['collapsed'] == "true" %}
-{% set is_expanded  = itil_layout['expanded'] == "true" %}
+{% set is_collapsed = itil_layout['collapsed']|default(false) == "true" %}
+{% set is_expanded  = itil_layout['expanded']|default(false) == "true" %}
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
 {% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
 

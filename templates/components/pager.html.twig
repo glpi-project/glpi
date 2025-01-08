@@ -57,7 +57,7 @@
 {% endif %}
 
 {% set back = start - limit %}
-{% if current_start - list_limit <= 0 %}
+{% if current_start - limit <= 0 %}
    {% set back = 0 %}
 {% endif %}
 

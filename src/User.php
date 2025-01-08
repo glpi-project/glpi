@@ -1917,13 +1917,11 @@ class User extends CommonDBTM
             'usertitles_id'       => $this->fields['usertitles_id'],
             'usercategories_id'   => $this->fields['usercategories_id'],
             'registration_number' => $this->fields['registration_number'],
+            'groups_id'           => $this->fields["groups_id"],
         ];
 
         if (Session::haveRight('user', READ)) {
              $user_params['login'] = $this->fields['name'];
-        }
-        if (!empty($this->fields["groups_id"])) {
-            $user_params['groups_id'] = $this->fields["groups_id"];
         }
         return TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
             'user'                 => $user_params,

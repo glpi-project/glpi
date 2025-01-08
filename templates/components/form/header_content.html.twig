@@ -31,13 +31,14 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set canedit      = params['canedit'] ?? true %}
-{% set withtemplate = params['withtemplate'] ?? '' %}
-{% set rand         = rand|default(random()) %}
-{% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
-{% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
-{% set id           = item.fields['id'] ?? -1 %}
-{% set in_navheader = in_navheader|default(false) %}
+{% set canedit        = params['canedit'] ?? true %}
+{% set withtemplate   = params['withtemplate'] ?? '' %}
+{% set rand           = rand|default(random()) %}
+{% set nametype       = params['formtitle'] ?? item.getTypeName(1) %}
+{% set friendlyname   = params['friendlyname'] ?? item.getHeaderName() %}
+{% set id             = item.fields['id'] ?? -1 %}
+{% set in_navheader   = in_navheader|default(false) %}
+{% set header_toolbar = header_toolbar|default(false) %}
 
 {% set entity_name = entity_name|default('') %}
 {% if entity_id is not defined %}
@@ -53,7 +54,7 @@
     {% endif %}
 {% endif %}
 
-{% set template_name = item.fields['template_name'] %}
+{% set template_name = item.fields['template_name']|default(null) %}
 {% if withtemplate == 2 and not item.isNewItem() %}
    <input type="hidden" name="template_name" value="{{ template_name }}" />
    {% set nametype = __('Created from the template %s')|format(template_name) %}

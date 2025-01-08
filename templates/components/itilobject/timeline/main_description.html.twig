@@ -33,6 +33,7 @@
 
 {% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
 {% set entry_rand = random() %}
+{% set anonym_user = (get_current_interface() == 'helpdesk' and users_id != session('glpiID') and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
 
 <div class="timeline-item mb-3 ITILContent"
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
@@ -50,6 +51,7 @@
                         'date_creation': item.fields['date_creation'],
                         'date_mod': item.fields['date_mod'],
                         'users_id_editor': item.fields['users_id_lastupdater'],
+                        'anchor': get_class(item) ~ '_' ~ item.getID(),
                         'anonym_user': anonym_user,
                      }, with_context = false) }}
                   </div>

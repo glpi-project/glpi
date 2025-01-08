@@ -235,7 +235,7 @@
                         {'disabled': disabled, 'step': 'any'}
                      ) }}
 
-                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+                     {% if item.fields['ticket_tco'] is defined %}
                         {% set ticket_tco_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
                         {{ fields.readOnlyField(
                            'ticket_tco',

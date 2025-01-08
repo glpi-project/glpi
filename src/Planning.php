@@ -807,20 +807,15 @@ TWIG, ['options' => $options]);
             $color = self::getPaletteColor('bg', $params['filter_color_index']);
         }
 
-        if ($filter_data['type'] !== 'event_filter') {
-            if ($caldav_item_url !== '' && $filter_data['type'] !== 'group_users' && $filter_data['type'] !== 'external') {
-                $url = parse_url($CFG_GLPI["url_base"]);
-                $url_port = 80;
-                if (isset($url['port'])) {
-                    $url_port = $url['port'];
-                } else if (isset($url['scheme']) && ($url["scheme"] === 'https')) {
-                    $url_port = 443;
-                }
-
-                $loginUser = new User();
-                $loginUser->getFromDB(Session::getLoginUserID(true));
-            }
+        $url = parse_url($CFG_GLPI["url_base"]);
+        if (!isset($url['port'])) {
+            $url['port'] = isset($url['scheme']) && ($url["scheme"] === 'https')
+                ? 443
+                : 80;
         }
+
+        $loginUser = new User();
+        $loginUser->getFromDB(Session::getLoginUserID(true));
 
         TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', [
             'filter_key'    => $filter_key,
@@ -831,9 +826,8 @@ TWIG, ['options' => $options]);
             'color'         => $color,
             'uID'           => $uID,
             'gID'           => $gID,
-            'login_user'    => $loginUser ?? null,
-            'url'           => $url ?? null,
-            'url_port'      => $url_port ?? null,
+            'login_user'    => $loginUser,
+            'url'           => $url,
             'caldav_url'    => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
         ]);
     }

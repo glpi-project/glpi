@@ -1144,10 +1144,6 @@ TWIG,
        // load log filters everywhere
         Html::requireJs('log_filters');
 
-        if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-            $tpl_vars['high_contrast'] = true;
-        }
-
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
