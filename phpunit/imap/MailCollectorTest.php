@@ -1291,12 +1291,12 @@ PLAINTEXT,
             [
                 'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>',
                 'mail_content' => 'Text before<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>Text after',
-                'filtered' => true,
+                'expected' => 'Text beforeText after',
             ],
             [
                 'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local</a>&gt;',
                 'mail_content' => 'Text before<a href="mailto:test2@mail.local%3cmailto:test2@mail.local">test2@mail.local&lt;mailto:test2@mail.local&gt;</a>Text after',
-                'filtered' => false,
+                'expected' => 'Text before<a href="mailto:test2@mail.local%3cmailto:test2@mail.local">test2@mail.local&lt;mailto:test2@mail.local&gt;</a>Text after',
             ],
         ];
     }
@@ -1308,7 +1308,7 @@ PLAINTEXT,
     public function testCleanContent(
         string $filter,
         string $mail_content,
-        bool $filtered
+        string $expected
     ) {
         $this->createItem(
             'BlacklistedMailContent',
@@ -1322,10 +1322,6 @@ PLAINTEXT,
 
         $mailcollector = new \MailCollector();
         $result = $mailcollector->cleanContent($original);
-        if ($filtered) {
-            $this->assertNotEquals($result, $original);
-        } else {
-            $this->assertEquals($result, $original);
-        }
+        $this->assertEquals($expected, $result);
     }
 }
