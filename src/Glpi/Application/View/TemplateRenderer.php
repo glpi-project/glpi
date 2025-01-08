@@ -81,8 +81,9 @@ class TemplateRenderer
         }
 
         $env_params = [
-            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-            'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
+            'debug'             => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
+            'auto_reload'       => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
+            'strict_variables'  => true,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
