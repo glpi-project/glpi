@@ -91,7 +91,7 @@ class Session
 
         if ($auth->auth_succeded) {
            // Restart GLPI session : complete destroy to prevent lost datas
-            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+            $tosave = ['glpi_plugins', 'plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
                 'glpiskipMaintenance'
             ];
             $save   = [];
