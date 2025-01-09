@@ -331,9 +331,6 @@ if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
     $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
     $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
-
-    $migration->addField("glpi_helpdesks_tiles_profiles_tiles", "rank", "int");
-    $migration->addKey("glpi_helpdesks_tiles_profiles_tiles", "rank");
 }
 
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
