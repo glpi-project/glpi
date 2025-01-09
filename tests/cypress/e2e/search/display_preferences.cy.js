@@ -145,9 +145,7 @@ describe('Display preferences', () => {
             cy.wait(250);
         }
 
-        cy.intercept('GET', '/ajax/common.tabs.php?*').as('refresh_tab_request');
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
-        cy.wait('@refresh_tab_request');
     }
 
     function addDisplayPeference(name) {
