@@ -438,7 +438,8 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::getInstance()->logException($exception);
+            ErrorHandler::getInstance()->outputExceptionMessage($exception);
             return new JSONResponse(null, 500);
         }
     }
@@ -457,7 +458,8 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::getInstance()->logException($exception);
+            ErrorHandler::getInstance()->outputExceptionMessage($exception);
             return new JSONResponse(null, 500);
         }
     }

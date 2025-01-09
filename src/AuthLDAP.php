@@ -2746,7 +2746,7 @@ TWIG, $twig_params);
                     ];
                 }
             } catch (\RuntimeException $e) {
-                ErrorHandler::getInstance()->handleException($e, false);
+                ErrorHandler::getInstance()->logException($e);
                 return false;
             }
         }

@@ -129,7 +129,7 @@ class Html
         try {
             $date = new \DateTime($time);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::getInstance()->logException($e);
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                     __('%1$s %2$s'),
@@ -6347,7 +6347,9 @@ HTML;
             }
             Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::getInstance()->logException($e);
+
+            ErrorHandler::getInstance()->outputExceptionMessage($e);
             if (isset($args['debug'])) {
                 $msg = 'An error occurred during SCSS compilation: ' . $e->getMessage();
                 $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);

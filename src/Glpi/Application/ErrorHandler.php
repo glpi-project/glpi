@@ -47,10 +47,8 @@ class ErrorHandler
 {
     /**
      * Map between error codes and log levels.
-     *
-     * @var array
      */
-    const ERROR_LEVEL_MAP = [
+    private const ERROR_LEVEL_MAP = [
         E_ERROR             => LogLevel::CRITICAL,
         E_WARNING           => LogLevel::WARNING,
         E_PARSE             => LogLevel::ALERT,
@@ -69,71 +67,26 @@ class ErrorHandler
     ];
 
     /**
-     * Fatal errors list.
-     *
-     * @var array
-     */
-    const FATAL_ERRORS = [
-        E_ERROR,
-        E_PARSE,
-        E_CORE_ERROR,
-        E_COMPILE_ERROR,
-        E_USER_ERROR,
-        E_RECOVERABLE_ERROR,
-    ];
-
-    /**
-     * Environment type.
+     * GLPI environment.
      */
     private string $env;
 
     /**
-     * Exit code to use on shutdown.
-     *
-     * @var int|null
-     */
-    private $exit_code = null;
-
-    /**
-     * Flag to indicate if error should be forwarded to PHP internal error handler.
-     *
-     * @var boolean
-     */
-    private $forward_to_internal_handler = true;
-
-    /**
      * Logger instance.
-     *
-     * @var LoggerInterface
      */
-    private $logger;
+    private ?LoggerInterface $logger = null;
 
     /**
      * Indicates wether output is disabled.
-     *
-     * @var bool
      */
-    private $output_disabled = false;
-
-    /**
-     * Indicates wether output is suspended (temporarly disabled).
-     *
-     * @var bool
-     */
-    private $output_suspended = false;
+    private bool $output_disabled = false;
 
     /**
      * Output handler to use. If not set, output will be directly echoed on a format depending on
      * execution context (Web VS CLI).
-     *
-     * @var OutputInterface|null
      */
-    private $output_handler;
+    private ?OutputInterface $output_handler = null;
 
-    /**
-     * @param LoggerInterface|null $logger
-     * @param string               $env
-     */
     private function __construct(?LoggerInterface $logger = null, string $env = GLPI_ENVIRONMENT_TYPE)
     {
         $this->logger = $logger;
@@ -179,26 +132,6 @@ class ErrorHandler
     }
 
     /**
-     * Suspend output.
-     *
-     * @return void
-     */
-    public function suspendOutput(): void
-    {
-        $this->output_suspended = true;
-    }
-
-    /**
-     * Take away output suspension.
-     *
-     * @return void
-     */
-    public function unsuspendOutput(): void
-    {
-        $this->output_suspended = false;
-    }
-
-    /**
      * Defines output handler.
      *
      * @param OutputInterface $output_handler
@@ -211,28 +144,17 @@ class ErrorHandler
     }
 
     /**
-     * Register error handler callbacks.
-     *
-     * @return void
+     * Register error reporting & display.
      */
     public function register(): void
     {
-        set_error_handler([$this, 'handleError']);
-
-        if (isCommandLine() && !defined('TU_USER')) {
-            // Register the exception handler only in CLI context.
-            // In web context, the exception will be catched by the `public/index.php` router
-            // and the error message will be displayed in the error page.
-            set_exception_handler([$this, 'handleException']);
-        }
-
         // Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
         // actually reported, and to prevent reporting other errors.
         $reporting_level = E_ALL;
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             if (
                 $this->env !== GLPI::ENV_DEVELOPMENT
-                && in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
+                && \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
             ) {
                 // Do not report debug and info messages unless in development env.
                 // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
@@ -241,117 +163,64 @@ class ErrorHandler
                 // triggered in vendor code to make our test suite fail.
                 // We may review this part once we will have migrate all our test suite on PHPUnit.
                 // For now, we rely on PHPStan to detect usages of deprecated code.
-                $reporting_level = $reporting_level & ~$value;
+                $reporting_level &= ~$value;
             }
 
             if (
-                !in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+                !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
                 && $log_level === LogLevel::NOTICE
             ) {
                 // Do not report notice messages unless in development/testing env.
                 // Notices are errors with no functional impact, so we do not want people to report them as issues.
-                $reporting_level = $reporting_level & ~$value;
+                $reporting_level &= ~$value;
             }
         }
-        error_reporting($reporting_level);
+        \error_reporting($reporting_level);
 
         // Disable native error displaying as it will be handled by `self::outputDebugMessage()`.
-        ini_set('display_errors', 'Off');
+        \ini_set('display_errors', 'Off');
     }
 
-    /**
-     * Error handler.
-     *
-     * @param integer $error_code
-     * @param string  $error_message
-     * @param string  $filename
-     * @param integer $line_number
-     *
-     * @return boolean
-     */
-    public function handleError(int $error_code, string $error_message, string $filename, int $line_number)
+    public function logPhpError(int $error_code, string $error_message, string $filename, int $line_number): void
     {
-        // Have to false to forward to PHP internal error handler.
-        $return = !$this->forward_to_internal_handler;
-
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         array_shift($trace);  // Remove current method from trace
         $error_trace = $this->getTraceAsString($trace);
 
-        if (in_array($error_code, self::FATAL_ERRORS, true)) {
-            throw $this->convertErrorToThrowable($error_code, $error_message, $filename, $line_number);
-        }
-
-        if (!(error_reporting() & $error_code)) {
-            // Do not handle error if '@' operator is used on errored expression
-            // see https://www.php.net/manual/en/language.operators.errorcontrol.php
-            return $return;
-        }
-
-        $error_type = sprintf(
-            'PHP %s (%s)',
-            $this->codeToString($error_code),
-            $error_code
+        $this->logErrorMessage(
+            \sprintf('PHP %s (%s)', $this->codeToString($error_code), $error_code),
+            \sprintf('%s in %s at line %s', $error_message, $filename, $line_number),
+            $error_trace,
+            self::ERROR_LEVEL_MAP[$error_code],
         );
-        $error_description = sprintf(
-            '%s in %s at line %s',
-            $error_message,
-            $filename,
-            $line_number
-        );
-        $log_level = self::ERROR_LEVEL_MAP[$error_code];
-
-        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-        $this->outputDebugMessage($error_type, $error_description, $log_level);
-
-        return $return;
     }
 
-    /**
-     * Exception handler.
-     *
-     * This handler is called by PHP prior to exiting, when an Exception is not catched,
-     * or manually called by the application to log exception details.
-     *
-     * @param \Throwable $exception
-     * @param bool $quiet
-     *
-     * @return void
-     */
-    public function handleException(\Throwable $exception, bool $quiet = false): void
+    public function outputPhpError(int $error_code, string $error_message, string $filename, int $line_number): void
     {
-        $this->exit_code = 255;
-
-        $error_type = sprintf(
-            'Uncaught Exception %s',
-            get_class($exception)
+        $this->outputDebugMessage(
+            \sprintf('PHP %s (%s)', $this->codeToString($error_code), $error_code),
+            \sprintf('%s in %s at line %s', $error_message, $filename, $line_number),
+            self::ERROR_LEVEL_MAP[E_ERROR],
         );
-        $error_description = sprintf(
-            '%s in %s at line %s',
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine()
-        );
-        $error_trace = $this->getTraceAsString($exception->getTrace());
-
-        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
-
-        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-        if (!$quiet) {
-            $this->outputDebugMessage($error_type, $error_description, $log_level);
-        }
     }
 
-    /**
-     * Defines if errors should be forward to PHP internal error handler.
-     *
-     * @param bool $forward_to_internal_handler
-     *
-     * @return void
-     */
-    public function setForwardToInternalHandler(bool $forward_to_internal_handler): void
+    public function logException(\Throwable $exception): void
     {
-        $this->forward_to_internal_handler = $forward_to_internal_handler;
+        $this->logErrorMessage(
+            \sprintf('Uncaught Exception %s', \get_class($exception)),
+            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            $this->getTraceAsString($exception->getTrace()),
+            self::ERROR_LEVEL_MAP[E_ERROR],
+        );
+    }
+
+    public function outputExceptionMessage(\Throwable $exception): void
+    {
+        $this->outputDebugMessage(
+            \sprintf('Uncaught Exception %s', \get_class($exception)),
+            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            self::ERROR_LEVEL_MAP[E_ERROR],
+        );
     }
 
     /**
@@ -397,8 +266,7 @@ class ErrorHandler
      */
     private function outputDebugMessage(string $error_type, string $message, string $log_level, bool $force = false): void
     {
-
-        if ($this->output_disabled || $this->output_suspended) {
+        if ($this->output_disabled) {
             return;
         }
 
@@ -514,27 +382,5 @@ class ErrorHandler
         }
 
         return $message;
-    }
-
-    private function convertErrorToThrowable(int $error_code, string $error_message, string $filename, int $line_number): \Throwable
-    {
-        $handler = new \Symfony\Component\ErrorHandler\ErrorHandler(null, $this->isDebug());
-        try {
-            $handler->handleError($error_code, $error_message, $filename, $line_number);
-        } catch (\Throwable $thrownException) {
-            return $thrownException;
-        }
-
-        return new \ErrorException(
-            message: \sprintf("An error occured (code %d, in %s::%d):\n%s", $error_code, $filename, $line_number, $error_message),
-            code: $error_code,
-            filename: $filename,
-            line: $line_number,
-        );
-    }
-
-    private function isDebug(): bool
-    {
-        return $this->env === GLPI::ENV_DEVELOPMENT || $this->env === GLPI::ENV_TESTING;
     }
 }

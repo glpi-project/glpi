@@ -256,7 +256,7 @@ class MailCollector extends CommonDBTM
                 $folders[] = $this->extractFolderData($folder);
             }
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::getInstance()->logException($e);
         }
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/folder_list.html.twig', [
             'item' => $this,
@@ -440,7 +440,7 @@ class MailCollector extends CommonDBTM
                 try {
                      $collector->connect();
                 } catch (\Throwable $e) {
-                    ErrorHandler::getInstance()->handleException($e, false);
+                    ErrorHandler::getInstance()->logException($e);
                     continue;
                 }
 
@@ -537,7 +537,9 @@ class MailCollector extends CommonDBTM
             try {
                 $this->connect();
             } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::getInstance()->logException($e);
+
+                ErrorHandler::getInstance()->outputExceptionMessage($e);
                 Session::addMessageAfterRedirect(
                     __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
                     false,
@@ -614,7 +616,7 @@ class MailCollector extends CommonDBTM
 
                         $messages[$message_id] = $message;
                     } catch (\Throwable $e) {
-                        ErrorHandler::getInstance()->handleException($e, false);
+                        ErrorHandler::getInstance()->logException($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(
@@ -662,7 +664,7 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (\Throwable $e) {
                         $error++;
-                        ErrorHandler::getInstance()->handleException($e, false);
+                        ErrorHandler::getInstance()->logException($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(

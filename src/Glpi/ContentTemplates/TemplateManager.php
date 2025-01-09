@@ -116,7 +116,7 @@ class TemplateManager
                 ]
             );
         } catch (\Twig\Error\Error $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::getInstance()->logException($e);
             return null;
         }
         return $html;

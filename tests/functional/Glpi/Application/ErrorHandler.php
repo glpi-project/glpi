@@ -143,7 +143,6 @@ class ErrorHandler extends \GLPITestCase
             \Glpi\Application\ErrorHandler::class,
             [$logger, $env]
         );
-        $error_handler->setForwardToInternalHandler(false);
         $error_handler->register();
 
         // Assert that nothing is logged when using '@' operator
@@ -257,73 +256,6 @@ class ErrorHandler extends \GLPITestCase
     }
 
     /**
-     * Test error handler and fatal error handler methods.
-     *
-     * @dataProvider handleErrorProvider
-     */
-    public function testHandleError(
-        int $session_mode,
-        string $env,
-        int $error_code,
-        ?Level $expected_log_level,
-        ?string $expected_msg_pattern,
-        bool $is_fatal_error
-    ) {
-        $handler = new TestHandler();
-        $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
-
-        $previous_use_mode = $_SESSION['glpi_use_mode'];
-
-        $error_handler = $this->callPrivateConstructor(
-            \Glpi\Application\ErrorHandler::class,
-            [$logger, $env]
-        );
-        $error_handler->setForwardToInternalHandler(false);
-        $error_handler->register();
-
-        // Assert that nothing is logged when using '@' operator
-        $_SESSION['glpi_use_mode'] = $session_mode;
-        @$error_handler->handleError($error_code, 'err_msg', __FILE__, __LINE__);
-        $_SESSION['glpi_use_mode'] = $previous_use_mode;
-        $this->integer(count($handler->getRecords()))->isEqualTo(0);
-        $this->output->isEmpty();
-
-        // Assert that error handler acts as expected when not using '@' operator
-        // Fatal error are not logged by function, but other errors should be
-        $_SESSION['glpi_use_mode'] = $session_mode;
-        $error_handler->handleError($error_code, 'err_msg', __FILE__, __LINE__);
-        $_SESSION['glpi_use_mode'] = $previous_use_mode;
-
-        if ($is_fatal_error) {
-            // If error is a Fatal error, message logging should be delegated to
-            // the 'handleFatalError' method which will be used as shutdown function.
-            $this->integer(count($handler->getRecords()))->isEqualTo(0);
-
-            $this->function->error_get_last = [
-                'type'    => $error_code,
-                'message' => 'err_msg',
-                'file'    => __FILE__,
-                'line'    => __LINE__,
-            ];
-            $_SESSION['glpi_use_mode'] = $session_mode;
-            $error_handler->handleFatalError();
-            $_SESSION['glpi_use_mode'] = $previous_use_mode;
-        }
-
-        if ($expected_log_level !== null) {
-            $this->integer(count($handler->getRecords()))->isEqualTo(1);
-            $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, $expected_log_level));
-        } else {
-            $this->integer(count($handler->getRecords()))->isEqualTo(0);
-        }
-        if ($expected_msg_pattern !== null && ($env === GLPI::ENV_DEVELOPMENT || $session_mode === Session::DEBUG_MODE)) {
-            $this->output->matches($expected_msg_pattern);
-        } else {
-            $this->output->isEmpty();
-        }
-    }
-
-    /**
      * Test exception handler.
      */
     public function testHandleException()
@@ -341,6 +273,7 @@ class ErrorHandler extends \GLPITestCase
                 $handler = new TestHandler();
                 $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
+                /** @var \Glpi\Application\ErrorHandler $error_handler */
                 $error_handler = $this->callPrivateConstructor(
                     \Glpi\Application\ErrorHandler::class,
                     [$logger, $env]
@@ -348,7 +281,7 @@ class ErrorHandler extends \GLPITestCase
 
                 // Assert that exception handler logs exception and output error when quiet parameter is not set
                 $_SESSION['glpi_use_mode'] = $session_mode;
-                $error_handler->handleException($exception);
+                $error_handler->logException($exception);
                 $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
                 $this->integer(count($handler->getRecords()))->isEqualTo(1);
@@ -362,26 +295,14 @@ class ErrorHandler extends \GLPITestCase
 
                 // Assert that exception handler logs exception and DO NOT output error when parameter mode is set to true
                 $_SESSION['glpi_use_mode'] = $session_mode;
-                $error_handler->handleException($exception, true);
+                $error_handler->logException($exception);
+                $error_handler->outputExceptionMessage($exception);
                 $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
                 $this->integer(count($handler->getRecords()))->isEqualTo(1);
                 $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, Level::Critical));
                 $this->output->isEmpty();
                 $handler->reset(); // Remove records
-
-                // Assert that exception handler logs exception and output error when parameter mode is set to false
-                $_SESSION['glpi_use_mode'] = $session_mode;
-                $error_handler->handleException($exception, false);
-                $_SESSION['glpi_use_mode'] = $previous_use_mode;
-
-                $this->integer(count($handler->getRecords()))->isEqualTo(1);
-                $this->boolean($handler->hasRecordThatMatches($expected_msg_pattern, Level::Critical));
-                if ($env === GLPI::ENV_DEVELOPMENT || $session_mode === Session::DEBUG_MODE) {
-                    $this->output->matches($expected_msg_pattern);
-                } else {
-                    $this->output->isEmpty();
-                }
             }
         }
     }

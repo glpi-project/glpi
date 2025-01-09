@@ -99,4 +99,3 @@ define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
 ErrorHandler::getInstance()->disableOutput();
-ErrorHandler::getInstance()->setForwardToInternalHandler(false);

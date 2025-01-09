@@ -209,7 +209,8 @@ switch ($_REQUEST['action']) {
             } catch (\Throwable $e) {
                 // Send exception to logger without actually exiting.
                 // Use quiet mode to not break JSON result.
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::getInstance()->logException($e);
+                ErrorHandler::getInstance()->outputExceptionMessage($e);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

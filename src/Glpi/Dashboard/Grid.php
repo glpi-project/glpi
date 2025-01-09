@@ -1039,7 +1039,8 @@ HTML;
         } catch (\Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::getInstance()->logException($e);
+            ErrorHandler::getInstance()->outputExceptionMessage($e);
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 

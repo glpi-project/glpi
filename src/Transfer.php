@@ -274,7 +274,7 @@ final class Transfer extends CommonDBTM
             if (!$intransaction && $DB->inTransaction()) {
                 $DB->rollBack();
             }
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::getInstance()->logException($e);
         }
     }
 

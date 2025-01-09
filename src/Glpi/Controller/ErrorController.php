@@ -121,7 +121,8 @@ class ErrorController extends AbstractController
             Toolbox::logInFile('access-errors', $message);
         } else {
             // Other errors are logged in the `php-errors` log
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::getInstance()->logException($exception);
+            ErrorHandler::getInstance()->outputExceptionMessage($exception);
         }
     }
 

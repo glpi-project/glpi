@@ -1880,7 +1880,7 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupt JSON output
+        ErrorHandler::getInstance()->disableOutput(); // Suspend error output to prevent warnings to corrupt JSON output
 
         $raw_events = [];
 
@@ -1954,7 +1954,7 @@ TWIG, $twig_params);
             }
         }
 
-        ErrorHandler::getInstance()->unsuspendOutput(); // Restore error output state
+        ErrorHandler::getInstance()->enableOutput(); // Restore error output state
 
         return $raw_events;
     }

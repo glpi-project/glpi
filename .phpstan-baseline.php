@@ -2150,18 +2150,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Psr\\\\Log\\\\LoggerInterface and Psr\\\\Log\\\\LoggerInterface will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$exit_code is never read, only written\\.$#',
-	'identifier' => 'property.onlyWritten',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\' will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
