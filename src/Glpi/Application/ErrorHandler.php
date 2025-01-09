@@ -309,36 +309,6 @@ class ErrorHandler
     }
 
     /**
-     * Twig error handler.
-     *
-     * This handler is manually called by application when an error occurred during Twig template rendering.
-     *
-     * @param \Twig\Error\Error $error
-     *
-     * @return void
-     */
-    public function handleTwigError(Error $error): void
-    {
-        $context = $error->getSourceContext();
-
-        $error_type = sprintf(
-            'Twig Error (%s)',
-            get_class($error)
-        );
-        $error_description = sprintf(
-            '"%s" in %s at line %s',
-            $error->getRawMessage(),
-            $context !== null ? sprintf('template "%s"', $context->getPath()) : 'unknown template',
-            $error->getTemplateLine()
-        );
-        $error_trace = $this->getTraceAsString($error->getTrace());
-        $log_level = self::ERROR_LEVEL_MAP[E_ERROR];
-
-        $this->logErrorMessage($error_type, $error_description, $error_trace, $log_level);
-        $this->outputDebugMessage($error_type, $error_description, $log_level);
-    }
-
-    /**
      * SQL warnings handler.
      *
      * This handler is manually called by application when warnings are triggered by a SQL query.

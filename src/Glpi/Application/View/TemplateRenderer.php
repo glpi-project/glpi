@@ -36,7 +36,6 @@
 namespace Glpi\Application\View;
 
 use GLPI;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -164,12 +163,9 @@ class TemplateRenderer
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             return $this->environment->load($template)->render($variables);
-        } catch (\Twig\Error\Error $e) {
-            ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
             Profiler::getInstance()->stop($template);
         }
-        return '';
     }
 
     /**
@@ -185,8 +181,6 @@ class TemplateRenderer
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             $this->environment->load($template)->display($variables);
-        } catch (\Twig\Error\Error $e) {
-            ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
             Profiler::getInstance()->stop($template);
         }
@@ -205,11 +199,8 @@ class TemplateRenderer
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             return $this->environment->createTemplate($template)->render($variables);
-        } catch (\Twig\Error\Error $e) {
-            ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
             Profiler::getInstance()->stop($template);
         }
-        return '';
     }
 }
