@@ -39,7 +39,7 @@ namespace tests\units;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class InfocomTest extends \GLPITestCase
+class InfocomTest extends \DBTestCase
 {
     public static function dataLinearAmortise()
     {
@@ -203,5 +203,72 @@ class InfocomTest extends \GLPITestCase
         if (count($oldmft)) {
             $this->assertSame($oldmft, \Infocom::mapOldAmortiseFormat($amortise, false));
         }
+    }
+
+    /**
+     * Test that alerts are raised for non-deleted items that have warranties that are about to expire.
+     * @return void
+     */
+    public function testExpireCronAlerts()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+        $computer = new \Computer();
+        $infocom = new \Infocom();
+
+        $this->assertTrue($root_entity->update([
+            'id' => $root_entity->getID(),
+            'use_infocoms_alert' => 1,
+            'send_infocoms_alert_before_delay' => 10, // 10 days
+        ]));
+
+        $deleted_id = $computer->add([
+            'name' => 'Deleted test',
+            'entities_id' => $root_entity->getID(),
+            'is_deleted' => 1,
+        ]);
+        $deleted_expired_infocom_id = $infocom->add([
+            'itemtype' => 'Computer',
+            'items_id' => $deleted_id,
+            'warranty_date' => date('Y-m-d', strtotime('-1 year')),
+            'warranty_duration' => 10, // 10 months
+        ]);
+
+        $deleted_id2 = $computer->add([
+            'name' => 'Deleted test',
+            'entities_id' => $root_entity->getID(),
+            'is_deleted' => 1,
+        ]);
+        $deleted_infocom_id = $infocom->add([
+            'itemtype' => 'Computer',
+            'items_id' => $deleted_id2,
+            'warranty_date' => date('Y-m-d', strtotime('-1 year')),
+            'warranty_duration' => 14, // 14 months
+        ]);
+
+        $not_deleted_id = $computer->add([
+            'name' => 'Not deleted test',
+            'entities_id' => $root_entity->getID(),
+        ]);
+        $not_deleted_infocom_id = $infocom->add([
+            'itemtype' => 'Computer',
+            'items_id' => $not_deleted_id,
+            'warranty_date' => date('Y-m-d', strtotime('-1 year')),
+            'warranty_duration' => 10, // 10 months
+        ]);
+
+        $CFG_GLPI["use_notifications"] = true;
+        \Infocom::cronInfocom();
+        $alerts = array_values(getAllDataFromTable(\Alert::getTable(), [
+            'itemtype' => 'Infocom',
+            'items_id' => [$deleted_infocom_id, $deleted_expired_infocom_id, $not_deleted_infocom_id],
+        ]));
+
+        $this->assertCount(2, $alerts);
+        $this->assertSame($not_deleted_infocom_id, $alerts[0]['items_id']);
+        $this->assertSame($deleted_expired_infocom_id, $alerts[1]['items_id']);
     }
 }
