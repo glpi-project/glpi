@@ -593,7 +593,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            \Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias)
+            (string)\Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias)
         );
     }
 
