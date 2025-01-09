@@ -2132,6 +2132,11 @@ JAVASCRIPT;
                 'state'       => $event['state'] ?? "",
             ];
 
+            // if duration is full day and start is midnight, force allDay to true
+            if (date('H:i:s', strtotime($begin)) === '00:00:00' && (int) $ms_duration % (DAY_TIMESTAMP * 1000) === 0) {
+                $new_event['allDay'] = true;
+            }
+
            // if we can't update the event, pass the editable key
             if (!$event['editable']) {
                 $new_event['editable'] = false;
