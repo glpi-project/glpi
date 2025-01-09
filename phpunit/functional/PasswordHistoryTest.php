@@ -37,9 +37,10 @@ namespace tests\units;
 
 use Auth;
 use DbTestCase;
+use Psr\Log\LogLevel;
 use User;
 
-final class PasswordHistory extends DbTestCase
+final class PasswordHistoryTest extends DbTestCase
 {
     /**
      * Data provider for testValidatePassword
@@ -52,7 +53,7 @@ final class PasswordHistory extends DbTestCase
 
         // Tests users
         $new_user = new User();
-        $this->boolean($new_user->getEmpty())->isTrue();
+        $this->assertTrue($new_user->getEmpty());
         $tu_user = getItemByTypeName('User', TU_USER);
 
         // Populate previous password data
@@ -135,22 +136,19 @@ final class PasswordHistory extends DbTestCase
     /**
      * Test method for PasswordHistory->validatePassword()
      *
-     * @dataprovider testValidatePasswordProvider
-     *
-     * @param User   $user     Test subject
-     * @param string $password Tested password
-     * @param bool   $expected Expected test result
-     *
      * @return void
      */
-    public function testValidatePassword(
-        User $user,
-        string $password,
-        bool $expected
-    ): void {
-        $this->boolean(
-            \PasswordHistory::getInstance()->validatePassword($user, $password)
-        )->isEqualTo($expected);
+    public function testValidatePassword(): void
+    {
+        foreach ($this->testValidatePasswordProvider() as $row) {
+            $user = $row['user'];
+            $password = $row['password'];
+            $expected = $row['expected'];
+            $this->assertEquals(
+                $expected,
+                \PasswordHistory::getInstance()->validatePassword($user, $password)
+            );
+        }
     }
 
     /**
@@ -232,36 +230,27 @@ final class PasswordHistory extends DbTestCase
     /**
      * Test method for PasswordHistory->updatePasswordHistory()
      *
-     * @dataprovider testUpdatePasswordHistoryProvider
-     *
-     * @param User        $user     Test subject
-     * @param string      $password Password to add to the history
-     * @param array       $expected Expected password history for the given user
-     * @param string|null $warning  Expected warning
-     *
      * @return void
      */
-    public function testUpdatePasswordHistory(
-        User $user,
-        string $password,
-        array $expected,
-        ?string $warning = null
-    ): void {
-        if (!$warning) {
+    public function testUpdatePasswordHistory(): void
+    {
+        foreach ($this->testUpdatePasswordHistoryProvider() as $row) {
+            $user = $row['user'];
+            $password = $row['password'];
+            $expected = $row['expected'];
+            $warning = $row['warning'] ?? null;
+
             \PasswordHistory::getInstance()->updatePasswordHistory($user, $password);
-        } else {
-            $this->when(
-                function () use ($user, $password) {
-                    \PasswordHistory::getInstance()->updatePasswordHistory($user, $password);
-                }
-            )->error()->withType(E_USER_WARNING)->withMessage($warning)->exists();
+            if ($warning) {
+                $this->hasPhpLogRecordThatContains($warning, LogLevel::WARNING);
+            }
+
+            // Check history
+            $passwords = $this->callPrivateMethod(\PasswordHistory::getInstance(), 'getForUser', $user);
+            $this->assertEquals($expected, $passwords);
+
+            // Ensure stored data doesn't go over the max allowed size
+            $this->assertLessThanOrEqual(\PasswordHistory::MAX_HISTORY_SIZE, count($passwords));
         }
-
-        // Check history
-        $passwords = $this->callPrivateMethod(\PasswordHistory::getInstance(), 'getForUser', $user);
-        $this->array($passwords)->isEqualTo($expected);
-
-        // Ensure stored data doesn't go over the max allowed size
-        $this->integer(count($passwords))->isLessThanOrEqualTo(\PasswordHistory::MAX_HISTORY_SIZE);
     }
 }

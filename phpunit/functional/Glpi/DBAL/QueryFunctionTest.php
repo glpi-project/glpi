@@ -36,10 +36,11 @@
 namespace tests\units\Glpi\DBAL;
 
 use Glpi\DBAL\QueryExpression;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class QueryFunction extends \GLPITestCase
+class QueryFunctionTest extends \GLPITestCase
 {
-    protected function dateAddProvider()
+    public static function dateAddProvider(): iterable
     {
         return [
             ['glpi_computers.date_mod', 1, 'DAY', null, 'DATE_ADD(`glpi_computers`.`date_mod`, INTERVAL 1 DAY)'],
@@ -50,15 +51,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dateAddProvider
-     */
-    public function testDateAdd($date, $interval, $interval_unit, $alias, $expected)
+    #[DataProvider('dateAddProvider')]
+    public function testDateAdd($date, $interval, $interval_unit, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::dateAdd($date, $interval, $interval_unit, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::dateAdd($date, $interval, $interval_unit, $alias)
+        );
     }
 
-    protected function concatProvider()
+    public static function concatProvider(): iterable
     {
         return [
             [
@@ -92,15 +94,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider concatProvider
-     */
-    public function testConcat($params, $alias, $expected)
+    #[DataProvider('concatProvider')]
+    public function testConcat($params, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::concat($params, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::concat($params, $alias)
+        );
     }
 
-    protected function concatWSProvider()
+    public static function concatWSProvider(): iterable
     {
         return [
             [
@@ -138,15 +141,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider concatWSProvider
-     */
-    public function testConcatWS($separator, $params, $alias, $expected)
+    #[DataProvider('concatWSProvider')]
+    public function testConcatWS($separator, $params, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::concat_ws($separator, $params, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::concat_ws($separator, $params, $alias)
+        );
     }
 
-    protected function ifProvider()
+    public static function ifProvider(): iterable
     {
         return [
             ['glpi_computers.is_deleted', new QueryExpression("'deleted'"), new QueryExpression("'not deleted'"), null, "IF(`glpi_computers`.`is_deleted`, 'deleted', 'not deleted')"],
@@ -156,15 +160,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider ifProvider
-     */
-    public function testIf($condition, $true, $false, $alias, $expected)
+    #[DataProvider('ifProvider')]
+    public function testIf($condition, $true, $false, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::if($condition, $true, $false, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::if($condition, $true, $false, $alias)
+        );
     }
 
-    protected function ifNullProvider()
+    public static function ifNullProvider(): iterable
     {
         return [
             ['`glpi_computers`.`name`', new QueryExpression("'unknown'"), null, "IFNULL(`glpi_computers`.`name`, 'unknown')"],
@@ -174,15 +179,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider ifNullProvider
-     */
-    public function testIfNUll($expression, $value, $alias, $expected)
+    #[DataProvider('ifNullProvider')]
+    public function testIfNUll($expression, $value, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::ifnull($expression, $value, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::ifnull($expression, $value, $alias)
+        );
     }
 
-    protected function groupConcatProvider()
+    public static function groupConcatProvider(): iterable
     {
         return [
             [
@@ -236,15 +242,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider groupConcatProvider
-     */
-    public function testGroupConcat($expression, $separator, $distinct, $order_by, $alias, $expected)
+    #[DataProvider('groupConcatProvider')]
+    public function testGroupConcat($expression, $separator, $distinct, $order_by, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias)
+        );
     }
 
-    protected function floorProvider()
+    public static function floorProvider(): iterable
     {
         return [
             ['glpi_computers.name', null, "FLOOR(`glpi_computers`.`name`)"],
@@ -252,15 +259,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider floorProvider
-     */
-    public function testFloor($expression, $alias, $expected)
+    #[DataProvider('floorProvider')]
+    public function testFloor($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::floor($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::floor($expression, $alias)
+        );
     }
 
-    protected function sumProvider()
+    public static function sumProvider(): iterable
     {
         return [
             ['glpi_computers.name', false, null, "SUM(`glpi_computers`.`name`)"],
@@ -270,15 +278,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider sumProvider
-     */
-    public function testSum($expression, $distinct, $alias, $expected)
+    #[DataProvider('sumProvider')]
+    public function testSum($expression, $distinct, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::sum($expression, $distinct, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::sum($expression, $distinct, $alias)
+        );
     }
 
-    protected function countProvider()
+    public static function countProvider(): iterable
     {
         return [
             ['glpi_computers.name', false, null, "COUNT(`glpi_computers`.`name`)"],
@@ -288,15 +297,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider countProvider
-     */
-    public function testCount($expression, $distinct, $alias, $expected)
+    #[DataProvider('countProvider')]
+    public function testCount($expression, $distinct, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::count($expression, $distinct, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::count($expression, $distinct, $alias)
+        );
     }
 
-    protected function minProvider()
+    public static function minProvider(): iterable
     {
         return [
             ['glpi_computers.uuid', null, "MIN(`glpi_computers`.`uuid`)"],
@@ -304,15 +314,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider minProvider
-     */
-    public function testMin($expression, $alias, $expected)
+    #[DataProvider('minProvider')]
+    public function testMin($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::min($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::min($expression, $alias)
+        );
     }
 
-    protected function avgProvider()
+    public static function avgProvider(): iterable
     {
         return [
             ['glpi_tickets.waiting_duration', null, "AVG(`glpi_tickets`.`waiting_duration`)"],
@@ -320,15 +331,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider avgProvider
-     */
-    public function testAvg($expression, $alias, $expected)
+    #[DataProvider('avgProvider')]
+    public function testAvg($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::avg($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::avg($expression, $alias)
+        );
     }
 
-    protected function castProvider()
+    public static function castProvider(): iterable
     {
         return [
             ['glpi_computers.serial', 'INT', null, "CAST(`glpi_computers`.`serial` AS INT)"],
@@ -336,15 +348,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider castProvider
-     */
-    public function testCast($expression, $type, $alias, $expected)
+    #[DataProvider('castProvider')]
+    public function testCast($expression, $type, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::cast($expression, $type, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::cast($expression, $type, $alias)
+        );
     }
 
-    protected function convertProvider()
+    public static function convertProvider(): iterable
     {
         return [
             ['glpi_computers.name', 'utf8mb4', null, "CONVERT(`glpi_computers`.`name` USING utf8mb4)"],
@@ -352,15 +365,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider convertProvider
-     */
-    public function testConvert($expression, $transcoding, $alias, $expected)
+    #[DataProvider('convertProvider')]
+    public function testConvert($expression, $transcoding, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::convert($expression, $transcoding, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::convert($expression, $transcoding, $alias)
+        );
     }
 
-    protected function nowProvider()
+    public static function nowProvider(): iterable
     {
         return [
             [null, "NOW()"],
@@ -368,15 +382,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider nowProvider
-     */
-    public function testNow($alias, $expected)
+    #[DataProvider('nowProvider')]
+    public function testNow($alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::now($alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::now($alias)
+        );
     }
 
-    protected function lowerProvider()
+    public static function lowerProvider(): iterable
     {
         return [
             ['glpi_computers.name', null, "LOWER(`glpi_computers`.`name`)"],
@@ -384,15 +399,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider lowerProvider
-     */
-    public function testLower($expression, $alias, $expected)
+    #[DataProvider('lowerProvider')]
+    public function testLower($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::lower($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::lower($expression, $alias)
+        );
     }
 
-    protected function replaceProvider()
+    public static function replaceProvider(): iterable
     {
         return [
             ['glpi_computers.name', 'glpi_computers.serial', 'glpi_computers.otherserial', null, "REPLACE(`glpi_computers`.`name`, `glpi_computers`.`serial`, `glpi_computers`.`otherserial`)"],
@@ -404,15 +420,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider replaceProvider
-     */
-    public function testReplace($expression, $search, $replace, $alias, $expected)
+    #[DataProvider('replaceProvider')]
+    public function testReplace($expression, $search, $replace, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::replace($expression, $search, $replace, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::replace($expression, $search, $replace, $alias)
+        );
     }
 
-    protected function unixTimestampProvider()
+    public static function unixTimestampProvider(): iterable
     {
         return [
             ['glpi_computers.date_mod', null, "UNIX_TIMESTAMP(`glpi_computers`.`date_mod`)"],
@@ -422,15 +439,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider unixTimestampProvider
-     */
-    public function testUnixTimestamp($expression, $alias, $expected)
+    #[DataProvider('unixTimestampProvider')]
+    public function testUnixTimestamp($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::unixTimestamp($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string) \Glpi\DBAL\QueryFunction::unixTimestamp($expression, $alias)
+        );
     }
 
-    protected function fromUnixTimestampProvider()
+    public static function fromUnixTimestampProvider(): iterable
     {
         return [
             [
@@ -460,15 +478,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider fromUnixTimestampProvider
-     */
-    public function testFromUnixTimestamp($expression, $format, $alias, $expected)
+    #[DataProvider('fromUnixTimestampProvider')]
+    public function testFromUnixTimestamp($expression, $format, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::fromUnixtime($expression, $format, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::fromUnixtime($expression, $format, $alias)
+        );
     }
 
-    protected function dateFormatProvider()
+    public static function dateFormatProvider(): iterable
     {
         return [
             ['glpi_computers.date_mod', '%Y-%m-%d', null, "DATE_FORMAT(`glpi_computers`.`date_mod`, '%Y-%m-%d')"],
@@ -476,15 +495,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider dateFormatProvider
-     */
-    public function testDateFormat($expression, $format, $alias, $expected)
+    #[DataProvider('dateFormatProvider')]
+    public function testDateFormat($expression, $format, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias)
+        );
     }
 
-    protected function coalesceProvider()
+    public static function coalesceProvider(): iterable
     {
         return [
             [
@@ -508,15 +528,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider coalesceProvider
-     */
-    public function testCoalesce($params, $alias, $expected)
+    #[DataProvider('coalesceProvider')]
+    public function testCoalesce($params, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::coalesce($params, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::coalesce($params, $alias)
+        );
     }
 
-    protected function leastProvider()
+    public static function leastProvider(): iterable
     {
         return [
             [
@@ -538,15 +559,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider leastProvider
-     */
-    public function testLeast($params, $alias, $expected)
+    #[DataProvider('leastProvider')]
+    public function testLeast($params, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::least($params, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::least($params, $alias)
+        );
     }
 
-    protected function timestampDiffProvider()
+    public static function timestampDiffProvider(): iterable
     {
         return [
             [
@@ -566,15 +588,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider timestampDiffProvider
-     */
-    public function testTimestampDiff($unit, $expression1, $expression2, $alias, $expected)
+    #[DataProvider('timestampDiffProvider')]
+    public function testTimestampDiff($unit, $expression1, $expression2, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias)
+        );
     }
 
-    protected function bitCountProvider()
+    public static function bitCountProvider(): iterable
     {
         return [
             [
@@ -590,15 +613,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider bitCountProvider
-     */
-    public function testBitCount($expression, $alias, $expected)
+    #[DataProvider('bitCountProvider')]
+    public function testBitCount($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::bitCount($expression, $alias)
+        );
     }
 
-    protected function substringProvider()
+    public static function substringProvider(): iterable
     {
         return [
             ['glpi_computers.name', 0, 10, null, "SUBSTRING(`glpi_computers`.`name`, 0, 10)"],
@@ -607,15 +631,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider substringProvider
-     */
-    public function testSubstring($expression, $start, $length, $alias, $expected)
+    #[DataProvider('substringProvider')]
+    public function testSubstring($expression, $start, $length, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias)
+        );
     }
 
-    protected function greatestProvider()
+    public static function greatestProvider(): iterable
     {
         return [
             [
@@ -637,15 +662,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider greatestProvider
-     */
-    public function testGreatest($params, $alias, $expected)
+    #[DataProvider('greatestProvider')]
+    public function testGreatest($params, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::greatest($params, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::greatest($params, $alias)
+        );
     }
 
-    protected function yearProvider()
+    public static function yearProvider(): iterable
     {
         return [
             [
@@ -666,15 +692,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider yearProvider
-     */
-    public function testYear($expression, $alias, $expected)
+    #[DataProvider('yearProvider')]
+    public function testYear($expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::year($expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::year($expression, $alias)
+        );
     }
 
-    protected function timeDiffProvider()
+    public static function timeDiffProvider(): iterable
     {
         return [
             [
@@ -698,15 +725,16 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider timeDiffProvider
-     */
-    public function testTimeDiff($expression1, $expression2, $alias, $expected)
+    #[DataProvider('timeDiffProvider')]
+    public function testTimeDiff($expression1, $expression2, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias)
+        );
     }
 
-    protected function locateProvider()
+    public static function locateProvider(): iterable
     {
         return [
             [
@@ -730,11 +758,12 @@ class QueryFunction extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider locateProvider
-     */
-    public function testLocate($substring, $expression, $alias, $expected)
+    #[DataProvider('locateProvider')]
+    public function testLocate($substring, $expression, $alias, $expected): void
     {
-        $this->string((string) \Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias))->isIdenticalTo($expected);
+        $this->assertSame(
+            $expected,
+            (string)\Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias)
+        );
     }
 }
