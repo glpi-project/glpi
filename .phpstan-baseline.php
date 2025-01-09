@@ -2162,18 +2162,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'Code\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'Message\' does not exist on string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$exit_code is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,

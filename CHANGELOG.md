@@ -395,6 +395,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Application\ErrorHandler::handleSqlError()`
+- `Glpi\Application\ErrorHandler::handleSqlWarnings()`
 - `Glpi\Application\ErrorHandler::handleTwigError()`
 - `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`

@@ -39,7 +39,6 @@ use GLPI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
-use Twig\Error\Error;
 
 /**
  * @since 9.5.0
@@ -306,33 +305,6 @@ class ErrorHandler
         $this->outputDebugMessage($error_type, $error_description, $log_level);
 
         return $return;
-    }
-
-    /**
-     * SQL warnings handler.
-     *
-     * This handler is manually called by application when warnings are triggered by a SQL query.
-     *
-     * @param string[] $warnings
-     * @param string   $query
-     *
-     * @return void
-     */
-    public function handleSqlWarnings(array $warnings, string $query)
-    {
-        $message = "\n"
-            . implode(
-                "\n",
-                array_map(
-                    function ($warning) {
-                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                    },
-                    $warnings
-                )
-            )
-            . "\n"
-            . sprintf('in query "%s"', $query);
-        $this->outputDebugMessage('SQL Warnings', $message, self::ERROR_LEVEL_MAP[E_USER_WARNING]);
     }
 
     /**
