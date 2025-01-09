@@ -37,9 +37,4 @@
  * @since 9.2
  */
 
-use Glpi\Application\ErrorHandler;
-
-// Ensure warnings will not break ajax output.
-ErrorHandler::getInstance()->disableOutput();
-
 GLPIUploadHandler::uploadFiles($_POST);

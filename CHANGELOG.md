@@ -166,7 +166,6 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 - The `helper` property of form fields will not support anymore the presence of HTML code.
-- `Glpi\Application\ErrorHandler` constructor visibility has been changed to private.
 - `GLPI::initErrorHandler()` does not return any value anymore.
 - The `inc/autoload.function.php`, `inc/based_config.php`, `inc/config.php`, `inc/db.function.php` and `inc/define.php` files have been removed and the `inc/includes.php` file has been almost emptied.
   The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding GLPI boostraping logic is now executed automatically.
@@ -397,11 +396,11 @@ The present file will list all changes made to the project; according to the
 - `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`
+- `GLPI::initErrorHandler()`
+- `GLPI::initLogger()`
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
-- `Glpi\Application\ErrorHandler::handleSqlError()`
-- `Glpi\Application\ErrorHandler::handleSqlWarnings()`
-- `Glpi\Application\ErrorHandler::handleTwigError()`
+- `Glpi\Application\ErrorHandler` class
 - `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`

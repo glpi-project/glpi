@@ -35,7 +35,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Log\LegacyGlobalLogger;
+use Glpi\Error\ErrorHandler;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -46,6 +46,9 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
+
+    // Prevent low level errors (e.g. warning) to be converted to exception in dev environment
+    $parameters->set('debug.error_handler.throw_at', ErrorHandler::FATAL_ERRORS);
 
     $services = $services
         ->defaults()
@@ -64,9 +67,7 @@ return static function (ContainerConfigurator $container): void {
         $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'
     );
 
-    /**
-     * Override Symfony's logger.
-     * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
-     */
-    $services->set('logger', LegacyGlobalLogger::class);
+    // Prevent Symfony to register its own default logger.
+    // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
+    $services->set('logger')->synthetic();
 };

@@ -167,7 +167,6 @@ function step2($update)
 function step3($host, $user, $password, $update)
 {
 
-    error_reporting(16);
     mysqli_report(MYSQLI_REPORT_OFF);
 
    //Check if the port is in url
@@ -482,13 +481,6 @@ function update1($dbname)
     }
 }
 
-
-
-//------------Start of install script---------------------------
-
-error_reporting(0); // we want to check system before affraid the user.
-
-
 /**
  * @since 0.84.2
  **/
@@ -508,6 +500,10 @@ function checkConfigFile()
 
     Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
 }
+
+
+//------------Start of install script---------------------------
+
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     $_SESSION = [];

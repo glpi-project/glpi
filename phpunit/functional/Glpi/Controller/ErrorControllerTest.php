@@ -42,7 +42,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -182,10 +181,6 @@ class ErrorControllerTest extends DbTestCase
         } else {
             $this->assertStringNotContainsString('<pre data-testid="stack-trace">', $content);
         }
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
-        }
     }
 
     #[DataProvider('requestProvider')]
@@ -225,10 +220,6 @@ class ErrorControllerTest extends DbTestCase
             $this->assertStringContainsString('<pre data-testid="stack-trace">', $content);
         } else {
             $this->assertStringNotContainsString('<pre data-testid="stack-trace">', $content);
-        }
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
         }
     }
 
@@ -278,9 +269,5 @@ class ErrorControllerTest extends DbTestCase
 
         $this->assertArrayHasKey('trace', $decoded_content);
         $this->assertEquals($debug_mode, $decoded_content['trace'] !== null);
-
-        if ($expected_code >= 500) {
-            $this->hasPhpLogRecordThatContains('*** Uncaught Exception', LogLevel::CRITICAL);
-        }
     }
 }

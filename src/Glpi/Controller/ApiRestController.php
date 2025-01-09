@@ -35,7 +35,6 @@
 namespace Glpi\Controller;
 
 use Glpi\Api\APIRest;
-use Glpi\Application\ErrorHandler;
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Security\Attribute\DisableCsrfChecks;
@@ -60,9 +59,6 @@ final class ApiRestController extends AbstractController
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
         return new HeaderlessStreamedResponse(function () {
-            // Ensure errors will not break API output.
-            ErrorHandler::getInstance()->disableOutput();
-
             $api = new APIRest();
             $api->call();
         });

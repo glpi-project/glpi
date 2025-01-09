@@ -32,29 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Glpi\Log;
 
-// Check PHP version not to have trouble
-// Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.4.999', '>')) {
-    exit('PHP version must be between 8.2 and 8.4.');
+use Monolog\Handler\StreamHandler;
+use Psr\Log\LogLevel;
+
+abstract class AbstractLogHandler extends StreamHandler
+{
+    public function __construct(string $logfile)
+    {
+        if (\defined('GLPI_LOG_LVL')) {
+            $log_level = \GLPI_LOG_LVL;
+        } else {
+            $log_level = match (\GLPI_ENVIRONMENT_TYPE) {
+                \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
+                \GLPI::ENV_TESTING => LogLevel::DEBUG,
+                default => LogLevel::WARNING,
+            };
+        }
+
+        parent::__construct($logfile, $log_level);
+    }
 }
-
-// Check the resources state before trying to instanciate the Kernel.
-// It must be done here as this check must be done even when the Kernel
-// cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
-
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$kernel = new Kernel();
-
-$request = Request::createFromGlobals();
-
-$response = $kernel->handle($request);
-
-$response->send();
-
-$kernel->terminate($request, $response);

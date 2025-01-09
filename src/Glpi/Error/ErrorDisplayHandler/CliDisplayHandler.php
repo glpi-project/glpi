@@ -32,29 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Glpi\Error\ErrorDisplayHandler;
 
-// Check PHP version not to have trouble
-// Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.4.999', '>')) {
-    exit('PHP version must be between 8.2 and 8.4.');
+final class CliDisplayHandler implements ErrorDisplayHandler
+{
+    public function canOutput(): bool
+    {
+        if (\defined('TU_USER')) {
+            // Our test suite il already checking logs to ensure that there is no unexpected error triggerred.
+            // Displaying of error messages is then disabled to not pollute the test suite results.
+            return false;
+        }
+
+        return \isCommandLine();
+    }
+
+    public function displayErrorMessage(string $error_label, string $message, string $log_level): void
+    {
+        echo \sprintf('%s: %s', $error_label, $message) . PHP_EOL;
+    }
 }
-
-// Check the resources state before trying to instanciate the Kernel.
-// It must be done here as this check must be done even when the Kernel
-// cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
-
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$kernel = new Kernel();
-
-$request = Request::createFromGlobals();
-
-$response = $kernel->handle($request);
-
-$response->send();
-
-$kernel->terminate($request, $response);
