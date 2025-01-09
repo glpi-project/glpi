@@ -1229,9 +1229,10 @@ class User extends CommonDBTM
             }
         }
 
-       // Security on default group  update
+        // Security on default group update
         if (
             isset($input['groups_id'])
+            && $input['groups_id'] > 0
             && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
         ) {
             unset($input['groups_id']);

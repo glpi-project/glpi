@@ -1013,9 +1013,8 @@ TWIG,
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_GLPI;
 
         // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
@@ -1036,11 +1035,13 @@ TWIG,
         $theme = ThemeManager::getInstance()->getCurrentTheme();
 
         $tpl_vars = [
-            'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title'     => $title,
-            'theme'     => $theme,
-            'css_files' => [],
-            'js_files'  => [],
+            'lang'               => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'              => $title,
+            'theme'              => $theme,
+            'is_anonymous_page'  => false,
+            'css_files'          => [],
+            'js_files'           => [],
+            'custom_header_tags' => [],
         ];
 
         $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
@@ -1188,30 +1189,6 @@ TWIG,
             $tpl_vars['high_contrast'] = true;
         }
 
-       // Add specific css for plugins
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_CSS]) && count($PLUGIN_HOOKS[Hooks::ADD_CSS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_CSS] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $file) {
-                    $tpl_vars['css_files'][] = [
-                        'path' => "{$CFG_GLPI['root_doc']}/plugins/{$plugin}/{$file}",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
-        }
-
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
@@ -1224,18 +1201,6 @@ TWIG,
             $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
             $tpl_vars['css_files'][] = ['path' => $theme_path];
         }
-
-        // Add specific meta tags for plugins
-        $custom_header_tags = [];
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG]) && count($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG] as $plugin => $plugin_header_tags) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                array_push($custom_header_tags, ...$plugin_header_tags);
-            }
-        }
-        $tpl_vars['custom_header_tags'] = $custom_header_tags;
 
 
         $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
@@ -1693,9 +1658,8 @@ TWIG,
         /**
          * @var array $CFG_GLPI
          * @var bool $FOOTER_LOADED
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $FOOTER_LOADED, $PLUGIN_HOOKS;
+        global $CFG_GLPI, $FOOTER_LOADED;
 
        // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1726,6 +1690,7 @@ TWIG,
 
         $tpl_vars = [
             'js_files' => [],
+            'js_modules' => [],
         ];
 
        // On demand scripts
@@ -1752,47 +1717,6 @@ TWIG,
         }
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
-
-        if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    $tpl_vars['js_files'][] = [
-                        'path' => "/plugins/{$plugin}/{$file}",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
-        }
-        if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    $tpl_vars['js_modules'][] = [
-                        'path' => "/plugins/{$plugin}/{$file}",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
-        }
 
         $tpl_vars['debug_info'] = null;
 

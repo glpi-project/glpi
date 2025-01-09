@@ -98,7 +98,8 @@ class Item_RemoteManagement extends CommonDBChild
             'FROM'      => self::getTable(),
             'WHERE'     => [
                 'itemtype'     => $item->getType(),
-                'items_id'     => $item->fields['id']
+                'items_id'     => $item->fields['id'],
+                'is_deleted'   => 0,
             ]
         ]);
         return $iterator;

@@ -455,6 +455,49 @@ TWIG, $twig_params);
             $subtables[] = $subtable;
         }
 
+        if (in_array($itemtype, $CFG_GLPI['remote_management_types'], true)) {
+            $iterator = $DB->request([
+                'FROM'  => Item_RemoteManagement::getTable(),
+                'WHERE' => [
+                    'is_dynamic'   => 1,
+                    'is_deleted'   => 1,
+                    'items_id'     => $ID,
+                    'itemtype'     => $itemtype
+                ]
+            ]);
+
+            $subtable = [
+                'nopager' => true,
+                'nosort' => true,
+                'nofilter' => true,
+                'columns' => [
+                    'chk' => '',
+                    'item' => Item_RemoteManagement::getTypeName(1),
+                    'type' => _n('Type', 'Types', 1),
+                    'is_dynamic' => __('Automatic inventory')
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => []
+            ];
+
+            foreach ($iterator as $line) {
+                $remote_management = new Item_RemoteManagement();
+                $remote_management->getFromResultSet($line);
+                $show_checkbox = $remote_management->can($line['id'], UPDATE) || $remote_management->can($remote_management->getID(), PURGE);
+                $subtable['entries'][] = [
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_RemoteManagement[{$remote_management->getID()}]'>" : '',
+                    'item' => $remote_management->getLink(),
+                    'type' => $remote_management->fields['type'],
+                    'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic'])
+                ];
+            }
+
+            $subtables[] = $subtable;
+        }
+
         $item_vm = new ItemVirtualMachine();
         $item_vms = $DB->request([
             'FROM'  => $item_vm::getTable(),

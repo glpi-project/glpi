@@ -31,6 +31,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{# JS scripts / modules are loaded in the footer in non-anonymous pages #}
+{% set js_files = js_files|merge(get_plugins_js_scripts_files(false)) %}
+{% set js_modules = js_modules|merge(get_plugins_js_modules_files(false)) %}
+
             </main> {# #page #}
          </div> {# .page-body #}
       </div> {# .page-wrapper #}

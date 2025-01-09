@@ -783,7 +783,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $this->assertEquals(
             1,
             countElementsInTable(
-                \Item_Project::getTable(),
+                \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsCreate_id
@@ -803,7 +803,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $this->assertEquals(
             0,
             countElementsInTable(
-                \Item_Project::getTable(),
+                \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id
@@ -824,7 +824,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $this->assertEquals(
             1,
             countElementsInTable(
-                \Item_Project::getTable(),
+                \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id

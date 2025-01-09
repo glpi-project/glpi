@@ -1474,8 +1474,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
@@ -1782,8 +1782,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
