@@ -34,8 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use RRule\RRule;
@@ -1880,8 +1878,6 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupt JSON output
-
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
@@ -1953,8 +1949,6 @@ TWIG, $twig_params);
                 ];
             }
         }
-
-        ErrorHandler::getInstance()->unsuspendOutput(); // Restore error output state
 
         return $raw_events;
     }

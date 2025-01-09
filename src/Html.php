@@ -34,11 +34,11 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -129,7 +129,8 @@ class Html
         try {
             $date = new \DateTime($time);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                     __('%1$s %2$s'),
@@ -6347,7 +6348,7 @@ HTML;
             }
             Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::logCaughtException($e);
             if (isset($args['debug'])) {
                 $msg = 'An error occurred during SCSS compilation: ' . $e->getMessage();
                 $msg = str_replace(["\n", "\"", "'"], ['\00000a', '\0022', '\0027'], $msg);

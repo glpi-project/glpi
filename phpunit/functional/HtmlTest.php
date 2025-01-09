@@ -70,7 +70,7 @@ class HtmlTest extends \GLPITestCase
 
         $expected_error = 'Failed to parse time string (not a date) at position 0 (n): The timezone could not be found in the database';
         $this->assertSame('not a date', \Html::convDate('not a date', 2));
-        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::CRITICAL);
+        $this->hasPhpLogRecordThatContains($expected_error, LogLevel::ERROR);
     }
 
     public function testConvDateTime()

@@ -52,8 +52,12 @@ final class ListenersPriority
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [
+        // Registers the current request to the error handler.
+        // Keep it in top priority as is required during handling of errors that may be triggered by any other listener.
+        HttpListener\ErrorHandlerRequestListener::class => 1000,
+
         // Static assets must be served without executing anything else.
-        // Keep them on top priority.
+        // Keep the listener on top priority.
         HttpListener\LegacyAssetsListener::class        => 500,
 
         // This listener will ensure that the request is made on a secure context (HTTPS) when the

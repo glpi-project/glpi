@@ -1736,12 +1736,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property GLPI\\:\\:\\$error_handler is unused\\.$#',
-	'identifier' => 'property.unused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPI.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method GLPIKey\\:\\:keyExists\\(\\) should return string but returns bool\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2064,24 +2058,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Psr\\\\Log\\\\LoggerInterface and Psr\\\\Log\\\\LoggerInterface will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Application\\\\ErrorHandler\\:\\:\\$exit_code is never read, only written\\.$#',
-	'identifier' => 'property.onlyWritten',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between null and 2 will always evaluate to false\\.$#',

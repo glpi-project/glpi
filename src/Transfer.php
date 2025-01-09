@@ -33,10 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 use Glpi\Toolbox\URL;
@@ -274,7 +274,8 @@ final class Transfer extends CommonDBTM
             if (!$intransaction && $DB->inTransaction()) {
                 $DB->rollBack();
             }
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
         }
     }
 

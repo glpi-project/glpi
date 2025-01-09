@@ -32,29 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Kernel\Kernel;
-use Symfony\Component\HttpFoundation\Request;
+namespace Glpi\Log;
 
-// Check PHP version not to have trouble
-// Need to be the very fist step before any include
-if (version_compare(PHP_VERSION, '8.2.0', '<') || version_compare(PHP_VERSION, '8.4.999', '>')) {
-    exit('PHP version must be between 8.2 and 8.4.');
+use Monolog\LogRecord;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+
+class AccessLogHandler extends AbstractLogHandler
+{
+    public function __construct()
+    {
+        parent::__construct(GLPI_LOG_DIR . '/access-errors.log');
+
+        $this->setFormatter(new AccessLogLineFormatter());
+    }
+
+    #[\Override()]
+    public function isHandling(LogRecord $record): bool
+    {
+        // Only log access errors.
+        // @see \Glpi\Log\ErrorLogHandler::canHandle()
+        if (!isset($record->context['exception'])) {
+            return false;
+        }
+
+        /** @var \Throwable $exception */
+        $exception = $record->context['exception'];
+        if (
+            !($exception instanceof HttpExceptionInterface)
+            || $exception->getStatusCode() < 400
+            || $exception->getStatusCode() >= 500
+        ) {
+            return false;
+        }
+
+        return parent::isHandling($record);
+    }
 }
-
-// Check the resources state before trying to instanciate the Kernel.
-// It must be done here as this check must be done even when the Kernel
-// cannot be instanciated due to missing dependencies.
-require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
-(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
-
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$kernel = new Kernel();
-
-$request = Request::createFromGlobals();
-
-$response = $kernel->handle($request);
-
-$response->send();
-
-$kernel->terminate($request, $response);

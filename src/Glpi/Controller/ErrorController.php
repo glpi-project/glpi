@@ -36,7 +36,6 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
-use Glpi\Application\ErrorHandler;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -47,7 +46,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Toolbox;
 
 class ErrorController extends AbstractController
 {
@@ -57,76 +55,6 @@ class ErrorController extends AbstractController
             return new Response('', 500);
         }
 
-        $this->logException($exception, $request);
-
-        return $this->getErrorResponse($exception, $request);
-    }
-
-    private function logException(\Throwable $exception, Request $request): void
-    {
-        if (
-            $exception instanceof HttpExceptionInterface
-            && $exception->getStatusCode() >= 400
-            && $exception->getStatusCode() < 500
-        ) {
-            // 4xx errors are logged in the `access-errors` log
-
-            $requested_uri = $request->getPathInfo();
-            if (($qs = $request->getQueryString()) !== null) {
-                $requested_uri .= '?' . $qs;
-            }
-
-            $user_id = Session::getLoginUserID() ?: 'Anonymous';
-
-            switch ($exception::class) {
-                case AccessDeniedHttpException::class:
-                    $message = sprintf(
-                        'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-                case NotFoundHttpException::class:
-                    $message = sprintf(
-                        'User ID: `%s` tried to access a non-existent item on `%s`.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-                default:
-                    $message = sprintf(
-                        'User ID: `%s` tried to execute an invalid request on `%s`.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-            }
-
-            if (($exception_message = $exception->getMessage()) !== '') {
-                $message .= sprintf('Additional information: %s', $exception_message);
-            }
-
-            $message .= "\n";
-            $message .= "  Backtrace :\n";
-
-            foreach ($exception->getTrace() as $frame) {
-                $script = ($frame['file'] ?? '') . ':' . ($frame['line'] ?? '');
-                $call = ($frame['class'] ?? '') . ($frame['type'] ?? '') . $frame['function'];
-                if (!empty($call)) {
-                    $call .= '()';
-                }
-                $message .= "  $script $call\n";
-            }
-
-            Toolbox::logInFile('access-errors', $message);
-        } else {
-            // Other errors are logged in the `php-errors` log
-            ErrorHandler::getInstance()->handleException($exception, true);
-        }
-    }
-
-    private function getErrorResponse(\Throwable $exception, Request $request): Response
-    {
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         $title      = _n('Error', 'Errors', 1);
