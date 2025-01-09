@@ -302,9 +302,11 @@ final class FormSerializer extends AbstractFormSerializer
         $spec               = new FormContentSpecification();
         $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'] ?? "";
-        $spec->description  = $form->fields['description'] ?? "";
+        $spec->header       = $form->fields['header'];
+        $spec->description  = $form->fields['description'];
+        $spec->illustration = $form->fields['illustration'];
         $spec->is_recursive = $form->fields['is_recursive'];
+        $spec->is_active    = $form->fields['is_active'];
 
         $entity = Entity::getById($form->fields['entities_id']);
         $spec->entity_name = $entity->fields['name'];
@@ -334,9 +336,11 @@ final class FormSerializer extends AbstractFormSerializer
             'name'                  => $spec->name,
             'header'                => $spec->header,
             'description'           => $spec->description,
+            'illustration'          => $spec->illustration,
             'forms_categories_id'   => $categories_id ?? 0,
             'entities_id'           => $entities_id,
             'is_recursive'          => $spec->is_recursive,
+            'is_active'             => $spec->is_active,
             '_do_not_init_sections' => true,
         ]);
         if (!$form->getFromDB($id)) {
@@ -354,7 +358,7 @@ final class FormSerializer extends AbstractFormSerializer
             $section_spec = new SectionContentSpecification();
             $section_spec->name = $section->fields['name'];
             $section_spec->rank = $section->fields['rank'];
-            $section_spec->description = $section->fields['description'] ?? "";
+            $section_spec->description = $section->fields['description'];
 
             $form_spec->sections[] = $section_spec;
         }

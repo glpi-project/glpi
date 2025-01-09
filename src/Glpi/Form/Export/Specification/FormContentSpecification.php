@@ -39,11 +39,13 @@ final class FormContentSpecification
 {
     public int $id;
     public string $name;
-    public string $header;
-    public string $description;
+    public ?string $header;
+    public ?string $description;
+    public string $illustration;
     public string $category_name;
     public string $entity_name;
     public bool $is_recursive;
+    public bool $is_active;
 
     /** @var SectionContentSpecification[] $sections */
     public array $sections = [];

@@ -38,6 +38,6 @@ namespace Glpi\Form\Export\Specification;
 final class SectionContentSpecification
 {
     public string $name;
-    public string $description;
+    public ?string $description;
     public int $rank;
 }
