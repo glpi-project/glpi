@@ -334,8 +334,8 @@ final class FormSerializer extends AbstractFormSerializer
         $form = new Form();
         $id = $form->add([
             'name'                  => $spec->name,
-            'header'                => $spec->header,
-            'description'           => $spec->description,
+            'header'                => $spec->header ?? null,
+            'description'           => $spec->description ?? null,
             'illustration'          => $spec->illustration,
             'forms_categories_id'   => $categories_id ?? 0,
             'entities_id'           => $entities_id,
