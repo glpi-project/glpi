@@ -99,6 +99,10 @@
         margin-left: 1.5rem !important;
         padding: 3px;
     }
+
+    &.navbar-expand-lg {
+        overflow-y: visible;
+    }
 }
 
 .sidebar {
