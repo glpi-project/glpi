@@ -116,20 +116,6 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->it->execute(['FROM' => []]);
     }
 
-    public function testDebug()
-    {
-        //Defining the following constant should produce the same, but this is not testable.
-        //define('GLPI_SQL_DEBUG', true);
-
-        $id = mt_rand();
-        $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'name', 'id = ' . $id], true);
-
-        $this->hasSqlLogRecordThatContains(
-            'Generated query: SELECT `name` FROM `foo` WHERE (id = ' . $id . ')',
-            LogLevel::DEBUG
-        );
-    }
-
     public function testFields()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'FIELDS' => 'bar', 'DISTINCT' => true]);
@@ -1529,10 +1515,7 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'params'   => ['glpi_computers', ''],
             'expected' => [
-                'criteria' => [
-                    'FROM' => 'glpi_computers',
-                ],
-                'debug'    => false,
+                'FROM' => 'glpi_computers',
             ],
             'sql'      => 'SELECT * FROM `glpi_computers`',
         ];
@@ -1541,11 +1524,8 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'params'   => ['glpi_computers', 'is_deleted = 0'],
             'expected' => [
-                'criteria' => [
-                    'FROM'  => 'glpi_computers',
-                    'WHERE' => [new QueryExpression('is_deleted = 0')]
-                ],
-                'debug'    => false,
+                'FROM'  => 'glpi_computers',
+                'WHERE' => [new QueryExpression('is_deleted = 0')]
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
         ];
@@ -1554,12 +1534,9 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'params'   => ['glpi_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
             'expected' => [
-                'criteria' => [
-                    'FROM'  => 'glpi_computers',
-                    'WHERE' => ['is_deleted' => 0],
-                    'ORDER' => 'id DESC'
-                ],
-                'debug'    => false,
+                'FROM'  => 'glpi_computers',
+                'WHERE' => ['is_deleted' => 0],
+                'ORDER' => 'id DESC'
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
         ];
@@ -1568,11 +1545,8 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'params'   => ['glpi_computers', ['is_deleted' => 1]],
             'expected' => [
-                'criteria' => [
-                    'FROM'  => 'glpi_computers',
-                    'is_deleted' => 1,
-                ],
-                'debug'    => false,
+                'FROM'  => 'glpi_computers',
+                'is_deleted' => 1,
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
         ];
@@ -1589,10 +1563,7 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'params'   => [$union, ''],
             'expected' => [
-                'criteria' => [
-                    'FROM'  => $union,
-                ],
-                'debug'    => false,
+                'FROM'  => $union,
             ],
             'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `glpi_computers`) UNION ALL (SELECT `serial` FROM `glpi_printers`)) AS `testalias`',
         ];

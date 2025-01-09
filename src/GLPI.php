@@ -78,9 +78,8 @@ class GLPI
     {
         /**
          * @var \Psr\Log\LoggerInterface $PHPLOGGER
-         * @var \Psr\Log\LoggerInterface $SQLLOGGER
          */
-        global $PHPLOGGER, $SQLLOGGER;
+        global $PHPLOGGER;
 
         if (defined('GLPI_LOG_LVL')) {
             $log_level = GLPI_LOG_LVL;
@@ -104,24 +103,14 @@ class GLPI
             }
         }
 
-        foreach (['php', 'sql'] as $type) {
-            $logger = new Logger('glpi' . $type . 'log');
-            $handler = new StreamHandler(
-                GLPI_LOG_DIR . "/{$type}-errors.log",
-                $log_level
-            );
-            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-            switch ($type) {
-                case 'php':
-                    $PHPLOGGER = $logger;
-                    break;
-                case 'sql':
-                    $SQLLOGGER = $logger;
-                    break;
-            }
-        }
+        $PHPLOGGER = new Logger('glpiphplog');
+        $handler = new StreamHandler(
+            GLPI_LOG_DIR . "/php-errors.log",
+            $log_level
+        );
+        $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
+        $handler->setFormatter($formatter);
+        $PHPLOGGER->pushHandler($handler);
     }
 
     /**

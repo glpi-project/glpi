@@ -301,6 +301,7 @@ The present file will list all changes made to the project; according to the
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `GLPI_DEMO_MODE` constant.
 - `GLPI_DUMP_DIR` constant.
+- `GLPI_SQL_DEBUG` constant.
 - `$CFG_GLPI_PLUGINS` global variable.
 - `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
 - `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
@@ -308,6 +309,7 @@ The present file will list all changes made to the project; according to the
 - `$LANG` global variable.
 - `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
 - `$SECURITY_STRATEGY` global variable.
+- `$SQLLOGGER` global variable
 - Usage of `$CFG_GLPI['itemdevices']` and `$CFG_GLPI['item_device_types']` configuration entries. Use `Item_Devices::getDeviceTypes()` to get the `Item_Devices` concrete class list.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
@@ -375,6 +377,7 @@ The present file will list all changes made to the project; according to the
 - `DbUtils::regenerateTreeCompleteName()`
 - `DBConnection::displayMySQLError()`
 - `DBmysql::error` property.
+- `DBmysql::getLastQueryWarnings()`
 - `Document::getImage()`
 - `Document::showUploadedFilesDropdown()`
 - `Document::uploadDocument()`
@@ -544,6 +547,9 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::handleProfileChangeRedirect()`
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
+- `Toolbox::logSqlDebug()`
+- `Toolbox::logSqlError()`
+- `Toolbox::logSqlWarning()`
 - `Toolbox::logWarning()`
 - `Toolbox::showMailServerConfig()`
 - `Toolbox::sodiumDecrypt()`

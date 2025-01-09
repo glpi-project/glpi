@@ -36,7 +36,6 @@
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -54,12 +53,7 @@ class GLPITestCase extends TestCase
     /**
      * @var TestHandler
      */
-    private $php_log_handler;
-
-    /**
-     * @var TestHandler
-     */
-    private $sql_log_handler;
+    private $log_handler;
 
     public function setUp(): void
     {
@@ -78,13 +72,11 @@ class GLPITestCase extends TestCase
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
-        // Init log handlers
-        global $PHPLOGGER, $SQLLOGGER;
+        // Init log handler
+        global $PHPLOGGER;
         /** @var \Monolog\Logger $PHPLOGGER */
-        $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
-        $PHPLOGGER->setHandlers([$this->php_log_handler]);
-        $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
-        $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+        $this->log_handler = new TestHandler(LogLevel::DEBUG);
+        $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
     }
@@ -110,28 +102,26 @@ class GLPITestCase extends TestCase
         }
 
         if (!$this->has_failed) {
-            foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
-                $this->assertIsArray($log_handler->getRecords());
-                $clean_logs = array_map(
-                    static function (\Monolog\LogRecord $entry): array {
-                        return [
-                            'channel' => $entry->channel,
-                            'level'   => $entry->level->name,
-                            'message' => $entry->message,
-                        ];
-                    },
-                    $log_handler->getRecords()
-                );
-                $this->assertEmpty(
-                    $clean_logs,
-                    sprintf(
-                        "Unexpected entries in log in %s::%s:\n%s",
-                        static::class,
-                        __METHOD__/*$method*/,
-                        print_r($clean_logs, true)
-                    )
-                );
-            }
+            $this->assertIsArray($this->log_handler->getRecords());
+            $clean_logs = array_map(
+                static function (\Monolog\LogRecord $entry): array {
+                    return [
+                        'channel' => $entry->channel,
+                        'level'   => $entry->level->name,
+                        'message' => $entry->message,
+                    ];
+                },
+                $this->log_handler->getRecords()
+            );
+            $this->assertEmpty(
+                $clean_logs,
+                sprintf(
+                    "Unexpected entries in log in %s::%s:\n%s",
+                    static::class,
+                    __METHOD__/*$method*/,
+                    print_r($clean_logs, true)
+                )
+            );
         }
     }
 
@@ -261,32 +251,6 @@ class GLPITestCase extends TestCase
      */
     protected function hasPhpLogRecordThatContains(string $message, string $level): void
     {
-        $this->hasLogRecordThatContains($this->php_log_handler, $message, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatContains(string $message, string $level): void
-    {
-        $this->hasLogRecordThatContains($this->sql_log_handler, $message, $level);
-    }
-
-    /**
-     * Check given log handler for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatContains(TestHandler $handler, string $message, string $level): void
-    {
         $this->has_failed = true;
 
         $records = array_map(
@@ -297,7 +261,7 @@ class GLPITestCase extends TestCase
                     'message' => $record['message'],
                 ];
             },
-            $handler->getRecords()
+            $this->log_handler->getRecords()
         );
 
         $matching = null;
@@ -315,7 +279,7 @@ class GLPITestCase extends TestCase
             sprintf("Message not found in log records\n- %s\n+ %s", $message, print_r($records, true))
         );
 
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }
@@ -330,36 +294,10 @@ class GLPITestCase extends TestCase
      */
     protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
     {
-        $this->hasLogRecordThatMatches($this->php_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatMatches(string $pattern, string $level): void
-    {
-        $this->hasLogRecordThatMatches($this->sql_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check given log handler for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, string $level): void
-    {
         $this->has_failed = true;
 
         $matching = null;
-        foreach ($handler->getRecords() as $record) {
+        foreach ($this->log_handler->getRecords() as $record) {
             if (
                 Level::fromValue($record['level']) === Level::fromName($level)
                 && preg_match($pattern, $record['message']) === 1
@@ -372,7 +310,7 @@ class GLPITestCase extends TestCase
             $matching,
             'No matching log found.'
         );
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }

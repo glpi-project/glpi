@@ -257,14 +257,16 @@ class Toolbox
     /**
      * Log in 'php-errors' all args
      *
-     * @param LoggerInterface   $logger Logger instance, if any
-     * @param integer           $level  Log level (defaults to warning)
-     * @param array             $args   Arguments (message to log, ...)
+     * @param mixed $level  The log level (a Monolog, PSR-3 or RFC 5424 level)
+     * @param array $args   Arguments (message to log, ...)
      *
      * @return void
      **/
-    private static function log(?LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
+    private static function log($level = LogLevel::WARNING, $args = null)
     {
+        /** @var \Monolog\Logger $PHPLOGGER */
+        global $PHPLOGGER;
+
         static $tps = 0;
 
         $extra = [];
@@ -308,25 +310,11 @@ class Toolbox
 
         $tps = microtime(true);
 
-        if ($logger === null) {
-            /** @var \Monolog\Logger $PHPLOGGER */
-            global $PHPLOGGER;
-            $logger = $PHPLOGGER;
-        }
-
         try {
-            $logger->log($level, $msg, $extra);
+            $PHPLOGGER->log($level, $msg, $extra);
         } catch (\Throwable $e) {
            //something went wrong, make sure logging does not cause fatal
             error_log($e);
-        }
-
-        /** @var \Monolog\Logger $SQLLOGGER */
-        global $SQLLOGGER;
-        if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
-           // Do not output related messages to $SQLLOGGER as they are redundant with
-           // output made by "ErrorHandler::handleSql*()" methods.
-            echo $msg;
         }
     }
 
@@ -335,7 +323,7 @@ class Toolbox
      */
     public static function logDebug()
     {
-        self::log(null, LogLevel::DEBUG, func_get_args());
+        self::log(LogLevel::DEBUG, func_get_args());
     }
 
     /**
@@ -343,40 +331,7 @@ class Toolbox
      */
     public static function logInfo()
     {
-        self::log(null, LogLevel::INFO, func_get_args());
-    }
-
-    /**
-     * SQL debug log
-     */
-    public static function logSqlDebug()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::DEBUG, $args);
-    }
-
-    /**
-     * SQL warning log
-     */
-    public static function logSqlWarning()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::WARNING, $args);
-    }
-
-    /**
-     * SQL error log
-     */
-    public static function logSqlError()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::ERROR, $args);
+        self::log(LogLevel::INFO, func_get_args());
     }
 
 
@@ -2567,7 +2522,7 @@ class Toolbox
     public static function jsonDecode($encoded, $assoc = false)
     {
         if (!is_string($encoded)) {
-            self::log(null, LogLevel::NOTICE, ['Only strings can be json to decode!']);
+            self::log(LogLevel::NOTICE, ['Only strings can be json to decode!']);
             return $encoded;
         }
 
@@ -2577,7 +2532,7 @@ class Toolbox
         }
 
         if ($json_data === null) {
-            self::log(null, LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
         }
 

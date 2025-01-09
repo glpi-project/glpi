@@ -198,13 +198,6 @@ class DBmysql
     private $field_cache = [];
 
     /**
-     * Last query warnings.
-     *
-     * @var array
-     */
-    private $last_query_warnings = [];
-
-    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param integer $choice host number (default NULL)
@@ -389,31 +382,29 @@ class DBmysql
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->affectedRows();
 
-        // Ensure that we collect warning after affected rows
-        $this->last_query_warnings = $this->fetchQueryWarnings();
-
-        $warnings_string = implode(
-            "\n",
-            array_map(
-                static function ($warning) {
-                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                },
-                $this->last_query_warnings
-            )
-        );
-        $debug_data['warnings'] = $warnings_string;
-
-        // Output warnings in SQL log
-        if (!empty($this->last_query_warnings)) {
-            $message = sprintf(
-                "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
-                $query,
-                $warnings_string
+        // Trigger warning errors if any SQL warnings was produced by the query
+        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
+        if (count($sql_warnings) > 0) {
+            $warnings_string = implode(
+                "\n",
+                array_map(
+                    static function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $sql_warnings
+                )
             );
-            $message .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
-            Toolbox::logSqlWarning($message);
 
-            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
+            $debug_data['warnings'] = $warnings_string;
+
+            trigger_error(
+                sprintf(
+                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
+                    $query,
+                    $warnings_string
+                ),
+                E_USER_WARNING
+            );
         }
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
@@ -1039,11 +1030,12 @@ class DBmysql
      * Instanciate a Simple DBIterator
      *
      * @param array|QueryUnion  $criteria Query criteria
-     * @param boolean           $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
+     *
+     * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($criteria, $debug = false)
+    public function request($criteria)
     {
         $iterator = new DBmysqlIterator($this);
         $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
@@ -1976,15 +1968,6 @@ class DBmysql
         }
 
         return $warnings;
-    }
-
-    /**
-     * Get SQL warnings related to last query.
-     * @return array
-     */
-    public function getLastQueryWarnings(): array
-    {
-        return $this->last_query_warnings;
     }
 
     /**

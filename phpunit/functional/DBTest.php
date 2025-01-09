@@ -689,40 +689,15 @@ SQL,
         $DB->rollBack();
     }
 
-    public function testGetLastQueryWarnings()
+    public function testQueryWarningsAreLogged()
     {
         $db = new \DB();
 
         $db->doQuery('SELECT 1/0');
-        $this->assertEquals(
-            [
-                [
-                    'Level'   => 'Warning',
-                    'Code'    => 1365,
-                    'Message' => 'Division by 0',
-                ]
-            ],
-            $db->getLastQueryWarnings()
-        );
-        $this->hasSqlLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
+        $this->hasPhpLogRecordThatContains('1365: Division by 0', LogLevel::WARNING);
 
         $db->doQuery('SELECT CAST("1a" AS SIGNED), CAST("123b" AS SIGNED)');
-        $this->assertEquals(
-            [
-                [
-                    'Level'   => 'Warning',
-                    'Code'    => 1292,
-                    'Message' => 'Truncated incorrect INTEGER value: \'1a\'',
-                ],
-                [
-                    'Level'   => 'Warning',
-                    'Code'    => 1292,
-                    'Message' => 'Truncated incorrect INTEGER value: \'123b\'',
-                ]
-            ],
-            $db->getLastQueryWarnings()
-        );
-        $this->hasSqlLogRecordThatContains(
+        $this->hasPhpLogRecordThatContains(
             '1292: Truncated incorrect INTEGER value: \'1a\'' . "\n" . '1292: Truncated incorrect INTEGER value: \'123b\'',
             LogLevel::WARNING
         );

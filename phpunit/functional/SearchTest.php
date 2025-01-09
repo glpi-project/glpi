@@ -3580,8 +3580,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=number
@@ -3594,8 +3594,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=number (usehaving=true)
@@ -3616,8 +3616,8 @@ class SearchTest extends DbTestCase
                 'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL AND `glpi_budgets`.`value` <> '')",
             ];
             // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
 
             // datatype=decimal (usehaving=true)
             yield [
@@ -3638,8 +3638,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=mio (usehaving=true)
@@ -3670,8 +3670,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=timestamp (usehaving=true)
