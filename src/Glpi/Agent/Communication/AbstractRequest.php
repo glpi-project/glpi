@@ -348,13 +348,15 @@ abstract class AbstractRequest
         $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
         if (!$xml) {
             $xml_errors = libxml_get_errors();
-           /* @var \LibXMLError $xml_error */
+            /* @var \LibXMLError $xml_error */
             foreach ($xml_errors as $xml_error) {
-                ErrorHandler::getInstance()->handleError(
-                    E_USER_WARNING,
-                    $xml_error->message,
-                    $xml_error->file,
-                    $xml_error->line
+                \trigger_error(
+                    \sprintf(
+                        'XML error `%s` at line %d.',
+                        $xml_error->message,
+                        $xml_error->line
+                    ),
+                    E_USER_WARNING
                 );
             }
             $this->addError('XML not well formed!', 400);
