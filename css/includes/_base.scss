@@ -427,7 +427,8 @@ body .toast {
 }
 
 .tooltip {
-    --tblr-tooltip-color: var(--tblr-body-color);
+    --tblr-tooltip-color: var(--tblr-body-bg); /* Couleur du texte */
+    --tblr-tooltip-bg: var(--tblr-body-color); /* Couleur de fond */
 }
 
 body pre {
