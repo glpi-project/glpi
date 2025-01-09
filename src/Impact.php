@@ -1770,8 +1770,11 @@ TWIG, $twig_params);
      */
     public static function getEnabledItemtypes(): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         // Get configured values
-        $enabled_itemtypes = json_decode(Config::getConfigurationValue('core', self::CONF_ENABLED)) ?? [];
+        $enabled_itemtypes = $CFG_GLPI[Impact::CONF_ENABLED] ?? [];
 
         if (!count($enabled_itemtypes)) {
             return [];

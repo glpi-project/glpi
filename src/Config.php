@@ -1644,6 +1644,10 @@ class Config extends CommonDBTM
             $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
         }
 
+        if (isset($CFG_GLPI[Impact::CONF_ENABLED])) {
+            $CFG_GLPI[Impact::CONF_ENABLED] = importArrayFromDB($CFG_GLPI[Impact::CONF_ENABLED]);
+        }
+
         if (!isset($_SERVER['REQUEST_URI'])) {
             // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
             // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
@@ -1984,6 +1988,20 @@ class Config extends CommonDBTM
                 return;
             }
 
+            // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
+            $array_fields = [
+                'priority_matrix',
+                'devices_in_menu',
+                'lock_item_list',
+                'planning_work_days',
+                Impact::CONF_ENABLED,
+            ];
+            if (in_array($this->fields['name'], $array_fields, true)) {
+                $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);
+            } else {
+                $CFG_GLPI[$this->fields['name']] = $newvalue;
+            }
+
             // avoid inserting truncated json in logs
             if (strlen($newvalue) > 255 && Toolbox::isJSON($newvalue)) {
                 $newvalue = "{...}";
@@ -1991,8 +2009,6 @@ class Config extends CommonDBTM
             if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
                 $oldvalue = "{...}";
             }
-
-            $CFG_GLPI[$this->fields['name']] = $newvalue; // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
 
             $this->logConfigChange(
                 $this->fields['context'],

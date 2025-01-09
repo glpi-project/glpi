@@ -740,7 +740,7 @@ class MassiveActionTest extends DbTestCase
         );
 
 
-        $this->assertTrue(boolval(Session::haveRight(Domain_Item::$rightname, UPDATE)));
+        $this->assertTrue(boolval(Session::haveRight(\Domain::$rightname, UPDATE)));
 
         // Execute action to link Computer and Manual Domain
         $this->processMassiveActionsForOneItemtype(

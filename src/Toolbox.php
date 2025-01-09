@@ -751,7 +751,7 @@ class Toolbox
      *
      * @param string $ininame  name of the ini ooption to retrieve (since 9.1)
      *
-     * @return integer memory limit
+     * @return integer|string memory limit
      **/
     public static function getMemoryLimit($ininame = 'memory_limit')
     {
@@ -800,7 +800,7 @@ class Toolbox
     {
 
         $mem = self::getMemoryLimit();
-        if ($mem == "") {
+        if ($mem === "") {
             return 0;
         }
         if ($mem == "-1") {

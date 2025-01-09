@@ -138,10 +138,7 @@ class Ticket extends CommonITILObject
 
     public function canAssign()
     {
-        if (
-            isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
-        ) {
+        if ($this->isDeleted() || (!$this->isNewItem() && $this->isClosed())) {
             return false;
         }
         return Session::haveRight(static::$rightname, self::ASSIGN);
@@ -3560,13 +3557,16 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
+        $initial_creation = static::isNewID($ID) && !$this->hasSavedInput();
+
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
         }
 
-        if (!$ID) {
+        if ($initial_creation) {
+            // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();

@@ -788,6 +788,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\!\\= between non\\-empty\\-string and \'\' will always evaluate to true\\.$#',
+	'identifier' => 'notEqual.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonDBTM\\:\\:forwardEntityInformations\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -1868,7 +1874,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<int\\|string, mixed\\>\\>\\.$#',
+	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<mixed\\>\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
@@ -2786,30 +2792,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -2820,24 +2802,6 @@ $ignoreErrors[] = [
 	'identifier' => 'isset.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\MainAsset\\\\NetworkEquipment\\) and \'getManagementPorts\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -2984,30 +2948,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$ports_id \\(array\\) of method Glpi\\\\Inventory\\\\MainAsset\\\\Unmanaged\\:\\:rulepassed\\(\\) should be compatible with parameter \\$ports_id \\(int\\) of method Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:rulepassed\\(\\)$#',
-	'identifier' => 'method.childParameterType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.property',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -3108,6 +3048,72 @@ $ignoreErrors[] = [
 	'identifier' => 'isset.property',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\MainAsset\\\\NetworkEquipment\\) and \'getManagementPorts\' will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.expr',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#4 \\$ports_id \\(array\\) of method Glpi\\\\Inventory\\\\MainAsset\\\\Unmanaged\\:\\:rulepassed\\(\\) should be compatible with parameter \\$ports_id \\(int\\) of method Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:rulepassed\\(\\)$#',
+	'identifier' => 'method.childParameterType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$request_query \\(string\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\:\\:\\$states_id_default \\(int\\) on left side of \\?\\? is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.property',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function in_array\\(\\) with arguments null, array\\{\'development\', \'testing\'\\} and true will always evaluate to false\\.$#',
@@ -3902,6 +3908,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between \'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\' and \'_\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicense\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -3912,6 +3924,12 @@ $ignoreErrors[] = [
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between \'d\'\\|\'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\'\\|\'v\' and \'_\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Item_Ticket\\:\\:displayTabContentForItem\\(\\) should return bool but returns string\\.$#',
@@ -4166,13 +4184,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<int\\|string, mixed\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_countable\\(\\) with array\\<int\\|string, array\\<int\\|string, mixed\\>\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_countable\\(\\) with array\\<array\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
@@ -4888,13 +4906,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on \\(int\\|string\\)\\.$#',
 	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Report.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTypeName\\(\\) on int\\|string\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -4910,13 +4922,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Report\\:\\:getAssetCounts\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>, array\\<string, array\\>\\> but returns array\\<int\\|string, array\\<string, mixed\\>\\>\\.$#',
+	'message' => '#^Method Report\\:\\:getAssetCounts\\(\\) should return array\\<class\\-string\\<CommonDBTM\\>, array\\<string, array\\>\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Report\\:\\:getOSInstallCounts\\(\\) should return array\\<string, array\\<int, array\\>\\> but returns array\\<int\\|string, array\\<string, mixed\\>\\>\\.$#',
+	'message' => '#^Method Report\\:\\:getOSInstallCounts\\(\\) should return array\\<string, array\\<int, array\\>\\> but returns array\\<array\\<string, mixed\\>\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
@@ -5237,6 +5249,12 @@ $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Loose comparison using \\=\\= between non\\-empty\\-string and \'\' will always evaluate to false\\.$#',
+	'identifier' => 'equal.alwaysFalse',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
