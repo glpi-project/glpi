@@ -48,7 +48,6 @@ parameters:
         - GLPI_RSS_DIR
         - GLPI_SERVERSIDE_URL_ALLOWLIST
         - GLPI_SESSION_DIR
-        - GLPI_SQL_DEBUG
         - GLPI_STRICT_DEPRECATED
         - GLPI_TELEMETRY_URI
         - GLPI_TEXT_MAXSIZE

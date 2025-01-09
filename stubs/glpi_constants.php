@@ -60,7 +60,6 @@ define('GLPI_VAR_DIR', null);
 // Optionnal constants
 define('GLPI_FORCE_MAIL', null);
 define('GLPI_LOG_LVL', null);
-define('GLPI_SQL_DEBUG', null);
 define('GLPI_STRICT_DEPRECATED', null);
 
 // Other constants
