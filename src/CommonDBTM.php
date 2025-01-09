@@ -1177,6 +1177,13 @@ class CommonDBTM extends CommonGLPI
         unset($_SESSION['saveInput'][$this->getType()]);
     }
 
+    /**
+     * @return bool true if input data is saved in the session
+     */
+    protected function hasSavedInput(): bool
+    {
+        return isset($_SESSION['saveInput'][static::class]);
+    }
 
     /**
      * Get the data saved in the session
