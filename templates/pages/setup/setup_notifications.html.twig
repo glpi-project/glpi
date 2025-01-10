@@ -56,7 +56,7 @@
                               class="form-check-input" type="checkbox" value="1"
                               {{ use_notifications ? 'checked="checked"' : '' }} />
                         <label class="form-check-label" for="use_notifications">
-                           {{ __('Enable followup') }}
+                           {{ __('Enable notifications') }}
                         </label>
                      </div>
                   </li>
@@ -112,7 +112,7 @@
                   <div class="list-group-item">
                      <div class="alert alert-important alert-warning m-3">
                         <i class="fa-fw ti ti-alert-triangle me-2"></i>
-                        {{ __('Unable to configure notifications: please configure at least one followup type using the above configuration.') }}
+                        {{ __('Unable to configure notifications: please configure at least one notification type using the above configuration.') }}
                      </div>
                   </div>
                {% endif %}

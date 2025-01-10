@@ -43,13 +43,13 @@ class NotificationMailingSetting extends NotificationSetting
 {
     public static function getTypeName($nb = 0)
     {
-        return __('Email followups configuration');
+        return __('Email notifications configuration');
     }
 
 
     public function getEnableLabel()
     {
-        return __('Enable followups via email');
+        return __('Enable email notifications');
     }
 
 
