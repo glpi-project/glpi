@@ -67,7 +67,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the global view config
         openDisplayPreferences();
-        goToTab('Global View');
+        goToTab('Global View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the helpdesk view config
@@ -106,7 +106,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the helpdesk view
         openDisplayPreferences();
-        goToTab('Helpdesk View');
+        goToTab('Helpdesk View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the global view
@@ -142,7 +142,7 @@ describe('Display preferences', () => {
             // Sadly, there is no easy way to determine this without waiting
             // an arbitrary amount of time.
             // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(250);
+            cy.wait(800);
         }
 
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
