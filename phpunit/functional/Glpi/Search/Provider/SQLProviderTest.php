@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Search\Provider;
 
 use DbTestCase;
 
-class SQLProvider extends DbTestCase
+class SQLProviderTest extends DbTestCase
 {
     public function testGetLeftJoinCriteria()
     {
@@ -56,7 +56,10 @@ class SQLProvider extends DbTestCase
             'tickets_id_1'
         );
         $it = new \DBmysqlIterator($DB);
-        $this->string($it->analyseJoins($item_item_join))->isEqualTo(' LEFT JOIN `glpi_tickets_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)');
+        $this->assertEquals(
+            ' LEFT JOIN `glpi_tickets_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)',
+            $it->analyseJoins($item_item_join)
+        );
 
         $item_item_revert_join = \Glpi\Search\Provider\SQLProvider::getLeftJoinCriteria(
             'Ticket_Ticket',
@@ -69,6 +72,9 @@ class SQLProvider extends DbTestCase
             ['jointype' => 'item_item_revert'],
             'tickets_id'
         );
-        $this->string($it->analyseJoins($item_item_revert_join))->isEqualTo(' LEFT JOIN `glpi_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)');
+        $this->assertEquals(
+            ' LEFT JOIN `glpi_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)',
+            $it->analyseJoins($item_item_revert_join)
+        );
     }
 }

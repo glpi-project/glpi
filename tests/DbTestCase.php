@@ -110,9 +110,9 @@ class DbTestCase extends \GLPITestCase
     /**
      * Generic method to test if an added object is corretly inserted
      *
-     * @param  Object $object The object to test
-     * @param  int    $id     The id of added object
-     * @param  array  $input  the input used for add object (optionnal)
+     * @param  CommonDBTM $object The object to test
+     * @param  int        $id     The id of added object
+     * @param  array      $input  the input used for add object (optionnal)
      *
      * @return void
      */

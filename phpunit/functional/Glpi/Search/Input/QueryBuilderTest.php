@@ -35,9 +35,12 @@
 
 namespace tests\units\Glpi\Search\Input;
 
-class QueryBuilder extends \GLPITestCase
+use Glpi\Search\Input\QueryBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+class QueryBuilderTest extends \GLPITestCase
 {
-    protected function inputValidationPatternProvider(): iterable
+    public static function inputValidationPatternProvider(): iterable
     {
         // string
         foreach (['dropdown', 'itemlink', 'itemtypename', 'specific', 'string', 'text', 'email'] as $datatype) {
@@ -344,28 +347,33 @@ class QueryBuilder extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider inputValidationPatternProvider
-     */
+    #[DataProvider('inputValidationPatternProvider')]
     public function testGetInputValidationPattern(
         string $datatype,
         array $valid_values,
         array $invalid_values
     ) {
-        $this->newTestedInstance();
+        $instance = new QueryBuilder();
 
         $result = \Glpi\Search\Input\QueryBuilder::getInputValidationPattern($datatype);
 
-        $this->array($result)->hasKeys(['pattern', 'validation_message']);
+        $this->assertArrayHasKey('pattern', $result);
+        $this->assertArrayHasKey('validation_message', $result);
 
         foreach ($valid_values as $value) {
-            $this->integer(preg_match($result['pattern'], $value))
-                ->isEqualTo(1, sprintf('Invalid result for field `%s` with value `%s`.', $datatype, $value));
+            $this->assertEquals(
+                1,
+                preg_match($result['pattern'], $value),
+                sprintf('Invalid result for field `%s` with value `%s`.', $datatype, $value)
+            );
         }
 
         foreach ($invalid_values as $value) {
-            $this->integer(preg_match($result['pattern'], $value))
-                ->isEqualTo(0, sprintf('Invalid result for field `%s` with value `%s`.', $datatype, $value));
+            $this->assertEquals(
+                0,
+                preg_match($result['pattern'], $value),
+                sprintf('Invalid result for field `%s` with value `%s`.', $datatype, $value)
+            );
         }
     }
 }

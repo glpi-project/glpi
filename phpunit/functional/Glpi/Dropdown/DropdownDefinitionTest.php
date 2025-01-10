@@ -36,12 +36,14 @@
 namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 
-class DropdownDefinition extends DbTestCase
+class DropdownDefinitionTest extends DbTestCase
 {
-    protected function updateInputProvider(): iterable
+    public static function updateInputProvider(): iterable
     {
         // Profiles input
         $self_service_p_id = getItemByTypeName(Profile::class, 'Self-Service', true);
@@ -159,21 +161,19 @@ class DropdownDefinition extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider updateInputProvider
-     */
+    #[DataProvider('updateInputProvider')]
     public function testPrepareInputForUpdate(array $input, array|false $output, array $messages): void
     {
-        $definition = $this->newTestedInstance();
+        $definition = new DropdownDefinition();
 
-        $this->variable($definition->prepareInputForUpdate($input))->isEqualTo($output);
+        $this->assertEquals($output, $definition->prepareInputForUpdate($input));
 
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
         }
     }
 
-    protected function addInputProvider(): iterable
+    public static function addInputProvider(): iterable
     {
         yield [
             'input'    => [],
@@ -332,7 +332,7 @@ class DropdownDefinition extends DbTestCase
             'messages' => [],
         ];
 
-        foreach ($this->updateInputProvider() as $data) {
+        foreach (self::updateInputProvider() as $data) {
             if (!array_key_exists('system_name', $data['input'])) {
                 // `system_name` is mandatory on add
                 $data['input']['system_name'] = __FUNCTION__;
@@ -353,14 +353,12 @@ class DropdownDefinition extends DbTestCase
         }
     }
 
-    /**
-     * @dataProvider addInputProvider
-     */
+    #[DataProvider('addInputProvider')]
     public function testPrepareInputForAdd(array $input, array|false $output, array $messages): void
     {
-        $definition = $this->newTestedInstance();
+        $definition = new DropdownDefinition();
 
-        $this->variable($definition->prepareInputForAdd($input))->isEqualTo($output);
+        $this->assertEquals($output, $definition->prepareInputForAdd($input));
 
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
@@ -369,15 +367,18 @@ class DropdownDefinition extends DbTestCase
 
     public function testUniqueSystemName(): void
     {
-        $definition = $this->newTestedInstance();
-        $this->integer($definition->add([
+        $definition = new DropdownDefinition();
+        $this->assertGreaterThan(
+            0,
+            $definition->add([
+                'system_name' => 'test',
+                'label' => 'Test',
+            ])
+        );
+        $this->assertFalse($definition->add([
             'system_name' => 'test',
             'label' => 'Test',
-        ]))->isGreaterThan(0);
-        $this->boolean($definition->add([
-            'system_name' => 'test',
-            'label' => 'Test',
-        ]))->isFalse();
+        ]));
         $this->hasSessionMessages(ERROR, ['The system name must be unique.']);
     }
 
@@ -386,7 +387,7 @@ class DropdownDefinition extends DbTestCase
         $definition = $this->createItem(
             \Glpi\Dropdown\DropdownDefinition::class,
             [
-                'system_name' => 'test',
+                'system_name' => 'testSystemNameUpdate',
             ]
         );
 
@@ -394,7 +395,7 @@ class DropdownDefinition extends DbTestCase
             'id' => $definition->getID(),
             'system_name' => 'changed',
         ]);
-        $this->boolean($updated)->isFalse();
+        $this->assertFalse($updated);
         $this->hasSessionMessages(ERROR, ['The system name cannot be changed.']);
     }
 
@@ -410,12 +411,18 @@ class DropdownDefinition extends DbTestCase
             ]
         );
 
-        $this->boolean($definition->delete([
+        $this->assertTrue($definition->delete([
             'id' => $definition->getID(),
-        ]))->isTrue();
-        $this->array(getAllDataFromTable('glpi_dropdowns_dropdowns', [
-            'dropdowns_dropdowndefinitions_id' => $definition->getID(),
-        ]))->size->isEqualTo(0);
+        ]));
+        $this->assertCount(
+            0,
+            getAllDataFromTable(
+                'glpi_dropdowns_dropdowns',
+                [
+                    'dropdowns_dropdowndefinitions_id' => $definition->getID(),
+                ]
+            )
+        );
     }
 
     public function testUpdateRights()
@@ -424,7 +431,7 @@ class DropdownDefinition extends DbTestCase
         $super_admin_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
 
         $definition = $this->initDropdownDefinition(
-            'test',
+            'testUpdateRights',
             profiles: [$super_admin_id => ALLSTANDARDRIGHT]
         );
 
@@ -456,10 +463,16 @@ class DropdownDefinition extends DbTestCase
             'is_active' => 0,
         ]);
 
-        $this->array(getAllDataFromTable('glpi_profilerights', [
-            'profiles_id' => $super_admin_id,
-            'name' => $definition->getCustomObjectRightname(),
-        ]))->size->isEqualTo(0);
+        $this->assertCount(
+            0,
+            getAllDataFromTable(
+                'glpi_profilerights',
+                [
+                    'profiles_id' => $super_admin_id,
+                    'name' => $definition->getCustomObjectRightname(),
+                ]
+            )
+        );
 
         // Make the definition active again and verify the rights are added back to the profilerights table
         $definition->update([
@@ -499,12 +512,13 @@ class DropdownDefinition extends DbTestCase
 
         foreach ($expected_profilerights as $profile_id => $rights) {
             $actual_profileright = $get_actual_profileright_for_profile($profile_id);
-            $this->array($actual_profileright)->isEqualTo(
+            $this->assertEquals(
                 [
                     'profiles_id' => $profile_id,
                     'name'        => $rightname,
                     'rights'      => $rights,
-                ]
+                ],
+                $actual_profileright
             );
         }
     }
@@ -519,7 +533,7 @@ class DropdownDefinition extends DbTestCase
             ]
         );
 
-        $this->boolean($definition->update([
+        $this->assertTrue($definition->update([
             'id' => $definition->getID(),
             '_save_translation' => true,
             'language' => 'en_US',
@@ -527,8 +541,8 @@ class DropdownDefinition extends DbTestCase
                 'one' => 'Test',
                 'other' => 'Tests',
             ]
-        ]))->isTrue();
-        $this->boolean($definition->update([
+        ]));
+        $this->assertTrue($definition->update([
             'id' => $definition->getID(),
             '_save_translation' => true,
             'language' => 'fr_FR',
@@ -536,34 +550,40 @@ class DropdownDefinition extends DbTestCase
                 'one' => 'Test FR',
                 'other' => 'Tests FR',
             ]
-        ]))->isTrue();
+        ]));
 
         $definition->getFromDB($definition->getID());
-        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
-            'en_US' => [
-                'one' => 'Test',
-                'other' => 'Tests',
+        $this->assertEquals(
+            [
+                'en_US' => [
+                    'one' => 'Test',
+                    'other' => 'Tests',
+                ],
+                'fr_FR' => [
+                    'one' => 'Test FR',
+                    'other' => 'Tests FR',
+                ],
             ],
-            'fr_FR' => [
-                'one' => 'Test FR',
-                'other' => 'Tests FR',
-            ],
-        ]);
+            json_decode($definition->fields['translations'], true)
+        );
 
-        $this->boolean($definition->update([
+        $this->assertTrue($definition->update([
             'id' => $definition->getID(),
             '_delete_translation' => true,
             'language' => 'en_US',
 
-        ]))->isTrue();
+        ]));
 
         $definition->getFromDB($definition->getID());
-        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
-            'fr_FR' => [
-                'one' => 'Test FR',
-                'other' => 'Tests FR',
+        $this->assertEquals(
+            [
+                'fr_FR' => [
+                    'one' => 'Test FR',
+                    'other' => 'Tests FR',
+                ],
             ],
-        ]);
+            json_decode($definition->fields['translations'], true)
+        );
     }
 
 
@@ -589,20 +609,20 @@ class DropdownDefinition extends DbTestCase
         );
 
         $_SESSION['glpilanguage'] = 'en_US';
-        $this->string($definition->getTranslatedName(1))->isEqualTo('Test');
-        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests');
+        $this->assertEquals('Test', $definition->getTranslatedName(1));
+        $this->assertEquals('Tests', $definition->getTranslatedName(10));
 
         $_SESSION['glpilanguage'] = 'fr_FR';
-        $this->string($definition->getTranslatedName(1))->isEqualTo('Test FR');
-        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests FR');
+        $this->assertEquals('Test FR', $definition->getTranslatedName(1));
+        $this->assertEquals('Tests FR', $definition->getTranslatedName(10));
 
         // untranslated language
         $_SESSION['glpilanguage'] = 'es_ES';
-        $this->string($definition->getTranslatedName(1))->isEqualTo("test");
-        $this->string($definition->getTranslatedName(10))->isEqualTo('test');
+        $this->assertEquals('test', $definition->getTranslatedName(1));
+        $this->assertEquals('test', $definition->getTranslatedName(10));
     }
 
-    protected function pluralFormProvider(): iterable
+    public static function pluralFormProvider(): iterable
     {
         yield [
             'language' => 'not a valid language',
@@ -628,18 +648,16 @@ class DropdownDefinition extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider pluralFormProvider
-     */
+    #[DataProvider('pluralFormProvider')]
     public function testGetPluralFormsForLanguage(string $language, array $expected)
     {
         $result = \Glpi\Dropdown\DropdownDefinition::getPluralFormsForLanguage($language);
-        $this->array($result)->hasSize(count($expected));
+        $this->assertCount(count($expected), $result);
         foreach ($result as $index => $category) {
-            $this->object($category)->isInstanceOf(\Gettext\Languages\Category::class);
-            $this->variable($category->id)->isEqualTo($expected[$index]['id']);
-            $this->variable($category->formula)->isEqualTo($expected[$index]['formula']);
-            $this->variable($category->examples)->isEqualTo($expected[$index]['examples']);
+            $this->assertInstanceOf(\Gettext\Languages\Category::class, $category);
+            $this->assertEquals($expected[$index]['id'], $category->id);
+            $this->assertEquals($expected[$index]['formula'], $category->formula);
+            $this->assertEquals($expected[$index]['examples'], $category->examples);
         }
     }
 }

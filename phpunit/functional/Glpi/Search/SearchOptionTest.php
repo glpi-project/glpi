@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\Search;
 
-class SearchOption extends \GLPITestCase
+use PHPUnit\Framework\Attributes\DataProvider;
+
+class SearchOptionTest extends \GLPITestCase
 {
-    protected function searchOptionIdGeneratorProvider(): iterable
+    public static function searchOptionIdGeneratorProvider(): iterable
     {
         yield [
             'string_identifier' => 'any string can be used',
@@ -56,28 +58,26 @@ class SearchOption extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider searchOptionIdGeneratorProvider
-     */
+    #[DataProvider('searchOptionIdGeneratorProvider')]
     public function testGenerateAPropbablyUniqueId(
         string $string_identifier,
         ?string $plugin,
         int $generated_id
     ) {
         $result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($string_identifier, $plugin);
-        $this->integer($result)->isEqualTo($generated_id);
+        $this->assertEquals($generated_id, $result);
     }
 
     public function testGenerateAPropbablyUniqueIdRange()
     {
         for ($i = 'a'; $i < 'aaa'; $i = str_increment($i)) {
             $core_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, null);
-            $this->integer($core_result)->isGreaterThanOrEqualTo(10000);
-            $this->integer($core_result)->isLessThanOrEqualTo(19999);
+            $this->assertGreaterThanOrEqual(10000, $core_result);
+            $this->assertLessThanOrEqual(19999, $core_result);
 
             $plugin_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, 'MyPlugin');
-            $this->integer($plugin_result)->isGreaterThanOrEqualTo(20000);
-            $this->integer($plugin_result)->isLessThanOrEqualTo(99999);
+            $this->assertGreaterThanOrEqual(20000, $plugin_result);
+            $this->assertLessThanOrEqual(99999, $plugin_result);
         }
     }
 }
