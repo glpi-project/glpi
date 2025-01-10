@@ -39,7 +39,7 @@ use DbTestCase;
 use Glpi\Form\Form;
 use Glpi\Http\Response;
 
-class CommonAjaxController extends DbTestCase
+class CommonAjaxControllerTest extends DbTestCase
 {
     /**
      * Data provider for the testHandleRequest method
@@ -371,46 +371,41 @@ class CommonAjaxController extends DbTestCase
     /**
      * Test the handleRequest method
      *
-     * @dataProvider testHandleRequestProvider
-     *
-     * @param array    $input             Request content
-     * @param Response $expected_response Expected response object
-     * @param string   $user              Logged in user:
-     *                                     - TU_USER (default)
-     *                                     - "normal"
-     *
      * @return void
      */
-    public function testHandleRequest(
-        array $input,
-        Response $expected_response,
-        string $user = TU_USER,
-    ): void {
-        if ($user === TU_USER) {
-            $this->login();
-        } elseif ($user === "normal") {
-            $this->login("normal", "normal");
+    public function testHandleRequest(): void
+    {
+        foreach ($this->testHandleRequestProvider() as $row) {
+            $input = $row['input'];
+            $expected_response = $row['expected_response'];
+            $user = $row['user'] ?? TU_USER;
+
+            if ($user === TU_USER) {
+                $this->login();
+            } elseif ($user === "normal") {
+                $this->login("normal", "normal");
+            }
+
+            $controller = new \Glpi\Controller\CommonAjaxController();
+            $response = $controller->handleRequest($input);
+
+            // Validate return code
+            $this->assertEquals(
+                $expected_response->getStatusCode(),
+                $response->getStatusCode()
+            );
+
+            // Validate headers
+            $this->assertEquals(
+                $expected_response->getHeaders(),
+                $response->getHeaders()
+            );
+
+            // Validate body
+            $this->assertEquals(
+                (string)$expected_response->getBody(),
+                (string)$response->getBody()
+            );
         }
-
-        $controller = new \Glpi\Controller\CommonAjaxController();
-        $response = $controller->handleRequest($input);
-
-        // Validate return code
-        $this
-            ->integer($response->getStatusCode())
-            ->isEqualTo($expected_response->getStatusCode())
-        ;
-
-        // Validate body
-        $this
-            ->array($response->getHeaders())
-            ->isEqualTo($expected_response->getHeaders())
-        ;
-
-        // Validate headers
-        $this
-            ->string((string) $response->getBody())
-            ->isEqualTo((string) $expected_response->getBody())
-        ;
     }
 }

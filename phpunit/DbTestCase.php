@@ -37,6 +37,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -116,8 +117,8 @@ class DbTestCase extends \GLPITestCase
      * Generic method to test if an added object is corretly inserted
      *
      * @param  CommonDBTM $object The object to test
-     * @param  int    $id     The id of added object
-     * @param  array  $input  the input used for add object (optionnal)
+     * @param  int        $id     The id of added object
+     * @param  array      $input  the input used for add object (optionnal)
      *
      * @return void
      */
@@ -196,11 +197,12 @@ class DbTestCase extends \GLPITestCase
     /**
      * Create an item of the given class
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
      *
-     * @return CommonDBTM
+     * @return T
      */
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
@@ -377,8 +379,9 @@ class DbTestCase extends \GLPITestCase
     /**
      * Initialize a definition.
      *
-     * @param string $system_name
+     * @param ?string $system_name
      * @param array $capacities
+     * @param ?array $profiles
      *
      * @return AssetDefinition
      */
@@ -404,8 +407,9 @@ class DbTestCase extends \GLPITestCase
                 'is_active'   => true,
                 'capacities'  => $capacities,
                 'profiles'    => $profiles,
+                'fields_display' => [],
             ],
-            skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
         $this->assertEquals(
             $capacities,
@@ -415,6 +419,40 @@ class DbTestCase extends \GLPITestCase
             $profiles,
             $this->callPrivateMethod($definition, 'getDecodedProfilesField')
         );
+
+        return $definition;
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param ?string $system_name
+     * @param ?array $profiles
+     *
+     * @return DropdownDefinition
+     */
+    protected function initDropdownDefinition(
+        ?string $system_name = null,
+        ?array $profiles = null,
+    ): DropdownDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            DropdownDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'profiles'    => $profiles,
+            ],
+            skip_fields: ['profiles'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->assertEquals($profiles, $this->callPrivateMethod($definition, 'getDecodedProfilesField'));
 
         return $definition;
     }
