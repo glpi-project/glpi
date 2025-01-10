@@ -35,18 +35,31 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-/**
- * Nota: Web access cannot be tested on CLI context.
- */
-class ProtectedWebAccess extends \GLPITestCase
-{
-    public function testCheckOutOfContext()
-    {
+use Glpi\System\Requirement\MemoryLimit;
 
-        $this->newTestedInstance([]);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Checking that web access to files directory is protected cannot be done on CLI context.']);
+class MemoryLimitTest extends \GLPITestCase
+{
+    public function testCheckWithEnoughMemory()
+    {
+        $instance = new MemoryLimit(32 * 1024 * 1024);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Allocated memory is sufficient.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckWithNotEnoughMemory()
+    {
+        $instance = new MemoryLimit(16 * 1024 * 1024 * 1024);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+             [
+                 'Allocated memory: ' . \Toolbox::getSize(\Toolbox::getMemoryLimit()),
+                 'A minimum of 16 GiB is commonly required for GLPI.',
+                 'Try increasing the memory_limit parameter in the php.ini file.'
+             ],
+            $instance->getValidationMessages()
+         );
     }
 }

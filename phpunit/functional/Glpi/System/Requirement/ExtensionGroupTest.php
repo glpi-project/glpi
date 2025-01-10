@@ -35,32 +35,43 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionFunction extends \GLPITestCase
+use Glpi\System\Requirement\ExtensionGroup;
+
+class ExtensionGroupTest extends \GLPITestCase
 {
     public function testCheckOnExistingExtension()
     {
-
-        $this->newTestedInstance('simplexml', 'simplexml_load_string');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['simplexml extension is installed.']);
+        $instance = new ExtensionGroup('test', ['curl', 'zlib']);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Following extensions are installed: curl, zlib.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnMissingMandatoryExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'fake_extension_function');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
+        $instance = new ExtensionGroup('test', ['curl', 'fake_ext']);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+             [
+                 'Following extensions are installed: curl.',
+                 'Following extensions are missing: fake_ext.'
+             ],
+            $instance->getValidationMessages()
+         );
     }
 
     public function testCheckOnMissingOptionalExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+        $instance = new ExtensionGroup('test', ['curl', 'fake_ext'], true);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+             [
+                 'Following extensions are installed: curl.',
+                 'Following extensions are not present: fake_ext.'
+             ],
+            $instance->getValidationMessages()
+         );
     }
 }

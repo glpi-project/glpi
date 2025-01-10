@@ -35,21 +35,21 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class Extension extends \GLPITestCase
+class ExtensionFunctionTest extends \GLPITestCase
 {
     public function testCheckOnExistingExtension()
     {
 
-        $this->newTestedInstance('curl');
+        $this->newTestedInstance('simplexml', 'simplexml_load_string');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
         $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['curl extension is installed.']);
+         ->isEqualTo(['simplexml extension is installed.']);
     }
 
     public function testCheckOnMissingMandatoryExtension()
     {
 
-        $this->newTestedInstance('fake_ext');
+        $this->newTestedInstance('fake_ext', 'fake_extension_function');
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['fake_ext extension is missing.']);
@@ -58,7 +58,7 @@ class Extension extends \GLPITestCase
     public function testCheckOnMissingOptionalExtension()
     {
 
-        $this->newTestedInstance('fake_ext', true);
+        $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
         $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['fake_ext extension is not present.']);

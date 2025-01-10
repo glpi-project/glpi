@@ -35,37 +35,37 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use org\bovigo\vfs\vfsStream;
+use Glpi\System\Requirement\Extension;
 
-class LogsWriteAccess extends \GLPITestCase
+class ExtensionTest extends \GLPITestCase
 {
-    public function testCheckOnExistingWritableDir()
+    public function testCheckOnExistingExtension()
     {
-
-        vfsStream::setup('root', 0777, []);
-
-        $logger = new Logger('test_log');
-        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
-
-        $this->newTestedInstance($logger);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['The log file has been created successfully.']);
+        $instance = new Extension('curl');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['curl extension is installed.'],
+            $instance->getValidationMessages()
+        );
     }
 
-    public function testCheckOnExistingProtectedDir()
+    public function testCheckOnMissingMandatoryExtension()
     {
+        $instance = new Extension('fake_ext');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is missing.'],
+            $instance->getValidationMessages()
+        );
+    }
 
-        vfsStream::setup('root', 0555, []);
-
-        $logger = new Logger('test_log');
-        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
-
-        $this->newTestedInstance($logger);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['The log file could not be created in ' . GLPI_LOG_DIR . '.']);
+    public function testCheckOnMissingOptionalExtension()
+    {
+        $instance = new Extension('fake_ext', true);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is not present.'],
+            $instance->getValidationMessages()
+        );
     }
 }

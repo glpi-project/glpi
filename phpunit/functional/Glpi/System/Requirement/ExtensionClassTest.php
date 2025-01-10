@@ -35,41 +35,47 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionClass extends \GLPITestCase
+use Glpi\System\Requirement\ExtensionClass;
+
+class ExtensionClassTest extends \GLPITestCase
 {
     public function testCheckOnExistingExtensionByClass()
     {
-
-        $this->newTestedInstance('psr-log', 'Psr\\Log\\NullLogger');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['psr-log extension is installed.']);
+        $instance = new ExtensionClass('psr-log', 'Psr\\Log\\NullLogger');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['psr-log extension is installed.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnExistingExtensionByInterface()
     {
-
-        $this->newTestedInstance('psr-simplecache', 'Psr\\SimpleCache\\CacheInterface');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['psr-simplecache extension is installed.']);
+        $instance = new ExtensionClass('psr-simplecache', 'Psr\\SimpleCache\\CacheInterface');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['psr-simplecache extension is installed.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnMissingMandatoryExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'Fake\\FakeExtension');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
+        $instance = new ExtensionClass('fake_ext', 'Fake\\FakeExtension');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is missing.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnMissingOptionalExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'Fake\\FakeExtension', true);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+        $instance = new ExtensionClass('fake_ext', 'Fake\\FakeExtension', true);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is not present.'],
+            $instance->getValidationMessages()
+        );
     }
 }

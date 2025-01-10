@@ -35,12 +35,13 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
+use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
 
-class InstallationNotOverriden extends \GLPITestCase
+class InstallationNotOverridenTest extends \GLPITestCase
 {
-    protected function versionDirectoryProvider(): iterable
+    public static function versionDirectoryProvider(): iterable
     {
         // Missing version directory
         // -> out of context
@@ -131,25 +132,29 @@ class InstallationNotOverriden extends \GLPITestCase
     {
         vfsStream::setup('root', null, $files !== null ? ['version' => $files] : []);
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DB();
-        $this->calling($db)->tableExists = true;
-        $this->calling($db)->fieldExists = true;
-        $this->calling($db)->request = function ($query) use ($previous_version) {
-            return new \ArrayIterator(
-                [
+        $db = $this->getMockBuilder(\DB::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['tableExists', 'fieldExists', 'request'])
+            ->getMock();
+        $db->method('tableExists')->willReturn(true);
+        $db->method('fieldExists')->willReturn(true);
+        $db->method('request')->willReturnCallback(
+            function ($query) use ($previous_version) {
+                return new \ArrayIterator(
                     [
-                        'context' => 'core',
-                        'name'    => 'version',
-                        'value'   => $previous_version,
+                        [
+                            'context' => 'core',
+                            'name'    => 'version',
+                            'value'   => $previous_version,
+                        ]
                     ]
-                ]
-            );
-        };
+                );
+            }
+        );
 
-        $this->newTestedInstance($db, vfsStream::url('root/version'));
-        $this->boolean($this->testedInstance->isOutOfContext())->isEqualTo($out_of_context);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-        $this->array($this->testedInstance->getValidationMessages())->isEqualTo($messages);
+        $instance = new InstallationNotOverriden($db, vfsStream::url('root/version'));
+        $this->assertEquals($out_of_context, $instance->isOutOfContext());
+        $this->assertEquals($validated, $instance->isValidated());
+        $this->assertEquals($messages, $instance->getValidationMessages());
     }
 }

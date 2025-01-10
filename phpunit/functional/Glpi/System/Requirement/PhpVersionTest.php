@@ -35,34 +35,29 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-use org\bovigo\vfs\vfsStream;
+use Glpi\System\Requirement\PhpVersion;
 
-/**
- * Nota: Complex ACL are not tested.
- */
-class DirectoryWriteAccess extends \GLPITestCase
+class PhpVersionTest extends \GLPITestCase
 {
-    public function testCheckOnExistingWritableDir()
+    public function testCheckWithUpToDateVersion()
     {
-
-        vfsStream::setup('root', 0777, []);
-        $path = vfsStream::url('root');
-
-        $this->newTestedInstance($path);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Write access to ' . $path . ' has been validated.']);
+        $instance = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['PHP version (' . PHP_VERSION . ') is supported.'],
+            $instance->getValidationMessages()
+        );
     }
 
-    public function testCheckOnUnexistingDir()
+    public function testCheckOutdatedVersion()
     {
-
-        vfsStream::setup('root', 0777, []);
-        $path = vfsStream::url('root/not-existing');
-
-        $this->newTestedInstance($path);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['The directory could not be created in ' . $path . '.']);
+        $instance = new PhpVersion('20.7', '20.8');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+             [
+                 'PHP version must be between 20.7.0 and 20.8.0 (exclusive).'
+             ],
+            $instance->getValidationMessages()
+         );
     }
 }

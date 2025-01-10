@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DbConfiguration extends \GLPITestCase
+use Glpi\System\Requirement\DbConfiguration;
+
+class DbConfigurationTest extends \GLPITestCase
 {
-    protected function configurationProvider()
+    public static function configurationProvider()
     {
         return [
             [
@@ -244,27 +246,36 @@ class DbConfiguration extends \GLPITestCase
 
         $that = $this;
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DB();
-        $this->calling($db)->getVersion = $version;
-        $this->calling($db)->doQuery = function ($query) use ($that, $variables) {
-            $matches = [];
-            if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
-                  $row = [];
-                foreach ($matches['name'] as $name) {
-                    $row[$name] = $variables[$name] ?? null;
-                }
-                $that->mockGenerator->orphanize('__construct');
-                $res = new \mock\mysqli_result();
-                $that->calling($res)->fetch_assoc = $row;
-                return $res;
-            }
-            return false;
-        };
+        $db = $this->getMockBuilder(\DB::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getVersion', 'doQuery'])
+            ->getMock();
 
-        $this->newTestedInstance($db);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo($messages);
+        $db->method('getVersion')->willReturn($version);
+        $db->method('doQuery')->willReturnCallback(
+            function ($query) use ($that, $variables) {
+                $matches = [];
+                if (preg_match_all('/@@GLOBAL\.`(?<name>[^`]+)`/', $query, $matches) > 0) {
+                    $row = [];
+                    foreach ($matches['name'] as $name) {
+                        $row[$name] = $variables[$name] ?? null;
+                    }
+                    $res = $this->getMockBuilder(\mysqli_result::class)
+                        ->disableOriginalConstructor()
+                        ->onlyMethods(['fetch_assoc'])
+                        ->getMock();
+                    $res->method('fetch_assoc')->willReturn($row);
+                    return $res;
+                }
+                return false;
+            }
+        );
+
+        $instance = new DbConfiguration($db);
+        $this->assertEquals($validated, $instance->isValidated());
+        $this->assertEquals(
+            $messages,
+            $instance->getValidationMessages()
+        );
     }
 }

@@ -35,27 +35,21 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class PhpVersion extends \GLPITestCase
+use Glpi\System\Requirement\ProtectedWebAccess;
+
+/**
+ * Nota: Web access cannot be tested on CLI context.
+ */
+class ProtectedWebAccessTest extends \GLPITestCase
 {
-    public function testCheckWithUpToDateVersion()
+    public function testCheckOutOfContext()
     {
-
-        $this->newTestedInstance(GLPI_MIN_PHP, GLPI_MAX_PHP);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['PHP version (' . PHP_VERSION . ') is supported.']);
-    }
-
-    public function testCheckOutdatedVersion()
-    {
-
-        $this->newTestedInstance('20.7', '20.8');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
-             [
-                 'PHP version must be between 20.7.0 and 20.8.0 (exclusive).'
-             ]
-         );
+        $instance = new ProtectedWebAccess([]);
+        $this->assertFalse($instance->isValidated());
+        $this->assertTrue($instance->isOutOfContext());
+        $this->assertEquals(
+            ['Checking that web access to files directory is protected cannot be done on CLI context.'],
+            $instance->getValidationMessages()
+        );
     }
 }

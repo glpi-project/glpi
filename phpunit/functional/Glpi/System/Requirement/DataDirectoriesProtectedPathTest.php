@@ -35,7 +35,9 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DataDirectoriesProtectedPath extends \GLPITestCase
+use Glpi\System\Requirement\DataDirectoriesProtectedPath;
+
+class DataDirectoriesProtectedPathTest extends \GLPITestCase
 {
     public function testCheckOnSecuredDirs()
     {
@@ -43,30 +45,30 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
 
         $secure_var_root_constant = sprintf('GLPI_TEST_%08x', rand());
         $secure_var_root_path = sprintf('%s/glpi_test_%08x', $tmp_dir, rand());
-        $this->boolean(mkdir($secure_var_root_path))->isTrue();
+        $this->assertTrue(mkdir($secure_var_root_path));
         define($secure_var_root_constant, $secure_var_root_path);
 
         $secure_dir_constant1 = sprintf('GLPI_TEST_%08x', rand());
-        $this->boolean(mkdir($secure_var_root_path . '/_cache'))->isTrue();
+        $this->assertTrue(mkdir($secure_var_root_path . '/_cache'));
         define($secure_dir_constant1, $secure_var_root_path . '/_cache'); // Inside var root
 
         $secure_dir_constant2 = sprintf('GLPI_TEST_%08x', rand());
         $secure_dir_path2     = sprintf('%s/glpi_test_%08x', $tmp_dir, rand());
-        $this->boolean(mkdir($secure_dir_path2))->isTrue();
+        $this->assertTrue(mkdir($secure_dir_path2));
         define($secure_dir_constant2, $secure_dir_path2); // Outside var root
 
-        $this->newTestedInstance(
+        $instance = new DataDirectoriesProtectedPath(
             [$secure_dir_constant1, $secure_dir_constant2],
             $secure_var_root_constant
         );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(
-                [
-                    'GLPI data directories are located in a secured path.',
-                ]
-            );
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            [
+                'GLPI data directories are located in a secured path.',
+            ],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnUnsecureDirsWithUnsecureVarRoot()
@@ -86,18 +88,21 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
         $unsecure_dir_constant3 = sprintf('GLPI_TEST_%08x', rand());
         define($unsecure_dir_constant3, $root_path . '/config'); // Outside var root
 
-        $this->newTestedInstance([$unsecure_dir_constant1, $unsecure_dir_constant2, $unsecure_dir_constant3], $unsecure_var_root_constant);
+        $instance = new DataDirectoriesProtectedPath(
+            [$unsecure_dir_constant1, $unsecure_dir_constant2, $unsecure_dir_constant3],
+            $unsecure_var_root_constant
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  sprintf('The following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
                  // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
                  sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
@@ -117,18 +122,21 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
         $unsecure_dir_constant3 = sprintf('GLPI_TEST_%08x', rand());
         define($unsecure_dir_constant3, $root_path . '/config'); // Outside var root
 
-        $this->newTestedInstance([$unsecure_dir_constant1, $unsecure_dir_constant2, $unsecure_dir_constant3], $secure_var_root_constant);
+        $instance = new DataDirectoriesProtectedPath(
+            [$unsecure_dir_constant1, $unsecure_dir_constant2, $unsecure_dir_constant3],
+            $secure_var_root_constant
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  sprintf('The following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s/files/_cache" ("%s")', $root_path, $unsecure_dir_constant1),
                  sprintf('‣ "%s/files/_log" ("%s")', $root_path, $unsecure_dir_constant2),
                  sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
                  sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
@@ -146,17 +154,20 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
         $missing_dir_constant2 = sprintf('GLPI_TEST_%08x', rand());
         define($missing_dir_constant2, $tmp_dir . '/not/exists'); // Inside var root
 
-        $this->newTestedInstance([$missing_dir_constant1, $missing_dir_constant2], $secure_var_root_constant);
+        $instance = new DataDirectoriesProtectedPath(
+            [$missing_dir_constant1, $missing_dir_constant2],
+            $secure_var_root_constant
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  'The following directories do not exist and cannot be tested:',
                  sprintf('‣ "/this/dir/not/exists" ("%s")', $missing_dir_constant1),
                  sprintf('‣ "%s/not/exists" ("%s")', $tmp_dir, $missing_dir_constant2),
                  sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
@@ -166,19 +177,23 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
 
         $unsecure_var_root_constant = sprintf('GLPI_TEST_%08x', rand());
         $unsecure_var_root_path = sprintf('%s/glpi_test_%08x', $root_path, rand());
-        $this->boolean(mkdir($unsecure_var_root_path))->isTrue();
+        $this->assertTrue(mkdir($unsecure_var_root_path));
         define($unsecure_var_root_constant, $unsecure_var_root_path); // inside root dir
 
-        $this->newTestedInstance([$unsecure_var_root_constant], $unsecure_var_root_constant, $root_path);
+        $instance = new DataDirectoriesProtectedPath(
+            [$unsecure_var_root_constant],
+            $unsecure_var_root_constant,
+            $root_path
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  sprintf('The following directories should be placed outside "%s":', $root_path),
                  sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
                  sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
@@ -189,17 +204,21 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
         $unsecure_var_root_constant = sprintf('GLPI_TEST_%08x', rand());
         define($unsecure_var_root_constant, $root_path); // constant points to root dir itself, it cannot be safe
 
-        $this->newTestedInstance([$unsecure_var_root_constant], $unsecure_var_root_constant, $root_path);
+        $instance = new DataDirectoriesProtectedPath(
+            [$unsecure_var_root_constant],
+            $unsecure_var_root_constant,
+            $root_path
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(
-                [
-                    sprintf('The following directories should be placed outside "%s":', $root_path),
-                    sprintf('‣ "%s" ("%s")', $root_path, $unsecure_var_root_constant),
-                    sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-                ]
-            );
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            [
+                sprintf('The following directories should be placed outside "%s":', $root_path),
+                sprintf('‣ "%s" ("%s")', $root_path, $unsecure_var_root_constant),
+                sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
+            ],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckWithSameDirectoryPrefix()
@@ -207,31 +226,35 @@ class DataDirectoriesProtectedPath extends \GLPITestCase
         $tmp_dir = sys_get_temp_dir();
 
         $root_path = sprintf('%s/glpi_root_%08x', $tmp_dir, rand());
-        $this->boolean(mkdir($root_path))->isTrue();
+        $this->assertTrue(mkdir($root_path));
 
         $secure_var_root_constant = sprintf('GLPI_TEST_%08x', rand());
         // generate a directory on same level starting with root path (e.g. `/var/www/glpi_files` when root is `/var/www/glpi`)
         $secure_var_root_path = sprintf('%s_%08x', $root_path, rand());
-        $this->boolean(mkdir($secure_var_root_path))->isTrue();
+        $this->assertTrue(mkdir($secure_var_root_path));
         define($secure_var_root_constant, $secure_var_root_path);
 
         $secure_dir_constant1 = sprintf('GLPI_TEST_%08x', rand());
-        $this->boolean(mkdir($secure_var_root_path . '/_cache'))->isTrue();
+        $this->assertTrue(mkdir($secure_var_root_path . '/_cache'));
         define($secure_dir_constant1, $secure_var_root_path . '/_cache'); // Inside var root
 
         $secure_dir_constant2 = sprintf('GLPI_TEST_%08x', rand());
         $secure_dir_path2     = sprintf('%s/glpi_test_%08x', $tmp_dir, rand());
-        $this->boolean(mkdir($secure_dir_path2))->isTrue();
+        $this->assertTrue(mkdir($secure_dir_path2));
         define($secure_dir_constant2, $secure_dir_path2); // Outside var root
 
-        $this->newTestedInstance([$secure_dir_constant1, $secure_dir_constant2], $secure_var_root_constant, $root_path);
+        $instance = new DataDirectoriesProtectedPath(
+            [$secure_dir_constant1, $secure_dir_constant2],
+            $secure_var_root_constant,
+            $root_path
+        );
 
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(
-                [
-                    'GLPI data directories are located in a secured path.',
-                ]
-            );
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            [
+                'GLPI data directories are located in a secured path.',
+            ],
+            $instance->getValidationMessages()
+        );
     }
 }

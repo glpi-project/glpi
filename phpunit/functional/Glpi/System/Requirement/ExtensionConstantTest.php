@@ -35,33 +35,41 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionConstant extends \GLPITestCase
+use Glpi\System\Requirement\ExtensionConstant;
+
+class ExtensionConstantTest extends \GLPITestCase
 {
     public function testCheckOnExistingConstant()
     {
         $test_constant = 'TEST_CONSTANT' . mt_rand();
         define($test_constant, 'TEST');
-        $this->newTestedInstance('Test constant', $test_constant, false, '');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(['The constant ' . $test_constant . ' is present.']);
+        $instance = new \Glpi\System\Requirement\ExtensionConstant('Test constant', $test_constant, false, '');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['The constant ' . $test_constant . ' is present.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnMissingMandatoryConstant()
     {
         $test_constant = 'TEST_CONSTANT' . mt_rand();
-        $this->newTestedInstance('Test constant', $test_constant, false, '');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(['The constant ' . $test_constant . ' is missing.']);
+        $instance = new \Glpi\System\Requirement\ExtensionConstant('Test constant', $test_constant, false, '');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The constant ' . $test_constant . ' is missing.'],
+            $instance->getValidationMessages()
+        );
     }
 
     public function testCheckOnMissingOptionalConstant()
     {
         $test_constant = 'TEST_CONSTANT' . mt_rand();
-        $this->newTestedInstance('Test constant', $test_constant, true, '');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-            ->isEqualTo(['The constant ' . $test_constant . ' is not present.']);
+        $instance = new ExtensionConstant('Test constant', $test_constant, true, '');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The constant ' . $test_constant . ' is not present.'],
+            $instance->getValidationMessages()
+        );
     }
 }

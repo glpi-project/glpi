@@ -35,29 +35,40 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class MemoryLimit extends \GLPITestCase
-{
-    public function testCheckWithEnoughMemory()
-    {
+use Glpi\System\Requirement\LogsWriteAccess;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use org\bovigo\vfs\vfsStream;
 
-        $this->newTestedInstance(32 * 1024 * 1024);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Allocated memory is sufficient.']);
+class LogsWriteAccessTest extends \GLPITestCase
+{
+    public function testCheckOnExistingWritableDir()
+    {
+        vfsStream::setup('root', 0777, []);
+
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
+
+        $instance = new LogsWriteAccess($logger);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['The log file has been created successfully.'],
+            $instance->getValidationMessages()
+        );
     }
 
-    public function testCheckWithNotEnoughMemory()
+    public function testCheckOnExistingProtectedDir()
     {
+        vfsStream::setup('root', 0555, []);
 
-        $this->newTestedInstance(16 * 1024 * 1024 * 1024);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
-             [
-                 'Allocated memory: ' . \Toolbox::getSize(\Toolbox::getMemoryLimit()),
-                 'A minimum of 16 GiB is commonly required for GLPI.',
-                 'Try increasing the memory_limit parameter in the php.ini file.'
-             ]
-         );
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
+
+        $instance = new LogsWriteAccess($logger);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log file could not be created in ' . GLPI_LOG_DIR . '.'],
+            $instance->getValidationMessages()
+        );
     }
 }

@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class DbEngine extends \GLPITestCase
+use Glpi\System\Requirement\DbEngine;
+
+class DbEngineTest extends \GLPITestCase
 {
-    protected function versionProvider()
+    public static function versionProvider()
     {
         return [
             [
@@ -93,14 +95,17 @@ class DbEngine extends \GLPITestCase
      */
     public function testCheck(string $version, bool $validated, array $messages)
     {
+        $db = $this->getMockBuilder(\DB::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getVersion'])
+            ->getMock();
+        $db->method('getVersion')->willReturn($version);
 
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DB();
-        $this->calling($db)->getVersion = $version;
-
-        $this->newTestedInstance($db);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo($messages);
+        $instance = new DbEngine($db);
+        $this->assertEquals($validated, $instance->isValidated());
+        $this->assertEquals(
+            $messages,
+            $instance->getValidationMessages()
+        );
     }
 }
