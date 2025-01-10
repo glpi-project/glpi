@@ -45,10 +45,10 @@ final class ListenersPriority
         KernelListener\InitializeDbConnection::class =>              180,
         KernelListener\InitializeCache::class =>                     170,
         KernelListener\LoadLegacyConfiguration::class =>             160,
-        KernelListener\CustomObjectsAutoloaderRegistration::class => 150,
-        KernelListener\InitializePlugins::class =>                   140,
-        KernelListener\CustomObjectsBootstrap::class =>              130,
-        KernelListener\LoadLanguage::class =>                        120,
+        KernelListener\LoadLanguage::class =>                        150,
+        KernelListener\CustomObjectsAutoloaderRegistration::class => 140,
+        KernelListener\InitializePlugins::class =>                   130,
+        KernelListener\CustomObjectsBootstrap::class =>              120,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [
