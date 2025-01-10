@@ -39,7 +39,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
-use Glpi\Cache\I18nCache;
 use Glpi\Dashboard\Grid;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
@@ -475,17 +474,6 @@ class Plugin extends CommonDBTM
             if ($mofile !== false) {
                 break;
             }
-        }
-
-        if (!defined('TU_USER')) {
-            $i18n_cache = new I18nCache((new CacheManager())->getTranslationsCacheInstance());
-            $TRANSLATE = new class ($i18n_cache) extends Laminas\I18n\Translator\Translator {
-                public function __construct(?I18nCache $cache)
-                {
-                    $this->cache = $cache;
-                }
-            };
-            $TRANSLATE->setLocale($coretrytoload);
         }
 
         if ($mofile !== false) {
