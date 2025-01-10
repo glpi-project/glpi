@@ -114,8 +114,8 @@ class NotificationSettingConfigTest extends DbTestCase
         $content = ob_get_clean();
         $this->assertStringContainsString('Notifications configuration', $content);
         $this->assertStringContainsString('Notification templates', $content);
-        $this->assertStringContainsString('Browser followups configuration', $content);
-        $this->assertStringNotContainsString('Email followups configuration', $content);
+        $this->assertStringContainsString('Browser notifications configuration', $content);
+        $this->assertStringNotContainsString('Email notifications configuration', $content);
 
         $CFG_GLPI['notifications_mailing'] = 1;
 
@@ -124,8 +124,8 @@ class NotificationSettingConfigTest extends DbTestCase
         $content = ob_get_clean();
         $this->assertStringContainsString('Notifications configuration', $content);
         $this->assertStringContainsString('Notification templates', $content);
-        $this->assertStringContainsString('Browser followups configuration', $content);
-        $this->assertStringContainsString('Email followups configuration', $content);
+        $this->assertStringContainsString('Browser notifications configuration', $content);
+        $this->assertStringContainsString('Email notifications configuration', $content);
 
         //reset
         $CFG_GLPI['use_notifications'] = 0;

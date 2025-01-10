@@ -42,12 +42,12 @@ class NotificationAjaxSetting extends NotificationSetting
 {
     public static function getTypeName($nb = 0)
     {
-        return __('Browser followups configuration');
+        return __('Browser notifications configuration');
     }
 
     public function getEnableLabel()
     {
-        return __('Enable followups from browser');
+        return __('Enable browser notifications');
     }
 
     public static function getMode()
