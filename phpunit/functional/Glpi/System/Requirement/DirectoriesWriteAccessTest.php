@@ -59,12 +59,12 @@ class DirectoriesWriteAccessTest extends \GLPITestCase
         $instance = new DirectoriesWriteAccess('test', [$path_a, $path_b]);
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-             [
-                 'Write access to ' . $path_a . ' has been validated.',
-                 'Write access to ' . $path_b . ' has been validated.',
-             ],
+            [
+                'Write access to ' . $path_a . ' has been validated.',
+                'Write access to ' . $path_b . ' has been validated.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnFaultyDirs()
@@ -86,12 +86,12 @@ class DirectoriesWriteAccessTest extends \GLPITestCase
         $instance = new DirectoriesWriteAccess('test', [$writable_path, $not_writable_path, $invalid_path]);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 'Write access to ' . $writable_path . ' has been validated.',
-                 'The directory could not be created in ' . $not_writable_path . '.',
-                 'The directory could not be created in ' . $invalid_path . '.',
-             ],
+            [
+                'Write access to ' . $writable_path . ' has been validated.',
+                'The directory could not be created in ' . $not_writable_path . '.',
+                'The directory could not be created in ' . $invalid_path . '.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 }

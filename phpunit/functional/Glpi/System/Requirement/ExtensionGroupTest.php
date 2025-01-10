@@ -54,12 +54,12 @@ class ExtensionGroupTest extends \GLPITestCase
         $instance = new ExtensionGroup('test', ['curl', 'fake_ext']);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 'Following extensions are installed: curl.',
-                 'Following extensions are missing: fake_ext.'
-             ],
+            [
+                'Following extensions are installed: curl.',
+                'Following extensions are missing: fake_ext.'
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnMissingOptionalExtension()
@@ -67,11 +67,11 @@ class ExtensionGroupTest extends \GLPITestCase
         $instance = new ExtensionGroup('test', ['curl', 'fake_ext'], true);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 'Following extensions are installed: curl.',
-                 'Following extensions are not present: fake_ext.'
-             ],
+            [
+                'Following extensions are installed: curl.',
+                'Following extensions are not present: fake_ext.'
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 }

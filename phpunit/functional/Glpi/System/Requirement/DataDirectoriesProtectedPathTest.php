@@ -95,15 +95,15 @@ class DataDirectoriesProtectedPathTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 sprintf('The following directories should be placed outside "%s":', $root_path),
-                 sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
+            [
+                sprintf('The following directories should be placed outside "%s":', $root_path),
+                sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
                  // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
-                 sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
-                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ],
+                sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
+                sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnUnsecureDirsWithSecureVarRoot()
@@ -129,15 +129,15 @@ class DataDirectoriesProtectedPathTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 sprintf('The following directories should be placed outside "%s":', $root_path),
-                 sprintf('‣ "%s/files/_cache" ("%s")', $root_path, $unsecure_dir_constant1),
-                 sprintf('‣ "%s/files/_log" ("%s")', $root_path, $unsecure_dir_constant2),
-                 sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
-                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ],
+            [
+                sprintf('The following directories should be placed outside "%s":', $root_path),
+                sprintf('‣ "%s/files/_cache" ("%s")', $root_path, $unsecure_dir_constant1),
+                sprintf('‣ "%s/files/_log" ("%s")', $root_path, $unsecure_dir_constant2),
+                sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
+                sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnMissingDirs()
@@ -161,14 +161,14 @@ class DataDirectoriesProtectedPathTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 'The following directories do not exist and cannot be tested:',
-                 sprintf('‣ "/this/dir/not/exists" ("%s")', $missing_dir_constant1),
-                 sprintf('‣ "%s/not/exists" ("%s")', $tmp_dir, $missing_dir_constant2),
-                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ],
+            [
+                'The following directories do not exist and cannot be tested:',
+                sprintf('‣ "/this/dir/not/exists" ("%s")', $missing_dir_constant1),
+                sprintf('‣ "%s/not/exists" ("%s")', $tmp_dir, $missing_dir_constant2),
+                sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithAnotherRootPath()
@@ -188,13 +188,13 @@ class DataDirectoriesProtectedPathTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 sprintf('The following directories should be placed outside "%s":', $root_path),
-                 sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
-                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
-             ],
+            [
+                sprintf('The following directories should be placed outside "%s":', $root_path),
+                sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
+                sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithPathThatIsSameAsRoot()
