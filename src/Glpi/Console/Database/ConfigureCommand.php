@@ -48,7 +48,7 @@ class ConfigureCommand extends AbstractConfigureCommand implements Configuration
 
         $this->setName('database:configure');
         $this->setAliases(['db:configure']);
-        $this->setDescription('Define database configuration');
+        $this->setDescription('Define database configuration and writes it to config_db.php');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
