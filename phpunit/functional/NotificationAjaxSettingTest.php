@@ -48,8 +48,8 @@ class NotificationAjaxSettingTest extends DbTestCase
 
     public function testGetTypeName()
     {
-        $this->assertSame('Browser followups configuration', \NotificationAjaxSetting::getTypeName());
-        $this->assertSame('Browser followups configuration', \NotificationAjaxSetting::getTypeName(10));
+        $this->assertSame('Browser notifications configuration', \NotificationAjaxSetting::getTypeName());
+        $this->assertSame('Browser notifications configuration', \NotificationAjaxSetting::getTypeName(10));
     }
 
     public function testDefineTabs()
@@ -77,7 +77,7 @@ class NotificationAjaxSettingTest extends DbTestCase
     public function testGetEnableLabel()
     {
         $settings = new \NotificationAjaxSetting();
-        $this->assertSame('Enable followups from browser', $settings->getEnableLabel());
+        $this->assertSame('Enable browser notifications', $settings->getEnableLabel());
     }
 
     public function testGetMode()
