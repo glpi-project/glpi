@@ -35,7 +35,7 @@
 
 namespace Glpi\CalDAV\Traits;
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\RichText\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component;
@@ -165,8 +165,8 @@ trait VobjectConverterTrait
                 $rrule = new RRule($rrule_specs);
                 $vcomp->RRULE = $rrule->rfcString();
             } catch (\InvalidArgumentException $e) {
-                ErrorHandler::getInstance()->logException($e);
-                ErrorHandler::getInstance()->outputExceptionMessage($e);
+                ErrorUtils::logException($e);
+                ErrorUtils::outputExceptionMessage($e);
             }
         }
 

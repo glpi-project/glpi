@@ -36,7 +36,7 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -121,8 +121,8 @@ class ErrorController extends AbstractController
             Toolbox::logInFile('access-errors', $message);
         } else {
             // Other errors are logged in the `php-errors` log
-            ErrorHandler::getInstance()->logException($exception);
-            ErrorHandler::getInstance()->outputExceptionMessage($exception);
+            ErrorUtils::logException($exception);
+            ErrorUtils::outputExceptionMessage($exception);
         }
     }
 

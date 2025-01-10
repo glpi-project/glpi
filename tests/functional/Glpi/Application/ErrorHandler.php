@@ -140,7 +140,7 @@ class ErrorHandler extends \GLPITestCase
         $previous_use_mode = $_SESSION['glpi_use_mode'];
 
         $error_handler = $this->callPrivateConstructor(
-            \Glpi\Application\ErrorHandler::class,
+            \Glpi\Application\ErrorUtils::class,
             [$logger, $env]
         );
         $error_handler->register();
@@ -273,9 +273,9 @@ class ErrorHandler extends \GLPITestCase
                 $handler = new TestHandler();
                 $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
-                /** @var \Glpi\Application\ErrorHandler $error_handler */
+                /** @var \Glpi\Application\ErrorUtils $error_handler */
                 $error_handler = $this->callPrivateConstructor(
-                    \Glpi\Application\ErrorHandler::class,
+                    \Glpi\Application\ErrorUtils::class,
                     [$logger, $env]
                 );
 

@@ -35,7 +35,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Grant\RefreshToken;
 use Symfony\Component\Mailer\Transport;
@@ -224,9 +224,9 @@ class GLPIMailer
             $this->error = $e->getMessage();
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();
-            ErrorHandler::getInstance()->logException($e);
+            ErrorUtils::logException($e);
 
-            ErrorHandler::getInstance()->outputExceptionMessage($e);
+            ErrorUtils::outputExceptionMessage($e);
         }
 
         if ($this->error !== null) {

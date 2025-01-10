@@ -35,6 +35,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
+use Glpi\Error\ErrorHandler;
 use Glpi\Log\LegacyGlobalLogger;
 
 return static function (ContainerConfigurator $container): void {
@@ -46,6 +47,7 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
+    $parameters->set('debug.error_handler.throw_at', ErrorHandler::FATAL_ERRORS);
 
     $services = $services
         ->defaults()

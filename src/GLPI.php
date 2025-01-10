@@ -33,8 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
-use Monolog\Formatter\LineFormatter;
+use Glpi\Error\LogLineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
@@ -67,8 +66,6 @@ class GLPI
      */
     public const ENV_DEVELOPMENT = 'development';
 
-    private $error_handler;
-
     /**
      * Init logger
      *
@@ -76,6 +73,9 @@ class GLPI
      */
     public function initLogger()
     {
+        $errorHandler = new \Glpi\Error\ErrorHandler();
+        $errorHandler::register($errorHandler);
+
         /**
          * @var \Psr\Log\LoggerInterface $PHPLOGGER
          */
@@ -108,18 +108,8 @@ class GLPI
             GLPI_LOG_DIR . "/php-errors.log",
             $log_level
         );
-        $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-        $handler->setFormatter($formatter);
-        $PHPLOGGER->pushHandler($handler);
-    }
+        $handler->setFormatter(new LogLineFormatter());
 
-    /**
-     * Init and register error handler.
-     *
-     * @return void
-     */
-    public function initErrorHandler(): void
-    {
-        ErrorHandler::getInstance()->register();
+        $PHPLOGGER->pushHandler($handler);
     }
 }

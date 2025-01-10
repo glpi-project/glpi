@@ -35,7 +35,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Inventory\Conf;
@@ -751,9 +751,9 @@ class Agent extends CommonDBTM
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->logException($e);
+            ErrorUtils::logException($e);
 
-            ErrorHandler::getInstance()->outputExceptionMessage($e);
+            ErrorUtils::outputExceptionMessage($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {
@@ -774,9 +774,9 @@ class Agent extends CommonDBTM
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->logException($e);
+            ErrorUtils::logException($e);
 
-            ErrorHandler::getInstance()->outputExceptionMessage($e);
+            ErrorUtils::outputExceptionMessage($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {

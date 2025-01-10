@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
@@ -98,4 +98,4 @@ define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
 
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
-ErrorHandler::getInstance()->disableOutput();
+\Glpi\Error\ErrorHandler::disableOutput();

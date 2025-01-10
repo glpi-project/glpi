@@ -36,7 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
@@ -63,7 +63,7 @@ final class ApiController extends AbstractController
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
         // Ensure errors will not break API output.
-        ErrorHandler::getInstance()->disableOutput();
+        \Glpi\Error\ErrorHandler::disableOutput();
 
         $method = $_SERVER['REQUEST_METHOD'];
         $relative_uri = $_SERVER['PATH_INFO'] ?? '';
@@ -106,8 +106,8 @@ final class ApiController extends AbstractController
                 400
             );
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->logException($e);
-            ErrorHandler::getInstance()->outputExceptionMessage($e);
+            ErrorUtils::logException($e);
+            ErrorUtils::outputExceptionMessage($e);
             $response = new JSONResponse(null, 500);
         }
 

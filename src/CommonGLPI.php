@@ -1197,6 +1197,7 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function display($options = [])
     {
+        trigger_error('Error triggerred', E_USER_WARNING);
         // Item might already be loaded, skip load and rights checks
         $item_loaded = $options['loaded'] ?? false;
         unset($options['loaded']);

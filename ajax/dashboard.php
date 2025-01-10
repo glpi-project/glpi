@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Dashboard\Grid;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
@@ -209,8 +209,8 @@ switch ($_REQUEST['action']) {
             } catch (\Throwable $e) {
                 // Send exception to logger without actually exiting.
                 // Use quiet mode to not break JSON result.
-                ErrorHandler::getInstance()->logException($e);
-                ErrorHandler::getInstance()->outputExceptionMessage($e);
+                ErrorUtils::logException($e);
+                ErrorUtils::outputExceptionMessage($e);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

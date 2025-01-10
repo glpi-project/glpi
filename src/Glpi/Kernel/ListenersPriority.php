@@ -52,6 +52,8 @@ final class ListenersPriority
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [
+        HttpListener\HtmlErrorDisplayHandlerRequestListener::class => 1000,
+
         // Static assets must be served without executing anything else.
         // Keep them on top priority.
         HttpListener\LegacyAssetsListener::class        => 500,

@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use RRule\RRule;
@@ -1880,7 +1880,7 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        ErrorHandler::getInstance()->disableOutput(); // Suspend error output to prevent warnings to corrupt JSON output
+        \Glpi\Error\ErrorHandler::disableOutput(); // Suspend error output to prevent warnings to corrupt JSON output
 
         $raw_events = [];
 
@@ -1954,7 +1954,7 @@ TWIG, $twig_params);
             }
         }
 
-        ErrorHandler::getInstance()->enableOutput(); // Restore error output state
+        \Glpi\Error\ErrorHandler::enableOutput(); // Restore error output state
 
         return $raw_events;
     }

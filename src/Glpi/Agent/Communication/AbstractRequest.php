@@ -39,7 +39,7 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Inventory\Conf;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;

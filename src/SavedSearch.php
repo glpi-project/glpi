@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
@@ -640,7 +640,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 try {
                     $search_data = $this->execute();
                 } catch (\Throwable $e) {
-                    ErrorHandler::getInstance()->logException($e);
+                    ErrorUtils::logException($e);
                     $error = true;
                 }
 
@@ -994,7 +994,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                               $DB->executeStatement($stmt);
                         }
                     } catch (\Throwable $e) {
-                        ErrorHandler::getInstance()->logException($e);
+                        ErrorUtils::logException($e);
                     }
                 }
 

@@ -37,9 +37,10 @@ namespace Glpi\Console;
 
 use DBmysql;
 use GLPI;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
@@ -206,7 +207,7 @@ class Application extends BaseApplication
         global $CFG_GLPI;
 
         $this->output = $output;
-        ErrorHandler::getInstance()->setOutputHandler($output);
+        ConsoleErrorDisplayHandler::setOutput($output);
 
         parent::configureIO($input, $output);
 

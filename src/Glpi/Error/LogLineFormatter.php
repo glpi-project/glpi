@@ -32,39 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Error;
 
-use Glpi\Api\APIRest;
-use Glpi\Application\ErrorUtils;
-use Glpi\Http\Firewall;
-use Glpi\Http\HeaderlessStreamedResponse;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Monolog\Formatter\LineFormatter;
 
-final class ApiRestController extends AbstractController
+final class LogLineFormatter extends LineFormatter
 {
-    #[Route(
-        "/apirest.php{request_parameters}",
-        name: "glpi_api_rest",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
-    )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(Request $request): Response
+    public function __construct()
     {
-        $_SERVER['PATH_INFO'] = $request->get('request_parameters');
+        parent::__construct("[%datetime%] %channel%.%level_name%: %message% %context.exception% %context% %extra%\n", 'Y-m-d H:i:s', true, true);
 
-        return new HeaderlessStreamedResponse(function () {
-            // Ensure errors will not break API output.
-            \Glpi\Error\ErrorHandler::disableOutput();
+        $this->setBasePath(GLPI_ROOT);
+        $this->allowInlineLineBreaks();
+        $this->ignoreEmptyContextAndExtra();
+        $this->indentStacktraces('  ');
+        $this->includeStacktraces();
+    }
 
-            $api = new APIRest();
-            $api->call();
-        });
+    protected function normalizeException(\Throwable $e, int $depth = 0): string
+    {
+        $message = $e->getMessage() . "\n" . StackTraceFormatter::getTraceAsString($e->getTrace());
+
+        if (($previous = $e->getPrevious()) instanceof \Throwable) {
+            do {
+                $depth++;
+                $message .= "\n Previous: " . $previous->getMessage() . "\n" . StackTraceFormatter::getTraceAsString($previous->getTrace());
+                if ($depth > $this->maxNormalizeDepth) {
+                    break;
+                }
+            } while ($previous = $previous->getPrevious());
+        }
+
+        return $message;
     }
 }

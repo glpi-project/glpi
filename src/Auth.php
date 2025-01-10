@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
@@ -315,9 +315,9 @@ class Auth extends CommonGLPI
                     'user_dn'           => $this->user_dn
                 ]);
             } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->logException($e);
+                ErrorUtils::logException($e);
 
-                ErrorHandler::getInstance()->outputExceptionMessage($e);
+                ErrorUtils::outputExceptionMessage($e);
                 $info = false;
             }
 
@@ -885,9 +885,9 @@ class Auth extends CommonGLPI
                                     ],
                                 ]);
                             } catch (\RuntimeException $e) {
-                                ErrorHandler::getInstance()->logException($e);
+                                ErrorUtils::logException($e);
 
-                                ErrorHandler::getInstance()->outputExceptionMessage($e);
+                                ErrorUtils::outputExceptionMessage($e);
                                 $user_dn = false;
                             }
                             if ($user_dn) {

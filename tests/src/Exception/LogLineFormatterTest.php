@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,28 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
-use Glpi\UI\ThemeManager;
+namespace Glpi\Tests\Exception;
 
-// Ensure warnings will not break image output.
-\Glpi\Error\ErrorHandler::disableOutput();
+use PHPUnit\Framework\TestCase;
 
-$theme = ThemeManager::getInstance()->getTheme($_GET['key']);
-$preview = $theme !== null ? $theme->getPreviewPath(false) : null;
+class LogLineFormatterTest extends TestCase
+{
 
-header_remove('Pragma');
-header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));
-header('Content-type: image/png');
-
-if ($preview === null) {
-    header('Cache-Control: no-cache');
-    // Return blank PNG to prevent "broken image" display.
-    $blank = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
-    header(sprintf('Content-Length: %s', strlen($blank)));
-    echo $blank;
-    return;
 }
-
-header('Cache-Control: public, max-age=2592000, must-revalidate'); // 1 month cache
-header(sprintf('Content-Length: %s', filesize($preview)));
-readfile($preview);

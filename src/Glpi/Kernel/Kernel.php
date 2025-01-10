@@ -63,7 +63,6 @@ final class Kernel extends BaseKernel
         // TODO: refactor the GLPI class.
         $glpi = (new GLPI());
         $glpi->initLogger();
-        $glpi->initErrorHandler();
 
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct(

@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 
 /**
  * @var array $CFG_GLPI
@@ -78,8 +78,8 @@ try {
     $messages = $TRANSLATE->getAllMessages($_GET['domain']);
 } catch (\Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
-    ErrorHandler::getInstance()->logException($e);
-    ErrorHandler::getInstance()->outputExceptionMessage($e);
+    ErrorUtils::logException($e);
+    ErrorUtils::outputExceptionMessage($e);
 }
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
    // No TextDomain found means that there is no translations for given domain.

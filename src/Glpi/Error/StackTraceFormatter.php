@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,28 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
-use Glpi\UI\ThemeManager;
+namespace Glpi\Error;
 
-// Ensure warnings will not break image output.
-\Glpi\Error\ErrorHandler::disableOutput();
+final readonly class StackTraceFormatter
+{
+    public static function getTraceAsString(array $trace): string
+    {
+        if (empty($trace)) {
+            return '';
+        }
 
-$theme = ThemeManager::getInstance()->getTheme($_GET['key']);
-$preview = $theme !== null ? $theme->getPreviewPath(false) : null;
+        $message = "  Backtrace :\n";
 
-header_remove('Pragma');
-header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));
-header('Content-type: image/png');
+        foreach ($trace as $item) {
+            $script = ($item['file'] ?? '') . ':' . ($item['line'] ?? '');
+            if (\str_starts_with($script, GLPI_ROOT)) {
+                $script = \substr($script, \strlen(GLPI_ROOT) + 1);
+            }
+            if (\strlen($script) > 50) {
+                $script = '...' . \substr($script, -47);
+            } else {
+                $script = \str_pad($script, 50);
+            }
 
-if ($preview === null) {
-    header('Cache-Control: no-cache');
-    // Return blank PNG to prevent "broken image" display.
-    $blank = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
-    header(sprintf('Content-Length: %s', strlen($blank)));
-    echo $blank;
-    return;
+            $call = ($item['class'] ?? '') . ($item['type'] ?? '') . ($item['function'] ?? '');
+            if (!empty($call)) {
+                $call .= '()';
+            }
+            $message .= "  $script $call\n";
+        }
+
+        return $message;
+    }
 }
-
-header('Cache-Control: public, max-age=2592000, must-revalidate'); // 1 month cache
-header(sprintf('Content-Length: %s', filesize($preview)));
-readfile($preview);

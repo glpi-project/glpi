@@ -35,7 +35,7 @@
 
 namespace Glpi\CalDAV;
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\CalDAV\Backend\Auth;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
@@ -96,7 +96,7 @@ class Server extends DAV\Server
             return;
         }
 
-        ErrorHandler::getInstance()->logException($exception);
-        ErrorHandler::getInstance()->outputExceptionMessage($exception);
+        ErrorUtils::logException($exception);
+        ErrorUtils::outputExceptionMessage($exception);
     }
 }

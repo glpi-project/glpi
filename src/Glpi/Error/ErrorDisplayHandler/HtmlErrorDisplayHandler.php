@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,28 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
-use Glpi\UI\ThemeManager;
+namespace Glpi\Error\ErrorDisplayHandler;
 
-// Ensure warnings will not break image output.
-\Glpi\Error\ErrorHandler::disableOutput();
+use Symfony\Component\HttpFoundation\Request;
 
-$theme = ThemeManager::getInstance()->getTheme($_GET['key']);
-$preview = $theme !== null ? $theme->getPreviewPath(false) : null;
+final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
+{
+    private static ?Request $currentRequest = null;
 
-header_remove('Pragma');
-header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));
-header('Content-type: image/png');
+    public static function setCurrentRequest(Request $request): void
+    {
+        self::$currentRequest = $request;
+    }
 
-if ($preview === null) {
-    header('Cache-Control: no-cache');
-    // Return blank PNG to prevent "broken image" display.
-    $blank = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
-    header(sprintf('Content-Length: %s', strlen($blank)));
-    echo $blank;
-    return;
+    public function canOutput(string $log_level, string $env): bool
+    {
+        return self::$currentRequest !== null;
+    }
+
+    public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void
+    {
+        $req = self::$currentRequest;
+
+        $types = $req->getAcceptableContentTypes();
+
+        if (in_array('text/html', $types)) {
+            echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
+                . '<span class="b">' . \htmlescape($error_type) . ': </span>' . \htmlescape($message) . '</div>';
+        } else {
+            \trigger_error('Cannot display error in HTTP context for requests that do not accept HTML as a response.', \E_USER_WARNING);
+        }
+    }
 }
-
-header('Cache-Control: public, max-age=2592000, must-revalidate'); // 1 month cache
-header(sprintf('Content-Length: %s', filesize($preview)));
-readfile($preview);

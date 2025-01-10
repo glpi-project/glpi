@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Application\ErrorUtils;
 use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;
 
@@ -58,8 +58,8 @@ if (isset($_POST["update"])) {
                 $_SESSION['smtp_oauth2_state'] = $provider->getState();
                 Html::redirect($auth_url);
             } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->logException($e);
-                ErrorHandler::getInstance()->outputExceptionMessage($e);
+                ErrorUtils::logException($e);
+                ErrorUtils::outputExceptionMessage($e);
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),
                     false,
