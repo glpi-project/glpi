@@ -485,6 +485,8 @@ class Plugin extends CommonDBTM
             }
         };
 
+        $TRANSLATE->setLocale($trytoload);
+
         if ($mofile !== false) {
             $TRANSLATE->addTranslationFile(
                 'gettext',
