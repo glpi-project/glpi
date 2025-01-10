@@ -35,21 +35,25 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class UserTitleParameters extends AbstractParameters
+use DbTestCase;
+use Glpi\ContentTemplates\TemplateManager;
+
+class AbstractParameters extends DbTestCase
 {
-    public function testGetValues(): void
+    protected function testGetAvailableParameters($values, $parameters): void
     {
-        $this->createItem('UserTitle', [
-            'name' => 'usertitle_testGetValues',
-        ]);
+        $parameters = TemplateManager::computeParameters($parameters);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('UserTitle', 'usertitle_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'   => getItemByTypeName('UserTitle', 'usertitle_testGetValues', true),
-            'name' => 'usertitle_testGetValues',
-        ]);
+        $values_keys = array_keys($values);
+        $parameters_keys = array_column($parameters, 'key');
 
-        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+        // Remove "flat" arrays (requester.user, requester.groups, ...)
+        $parameters_keys = array_map(function ($parameter) {
+            $properties = explode('.', $parameter);
+            return array_shift($properties);
+        }, $parameters_keys);
+        $parameters_keys = array_values(array_unique($parameters_keys));
+
+        $this->assertEquals($values_keys, $parameters_keys);
     }
 }

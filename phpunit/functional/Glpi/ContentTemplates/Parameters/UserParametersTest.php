@@ -35,7 +35,11 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class UserParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\UserParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class UserParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
@@ -64,35 +68,38 @@ class UserParameters extends AbstractParameters
             'locations_id'        => $test_location,
         ]);
 
-        $parameters = $this->newTestedInstance();
+        $parameters = new UserParameters();
         $values = $parameters->getValues(getItemByTypeName('User', 'user_testGetValues'));
 
-        $this->array($values)->isEqualTo([
-            'id'          => getItemByTypeName('User', 'user_testGetValues', true),
-            'login'       => 'user_testGetValues',
-            'fullname'    => 'lastname firstname',
-            'email'       => 'test@email.com',
-            'phone'       => '0101010101',
-            'phone2'      => '0202020202',
-            'mobile'      => '0303030303',
-            'firstname'   => 'firstname',
-            'realname'    => 'lastname',
-            'responsible' => TU_USER,
-            'location' => [
-                'id'           => $test_location,
-                'name'         => 'test location',
-                'completename' => 'test location',
+        $this->assertEquals(
+            [
+                'id'          => getItemByTypeName('User', 'user_testGetValues', true),
+                'login'       => 'user_testGetValues',
+                'fullname'    => 'lastname firstname',
+                'email'       => 'test@email.com',
+                'phone'       => '0101010101',
+                'phone2'      => '0202020202',
+                'mobile'      => '0303030303',
+                'firstname'   => 'firstname',
+                'realname'    => 'lastname',
+                'responsible' => TU_USER,
+                'location' => [
+                    'id'           => $test_location,
+                    'name'         => 'test location',
+                    'completename' => 'test location',
+                ],
+                'usertitle'  => [
+                    'id'   => $test_usertitle,
+                    'name' => 'test title',
+                ],
+                'usercategory'  => [
+                    'id'   => $test_usercategory,
+                    'name' => 'test category',
+                ],
+                'used_items'  => [],
             ],
-            'usertitle'  => [
-                'id'   => $test_usertitle,
-                'name' => 'test title',
-            ],
-            'usercategory'  => [
-                'id'   => $test_usercategory,
-                'name' => 'test category',
-            ],
-            'used_items'  => [],
-        ]);
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

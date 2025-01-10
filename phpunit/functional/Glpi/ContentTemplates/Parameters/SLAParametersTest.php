@@ -35,25 +35,37 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-use DbTestCase;
-use Glpi\ContentTemplates\TemplateManager;
+use Glpi\ContentTemplates\Parameters\SLAParameters;
 
-class AbstractParameters extends DbTestCase
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class SLAParametersTest extends AbstractParameters
 {
-    protected function testGetAvailableParameters($values, $parameters): void
+    public function testGetValues(): void
     {
-        $parameters = TemplateManager::computeParameters($parameters);
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $values_keys = array_keys($values);
-        $parameters_keys = array_column($parameters, 'key');
+        $this->createItem('SLA', [
+            'name'            => 'sla_testGetValues',
+            'type'            => 1,
+            'entities_id'     => $test_entity_id,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
+        ]);
 
-       // Remove "flat" arrays (requester.user, requester.groups, ...)
-        $parameters_keys = array_map(function ($parameter) {
-            $properties = explode('.', $parameter);
-            return array_shift($properties);
-        }, $parameters_keys);
-        $parameters_keys = array_values(array_unique($parameters_keys));
+        $parameters = new SLAParameters();
+        $values = $parameters->getValues(getItemByTypeName('SLA', 'sla_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'       => getItemByTypeName('SLA', 'sla_testGetValues', true),
+                'name'     => 'sla_testGetValues',
+                'type'     => 'Time to own',
+                'duration' => '4',
+                'unit'     => 'hours',
+            ],
+            $values
+        );
 
-        $this->array($parameters_keys)->isEqualTo($values_keys);
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }
 }

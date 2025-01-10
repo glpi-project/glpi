@@ -38,6 +38,7 @@ namespace tests\units\Glpi\ContentTemplates;
 use Change;
 use CommonITILActor;
 use DbTestCase;
+use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Toolbox\Sanitizer;
 use Problem;
 use Ticket;
@@ -45,9 +46,9 @@ use Ticket;
 /**
  * Functionnals test to make sure content templates work as expected
  */
-class TemplateManager extends DbTestCase
+class TemplateManagerTest extends DbTestCase
 {
-    protected function testTemplatesProvider(): array
+    public static function testTemplatesProvider(): array
     {
         return [
             [
@@ -84,13 +85,14 @@ class TemplateManager extends DbTestCase
                 'content'   => "Test forbidden tag: {% set var = 'value' %}",
                 'params'    => [],
                 'expected'  => "",
-                'error'     => 'Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
+                'error'     => 'Tag "set" is not allowed in "template" at line 1.',
             ],
             [
                 'content'   => "Test syntax error {{",
                 'params'    => [],
                 'expected'  => "",
-                'error'     => 'Invalid twig template syntax',
+                'error'     => 'Unexpected token "end of template" of value "" in "template" at line 1.',
+                'validation_error' => 'Invalid twig template syntax'
             ],
             [
                 'content'   => '&#60;h1&#62;Test sanitized template&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
@@ -128,22 +130,14 @@ class TemplateManager extends DbTestCase
         string $expected,
         ?string $error = null
     ): void {
-        $manager = $this->newTestedInstance();
-
-        $html = null;
+        $manager = new TemplateManager();
 
         if ($error !== null) {
-            $this->exception(
-                function () use ($manager, $content, $params, &$html) {
-                    $html = $manager->render($content, $params);
-                }
-            );
-            return;
-        } else {
-            $html = $manager->render($content, $params);
+            $this->expectExceptionMessage($error);
         }
 
-        $this->string($html)->isEqualTo($expected);
+        $html = $manager->render($content, $params);
+        $this->assertEquals($expected, $html);
     }
 
     /**
@@ -153,33 +147,39 @@ class TemplateManager extends DbTestCase
         string $content,
         array $params,
         string $expected,
-        ?string $error = null
+        ?string $error = null,
+        ?string $validation_error = null
     ): void {
-        $manager = $this->newTestedInstance();
+        $manager = new TemplateManager();
         $err_msg = null;
         $is_valid = $manager->validate($content, $err_msg);
-        $this->boolean($is_valid)->isEqualTo(empty($error));
+        $this->assertEquals(empty($error), $is_valid);
 
-       // Handle error if neeced
+        // Handle error if needed
         if ($error !== null) {
-            $this->string($err_msg)->contains($error);
+            $this->assertStringContainsString($validation_error ?? $error, $err_msg);
         }
     }
 
     public function testGetSecurityPolicy(): void
     {
        // Not much to test here, maybe keepk this for code coverage ?
-        $manager = $this->newTestedInstance();
-        $this->object($manager->getSecurityPolicy())->isInstanceOf(\Twig\Sandbox\SecurityPolicy::class);
+        $manager = new TemplateManager();
+        $this->assertInstanceOf(\Twig\Sandbox\SecurityPolicy::class, $manager->getSecurityPolicy());
     }
+
     /**
      * Get all possible CommonITILObject classes.
      *
      * @return array
      */
-    protected function commonITILObjectclassesProvider(): array
+    public static function commonITILObjectclassesProvider(): array
     {
-        return [Ticket::class, Change::class, Problem::class];
+        return [
+            [Ticket::class],
+            [Change::class],
+            [Problem::class]
+        ];
     }
 
     /**
@@ -196,7 +196,7 @@ class TemplateManager extends DbTestCase
 
         /** @var \CommonITILObject $common_itil_object */
         $common_itil_object = new $common_itil_object_class();
-        $this->boolean($common_itil_object instanceof \CommonITILObject)->isTrue();
+        $this->assertTrue($common_itil_object instanceof \CommonITILObject);
 
         // Test entity
         $entities_id = getItemByTypeName("Entity", "_test_root_entity", true);
@@ -225,17 +225,21 @@ class TemplateManager extends DbTestCase
 
         // Validate requester
         $actors = $common_itil_object->getITILActors();
-        $this->array($actors[$user->getID()])->isEqualTo([CommonITILActor::REQUESTER]);
+        $this->assertEquals(
+            [CommonITILActor::REQUESTER],
+            $actors[$user->getID()]
+        );
 
         // Get task
         $task_type = $common_itil_object->getTaskClass();
         $tasks = (new $task_type())->find([
             $common_itil_object->getForeignKeyField() => $common_itil_object->getId(),
         ]);
-        $this->array($tasks)->hasSize(1);
+        $this->assertCount(1, $tasks);
         $task = array_pop($tasks);
-        $this->string(Sanitizer::unsanitize($task['content']))->isEqualTo(
-            "<p>{$common_itil_object->getId()} {$user->fields['name']}</p>"
+        $this->assertEquals(
+            "<p>{$common_itil_object->getId()} {$user->fields['name']}</p>",
+            Sanitizer::unsanitize($task['content'])
         );
     }
 }

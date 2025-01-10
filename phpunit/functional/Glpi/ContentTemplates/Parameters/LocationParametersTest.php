@@ -35,24 +35,37 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class ITILCategoryParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\LocationParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class LocationParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $this->createItem('ITILCategory', [
-            'name'        => 'itilcategory_testGetValues',
-            'entities_id' => $test_entity_id
+        $this->createItem('Location', [
+            'name'        => 'location_testGetValues_parent',
+            'entities_id' => $test_entity_id,
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
-            'name'         => 'itilcategory_testGetValues',
-            'completename' => 'itilcategory_testGetValues',
+        $this->createItem('Location', [
+            'name'        => 'location_testGetValues',
+            'entities_id' => $test_entity_id,
+            'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true)
         ]);
+
+        $parameters = new LocationParameters();
+        $values = $parameters->getValues(getItemByTypeName('Location', 'location_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'   => getItemByTypeName('Location', 'location_testGetValues', true),
+                'name' => 'location_testGetValues',
+                'completename' => 'location_testGetValues_parent > location_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

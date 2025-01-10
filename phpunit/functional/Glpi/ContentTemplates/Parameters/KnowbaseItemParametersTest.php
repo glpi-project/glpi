@@ -35,20 +35,34 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class RequestTypeParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\KnowbaseItemParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class KnowbaseItemParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $this->createItem('RequestType', [
-            'name' => 'requesttype_testGetValues',
+        $this->login();
+
+        $this->createItem('KnowbaseItem', [
+            'name'        => 'kbi_testGetValues',
+            'answer'      => "test answer' \"testGetValues",
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('RequestType', 'requesttype_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'   => getItemByTypeName('RequestType', 'requesttype_testGetValues', true),
-            'name' => 'requesttype_testGetValues',
-        ]);
+        $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
+
+        $parameters = new KnowbaseItemParameters();
+        $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'     => $kbi_id,
+                'name'   => 'kbi_testGetValues',
+                'answer' => "test answer' \"testGetValues",
+                'link'   => "<a  href='/glpi/front/knowbaseitem.form.php?id=$kbi_id'  title=\"kbi_testGetValues\">kbi_testGetValues</a>",
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

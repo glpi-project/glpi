@@ -35,41 +35,36 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class SupplierParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\OLAParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class OLAParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $this->createItem('Supplier', [
-            'name'        => 'supplier_testGetValues',
-            'entities_id' => $test_entity_id,
-            'address'     => '221B Baker Street',
-            'town'        => 'London',
-            'postcode'    => 'NW1 6XE',
-            'state'       => 'England',
-            'country'     => 'UK',
-            'phonenumber' => '+44 20 7224 ...0',
-            'fax'         => '+44 20 7224 ...1',
-            'email'       => 'test@glpi-project.org',
-            'website'     => 'https://glpi-project.org',
+        $this->createItem('OLA', [
+            'name'            => 'ola_testGetValues',
+            'type'            => 1,
+            'entities_id'     => $test_entity_id,
+            'number_time'     => 4,
+            'definition_time' => 'hour',
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('Supplier', 'supplier_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'       => getItemByTypeName('Supplier', 'supplier_testGetValues', true),
-            'name'     => 'supplier_testGetValues',
-            'address'  => '221B Baker Street',
-            'city'     => 'London',
-            'postcode' => 'NW1 6XE',
-            'state'    => 'England',
-            'country'  => 'UK',
-            'phone'    => '+44 20 7224 ...0',
-            'fax'      => '+44 20 7224 ...1',
-            'email'    => 'test@glpi-project.org',
-            'website'  => 'https://glpi-project.org',
-        ]);
+        $parameters = new OLAParameters();
+        $values = $parameters->getValues(getItemByTypeName('OLA', 'ola_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
+                'name'     => 'ola_testGetValues',
+                'type'     => 'Time to own',
+                'duration' => '4',
+                'unit'     => 'hours',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

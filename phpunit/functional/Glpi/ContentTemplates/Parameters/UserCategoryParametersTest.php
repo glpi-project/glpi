@@ -35,31 +35,27 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class AssetParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\UserCategoryParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class UserCategoryParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
-
-        $this->createItem('Computer', [
-            'name'        => 'pc_testGetValues',
-            'serial'      => 'abcd1234',
-            'entities_id' => $test_entity_id
+        $this->createItem('UserCategory', [
+            'name' => 'usercategory_testGetValues',
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
-            'name'        => 'pc_testGetValues',
-            'itemtype'    => 'Computer',
-            'serial'      => 'abcd1234',
-            'entity' => [
-                'id'           => $test_entity_id,
-                'name'         => '_test_child_2',
-                'completename' => 'Root entity > _test_root_entity > _test_child_2',
-            ]
-        ]);
+        $parameters = new UserCategoryParameters();
+        $values = $parameters->getValues(getItemByTypeName('UserCategory', 'usercategory_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'   => getItemByTypeName('UserCategory', 'usercategory_testGetValues', true),
+                'name' => 'usercategory_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

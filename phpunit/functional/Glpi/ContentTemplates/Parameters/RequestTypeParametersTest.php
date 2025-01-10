@@ -35,29 +35,27 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class SLAParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\RequestTypeParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class RequestTypeParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
-
-        $this->createItem('SLA', [
-            'name'            => 'sla_testGetValues',
-            'type'            => 1,
-            'entities_id'     => $test_entity_id,
-            'number_time'     => 4,
-            'definition_time' => 'hour',
+        $this->createItem('RequestType', [
+            'name' => 'requesttype_testGetValues',
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('SLA', 'sla_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'       => getItemByTypeName('SLA', 'sla_testGetValues', true),
-            'name'     => 'sla_testGetValues',
-            'type'     => 'Time to own',
-            'duration' => '4',
-            'unit'     => 'hours',
-        ]);
+        $parameters = new RequestTypeParameters();
+        $values = $parameters->getValues(getItemByTypeName('RequestType', 'requesttype_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'   => getItemByTypeName('RequestType', 'requesttype_testGetValues', true),
+                'name' => 'requesttype_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

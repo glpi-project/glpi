@@ -35,20 +35,24 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class UserCategoryParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\EntityParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class EntityParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $this->createItem('UserCategory', [
-            'name' => 'usercategory_testGetValues',
-        ]);
-
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('UserCategory', 'usercategory_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'   => getItemByTypeName('UserCategory', 'usercategory_testGetValues', true),
-            'name' => 'usercategory_testGetValues',
-        ]);
+        $parameters = new EntityParameters();
+        $values = $parameters->getValues(getItemByTypeName('Entity', '_test_child_2'));
+        $this->assertEquals(
+            [
+                'id'   => getItemByTypeName('Entity', '_test_child_2', true),
+                'name' => '_test_child_2',
+                'completename' => 'Root entity > _test_root_entity > _test_child_2',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

@@ -35,7 +35,11 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class ChangeParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\ChangeParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class ChangeParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
@@ -61,51 +65,54 @@ class ChangeParameters extends AbstractParameters
 
         $changes_id = getItemByTypeName('Change', 'change_testGetValues', true);
 
-        $parameters = $this->newTestedInstance();
+        $parameters = new ChangeParameters();
         $values = $parameters->getValues(getItemByTypeName('Change', 'change_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'        => $changes_id,
-            'ref'       => "#$changes_id",
-            'link'      => "<a  href='/glpi/front/change.form.php?id=$changes_id'  title=\"change_testGetValues\">change_testGetValues</a>",
-            'name'      => 'change_testGetValues',
-            'content'   => '<p>change_testGetValues content</p>',
-            'date'      => '2021-07-19 17:11:28',
-            'solvedate' => null,
-            'closedate' => null,
-            'status'    => 'New',
-            'urgency'   => 'Medium',
-            'impact'    => 'Medium',
-            'priority'  => 'Medium',
-            'entity' => [
-                'id'           => $test_entity_id,
-                'name'         => '_test_child_2',
-                'completename' => 'Root entity > _test_root_entity > _test_child_2',
-            ],
-            'itilcategory' => [
-                'id'           => $itilcategories_id,
-                'name'         => 'category_testGetValues',
-                'completename' => 'category_testGetValues',
-            ],
-            'requesters' => [
-                'users'  => [],
-                'groups' => [],
-            ],
-            'observers' => [
-                'users'  => [],
-                'groups' => [
-                    [
-                        'id'           => $observer_groups_id,
-                        'name'         => '_test_group_1',
-                        'completename' => '_test_group_1',
+        $this->assertEquals(
+            [
+                'id'        => $changes_id,
+                'ref'       => "#$changes_id",
+                'link'      => "<a  href='/glpi/front/change.form.php?id=$changes_id'  title=\"change_testGetValues\">change_testGetValues</a>",
+                'name'      => 'change_testGetValues',
+                'content'   => '<p>change_testGetValues content</p>',
+                'date'      => '2021-07-19 17:11:28',
+                'solvedate' => null,
+                'closedate' => null,
+                'status'    => 'New',
+                'urgency'   => 'Medium',
+                'impact'    => 'Medium',
+                'priority'  => 'Medium',
+                'entity' => [
+                    'id'           => $test_entity_id,
+                    'name'         => '_test_child_2',
+                    'completename' => 'Root entity > _test_root_entity > _test_child_2',
+                ],
+                'itilcategory' => [
+                    'id'           => $itilcategories_id,
+                    'name'         => 'category_testGetValues',
+                    'completename' => 'category_testGetValues',
+                ],
+                'requesters' => [
+                    'users'  => [],
+                    'groups' => [],
+                ],
+                'observers' => [
+                    'users'  => [],
+                    'groups' => [
+                        [
+                            'id'           => $observer_groups_id,
+                            'name'         => '_test_group_1',
+                            'completename' => '_test_group_1',
+                        ],
                     ],
                 ],
+                'assignees' => [
+                    'users'     => [],
+                    'groups'    => [],
+                    'suppliers' => [],
+                ],
             ],
-            'assignees' => [
-                'users'     => [],
-                'groups'    => [],
-                'suppliers' => [],
-            ],
-        ]);
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

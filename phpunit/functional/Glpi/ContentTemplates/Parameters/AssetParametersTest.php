@@ -35,29 +35,38 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class OLAParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\AssetParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class AssetParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $this->createItem('OLA', [
-            'name'            => 'ola_testGetValues',
-            'type'            => 1,
-            'entities_id'     => $test_entity_id,
-            'number_time'     => 4,
-            'definition_time' => 'hour',
+        $this->createItem('Computer', [
+            'name'        => 'pc_testGetValues',
+            'serial'      => 'abcd1234',
+            'entities_id' => $test_entity_id
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('OLA', 'ola_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
-            'name'     => 'ola_testGetValues',
-            'type'     => 'Time to own',
-            'duration' => '4',
-            'unit'     => 'hours',
-        ]);
+        $parameters = new AssetParameters();
+        $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
+                'name'        => 'pc_testGetValues',
+                'itemtype'    => 'Computer',
+                'serial'      => 'abcd1234',
+                'entity' => [
+                    'id'           => $test_entity_id,
+                    'name'         => '_test_child_2',
+                    'completename' => 'Root entity > _test_root_entity > _test_child_2',
+                ]
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

@@ -35,27 +35,27 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class KnowbaseItemParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\UserTitleParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class UserTitleParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $this->login();
-
-        $this->createItem('KnowbaseItem', [
-            'name'        => 'kbi_testGetValues',
-            'answer'      => "test answer' \"testGetValues",
+        $this->createItem('UserTitle', [
+            'name' => 'usertitle_testGetValues',
         ]);
 
-        $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
-
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'     => $kbi_id,
-            'name'   => 'kbi_testGetValues',
-            'answer' => "test answer' \"testGetValues",
-            'link'   => "<a  href='/glpi/front/knowbaseitem.form.php?id=$kbi_id'  title=\"kbi_testGetValues\">kbi_testGetValues</a>",
-        ]);
+        $parameters = new UserTitleParameters();
+        $values = $parameters->getValues(getItemByTypeName('UserTitle', 'usertitle_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'   => getItemByTypeName('UserTitle', 'usertitle_testGetValues', true),
+                'name' => 'usertitle_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

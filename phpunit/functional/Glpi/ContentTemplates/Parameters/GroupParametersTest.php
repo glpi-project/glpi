@@ -35,17 +35,31 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class EntityParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\GroupParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class GroupParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('Entity', '_test_child_2'));
-        $this->array($values)->isEqualTo([
-            'id'   => getItemByTypeName('Entity', '_test_child_2', true),
-            'name' => '_test_child_2',
-            'completename' => 'Root entity > _test_root_entity > _test_child_2',
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $this->createItem('Group', [
+            'name'        => 'group_testGetValues',
+            'entities_id' => $test_entity_id
         ]);
+
+        $parameters = new GroupParameters();
+        $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
+                'name'         => 'group_testGetValues',
+                'completename' => 'group_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }

@@ -35,24 +35,31 @@
 
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-class GroupParameters extends AbstractParameters
+use Glpi\ContentTemplates\Parameters\ITILCategoryParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class ITILCategoryParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $this->createItem('Group', [
-            'name'        => 'group_testGetValues',
+        $this->createItem('ITILCategory', [
+            'name'        => 'itilcategory_testGetValues',
             'entities_id' => $test_entity_id
         ]);
 
-        $parameters = $this->newTestedInstance();
-        $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
-        $this->array($values)->isEqualTo([
-            'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
-            'name'         => 'group_testGetValues',
-            'completename' => 'group_testGetValues',
-        ]);
+        $parameters = new ITILCategoryParameters();
+        $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
+                'name'         => 'itilcategory_testGetValues',
+                'completename' => 'itilcategory_testGetValues',
+            ],
+            $values
+        );
 
         $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }
