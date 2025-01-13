@@ -68,7 +68,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -77,7 +77,7 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturn(true);
+        $instance->method('getSelinuxBoolean')->willReturn(1);
 
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
@@ -96,7 +96,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -105,9 +105,9 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturnCallback(
+        $instance->method('getSelinuxBoolean')->willReturnCallback(
             function ($bool) {
-                return $bool != 'httpd_can_network_connect';
+                return (int)($bool != 'httpd_can_network_connect');
             }
         );
 
@@ -128,7 +128,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -137,9 +137,9 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturnCallback(
+        $instance->method('getSelinuxBoolean')->willReturnCallback(
             function ($bool) {
-                return $bool != 'httpd_can_network_connect_db';
+                return (int)($bool != 'httpd_can_network_connect_db');
             }
         );
 
@@ -160,7 +160,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -169,9 +169,9 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturnCallback(
+        $instance->method('getSelinuxBoolean')->willReturnCallback(
             function ($bool) {
-                return $bool != 'httpd_can_sendmail';
+                return (int)($bool != 'httpd_can_sendmail');
             }
         );
 
@@ -192,7 +192,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -201,7 +201,7 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturn(false);
+        $instance->method('getSelinuxBoolean')->willReturn(0);
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
@@ -224,7 +224,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -233,7 +233,7 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(0);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturn(true);
+        $instance->method('getSelinuxBoolean')->willReturn(1);
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
@@ -252,7 +252,7 @@ class SeLinuxTest extends \GLPITestCase
                 'doesSelinuxGetenforceFunctionExists',
                 'getSelinxEnforceStatus',
                 'doesSelinuxBooleanFunctionExists',
-                'isSelinuxBooleanActive'
+                'getSelinuxBoolean'
             ])
             ->getMock();
         $instance->method('doesSelinuxBinariesExists')->willReturn(true);
@@ -261,7 +261,7 @@ class SeLinuxTest extends \GLPITestCase
         $instance->method('doesSelinuxGetenforceFunctionExists')->willReturn(true);
         $instance->method('getSelinxEnforceStatus')->willReturn(1);
         $instance->method('doesSelinuxBooleanFunctionExists')->willReturn(true);
-        $instance->method('isSelinuxBooleanActive')->willReturn(true);
+        $instance->method('getSelinuxBoolean')->willReturn(1);
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(

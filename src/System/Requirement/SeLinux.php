@@ -114,7 +114,7 @@ class SeLinux extends AbstractRequirement
 
         foreach ($bools as $bool) {
             if ($this->doesSelinuxBooleanFunctionExists()) {
-                $state = $this->isSelinuxBooleanActive($bool);
+                $state = $this->getSelinuxBoolean($bool);
                 if ($state == 1) {
                     $state = 'on';
                 } else if ($state == 0) {
@@ -186,7 +186,7 @@ class SeLinux extends AbstractRequirement
         return 0;
     }
 
-    protected function isSelinuxBooleanActive(string $bool): int
+    protected function getSelinuxBoolean(string $bool): int
     {
         if (function_exists('selinux_get_boolean_active')) {
             return selinux_get_boolean_active($bool);
