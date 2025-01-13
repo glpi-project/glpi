@@ -34,32 +34,24 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use CommonDBTM;
 use Config;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Helpdesk\Tile\TileInterface;
-use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Form\Form;
+use Glpi\Helpdesk\Tile\ExternalPageTile;
+use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteTileController extends AbstractController
+final class ShowAddTileFormController extends AbstractController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
-    }
-
     #[Route(
-        "/ajax/Config/Helpdesk/DeleteTile",
-        name: "glpi_config_helpdesk_delete_tile",
-        methods: "POST"
+        "/Config/Helpdesk/ShowAddTileForm",
+        name: "glpi_config_helpdesk_show_add_tile_form",
+        methods: "GET"
     )]
     public function __invoke(Request $request): Response
     {
@@ -67,27 +59,18 @@ final class DeleteTileController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // Read parameters
-        $tile_id = $request->request->getInt('tile_id');
-        $tile_itemtype = $request->request->getString('tile_itemtype');
-
-        // Validate parameters
-        if (
-            $tile_id == 0
-            || !is_a($tile_itemtype, TileInterface::class, true)
-            || !is_a($tile_itemtype, CommonDBTM::class, true)
-        ) {
-            throw new BadRequestHttpException();
-        }
-
-        // Try to load the given tile
-        $tile = $tile_itemtype::getById($tile_id);
-        if (!$tile) {
-            throw new NotFoundHttpException();
-        }
-
-        // Delete tile and return an empty response
-        $this->tiles_manager->deleteTile($tile);
-        return new Response();
+        // Render form
+        return $this->render('pages/admin/helpdesk_home_config_add_tile_form.html.twig', [
+            'possible_tiles' => [
+                new GlpiPageTile(),
+                new ExternalPageTile(),
+                new FormTile(),
+            ],
+            'possible_tiles_dropdown_values' => [
+                GlpiPageTile::class     => __("GLPI page"),
+                ExternalPageTile::class => __("External page"),
+                FormTile::class         => Form::getTypeName(1),
+            ],
+        ]);
     }
 }

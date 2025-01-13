@@ -40,14 +40,17 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Session\SessionInfo;
+use RuntimeException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteTileController extends AbstractController
+final class UpdateTileController extends AbstractController
 {
     private TilesManager $tiles_manager;
 
@@ -57,8 +60,8 @@ final class DeleteTileController extends AbstractController
     }
 
     #[Route(
-        "/ajax/Config/Helpdesk/DeleteTile",
-        name: "glpi_config_helpdesk_delete_tile",
+        "/ajax/Config/Helpdesk/UpdateTile",
+        name: "glpi_config_helpdesk_update_tile",
         methods: "POST"
     )]
     public function __invoke(Request $request): Response
@@ -68,26 +71,39 @@ final class DeleteTileController extends AbstractController
         }
 
         // Read parameters
-        $tile_id = $request->request->getInt('tile_id');
-        $tile_itemtype = $request->request->getString('tile_itemtype');
+        $id = $request->request->getInt('id');
+        $itemtype = $request->request->getString('_itemtype');
+        $input = $request->request->all();
+        unset($input['_itemtype']);
 
         // Validate parameters
         if (
-            $tile_id == 0
-            || !is_a($tile_itemtype, TileInterface::class, true)
-            || !is_a($tile_itemtype, CommonDBTM::class, true)
+            $id == 0
+            || !is_a($itemtype, TileInterface::class, true)
+            || !is_a($itemtype, CommonDBTM::class, true)
         ) {
             throw new BadRequestHttpException();
         }
 
         // Try to load the given tile
-        $tile = $tile_itemtype::getById($tile_id);
+        $tile = $itemtype::getById($id);
         if (!$tile) {
             throw new NotFoundHttpException();
         }
 
-        // Delete tile and return an empty response
-        $this->tiles_manager->deleteTile($tile);
-        return new Response();
+        // Try to update the tile
+        if (!$tile->update($input)) {
+            throw new RuntimeException();
+        }
+
+        // Re-render the tile list
+        $profile_id = $this->tiles_manager->getProfileTileForTile($tile)->fields['profiles_id'];
+        $tiles = $this->tiles_manager->getTiles(new SessionInfo(
+            profile_id: $profile_id,
+        ), check_availability: false);
+        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
+            'tiles_manager' => $this->tiles_manager,
+            'tiles' => $tiles,
+        ]);
     }
 }

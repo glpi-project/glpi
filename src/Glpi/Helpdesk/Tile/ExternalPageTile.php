@@ -36,6 +36,7 @@ namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
 use Glpi\Session\SessionInfo;
+use Glpi\UI\IllustrationManager;
 use Override;
 
 final class ExternalPageTile extends CommonDBTM implements TileInterface
@@ -51,25 +52,25 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     #[Override]
     public function getTitle(): string
     {
-        return $this->fields['title'];
+        return $this->fields['title'] ?? "";
     }
 
     #[Override]
     public function getDescription(): string
     {
-        return $this->fields['description'];
+        return $this->fields['description'] ?? "";
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'];
+        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
     public function getTileUrl(): string
     {
-        return $this->fields['url'];
+        return $this->fields['url'] ?? "";
     }
 
     #[Override]
@@ -82,5 +83,11 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     public function getDatabaseId(): int
     {
         return $this->fields['id'];
+    }
+
+    #[Override]
+    public function getConfigFieldsTemplate(): string
+    {
+        return "pages/admin/external_page_tile_config_fields.html.twig";
     }
 }

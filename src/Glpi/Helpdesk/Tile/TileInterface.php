@@ -49,4 +49,6 @@ interface TileInterface
     public function isAvailable(SessionInfo $session_info): bool;
 
     public function getDatabaseId(): int;
+
+    public function getConfigFieldsTemplate(): string;
 }
