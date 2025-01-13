@@ -65,5 +65,4 @@ class GLPI
      * Suitable for developer machines and development servers.
      */
     public const ENV_DEVELOPMENT = 'development';
-
 }

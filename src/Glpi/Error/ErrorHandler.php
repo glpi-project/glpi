@@ -97,10 +97,10 @@ final class ErrorHandler extends BaseErrorHandler
         parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === \GLPI::ENV_DEVELOPMENT);
 
         $this->env = \GLPI_ENVIRONMENT_TYPE;
-        $this->scopeAt(self::FATAL_ERRORS, true);
-        $this->screamAt(self::FATAL_ERRORS, true);
-        $this->traceAt(self::FATAL_ERRORS, true);
-        $this->throwAt(self::FATAL_ERRORS, true);
+        $this->scopeAt(E_ALL, true); // Preserve variables for all errors
+        $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
+        $this->screamAt(self::FATAL_ERRORS, true); // Never silent fatal errors
+        $this->throwAt(self::FATAL_ERRORS, true); // Convert fatal errors to exceptions
         $this->setDefaultLogger($logger);
 
         self::$currentLogger = $logger;
@@ -157,7 +157,7 @@ final class ErrorHandler extends BaseErrorHandler
 
     public function handleError(int $type, string $message, string $file, int $line): bool
     {
-        $handled = parent::handleError($type, $message, $file, $line);
+        parent::handleError($type, $message, $file, $line);
 
         if (self::$enable_output) {
             self::displayErrorMessage(
@@ -168,7 +168,10 @@ final class ErrorHandler extends BaseErrorHandler
             );
         }
 
-        return $handled;
+        // Never forward any error to the PHP native PHP error handler.
+        // We do not want the native PHP error handler to output anything, and we already logged errors that are supposed
+        // to be logged in the GLPI error log.
+        return false;
     }
 
     private function configureErrorDisplay(): void
