@@ -49,7 +49,7 @@ class GlpiLogHandler extends StreamHandler
         } else {
             $log_level = match (GLPI_ENVIRONMENT_TYPE) {
                 \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
-                \GLPI::ENV_TESTING => LogLevel::NOTICE,
+                \GLPI::ENV_TESTING => LogLevel::DEBUG,
                 default => LogLevel::WARNING,
             };
         }

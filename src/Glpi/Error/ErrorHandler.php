@@ -157,6 +157,11 @@ final class ErrorHandler extends BaseErrorHandler
 
     public function handleError(int $type, string $message, string $file, int $line): bool
     {
+        if (0 === (error_reporting() & $type)) {
+            // GLPI does not log silented errors, they should just be ignored.
+            return true;
+        }
+
         parent::handleError($type, $message, $file, $line);
 
         if (self::$enable_output) {
@@ -171,7 +176,7 @@ final class ErrorHandler extends BaseErrorHandler
         // Never forward any error to the PHP native PHP error handler.
         // We do not want the native PHP error handler to output anything, and we already logged errors that are supposed
         // to be logged in the GLPI error log.
-        return false;
+        return true;
     }
 
     private function configureErrorDisplay(): void
@@ -181,31 +186,20 @@ final class ErrorHandler extends BaseErrorHandler
         $reporting_level = E_ALL;
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             if (
-                $this->env !== GLPI::ENV_DEVELOPMENT
-                && \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO], true)
+                !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+                && \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE], true)
             ) {
-                // Do not report debug and info messages unless in development env.
+                // Do not report debug, info and notices messages unless in development env.
+                //
                 // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
                 //
-                // Suppressing the deprecations in the testing environment is mandatory to prevent deprecations
-                // triggered in vendor code to make our test suite fail.
-                // We may review this part once we will have migrate all our test suite on PHPUnit.
-                // For now, we rely on PHPStan to detect usages of deprecated code.
-                $reporting_level &= ~$value;
-            }
-
-            if (
-                $log_level === LogLevel::NOTICE
-                && !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
-            ) {
-                // Do not report notice messages unless in development/testing env.
                 // Notices are errors with no functional impact, so we do not want people to report them as issues.
                 $reporting_level &= ~$value;
             }
         }
         \error_reporting($reporting_level);
 
-        // Disable native error displaying as it will be handled by `self::outputDebugMessage()`.
+        // Disable native error displaying as it will be handled by `self::displayErrorMessage()`.
         \ini_set('display_errors', 'Off');
     }
 }

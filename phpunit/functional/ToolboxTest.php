@@ -1080,9 +1080,9 @@ HTML;
 
     public function testDeprecated()
     {
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated');
-        \error_reporting($reporting_level); // restore previous level
+        //\error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
@@ -1093,9 +1093,9 @@ HTML;
     public function testDeprecatedPast()
     {
         // Test planned deprecation in the past
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
-        \error_reporting($reporting_level); // restore previous level
+        //\error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
@@ -1106,9 +1106,9 @@ HTML;
     public function testDeprecatedCurrent()
     {
         // Test planned deprecation in current version
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
-        \error_reporting($reporting_level); // restore previous level
+        //\error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
@@ -1119,9 +1119,9 @@ HTML;
     public function testFutureDeprecated()
     {
         // Test planned deprecation in the future does NOT throw an error
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '99.0');
-        \error_reporting($reporting_level); // restore previous level
+        //\error_reporting($reporting_level); // restore previous level
 
         $this->assertTrue(true); //non empty test
     }

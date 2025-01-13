@@ -167,7 +167,7 @@ function step2($update)
 function step3($host, $user, $password, $update)
 {
 
-    error_reporting(16);
+    //error_reporting(16);
     mysqli_report(MYSQLI_REPORT_OFF);
 
    //Check if the port is in url
@@ -486,7 +486,7 @@ function update1($dbname)
 
 //------------Start of install script---------------------------
 
-error_reporting(0); // we want to check system before affraid the user.
+//error_reporting(0); // we want to check system before affraid the user.
 
 
 /**
