@@ -197,11 +197,11 @@
       }
 
       &.disabled {
+         opacity: .3;
+
          &:hover {
             opacity: .3;
          }
-
-         opacity: .3;
       }
    }
 
