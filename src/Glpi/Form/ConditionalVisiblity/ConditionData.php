@@ -72,7 +72,7 @@ final class ConditionData
     public function getLogicOperator(): LogicOperator
     {
         // Fallback to "AND" if no value is set.
-        return LogicOperator::tryFrom($this->logic_operator) ?? LogicOperator::AND;
+        return LogicOperator::tryFrom($this->logic_operator ?? "") ?? LogicOperator::AND;
     }
 
     public function getValueOperator(): ?ValueOperator
