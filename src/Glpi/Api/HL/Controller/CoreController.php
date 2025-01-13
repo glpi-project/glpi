@@ -41,6 +41,7 @@ use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Application\ErrorUtils;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;

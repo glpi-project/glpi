@@ -39,10 +39,8 @@ use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\LegacyCliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Component\ErrorHandler\BufferingLogger;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 
 final class ErrorHandler extends BaseErrorHandler
@@ -96,13 +94,14 @@ final class ErrorHandler extends BaseErrorHandler
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct();
+        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === \GLPI::ENV_DEVELOPMENT);
 
         $this->env = \GLPI_ENVIRONMENT_TYPE;
         $this->scopeAt(self::FATAL_ERRORS, true);
         $this->screamAt(self::FATAL_ERRORS, true);
         $this->traceAt(self::FATAL_ERRORS, true);
         $this->throwAt(self::FATAL_ERRORS, true);
+        $this->setDefaultLogger($logger);
 
         self::$currentLogger = $logger;
         $this->configureErrorDisplay();
