@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;

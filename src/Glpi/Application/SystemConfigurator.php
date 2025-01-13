@@ -269,6 +269,5 @@ final class SystemConfigurator
 
         $errorHandler = new ErrorHandler($PHPLOGGER);
         $errorHandler::register($errorHandler);
-
     }
 }
