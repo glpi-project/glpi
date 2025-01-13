@@ -269,68 +269,6 @@ $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
 
-// Temporary migration code to cover dev migrations
-// TODO: Should be removed from the final release
-if (GLPI_VERSION == "11.0.0-dev") {
-    $migration->addField("glpi_forms_forms", "is_draft", "bool");
-    $migration->addKey("glpi_forms_forms", "is_draft");
-    $migration->changeField("glpi_forms_forms", "header", "header", "longtext");
-    $migration->changeField("glpi_forms_sections", "description", "description", "longtext");
-    $migration->changeField("glpi_forms_questions", "description", "description", "longtext");
-
-    // Deletion of subtype, use final type in `type` field instead
-    if ($DB->fieldExists("glpi_forms_questions", "subtype")) {
-        $migration->dropField("glpi_forms_questions", "subtype");
-
-        // Set a concrete type instead the "parent type" that was used before this migration
-        $questions = $DB->request([
-            'SELECT' => ['id', 'type'],
-            'FROM' => 'glpi_forms_questions',
-        ]);
-        foreach ($questions as $question) {
-            if ($question['type'] == "Glpi\Form\QuestionType\AbstractQuestionTypeShortAnswer") {
-                // Default subtype for short answers
-                $new_type = "Glpi\Form\QuestionType\QuestionTypeShortText";
-            } elseif ($question['type'] == "Glpi\Form\QuestionType\QuestionTypeLongText") {
-                // Long answers have no sub types, use parent
-                $new_type = $question['type'];
-            } else {
-                // Unknown type
-                continue;
-            }
-
-            $migration->addPostQuery($DB->buildUpdate(
-                'glpi_forms_questions',
-                ['type' => $new_type],
-                ['id' => $question['id']]
-            ));
-        }
-    }
-
-    $migration->addField("glpi_forms_answerssets", "entities_id", "fkey");
-    $migration->addKey("glpi_forms_answerssets", "entities_id");
-    $migration->addField("glpi_forms_destinations_formdestinations", "config", "JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type'");
-
-    $migration->addField("glpi_forms_forms", "illustration", "string");
-    $migration->addField("glpi_forms_forms", "description", "text");
-
-    $migration->addField("glpi_forms_forms", "forms_categories_id", "fkey");
-    $migration->addKey("glpi_forms_forms", "forms_categories_id");
-
-    $migration->addField("glpi_forms_sections", "uuid", "string");
-    $migration->addKey("glpi_forms_sections", "uuid", type: 'UNIQUE');
-
-    $migration->addField("glpi_forms_questions", "uuid", "string");
-    $migration->addField("glpi_forms_questions", "forms_sections_uuid", "string");
-    $migration->addKey("glpi_forms_questions", "uuid", type: 'UNIQUE');
-    $migration->addKey("glpi_forms_questions", "forms_sections_uuid");
-
-    $migration->addField("glpi_forms_comments", "uuid", "string");
-    $migration->addField("glpi_forms_comments", "forms_sections_uuid", "string");
-    $migration->addKey("glpi_forms_comments", "uuid", type: 'UNIQUE');
-    $migration->addKey("glpi_forms_comments", "forms_sections_uuid");
-}
-
 CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
     'state'         => CronTask::STATE_WAITING,
     'mode'          => CronTask::MODE_INTERNAL,
