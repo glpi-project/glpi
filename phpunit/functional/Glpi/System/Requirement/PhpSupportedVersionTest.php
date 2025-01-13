@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class PhpSupportedVersion extends \GLPITestCase
+use Glpi\System\Requirement\PhpSupportedVersion;
+
+class PhpSupportedVersionTest extends \GLPITestCase
 {
-    protected function versionProvider(): iterable
+    public static function versionProvider(): iterable
     {
         yield [
             'phpversion' => '7.4.0-rc1',
@@ -131,10 +133,11 @@ class PhpSupportedVersion extends \GLPITestCase
      */
     public function testCheck(string $phpversion, bool $validated, array $messages): void
     {
-        $this->function->phpversion = $phpversion;
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($validated);
-        $this->array($this->testedInstance->getValidationMessages())->isEqualTo($messages);
+        $instance = $this->getMockBuilder(PhpSupportedVersion::class)
+            ->onlyMethods(['getPHPVersion'])
+            ->getMock();
+        $instance->method('getPHPVersion')->willReturn($phpversion);
+        $this->assertSame($validated, $instance->isValidated());
+        $this->assertEquals($messages, $instance->getValidationMessages());
     }
 }

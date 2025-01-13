@@ -35,12 +35,14 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class SessionsSecurityConfiguration extends \GLPITestCase
+use Glpi\System\Requirement\SessionsSecurityConfiguration;
+
+class SessionsSecurityConfigurationTest extends \GLPITestCase
 {
-    protected function configProvider(): iterable
+    public static function configProvider(): iterable
     {
         // Boolean values are supposed to be converted by PHP internal logic when the PHP ini files are parsed,
-        // but they will not be converted to boolean when they are programatically set by a `ini_set()` call.
+        // but they will not be converted to boolean when they are programmatically set by a `ini_set()` call.
         $boolean_specs = [
             [
                 'true'  => true,
@@ -164,27 +166,23 @@ class SessionsSecurityConfiguration extends \GLPITestCase
      * @dataProvider configProvider
      */
     public function testCheckWithLowercaseLaxSameSiteConfig(
-        string $cookie_secure,
-        string $cookie_httponly,
+        mixed $cookie_secure,
+        mixed $cookie_httponly,
         string $cookie_samesite,
         ?string $server_https,
         ?string $server_port,
         bool $is_valid
     ) {
-        $this->function->ini_get = function ($name) use ($cookie_secure, $cookie_httponly, $cookie_samesite) {
-            switch ($name) {
-                case 'session.cookie_secure':
-                    return $cookie_secure;
-                    break;
-                case 'session.cookie_httponly':
-                    return $cookie_httponly;
-                    break;
-                case 'session.cookie_samesite':
-                    return $cookie_samesite;
-                    break;
-            }
-            return '';
-        };
+        $instance = $this->getMockBuilder(SessionsSecurityConfiguration::class)
+            ->onlyMethods([
+                'getCookiesSecure',
+                'getCookiesHttponly',
+                'getCookiesSamesite'
+            ])
+            ->getMock();
+        $instance->method('getCookiesSecure')->willReturn($cookie_secure);
+        $instance->method('getCookiesHttponly')->willReturn($cookie_httponly);
+        $instance->method('getCookiesSamesite')->willReturn($cookie_samesite);
 
         if ($server_https !== null) {
             $_SERVER['HTTPS'] = $server_https;
@@ -193,16 +191,16 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             $_SERVER['SERVER_PORT'] = $server_port;
         }
 
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo($is_valid);
-        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(
+        $this->assertSame($is_valid, $instance->isValidated());
+        $this->assertEquals(
             [
                 'Checking the session cookie configuration of the web server cannot be done in the CLI context.',
                 'You should apply the following recommendations for configuring the web server.',
                 'PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.',
                 'PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.',
                 'PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.',
-            ]
+            ],
+            $instance->getValidationMessages()
         );
     }
 }

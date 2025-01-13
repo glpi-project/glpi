@@ -35,77 +35,84 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class SessionsConfiguration extends \GLPITestCase
+use Glpi\System\Requirement\SessionsConfiguration;
+
+class SessionsConfigurationTest extends \GLPITestCase
 {
     public function testCheckWithGoodConfig()
     {
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['Sessions configuration is OK.']);
+        $instance = new SessionsConfiguration();
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Sessions configuration is OK.'],
+            $instance->getValidationMessages()
+         );
     }
 
     public function testCheckWithMissingExtension()
     {
-
-        $this->function->extension_loaded = false;
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['session extension is not installed.']);
+        $instance = $this->getMockBuilder(SessionsConfiguration::class)
+            ->onlyMethods(['isExtensionLoaded'])
+            ->getMock();
+        $instance->method('isExtensionLoaded')->willReturn(false);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['session extension is not installed.'],
+            $instance->getValidationMessages()
+         );
     }
 
     public function testCheckWithAutostart()
     {
+        $instance = $this->getMockBuilder(SessionsConfiguration::class)
+            ->onlyMethods(['isAutostartOn', 'isUsetranssidOn'])
+            ->getMock();
+        $instance->method('isAutostartOn')->willReturn(true);
+        $instance->method('isUsetranssidOn')->willReturn(false);
 
-        $this->function->ini_get = function ($name) {
-            return $name == 'session.auto_start' ? '1' : '0';
-        };
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  '"session.auto_start" must be set to off.',
                  'See .htaccess file in the GLPI root for more information.',
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
     public function testCheckWithUseTransId()
     {
+        $instance = $this->getMockBuilder(SessionsConfiguration::class)
+            ->onlyMethods(['isAutostartOn', 'isUsetranssidOn'])
+            ->getMock();
+        $instance->method('isAutostartOn')->willReturn(false);
+        $instance->method('isUsetranssidOn')->willReturn(true);
 
-        $this->function->ini_get = function ($name) {
-            return $name == 'session.use_trans_sid' ? '1' : '0';
-        };
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  '"session.use_trans_sid" must be set to off.',
                  'See .htaccess file in the GLPI root for more information.',
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 
     public function testCheckWithAutostartAndUseTransId()
     {
+        $instance = $this->getMockBuilder(SessionsConfiguration::class)
+            ->onlyMethods(['isAutostartOn', 'isUsetranssidOn'])
+            ->getMock();
+        $instance->method('isAutostartOn')->willReturn(true);
+        $instance->method('isUsetranssidOn')->willReturn(true);
 
-        $this->function->ini_get = '1';
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
              [
                  '"session.auto_start" and "session.use_trans_sid" must be set to off.',
                  'See .htaccess file in the GLPI root for more information.',
-             ]
+             ],
+            $instance->getValidationMessages()
          );
     }
 }
