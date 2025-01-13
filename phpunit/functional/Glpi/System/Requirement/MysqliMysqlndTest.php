@@ -50,7 +50,7 @@ class MysqliMysqlndTest extends \GLPITestCase
         $this->assertEquals(
             ['mysqli extension is installed.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckUsingAlternativeDriver()

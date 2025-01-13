@@ -205,13 +205,13 @@ class SeLinuxTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 'SELinux boolean httpd_can_network_connect is off, some features may require this to be on.',
-                 'SELinux boolean httpd_can_network_connect_db is off, some features may require this to be on.',
-                 'SELinux boolean httpd_can_sendmail is off, some features may require this to be on.',
-             ],
+            [
+                'SELinux boolean httpd_can_network_connect is off, some features may require this to be on.',
+                'SELinux boolean httpd_can_network_connect_db is off, some features may require this to be on.',
+                'SELinux boolean httpd_can_sendmail is off, some features may require this to be on.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithPermissiveSeLinux()

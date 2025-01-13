@@ -166,8 +166,8 @@ class SessionsSecurityConfigurationTest extends \GLPITestCase
      * @dataProvider configProvider
      */
     public function testCheckWithLowercaseLaxSameSiteConfig(
-        mixed $cookie_secure,
-        mixed $cookie_httponly,
+        $cookie_secure,
+        $cookie_httponly,
         string $cookie_samesite,
         ?string $server_https,
         ?string $server_port,

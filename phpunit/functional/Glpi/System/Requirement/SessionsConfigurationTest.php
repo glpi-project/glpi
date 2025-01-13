@@ -46,7 +46,7 @@ class SessionsConfigurationTest extends \GLPITestCase
         $this->assertEquals(
             ['Sessions configuration is OK.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithMissingExtension()
@@ -59,7 +59,7 @@ class SessionsConfigurationTest extends \GLPITestCase
         $this->assertEquals(
             ['session extension is not installed.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithAutostart()
@@ -72,12 +72,12 @@ class SessionsConfigurationTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 '"session.auto_start" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
-             ],
+            [
+                '"session.auto_start" must be set to off.',
+                'See .htaccess file in the GLPI root for more information.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithUseTransId()
@@ -90,12 +90,12 @@ class SessionsConfigurationTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 '"session.use_trans_sid" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
-             ],
+            [
+                '"session.use_trans_sid" must be set to off.',
+                'See .htaccess file in the GLPI root for more information.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckWithAutostartAndUseTransId()
@@ -108,11 +108,11 @@ class SessionsConfigurationTest extends \GLPITestCase
 
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-             [
-                 '"session.auto_start" and "session.use_trans_sid" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
-             ],
+            [
+                '"session.auto_start" and "session.use_trans_sid" must be set to off.',
+                'See .htaccess file in the GLPI root for more information.',
+            ],
             $instance->getValidationMessages()
-         );
+        );
     }
 }

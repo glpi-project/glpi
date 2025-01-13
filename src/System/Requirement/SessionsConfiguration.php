@@ -92,6 +92,7 @@ class SessionsConfiguration extends AbstractRequirement
 
     protected function isUsetranssidOn(): bool
     {
-        return ini_get('session.use_trans_sid') == 1 || isset($_POST[session_name()]) || isset($_GET[session_name()]);;
+        return ini_get('session.use_trans_sid') == 1 || isset($_POST[session_name()]) || isset($_GET[session_name()]);
+        ;
     }
 }

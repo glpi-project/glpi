@@ -96,12 +96,12 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         }
     }
 
-    protected function getCookiesSecure(): mixed
+    protected function getCookiesSecure()
     {
         return ini_get('session.cookie_secure');
     }
 
-    protected function getCookiesHttpOnly(): mixed
+    protected function getCookiesHttpOnly()
     {
         return ini_get('session.cookie_httponly');
     }
