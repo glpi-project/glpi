@@ -34,11 +34,11 @@
 
 namespace Glpi\Error\ErrorDisplayHandler;
 
-final class EchoDisplayHandler implements ErrorDisplayHandler
+final class LegacyCliDisplayHandler implements ErrorDisplayHandler
 {
     public function canOutput(string $log_level, string $env): bool
     {
-        return true;
+        return \isCommandLine();
     }
 
     public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void

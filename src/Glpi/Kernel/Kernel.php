@@ -37,6 +37,7 @@ namespace Glpi\Kernel;
 use GLPI;
 use Glpi\Application\SystemConfigurator;
 use Glpi\Http\Listener\PluginsRouterListener;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -53,16 +54,15 @@ final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    private LoggerInterface $logger;
+
     public function __construct(?string $env = null)
     {
         // Initialize system configuration.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
-        (new SystemConfigurator($this->getProjectDir(), $env))();
-
-        // TODO: refactor the GLPI class.
-        $glpi = (new GLPI());
-        $glpi->initLogger();
+        $configurator = new SystemConfigurator($this->getProjectDir(), $env);
+        $this->logger = $configurator->getLogger();
 
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct(
@@ -112,6 +112,9 @@ final class Kernel extends BaseKernel
         $dispatch_postboot = !$this->booted;
 
         parent::boot();
+
+        // Override Symfony's logger
+        $this->container->set('logger', $this->logger);
 
         if ($dispatch_postboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());

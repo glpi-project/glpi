@@ -36,13 +36,12 @@ namespace Glpi\Error;
 
 use GLPI;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
-use Glpi\Error\ErrorDisplayHandler\EchoDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\LegacyCliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\ErrorHandler\BufferingLogger;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 
@@ -91,21 +90,21 @@ final class ErrorHandler extends BaseErrorHandler
      */
     private static bool $enable_output = true;
 
-    private static Logger $currentLogger;
+    private static LoggerInterface $currentLogger;
 
     private string $env;
 
-    public function __construct(?BufferingLogger $bootstrappingLogger = null, bool $debug = false, string $env = \GLPI_ENVIRONMENT_TYPE)
+    public function __construct(LoggerInterface $logger)
     {
-        parent::__construct($bootstrappingLogger, $debug);
+        parent::__construct();
 
-        $this->env = $env;
+        $this->env = \GLPI_ENVIRONMENT_TYPE;
         $this->scopeAt(self::FATAL_ERRORS, true);
         $this->screamAt(self::FATAL_ERRORS, true);
         $this->traceAt(self::FATAL_ERRORS, true);
         $this->throwAt(self::FATAL_ERRORS, true);
 
-        $this->configureLogger();
+        self::$currentLogger = $logger;
         $this->configureErrorDisplay();
     }
 
@@ -119,12 +118,8 @@ final class ErrorHandler extends BaseErrorHandler
         self::$enable_output = false;
     }
 
-    public static function getCurrentLogger(): Logger
+    public static function getCurrentLogger(): LoggerInterface
     {
-        if (!self::$currentLogger) {
-            throw new \RuntimeException('Logger was fetched from an unbuilt ErrorHandler, probably because the call was made before Kernel was created. Please check your GLPI codebase is up-to-date and that all your PHP files are executed within a valid Kernel.');
-        }
-
         return self::$currentLogger;
     }
 
@@ -143,7 +138,7 @@ final class ErrorHandler extends BaseErrorHandler
         return $handlers = [
             new ConsoleErrorDisplayHandler(),
             new HtmlErrorDisplayHandler(),
-            new EchoDisplayHandler(),
+            new LegacyCliDisplayHandler(),
         ];
     }
 
@@ -153,30 +148,11 @@ final class ErrorHandler extends BaseErrorHandler
             return;
         }
 
-        $is_dev_env         = $env === \GLPI::ENV_DEVELOPMENT;
-        $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
-        $is_console_context = \isCommandLine();
-
-        if (
-            !$is_dev_env             // error messages are always displayed in development environment
-            && !$is_debug_mode       // error messages are always displayed in debug mode
-            && !$is_console_context  // error messages are always forwarded to the console output handler, that handles itself the verbosity level
-        ) {
-            return;
-        }
-
-        $output_handled = false;
-
         foreach (self::getOutputHandlers() as $handler) {
             if ($handler->canOutput($log_level, $env)) {
-                $output_handled = true;
                 $handler->displayErrorMessage($error_type, $message, $log_level, $env);
                 break; // Only one display per handler
             }
-        }
-
-        if (!$output_handled) {
-            throw new \RuntimeException('No error display handler was able to output the error message.');
         }
     }
 
@@ -194,31 +170,6 @@ final class ErrorHandler extends BaseErrorHandler
         }
 
         return $handled;
-    }
-
-    private function configureLogger(): void
-    {
-        if (\defined('GLPI_LOG_LVL')) {
-            $minimum_log_level = GLPI_LOG_LVL;
-        } else {
-            $minimum_log_level = match (\GLPI_ENVIRONMENT_TYPE) {
-                \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
-                \GLPI::ENV_TESTING => LogLevel::NOTICE,
-                default => LogLevel::WARNING,
-            };
-        }
-
-        $logger = new Logger('glpierrorlog');
-        $handler = new \Monolog\Handler\StreamHandler(
-            GLPI_LOG_DIR . "/glpi-errors.log",
-            $minimum_log_level
-        );
-        $handler->setFormatter(new LogLineFormatter());
-
-        $logger->pushHandler($handler);
-        $this->setDefaultLogger($logger);
-
-        self::$currentLogger = $logger;
     }
 
     private function configureErrorDisplay(): void

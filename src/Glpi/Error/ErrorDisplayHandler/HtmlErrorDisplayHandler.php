@@ -47,20 +47,30 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
 
     public function canOutput(string $log_level, string $env): bool
     {
-        return self::$currentRequest !== null;
+        if (!self::$currentRequest) {
+            return false;
+        }
+        $is_dev_env         = $env === \GLPI::ENV_DEVELOPMENT;
+        $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+
+        if (
+            !$is_dev_env             // error messages are always displayed in development environment
+            && !$is_debug_mode        // error messages are always displayed in debug mode
+        ) {
+            return false;
+        }
+
+        /**
+         * @see Request::initializeFormats
+         */
+        $type = self::$currentRequest->getPreferredFormat();
+
+        return $type === 'html';
     }
 
     public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void
     {
-        $req = self::$currentRequest;
-
-        $types = $req->getAcceptableContentTypes();
-
-        if (in_array('text/html', $types)) {
-            echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
-                . '<span class="b">' . \htmlescape($error_type) . ': </span>' . \htmlescape($message) . '</div>';
-        } else {
-            \trigger_error('Cannot display error in HTTP context for requests that do not accept HTML as a response.', \E_USER_WARNING);
-        }
+        echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
+            . '<span class="b">' . \htmlescape($error_type) . ': </span>' . \htmlescape($message) . '</div>';
     }
 }

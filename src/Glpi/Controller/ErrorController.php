@@ -36,7 +36,6 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
-use Glpi\Application\ErrorUtils;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -57,12 +56,17 @@ class ErrorController extends AbstractController
             return new Response('', 500);
         }
 
-        $this->logException($exception, $request);
+        $this->logHttpException($exception, $request);
 
         return $this->getErrorResponse($exception, $request);
     }
 
-    private function logException(\Throwable $exception, Request $request): void
+    /**
+     * @TODO: create a specific handler in our logger so that HTTP errors are logged differently according to this method ⬇
+     *
+     * @see \Glpi\Log\GlpiLogHandler::canHandle
+     */
+    private function logHttpException(\Throwable $exception, Request $request): void
     {
         if (
             $exception instanceof HttpExceptionInterface
@@ -78,29 +82,23 @@ class ErrorController extends AbstractController
 
             $user_id = Session::getLoginUserID() ?: 'Anonymous';
 
-            switch ($exception::class) {
-                case AccessDeniedHttpException::class:
-                    $message = sprintf(
-                        'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-                case NotFoundHttpException::class:
-                    $message = sprintf(
-                        'User ID: `%s` tried to access a non-existent item on `%s`.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-                default:
-                    $message = sprintf(
-                        'User ID: `%s` tried to execute an invalid request on `%s`.',
-                        $user_id,
-                        $requested_uri
-                    );
-                    break;
-            }
+            $message = match ($exception::class) {
+                AccessDeniedHttpException::class => sprintf(
+                    'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
+                    $user_id,
+                    $requested_uri
+                ),
+                NotFoundHttpException::class => sprintf(
+                    'User ID: `%s` tried to access a non-existent item on `%s`.',
+                    $user_id,
+                    $requested_uri
+                ),
+                default => sprintf(
+                    'User ID: `%s` tried to execute an invalid request on `%s`.',
+                    $user_id,
+                    $requested_uri
+                ),
+            };
 
             if (($exception_message = $exception->getMessage()) !== '') {
                 $message .= sprintf('Additional information: %s', $exception_message);
@@ -119,10 +117,6 @@ class ErrorController extends AbstractController
             }
 
             Toolbox::logInFile('access-errors', $message);
-        } else {
-            // Other errors are logged in the `php-errors` log
-            ErrorUtils::logException($exception);
-            ErrorUtils::outputExceptionMessage($exception);
         }
     }
 

@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Exception;
 
-use Glpi\Error\LogLineFormatter;
+use Glpi\Log\LogLineFormatter;
 use PHPUnit\Framework\TestCase;
 
 class LogLineFormatterTest extends TestCase

@@ -36,7 +36,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Error\ErrorHandler;
-use Glpi\Log\LegacyGlobalLogger;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -70,5 +69,5 @@ return static function (ContainerConfigurator $container): void {
      * Override Symfony's logger.
      * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
      */
-    $services->set('logger', LegacyGlobalLogger::class);
+    $services->set('logger')->synthetic();
 };

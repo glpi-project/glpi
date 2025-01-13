@@ -35,16 +35,25 @@
 
 namespace Glpi\Application;
 
+use Glpi\Error\ErrorHandler;
+use Glpi\Log\GlpiLogHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+
 final class SystemConfigurator
 {
-    public function __construct(private string $root_dir, private ?string $env)
-    {
-    }
+    private LoggerInterface $logger;
 
-    public function __invoke(): void
+    public function __construct(private string $root_dir, private ?string $env)
     {
         $this->computeConstants();
         $this->setSessionConfiguration();
+        $this->initLogger();
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
     }
 
     private function computeConstants(): void
@@ -244,5 +253,22 @@ final class SystemConfigurator
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
         // for every GLPI instance, enven if they are served by the same server (mostly for dev envs).
         session_name('glpi_' . \hash('sha512', $this->root_dir . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['SERVER_PORT'] ?? '')));
+    }
+
+    private function initLogger(): void
+    {
+        /**
+         * @var LoggerInterface $PHPLOGGER
+         */
+        global $PHPLOGGER;
+
+        $PHPLOGGER = new Logger('glpi');
+        $PHPLOGGER->pushHandler(new GlpiLogHandler());
+
+        $this->logger = $PHPLOGGER;
+
+        $errorHandler = new ErrorHandler($PHPLOGGER);
+        $errorHandler::register($errorHandler);
+
     }
 }

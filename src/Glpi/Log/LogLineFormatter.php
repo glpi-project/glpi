@@ -32,8 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Error;
+namespace Glpi\Log;
 
+use Glpi\Error\StackTraceFormatter;
 use Monolog\Formatter\LineFormatter;
 
 final class LogLineFormatter extends LineFormatter
