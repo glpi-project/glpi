@@ -254,12 +254,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'11\\.0\\.0\\-dev\' and \'11\\.0\\.0\\-dev\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 1,
