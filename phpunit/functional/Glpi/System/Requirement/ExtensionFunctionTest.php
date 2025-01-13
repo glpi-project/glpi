@@ -46,7 +46,7 @@ class ExtensionFunctionTest extends \GLPITestCase
         $this->assertEquals(
             ['simplexml extension is installed.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnMissingMandatoryExtension()
@@ -56,7 +56,7 @@ class ExtensionFunctionTest extends \GLPITestCase
         $this->assertEquals(
             ['fake_ext extension is missing.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 
     public function testCheckOnMissingOptionalExtension()
@@ -66,6 +66,6 @@ class ExtensionFunctionTest extends \GLPITestCase
         $this->assertEquals(
             ['fake_ext extension is not present.'],
             $instance->getValidationMessages()
-         );
+        );
     }
 }
