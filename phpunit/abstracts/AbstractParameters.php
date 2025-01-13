@@ -33,38 +33,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-final class IntegerSize extends AbstractRequirement
+use DbTestCase;
+use Glpi\ContentTemplates\TemplateManager;
+
+class AbstractParameters extends DbTestCase
 {
-    public function __construct()
+    protected function testGetAvailableParameters($values, $parameters): void
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
-        );
-    }
+        $parameters = TemplateManager::computeParameters($parameters);
 
-    protected function check()
-    {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
+        $values_keys = array_keys($values);
+        $parameters_keys = array_column($parameters, 'key');
 
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
+        // Remove "flat" arrays (requester.user, requester.groups, ...)
+        $parameters_keys = array_map(function ($parameter) {
+            $properties = explode('.', $parameter);
+            return array_shift($properties);
+        }, $parameters_keys);
+        $parameters_keys = array_values(array_unique($parameters_keys));
 
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $this->assertEquals($values_keys, $parameters_keys);
     }
 }

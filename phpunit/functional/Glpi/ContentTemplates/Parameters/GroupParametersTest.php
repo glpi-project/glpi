@@ -33,38 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\ContentTemplates\Parameters\GroupParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class GroupParametersTest extends AbstractParameters
 {
-    public function __construct()
+    public function testGetValues(): void
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $this->createItem('Group', [
+            'name'        => 'group_testGetValues',
+            'entities_id' => $test_entity_id
+        ]);
+
+        $parameters = new GroupParameters();
+        $values = $parameters->getValues(getItemByTypeName('Group', 'group_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'           => getItemByTypeName('Group', 'group_testGetValues', true),
+                'name'         => 'group_testGetValues',
+                'completename' => 'group_testGetValues',
+            ],
+            $values
         );
-    }
 
-    protected function check()
-    {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
-
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
-
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }
 }

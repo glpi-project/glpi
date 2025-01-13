@@ -33,38 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\System\Requirement;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\System\Requirement\PhpVersion;
+
+class PhpVersionTest extends \GLPITestCase
 {
-    public function __construct()
+    public function testCheckWithUpToDateVersion()
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        $instance = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['PHP version (' . PHP_VERSION . ') is supported.'],
+            $instance->getValidationMessages()
         );
     }
 
-    protected function check()
+    public function testCheckOutdatedVersion()
     {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
-
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
-
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $instance = new PhpVersion('20.7', '20.8');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            [
+                'PHP version must be between 20.7 and 20.8.'
+            ],
+            $instance->getValidationMessages()
+        );
     }
 }

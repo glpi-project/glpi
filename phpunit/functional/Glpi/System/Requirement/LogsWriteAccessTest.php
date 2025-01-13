@@ -33,38 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\System\Requirement;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\System\Requirement\LogsWriteAccess;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use org\bovigo\vfs\vfsStream;
+
+class LogsWriteAccessTest extends \GLPITestCase
 {
-    public function __construct()
+    public function testCheckOnExistingWritableDir()
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        vfsStream::setup('root', 0777, []);
+
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
+
+        $instance = new LogsWriteAccess($logger);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['The log file has been created successfully.'],
+            $instance->getValidationMessages()
         );
     }
 
-    protected function check()
+    public function testCheckOnExistingProtectedDir()
     {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
+        vfsStream::setup('root', 0555, []);
 
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
+        $logger = new Logger('test_log');
+        $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
 
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $instance = new LogsWriteAccess($logger);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log file could not be created in ' . GLPI_LOG_DIR . '.'],
+            $instance->getValidationMessages()
+        );
     }
 }

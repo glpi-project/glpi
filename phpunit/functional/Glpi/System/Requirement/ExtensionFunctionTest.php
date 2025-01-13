@@ -33,38 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\System\Requirement;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\System\Requirement\ExtensionFunction;
+
+class ExtensionFunctionTest extends \GLPITestCase
 {
-    public function __construct()
+    public function testCheckOnExistingExtension()
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        $instance = new ExtensionFunction('simplexml', 'simplexml_load_string');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['simplexml extension is installed.'],
+            $instance->getValidationMessages()
         );
     }
 
-    protected function check()
+    public function testCheckOnMissingMandatoryExtension()
     {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
+        $instance = new ExtensionFunction('fake_ext', 'fake_extension_function');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is missing.'],
+            $instance->getValidationMessages()
+        );
     }
 
-    protected function isExtensionLoaded(): bool
+    public function testCheckOnMissingOptionalExtension()
     {
-        return extension_loaded('mysqli');
-    }
-
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $instance = new ExtensionFunction('fake_ext', 'fake_extension_function', true);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is not present.'],
+            $instance->getValidationMessages()
+        );
     }
 }
