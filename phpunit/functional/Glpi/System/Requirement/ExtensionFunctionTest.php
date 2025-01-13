@@ -35,32 +35,37 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
+use Glpi\System\Requirement\ExtensionFunction;
+
 class ExtensionFunctionTest extends \GLPITestCase
 {
     public function testCheckOnExistingExtension()
     {
-
-        $this->newTestedInstance('simplexml', 'simplexml_load_string');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['simplexml extension is installed.']);
+        $instance = new ExtensionFunction('simplexml', 'simplexml_load_string');
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['simplexml extension is installed.'],
+            $instance->getValidationMessages()
+         );
     }
 
     public function testCheckOnMissingMandatoryExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'fake_extension_function');
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is missing.']);
+        $instance = new ExtensionFunction('fake_ext', 'fake_extension_function');
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is missing.'],
+            $instance->getValidationMessages()
+         );
     }
 
     public function testCheckOnMissingOptionalExtension()
     {
-
-        $this->newTestedInstance('fake_ext', 'fake_extension_function', true);
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(['fake_ext extension is not present.']);
+        $instance = new ExtensionFunction('fake_ext', 'fake_extension_function', true);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['fake_ext extension is not present.'],
+            $instance->getValidationMessages()
+         );
     }
 }
