@@ -1796,12 +1796,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property GLPI\\:\\:\\$error_handler is unused\\.$#',
-	'identifier' => 'property.unused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPI.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$config_dir \\(null\\) of method GLPIKey\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
@@ -2142,18 +2136,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$env \\(null\\) of method Glpi\\\\Application\\\\ErrorHandler\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$cachedir \\(null\\) of method Glpi\\\\Application\\\\View\\\\TemplateRenderer\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
@@ -2580,6 +2562,30 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class Glpi\\\\Error\\\\ErrorHandler extends @final class Symfony\\\\Component\\\\ErrorHandler\\\\ErrorHandler\\.$#',
+	'identifier' => 'class.extendsFinalByPhpDoc',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Default value of the parameter \\#4 \\$env \\(null\\) of method Glpi\\\\Error\\\\ErrorHandler\\:\\:displayErrorMessage\\(\\) is incompatible with type string\\.$#',
+	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Error\\\\ErrorHandler\\:\\:\\$env \\(string\\) does not accept null\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
@@ -3084,6 +3090,18 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match arm comparison between null and \'development\' is always false\\.$#',
+	'identifier' => 'match.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Log/GlpiLogHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Match arm comparison between null and \'testing\' is always false\\.$#',
+	'identifier' => 'match.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Log/GlpiLogHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
