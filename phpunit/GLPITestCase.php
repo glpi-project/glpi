@@ -75,7 +75,7 @@ class GLPITestCase extends TestCase
         // Init log handler
         global $PHPLOGGER;
         /** @var \Monolog\Logger $PHPLOGGER */
-        $this->log_handler = new TestHandler(LogLevel::DEBUG);
+        $this->log_handler = new TestHandler(LogLevel::NOTICE);
         $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
