@@ -39,29 +39,37 @@
        container size for each sections of the page using container-xl/container-narrow classes#}
     <div class="d-flex flex-column helpdesk-home-container force-full-width">
         <div class="search-banner">
-            <div class="container-narrow">
-                <h1 class="text-dark text-center">
-                    {{ __("How can we help you?") }}
-                </h1>
-
-                <div id="search-overlay" class="search-overlay bg-dark"></div>
-                <div class="input-icon search-bar-container">
-                    <span class="input-icon-addon">
-                        <i class="ti ti-search"></i>
-                    </span>
-                    <input
-                        id="search-input"
-                        type="text"
-                        value=""
-                        class="form-control home-search"
-                        placeholder="{{ __("Search for knowledge base entries or forms") }}"
-                    >
-                    <section
-                        id="search-results"
-                        class="position-absolute bg-white w-100 d-none"
-                        aria-label="{{ __("Search results") }}"
-                    >
-                    </section>
+            <div class="container-xl">
+                <div class="row search-container">
+                    <div class="col-5 align-self-end mb-4">
+                        <h1 class="text-dark">
+                            {{ __("How can we help?") }}
+                        </h1>
+                        <div id="search-overlay" class="search-overlay bg-dark"></div>
+                        <div class="input-icon search-bar-container">
+                            <span class="input-icon-addon">
+                                <i class="ti ti-search"></i>
+                            </span>
+                            <input
+                                id="search-input"
+                                type="text"
+                                value=""
+                                class="form-control home-search"
+                                placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                            >
+                            <section
+                                id="search-results"
+                                class="position-absolute bg-white w-100 d-none"
+                                aria-label="{{ __("Search results") }}"
+                            >
+                            </section>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                    </div>
+                    <div class="col-5">
+                        <img class="h-100" src="/pics/selfservice-portal-header-1.svg">
+                    </div>
                 </div>
             </div>
         </div>
