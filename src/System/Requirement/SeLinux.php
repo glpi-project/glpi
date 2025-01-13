@@ -56,7 +56,7 @@ class SeLinux extends AbstractRequirement
         $is_slash_separator = DIRECTORY_SEPARATOR == '/';
         $are_bin_existing = $this->doesSelinuxBinariesExists();
         $are_functions_existing = $this->doesSelinuxIsEnabledFunctionExists()
-            && $this->doesSelinuxIsEnabledFunctionExists()
+            && $this->doesSelinuxIsEnabledFunctionExists() //@phpstan-ignore-line
             && $this->doesSelinuxBooleanFunctionExists();
 
         $exec_enabled = function_exists('exec') && !in_array('exec', explode(',', ini_get('disable_functions')), true);
@@ -175,16 +175,22 @@ class SeLinux extends AbstractRequirement
 
     protected function isSelinuxEnabled(): bool
     {
-        return selinux_is_enabled();
+        return function_exists('selinux_is_enabled') && selinux_is_enabled();
     }
 
     protected function getSelinxEnforceStatus(): int
     {
-        return selinux_getenforce();
+        if (function_exists('selinux_getenforce')) {
+            return selinux_getenforce();
+        }
+        return 0;
     }
 
-    protected function isSelinuxBooleanActive(string $bool): bool
+    protected function isSelinuxBooleanActive(string $bool): int
     {
-        return selinux_get_boolean_active($bool);
+        if (function_exists('selinux_get_boolean_active')) {
+            return selinux_get_boolean_active($bool);
+        }
+        return 0;
     }
 }
