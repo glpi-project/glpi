@@ -1040,7 +1040,6 @@ HTML;
             $html = $render_error_html;
             // Log the error message without exiting
             ErrorUtils::logException($e);
-            ErrorUtils::outputExceptionMessage($e);
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 

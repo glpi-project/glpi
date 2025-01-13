@@ -275,6 +275,7 @@ final class Transfer extends CommonDBTM
                 $DB->rollBack();
             }
             ErrorUtils::logException($e);
+            ErrorUtils::outputExceptionMessage($e);
         }
     }
 

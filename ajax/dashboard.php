@@ -210,7 +210,6 @@ switch ($_REQUEST['action']) {
                 // Send exception to logger without actually exiting.
                 // Use quiet mode to not break JSON result.
                 ErrorUtils::logException($e);
-                ErrorUtils::outputExceptionMessage($e);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

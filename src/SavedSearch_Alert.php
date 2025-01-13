@@ -130,6 +130,7 @@ class SavedSearch_Alert extends CommonDBChild
             }
         } catch (\RuntimeException $e) {
             ErrorUtils::logException($e);
+            ErrorUtils::outputExceptionMessage($e);
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/alert.html.twig', [
@@ -451,6 +452,7 @@ class SavedSearch_Alert extends CommonDBChild
                 } catch (\Throwable $e) {
                     self::restoreContext($context);
                     ErrorUtils::logException($e);
+                    ErrorUtils::outputExceptionMessage($e);
                 }
             }
             return 1;

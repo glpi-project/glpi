@@ -97,6 +97,5 @@ class Server extends DAV\Server
         }
 
         ErrorUtils::logException($exception);
-        ErrorUtils::outputExceptionMessage($exception);
     }
 }

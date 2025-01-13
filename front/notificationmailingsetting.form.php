@@ -59,7 +59,6 @@ if (isset($_POST["update"])) {
                 Html::redirect($auth_url);
             } catch (\Throwable $e) {
                 ErrorUtils::logException($e);
-                ErrorUtils::outputExceptionMessage($e);
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),
                     false,

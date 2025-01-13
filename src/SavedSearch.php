@@ -641,6 +641,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $search_data = $this->execute();
                 } catch (\Throwable $e) {
                     ErrorUtils::logException($e);
+                    ErrorUtils::outputExceptionMessage($e);
                     $error = true;
                 }
 
@@ -995,6 +996,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                         }
                     } catch (\Throwable $e) {
                         ErrorUtils::logException($e);
+                        ErrorUtils::outputExceptionMessage($e);
                     }
                 }
 

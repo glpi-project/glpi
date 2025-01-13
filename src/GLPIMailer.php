@@ -225,8 +225,6 @@ class GLPIMailer
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();
             ErrorUtils::logException($e);
-
-            ErrorUtils::outputExceptionMessage($e);
         }
 
         if ($this->error !== null) {

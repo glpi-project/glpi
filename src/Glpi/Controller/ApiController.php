@@ -107,7 +107,6 @@ final class ApiController extends AbstractController
             );
         } catch (\Throwable $e) {
             ErrorUtils::logException($e);
-            ErrorUtils::outputExceptionMessage($e);
             $response = new JSONResponse(null, 500);
         }
 

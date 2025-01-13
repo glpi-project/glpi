@@ -257,6 +257,7 @@ class MailCollector extends CommonDBTM
             }
         } catch (\Throwable $e) {
             ErrorUtils::logException($e);
+            ErrorUtils::outputExceptionMessage($e);
         }
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/folder_list.html.twig', [
             'item' => $this,
@@ -441,6 +442,7 @@ class MailCollector extends CommonDBTM
                      $collector->connect();
                 } catch (\Throwable $e) {
                     ErrorUtils::logException($e);
+                    ErrorUtils::outputExceptionMessage($e);
                     continue;
                 }
 
@@ -538,8 +540,6 @@ class MailCollector extends CommonDBTM
                 $this->connect();
             } catch (\Throwable $e) {
                 ErrorUtils::logException($e);
-
-                ErrorUtils::outputExceptionMessage($e);
                 Session::addMessageAfterRedirect(
                     __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
                     false,
@@ -617,6 +617,7 @@ class MailCollector extends CommonDBTM
                         $messages[$message_id] = $message;
                     } catch (\Throwable $e) {
                         ErrorUtils::logException($e);
+                        ErrorUtils::outputExceptionMessage($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(
@@ -665,6 +666,7 @@ class MailCollector extends CommonDBTM
                     } catch (\Throwable $e) {
                         $error++;
                         ErrorUtils::logException($e);
+                        ErrorUtils::outputExceptionMessage($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(

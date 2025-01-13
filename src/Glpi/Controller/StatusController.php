@@ -41,7 +41,6 @@ use Glpi\Application\ErrorUtils;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -52,7 +51,7 @@ final class StatusController extends AbstractController
         name: "glpi_status"
     )]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(SymfonyRequest $request): SymfonyResponse
+    public function __invoke(): SymfonyResponse
     {
         // Force in normal mode
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
@@ -64,7 +63,6 @@ final class StatusController extends AbstractController
             $response = Router::getInstance()->handleRequest($request);
         } catch (\Throwable $e) {
             ErrorUtils::logException($e);
-            ErrorUtils::outputExceptionMessage($e);
             $response = new JSONResponse(null, 500);
         }
 

@@ -752,8 +752,6 @@ class Agent extends CommonDBTM
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             ErrorUtils::logException($e);
-
-            ErrorUtils::outputExceptionMessage($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {
@@ -775,8 +773,6 @@ class Agent extends CommonDBTM
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             ErrorUtils::logException($e);
-
-            ErrorUtils::outputExceptionMessage($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {

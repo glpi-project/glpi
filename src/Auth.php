@@ -316,8 +316,6 @@ class Auth extends CommonGLPI
                 ]);
             } catch (\Throwable $e) {
                 ErrorUtils::logException($e);
-
-                ErrorUtils::outputExceptionMessage($e);
                 $info = false;
             }
 
@@ -886,8 +884,6 @@ class Auth extends CommonGLPI
                                 ]);
                             } catch (\RuntimeException $e) {
                                 ErrorUtils::logException($e);
-
-                                ErrorUtils::outputExceptionMessage($e);
                                 $user_dn = false;
                             }
                             if ($user_dn) {

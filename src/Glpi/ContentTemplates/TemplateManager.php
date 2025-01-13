@@ -117,6 +117,7 @@ class TemplateManager
             );
         } catch (\Twig\Error\Error $e) {
             ErrorUtils::logException($e);
+            ErrorUtils::outputExceptionMessage($e);
             return null;
         }
         return $html;

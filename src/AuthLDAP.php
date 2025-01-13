@@ -2747,6 +2747,7 @@ TWIG, $twig_params);
                 }
             } catch (\RuntimeException $e) {
                 ErrorUtils::logException($e);
+                ErrorUtils::outputExceptionMessage($e);
                 return false;
             }
         }
