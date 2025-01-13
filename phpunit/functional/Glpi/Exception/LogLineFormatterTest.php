@@ -32,11 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Exception;
+namespace tests\units\Glpi\Exception;
 
+use Glpi\Error\LogLineFormatter;
 use PHPUnit\Framework\TestCase;
 
 class LogLineFormatterTest extends TestCase
 {
+    public function testBasicExceptionFormat(): void
+    {
+        $formatter = new LogLineFormatter();
 
+        $normalizedExceptionMessage = $formatter->normalizeValue(new \RuntimeException('NOOP'));
+
+        self::assertIsString($normalizedExceptionMessage);
+
+        $lines = explode("\n", $normalizedExceptionMessage);
+        self::assertSame('NOOP', $lines[0]);
+        self::assertSame('  Backtrace :', $lines[1]);
+        self::assertMatchesRegularExpression(\sprintf('~%s\(\)$~', \str_replace(['::', '\\'], ['->', '\\\\'], __METHOD__)), $lines[2]);
+        self::assertMatchesRegularExpression(\sprintf('~%s->%s\(\)$~', \str_replace('\\', '\\\\', TestCase::class), 'runTest'), $lines[3]);
+    }
 }
