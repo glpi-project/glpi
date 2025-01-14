@@ -1577,9 +1577,9 @@ class DBmysqlIteratorTest extends DbTestCase
              ->getMock();
         $iterator = new \DBmysqlIterator($db);
 
-        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
-        //\error_reporting($reporting_level); // restore previous level
+        \error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'The `test()` method signature changed. Its previous signature is deprecated.',
@@ -1593,9 +1593,9 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         $iterator = new \DBmysqlIterator(null);
 
-        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         $iterator->execute(...$params);
-        //\error_reporting($reporting_level); // restore previous level
+        \error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
@@ -1624,9 +1624,9 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $iterator = new \DBmysqlIterator($db);
 
-        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         $iterator->buildQuery(...$params);
-        //\error_reporting($reporting_level); // restore previous level
+        \error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.',

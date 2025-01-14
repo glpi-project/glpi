@@ -233,7 +233,7 @@ class Auth extends CommonGLPI
             return false;
         }
 
-        //$oldlevel = error_reporting(16);
+        $oldlevel = error_reporting(16);
         // No retry (avoid lock account when password is not correct)
         try {
             $config = Toolbox::parseMailServerConnectString($host);
@@ -264,7 +264,7 @@ class Auth extends CommonGLPI
             $this->addToError($e->getMessage());
             return false;
         } finally {
-            //error_reporting($oldlevel);
+            error_reporting($oldlevel);
         }
     }
 

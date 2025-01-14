@@ -7800,9 +7800,9 @@ HTML
     {
         $ticket = new \Ticket();
 
-        //$reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         $ticket->plugin_xxx_data = 'test';
-        //\error_reporting($reporting_level); // restore previous level
+        \error_reporting($reporting_level); // restore previous level
 
         $this->hasPhpLogRecordThatContains(
             'Creation of dynamic property Ticket::$plugin_xxx_data is deprecated',
