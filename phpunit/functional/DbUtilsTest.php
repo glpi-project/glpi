@@ -38,6 +38,7 @@ namespace tests\units;
 use DbTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
 
 /* Test for inc/dbutils.class.php */
@@ -937,9 +938,7 @@ class DbUtilsTest extends DbTestCase
         $this->runGetAncestorsOf();
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testGetAncestorsOfCached()
     {
         $this->login();
@@ -1129,9 +1128,7 @@ class DbUtilsTest extends DbTestCase
         $this->runGetSonsOf();
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testGetSonsOfCached()
     {
         $this->login();
