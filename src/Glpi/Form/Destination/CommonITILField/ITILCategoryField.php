@@ -79,14 +79,6 @@ class ITILCategoryField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILCategoryFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select an ITIL category..."),
@@ -114,8 +106,11 @@ class ITILCategoryField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $itilcategory_id = $config->getStrategy()->getITILCategory($config, $answers_set);
+        $itilcategory_id = $strategy->getITILCategory($config, $answers_set);
 
         // Do not edit input if invalid value was found
         if (!ITILCategory::getById($itilcategory_id)) {
@@ -135,7 +130,7 @@ class ITILCategoryField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILCategoryFieldStrategy::cases() as $strategies) {

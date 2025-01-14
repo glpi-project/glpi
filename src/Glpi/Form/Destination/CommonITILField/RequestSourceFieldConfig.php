@@ -36,9 +36,10 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Override;
 
-final class RequestSourceFieldConfig implements JsonFieldInterface
+final class RequestSourceFieldConfig implements JsonFieldInterface, ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -73,9 +74,18 @@ final class RequestSourceFieldConfig implements JsonFieldInterface
         ];
     }
 
-    public function getStrategy(): RequestSourceFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<RequestSourceFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificRequestSource(): ?int

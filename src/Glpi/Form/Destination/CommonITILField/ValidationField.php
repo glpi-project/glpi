@@ -90,14 +90,6 @@ class ValidationField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ValidationFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ACTORS strategy
             'specific_values_extra_field' => [
                 'values'        => $specific_actors,
@@ -126,17 +118,19 @@ class ValidationField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $validations = $config->getStrategy()->getValidation($config, $answers_set);
+        // Compute value according to strategies
+        foreach ($config->getStrategies() as $strategy) {
+            $validations = $strategy->getValidation($config, $answers_set);
 
-        if (!empty($validations)) {
-            foreach ($validations as $validation) {
-                $input['_add_validation'] = 0;
-                $input['_validation_targets'][] = [
-                    'validatortype'   => $validation['itemtype'],
-                    'itemtype_target' => $validation['itemtype'],
-                    'items_id_target' => $validation['items_id'],
-                ];
+            if (!empty($validations)) {
+                foreach ($validations as $validation) {
+                    $input['_add_validation'] = 0;
+                    $input['_validation_targets'][] = [
+                        'validatortype'   => $validation['itemtype'],
+                        'itemtype_target' => $validation['itemtype'],
+                        'items_id_target' => $validation['items_id'],
+                    ];
+                }
             }
         }
 
@@ -147,11 +141,11 @@ class ValidationField extends AbstractConfigField
     public function getDefaultConfig(Form $form): ValidationFieldConfig
     {
         return new ValidationFieldConfig(
-            ValidationFieldStrategy::NO_VALIDATION
+            [ValidationFieldStrategy::NO_VALIDATION]
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ValidationFieldStrategy::cases() as $strategies) {
@@ -199,7 +193,7 @@ class ValidationField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
-        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGY])) {
+        if (!isset($input[$this->getKey()][ValidationFieldConfig::STRATEGIES])) {
             return $input;
         }
 
@@ -242,5 +236,11 @@ class ValidationField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function canHaveMultipleStrategies(): bool
+    {
+        return true;
     }
 }

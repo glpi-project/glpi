@@ -33,50 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Form\Destination;
 
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeAssignee;
-use Override;
-use Session;
-
-class AssigneeField extends ITILActorField
+interface ConfigFieldWithStrategiesInterface
 {
-    #[Override]
-    public function getAllowedQuestionType(): string
-    {
-        return QuestionTypeAssignee::class;
-    }
+    /**
+     * Get strategies input name
+     */
+    public static function getStrategiesInputName(): string;
 
-    #[Override]
-    public function getActorType(): string
-    {
-        return 'assign';
-    }
-
-    #[Override]
-    public function getLabel(): string
-    {
-        return _n('Assignee', 'Assignees', Session::getPluralNumber());
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 30;
-    }
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return AssigneeFieldConfig::class;
-    }
-
-    #[Override]
-    public function getDefaultConfig(Form $form): AssigneeFieldConfig
-    {
-        return new AssigneeFieldConfig(
-            [ITILActorFieldStrategy::FROM_TEMPLATE],
-        );
-    }
+    /**
+     * Get actual strategies
+     *
+     * @return array
+     */
+    public function getStrategies(): array;
 }

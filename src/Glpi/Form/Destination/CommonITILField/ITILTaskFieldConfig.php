@@ -36,13 +36,17 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 use TaskTemplate;
 
-final class ITILTaskFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class ITILTaskFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -85,9 +89,18 @@ final class ITILTaskFieldConfig implements JsonFieldInterface, ConfigWithForeign
         ];
     }
 
-    public function getStrategy(): ITILTaskFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<ITILTaskFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificTaskTemplatesIds(): ?array

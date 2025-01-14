@@ -39,7 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 
-interface ConfigFieldInterface
+interface DestinationFieldInterface
 {
     /**
      * Get the unique key used to set/get this field configuration in the
@@ -127,4 +127,18 @@ interface ConfigFieldInterface
      * @return array
      */
     public function prepareInput(array $input): array;
+
+    /**
+     * Get the possible values for the main configuration dropdown.
+     *
+     * @return array
+     */
+    public function getStrategiesForDropdown(): array;
+
+    /**
+     * Check if this field can have multiple strategies at the same time.
+     *
+     * @return bool
+     */
+    public function canHaveMultipleStrategies(): bool;
 }

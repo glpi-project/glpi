@@ -200,7 +200,7 @@ final class DefaultDataManager
 
             // Set last valid answer as observer
             ObserverField::getKey() => (new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
+                strategies: [ITILActorFieldStrategy::LAST_VALID_ANSWER],
             ))->jsonSerialize(),
         ];
 
@@ -263,7 +263,7 @@ final class DefaultDataManager
 
             // Set last valid answer as observer
             ObserverField::getKey() => (new ObserverFieldConfig(
-                strategy: ITILActorFieldStrategy::LAST_VALID_ANSWER,
+                strategies: [ITILActorFieldStrategy::LAST_VALID_ANSWER],
             ))->jsonSerialize(),
         ];
 

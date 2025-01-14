@@ -78,14 +78,6 @@ abstract class ITILActorField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select actors..."),
@@ -114,20 +106,18 @@ abstract class ITILActorField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $itilactors_ids = $config->getStrategy()->getITILActorsIDs(
-            $this,
-            $config,
-            $answers_set
-        );
+        // Compute value according to strategies
+        foreach ($config->getStrategies() as $strategy) {
+            $itilactors_ids = $strategy->getITILActorsIDs($this, $config, $answers_set);
 
-        if (!empty($itilactors_ids)) {
-            foreach ($itilactors_ids as $itemtype => $ids) {
-                foreach ($ids as $id) {
-                    $input['_actors'][$this->getActorType()][] = [
-                        'itemtype' => $itemtype,
-                        'items_id' => $id,
-                    ];
+            if (!empty($itilactors_ids)) {
+                foreach ($itilactors_ids as $itemtype => $ids) {
+                    foreach ($ids as $id) {
+                        $input['_actors'][$this->getActorType()][] = [
+                            'itemtype' => $itemtype,
+                            'items_id' => $id,
+                        ];
+                    }
                 }
             }
         }
@@ -140,7 +130,7 @@ abstract class ITILActorField extends AbstractConfigField
     {
         $input = parent::prepareInput($input);
 
-        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGY])) {
+        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGIES])) {
             return $input;
         }
 
@@ -167,7 +157,7 @@ abstract class ITILActorField extends AbstractConfigField
         return $input;
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILActorFieldStrategy::cases() as $strategies) {
@@ -186,5 +176,11 @@ abstract class ITILActorField extends AbstractConfigField
             },
             []
         );
+    }
+
+    #[Override]
+    public function canHaveMultipleStrategies(): bool
+    {
+        return true;
     }
 }

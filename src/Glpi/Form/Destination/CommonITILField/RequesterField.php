@@ -70,7 +70,7 @@ class RequesterField extends ITILActorField
     public function getDefaultConfig(Form $form): RequesterFieldConfig
     {
         return new RequesterFieldConfig(
-            ITILActorFieldStrategy::FORM_FILLER,
+            [ITILActorFieldStrategy::FORM_FILLER],
         );
     }
 

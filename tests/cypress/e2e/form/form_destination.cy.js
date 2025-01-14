@@ -144,4 +144,55 @@ describe('Form destination', () => {
         cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
         cy.get('@title_field').contains('Form name: Test form for the destination form suite');
     });
+
+    it('can define multiple strategies for the same field', () => {
+        cy.findByRole('region', {name: 'Requesters configuration'}).as('requesters_config');
+        cy.get('@requesters_config').findByRole('button', {name: 'Combine with another option'}).should('exist').as('add_strategy_button');
+        cy.getDropdownByLabelText('Requesters').as('first_strategy_dropdown');
+
+        // Define first strategy
+        cy.get('@first_strategy_dropdown').selectDropdownValue('From template');
+
+        // Add a second strategy
+        cy.get('@add_strategy_button').click();
+        cy.findByRole('combobox', {name: '-----'}).as('second_strategy_dropdown');
+        cy.get('@second_strategy_dropdown').selectDropdownValue('Specific actors');
+        cy.get('@requesters_config').getDropdownByLabelText('Select actors...').as('second_strategy_actors_dropdown');
+        cy.get('@second_strategy_actors_dropdown').selectDropdownValue('glpi');
+
+        // Add a third strategy
+        cy.get('@add_strategy_button').click();
+        cy.findByRole('combobox', {name: '-----'}).as('third_strategy_dropdown');
+        cy.get('@third_strategy_dropdown').selectDropdownValue('Answer to last "Requesters" question');
+
+        // Save changes
+        cy.findByRole('button', {name: 'Update item'}).click();
+
+        // Check if the strategies are saved
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_config').within(() => {
+            cy.findByRole('combobox', {name: 'From template'}).should('exist');
+            cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
+            cy.findByRole('listitem', {name: 'glpi'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+        });
+
+        // Add a fourth strategy
+        cy.get('@requesters_config').findByRole('button', {name: 'Combine with another option'}).click();
+        cy.findByRole('combobox', {name: '-----'}).as('fourth_strategy_dropdown');
+        cy.get('@fourth_strategy_dropdown').selectDropdownValue('User who filled the form');
+
+        // Save changes
+        cy.findByRole('button', {name: 'Update item'}).click();
+
+        // Check if the strategies are saved
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_config').within(() => {
+            cy.findByRole('combobox', {name: 'From template'}).should('exist');
+            cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
+            cy.findByRole('listitem', {name: 'glpi'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+            cy.findByRole('combobox', {name: 'User who filled the form'}).should('exist');
+        });
+    });
 });

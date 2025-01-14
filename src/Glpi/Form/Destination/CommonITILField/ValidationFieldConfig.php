@@ -36,21 +36,30 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
 use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
 use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class ValidationFieldConfig implements JsonFieldInterface, ConfigWithForeignKeysInterface
+final class ValidationFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY              = 'strategy';
+    public const STRATEGIES            = 'strategies';
     public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
     public const SPECIFIC_ACTORS       = 'specific_actors';
 
+    /**
+     * @param array<ValidationFieldStrategy> $strategies
+     * @param array<int>                     $specific_question_ids
+     * @param array<int>                     $specific_actors
+     */
     public function __construct(
-        private ValidationFieldStrategy $strategy,
+        private array $strategies,
         private array $specific_question_ids = [],
         private array $specific_actors = [],
     ) {
@@ -68,13 +77,16 @@ final class ValidationFieldConfig implements JsonFieldInterface, ConfigWithForei
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategy = ValidationFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = ValidationFieldStrategy::NO_VALIDATION;
+        $strategies = array_map(
+            fn (string $strategy) => ValidationFieldStrategy::tryFrom($strategy),
+            $data[self::STRATEGIES] ?? []
+        );
+        if (empty($strategies)) {
+            $strategies = [ValidationFieldStrategy::NO_VALIDATION];
         }
 
         return new self(
-            strategy: $strategy,
+            strategies: $strategies,
             specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
             specific_actors: $data[self::SPECIFIC_ACTORS] ?? [],
         );
@@ -84,15 +96,27 @@ final class ValidationFieldConfig implements JsonFieldInterface, ConfigWithForei
     public function jsonSerialize(): array
     {
         return [
-            self::STRATEGY => $this->strategy->value,
+            self::STRATEGIES              => array_map(
+                fn (ValidationFieldStrategy $strategy) => $strategy->value,
+                $this->strategies
+            ),
             self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
             self::SPECIFIC_ACTORS => $this->specific_actors,
         ];
     }
 
-    public function getStrategy(): ValidationFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGIES;
+    }
+
+    /**
+     * @return array<ValidationFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return $this->strategies;
     }
 
     public function getSpecificQuestionIds(): array
