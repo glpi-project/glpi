@@ -1092,10 +1092,10 @@ class DBmysql
     /**
      * Instanciate a Simple DBIterator
      *
-     * @param string|string[] $tableorsql Table name, array of names or SQL query
-     * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
-     *                                    (default '')
-     * @param boolean         $debug      To log the request (default false)
+     * @param string|array|QueryUnion   $tableorsql Table name, array of names or SQL query
+     * @param string|array              $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
+     *                                              (default '')
+     * @param boolean                   $debug      To log the request (default false)
      *
      * @return DBmysqlIterator
      */
