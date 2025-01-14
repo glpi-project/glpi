@@ -960,7 +960,8 @@ class Group_User extends CommonDBRelation
         $user_inst = new User();
 
         // If user's default group is affected, remove it from user
-        if ($user_inst->getFromDB($users_id)
+        if (
+            $user_inst->getFromDB($users_id)
             && $user_inst->fields['groups_id'] == $groups_id
         ) {
             if (
