@@ -101,7 +101,13 @@ final class ErrorHandler extends BaseErrorHandler
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
         $this->screamAt(self::FATAL_ERRORS, true); // Never silent fatal errors
         $this->throwAt(self::FATAL_ERRORS, true); // Convert fatal errors to exceptions
-        $this->setDefaultLogger($logger);
+
+        $error_map = self::ERROR_LEVEL_MAP;
+        if (\PHP_VERSION_ID >= 80400) {
+            unset($error_map[2048]); // Symfony handler does not support E_STRICT in PHP >= 8.4
+        }
+
+        $this->setDefaultLogger($logger, $error_map);
 
         self::$currentLogger = $logger;
         $this->configureErrorDisplay();

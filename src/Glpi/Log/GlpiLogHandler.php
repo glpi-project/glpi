@@ -83,7 +83,13 @@ class GlpiLogHandler extends StreamHandler
      */
     public function canHandle(LogRecord $record): bool
     {
+        // Do not log "Notified event {...}" messages
         if (isset($record->context['event']) && $record->level === Level::Debug) {
+            return false;
+        }
+
+        // Do not log "Matched route "{...}"" messages
+        if (isset($record->context['route']) && $record->level === Level::Info) {
             return false;
         }
 
