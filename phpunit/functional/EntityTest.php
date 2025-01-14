@@ -283,7 +283,7 @@ class EntityTest extends DbTestCase
     }
 
     /**
-     * @tags cache
+     * @group cache
      */
     public function testChangeEntityParentCached()
     {
@@ -302,7 +302,7 @@ class EntityTest extends DbTestCase
     }
 
     /**
-     * @tags cache
+     * @group cache
      */
     public function testMoveParentEntityCached(): void
     {
