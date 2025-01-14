@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,46 +32,53 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Override;
-
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class ConditionData
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'text';
+    public function __construct(
+        private string $item_uuid,
+        private string $item_type,
+        private ?string $value_operator,
+        private mixed $value,
+        private ?string $logic_operator = null,
+    ) {
     }
 
-    #[Override]
-    public function getName(): string
+    /**
+     * Itemtype + uuid, used for dropdowns to allow selecting type + item using
+     * a single dropdown
+     */
+    public function getItemDropdownKey(): string
     {
-        return __("Text");
+        return $this->item_type . '-' . $this->item_uuid;
     }
 
-    #[Override]
-    public function getIcon(): string
+    public function getItemUuid(): string
     {
-        return 'ti ti-text-size';
+        return $this->item_uuid;
     }
 
-    #[Override]
-    public function getWeight(): int
+    public function getItemType(): string
     {
-        return 10;
+        return $this->item_type;
     }
 
-    #[Override]
-    public function getSupportedValueOperators(): array
+    public function getValue(): mixed
     {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
+        return $this->value;
+    }
+
+    public function getLogicOperator(): LogicOperator
+    {
+        // Fallback to "AND" if no value is set.
+        return LogicOperator::tryFrom($this->logic_operator ?? "") ?? LogicOperator::AND;
+    }
+
+    public function getValueOperator(): ?ValueOperator
+    {
+        // No follback here as an empty value is valid if the condition is not
+        // fully specified yet.
+        return ValueOperator::tryFrom($this->value_operator ?? "");
     }
 }

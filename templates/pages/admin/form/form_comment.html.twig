@@ -48,6 +48,7 @@
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').COMMENT.value }}"
     data-glpi-draggable-item
 >
     <section
@@ -82,15 +83,57 @@
                     data-glpi-form-editor-comment-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                {# Visibility dropdown #}
+                {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                    'item': comment,
+                    'type': "Glpi\\Form\\Comment",
+                }, with_context = false) }}
+
                 {# Duplicate comment #}
                 <i
-                    class="ti ti-copy ms-auto cursor-pointer"
+                    class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate comment") }}"
                     data-glpi-form-editor-on-click="duplicate-comment"
                     data-glpi-form-editor-comment-extra-details
                 ></i>
+
+                {# Delete comment #}
+                <i
+                    role="button"
+                    class="ti ti-trash ms-3 cursor-pointer"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ __("Delete") }}"
+                    aria-label="{{ __("Delete") }}"
+                    data-glpi-form-editor-on-click="delete-comment"
+                    data-glpi-form-editor-comment-extra-details
+                ></i>
+
+                {# Extra actions #}
+                <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
+                    <i
+                        class="ti ti-dots-vertical show"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        role="button"
+                        title="{{ __('More actions') }}"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-visibility-dropdown"
+                            >
+                                <i class="ti ti-eye-cog me-2"></i>
+                                <span>{{ __("Configure visiblity") }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             {# Display common fields #}
@@ -117,20 +160,6 @@
                 })
                 ) }}
             </div>
-
-            <div
-                class="d-flex flex-row-reverse align-items-center"
-                data-glpi-form-editor-comment-extra-details
-            >
-                <button
-                    class="btn btn-ghost-danger px-2"
-                    type="button"
-                    data-glpi-form-editor-on-click="delete-comment"
-                >
-                    <i class="ti ti-trash me-2"></i>
-                    {{ __("Delete") }}
-                </button>
-            </div>
         </div>
 
         {# Common hidden data #}
@@ -150,6 +179,7 @@
             value="{{ comment is not null ? comment.fields.rank : 0 }}"
         />
     </section>
+
     <div data-glpi-form-editor-comment-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update': can_update,
