@@ -4,9 +4,10 @@
         {
             "id": 0,
             "name": "My valid form",
-            "header": "",
+            "illustration": "report-issue",
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
+            "is_active": false,
             "sections": [
                 {
                     "name": "First section",
@@ -40,9 +41,10 @@
         {
             "id": 1,
             "name": "My invalid form",
-            "header": "",
+            "illustration": "report-issue",
             "entity_name": "Missing entity",
             "is_recursive": false,
+            "is_active": false,
             "sections": [
                 {
                     "name": "First section",

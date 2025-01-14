@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form;
 
 use Computer;
 use Entity;
+use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
@@ -46,7 +47,6 @@ use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
-use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
@@ -200,6 +200,8 @@ final class FormSerializerTest extends \DbTestCase
         $fields_to_check = [
             'name',
             'header',
+            'description',
+            'forms_categories_id',
             'entities_id',
             'is_recursive',
         ];
@@ -798,6 +800,155 @@ final class FormSerializerTest extends \DbTestCase
         ], array_map(fn (Form $form) => $form->fields['name'], $import_result->getImportedForms()));
     }
 
+    public function testAllFieldsAreExportedAndImported(): void
+    {
+        $this->login();
+
+        // Retrieve a default form
+        $forms_id = getItemByTypeName(Form::class, 'Report an issue', true);
+        $this->assertIsNotBool($forms_id);
+
+        // Transfer the form to the test root entity
+        $transfer = new \Transfer();
+        $transfer->moveItems([Form::getType() => [$forms_id]], $this->getTestRootEntity(only_id: true), []);
+
+        // Export and import the form
+        $form = Form::getById($forms_id);
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Check that all fields are equals
+        $this->assertArrayIsEqualToArrayIgnoringListOfKeys(
+            $form->fields,
+            $form_copy->fields,
+            [
+                'id',
+                'date_creation',
+            ]
+        );
+
+        $ids_for_default_form = [
+            Form::getForeignKeyField() => [$forms_id],
+        ];
+        $ids_for_imported_form = [
+            Form::getForeignKeyField() => [$form_copy->getID()],
+        ];
+
+        $this->compareValuesForRelations(
+            getDbRelations()[Form::getTable()],
+            $ids_for_default_form,
+            $ids_for_imported_form,
+        );
+    }
+
+    private function compareValuesForRelations(
+        $relations,
+        $ids_for_default_form,
+        $ids_for_imported_form
+    ): void {
+        $relation_table_names_to_ignore = [
+            '_glpi_helpdesks_tiles_formtiles', // Do not export/import tiles
+            '_glpi_forms_answerssets', // Do not export/import answers sets
+        ];
+
+        $field_keys_to_ignore_for_specific_tables = [
+            '_glpi_forms_sections'                      => ['uuid'],
+            '_glpi_forms_questions'                     => ['uuid', 'forms_sections_uuid'],
+            '_glpi_forms_comments'                      => ['uuid', 'forms_sections_uuid'],
+            '_glpi_forms_destinations_formdestinations' => ['config'],
+        ];
+
+        foreach ($relations as $table_name => $field_keys) {
+            // Skip some tables
+            if (in_array($table_name, $relation_table_names_to_ignore)) {
+                continue;
+            }
+
+            $relation_item = new (getItemTypeForTable(ltrim($table_name, '_')))();
+
+            // Get relations recursively
+            $new_relations = getDbRelations()[$relation_item->getTable()] ?? false;
+
+            // Compare values for each fields in relation
+            foreach ($field_keys as $field_key) {
+                if (in_array($field_key, $ids_for_default_form)) {
+                    continue;
+                }
+
+                $default_values = $relation_item->find([$ids_for_default_form]);
+                $imported_values = $relation_item->find([$ids_for_imported_form]);
+
+                foreach ($default_values as $default_value) {
+                    $imported_value = array_shift($imported_values);
+
+                    if ($new_relations !== false) {
+                        foreach ($new_relations as $new_relation_table_name) {
+                            $ids_for_default_form[$relation_item->getForeignKeyField()] = [$default_value['id']];
+                            $ids_for_imported_form[$relation_item->getForeignKeyField()] = [$imported_value['id']];
+                        }
+                    }
+
+                    $this->assertNotNull($imported_value, "No imported value found in $table_name");
+                    $this->assertArrayIsEqualToArrayIgnoringListOfKeys(
+                        $default_value,
+                        $imported_value,
+                        array_merge(
+                            ['id', 'date_creation', $field_key],
+                            $field_keys_to_ignore_for_specific_tables[$table_name] ?? []
+                        ),
+                        "Failed to compare $table_name"
+                    );
+
+                    if ($table_name === '_glpi_forms_destinations_formdestinations') {
+                        $default_config = json_decode($default_value['config'], true);
+                        $imported_config = json_decode($imported_value['config'], true);
+
+                        $this->removeEmptyValues($default_config);
+                        $this->removeEmptyValues($imported_config);
+
+                        $this->assertEquals(
+                            $default_config,
+                            $imported_config
+                        );
+                    }
+                }
+            }
+
+            if ($new_relations !== false) {
+                $a = array_filter(
+                    $ids_for_default_form,
+                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    ARRAY_FILTER_USE_KEY
+                );
+                $b = array_filter(
+                    $ids_for_imported_form,
+                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    ARRAY_FILTER_USE_KEY
+                );
+                if (!empty($a) && !empty($b)) {
+                    $this->compareValuesForRelations(
+                        $new_relations,
+                        $a,
+                        $b
+                    );
+                }
+            }
+        }
+    }
+
+    private function removeEmptyValues(array &$array): void
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $this->removeEmptyValues($value);
+                if (empty($value)) {
+                    unset($array[$key]);
+                }
+            } elseif (empty($value)) {
+                unset($array[$key]);
+            }
+        }
+    }
+
     // TODO: add a test later to make sure that requirements for each forms do
     // not contains a singular item multiple times.
     // For example, if a specific group is referenced multiple time by a form
@@ -807,9 +958,12 @@ final class FormSerializerTest extends \DbTestCase
 
     private function createAndGetFormWithBasicPropertiesFilled(): Form
     {
+        $form_category = $this->createItem(Category::class, ['name' => 'My service catalog category']);
         $form_name = "Form with basic properties fully filled " . mt_rand();
         $builder = new FormBuilder($form_name);
         $builder->setHeader("My custom header")
+            ->setDescription("My custom description for the service catalog")
+            ->setCategory($form_category->getID())
             ->setEntitiesId($this->getTestRootEntity(only_id: true))
             ->setIsRecursive(true)
         ;
