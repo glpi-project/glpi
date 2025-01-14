@@ -310,22 +310,31 @@ class CacheManager
     }
 
     /**
-     * Reset all caches.
+     * Clears the cache for all known contexts.
      *
-     * @return bool
+     * @return bool Returns true if the cache was successfully cleared for all contexts, false otherwise.
      */
-    public function resetAllCaches(): bool
+    public function clearCacheContext(): bool
     {
-
         $success = true;
 
-       // Clear all cache contexts
         $known_contexts = $this->getKnownContexts();
         foreach ($known_contexts as $context) {
             $success = $this->getCacheInstance($context)->clear() && $success;
         }
 
-       // Clear compiled templates
+        return $success;
+    }
+
+    /**
+     * Clears the compiled template cache.
+     *
+     * @return bool True if all cache files and directories were successfully deleted, false otherwise.
+     */
+    public function clearCompiledCache(): bool
+    {
+        $success = true;
+
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
@@ -340,6 +349,16 @@ class CacheManager
         }
 
         return $success;
+    }
+
+    /**
+     * Reset all caches.
+     *
+     * @return bool
+     */
+    public function resetAllCaches(): bool
+    {
+        return $this->clearCacheContext() && $this->clearCompiledCache();
     }
 
     /**

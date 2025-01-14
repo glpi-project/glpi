@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Cache\CacheManager;
+
 /**
  * Group_User Class
  *
@@ -958,13 +960,20 @@ class Group_User extends CommonDBRelation
         $user_inst = new User();
 
         // If user's default group is affected, remove it from user
-        if ($user_inst->getFromDB($users_id) && $user_inst->fields['groups_id'] == $groups_id) {
-            $user_inst->update(
-                [
-                    'id'        => $users_id,
-                    'groups_id' => 0,
-                ]
-            );
+        if ($user_inst->getFromDB($users_id)
+            && $user_inst->fields['groups_id'] == $groups_id
+        ) {
+            if (
+                $user_inst->update(
+                    [
+                        'id'        => $users_id,
+                        'groups_id' => 0,
+                    ]
+                )
+            ) {
+                // Clear twig cache to avoid wrong group in user tooltip
+                (new CacheManager())->clearCompiledCache();
+            }
         }
 
         // remove user from plannings
