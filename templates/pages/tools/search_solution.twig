@@ -163,7 +163,7 @@
                 $('#{{ container_id }}').html(html);
                 hideLoading();
             }, () => {
-                window.glpi_toast_error('{{ __('An error occurred while searching for solutions') }}');
+                window.glpi_toast_error('{{ __('An error occurred while searching for solutions')|e('js') }}');
                 hideLoading();
             });
         }
