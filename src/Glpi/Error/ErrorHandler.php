@@ -46,7 +46,7 @@ final class ErrorHandler extends BaseErrorHandler
 {
     public const FATAL_ERRORS = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
 
-    public const ERROR_LEVEL_MAP = [
+    private const ERROR_LEVEL_MAP = [
         E_ERROR             => LogLevel::CRITICAL,
         E_WARNING           => LogLevel::WARNING,
         E_PARSE             => LogLevel::ALERT,
@@ -58,7 +58,6 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_ERROR        => LogLevel::ERROR,
         E_USER_WARNING      => LogLevel::WARNING,
         E_USER_NOTICE       => LogLevel::NOTICE,
-        2048                => LogLevel::NOTICE, // 2048 = deprecated E_STRICT (since PHP 8.4)
         E_RECOVERABLE_ERROR => LogLevel::ERROR,
         E_DEPRECATED        => LogLevel::INFO,
         E_USER_DEPRECATED   => LogLevel::INFO,
@@ -76,7 +75,6 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_ERROR        => 'User Error',
         E_USER_WARNING      => 'User Warning',
         E_USER_NOTICE       => 'User Notice',
-        2048                => 'Runtime Notice', // 2048 = deprecated E_STRICT (since PHP 8.4)
         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
         E_DEPRECATED        => 'Deprecated function',
         E_USER_DEPRECATED   => 'User deprecated function',
@@ -91,17 +89,13 @@ final class ErrorHandler extends BaseErrorHandler
         parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === \GLPI::ENV_DEVELOPMENT);
 
         $this->env = \GLPI_ENVIRONMENT_TYPE;
+
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
         $this->screamAt(self::FATAL_ERRORS, true); // Never silent fatal errors
         $this->throwAt(self::FATAL_ERRORS, true); // Convert fatal errors to exceptions
 
-        $error_map = self::ERROR_LEVEL_MAP;
-        if (\PHP_VERSION_ID >= 80400) {
-            unset($error_map[2048]); // Symfony handler does not support E_STRICT in PHP >= 8.4
-        }
-
-        $this->setDefaultLogger($logger, $error_map);
+        $this->setDefaultLogger($logger, self::ERROR_LEVEL_MAP);
 
         self::$currentLogger = $logger;
         $this->configureErrorDisplay();

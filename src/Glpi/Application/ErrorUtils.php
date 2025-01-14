@@ -48,20 +48,12 @@ class ErrorUtils
      */
     public static function logException(\Throwable $exception): void
     {
-        try {
-            $trace = StackTraceFormatter::getTraceAsString($exception->getTrace());
+        $trace = StackTraceFormatter::getTraceAsString($exception->getTrace());
 
-            ErrorHandler::getCurrentLogger()->log(
-                ErrorHandler::ERROR_LEVEL_MAP[E_ERROR],
-                '  *** ' . \sprintf('Uncaught Exception %s', \get_class($exception)) . ': ' . \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()) . (!empty($trace) ? "\n" . $trace : '')
-            );
-        } catch (\Throwable) {
-            ErrorHandler::displayErrorMessage(
-                'Error',
-                'An error has occurred, but the trace of this error could not recorded because of a problem accessing the log file.',
-                LogLevel::CRITICAL,
-            );
-        }
+        ErrorHandler::getCurrentLogger()->log(
+            LogLevel::CRITICAL,
+            '  *** ' . \sprintf('Uncaught Exception %s', \get_class($exception)) . ': ' . \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()) . (!empty($trace) ? "\n" . $trace : '')
+        );
     }
 
     /**
@@ -70,9 +62,9 @@ class ErrorUtils
     public static function outputExceptionMessage(\Throwable $exception): void
     {
         ErrorHandler::displayErrorMessage(
-            \sprintf('Uncaught Exception %s', \get_class($exception)),
+            \sprintf('Exception %s', \get_class($exception)),
             \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
-            ErrorHandler::ERROR_LEVEL_MAP[E_ERROR],
+            LogLevel::CRITICAL,
         );
     }
 }
