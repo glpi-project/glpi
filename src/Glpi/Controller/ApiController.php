@@ -62,9 +62,6 @@ final class ApiController extends AbstractController
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
-        // Ensure errors will not break API output.
-        \Glpi\Error\ErrorHandler::disableOutput();
-
         $method = $_SERVER['REQUEST_METHOD'];
         $relative_uri = $_SERVER['PATH_INFO'] ?? '';
         // Ensure uri starts with slash but does not end with a slash

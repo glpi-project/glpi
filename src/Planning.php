@@ -1880,8 +1880,6 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        \Glpi\Error\ErrorHandler::disableOutput(); // Suspend error output to prevent warnings to corrupt JSON output
-
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
@@ -1953,8 +1951,6 @@ TWIG, $twig_params);
                 ];
             }
         }
-
-        \Glpi\Error\ErrorHandler::enableOutput(); // Restore error output state
 
         return $raw_events;
     }

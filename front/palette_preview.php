@@ -33,11 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
 use Glpi\UI\ThemeManager;
-
-// Ensure warnings will not break image output.
-\Glpi\Error\ErrorHandler::disableOutput();
 
 $theme = ThemeManager::getInstance()->getTheme($_GET['key']);
 $preview = $theme !== null ? $theme->getPreviewPath(false) : null;

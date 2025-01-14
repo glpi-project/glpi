@@ -34,15 +34,21 @@
 
 namespace Glpi\Error\ErrorDisplayHandler;
 
-final class LegacyCliDisplayHandler implements ErrorDisplayHandler
+final class CliDisplayHandler implements ErrorDisplayHandler
 {
     public function canOutput(string $log_level, string $env): bool
     {
+        if (defined('TU_USER')) {
+            // Our test suite il already checking logs to ensure that there is no unexpected error triggerred.
+            // Displaying of error messages is then disabled to not pollute the test suite results.
+            return false;
+        }
+
         return \isCommandLine();
     }
 
     public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void
     {
-        echo \sprintf('PHP Error (%s) %s: %s', $log_level, $error_type, $message);
+        echo \sprintf('%s: %s', $error_type, $message) . PHP_EOL;
     }
 }

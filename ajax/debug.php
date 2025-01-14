@@ -99,8 +99,6 @@ if (isset($_GET['action'])) {
             echo '[]';
             return;
         }
-        // In some cases, a class that isn't a proper itemtype may show in the selection box and this would trigger a SQL error that cannot be caught.
-        \Glpi\Error\ErrorHandler::disableOutput();
         try {
             /** @var CommonGLPI $item */
             $item = new $_GET['itemtype']();

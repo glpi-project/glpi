@@ -36,9 +36,8 @@ namespace Glpi\Error;
 
 use GLPI;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
-use Glpi\Error\ErrorDisplayHandler\LegacyCliDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
-use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
@@ -83,11 +82,6 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_DEPRECATED   => 'User deprecated function',
     ];
 
-    /**
-     * @var bool By default, the ErrorHandler will always display errors right in the current execution. This is done via output handlers.
-     */
-    private static bool $enable_output = true;
-
     private static LoggerInterface $currentLogger;
 
     private string $env;
@@ -113,23 +107,13 @@ final class ErrorHandler extends BaseErrorHandler
         $this->configureErrorDisplay();
     }
 
-    public static function enableOutput(): void
-    {
-        self::$enable_output = true;
-    }
-
-    public static function disableOutput(): void
-    {
-        self::$enable_output = false;
-    }
-
     public static function getCurrentLogger(): LoggerInterface
     {
         return self::$currentLogger;
     }
 
     /**
-     * @return array<ErrorDisplayHandler>
+     * @return array<\Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler>
      */
     private static function getOutputHandlers(): array
     {
@@ -143,16 +127,12 @@ final class ErrorHandler extends BaseErrorHandler
         return $handlers = [
             new ConsoleErrorDisplayHandler(),
             new HtmlErrorDisplayHandler(),
-            new LegacyCliDisplayHandler(),
+            new CliDisplayHandler(),
         ];
     }
 
     public static function displayErrorMessage(string $error_type, string $message, string $log_level, string $env = \GLPI_ENVIRONMENT_TYPE): void
     {
-        if (!self::$enable_output) {
-            return;
-        }
-
         foreach (self::getOutputHandlers() as $handler) {
             if ($handler->canOutput($log_level, $env)) {
                 $handler->displayErrorMessage($error_type, $message, $log_level, $env);
@@ -170,14 +150,12 @@ final class ErrorHandler extends BaseErrorHandler
 
         parent::handleError($type, $message, $file, $line);
 
-        if (self::$enable_output) {
-            self::displayErrorMessage(
-                \sprintf('PHP %s (%s)', self::ERROR_CODE_MESSAGE[$type] ?? 'Unknown error', $type),
-                \sprintf('%s in %s at line %s', $message, $file, $line),
-                self::ERROR_LEVEL_MAP[E_ERROR],
-                $this->env,
-            );
-        }
+        self::displayErrorMessage(
+            \sprintf('PHP %s (%s)', self::ERROR_CODE_MESSAGE[$type] ?? 'Unknown error', $type),
+            \sprintf('%s in %s at line %s', $message, $file, $line),
+            self::ERROR_LEVEL_MAP[$type],
+            $this->env,
+        );
 
         // Never forward any error to the PHP native PHP error handler.
         // We do not want the native PHP error handler to output anything, and we already logged errors that are supposed

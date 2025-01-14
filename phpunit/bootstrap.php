@@ -91,6 +91,3 @@ $tu_oauth_client = new OAuthClient();
 $tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
 define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
 define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
-
-// There is no need to pollute the output with error messages.
-\Glpi\Error\ErrorHandler::disableOutput();
