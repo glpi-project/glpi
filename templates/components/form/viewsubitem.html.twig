@@ -62,7 +62,7 @@
         modal_el[0].addEventListener('hidden.bs.modal', (event) => {
             event.target.removeAttribute('data-cy-ready');
         });
-        $('#{{ subitem_container_id }}').load('/ajax/viewsubitem.php',{
+        $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",
         {{ items_id }}: {{ id }},
