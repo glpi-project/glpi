@@ -32,36 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Http\Listener;
 
-use Glpi\Http\Firewall;
-use Glpi\Http\HeaderlessStreamedResponse;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Glpi\Controller\InventoryController;
+use Glpi\Kernel\ListenersPriority;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-final class CaldavController extends AbstractController
+final readonly class CatchInventoryAgentRequestListener implements EventSubscriberInterface
 {
-    #[Route(
-        "/caldav.php{request_parameters}",
-        name: "glpi_caldav",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
-    )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(Request $request): Response
+    public static function getSubscribedEvents(): array
     {
-        return new HeaderlessStreamedResponse(function () {
-            /** @var array $CFG_GLPI */
-            global $CFG_GLPI;
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
 
-            $server = new \Glpi\CalDAV\Server();
-            $server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-            $server->start();
-        });
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+        $request = $event->getRequest();
+
+        if (
+            $request->getPathInfo() === '/'
+            && $request->isMethod('POST')
+            && !$request->request->has('totp_code')
+            && $request->getContent() !== ''
+        ) {
+            $request->attributes->set('_controller', InventoryController::class . '::index');
+        }
     }
 }

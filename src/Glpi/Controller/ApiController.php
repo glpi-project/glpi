@@ -41,6 +41,7 @@ use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
+use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -55,6 +56,7 @@ final class ApiController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
+    #[DisableCsrfChecks()]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {

@@ -39,6 +39,7 @@ use Glpi\Exception\Http\HttpException;
 use Glpi\Http\Firewall;
 use Symfony\Component\HttpFoundation\Request;
 use Glpi\Inventory\Conf;
+use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +48,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
+
+    #[DisableCsrfChecks()]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]

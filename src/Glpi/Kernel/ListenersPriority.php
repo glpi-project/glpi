@@ -71,7 +71,8 @@ final class ListenersPriority
 
         HttpListener\CheckMaintenanceListener::class    => 430,
 
-        HttpListener\CheckCsrfListener::class           => 420,
+        // This listener will forward to the inventory controller any inventory agent requests made on the index endpoint.
+        HttpListener\CatchInventoryAgentRequestListener::class => 420,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.
