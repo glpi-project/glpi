@@ -45,12 +45,12 @@ class DbTimezonesTest extends \GLPITestCase
             ->getMock();
 
         $db->method('request')->willReturnCallback(
-            function ($query) {
+            function ($criteria) {
                 $result = $this->getMockBuilder(\DBmysqlIterator::class)
                     ->setConstructorArgs([null])
                     ->onlyMethods(['count'])
                     ->getMock();
-                if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
                     $result->method('count')->willReturn(0);
                 }
                 return $result;
@@ -73,14 +73,14 @@ class DbTimezonesTest extends \GLPITestCase
             ->getMock();
 
         $db->method('request')->willReturnCallback(
-            function ($query) {
+            function ($criteria) {
                 $result = $this->getMockBuilder(\DBmysqlIterator::class)
                     ->setConstructorArgs([null])
                     ->onlyMethods(['count'])
                     ->getMock();
-                if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
                     $result->method('count')->willReturn(0);
                 }
                 return $result;
@@ -103,14 +103,14 @@ class DbTimezonesTest extends \GLPITestCase
             ->getMock();
 
         $db->method('request')->willReturnCallback(
-            function ($query) {
+            function ($criteria) {
                 $result = $this->getMockBuilder(\DBmysqlIterator::class)
                     ->setConstructorArgs([null])
                     ->onlyMethods(['count', 'current'])
                     ->getMock();
-                if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
                     $result->method('count')->willReturn(1);
                 } else {
                     $result->method('current')->willReturn(['cpt' => 0]);
@@ -135,14 +135,14 @@ class DbTimezonesTest extends \GLPITestCase
             ->getMock();
 
         $db->method('request')->willReturnCallback(
-            function ($query) {
+            function ($criteria) {
                 $result = $this->getMockBuilder(\DBmysqlIterator::class)
                     ->setConstructorArgs([null])
                     ->onlyMethods(['count', 'current'])
                     ->getMock();
-                if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
                     $result->method('count')->willReturn(1);
                 } else {
                     $result->method('current')->willReturn(['cpt' => 30]);
