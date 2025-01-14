@@ -55,6 +55,13 @@ describe('ITILCategory configuration', () => {
         cy.getDropdownByLabelText("Select a dropdown type").selectDropdownValue('ITIL categories');
         cy.get('@form_id').then((form_id) => {
             const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
+
+            // Wait for the items_id dropdown to be loaded
+            cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(200);
+
             cy.getDropdownByLabelText("Select a dropdown item").selectDropdownValue(`»${itilcategory_name}`);
         });
         cy.findByRole('button', {'name': 'Save'}).click();

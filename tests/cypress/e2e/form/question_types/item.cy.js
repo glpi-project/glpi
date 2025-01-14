@@ -70,6 +70,9 @@ describe('Item form question type', () => {
         // Select the ticket itemtype
         cy.findByRole("option", { name: "Tickets" }).should('exist').click();
 
+        // Wait for the items_id dropdown to be loaded
+        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select an item").click();
 
@@ -104,6 +107,9 @@ describe('Item form question type', () => {
 
         // Select the ITIL category itemtype
         cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+
+        // Wait for the items_id dropdown to be loaded
+        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select a dropdown item").click();

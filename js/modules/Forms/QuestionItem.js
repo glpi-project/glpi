@@ -55,6 +55,30 @@ export class GlpiFormQuestionTypeItem {
                 this.#updateItemsIdDropdownID(question_details);
             }
         });
+
+        $(document).on('glpi-form-editor-question-sub-type-changed', (event, question, sub_type) => {
+            if (question.find('[name="type"], [data-glpi-form-editor-original-name="type"]').val() !== this.#question_type) {
+                return;
+            }
+
+            const select = question.find('[data-glpi-form-editor-question-type-specific] select');
+            const container = select.parent();
+
+            // Add a flag to all children to mark them as to be removed
+            container.children().attr('data-to-remove', 'true');
+
+            // Load the new dropdown
+            container.load(
+                `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
+                {
+                    'idtable'   : sub_type,
+                    'width'     : '100%',
+                    'name'      : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'aria_label': select.attr('aria-label'),
+                },
+                () => container.find('[data-to-remove]').remove()
+            );
+        });
     }
 
     #updateItemsIdDropdownID(question_details) {

@@ -249,6 +249,29 @@
                     }
                 ) }}
 
+                {% set sub_types = question_type.getSubTypes() %}
+                {{ fields.dropdownArrayField(
+                    question_type.getSubTypeFieldName(),
+                    question_type.getSubTypeDefaultValue(question),
+                    question_type.getSubTypes(),
+                    '',
+                    {
+                        'init'                 : question is not null,
+                        'no_label'             : true,
+                        'mb'                   : '',
+                        'field_class'          : 'me-2' ~ (sub_types is empty ? ' d-none' : ''),
+                        'class'                : 'form-select form-select-sm',
+                        'width'                : 'auto',
+                        'disabled'             : sub_types is empty,
+                        'aria_label'           : question_type.getSubTypeFieldAriaLabel(),
+                        'add_data_attributes'  : {
+                            'glpi-form-editor-on-change'                   : 'change-question-sub-type',
+                            'glpi-form-editor-question-sub-type-selector'  : '',
+                            'glpi-form-editor-specific-question-extra-data': ''
+                        }
+                    }
+                ) }}
+
                 {# Render the specific question options #}
                 <div class="ms-auto" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
                     {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}

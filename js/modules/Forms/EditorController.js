@@ -69,6 +69,12 @@ export class GlpiFormEditorController
     #options;
 
     /**
+     * Subtypes options for each question type
+     * @type {Object}
+     */
+    #question_subtypes_options;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -83,6 +89,7 @@ export class GlpiFormEditorController
         this.#defaultQuestionType = defaultQuestionType;
         this.#templates           = templates;
         this.#options             = {};
+        this.#question_subtypes_options    = {};
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -253,6 +260,16 @@ export class GlpiFormEditorController
     }
 
     /**
+     * Register new subtypes options for the given question type.
+     *
+     * @param {string} type    Question type
+     * @param {Object} options Subtypes options for the question type
+     */
+    registerQuestionSubTypesOptions(type, options) {
+        this.#question_subtypes_options[type] = options;
+    }
+
+    /**
      * Handle backend response
      */
     #handleBackendUpdateResponse() {
@@ -335,6 +352,13 @@ export class GlpiFormEditorController
             // Change the type of the target question
             case "change-question-type":
                 this.#changeQuestionType(
+                    target.closest("[data-glpi-form-editor-question]"),
+                    target.val()
+                );
+                break;
+
+            case "change-question-sub-type":
+                this.#changeQuestionSubType(
                     target.closest("[data-glpi-form-editor-question]"),
                     target.val()
                 );
@@ -1296,7 +1320,61 @@ export class GlpiFormEditorController
             extracted_default_value
         );
 
+        // Update sub question types
+        if (this.#question_subtypes_options[type] !== undefined) {
+            const sub_types_select = question.find("[data-glpi-form-editor-question-sub-type-selector]");
+
+            // Show sub question type selector
+            sub_types_select.closest("div").removeClass("d-none");
+            sub_types_select.attr('disabled', false);
+
+            // Remove current sub types options
+            sub_types_select.find('optgroup, option').remove();
+
+            // Find sub types available for the new type
+            const new_sub_types = this.#question_subtypes_options[type].subtypes;
+
+            // Copy the new sub types options into the dropdown
+            for (const category in new_sub_types) {
+                const optgroup = $(`<optgroup label="${category}"></optgroup>`);
+                for (const [sub_type, label] of Object.entries(new_sub_types[category])) {
+                    const option = $(`<option value="${sub_type}">${label}</option>`);
+                    optgroup.append(option);
+                }
+                sub_types_select.append(optgroup);
+            }
+
+            // Set the default sub type
+            if (this.#question_subtypes_options[type].default_value) {
+                sub_types_select.val(this.#question_subtypes_options[type].default_value);
+            }
+
+            // Update the field name and aria-label
+            sub_types_select.attr("name", this.#question_subtypes_options[type].field_name);
+            sub_types_select.attr("aria-label", this.#question_subtypes_options[type].field_aria_label);
+
+            // Remove the "original-name" data attribute to avoid conflicts
+            sub_types_select.removeAttr("data-glpi-form-editor-original-name");
+
+            // Trigger sub type change
+            sub_types_select.trigger("change");
+        } else {
+            // Hide sub question type selector
+            question.find("[data-glpi-form-editor-question-sub-type-selector]")
+                .attr('disabled', true)
+                .closest("div").addClass("d-none");
+        }
+
         $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);
+    }
+
+    /**
+     * Handle the change of the sub type of the given question.
+     * @param {jQuery} question Question to update
+     * @param {string} sub_type New sub type
+     */
+    #changeQuestionSubType(question, sub_type) {
+        $(document).trigger('glpi-form-editor-question-sub-type-changed', [question, sub_type]);
     }
 
     /**

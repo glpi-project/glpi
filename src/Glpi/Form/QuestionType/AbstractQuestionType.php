@@ -169,4 +169,28 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
 
         return $config_class::jsonDeserialize($serialized_data);
     }
+
+    #[Override]
+    public function getSubTypes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function getSubTypeFieldName(): string
+    {
+        return 'sub_type';
+    }
+
+    #[Override]
+    public function getSubTypeFieldAriaLabel(): string
+    {
+        return __('Question sub type');
+    }
+
+    #[Override]
+    public function getSubTypeDefaultValue(?Question $question): ?string
+    {
+        return '';
+    }
 }
