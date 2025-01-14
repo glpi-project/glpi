@@ -10,6 +10,11 @@ else
   PHPUNIT_ADDITIONNAL_OPTIONS="--no-coverage";
 fi
 
-vendor/bin/phpunit --group cache $PHPUNIT_ADDITIONNAL_OPTIONS $@
+for CONFIG in {"--use-default","--dsn=memcached://memcached","--dsn=redis://redis"}; do
+  php bin/console cache:configure \
+    --ansi --no-interaction \
+    $CONFIG
+  vendor/bin/phpunit --group cache $PHPUNIT_ADDITIONNAL_OPTIONS $@
+done
 
 unset COVERAGE_DIR
