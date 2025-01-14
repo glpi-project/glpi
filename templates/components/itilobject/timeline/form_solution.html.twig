@@ -283,7 +283,8 @@
                 url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
             });
             $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
-                const solutions_id = $(e.target).attr('data-solution-id') ?? $(e.target).closest('.list-group-item').attr('data-solution-id');
+                const btn = $(e.target).closest('button.use-solution');
+                const solutions_id = btn.attr('data-solution-id') ?? btn.closest('.list-group-item').attr('data-solution-id');
                 $('#modal_searchSolution').modal('hide');
                 if (solutions_id) {
                     $.ajax({
