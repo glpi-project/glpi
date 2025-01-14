@@ -100,10 +100,6 @@
             <div class="row mx-n3 mx-xxl-auto">
                <div class="col-12 col-xl-7 col-xxl-8">
                   {% set content = subitem.fields['content'] %}
-                  {% if kb_id_toload > 0 %}
-                     {% set kb_item = get_item("KnowbaseItem", kb_id_toload) %}
-                     {% set content = (kb_item.fields['answer'] ?? "") %}
-                  {% endif %}
 
                   {{ fields.textareaField(
                      'content',
@@ -126,12 +122,10 @@
                      {% if candedit %}
                         {% if can_read_kb and not nokb %}
                            {% set search_solution_button %}
-                              <a href="{{ path('/front/knowbaseitem.php?item_itemtype=' ~ item.getType() ~ '&item_items_id=' ~ item.getID() ~ '&forcetab=Knowbase$1') }}"
-                                 class="btn btn-secondary overflow-hidden text-nowrap" type="submit"
-                                 title="{{ __('Search a solution') }}"
-                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                                 <i class="fas fa-search"></i>
-                              </a>
+                               <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="search_solution"
+                                       title="{{ __('Search a solution') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                                   <i class="ti ti-search"></i>
+                               </button>
                            {% endset %}
                            {{ fields.field(
                               '',
@@ -196,23 +190,23 @@
                         }
                      ) }}
 
-                     {% if can_read_kb and kb_id_toload > 0 %}
-                        {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           'kb_linked_id',
-                           1,
-                           link_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                              'yes_value': kb_id_toload,
-                           }
-                        ) }}
-                     {% endif %}
+                    {% set link_kb_lbl %}
+                        <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="{{ __('Link to knowledge base entry #%id')|replace({'%id': ''}) }}"></i>
+                    {% endset %}
+                    {{ fields.sliderField(
+                       'kb_linked_id',
+                       1,
+                       link_kb_lbl,
+                       {
+                          'full_width': true,
+                          'icon_label': true,
+                          'rand': rand,
+                          'yes_value': 0,
+                          'add_field_class': 'd-none',
+                           'disabled': true,
+                       }
+                    ) }}
 
                      {% if candedit and can_update_kb and not nokb %}
                         {% set sol_to_kb_lbl %}
@@ -281,6 +275,33 @@
                $("#dropdown_solutiontypes_id{{ rand }}").append(newOption).trigger('change');
             });
          }
+         $('button[name="search_solution"]').on('click', () => {
+            window.glpi_ajax_dialog({
+                id: 'modal_searchSolution',
+                modalclass: 'modal-xl',
+                title: '{{ __('Search a solution') }}',
+                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
+            });
+            $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
+                const btn = $(e.target).closest('button.use-solution');
+                const solutions_id = btn.attr('data-solution-id') ?? btn.closest('.list-group-item').attr('data-solution-id');
+                $('#modal_searchSolution').modal('hide');
+                if (solutions_id) {
+                    $.ajax({
+                        url: `{{ path('/Knowbase/KnowbaseItem/') }}${solutions_id}/Content`
+                    }).then((data) => {
+                        if (data) {
+                            setRichTextEditorContent("content_{{ rand }}", data);
+                            const link_kb = $('.itilsolution input[type="checkbox"][name="kb_linked_id"]');
+                            link_kb.val(solutions_id);
+                            link_kb.removeAttr('disabled');
+                            link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', solutions_id));
+                            link_kb.closest('.form-field').removeClass('d-none');
+                        }
+                    });
+                }
+            })
+         });
       </script>
    {% endif %}
 {% endblock %}
