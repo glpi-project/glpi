@@ -395,9 +395,9 @@
                 '{{ get_class(question_type)|e('js') }}',
                 {
                     'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
-                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null) }}',
-                    'field_name'      : '{{ question_type.getSubTypeFieldName() }}',
-                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel() }}',
+                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
+                    'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
+                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
                 }
             )
         {% endif %}
