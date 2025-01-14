@@ -159,10 +159,12 @@ final class KnowbaseItemController extends AbstractController
                 'id' => $data['id'],
                 'name' => $data['name'],
                 'content_preview' => mb_substr(
-                    RichText::getTextFromHtml(
+                    string: RichText::getTextFromHtml(
                         content: $data['answer'],
                         preserve_line_breaks: true
-                    ), 0, GLPI_TEXT_MAXSIZE
+                    ),
+                    start: 0,
+                    length: GLPI_TEXT_MAXSIZE
                 ),
                 'url' => KnowbaseItem::getFormURLWithID($data['id']),
                 'icon' => $fa_class,
