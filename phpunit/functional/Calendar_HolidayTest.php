@@ -38,6 +38,7 @@ namespace tests\units;
 use Calendar;
 use DbTestCase;
 use Holiday;
+use PHPUnit\Framework\Attributes\Group;
 
 /* Test for inc/calendar_holiday.class.php */
 
@@ -77,9 +78,8 @@ class Calendar_HolidayTest extends DbTestCase
         $this->assertEquals([], $holidays);
     }
 
-    /**
-     * @tags cache
-     */
+
+    #[Group('cache')]
     public function testHolidaysCache()
     {
         global $GLPI_CACHE;
