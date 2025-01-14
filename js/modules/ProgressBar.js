@@ -139,9 +139,7 @@ export class ProgressBar
 
         setTimeout(async () => {
             try {
-                const res = await fetch(`${CFG_GLPI.root_doc}/progress/check/${_this.#parameters.key}`, {
-                    method: 'POST',
-                });
+                const res = await fetch(`${CFG_GLPI.root_doc}/progress/check/${_this.#parameters.key}`);
 
                 if (res.status === 404) {
                     throw new Error('Not found');
