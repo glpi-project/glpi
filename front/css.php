@@ -36,9 +36,9 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\UI\ThemeManager;
 
-// Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).
+// Main CSS compilation requires about 70MB of memory.
 // Ensure to have enough memory to not reach memory limit.
-$max_memory = 192;
+$max_memory = 96;
 if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
     ini_set('memory_limit', sprintf('%dM', $max_memory));
 }

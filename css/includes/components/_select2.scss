@@ -112,13 +112,13 @@
             min-height: $input-height;
 
             .form-select-sm + & {
-                @include font-size($input-font-size-sm * 0.875);
+                @include font-size(calc(#{$input-font-size-sm} * 0.875));
 
                 min-height: $input-height-sm;
             }
 
             .form-select-lg + & {
-                @include font-size($input-font-size-lg * 0.875);
+                @include font-size(calc(#{$input-font-size-lg} * 0.875));
 
                 min-height: $input-height-lg;
             }

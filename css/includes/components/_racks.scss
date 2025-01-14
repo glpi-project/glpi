@@ -428,6 +428,18 @@ ul.indexes {
 }
 
 .grid-rack {
+    width: 217px;
+    background:
+        var(--tblr-body-bg) repeating-linear-gradient(
+            transparent,
+            transparent 21px,
+            var(--tblr-bg-surface-tertiary) 21px,
+            var(--tblr-bg-surface-tertiary) 42px
+        );
+    z-index: 1;
+    border: 1px solid var(--tblr-border-color);
+    float: left;
+
     *,
     ::before,
     ::after {
@@ -441,18 +453,6 @@ ul.indexes {
             width: 100%;
         }
     }
-
-    width: 217px;
-    background:
-        var(--tblr-body-bg) repeating-linear-gradient(
-            transparent,
-            transparent 21px,
-            var(--tblr-bg-surface-tertiary) 21px,
-            var(--tblr-bg-surface-tertiary) 42px
-        );
-    z-index: 1;
-    border: 1px solid var(--tblr-border-color);
-    float: left;
 }
 
 .virtual_pdu_space {

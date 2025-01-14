@@ -66,7 +66,7 @@
         "sabre/http": "^5.1",
         "sabre/uri": "^2.3",
         "sabre/vobject": "^4.5",
-        "scssphp/scssphp": "^1.13",
+        "scssphp/scssphp": "^2.0",
         "sebastian/diff": "^6.0",
         "simplepie/simplepie": "^1.8",
         "symfony/cache": "^6.4",
