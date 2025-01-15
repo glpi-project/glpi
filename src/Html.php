@@ -6093,7 +6093,7 @@ HTML;
      *
      * @return string
      */
-    final public static function getPrefixedUrl($url)
+    final public static function getPrefixedUrl(string $url): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -6139,7 +6139,7 @@ HTML;
     /**
      * Get all options for the menu fuzzy search
      * @return array
-     * @phpstan-return array{url: string, title: string}
+     * @phpstan-return array<array{url: string, title: string}>
      * @since 11.0.0
      */
     public static function getMenuFuzzySearchList(): array
@@ -6151,7 +6151,7 @@ HTML;
             if (isset($firstlvl['default'])) {
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
-                        'url'   => $firstlvl['default'],
+                        'url'   => self::getPrefixedUrl($firstlvl['default']),
                         'title' => $firstlvl['title']
                     ];
                 }
@@ -6160,7 +6160,7 @@ HTML;
             if (isset($firstlvl['default_dashboard'])) {
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
-                        'url'   => $firstlvl['default_dashboard'],
+                        'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
                         'title' => $firstlvl['title'] . " > " . __('Dashboard')
                     ];
                 }
@@ -6170,7 +6170,7 @@ HTML;
                 foreach ($firstlvl['content'] as $menu) {
                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
                         $fuzzy_entries[] = [
-                            'url'   => $menu['page'],
+                            'url'   => self::getPrefixedUrl($menu['page']),
                             'title' => $firstlvl['title'] . " > " . $menu['title']
                         ];
 
@@ -6178,7 +6178,7 @@ HTML;
                             foreach ($menu['options'] as $submenu) {
                                 if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
                                     $fuzzy_entries[] = [
-                                        'url'   => $submenu['page'],
+                                        'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > " .
                                             $menu['title'] . " > " .
                                             $submenu['title']
