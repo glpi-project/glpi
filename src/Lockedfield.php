@@ -221,7 +221,8 @@ class Lockedfield extends CommonDBTM
         $subquery2 = new \QuerySubQuery([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                'is_global' => 1
+                'itemtype' => $itemtype,
+                'is_global' => 1,
             ]
         ]);
 
