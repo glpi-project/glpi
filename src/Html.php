@@ -3383,7 +3383,7 @@ JS;
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: '" . URL::sanitizeURL($CFG_GLPI['root_doc'] . $param['url'])  . "',
+                    url: " . json_encode($CFG_GLPI['root_doc'] . $param['url'])  . ",
                     type: 'GET',
                     data: {},
                 },
