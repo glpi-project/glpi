@@ -78,7 +78,7 @@ class Calendar_HolidayTest extends DbTestCase
     }
 
     /**
-     * @tags cache
+     * @group cache
      */
     public function testHolidaysCache()
     {

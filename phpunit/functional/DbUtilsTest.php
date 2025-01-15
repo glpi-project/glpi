@@ -915,7 +915,7 @@ class DbUtilsTest extends DbTestCase
     }
 
     /**
-     * @tags cache
+     * @group cache
      */
     public function testGetAncestorsOfCached()
     {
@@ -1107,7 +1107,7 @@ class DbUtilsTest extends DbTestCase
     }
 
     /**
-     * @tags cache
+     * @group cache
      */
     public function testGetSonsOfCached()
     {
