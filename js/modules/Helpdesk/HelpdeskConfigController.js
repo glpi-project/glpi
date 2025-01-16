@@ -184,6 +184,7 @@ export class GlpiHelpdeskConfigController
                 method: 'POST',
                 body: form_data,
                 headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
                     'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
@@ -243,6 +244,7 @@ export class GlpiHelpdeskConfigController
                 method: 'POST',
                 body: form_data,
                 headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
                     'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
