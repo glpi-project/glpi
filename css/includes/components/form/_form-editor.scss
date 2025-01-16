@@ -326,3 +326,11 @@
 .visibility-dropdown-card {
     width: 600px;
 }
+
+// Fix a weird scrolling issue on the form editor where the body scrolls instead of the form editor
+html {
+    // Only apply the overflow hidden on the body when active tab contains the form editor
+    &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
+        overflow: hidden;
+    }
+}
