@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseSchemaConsistencyChecker extends \GLPITestCase
+use Glpi\System\Diagnostic\DatabaseSchemaConsistencyChecker;
+
+class DatabaseSchemaConsistencyCheckerTest extends \GLPITestCase
 {
-    protected function sqlProvider(): iterable
+    public static function sqlProvider(): iterable
     {
        // `date_creation` should always be associated with `date_mod`
         yield [
@@ -95,11 +97,11 @@ SQL
 
         $table_name = sprintf('glpitests_%s', uniqid());
 
-        $this->newTestedInstance($DB);
+        $instance = new DatabaseSchemaConsistencyChecker($DB);
         $DB->doQuery(sprintf($create_table_sql, $table_name));
-        $missing_fields = $this->testedInstance->getMissingFields($table_name);
+        $missing_fields = $instance->getMissingFields($table_name);
         $DB->doQuery(sprintf('DROP TABLE `%s`', $table_name));
 
-        $this->array($missing_fields)->isEqualTo($expected_missing);
+        $this->assertEquals($expected_missing, $missing_fields);
     }
 }
