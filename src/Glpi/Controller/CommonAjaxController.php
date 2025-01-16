@@ -228,7 +228,7 @@ class CommonAjaxController
         } else {
             // Failed update
             $error = $this->item->formatSessionMessageAfterAction(
-                __("Failed to udpate item")
+                __("Failed to update item")
             );
             return $this->errorReponse(422, $error);
         }
