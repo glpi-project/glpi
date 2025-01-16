@@ -8,7 +8,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -139,13 +139,12 @@ if (array_key_exists('config-dir', $options)) {
    $config_dir = $options['config-dir'];
 
    if (false === $config_dir || !@is_dir($config_dir)) {
-      die(
-         sprintf(
-            '--config-dir "%s" does not exists in "%s".' . "\n",
-            $config_dir,
-            getcwd()
-         )
+      echo sprintf(
+         '--config-dir "%s" does not exists in "%s".' . "\n",
+         $config_dir,
+         getcwd()
       );
+      exit(1);
    }
 
    define('GLPI_CONFIG_DIR', realpath($config_dir));
@@ -154,11 +153,5 @@ if (array_key_exists('config-dir', $options)) {
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new \Glpi\Kernel\Kernel($options['env'] ?? null);
-$kernel->loadCliConsoleOnlyConfig();
-
-if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-    include_once GLPI_CONFIG_DIR . '/config_db.php';
-}
-
-$application = new \Glpi\Console\Application();
+$application = new \Glpi\Console\Application($kernel);
 $application->run();

@@ -35,7 +35,7 @@ jobs:
       matrix:
         include:
           - {php-version: "8.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "8.3"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.4"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -116,11 +116,11 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.3", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.3", "db-image": "mysql:8.4"},
+                  {"php-version": "8.4", "db-image": "mariadb:11.4"},
+                  {"php-version": "8.4", "db-image": "mysql:8.4"},
                   {"php-version": "8.2", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.3", "db-image": "mariadb:10.5"},
-                  {"php-version": "8.3", "db-image": "percona:8.0"}
+                  {"php-version": "8.4", "db-image": "mariadb:10.5"},
+                  {"php-version": "8.4", "db-image": "percona:8.0"}
                 ]
               }
             '
@@ -128,8 +128,8 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.3", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.3", "db-image": "mysql:8.4"}
+                  {"php-version": "8.4", "db-image": "mariadb:11.4"},
+                  {"php-version": "8.4", "db-image": "mysql:8.4"}
                 ]
               }
             '
@@ -141,6 +141,7 @@ jobs:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     needs: "generate-tests-matrix"
     runs-on: "ubuntu-latest"
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-tests-matrix.outputs.matrix) }}

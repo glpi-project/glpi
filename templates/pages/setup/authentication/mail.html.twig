@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -35,10 +35,21 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block more_fields %}
-    {{ fields.textField('host', item.fields['host'], __('Email domain Name (users email will be login@domain)')) }}
+    {{ fields.nullField() }}
+
+    {{ fields.smallTitle(__('Server configuration')) }}
     {% set connect_opts = call('Toolbox::parseMailServerConnectString', [item.fields['connect_string']]) %}
     {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
         'connect_opts': connect_opts,
-        'host': item.fields['connect_string']
+        'connect_string': item.fields['connect_string']
     }) }}
+
+    {{ fields.smallTitle(__('Email options')) }}
+    {{ fields.textField(
+       'host',
+       item.fields['host'],
+       __('Email domain name'), {
+            helper: __('Users email will be login@domainname')
+        }
+    ) }}
 {% endblock %}

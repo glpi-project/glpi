@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,9 @@ namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
 use ConsumableItem;
+use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
-use Group;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -168,6 +168,30 @@ class QuestionTypeItem extends AbstractQuestionType
     }
 
     #[Override]
+    public function getSubTypes(): array
+    {
+        return Dropdown::buildItemtypesDropdownOptions($this->getAllowedItemtypes());
+    }
+
+    #[Override]
+    public function getSubTypeFieldName(): string
+    {
+        return 'itemtype';
+    }
+
+    #[Override]
+    public function getSubTypeFieldAriaLabel(): string
+    {
+        return $this->itemtype_aria_label;
+    }
+
+    #[Override]
+    public function getSubTypeDefaultValue(?Question $question): ?string
+    {
+        return $this->getDefaultValueItemtype($question);
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -175,29 +199,21 @@ class QuestionTypeItem extends AbstractQuestionType
 
             {% set rand = random() %}
 
-            {{ fields.dropdownItemsFromItemtypes(
+            {{ fields.dropdownField(
+                default_itemtype|default(itemtypes|first|first),
                 'default_value',
+                default_items_id,
                 '',
                 {
-                    'init'                           : init,
-                    'itemtypes'                      : itemtypes,
-                    'no_label'                       : true,
-                    'display_emptychoice'            : true,
-                    'default_itemtype'               : default_itemtype,
-                    'default_items_id'               : default_items_id,
-                    'itemtype_name'                  : 'itemtype',
-                    'items_id_name'                  : 'default_value',
-                    'width'                          : '100%',
-                    'container_css_class'            : 'mt-2',
-                    'no_sort'                        : true,
-                    'aria_label'                     : itemtype_aria_label,
-                    'specific_tags_items_id_dropdown': {
-                        'aria-label': items_id_aria_label,
-                    },
-                    'add_data_attributes_itemtype_dropdown' : {
-                        'glpi-form-editor-specific-question-extra-data': '',
-                    },
-                    'mb'                            : '',
+                    'init'               : init,
+                    'no_label'           : true,
+                    'display_emptychoice': true,
+                    'width'              : '100%',
+                    'container_css_class': 'mt-2',
+                    'mb'                 : '',
+                    'comments'           : false,
+                    'addicon'            : false,
+                    'aria_label'         : aria_label,
                 }
             ) }}
 
@@ -212,14 +228,13 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'init'                => $question != null,
-            'question'            => $question,
-            'question_type'       => $this::class,
-            'default_itemtype'    => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id'    => $this->getDefaultValueItemId($question),
-            'itemtypes'           => $this->getAllowedItemtypes(),
-            'itemtype_aria_label' => $this->itemtype_aria_label,
-            'items_id_aria_label' => $this->items_id_aria_label,
+            'init'             => $question != null,
+            'question'         => $question,
+            'question_type'    => $this::class,
+            'default_itemtype' => $this->getDefaultValueItemtype($question),
+            'default_items_id' => $this->getDefaultValueItemId($question),
+            'itemtypes'        => $this->getAllowedItemtypes(),
+            'aria_label'       => $this->items_id_aria_label,
         ]);
     }
 
@@ -257,11 +272,11 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'            => $question,
-            'itemtype'            => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id'    => $this->getDefaultValueItemId($question),
-            'aria_label'          => $this->items_id_aria_label,
-            'items_id_aria_label' => $this->items_id_aria_label,
+            'question'         => $question,
+            'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
+            'default_items_id' => $this->getDefaultValueItemId($question),
+            'aria_label'       => $this->items_id_aria_label,
+            'sub_types'        => $this->getSubTypes(),
         ]);
     }
 

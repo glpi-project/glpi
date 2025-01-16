@@ -6,9 +6,10 @@
 # Translators:
 # M Taufiq Permana Sumarna <taufiqpsumarna@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Ikrar Bagaskara, 2024
 # Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Teguh Herwanto <therwanto@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2024\n"
+"Last-Translator: Teguh Herwanto <therwanto@gmail.com>, 2024\n"
 "Language-Team: Indonesian (Indonesia) (https://app.transifex.com/glpi/teams/1637/id_ID/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,69 +29,71 @@ msgstr ""
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr ""
+msgstr "sistem cache %sdigunakan"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:70
 msgid "\"-p foo\" will set \"foo\" param value to true"
-msgstr ""
+msgstr "\"-p foo\" akan menyetel nilai param \"foo\" menjadi true"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:72
 msgid "\"-p foo=bar\" will set \"foo\" param value to \"bar\""
-msgstr ""
+msgstr "\"-p foo=bar\" akan menyetel nilai param \"foo\" ke \"bar\""
 
 #: src/Agent.php:514
 msgid "\"deviceid\" is mandatory!"
-msgstr ""
+msgstr "\"deviceid\" wajib diisi!"
 
 #: src/Glpi/System/Requirement/SessionsConfiguration.php:66
 msgid "\"session.auto_start\" and \"session.use_trans_sid\" must be set to off."
 msgstr ""
+"\"session.auto_start\" dan \"session.use_trans_sid\" harus disetel ke "
+"nonaktif."
 
 #: src/Glpi/System/Requirement/SessionsConfiguration.php:68
 msgid "\"session.auto_start\" must be set to off."
-msgstr ""
+msgstr "\"session.auto_start\" harus disetel ke nonaktif."
 
 #: src/Glpi/System/Requirement/SessionsConfiguration.php:70
 msgid "\"session.use_trans_sid\" must be set to off."
-msgstr ""
+msgstr "\"session.use_trans_sid\" harus disetel ke nonaktif."
 
 #: src/KnowbaseItem_Revision.php:208
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:76
 #, php-format
 msgid "%1$d component(s) attached to %2$d asset(s)"
-msgstr ""
+msgstr "komponen %1$d melekat pada aset %2$d"
 
 #: src/DatabaseInstance.php:465
 #, php-format
 msgid "%1$d database"
 msgid_plural "%1$d databases"
-msgstr[0] ""
+msgstr[0] "%1$d basis data"
 
 #: src/Dropdown.php:2188
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
-msgstr[0] ""
+msgstr[0] "%1$d hari %2$d jam %3$s"
 
 #: src/Html.php:4232
 #, php-format
 msgid "%1$d on %2$d"
-msgstr ""
+msgstr "%1$dpada %2$d"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: src/Dropdown.php:2202
 #, php-format
 msgid "%1$dh%2$s"
-msgstr ""
+msgstr "%1$d jam %2$s"
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
 #: src/CronTask.php:857
 #, php-format
 msgid "%1$s #%2$s"
-msgstr ""
+msgstr "%1$s # %2$s"
 
 #. TRANS: %1$s is the name, %2$s is the firstname
 #. TRANS: %1$s is a number maybe float or string and %2$s the unit
@@ -146,22 +149,22 @@ msgstr "%1$s %2$s"
 #: src/Glpi/Search/Output/Spreadsheet.php:266
 #, php-format
 msgid "%1$s %2$s (%3$s)"
-msgstr ""
+msgstr "%1$s%2$s (%3$s)"
 
 #: src/CommonITILObject.php:10391
 #, php-format
 msgid "%1$s (#%2$s) - %3$s"
-msgstr ""
+msgstr "%1$s (#%2$s) - %3$s"
 
 #: src/Item_Devices.php:1072 src/CommonITILValidation.php:1852
 #, php-format
 msgid "%1$s (%2$d%%) "
-msgstr ""
+msgstr "%1$s (%2$d %%)"
 
 #: src/Item_Devices.php:1069
 #, php-format
 msgid "%1$s (%2$s%%) "
-msgstr ""
+msgstr "%1$s (%2$s %%)"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -232,17 +235,17 @@ msgstr "%1$s = %2$s"
 #: src/Log.php:785
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Status %2$s ->%3$s)"
 
 #: ajax/dropdownValidator.php:107
 #, php-format
 msgid "%1$s (supervisor of %2$s)"
-msgstr ""
+msgstr "%1$s (pengawas%2$s)"
 
 #: src/Auth.php:1306 src/Auth.php:1323 src/Auth.php:1340
 #, php-format
 msgid "%1$s + %2$s"
-msgstr ""
+msgstr "%1$s + %2$s"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #: templates/components/form/header_content.html.twig
@@ -296,7 +299,7 @@ msgstr "%1$s - %2$s"
 #: src/CommonDBTM.php:2035
 #, php-format
 msgid "%1$s - ID %2$d"
-msgstr ""
+msgstr "%1$s - ID %2$d"
 
 #. TRANS: %1$s is a string (device name - port name...), %2$s is network
 #. outlet name
@@ -315,6 +318,8 @@ msgstr "%1$s - port %2$s"
 #, php-format
 msgid "%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)"
 msgstr ""
+"%1$s - aturan pemutaran ulang pada database yang sudah ada: %2$s / %3$s "
+"(%4$s Mio)"
 
 #: templates/pages/setup/general/performance.html.twig
 #: src/NotificationTargetTicket.php:566 src/NotificationTargetTicket.php:571
@@ -327,7 +332,7 @@ msgstr ""
 #: src/IPNetwork.php:247 src/IPNetwork.php:253 src/IPNetwork.php:1126
 #, php-format
 msgid "%1$s / %2$s"
-msgstr ""
+msgstr "%1$s / %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:346
 #: src/Glpi/Search/Output/Spreadsheet.php:480
@@ -343,7 +348,7 @@ msgstr "%1$s < %2$s"
 #: src/Glpi/Search/Output/Spreadsheet.php:504
 #, php-format
 msgid "%1$s <> %2$s"
-msgstr ""
+msgstr "%1$s <> %2$s"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -379,7 +384,7 @@ msgstr "%1$s > %2$s"
 #: src/Glpi/Inventory/Asset/Bios.php:62
 #, php-format
 msgid "%1$s BIOS"
-msgstr ""
+msgstr "%1$s BIOS"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:92
@@ -395,12 +400,12 @@ msgstr "1%1$s menambahkan item"
 #: front/lockedfield.form.php:55
 #, php-format
 msgid "%1$s adds global lock on %2$s"
-msgstr ""
+msgstr "%1$s menambahkan kunci global pada %2$s"
 
 #: front/socket.form.php:101
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr ""
+msgstr "%1$s menambahkan beberapa soket"
 
 #. TRANS: %1$s is the user login, %2$s is the name of the item
 #: front/change.form.php:59 front/user.form.php:84 front/user.form.php:213
@@ -440,7 +445,7 @@ msgstr "%1$s menambahkan lisensi %2$s"
 #: src/Reservation.php:211
 #, php-format
 msgid "%1$s adds the reservation %2$s for item %3$s"
-msgstr ""
+msgstr "%1$s menambahkan reservasi %2$s untuk barang%3$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:59
@@ -451,7 +456,7 @@ msgstr "%1$s menambahkan versi %2$s "
 #: src/Glpi/Asset/Capacity/HasAntivirusCapacity.php:75
 #, php-format
 msgid "%1$s antiviruses attached to %2$s assets"
-msgstr ""
+msgstr "%1$s antivirus yang terpasang pada aset %2$s"
 
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:64
 #, php-format
@@ -4503,7 +4508,7 @@ msgstr[0] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Item terkait"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -8561,7 +8566,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Perangkat"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -14934,7 +14939,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17509,7 +17514,7 @@ msgstr "Lain"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Lain"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20443,7 +20448,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restore"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21145,7 +21150,7 @@ msgstr "Hal kedua"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Secondary"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -22798,7 +22803,7 @@ msgstr "sistem"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "sistem"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24434,7 +24439,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26302,7 +26307,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Tampilan"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

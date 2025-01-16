@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -95,12 +95,16 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->registerToTypeConfig('agent_types', $classname);
         $this->registerToTypeConfig('environment_types', $classname);
         $this->registerToTypeConfig('process_types', $classname);
+        $this->registerToTypeConfig('ruleimportasset_types', $classname);
 
         //copy rules from "inventory model" (Computer only for now)
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+    }
 
+    public function onCapacityEnabled(string $classname): void
+    {
         //create rules
         $rules = new \RuleImportAsset();
         $rules->initRules(true, $classname);
@@ -114,6 +118,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('agent_types', $classname);
         $this->unregisterFromTypeConfig('environment_types', $classname);
         $this->unregisterFromTypeConfig('process_types', $classname);
+        $this->unregisterFromTypeConfig('ruleimportasset_types', $classname);
 
         $env_item = new Item_Environment();
         $env_item->deleteByCriteria([

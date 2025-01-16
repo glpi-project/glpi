@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,19 +69,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 if (empty($itemtype)) {
                     throw new BadRequestHttpException("Missing itemtype");
                 }
-                $icon = $CFG_GLPI["impact_asset_types"][$itemtype];
-                // Execute search
 
+                // Execute search
                 $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);
                 foreach ($assets['items'] as $index => $item) {
-                    $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
-                        'itemtype' => $itemtype,
-                        'items_id' => $item['id']
-                    ]);
-                    if ($plugin_icon && is_string($plugin_icon)) {
-                        $icon = ltrim($plugin_icon, '/');
-                    }
-                    $item['image'] = $CFG_GLPI['root_doc'] . '/' . $icon;
+                    $item['image'] = Impact::getImpactIcon($itemtype, $item['id']);
+
                     $assets['items'][$index] = $item;
                 }
                 header('Content-Type: application/json');

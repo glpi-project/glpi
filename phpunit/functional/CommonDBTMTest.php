@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -2124,5 +2124,11 @@ class CommonDBTMTest extends DbTestCase
 
         $item = new $itemtype();
         $item->displayFullPageForItem($items_id);
+    }
+
+    public function testGetFormFields()
+    {
+        $computer = new \Computer();
+        $this->assertTrue(!array_diff(['name', 'serial', '_template_is_active'], $computer->getFormFields()));
     }
 }

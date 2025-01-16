@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -443,7 +443,7 @@ class NetworkAlias extends FQDNLabel
                 Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td><a href='" . $alias->getFormURLWithID($data['alias_id']) . "'>" .
+                    echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>" .
                           htmlescape($data['alias']) . "</a></td>";
                     echo "<td><a href='" . $address->getLinkURL() . "'>" . htmlescape($address->getInternetName()) .
                     "</a></td>";

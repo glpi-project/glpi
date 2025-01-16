@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -53,12 +53,12 @@ final class ResourcesChecker
         if (!$this->areDependenciesUpToDate()) {
             echo 'Application dependencies are not up to date.' . PHP_EOL;
             echo 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
-            exit();
+            exit(1);
         }
         if (!$this->areLocalesUpToDate()) {
             echo 'Application locales have to be compiled.' . PHP_EOL;
             echo 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
-            exit();
+            exit(1);
         }
     }
 

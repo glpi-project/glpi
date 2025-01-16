@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,32 +37,22 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
 /**
- * @var \DBmysql $DB
+ * @var \DBmysql|null $DB
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  * @var \Update $update
  * @var bool $HEADER_LOADED
  */
 global $DB,
-    $GLPI_CACHE,
-    $update,
-    $HEADER_LOADED;
+       $GLPI_CACHE,
+       $update,
+       $HEADER_LOADED;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
-Session::checkCookieSecureConfig();
-
-if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
-    $DB = new DB();
-}
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
-Config::loadLegacyConfiguration();
-
 $update = new Update($DB);
-$update->initSession();
 
 if (isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
@@ -70,20 +60,6 @@ if (isset($_POST['update_end'])) {
     }
     header('Location: ../index.php');
 }
-
-
-//test la connection a la base de donn???.
-function test_connect()
-{
-    /** @var \DBmysql $DB */
-    global $DB;
-
-    if ($DB->error == 0) {
-        return true;
-    }
-    return false;
-}
-
 
 
 //update database
@@ -94,10 +70,6 @@ function doUpdateDb()
      * @var \Update $update
      */
     global $migration, $update;
-
-    // Init debug variable
-    // Only show errors
-    Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
     $currents            = $update->getCurrents();
     $current_version     = $currents['version'];
@@ -165,26 +137,30 @@ function showSecurityKeyCheckForm()
 //Debut du script
 $HEADER_LOADED = true;
 
-Session::start();
-
-Session::loadLanguage('', false);
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
-echo "<!DOCTYPE html>";
-echo "<html lang='fr'>";
-echo "<head>";
-echo "<meta charset='utf-8'>";
-echo "<title>" . __s('GLPI setup') . "</title>";
-//JS
-echo Html::script("lib/base.js");
-echo Html::script("js/glpi_dialog.js");
-// CSS
-echo Html::css('lib/tabler.css');
-echo Html::css('lib/base.css');
-echo Html::scss("css/install", [], true);
-echo "</head>";
+TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
+    'lang'  => $_SESSION['glpilanguage'],
+    'title' => __('GLPI setup'),
+    'css_files' => [
+        ['path' => 'lib/tabler.css'],
+        ['path' => 'lib/base.css'],
+        ['path' => 'css/install.scss'],
+    ],
+    'js_files' => [
+        ['path' => 'lib/base.js'],
+        ['path' => 'lib/fuzzy.js'],
+        ['path' => 'js/common.js'],
+        ['path' => 'js/glpi_dialog.js'],
+    ],
+    'js_modules' => [],
+    'custom_header_tags' => [],
+]);
+
+// CFG
+echo Html::getCoreVariablesForJavascript();
+
 echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
@@ -220,7 +196,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
     }
 } else {
    // Step 2
-    if (test_connect()) {
+    if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
         $result = Config::displayCheckDbEngine(true);
@@ -239,6 +215,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             echo "<div class='text-center'>";
             doUpdateDb();
             echo "</div>";
+
+            Session::destroy(); // Remove session data set by web installation
 
             $_SESSION['telemetry_from_install'] = true;
 

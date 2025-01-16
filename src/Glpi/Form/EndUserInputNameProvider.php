@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,6 +54,32 @@ final class EndUserInputNameProvider
         return sprintf(self::END_USER_INPUT_NAME, $question->getID());
     }
 
+
+    public function getFiles(array $inputs, array $answers): array
+    {
+        $files = [
+            'filename' => [],
+            'prefix'   => [],
+            'tag'      => []
+        ];
+
+        foreach (array_keys($answers) as $answer_id) {
+            if (
+                isset($inputs["_answers_$answer_id"])
+                && isset($inputs["_prefix_answers_$answer_id"])
+                && isset($inputs["_tag_answers_$answer_id"])
+            ) {
+                foreach (array_keys($inputs["_answers_$answer_id"]) as $i) {
+                    $files['filename'][] = $inputs["_answers_$answer_id"][$i];
+                    $files['prefix'][]   = $inputs["_prefix_answers_$answer_id"][$i];
+                    $files['tag'][]      = $inputs["_tag_answers_$answer_id"][$i];
+                }
+            }
+        }
+
+        return $files;
+    }
+
     /**
      * Get the answers submitted by the end user
      * The answers are indexed by question ID
@@ -78,6 +104,15 @@ final class EndUserInputNameProvider
      */
     private function filterAnswers(array $answers): array
     {
+        // Remove files
+        foreach (array_keys($answers) as $key) {
+            foreach (["_$key", "_prefix_$key", "_tag_$key"] as $extra_file_info) {
+                if (isset($answers[$extra_file_info])) {
+                    unset($answers["_$key"]);
+                }
+            }
+        }
+
         return array_filter(
             $answers,
             function ($key) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,13 +43,13 @@ abstract class Dropdown extends CommonTreeDropdown
     use CustomObjectTrait;
 
     /**
-     * Dropdown definition.
+     * Dropdown definition system name.
      *
      * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
      * Must be defined by child class too to ensure that assigning a value to this property will affect
      * each child classe independently.
      */
-    protected static DropdownDefinition $definition;
+    protected static string $definition_system_name;
 
     /**
      * Get the dropdown definition related to concrete class.
@@ -58,11 +58,12 @@ abstract class Dropdown extends CommonTreeDropdown
      */
     public static function getDefinition(): DropdownDefinition
     {
-        if (!(static::$definition instanceof DropdownDefinition)) {
+        $definition = DropdownDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
+        if (!($definition instanceof DropdownDefinition)) {
             throw new \RuntimeException('Dropdown definition is expected to be defined in concrete class.');
         }
 
-        return static::$definition;
+        return $definition;
     }
 
     /**

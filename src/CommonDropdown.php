@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -605,9 +605,9 @@ abstract class CommonDropdown extends CommonDBTM
      * Show a dialog to Confirm delete action
      * And propose a value to replace
      *
-     * @param $target string URL
-     **/
-    public function showDeleteConfirmForm($target)
+     * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
+     */
+    public function showDeleteConfirmForm()
     {
 
         if ($this->haveChildren()) {
@@ -617,7 +617,8 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $ID = (int)$this->fields['id'];
-        $target = htmlescape($target);
+
+        $target = htmlescape(static::getFormURL());
 
         echo "<div class='center'><p class='red'>";
         echo __s("Caution: you're about to remove a heading used for one or more items.");

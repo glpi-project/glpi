@@ -35,7 +35,9 @@
             twig: '#64ad52',
             plugins: '#a077a6',
             search: '#b6803d',
+            boot: '#a24e55',
         };
+
         let bg_color = '';
         if (predefined_colors[category] !== undefined) {
             bg_color = predefined_colors[category];
@@ -52,13 +54,8 @@
             bg_color = color;
         }
 
-        const contrasting_color = tinycolor.mostReadable(bg_color, tinycolor(bg_color).monochromatic(), {
-            includeFallbackColors: true
-        }).toHexString();
-
         return {
             bg_color: bg_color,
-            text_color: contrasting_color
         };
     }
 
@@ -83,7 +80,6 @@
                 name: escapeMarkupText(section.name),
                 category: escapeMarkupText(section.category),
                 bg_color: cat_colors.bg_color,
-                text_color: cat_colors.text_color,
                 start: section.start,
                 end: section.end,
                 duration: duration,
@@ -132,7 +128,7 @@
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></td>
                     <td data-prop="category">
-                        <span class="category-badge fw-bold" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
+                        <span class="category-badge badge badge-outline fw-bold border-2" :style="`border-color: ${section.bg_color};`">
                             {{ section.category }}
                         </span>
                     </td>
@@ -158,7 +154,6 @@
         min-width: 2rem;
     }
     .category-badge {
-        padding: 5px;
-        border-radius: 25%;
+        color: var(--tblr-body-color);
     }
 </style>

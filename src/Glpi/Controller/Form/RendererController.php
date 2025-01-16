@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,8 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,7 +52,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController
 {
-    #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
+    private string $interface;
+
+    public function __construct()
+    {
+        $this->interface = Session::getCurrentInterface();
+    }
+
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/Render/{id}",
         name: "glpi_form_render",
@@ -62,11 +71,34 @@ final class RendererController extends AbstractController
         $form = $this->loadTargetForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
+        $my_tickets_criteria = [
+            "criteria" => [
+                [
+                    "field" => 12, // Status
+                    "searchtype" => "equals",
+                    "value" => "notold", // Not solved
+                ],
+            ],
+        ];
+        if ($this->interface == 'central') {
+            $my_tickets_criteria["criteria"][] = [
+                "link" => "AND",
+                "field" => 4, // Requester
+                "searchtype" => "equals",
+                "value" => 'myself',
+            ];
+        }
+
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
-            'menu' => ['admin', Form::getType()],
+            'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
             'unauthenticated_user' => !Session::isAuthenticated(),
+            'my_tickets_url_param' => http_build_query($my_tickets_criteria),
+
+            // Direct access token must be included in the form data as it will
+            // be checked in the submit answers controller.
+            'token' => $request->query->getString('token'),
         ]);
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -84,13 +84,6 @@ if (isset($_GET['docid'])) {
     if (count($splitter) == 2) {
         $expires_headers = false;
         $send = false;
-        if (
-            ($splitter[0] == "_dumps")
-            && Session::haveRight("backup", CREATE)
-        ) {
-            $send = GLPI_DUMP_DIR . '/' . $splitter[1];
-        }
-
         if ($splitter[0] == "_pictures") {
             if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
                // Can use expires header as picture file path changes when picture changes.

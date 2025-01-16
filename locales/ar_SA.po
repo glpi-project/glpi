@@ -11,8 +11,8 @@
 # Emirhan özfidan, 2024
 # MaryamMo, 2024
 # Lama N, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Mohammad Mousa <mm84010@gmail.com>, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Mohammad Mousa <mm84010@gmail.com>, 2024\n"
+"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2024\n"
 "Language-Team: Arabic (Saudi Arabia) (https://app.transifex.com/glpi/teams/1637/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4827,7 +4827,7 @@ msgstr[5] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "عناصر مرتبطة"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -9287,7 +9287,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "أجهزة"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -16172,7 +16172,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "رئيسي"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -16744,7 +16744,7 @@ msgstr[5] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "شاشات"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -18920,7 +18920,7 @@ msgstr "آخر"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "آخر"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -22217,7 +22217,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "إعادة"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22949,7 +22949,7 @@ msgstr "المادة الثانية"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "ثانوي"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -24717,7 +24717,7 @@ msgstr "نظام"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "نظام"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -26464,7 +26464,7 @@ msgstr "المجموع"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "المجموع"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -28643,7 +28643,7 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:301
 msgid "Watchers"
-msgstr ""
+msgstr "مراقبان"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"

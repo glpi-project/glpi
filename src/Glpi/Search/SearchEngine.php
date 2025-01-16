@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -173,7 +173,7 @@ final class SearchEngine
     private static function getMetaParentItemtypesForTypesConfig(string $config_key): array
     {
         $matches = [];
-        if (preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
+        if (str_contains($config_key, 'rule') || preg_match('/^(.+)_types$/', $config_key, $matches) === 0) {
             return [];
         }
 
@@ -284,6 +284,7 @@ final class SearchEngine
 
         // Default values of parameters
         $p = [
+            'itemtype'                  => $itemtype,
             'criteria'                  => [],
             'metacriteria'              => [],
             'sort'                      => [0],

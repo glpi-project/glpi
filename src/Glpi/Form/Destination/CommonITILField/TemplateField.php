@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -87,14 +87,6 @@ class TemplateField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . TemplateFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for CONFIG_SPECIFIC_TEMPLATE
             'specific_template_extra_field' => [
                 'empty_label'     => __("Select a template..."),
@@ -107,20 +99,11 @@ class TemplateField extends AbstractConfigField
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            {{ fields.dropdownArrayField(
-                main_config_field.input_name,
-                main_config_field.value,
-                main_config_field.possible_values,
-                main_config_field.label,
-                options
-            ) }}
-
             <div
                 {% if main_config_field.value != CONFIG_SPECIFIC_TEMPLATE %}
                     class="d-none"
                 {% endif %}
-                data-glpi-parent-dropdown="{{ main_config_field.input_name }}"
-                data-glpi-parent-dropdown-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}"
+                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}"
             >
                 {{ fields.dropdownArrayField(
                     specific_template_extra_field.input_name,
@@ -128,6 +111,8 @@ class TemplateField extends AbstractConfigField
                     specific_template_extra_field.possible_values,
                     "",
                     options|merge({
+                        field_class: '',
+                        mb: '',
                         no_label: true,
                         display_emptychoice: true,
                         emptylabel: specific_template_extra_field.empty_label,
@@ -151,8 +136,11 @@ TWIG;
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $template_id = $config->getStrategy()->getTemplateID($config, $answers_set);
+        $template_id = $strategy->getTemplateID($config, $answers_set);
 
         // Do not edit the input if invalid value was found
         if (!$this->itil_template_class::getById($template_id)) {
@@ -172,7 +160,7 @@ TWIG;
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (TemplateFieldStrategy::cases() as $strategies) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,110 +35,220 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Form;
-use Glpi\FuzzyMatcher\FuzzyMatcher;
-use Glpi\FuzzyMatcher\PartialMatchStrategy;
+use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
+use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
+use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 
 final class ServiceCatalogManager
 {
-    private FormAccessControlManager $access_manager;
-    private FuzzyMatcher $matcher;
+    /** @var \Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface[] */
+    private array $providers;
 
     public function __construct()
     {
-        $this->access_manager = FormAccessControlManager::getInstance();
-        $this->matcher = new FuzzyMatcher(new PartialMatchStrategy());
+        $this->providers = [
+            new FormProvider(),
+            new CategoryProvider(),
+        ];
     }
 
     /**
-     * Return all available forms for the given user.
+     * Return all available forms and non empties categories for the given user.
      *
-     * Forms names may be altered to ensure uniqueness.
-     * This is done by by adding suffixes to forms with the same name :
-     * "My form", "My form (1)", "My form (2)", ...
-     *
-     * This is required to comply with accessibility requirements (<sections>
-     * names must be unique).
-     *
-     * @return Form[]
+     * @return ServiceCatalogItemInterface[]
      */
-    public function getForms(
-        FormAccessParameters $parameters,
-        string $filter = "",
-    ): array {
-        $forms = $this->getFormsFromDatabase($parameters, $filter);
-        $forms = $this->addSuffixesToIdenticalFormNames($forms);
-
-        return $forms;
-    }
-
-    /** @return Form[] */
-    private function getFormsFromDatabase(
-        FormAccessParameters $parameters,
-        string $filter = "",
-    ): array {
-        $forms = [];
-        $raw_forms = (new Form())->find([
-            'is_active' => 1,
-        ], ['name']);
-
-        foreach ($raw_forms as $raw_form) {
-            $form = new Form();
-            $form->getFromResultSet($raw_form);
-            $form->post_getFromDB();
-
-            // Fuzzy matching
-            $name = $form->fields['name'] ?? "";
-            $description = $form->fields['description'] ?? "";
-            if (
-                !$this->matcher->match($name, $filter)
-                && !$this->matcher->match($description, $filter)
-            ) {
-                continue;
-            }
-
-            /// Note: this is in theory less performant than applying the parameters
-            // directly to the SQL query (which would require more complicated code).
-            // However, the number of forms is expected to be low, so this is acceptable.
-            // If performance becomes an issue, we can revisit this and/or add a cache.
-            if (!$this->access_manager->canAnswerForm($form, $parameters)) {
-                continue;
-            }
-
-            $forms[] = $form;
-        };
-
-        return $forms;
-    }
-
-    /** @return Form[] */
-    private function addSuffixesToIdenticalFormNames(array $forms): array
+    public function getItems(ItemRequest $item_request): array
     {
-        // Group forms by names
-        $forms_grouped_by_names = [];
-        foreach ($forms as $form) {
-            if (!isset($forms_grouped_by_names[$form->fields['name']])) {
-                $forms_grouped_by_names[$form->fields['name']] = [];
-            }
+        $items = [];
 
-            $forms_grouped_by_names[$form->fields['name']][] = $form;
+        // Load root items
+        foreach ($this->providers as $provider) {
+            array_push($items, ...$provider->getItems($item_request));
         }
 
-        // Add suffixes to forms with identical names
-        $forms_with_unique_names = [];
-        foreach ($forms_grouped_by_names as $forms) {
-            foreach ($forms as $i => $form) {
-                if ($i == 0) {
-                    $forms_with_unique_names[] = $form;
-                } else {
-                    $form->fields['name'] = "{$form->fields['name']} ($i)";
-                    $forms_with_unique_names[] = $form;
+        // Load children for composite (non recursive, only for the first level)
+        foreach ($items as $item) {
+            if (!($item instanceof ServiceCatalogCompositeInterface)) {
+                continue;
+            }
+
+            $children = [];
+            $children_request = $item->getChildrenItemRequest($item_request);
+            foreach ($this->providers as $provider) {
+                array_push($children, ...$provider->getItems($children_request));
+            }
+
+            // We don't want to display empty categories
+            $children = $this->removeChildrenCompositeWithoutChildren(
+                $children_request,
+                $children
+            );
+            $children = $this->sortChildItems($children);
+            $item->setChildren($children);
+        }
+
+        // Remove empty composite, must be done after the children has been loaded.
+        $items = $this->removeRootCompositeWithoutChildren($items);
+        $items = $this->sortRootItems($items);
+
+        return $items;
+    }
+
+    /**
+     * Remove composite items from the root level of the tree that do not have
+     * any children.
+     *
+     * Since children have already been computed at this point, we only need to
+     * check for the result of `getChildren`.
+     *
+     * @param ServiceCatalogItemInterface[] $items
+     * @return ServiceCatalogItemInterface[]
+     */
+    private function removeRootCompositeWithoutChildren(
+        array $items,
+    ): array {
+        return array_filter(
+            $items,
+            function (ServiceCatalogItemInterface $item) {
+                // Not a composite, do not remove it from the list.
+                if ($item instanceof ServiceCatalogLeafInterface) {
+                    return true;
+                }
+
+                // Is a composite, we must check if it has any children.
+                // Since children have already been computed at this point, we
+                // only need to check for the result of `getChildren()`.
+                if ($item instanceof ServiceCatalogCompositeInterface) {
+                    return count($item->getChildren()) > 0;
+                }
+
+                // Unknown implementation, should never happen.
+                throw new \RuntimeException("Unsupported item: " . get_class($item));
+            }
+        );
+    }
+
+    /**
+     * Remove composite items from the second level of the tree that do not have
+     * any children.
+     *
+     * @param ServiceCatalogItemInterface[] $items
+     * @return ServiceCatalogItemInterface[]
+     */
+    private function removeChildrenCompositeWithoutChildren(
+        ItemRequest $item_request,
+        array $items,
+    ): array {
+        return array_filter(
+            $items,
+            function (ServiceCatalogItemInterface $item) use ($item_request) {
+                // Not a composite, do not remove it from the list.
+                if ($item instanceof ServiceCatalogLeafInterface) {
+                    return true;
+                }
+
+                // Is a composite, we must check if it has any children.
+                if ($item instanceof ServiceCatalogCompositeInterface) {
+                    return $this->hasChildren($item_request, $item);
+                }
+
+                // Unknown implementation, should never happen.
+                throw new \RuntimeException("Unsupported item: " . get_class($item));
+            }
+        );
+    }
+
+    private function hasChildren(
+        ItemRequest $item_request,
+        ?ServiceCatalogCompositeInterface $composite = null,
+    ): bool {
+        $leaf_providers = array_filter(
+            $this->providers,
+            fn($p) => $p instanceof LeafProviderInterface
+        );
+        $composite_providers = array_filter(
+            $this->providers,
+            fn($p) => $p instanceof CompositeProviderInterface
+        );
+        $child_request = $composite->getChildrenItemRequest($item_request);
+
+        // Check if the composite has at least one direct children (any leaf)
+        foreach ($leaf_providers as $provider) {
+            $items = $provider->getItems($child_request);
+            if (count($items)) {
+                return true;
+            }
+        }
+
+        // Load sub composites to look for indirect children
+        foreach ($composite_providers as $provider) {
+            $items = $provider->getItems($child_request);
+
+            // Can't have any indirect children if we have no sub composites
+            if (count($items) === 0) {
+                return false;
+            }
+
+            foreach ($items as $item) {
+                // Look for indirect children using recursion
+                if ($this->hasChildren($item_request, $item)) {
+                    return true;
                 }
             }
+
+            // No leaf found in all sub composites
+            return false;
         }
 
-        return $forms_with_unique_names;
+        return false;
+    }
+
+    /**
+     * @param ServiceCatalogItemInterface[] $items
+     * @return ServiceCatalogItemInterface[]
+     */
+    private function sortChildItems(array $items): array
+    {
+        usort($items, function (
+            ServiceCatalogItemInterface $a,
+            ServiceCatalogItemInterface $b,
+        ) {
+            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
+        });
+
+        return $items;
+    }
+
+    /**
+     * @param ServiceCatalogItemInterface[] $items
+     * @return ServiceCatalogItemInterface[]
+     */
+    private function sortRootItems(array $items): array
+    {
+        // Root items are sorted with categories at the end as they will be
+        // displayed differently
+        usort($items, function (
+            ServiceCatalogItemInterface $a,
+            ServiceCatalogItemInterface $b,
+        ) {
+            if (
+                $a instanceof ServiceCatalogCompositeInterface
+                && !($b instanceof ServiceCatalogCompositeInterface)
+            ) {
+                return 1;
+            }
+
+            if (
+                !($a instanceof ServiceCatalogCompositeInterface)
+                && $b instanceof ServiceCatalogCompositeInterface
+            ) {
+                return -1;
+            }
+
+            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
+        });
+
+        return $items;
     }
 }

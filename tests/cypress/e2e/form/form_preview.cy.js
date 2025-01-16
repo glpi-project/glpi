@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -126,7 +126,7 @@ describe('Form preview', config, () => {
 
         cy.findAllByRole('region', { 'name': 'Form section' }).eq(1).within(() => {
             // Set the section description
-            cy.findByRole('button', { 'name': 'Section actions' }).click();
+            cy.findByRole('button', { 'name': 'More actions' }).click();
             cy.findByRole('button', { 'name': 'Merge with previous section' }).click();
         });
         checkPreviewButton();

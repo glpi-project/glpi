@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,7 +50,7 @@ trait AssetImage
      */
     public function managePictures($input)
     {
-        foreach (['picture_front', 'picture_rear'] as $name) {
+        foreach (['picture_front', 'picture_rear', 'picture'] as $name) {
             if (
                 isset($input["_blank_$name"])
                 && $input["_blank_$name"]

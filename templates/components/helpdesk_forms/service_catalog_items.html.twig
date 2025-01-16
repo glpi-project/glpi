@@ -1,0 +1,89 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% for item in items %}
+    {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
+        {{ include(
+            'components/helpdesk_forms/service_catalog_item.html.twig',
+            {item: item},
+            with_context = false
+        ) }}
+    {% endif %}
+    {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
+        <div class="col-12 d-flex">
+            {% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
+            <section
+                class="card mx-1 my-2 flex-grow-1"
+                aria-labelledby="{{ unique_dom_id }}"
+            >
+                <div class="card-body">
+                    <div class="card-title mb-0 d-flex align-items-center w-100">
+                        <h2 id="{{ unique_dom_id }}" class="mb-0 fs-2">
+                            {{ item.getServiceCatalogItemTitle() }}
+                        </h2>
+                        <div class="card-subtitle ms-2 remove-last-tinymce-margin">
+                            {{ item.getServiceCatalogItemDescription()|safe_html }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        {% for child in item.getChildren() %}
+                            {{ include(
+                                'components/helpdesk_forms/service_catalog_nested_item.html.twig',
+                                {child: child},
+                                with_context = false
+                            ) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    {% endif %}
+{% else %}
+    {% if is_default_search %}
+        {# The user is not allowed to see any forms at this time #}
+        {% set empty_title = __("There are no forms available") %}
+        {% set empty_subtitle = __("Please try again later.") %}
+    {% else %}
+        {# The current search filter did not match any forms #}
+        {% set empty_title = __("No forms found") %}
+        {% set empty_subtitle = __("Try different keywords or filters.") %}
+    {% endif %}
+    <div class="empty">
+        <p class="empty-title">{{ empty_title }}</p>
+        <p class="empty-subtitle text-secondary">
+            {{ empty_subtitle }}
+        </p>
+    </div>
+{% endfor %}

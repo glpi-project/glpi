@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -78,26 +78,24 @@ abstract class AbstractDefinitionManager
      */
     abstract public function autoloadClass(string $classname): void;
 
-    final public function bootstrapClasses(): void
+    /**
+     * Boostrap all the active definitions.
+     */
+    final public function bootstrapDefinitions(): void
     {
-        foreach ($this->getDefinitions() as $definition) {
-            if (!$definition->isActive()) {
-                continue;
-            }
-
-            $this->boostrapConcreteClass($definition);
+        foreach ($this->getDefinitions(true) as $definition) {
+            $this->bootstrapDefinition($definition);
         }
     }
 
     /**
-     * Bootstrap the concrete class.
+     * Bootstrap the definition.
      * @param AbstractDefinition $definition
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    protected function boostrapConcreteClass(AbstractDefinition $definition): void
+    public function bootstrapDefinition(AbstractDefinition $definition)
     {
-        // Intentionally left blank
     }
 
     final public function getCustomObjectClassNames(bool $with_namespace = true): array
@@ -115,18 +113,27 @@ abstract class AbstractDefinitionManager
     }
 
     /**
-     * Get the dropdown definition corresponding to given system name.
+     * Get the definition corresponding to given system name.
      *
      * @param string $system_name
      * @phpstan-return ConcreteDefinition|null
      */
-    final protected function getDefinition(string $system_name): ?AbstractDefinition
+    final public function getDefinition(string $system_name): ?AbstractDefinition
     {
         return $this->getDefinitions()[$system_name] ?? null;
     }
 
     /**
-     * Get all the dropdown definitions.
+     * Clear the definitions cache.
+     */
+    final public function clearDefinitionsCache(): void
+    {
+        $definition_class = static::getDefinitionClass();
+        unset($this->definitions_data[$definition_class]);
+    }
+
+    /**
+     * Get all the definitions.
      *
      * @param bool $only_active
      * @return AbstractDefinition[]

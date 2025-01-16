@@ -73,6 +73,8 @@ The present file will list all changes made to the project; according to the
 - `Group` and `Group in charge` fields for assets may now contain multiple groups.
 - "If software are no longer used" transfer option is now taken into account rather than always preserving.
 - Notifications can now specify exclusions for recipients.
+- Warranty expiration alerts no longer trigger for deleted items.
+- New UI for searching for Ticket/Change/Problem solutions from the Knowledgebase.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -175,6 +177,9 @@ The present file will list all changes made to the project; according to the
 - `CartridgeItem::addCompatibleType()` method is now static.
 - `Rule::initRule()` has been made final and non static and its signature changed.
 - `Clonable::clone()` and `Clonable::cloneMultiple()` methods now accept a `$clone_as_template` parameter to allow creating templates.
+- `enable_partial_warnings` option removed from `SavedSearch::displayMine()`.
+- `enable_partial_warnings` option removed from `SavedSearch::execute()`.
+- `enable_partial_warnings` option removed from `SavedSearch::getMine()`.
 - `Transfer` class is now final.
 - `Transfer::addNotToBeTransfer()` method is now private.
 - `Transfer::addToAlreadyTransfer()` method is now private.
@@ -217,6 +222,8 @@ The present file will list all changes made to the project; according to the
 - `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `Migration::updateRight()` renamed to `Migration::replaceRight()`.
 - `Search::getOptions()` no longer returns a reference.
+- The `$target` parameter has been removed from the `AuthLDAP::showLdapGroups()` method.
+- The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
@@ -294,6 +301,8 @@ The present file will list all changes made to the project; according to the
 #### Removed
 - `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `GLPI_DEMO_MODE` constant.
+- `GLPI_DUMP_DIR` constant.
+- `GLPI_SQL_DEBUG` constant.
 - `$CFG_GLPI_PLUGINS` global variable.
 - `$DBCONNECTION_REQUIRED` and `$USEDBREPLICATE` global variables. Use `DBConnection::getReadConnection()` to get the most apporpriate connection for read only operations.
 - `$dont_check_maintenance_mode` and `$skip_db_check` global variables.
@@ -301,6 +310,7 @@ The present file will list all changes made to the project; according to the
 - `$LANG` global variable.
 - `$PLUGINS_EXCLUDED` and `$PLUGINS_INCLUDED` global variables.
 - `$SECURITY_STRATEGY` global variable.
+- `$SQLLOGGER` global variable
 - Usage of `$CFG_GLPI['itemdevices']` and `$CFG_GLPI['item_device_types']` configuration entries. Use `Item_Devices::getDeviceTypes()` to get the `Item_Devices` concrete class list.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
@@ -352,8 +362,10 @@ The present file will list all changes made to the project; according to the
 - `Computer_Item::showForItem()`
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
+- `Config::detectRootDoc()`
 - `Config::getCurrentDBVersion()`
 - `Config::showDebug()`
+- `Config::showLibrariesInformation()`
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
@@ -364,12 +376,16 @@ The present file will list all changes made to the project; according to the
 - `Contract::showShort()`
 - `DbUtils::closeDBConnections()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `DBConnection::displayMySQLError()`
+- `DBmysql::error` property.
+- `DBmysql::getLastQueryWarnings()`
 - `Document::getImage()`
 - `Document::showUploadedFilesDropdown()`
 - `Document::uploadDocument()`
 - `Document_Item::showSimpleAddForItem()`
 - `Dropdown::showAdvanceDateRestrictionSwitch()`
 - `DropdownTranslation::canBeTranslated()`. Translations are now always active.
+- `DropdownTranslation::getTranslationByName()`
 - `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
 - `Entity::cleanEntitySelectorCache()`
@@ -380,6 +396,9 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Application\ErrorHandler::handleSqlError()`
+- `Glpi\Application\ErrorHandler::handleSqlWarnings()`
+- `Glpi\Application\ErrorHandler::handleTwigError()`
+- `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
 - `Glpi\Dashboard\Filter::itilcategory()`
@@ -496,6 +515,7 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputerCollection` class.
 - `RuleMatchedLog::showFormAgent()`.
 - `RuleMatchedLog::showItemForm()`.
+- `SavedSearch::prepareQueryToUse()`
 - `Search::SYLK_OUTPUT` constant.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
@@ -505,6 +525,7 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `Session::buildSessionName()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
@@ -528,12 +549,16 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::handleProfileChangeRedirect()`
 - `Toolbox::logError()`
 - `Toolbox::logNotice()`
+- `Toolbox::logSqlDebug()`
+- `Toolbox::logSqlError()`
+- `Toolbox::logSqlWarning()`
 - `Toolbox::logWarning()`
 - `Toolbox::showMailServerConfig()`
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
 - `Transfer::manageConnectionComputer()`
+- `Update::initSession()`
 - `User::getDelegateGroupsForUser()`
 - `User::showDebug()`
 - `User::title()`
@@ -542,12 +567,11 @@ The present file will list all changes made to the project; according to the
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
 - `CommonDBTM::$fkfield` property.
 - `getHTML` action for `ajax/fuzzysearch.php` endpoint.
-- `Config::showLibrariesInformation()`
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
+- `$_SESSION['glpiroot']` session variable.
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
-- `DropdownTranslation::getTranslationByName()`
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 - `ajax/ldapdaterestriction.php` script.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.

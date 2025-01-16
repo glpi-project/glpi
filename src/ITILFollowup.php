@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 
 /**
@@ -726,6 +727,8 @@ class ITILFollowup extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $tab = [];
 
@@ -773,6 +776,24 @@ class ITILFollowup extends CommonDBChild
                 'condition'          => $followup_condition
             ]
         ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => static::getTable(),
+            'field'              => 'date',
+            'name'               => _n('Latest date', 'Latest dates', 1),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'joinparams'         => [
+                'jointype'           => 'itemtype_item',
+                'condition'          => $followup_condition
+            ],
+            'computation'        => QueryFunction::max('TABLE.date'),
+            'nometa'             => true // cannot GROUP_CONCAT a MAX
+        ];
+
 
         $tab[] = [
             'id'                 => '27',

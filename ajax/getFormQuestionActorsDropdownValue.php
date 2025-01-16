@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,4 +57,10 @@ if (Session::getCurrentInterface() !== 'central') {
     }
 }
 
-show_rights_dropdown(FormActorsDropdown::class);
+$options = [
+    'allowed_types'    => $_POST['allowed_types']    ?? [],
+    'right_for_users'  => $_POST['right_for_users']  ?? 'all',
+    'group_conditions' => $_POST['group_conditions'] ?? [],
+];
+
+show_rights_dropdown(FormActorsDropdown::class, $options);

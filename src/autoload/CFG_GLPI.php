@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -129,6 +129,14 @@ $CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEqui
     'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
     'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
 ];
+
+$CFG_GLPI["ruleimportasset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
+    'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
+    'Certificate', 'Enclosure', 'PDU', 'Line',
+    'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
+    'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment'
+];
+
 
 $CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
     'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
@@ -533,6 +541,7 @@ $CFG_GLPI['javascript'] = [
         ],
     ],
     'config' => [
+        'assetdefinition'  => ['sortable'],
         'commondropdown'  => [
             'ITILFollowupTemplate'   => ['tinymce'],
             'ProjectTaskTemplate'    => ['tinymce'],
@@ -578,22 +587,22 @@ $CFG_GLPI['max_time_for_count'] = 200;
  * Impact itemtypes enabled by default
  */
 $CFG_GLPI["default_impact_asset_types"] = [
-    Appliance::class          => "pics/impact/appliance.png",
-    Cluster::class            => "pics/impact/cluster.png",
-    Computer::class           => "pics/impact/computer.png",
-    Datacenter::class         => "pics/impact/datacenter.png",
-    DCRoom::class             => "pics/impact/dcroom.png",
-    Domain::class             => "pics/impact/domain.png",
-    Enclosure::class          => "pics/impact/enclosure.png",
-    Monitor::class            => "pics/impact/monitor.png",
-    NetworkEquipment::class   => "pics/impact/networkequipment.png",
-    PDU::class                => "pics/impact/pdu.png",
-    Peripheral::class         => "pics/impact/peripheral.png",
-    Phone::class              => "pics/impact/phone.png",
-    Printer::class            => "pics/impact/printer.png",
-    Rack::class               => "pics/impact/rack.png",
-    Software::class           => "pics/impact/software.png",
-    DatabaseInstance::class   => "pics/impact/databaseinstance.png",
+    Appliance::class          => "/pics/impact/appliance.png",
+    Cluster::class            => "/pics/impact/cluster.png",
+    Computer::class           => "/pics/impact/computer.png",
+    Datacenter::class         => "/pics/impact/datacenter.png",
+    DCRoom::class             => "/pics/impact/dcroom.png",
+    Domain::class             => "/pics/impact/domain.png",
+    Enclosure::class          => "/pics/impact/enclosure.png",
+    Monitor::class            => "/pics/impact/monitor.png",
+    NetworkEquipment::class   => "/pics/impact/networkequipment.png",
+    PDU::class                => "/pics/impact/pdu.png",
+    Peripheral::class         => "/pics/impact/peripheral.png",
+    Phone::class              => "/pics/impact/phone.png",
+    Printer::class            => "/pics/impact/printer.png",
+    Rack::class               => "/pics/impact/rack.png",
+    Software::class           => "/pics/impact/software.png",
+    DatabaseInstance::class   => "/pics/impact/databaseinstance.png",
 ];
 
 /**
@@ -601,26 +610,26 @@ $CFG_GLPI["default_impact_asset_types"] = [
  * added in GLPI configuration
  */
 $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
-    AuthLDAP::class           => "pics/impact/authldap.png",
-    CartridgeItem::class      => "pics/impact/cartridgeitem.png",
-    Contract::class           => "pics/impact/contract.png",
-    CronTask::class           => "pics/impact/crontask.png",
-    DeviceSimcard::class      => "pics/impact/devicesimcard.png",
-    Entity::class             => "pics/impact/entity.png",
-    Group::class              => "pics/impact/group.png",
-    ITILCategory::class       => "pics/impact/itilcategory.png",
-    Line::class               => "pics/impact/line.png",
-    Location::class           => "pics/impact/location.png",
-    MailCollector::class      => "pics/impact/mailcollector.png",
-    Notification::class       => "pics/impact/notification.png",
-    Profile::class            => "pics/impact/profile.png",
-    Project::class            => "pics/impact/project.png",
-    Rack::class               => "pics/impact/rack.png",
-    SLM::class                => "pics/impact/slm.png",
-    SoftwareLicense::class    => "pics/impact/softwarelicense.png",
-    Supplier::class           => "pics/impact/supplier.png",
-    User::class               => "pics/impact/user.png",
-    Database::class           => "pics/impact/database.png",
+    AuthLDAP::class           => "/pics/impact/authldap.png",
+    CartridgeItem::class      => "/pics/impact/cartridgeitem.png",
+    Contract::class           => "/pics/impact/contract.png",
+    CronTask::class           => "/pics/impact/crontask.png",
+    DeviceSimcard::class      => "/pics/impact/devicesimcard.png",
+    Entity::class             => "/pics/impact/entity.png",
+    Group::class              => "/pics/impact/group.png",
+    ITILCategory::class       => "/pics/impact/itilcategory.png",
+    Line::class               => "/pics/impact/line.png",
+    Location::class           => "/pics/impact/location.png",
+    MailCollector::class      => "/pics/impact/mailcollector.png",
+    Notification::class       => "/pics/impact/notification.png",
+    Profile::class            => "/pics/impact/profile.png",
+    Project::class            => "/pics/impact/project.png",
+    Rack::class               => "/pics/impact/rack.png",
+    SLM::class                => "/pics/impact/slm.png",
+    SoftwareLicense::class    => "/pics/impact/softwarelicense.png",
+    Supplier::class           => "/pics/impact/supplier.png",
+    User::class               => "/pics/impact/user.png",
+    Database::class           => "/pics/impact/database.png",
 ];
 
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];

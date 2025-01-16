@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -273,11 +273,12 @@ class NotificationTemplate extends CommonDBTM
                     $css = $this->fields['css'] ?? '';
 
                     $lang['content_html'] =
-                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
-                        'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" .
+
+                     "<!DOCTYPE html>" .
                      "<html>
                         <head>
-                         <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
+                         <meta charset='utf-8' />
+                         <meta name='viewport' content='width=device-width, initial-scale=1' />
                          <title>" . htmlescape($lang['subject']) . "</title>
                          <style type='text/css'>
                            {$css}

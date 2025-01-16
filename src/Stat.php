@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,8 +41,6 @@ use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
-use Laminas\Json\Expr as Json_Expr;
-use Laminas\Json\Json;
 
 /**
  *  Stat class
@@ -1998,12 +1996,6 @@ class Stat extends CommonGLPI
                 'lineStyle'       => [
                     'width'  => 4
                 ],
-                'symbol'          => new Json_Expr(<<<JAVASCRIPT
-                    function(value) {
-                        return value > 0 ? 'circle': 'none';
-                    }
-JAVASCRIPT
-                ),
                 'symbolSize'      => 8,
                 'legendHoverLink' => true,
             ];
@@ -2013,12 +2005,6 @@ JAVASCRIPT
             $chart_options['toolbox']['feature']['myCsvExport'] = [
                 'icon'    => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
                 'title'   => __('Export to CSV'),
-                'onclick' => new Json_Expr(<<<JAVASCRIPT
-                    function () {
-                        location.href = '$csv_link';
-                    }
-JAVASCRIPT
-                ),
             ];
         }
 
@@ -2046,14 +2032,29 @@ JAVASCRIPT
         </style>
 HTML;
 
-        $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
-        $js = <<<JAVASCRIPT
-        $(function () {
-            var myChart = echarts.init($('#{$slug}')[0]);
-            myChart.setOption($chart_options_json);
-        });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
+        $twig_params = [
+            'slug' => $slug,
+            'chart_options' => $chart_options,
+            'csv_link' => $csv_link
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script type="module">
+                function exportToCSV() {
+                    location.href = '{{ csv_link|e('js') }}';
+                }
+                const chart_options = {{ chart_options|json_encode|raw }};
+                const myChart = echarts.init(document.getElementById('{{ slug }}'));
+
+                $.each(chart_options.series, function (index, serie) {
+                    serie.symbol = (value) => value > 0 ? 'circle': 'none';
+                });
+                if (chart_options['toolbox']['feature']['myCsvExport'] !== undefined) {
+                    chart_options['toolbox']['feature']['myCsvExport']['onclick'] = exportToCSV;
+                }
+                myChart.setOption(chart_options);
+            </script>
+TWIG, $twig_params);
 
         $out = $html . $js;
 
@@ -2136,12 +2137,6 @@ JAVASCRIPT;
                     'myCsvExport'    => [
                         'icon'    => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
                         'title'   => __('Export to CSV'),
-                        'onclick' => new Json_Expr(<<<JAVASCRIPT
-                            function () {
-                                location.href = '$csv_link';
-                            }
-JAVASCRIPT
-                        ),
                     ],
                     'saveAsImage' => [
                         'icon'  => 'path://M15,8L15.01,8 M7,4h10s3,0,3,3v10s0,3,-3,3h-10s-3,0,-3,-3v-10s0,-3,3,-3 M4,15l4,-4a3,5,0,0,1,3,0l5,5 M14,14l1,-1a3,5,0,0,1,3,0l2,2',
@@ -2195,14 +2190,26 @@ JAVASCRIPT
         </style>
 HTML;
 
-        $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
-        $js = <<<JAVASCRIPT
-        $(function () {
-            var myChart = echarts.init($('#{$slug}')[0]);
-            myChart.setOption($chart_options_json);
-        });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
+        $twig_params = [
+            'slug' => $slug,
+            'chart_options' => $chart_options,
+            'csv_link' => $csv_link
+        ];
+        // language=Twig
+        $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script type="module">
+                function exportToCSV() {
+                    location.href = '{{ csv_link|e('js') }}';
+                }
+                const chart_options = {{ chart_options|json_encode|raw }};
+                const myChart = echarts.init(document.getElementById('{{ slug }}'));
+
+                if (chart_options['toolbox']['feature']['myCsvExport'] !== undefined) {
+                    chart_options['toolbox']['feature']['myCsvExport']['onclick'] = exportToCSV;
+                }
+                myChart.setOption(chart_options);
+            </script>
+TWIG, $twig_params);
 
         $out = $html . $js;
 

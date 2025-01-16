@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,15 +48,20 @@ define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
-global $CFG_GLPI, $GLPI_CACHE;
+global $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('testing');
-$kernel->loadCommonGlobalConfig();
+$kernel->boot();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-    die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
+    echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
+    exit(1);
+}
+if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+    echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
+    exit(1);
 }
 
 //init cache
@@ -76,9 +81,7 @@ set_error_handler(null);
 
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/FrontBaseClass.php';
-include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,9 @@
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
+use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
@@ -69,6 +69,12 @@ class Session
      * Prevents intensive use of dropdowns from resulting in an excessively cumbersome session.
      */
     private const IDOR_MAX_TOKENS = 2500;
+
+    /**
+     * @var bool $bypass_right_checks
+     * @internal
+     */
+    private static bool $bypass_right_checks = false;
 
     /**
      * Destroy the current session
@@ -158,7 +164,6 @@ class Session
                     } else {
                         $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                     }
-                    $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                     $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                     $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                     $_SESSION["glpicrontimer"]       = time();
@@ -168,9 +173,7 @@ class Session
 
                     $auth->user->computePreferences();
                     foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                        if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
-                            $_SESSION["glpi$field"] = $_POST[$field];
-                        } else if (isset($auth->user->fields[$field])) {
+                        if (isset($auth->user->fields[$field])) {
                             $_SESSION["glpi$field"] = $auth->user->fields[$field];
                         }
                     }
@@ -191,6 +194,11 @@ class Session
                     self::loadLanguage();
 
                     if ($auth->password_expired) {
+                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
+                        // fail the session check (as we use a special partial session here without profiles) and thus
+                        // destroy the session (which would make the "password expired" form impossible to submit as the
+                        // csrf check would fail as the session data would be empty).
+                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
                        // Do not init profiles, as user has to update its password to be able to use GLPI
                         return;
@@ -249,48 +257,26 @@ class Session
     public static function start()
     {
         if (session_status() === PHP_SESSION_NONE) {
-            ini_set('session.use_only_cookies', '1'); // Force session to use cookies
-            session_name(self::buildSessionName());
-
-            @session_start();
+            session_start();
         }
-       // Define current time for sync of action timing
+
+        // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-    }
 
-    /**
-     * Build the session name based on GLPI's folder path + full domain + port
-     *
-     * Adding the full domain name prevent two GLPI instances on the same
-     * domain (e.g. test.domain and prod.domain) with identical folder's
-     * path (e.g. /var/www/glpi) to compete for the same cookie name
-     *
-     * Adding the port prevent some conflicts when using docker
-     *
-     * @param string|null $path Default to GLPI_ROOT
-     * @param string|null $host Default to $_SERVER['HTTP_HOST']
-     * @param string|null $port Default to $_SERVER['SERVER_PORT']
-     *
-     * @return string An unique session name
-     */
-    public static function buildSessionName(
-        ?string $path = null,
-        ?string $host = null,
-        ?string $port = null
-    ): string {
-        if (is_null($path)) {
-            $path = realpath(GLPI_ROOT);
+        // Define session default mode
+        if (!isset($_SESSION['glpi_use_mode'])) {
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         }
 
-        if (is_null($host)) {
-            $host = $_SERVER['HTTP_HOST'] ?? '';
+        // Define default language
+        if (!isset($_SESSION['glpilanguage'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
         }
 
-        if (is_null($port)) {
-            $port = $_SERVER['SERVER_PORT'] ?? '';
+        // Init messages array
+        if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
         }
-
-        return "glpi_" . md5($path . $host . $port);
     }
 
 
@@ -978,8 +964,7 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
-                  || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
+                  InventoryController::$is_running === true
                   || defined('TU_USER')
               )
         );
@@ -1025,23 +1010,6 @@ class Session
 
         if (!self::isAuthenticated()) {
             Html::redirectToLogin();
-        }
-    }
-
-    /**
-     * Check the `session.cookie_secure` configuration and exit with an error message if the
-     * current request context is not allowed to use session cookies.
-     */
-    public static function checkCookieSecureConfig(): void
-    {
-        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // throw an exception
-        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
-        if ($is_https_request === false && $cookie_secure === true) {
-            $exception = new BadRequestHttpException();
-            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
-            throw $exception;
         }
     }
 
@@ -1450,7 +1418,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory() || Session::isCron()) {
+        if (self::isRightChecksDisabled() || Session::isInventory() || Session::isCron()) {
             return true;
         }
 
@@ -2410,6 +2378,7 @@ class Session
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
+            active_entities_ids: $_SESSION['glpiactiveentities'],
         );
     }
 
@@ -2427,5 +2396,48 @@ class Session
     public static function resetAjaxParam(): void
     {
         self::$is_ajax_request = false;
+    }
+
+    public static function getCurrentProfile(): Profile
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            throw new RuntimeException("No active session");
+        }
+
+        $profile = Profile::getById($profile_id);
+        if (!$profile) {
+            throw new RuntimeException("Failed to load profile: $profile_id");
+        }
+
+        return $profile;
+    }
+
+    /**
+     * Runs a callable with the right checks disabled.
+     * @return mixed|void The return value of the callable.
+     * @throws Throwable Any throwable that was caught from the callable if any.
+     */
+    public static function callAsSystem(callable $fn)
+    {
+        $caught_throwable = null;
+        try {
+            self::$bypass_right_checks = true;
+            return $fn();
+        } catch (Throwable $e) {
+            $caught_throwable = $e;
+        } finally {
+            self::$bypass_right_checks = false;
+        }
+        throw $caught_throwable;
+    }
+
+    /**
+     * @return bool Whether the right checks are disabled.
+     * @internal No backwards compatibility promise.
+     */
+    public static function isRightChecksDisabled(): bool
+    {
+        return self::$bypass_right_checks;
     }
 }

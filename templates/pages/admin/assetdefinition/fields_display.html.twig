@@ -1,0 +1,96 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set all_fields = all_fields ?? {} %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+{% set rand = rand|default(random()) %}
+
+{% block form_fields %}
+    <div id="sortable-fields-toolbar" class="row mt-3">
+        <div class="col-12">
+            {% set btns %}
+                <button type="button" class="btn btn-outline-secondary ms-3" id="add-field">
+                    {{ __("Add") }}
+                </button>
+                {{ include('components/form/viewsubitem.html.twig', custom_field_form_params|merge({
+                    add_new_btn_class: 'btn-outline-secondary ms-2',
+                    add_new_inline: true,
+                    rand: rand,
+                }), with_context = false) }}
+            {% endset %}
+            <script>
+                function formatAllFields(field) {
+                    if ($(`.sortable-field[data-key="${field.id}"]`).length) {
+                        return null
+                    }
+                    $(field.element).attr('data-customfield-id', field.customfields_id);
+                    return $(`<span data-customfield-id="${field.customfields_id}">${field.text}</span>`);
+                }
+            </script>
+            {% set get_fields_url = path('ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=' ~ item.getID()) %}
+            {{ fields.dropdownAjaxField(get_fields_url, 'new_field', '', _n('Field', 'Fields', 1), {
+                rand: rand,
+                templateSelection: 'formatAllFields',
+                templateResult: 'formatAllFields',
+                add_field_html: btns,
+                inline_add_field_html: true,
+                full_width: true,
+                flex_class: 'd-flex'
+            }) }}
+        </div>
+    </div>
+    <div id="sortable-fields-container" class="card-body d-flex flex-wrap"></div>
+
+    <style>
+        .sortable-field .btn-group .select2-container {
+            flex-basis: auto;
+            width: 100% !important;
+        }
+    </style>
+    <script>
+        window.Vue.createApp(window.Vue.components['CustomObject/FieldPreview/FieldDisplay'].component, {
+            items_id: {{ item.getID() }},
+            toolbar_el: '#sortable-fields-toolbar',
+            all_fields: {{ all_fields|json_encode()|raw }},
+            fields_display: {{ fields_display|default({})|json_encode()|raw }},
+            add_edit_fn: 'viewAddEditSubItem{{ rand }}'
+        }).mount('#sortable-fields-container');
+    </script>
+{% endblock %}

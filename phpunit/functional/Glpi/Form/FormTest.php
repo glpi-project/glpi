@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,6 +54,7 @@ use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Log;
+use Ramsey\Uuid\Uuid;
 
 class FormTest extends DbTestCase
 {
@@ -167,14 +168,14 @@ class FormTest extends DbTestCase
         );
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Delete content
         foreach ($form->getSections() as $section) {
             foreach ($section->getQuestions() as $question) {
                 $this->deleteItem(Question::class, $question->getID());
             }
-            foreach ($section->getComments() as $comment) {
+            foreach ($section->getFormComments() as $comment) {
                 $this->deleteItem(Comment::class, $comment->getID());
             }
             $this->deleteItem(Section::class, $section->getID());
@@ -184,13 +185,13 @@ class FormTest extends DbTestCase
         // shouldn't change
         $this->assertCount(2, $form->getSections());
         $this->assertCount(3, $form->getQuestions());
-        $this->assertCount(2, $form->getComments());
+        $this->assertCount(2, $form->getFormComments());
 
         // Reload form
         $form->getFromDB($form->getID());
         $this->assertCount(0, $form->getSections());
         $this->assertCount(0, $form->getQuestions());
-        $this->assertCount(0, $form->getComments());
+        $this->assertCount(0, $form->getFormComments());
     }
 
     /**
@@ -249,27 +250,23 @@ class FormTest extends DbTestCase
             '_update' => true, // Needed to get confirmation message
             '_questions' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Question name',
-                    'type'                      => QuestionTypeShortText::class,
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Question name',
+                    'type'                => QuestionTypeShortText::class,
                 ],
             ],
             '_comments' => [
                 [
-                    'id'                        => uniqid(),
-                    '_use_uuid'                 => true,
-                    'forms_sections_id'          => $section->getID(),
-                    '_use_uuid_for_sections_id' => false,
-                    'name'                      => 'Comment name',
-                    'description'               => 'Comment description',
+                    'uuid'                  => Uuid::uuid4(),
+                    'forms_sections_uuid' => $section->fields['uuid'],
+                    'name'                => 'Comment name',
+                    'description'         => 'Comment description',
                 ],
             ],
         ]);
         $this->assertCount(1, $form->getQuestions());
-        $this->assertCount(1, $form->getComments());
+        $this->assertCount(1, $form->getFormComments());
 
         $id = $form->getID();
         $this->hasSessionMessages(INFO, ['Item successfully updated: <a href="/glpi/front/form/form.form.php?id=' . $id . '" title="Form with first section">Form with first section</a>']);
@@ -360,7 +357,7 @@ class FormTest extends DbTestCase
         array $expected_comment_names,
         array $expected_comment_descriptions
     ): void {
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
         $names = array_map(fn($comment) => $comment->getName(), $comments);
         $names = array_values($names); // Strip keys
         $this->assertEquals($expected_comment_names, $names);

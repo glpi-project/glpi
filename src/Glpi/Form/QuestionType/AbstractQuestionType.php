@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -168,5 +168,29 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
         }
 
         return $config_class::jsonDeserialize($serialized_data);
+    }
+
+    #[Override]
+    public function getSubTypes(): array
+    {
+        return [];
+    }
+
+    #[Override]
+    public function getSubTypeFieldName(): string
+    {
+        return 'sub_type';
+    }
+
+    #[Override]
+    public function getSubTypeFieldAriaLabel(): string
+    {
+        return __('Question sub type');
+    }
+
+    #[Override]
+    public function getSubTypeDefaultValue(?Question $question): ?string
+    {
+        return '';
     }
 }

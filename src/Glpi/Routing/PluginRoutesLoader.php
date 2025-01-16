@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,20 +50,20 @@ class PluginRoutesLoader extends Loader
 
         $plugins = Plugin::getPlugins();
 
-        $paths = [];
+        foreach ($plugins as $plugin_key) {
+            $plugin_path = Plugin::getPhpDir($plugin_key) . '/src/Controller/';
 
-        foreach ($plugins as $k => $plugin_name) {
-            $paths[$k] = Plugin::getPhpDir($plugin_name) . '/src/Controller/';
-        }
+            if (!\file_exists($plugin_path)) {
+                // No controller directory found in the plugin
+                continue;
+            }
 
-        $loader = new AttributeDirectoryLoader(
-            new FileLocator($paths),
-            new AttributeRouteControllerLoader($this->env),
-        );
-
-        foreach ($plugins as $k => $plugin_name) {
-            $plugin_path = $paths[$k];
+            $loader = new AttributeDirectoryLoader(
+                new FileLocator($plugin_path),
+                new AttributeRouteControllerLoader($this->env),
+            );
             $plugin_routes = $loader->load($plugin_path, 'attribute');
+
             if (!$plugin_routes) {
                 // No route found in the plugin
                 continue;
@@ -71,7 +71,7 @@ class PluginRoutesLoader extends Loader
 
             foreach ($plugin_routes as $route) {
                 /** @var Route $route */
-                $prefix = '/plugins/' . $plugin_name . '/';
+                $prefix = '/plugins/' . $plugin_key . '/';
                 if (!\str_starts_with($route->getPath(), $prefix)) {
                     $route->setPath($prefix . \ltrim($route->getPath(), '/'));
                 }

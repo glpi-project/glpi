@@ -4,16 +4,16 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Pierfrancesco Passerini <p.passerini@gmail.com>, 2022
 # Stefano Beschi, 2022
 # Andrea Garelli <garelli.andrea@gmail.com>, 2024
 # Vincenzo Reale <vinx.reale@gmail.com>, 2024
 # Tiziano Sartori <tiziano.sartori@gmail.com>, 2024
 # Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
-# Davide <spam@habilitas.it>, 2024
 # Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Pierfrancesco Passerini <p.passerini@gmail.com>, 2024
+# Davide <spam@habilitas.it>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2024\n"
+"Last-Translator: Davide <spam@habilitas.it>, 2024\n"
 "Language-Team: Italian (Italy) (https://app.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,7 +63,7 @@ msgstr "\"session.use_trans_sid\" dev'essere impostato su off."
 
 #: src/KnowbaseItem_Revision.php:208
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:76
 #, php-format
@@ -4575,7 +4575,7 @@ msgstr "Dispositivi collegabili ad una chiamata"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Elementi associabili alle chiamate, ai cambiamenti e ai problemi"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4685,7 +4685,7 @@ msgstr[2] "Tipi di elemento associati"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Elementi associati"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5138,7 +5138,7 @@ msgstr "Tempo medio di presa in carico"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5392,7 +5392,7 @@ msgstr "Marca"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Marca"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -5906,9 +5906,9 @@ msgstr[2] "Cartucce"
 #: src/Printer_CartridgeInfo.php:46
 msgid "Cartridge inventoried information"
 msgid_plural "Cartridge inventoried information"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Informazioni sull'inventario della cartuccia"
+msgstr[1] "Informazioni sull'inventario delle cartucce"
+msgstr[2] "Informazioni sull'inventario delle cartucce"
 
 #: templates/pages/assets/cartridge.html.twig src/CartridgeItem.php:64
 msgid "Cartridge model"
@@ -6183,7 +6183,7 @@ msgstr "Cambia la visibilità per le entità figlio"
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Modificato"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6460,6 +6460,8 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Pulisci documenti orfani: elimina tutti i documenti che non sono associati a"
+" nessun elemento."
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -6958,7 +6960,7 @@ msgstr[2] "Computer"
 
 #: src/ItemVirtualMachine.php:488
 msgid "Computer UUID"
-msgstr ""
+msgstr "Computer UUID"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:195
 msgid "Computer inventory"
@@ -8974,7 +8976,7 @@ msgstr "ID del dispositivo"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Periferiche"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9393,7 +9395,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Vuoi ripristinare la versione selezionata?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9415,7 +9417,7 @@ msgstr "Documento"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -9905,7 +9907,7 @@ msgstr "Durata effettiva"
 #: src/Toolbox.php:830 js/common.js:656
 msgctxt "size"
 msgid "EiB"
-msgstr ""
+msgstr "EiB"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:142
 msgid "Either --dsn or --use-default options have to be used."
@@ -10624,8 +10626,8 @@ msgid ""
 "Even if GLPI still supports this PHP version, an upgrade to a more recent "
 "PHP version is recommended."
 msgstr ""
-"Anche se GLPI supporta ancora questa versione di PHP, è consigliato "
-"effettuare l'aggiornamento ad una versione più recente di PHP."
+"Sebbene GLPI supporti ancora questa versione, è consigliato effettuare "
+"l'aggiornamento di PHP ad una versione più recente."
 
 #: templates/pages/setup/webhook/webhook.html.twig
 #: templates/pages/setup/webhook/webhooktest.html.twig
@@ -11125,7 +11127,7 @@ msgstr[2] "Campi"
 #: src/Glpi/Api/API.php:1247
 #, php-format
 msgid "Field %s is not valid for %s item."
-msgstr ""
+msgstr "Il campo %s non è valido per l'oggetto %s."
 
 #: src/Notification.php:689 src/Notification.php:701
 msgid "Field itemtype is mandatory"
@@ -11511,7 +11513,7 @@ msgstr "Per %s chiuso dopo"
 
 #: src/Glpi/Api/HL/Search.php:114
 msgid "For more information, check the GLPI logs."
-msgstr ""
+msgstr "Per ulteriori informazioni, controllare i log di GLPI."
 
 #: src/Glpi/System/Requirement/SeLinux.php:101
 msgid "For security reasons, SELinux mode should be Enforcing."
@@ -11810,7 +11812,7 @@ msgstr "Nome completo"
 
 #: src/User.php:3063 src/User.php:3447
 msgid "Full structure"
-msgstr ""
+msgstr "Struttura completa"
 
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:67
 msgid "Full width"
@@ -11990,7 +11992,7 @@ msgstr "Acquisisci informazioni su un plugin"
 #: src/Toolbox.php:827 js/common.js:653
 msgctxt "size"
 msgid "GiB"
-msgstr ""
+msgstr "GiB"
 
 #: src/Consumable.php:209 src/Consumable.php:242
 msgctxt "button"
@@ -13343,7 +13345,7 @@ msgstr "Eredita configurazione dall'entità superiore"
 
 #: templates/pages/management/contract.html.twig
 msgid "Initial contract period"
-msgstr "Durata del contratto dalla data di inizio"
+msgstr "Durata del contratto per il primo periodo"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:558
 msgid "Initial page counter"
@@ -13656,7 +13658,7 @@ msgstr "Contesto cache non valido: \"%s\"."
 
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:167
 msgid "Invalid checksum"
-msgstr "Checksum invalido"
+msgstr "Checksum non valido"
 
 #: front/preference.php:52 src/Glpi/Controller/IndexController.php:173
 msgid "Invalid code"
@@ -13732,7 +13734,7 @@ msgstr "Date pianificate non valide. Le date non sono state aggiornate."
 
 #: src/Plugin.php:249
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Directory plugin non valida"
 
 #: src/Glpi/Console/Plugin/UninstallCommand.php:156
 #: src/Glpi/Console/Plugin/DeactivateCommand.php:130
@@ -14269,7 +14271,7 @@ msgstr "Chiave"
 #: src/Toolbox.php:825 js/common.js:651
 msgctxt "size"
 msgid "KiB"
-msgstr ""
+msgstr "KiB"
 
 #: front/knowbaseitem.form.php:173 src/ITILCategory.php:76
 #: src/ITILCategory.php:295 src/KnowbaseItem_Item.php:73
@@ -15673,7 +15675,7 @@ msgstr "Azioni massive"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15953,7 +15955,7 @@ msgstr "Metodo"
 #: src/Toolbox.php:826 js/common.js:652
 msgctxt "size"
 msgid "MiB"
-msgstr ""
+msgstr "MiB"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:367
 msgid "Microphone"
@@ -16237,7 +16239,7 @@ msgstr[2] "Monitor"
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Monitor"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -16895,7 +16897,7 @@ msgstr "Mese successivo"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
-msgstr ""
+msgstr "Data del prossimo rinnovo"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Next run"
@@ -18352,7 +18354,7 @@ msgstr "Altro"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Altro"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -18501,7 +18503,7 @@ msgstr "PHP"
 #: src/Glpi/System/Requirement/PhpSupportedVersion.php:70
 #, php-format
 msgid "PHP %s is no longer maintained by its community."
-msgstr "PHP %s non è più mantenuto dalla sua comunità."
+msgstr "PHP %s non è più manutenuto dalla sua comunità."
 
 #: front/config.form.php:60
 msgid "PHP OPcache reset successful"
@@ -18555,7 +18557,7 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
-msgstr "Versione di PHP mantenuta"
+msgstr "Versione di PHP manutenuta"
 
 #: src/Glpi/System/Requirement/IntegerSize.php:43
 msgid "PHP maximal integer size"
@@ -18883,9 +18885,9 @@ msgstr "Preavviso periodicità"
 #: src/Peripheral.php:83
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Periferica"
+msgstr[1] "Periferiche"
+msgstr[2] "Periferiche"
 
 #: src/PeripheralModel.php:41 src/Rule.php:331
 msgid "Peripheral model"
@@ -19051,7 +19053,7 @@ msgstr ""
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
@@ -20069,11 +20071,11 @@ msgstr[2] "Attività per il progetto"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "Attività di progetto del gruppo"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
-msgstr ""
+msgstr "Attività di progetto dell'utente"
 
 #: src/ProjectTaskTemplate.php:50
 msgid "Project task template"
@@ -21489,7 +21491,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Ripristina"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22209,7 +22211,7 @@ msgstr "Secondo elemento"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Secondario"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23265,6 +23267,8 @@ msgstr "Sono disponibili alcuni aggiornamenti per i plugin installati!"
 msgid ""
 "Some users are not listed as they are not visible from your current entity."
 msgstr ""
+"Alcuni utenti non sono elencati perché non sono visibili dall'attuale "
+"entità."
 
 #: src/CommonITILObject_CommonITILObject.php:398 src/Ticket.php:2220
 msgid "Son of"
@@ -23925,7 +23929,7 @@ msgstr "Sistema"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24325,7 +24329,7 @@ msgstr "Test"
 #: templates/pages/setup/ldap/test_form.html.twig
 #, php-format
 msgid "Test LDAP server: %s"
-msgstr ""
+msgstr "Test server LDAP: %s"
 
 #: src/AuthMail.php:242
 msgid "Test connection to email server"
@@ -24366,12 +24370,12 @@ msgstr "Analisi"
 #: src/Glpi/Asset/CustomFieldType/TextType.php:43
 #: src/Glpi/Form/QuestionType/QuestionTypeShortText.php:51
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
 #: js/modules/Form/WebIconSelector.js:165
 msgctxt "icons"
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Text in the login box"
@@ -24512,6 +24516,8 @@ msgid ""
 "The content of the notification contains sensitive information and therefore"
 " cannot be displayed."
 msgstr ""
+"Il contenuto della notifica include informazioni sensibili e pertanto non "
+"può essere visualizzato."
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid ""
@@ -24773,8 +24779,8 @@ msgid ""
 "The specified profile doesn't exist or is not allowed to access the central "
 "interface."
 msgstr ""
-"IL profilo specificvato non esiste o non è abilitato per l'accesso "
-"all'interfaccia centrale"
+"IL profilo specificato non esiste o non è abilitato per l'accesso "
+"all'interfaccia centrale."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:331
 msgid "The system name cannot be changed."
@@ -25173,7 +25179,7 @@ msgstr "Giovedì"
 #: src/Toolbox.php:828 js/common.js:654
 msgctxt "size"
 msgid "TiB"
-msgstr ""
+msgstr "TiB"
 
 #: src/Html.php:1501 src/NotificationTargetProject.php:794
 #: src/NotificationTargetProject.php:812 src/NotificationTargetProblem.php:224
@@ -25668,7 +25674,7 @@ msgstr "Totale"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Totale"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26331,7 +26337,7 @@ msgid ""
 " the new required units do not fit into the rack"
 msgstr ""
 "Impossibile aggiornare il modello perché è utilizzato da un asset nel rack "
-"\"%s\" e le nuove unità richieste non entrano nel rack"
+"\"%s\" e non c'è spazio nel rack per le nuove unità"
 
 #: src/Glpi/System/Requirement/DbConfiguration.php:67
 msgid "Unable to validate database configuration variables."
@@ -26517,9 +26523,9 @@ msgstr "Sblocca elemento"
 #: src/Unmanaged.php:55
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dispositivo non gestito"
+msgstr[1] "Dispositivi non gestiti"
+msgstr[2] "Dispositivi non gestiti"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
@@ -27608,7 +27614,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Visualizzato"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -27971,7 +27977,7 @@ msgstr ""
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "When connecting or updating the relevant field"
-msgstr ""
+msgstr "Comportamento alla connessione/aggiornamento del campo corrispondente"
 
 #: templates/pages/admin/entity/assets.html.twig
 msgid "When disconnecting"
@@ -28248,7 +28254,7 @@ msgstr "Ieri"
 #: src/Toolbox.php:832 js/common.js:658
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format
@@ -28598,7 +28604,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Devi selezionare almeno 1 oggetto per formare un gruppo"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""
@@ -28725,7 +28731,7 @@ msgstr "Le tue chiamate da convalidate"
 #: src/Toolbox.php:831 js/common.js:657
 msgctxt "size"
 msgid "ZiB"
-msgstr ""
+msgstr "ZiB"
 
 #: js/modules/Form/WebIconSelector.js:169
 msgctxt "icons"

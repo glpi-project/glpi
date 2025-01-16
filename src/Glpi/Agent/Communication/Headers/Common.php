@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ class Common
      *
      * @var string
      */
-    protected $content_type;
+    protected string $content_type;
 
     /**
      * "Accept" HTTP header
@@ -55,7 +55,7 @@ class Common
      *
      * @var string
      */
-    protected $accept;
+    protected string $accept;
 
     /**
      * "Cache-Control" HTTP header
@@ -63,7 +63,7 @@ class Common
      *
      * @var string
      */
-    protected $cache_control = 'no-cache,no-store';
+    protected string $cache_control = 'no-cache,no-store';
 
     /**
      * "Connection" HTTP header
@@ -71,7 +71,7 @@ class Common
      *
      * @var string
      */
-    protected $connection = 'close';
+    protected string $connection = 'close';
 
     /**
      * "Pragma" HTTP header
@@ -81,7 +81,7 @@ class Common
      *
      * @var string
      */
-    protected $pragma = 'no-cache';
+    protected string $pragma = 'no-cache';
 
    //GLPI agent headers
     /**
@@ -92,7 +92,7 @@ class Common
      *
      * @var string
      */
-    protected $glpi_agent_id;
+    protected string $glpi_agent_id;
 
     /**
      * "GLPI-Request-ID" HTTP header
@@ -101,7 +101,7 @@ class Common
      *
      * @var string
      */
-    protected $glpi_request_id;
+    protected string $glpi_request_id;
 
     /**
      * "GLPI-CryptoKey-ID" HTTP header
@@ -110,7 +110,7 @@ class Common
      *
      * @var string
      */
-    protected $glpi_cryptokey_id;
+    protected string $glpi_cryptokey_id;
 
     /**
      * "GLPI-Proxy-ID" HTTP header
@@ -119,19 +119,19 @@ class Common
      *
      * @var string
      */
-    protected $glpi_proxy_id;
+    protected string $glpi_proxy_id;
 
     /**
      * Authorization header
-     * @var string
+     * @var ?string
      */
-    protected $authorization;
+    protected ?string $authorization = null;
 
     /**
      * Define HTTP Authorization Header Authorization type
      * @var string
      */
-    protected $www_authenticate;
+    protected string $www_authenticate;
 
     public function getRequireds(): array
     {
@@ -158,7 +158,7 @@ class Common
      *
      * @return array
      */
-    public function getHeaders($legacy = true): array
+    public function getHeaders(bool $legacy = true): array
     {
        //parse class attributes and normalize key name
         $reflect = new ReflectionClass($this);
@@ -188,8 +188,10 @@ class Common
      * Get header value
      *
      * @param string $name Header name
+     *
+     * @return mixed
      */
-    public function getHeader($name)
+    public function getHeader(string $name): mixed
     {
         $propname = strtolower(str_replace('-', '_', $name));
 
@@ -203,7 +205,7 @@ class Common
      *
      * @return string
      */
-    final public function getHeaderName($prop): string
+    final public function getHeaderName(string $prop): string
     {
         $name = $prop;
 
@@ -231,11 +233,11 @@ class Common
     /**
      * Set multiple HTTP header values at once
      *
-     * @param $headers Array of HTTP header name as key and value
+     * @param array $headers Array of HTTP header name as key and value
      *
      * @return $this
      */
-    public function setHeaders($headers): self
+    public function setHeaders(array $headers): self
     {
         foreach ($headers as $header => $value) {
             $this->setHeader($header, $value);
@@ -246,12 +248,12 @@ class Common
     /**
      * Set HTTP header value
      *
-     * @param $name HTTP header name
-     * @param $value Value to set
+     * @param string $name  HTTP header name
+     * @param mixed  $value Value to set
      *
      * @return $this
      */
-    public function setHeader($name, $value): self
+    public function setHeader(string $name, mixed $value): self
     {
         $propname = strtolower(str_replace('-', '_', $name));
         if (property_exists($this, $propname)) {
@@ -267,7 +269,7 @@ class Common
      *
      * @return bool
      */
-    public function hasHeader($name): bool
+    public function hasHeader(string $name): bool
     {
         $propname = strtolower(str_replace('-', '_', $name));
         return property_exists($this, $propname) && !empty($this->$propname);

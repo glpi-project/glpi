@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -477,11 +477,12 @@ class DBConnection extends CommonDBTM
      * @param boolean $use_slave try to connect to slave server first not to main server
      * @param boolean $required  connection to the specified server is required
      *                           (if connection failed, do not try to connect to the other server)
-     * @param boolean $display   display error message (true by default)
      *
      * @return boolean True if successfull, false otherwise
-     **/
-    public static function establishDBConnection($use_slave, $required, $display = true)
+     *
+     * @since 11.0.0 The `$display` parameter has been removed.
+     */
+    public static function establishDBConnection($use_slave, $required)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -524,10 +525,6 @@ class DBConnection extends CommonDBTM
             }
         }
 
-       // Display error if needed
-        if (!$res && $display) {
-            self::displayMySQLError();
-        }
         return $res;
     }
 
@@ -646,39 +643,6 @@ class DBConnection extends CommonDBTM
             }
         }
         return 0;
-    }
-
-
-    /**
-     *  Display a common mysql connection error
-     **/
-    public static function displayMySQLError()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $error = $DB instanceof DBmysql ? $DB->error : 1;
-        switch ($error) {
-            case 2:
-                $en_msg = "Use of mysqlnd driver is required for exchanges with the MySQL server.";
-                $fr_msg = "L'utilisation du driver mysqlnd est requise pour les échanges avec le serveur MySQL.";
-                break;
-            case 1:
-            default:
-                $fr_msg = "Le serveur Mysql est inaccessible. Vérifiez votre configuration.";
-                $en_msg = "A link to the SQL server could not be established. Please check your configuration.";
-                break;
-        }
-
-        if (!isCommandLine()) {
-            Html::nullHeader("Mysql Error", '');
-            echo "<div class='center'><p class ='b'>$en_msg</p><p class='b'>$fr_msg</p></div>";
-            Html::nullFooter();
-        } else {
-            echo "$en_msg\n$fr_msg\n";
-        }
-
-        die(1);
     }
 
 
@@ -867,7 +831,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCharset(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -886,7 +850,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultCollation(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && !$DB->use_utf8mb4) {
@@ -905,7 +869,7 @@ class DBConnection extends CommonDBTM
      */
     public static function getDefaultPrimaryKeySignOption(): string
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($DB instanceof DBmysql && $DB->allow_signed_keys) {
@@ -945,7 +909,7 @@ class DBConnection extends CommonDBTM
      */
     public static function isDbAvailable(): bool
     {
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
         return $DB instanceof DBmysql && $DB->connected;
     }

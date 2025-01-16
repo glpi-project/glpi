@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,7 +49,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
     /**
-     * @var DBmysql
+     * @var DBmysql|null
      */
     protected $db;
 
@@ -109,7 +109,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     protected function initDbConnection()
     {
 
-        /** @var \DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {

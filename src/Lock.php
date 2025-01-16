@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -452,6 +452,49 @@ TWIG, $twig_params);
                     'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic'])
                 ];
             }
+            $subtables[] = $subtable;
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['remote_management_types'], true)) {
+            $iterator = $DB->request([
+                'FROM'  => Item_RemoteManagement::getTable(),
+                'WHERE' => [
+                    'is_dynamic'   => 1,
+                    'is_deleted'   => 1,
+                    'items_id'     => $ID,
+                    'itemtype'     => $itemtype
+                ]
+            ]);
+
+            $subtable = [
+                'nopager' => true,
+                'nosort' => true,
+                'nofilter' => true,
+                'columns' => [
+                    'chk' => '',
+                    'item' => Item_RemoteManagement::getTypeName(1),
+                    'type' => _n('Type', 'Types', 1),
+                    'is_dynamic' => __('Automatic inventory')
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => []
+            ];
+
+            foreach ($iterator as $line) {
+                $remote_management = new Item_RemoteManagement();
+                $remote_management->getFromResultSet($line);
+                $show_checkbox = $remote_management->can($line['id'], UPDATE) || $remote_management->can($remote_management->getID(), PURGE);
+                $subtable['entries'][] = [
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_RemoteManagement[{$remote_management->getID()}]'>" : '',
+                    'item' => $remote_management->getLink(),
+                    'type' => $remote_management->fields['type'],
+                    'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic'])
+                ];
+            }
+
             $subtables[] = $subtable;
         }
 

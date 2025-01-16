@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
@@ -80,7 +80,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_slas_tto_id: $created_sla_tto->getID()
@@ -102,7 +102,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_tto->getID()
             ),
@@ -146,7 +146,7 @@ final class SLATTOFieldTest extends DbTestCase
 
         $this->checkSLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_tto->getID()
             ),
@@ -156,7 +156,7 @@ final class SLATTOFieldTest extends DbTestCase
 
     private function checkSLATTOFieldConfiguration(
         Form $form,
-        SLMFieldConfig $config,
+        SLATTOFieldConfig $config,
         int $expected_slas_tto_id
     ): Ticket {
         // Insert config

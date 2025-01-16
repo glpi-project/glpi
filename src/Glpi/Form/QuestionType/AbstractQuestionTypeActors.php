@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Group;
@@ -53,6 +54,23 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      * @return array
      */
     abstract public function getAllowedActorTypes(): array;
+
+    /**
+     * Retrieve the right to use to retrieve users
+     *
+     * @return string
+     */
+    public function getRightForUsers(): string
+    {
+        return 'all';
+    }
+
+    /**
+     * Retrieve the group conditions
+     *
+     * @return array
+     */
+    abstract public function getGroupConditions(): array;
 
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
@@ -84,38 +102,55 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function validateExtraDataInput(array $input): bool
     {
-        $allowed_keys = [
-            'is_multiple_actors'
-        ];
-
-        return empty(array_diff(array_keys($input), $allowed_keys))
-            && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
+        // Only one key is allowed and optional: 'is_multiple_actors'.
+        // This key must be a valid boolean.
+        return (
+            isset($input['is_multiple_actors'])
+            && count($input) === 1
+            && filter_var($input['is_multiple_actors'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
+        ) || empty($input);
     }
 
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
     {
+        if (empty($answer)) {
+            return [];
+        }
+
         if (!is_array($answer)) {
             $answer = [$answer];
         }
 
         $actors = [];
-        if (is_array($answer)) {
-            foreach ($answer as $actor) {
-                // The "0" value can occur when the empty label is selected.
-                if ($actor == "0") {
-                    continue;
-                }
-
-                $actor_parts = explode('-', $actor);
-                $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
-                $item_id = $actor_parts[1];
-
-                $actors[] = [
-                    'itemtype' => $itemtype,
-                    'items_id' => $item_id
-                ];
+        foreach ($answer as $actor) {
+            // The "0" value can occur when the empty label is selected.
+            if (empty($actor)) {
+                continue;
             }
+
+            $actor_parts = explode('-', $actor);
+            $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
+            $item_id = $actor_parts[1];
+
+            // Check if the itemtype is allowed
+            if (!in_array($itemtype, $this->getAllowedActorTypes())) {
+                throw new Exception("Invalid actor type: $itemtype");
+            }
+
+            // Check if the item exists
+            if ($itemtype::getById($item_id) === false) {
+                throw new Exception("Invalid actor ID: $item_id");
+            }
+
+            $actors[] = [
+                'itemtype' => $itemtype,
+                'items_id' => $item_id
+            ];
+        }
+
+        if (!$this->isMultipleActors($question) && count($actors) > 1) {
+            throw new Exception("Multiple actors are not allowed");
         }
 
         return $actors;
@@ -185,11 +220,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             'default_value',
             values,
             {
-                'multiple': false,
-                'init': init,
-                'allowed_types': allowed_types,
-                'aria_label': aria_label,
-                'specific_tags': is_multiple_actors ? {
+                'multiple'        : false,
+                'init'            : init,
+                'allowed_types'   : allowed_types,
+                'right_for_users' : right_for_users,
+                'group_conditions': group_conditions,
+                'aria_label'      : aria_label,
+                'specific_tags'   : is_multiple_actors ? {
                     'disabled': 'disabled'
                 } : {}
             }
@@ -198,11 +235,13 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             'default_value',
             values,
             {
-                'multiple': true,
-                'init': init,
-                'allowed_types': allowed_types,
-                'aria_label': aria_label,
-                'specific_tags': not is_multiple_actors ? {
+                'multiple'        : true,
+                'init'            : init,
+                'allowed_types'   : allowed_types,
+                'right_for_users' : right_for_users,
+                'group_conditions': group_conditions,
+                'aria_label'      : aria_label,
+                'specific_tags'   : not is_multiple_actors ? {
                     'disabled': 'disabled'
                 } : {}
             }
@@ -249,7 +288,9 @@ TWIG;
             'values'             => $this->getDefaultValue($question, $this->isMultipleActors($question)),
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $this->isMultipleActors($question),
-            'aria_label'         => __('Select an actor...')
+            'aria_label'         => __('Select an actor...'),
+            'right_for_users'    => $this->getRightForUsers(),
+            'group_conditions'   => $this->getGroupConditions()
         ]);
     }
 

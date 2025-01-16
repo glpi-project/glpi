@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -77,14 +77,6 @@ class ITILFollowupField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILFollowupFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_value_extra_field' => [
                 'aria_label'     => __("Select followup templates..."),
@@ -104,8 +96,11 @@ class ITILFollowupField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $itilfollowuptemplates_ids = $config->getStrategy()->getITILFollowupTemplatesIDs($config);
+        $itilfollowuptemplates_ids = $strategy->getITILFollowupTemplatesIDs($config);
 
         if (!empty($itilfollowuptemplates_ids)) {
             $input['_itilfollowuptemplates_id'] = $itilfollowuptemplates_ids;
@@ -122,7 +117,7 @@ class ITILFollowupField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILFollowupFieldStrategy::cases() as $strategies) {

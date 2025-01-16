@@ -1,0 +1,100 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% if faq_entries|length %}
+    <h2 class="search-results-title mt-2 d-flex align-items-center px-3 mb-0">
+        <span class="text-muted text-uppercase">{{ __("FAQ articles") }}</span>
+        <span class="ms-2 badge bg-secondary-lt">{{ faq_entries|length }}</span>
+    </h2>
+
+    <div class="list-group list-group-flush list-group-hoverable pb-3">
+        {% for faq in faq_entries|slice(0, 20) %}
+            <div class="list-group-item border-0 pt-1 pb-1">
+                <a
+                    href="{{ path("/front/helpdesk.faq.php?id=" ~ faq.id) }}"
+                    class="row align-items-center"
+                    aria-label="{{ faq.name }}"
+                >
+                    <div class="col-auto">
+                        {{ render_illustration("browse-kb", 60) }}
+                    </div>
+                    <div class="col text-truncate">
+                        <span class="text-dark text-reset d-block">{{ faq.name }}</span>
+                        <div class="d-block text-secondary text-truncate richtext-strip-margin">
+                            {{ faq.answer|safe_html }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endif %}
+
+{% if faq_entries|length and forms|length %}
+    <hr class="mb-2 mt-0">
+{% endif %}
+
+{% if forms|length %}
+    <h2 class="search-results-title mt-2 d-flex align-items-center px-3 mb-0">
+        <span class="text-muted text-uppercase">{{ __("Forms") }}</span>
+        <span class="ms-2 badge bg-secondary-lt">{{ forms|length }}</span>
+    </h2>
+
+    <div class="list-group list-group-flush list-group-hoverable pb-3">
+        {% for form in forms|slice(0, 20) %}
+            <div class="list-group-item border-0 pt-1 pb-1">
+                <a
+                    href="{{ path("/Form/Render/" ~ form.getID()) }}"
+                    class="row align-items-center"
+                    aria-label="{{ form.fields.name }}"
+                >
+                    <div class="col-auto">
+                        {{ render_illustration(form.fields.illustration, 60) }}
+                    </div>
+                    <div class="col text-truncate">
+                        <span class="text-dark text-reset d-block"> {{ form.fields.name }} </span>
+                        <div class="d-block text-secondary text-truncate">
+                            {{ form.fields.description }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if not faq_entries|length and not forms|length %}
+    <div class="px-3 py-2">
+        {{ __("No results found") }}
+    </div>
+{% endif %}

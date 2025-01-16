@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,7 @@
 namespace Glpi\Controller;
 
 use Auth;
+use Glpi\Http\Firewall;
 use Html;
 use Session;
 use Toolbox;
@@ -47,10 +48,15 @@ use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
 {
+    public function __construct(private HttpKernelInterface $http_kernel)
+    {
+    }
+
     #[Route(
         [
             "base" => "/",
@@ -58,64 +64,31 @@ final class IndexController extends AbstractController
         ],
         name: "glpi_index"
     )]
-    #[SecurityStrategy('no_check')]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
+        if (
+            $request->isMethod('POST')
+            && !$request->request->has('totp_code')
+            && $request->getContent() !== ''
+        ) {
+            // POST request from the inventory agent, forward it to the inventory controller.
+            $sub_request = $request->duplicate(
+                attributes: ['_controller' => InventoryController::class . '::index']
+            );
+            return $this->http_kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        }
+
         return new HeaderlessStreamedResponse($this->call(...));
     }
 
     private function call(): void
     {
         /**
-         * @var \DBmysql|null $DB
          * @var array $CFG_GLPI
          * @var array $PLUGIN_HOOKS
          */
-        global $DB, $CFG_GLPI, $PLUGIN_HOOKS;
-
-        // If config_db doesn't exist -> start installation
-        if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php") || !class_exists('DB', false)) {
-            if (file_exists(GLPI_ROOT . '/install/install.php')) {
-                Html::redirect("install/install.php");
-            } else {
-                // Init session (required by header display logic)
-                Session::setPath();
-                Session::start();
-                Session::loadLanguage('', false);
-                // Prevent inclusion of debug information in footer, as they are based on vars that are not initialized here.
-                $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-                // no translation
-                $title_text        = 'GLPI seems to not be configured properly.';
-                $missing_conf_text = sprintf('Database configuration file "%s" is missing.', GLPI_CONFIG_DIR . '/config_db.php');
-                $hint_text         = 'You have to either restart the install process, either restore this file.';
-
-                Html::nullHeader('Missing configuration');
-                echo '<div class="container-fluid mb-4">';
-                echo '<div class="row justify-content-center">';
-                echo '<div class="col-xl-6 col-lg-7 col-md-9 col-sm-12">';
-                echo '<h2>' . $title_text . '</h2>';
-                echo '<p class="mt-2 mb-n2 alert alert-warning">';
-                echo $missing_conf_text;
-                echo ' ';
-                echo $hint_text;
-                echo '</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-                Html::nullFooter();
-                return;
-            }
-        }
-
-        //Try to detect GLPI agent calls
-        $rawdata = file_get_contents("php://input");
-        if (!isset($_POST['totp_code']) && !empty($rawdata) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            include_once(GLPI_ROOT . '/front/inventory.php');
-            return;
-        }
-
-        Session::checkCookieSecureConfig();
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $_SESSION["glpicookietest"] = 'testcookie';
 

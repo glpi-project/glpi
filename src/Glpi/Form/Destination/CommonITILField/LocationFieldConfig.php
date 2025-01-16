@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,20 +36,38 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Location;
 use Override;
 
-final class LocationFieldConfig implements JsonFieldInterface
+final class LocationFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_ID = 'question_id';
-    public const LOCATION_ID = 'location_id';
+    public const SPECIFIC_QUESTION_ID = 'specific_question_id';
+    public const SPECIFIC_LOCATION_ID = 'specific_location_id';
 
     public function __construct(
         private LocationFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_location_id = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyHandler(self::SPECIFIC_LOCATION_ID, Location::class),
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
     }
 
     #[Override]
@@ -62,8 +80,8 @@ final class LocationFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::QUESTION_ID],
-            specific_location_id: $data[self::LOCATION_ID],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_location_id: $data[self::SPECIFIC_LOCATION_ID] ?? null
         );
     }
 
@@ -72,14 +90,23 @@ final class LocationFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_ID => $this->specific_question_id,
-            self::LOCATION_ID => $this->specific_location_id,
+            self::SPECIFIC_QUESTION_ID => $this->specific_question_id,
+            self::SPECIFIC_LOCATION_ID => $this->specific_location_id,
         ];
     }
 
-    public function getStrategy(): LocationFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<LocationFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificQuestionId(): ?int

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -405,6 +405,8 @@ class User extends CommonDBTM
         $this->addStandardTab('Auth', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
         $this->addStandardTab('Certificate_Item', $ong, $options);
+        $this->addStandardTab(SoftwareLicense_User::class, $ong, $options);
+        $this->addStandardTab(Contract_User::class, $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -1157,8 +1159,27 @@ class User extends CommonDBTM
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
                 && !$this->currentUserHaveMoreRightThan($input['id'])
             ) {
+                $ignored_fields = [];
                 foreach ($protected_input_keys as $input_key) {
+                    if (
+                        isset($input[$input_key])
+                        && !str_starts_with($input_key, '_') // virtual field
+                        && $input[$input_key] != $this->getField($input_key)
+                    ) {
+                        $ignored_fields[] = $input_key;
+                    }
                     unset($input[$input_key]);
+                }
+                if (!empty($ignored_fields)) {
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('You are not allowed to update the following fields: %s'),
+                            implode(', ', $ignored_fields)
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
                 }
             }
         }
@@ -1208,9 +1229,10 @@ class User extends CommonDBTM
             }
         }
 
-       // Security on default group  update
+        // Security on default group update
         if (
             isset($input['groups_id'])
+            && $input['groups_id'] > 0
             && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
         ) {
             unset($input['groups_id']);
@@ -2878,7 +2900,12 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         $activerand = mt_rand();
         echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
+        $params = ['rand' => $activerand];
+        if (!$higherrights) {
+            $params['readonly'] = true;
+            $params['tooltip'] = __('Not enough rights to change this field');
+        }
+        Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, $params);
         echo "</td>";
         echo "<td>" . _sn('Email', 'Emails', Session::getPluralNumber());
         UserEmail::showAddEmailButton($this);

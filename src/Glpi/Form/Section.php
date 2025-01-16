@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,18 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
+use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
 use Override;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild
+final class Section extends CommonDBChild implements ConditionnableInterface
 {
+    use ConditionnableTrait;
+
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
@@ -55,7 +60,7 @@ final class Section extends CommonDBChild
 
     /**
      * Lazy loaded array of comments
-     * Should always be accessed through getComments()
+     * Should always be accessed through getFormComments()
      * @var Comment[]|null
      */
     protected ?array $comments = null;
@@ -84,6 +89,39 @@ final class Section extends CommonDBChild
         );
     }
 
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        return $input;
+    }
+
     /**
      * Get blocks of this section
      * Block can be a question or a comment
@@ -93,7 +131,7 @@ final class Section extends CommonDBChild
      */
     public function getBlocks(): array
     {
-        $blocks = array_merge($this->getQuestions(), $this->getComments());
+        $blocks = array_merge($this->getQuestions(), $this->getFormComments());
         usort($blocks, fn($a, $b) => $a->fields['rank'] <=> $b->fields['rank']);
 
         return $blocks;
@@ -137,11 +175,8 @@ final class Section extends CommonDBChild
      *
      * @return Comment[]
      */
-    public function getComments(): array
+    public function getFormComments(): array
     {
-        // TODO: getComments is already a method part of the CommonDBTM interface.
-        // We need another name for this.
-
         // Lazy loading
         if ($this->comments === null) {
             $this->comments = [];

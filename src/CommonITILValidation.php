@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -712,11 +712,22 @@ abstract class CommonITILValidation extends CommonDBChild
         global $DB;
 
         $row = $DB->request([
-            'FROM'   => static::getTable(),
+            'FROM'   => static::$itemtype::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'status' => self::WAITING,
-                static::getTargetCriteriaForUser($users_id)
+                [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => static::$items_id,
+                        'FROM'   => static::getTable(),
+                        'WHERE'  => [
+                            'status' => self::WAITING,
+                            static::getTargetCriteriaForUser($users_id),
+                        ]
+                    ])
+                ],
+                'NOT' => [
+                    'status' => static::$itemtype::getClosedStatusArray(),
+                ],
             ]
         ])->current();
 

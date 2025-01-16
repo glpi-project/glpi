@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@ describe('Form access policy', () => {
     beforeEach(() => {
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': 'Test form for the access policy form suite',
+            'is_active': true,
         }).as('form_id');
 
         cy.login();
@@ -47,6 +48,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -59,6 +62,7 @@ describe('Form access policy', () => {
 
         // Check if "allow unauthenticated users" checkbox isn't checked
         cy.findByRole('checkbox', { 'name': 'Allow unauthenticated users ?' }).should('not.be.checked');
+        cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url_before_save');
 
         // Save changes
         cy.findByRole('button', { 'name': 'Save changes' }).click();
@@ -66,8 +70,16 @@ describe('Form access policy', () => {
         // Retrieve the direct access URL
         cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url');
 
-        // Visit the direct access URL
+        // Make sure the url wasn't regenerated
+        cy.get('@direct_access_url_before_save').invoke('val').then((direct_access_url_before_save) => {
+            cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
+                expect(direct_access_url_before_save).to.equal(direct_access_url);
+            });
+        });
+
+        // Visit the direct access URL as non admin (to make sure the token is taken into account)
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
+            cy.changeProfile('Self-Service');
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
@@ -76,6 +88,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set and direct access works with autenticated user', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -105,12 +119,14 @@ describe('Form access policy', () => {
                 url: direct_access_url,
                 failOnStatusCode: false,
             }).then((response) => {
-                expect( response.status).to.eq(403);
+                expect(response.status).to.eq(403);
             });
         });
     });
 
     it('check if form direct access policy can be set and direct access works with unauthenticated user', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -143,6 +159,8 @@ describe('Form access policy', () => {
     });
 
     it('check if form direct access policy can be set and direct access works with unauthenticated user and hide blacklisted questions', () => {
+        cy.changeProfile('Super-Admin');
+
         // Enable direct access policy
         cy.findByRole('region', {
             name: 'Allow direct access'
@@ -207,5 +225,44 @@ describe('Form access policy', () => {
             // Check if the short answer question is displayed
             cy.findByRole('heading', { 'name': 'Short answer question title' }).should('exist');
         });
+    });
+
+    it('check that form can be submitted with direct access', () => {
+        cy.changeProfile('Super-Admin');
+
+        // Enable direct access policy
+        cy.findByRole('region', {
+            name: 'Allow direct access'
+        }).within(() => {
+            cy.findByRole('checkbox', {name: 'Active'})
+                .should('not.be.checked')
+                .click()
+            ;
+        });
+        cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url');
+        cy.findByRole('button', { 'name': 'Save changes' }).click();
+
+        // Add a simple question to the form
+        cy.get('@form_id').then((form_id) => {
+            const tab = 'Glpi\\Form\\Form$main';
+            cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
+        });
+        cy.findByRole('button', { 'name': 'Add a new question' }).click();
+        cy.focused().type('Question 1');
+        cy.findByRole('button', { 'name': 'Save' }).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+
+        // Change profile and go to the form
+        cy.changeProfile('Self-Service');
+        cy.get('@direct_access_url')
+            .invoke('val')
+            .then((direct_access_url) => {
+                cy.visit(direct_access_url);
+                cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+                cy.findByRole('textbox', { 'name': 'Question 1' }).type('My answer');
+                cy.findByRole('button', { 'name': 'Send form' }).click();
+                cy.findByRole('alert').should('contain.text', 'Item successfully created');
+            })
+        ;
     });
 });

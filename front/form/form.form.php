@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,6 @@ if (($_REQUEST['id'] ?? 0) == 0) {
         'is_draft'    => true,
     ]);
     Html::redirect($form->getLinkURL());
-    // Code stop here due to exit() in the Html::redirect() method
 } elseif (isset($_POST['update'])) {
     $id = $_POST['id'] ?? 0;
 

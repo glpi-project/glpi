@@ -4,6 +4,7 @@ includes:
 parameters:
     level: 4
     bootstrapFiles:
+        - stubs/db_config_classes.php
         - stubs/glpi_constants.php
     paths:
         - ajax
@@ -13,16 +14,60 @@ parameters:
         - src
     universalObjectCratesClasses:
         - Sabre\VObject\Node
+    dynamicConstantNames:
+        - GLPI_AJAX_DASHBOARD
+        - GLPI_ALLOW_IFRAME_IN_RICH_TEXT
+        - GLPI_CACHE_DIR
+        - GLPI_CALDAV_IMPORT_STATE
+        - GLPI_CENTRAL_WARNINGS
+        - GLPI_CONFIG_DIR
+        - GLPI_CRON_DIR
+        - GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE
+        - GLPI_DOC_DIR
+        - GLPI_DOCUMENTATION_ROOT_URL
+        - GLPI_ENVIRONMENT_TYPE
+        - GLPI_FORCE_MAIL
+        - GLPI_GRAPH_DIR
+        - GLPI_INSTALL_MODE
+        - GLPI_INVENTORY_DIR
+        - GLPI_LOCAL_I18N_DIR
+        - GLPI_LOCK_DIR
+        - GLPI_LOG_DIR
+        - GLPI_LOG_LVL
+        - GLPI_MARKETPLACE_ALLOW_OVERRIDE
+        - GLPI_MARKETPLACE_DIR
+        - GLPI_MARKETPLACE_ENABLE
+        - GLPI_MARKETPLACE_MANUAL_DOWNLOADS
+        - GLPI_MARKETPLACE_PLUGINS_API_URI
+        - GLPI_MARKETPLACE_PRERELEASES
+        - GLPI_NETWORK_REGISTRATION_API_URL
+        - GLPI_NETWORK_MAIL
+        - GLPI_NETWORK_SERVICES
+        - GLPI_PICTURE_DIR
+        - GLPI_PLUGIN_DOC_DIR
+        - GLPI_RSS_DIR
+        - GLPI_SERVERSIDE_URL_ALLOWLIST
+        - GLPI_SESSION_DIR
+        - GLPI_STRICT_DEPRECATED
+        - GLPI_TELEMETRY_URI
+        - GLPI_TEXT_MAXSIZE
+        - GLPI_THEMES_DIR
+        - GLPI_TMP_DIR
+        - GLPI_UPLOAD_DIR
+        - GLPI_USER_AGENT_EXTRA_COMMENTS
+        - GLPI_VAR_DIR
+        - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
+        - PLUGINS_DIRECTORIES
+        - TU_USER
     ignoreErrors:
-        - '/Instantiated class (DB|DBSlave) not found/'
-        - '/Instantiated class XHProfRuns_Default not found/'
-        - '/Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse/'
-        - { message: '/Variable \$this might not be defined/', paths: [ 'inc/includes.php' ] }
-        - { message: '/Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController./', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
-        - { message: '/Access to protected property/', paths: [ 'front/dropdown.common.form.php' ] }
-        - { message: '/LDAP\\Connection/', reportUnmatched: false }
+        - '~Instantiated class XHProfRuns_Default not found~'
+        - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
+        - { message: '~Variable \$this might not be defined~', paths: [ 'inc/includes.php' ] }
+        - { message: '~Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController.~', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
+        - { message: '~Access to protected property~', paths: [ 'front/dropdown.common.form.php' ] }
+        - { message: '~LDAP\\Connection~', reportUnmatched: false }
         -
-            message: '/\/config\/config_db.php" is not a file or it does not exist./'
+            message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule

@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -76,9 +76,9 @@
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
                     {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
                     <tr>
-                        {% if super_header_raw != 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
+                        {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
-                        {% if super_header_raw != 'th_elements' %}</th>{% endif %}
+                        {% if super_header_raw is not same as 'th_elements' %}</th>{% endif %}
                     </tr>
                 {% endif %}
                 {% if no_header is not defined or no_header == false %}
@@ -237,11 +237,11 @@
                                                 {{ entry[colkey] }}
                                             </span>
                                         {% elseif formatter starts with "progress" %}
-                                            {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                            {{ progress_bar(entry[colkey]) }}
                                         {% elseif formatter == "date" %}
-                                            {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_date }}
                                         {% elseif formatter == "datetime" %}
-                                            {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                            {{ entry[colkey]|formatted_datetime }}
                                         {% elseif formatter == "duration" %}
                                             {{ entry[colkey]|formatted_duration }}
                                         {% elseif formatter == "bytesize" %}
@@ -260,11 +260,24 @@
                                             {% set initials = entry_data['initials'] %}
                                             {% set bg_color = img is not empty ? 'inherit' : entry_data['initials_bg'] %}
                                             <span class="avatar {{ avatar_size }} rounded"
-                                                  style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
-                                                   {% if img is empty %}
-                                                       {{ initials }}
-                                                   {% endif %}
-                                                </span>
+                                                style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
+                                                {% if img is empty %}
+                                                    {{ initials }}
+                                                {% endif %}
+                                            </span>
+                                        {% elseif formatter == "badge" %}
+                                            {% set entry_data = entry[colkey] %}
+                                            {% set content = entry_data['content'] %}
+                                            {% set color = entry_data['color'] ?? '#BBBBBB' %}
+                                            {% if not (color matches '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/') %}
+                                                {% set color = '#BBBBBB' %}
+                                            {% endif %}
+                                            {% if content is not empty %}
+                                                <div class="badge_block" style="border-color: {{ color }}">
+                                                    <span class="me-1" style="background: {{ color }}"></span>
+                                                    {{ content }}
+                                                </div>
+                                            {% endif %}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}

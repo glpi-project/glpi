@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -90,7 +90,8 @@ final class AnswersHandler
     public function saveAnswers(
         Form $form,
         array $answers,
-        int $users_id
+        int $users_id,
+        array $files = []
     ): AnswersSet {
         /** @var \DBmysql $DB */
         global $DB;
@@ -103,7 +104,7 @@ final class AnswersHandler
             $DB->beginTransaction();
 
             try {
-                $answers_set = $this->doSaveAnswers($form, $answers, $users_id);
+                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $files);
                 $DB->commit();
                 return $answers_set;
             } catch (\Throwable $e) {
@@ -137,7 +138,8 @@ final class AnswersHandler
     protected function doSaveAnswers(
         Form $form,
         array $answers,
-        int $users_id
+        int $users_id,
+        array $files = []
     ): AnswersSet {
         // Save answers
         $answers_set = $this->createAnswserSet(
@@ -145,6 +147,7 @@ final class AnswersHandler
             $answers,
             $users_id
         );
+        $answers_set->setSubmittedFiles($files);
 
         // Create destinations objects
         $this->createDestinations(

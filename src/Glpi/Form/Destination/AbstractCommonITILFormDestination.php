@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -132,6 +132,9 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             );
         }
 
+        // Add linked items
+        $input = $this->setFilesInput($input, $answers_set);
+
         // Create commonitil object
         $itil_object = new $itemtype();
         if (!($itil_object instanceof CommonITILObject)) {
@@ -199,6 +202,23 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         ];
     }
 
+    /**
+     * Get a configurable field by its key.
+     *
+     * @param string $key
+     * @return \Glpi\Form\Destination\AbstractConfigField|null
+     */
+    public function getConfigurableFieldByKey(string $key): ?AbstractConfigField
+    {
+        foreach ($this->getConfigurableFields() as $field) {
+            if ($field::getKey() === $key) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
     final public function formatConfigInputName(string $field_key): string
     {
         // Handle array fields
@@ -237,6 +257,20 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         foreach ($fields as $field => $value) {
             $input[$field] = $value;
         }
+
+        return $input;
+    }
+
+    private function setFilesInput(array $input, AnswersSet $answers_set): array
+    {
+        $files = $answers_set->getSubmittedFiles();
+        if (empty($files) || empty($files['filename'])) {
+            return $input;
+        }
+
+        $input['_filename']        = $files['filename'];
+        $input['_prefix_filename'] = $files['prefix'];
+        $input['_tag_filename']    = $files['tag'];
 
         return $input;
     }

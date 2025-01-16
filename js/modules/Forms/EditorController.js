@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,6 +69,12 @@ export class GlpiFormEditorController
     #options;
 
     /**
+     * Subtypes options for each question type
+     * @type {Object}
+     */
+    #question_subtypes_options;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -83,6 +89,7 @@ export class GlpiFormEditorController
         this.#defaultQuestionType = defaultQuestionType;
         this.#templates           = templates;
         this.#options             = {};
+        this.#question_subtypes_options    = {};
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -117,6 +124,13 @@ export class GlpiFormEditorController
                 .find("[data-glpi-form-editor-form-details-name]")[0]
                 .select();
         }
+
+        this.computeState();
+
+        // Some radios wont be displayed correclty as checked as they share the same name.
+        // This is fixed by re-checking them after the state has been computed.
+        // Not sure if there is a better solution for this, it doesn't feel great.
+        this.#refreshCheckedInputs();
     }
 
     /**
@@ -139,13 +153,13 @@ export class GlpiFormEditorController
             () => this.#handleBackendUpdateResponse()
         );
 
+
         // Handle clicks inside the form editor, remove the active item
         $(document)
             .on(
                 'click',
                 '[data-glpi-form-editor]',
                 () => {
-                    this.#setFormDetailsAsActive();
                     $('.simulate-focus').removeClass('simulate-focus');
                 }
             );
@@ -162,6 +176,23 @@ export class GlpiFormEditorController
             .on(
                 'tinyMCEClick',
                 (e, original_event) => this.#handleTinyMCEClick(original_event)
+            );
+
+
+        // Handle visiblity editor dropdowns
+        // The dropdown content will be re-rendered each time it is opened.
+        // This ensure the selectable data is always up to date (i.e. the
+        // question selector has up to date questions names, contains all newly
+        // added questions and do not include deleted questions).
+        $(document)
+            .on(
+                'show.bs.dropdown',
+                '[data-glpi-form-editor-visibility-dropdown]',
+                (e) => this.#renderVisibilityEditor(
+                    $(e.target)
+                        .parent()
+                        .find('[data-glpi-form-editor-visibility-editor]')
+                ),
             );
 
         // Compute state before submitting the form
@@ -226,6 +257,16 @@ export class GlpiFormEditorController
      */
     registerQuestionTypeOptions(type, options) {
         this.#options[type] = options;
+    }
+
+    /**
+     * Register new subtypes options for the given question type.
+     *
+     * @param {string} type    Question type
+     * @param {Object} options Subtypes options for the question type
+     */
+    registerQuestionSubTypesOptions(type, options) {
+        this.#question_subtypes_options[type] = options;
     }
 
     /**
@@ -316,6 +357,13 @@ export class GlpiFormEditorController
                 );
                 break;
 
+            case "change-question-sub-type":
+                this.#changeQuestionSubType(
+                    target.closest("[data-glpi-form-editor-question]"),
+                    target.val()
+                );
+                break;
+
             // Add a new section at the end of the form
             case "add-section":
                 this.#addSection(
@@ -399,12 +447,58 @@ export class GlpiFormEditorController
                     `),
                 );
                 break;
+
             // Delete the target comment
             case "delete-comment":
                 this.#deleteComment(
                     target.closest("[data-glpi-form-editor-comment]")
                 );
                 break;
+
+            case "show-visibility-dropdown":
+                this.#showVisibilityDropdown(
+                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
+                );
+                break;
+
+            // Set the conditional visibility of a section/question/comment
+            case "set-visiblity-value": {
+                const input = $(`#${target.attr('for')}`);
+                this.#setVisibilityValue(
+                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]'),
+                    input.val()
+                );
+                break;
+            }
+
+            // Re-render the visibility editor
+            case "render-visibility-editor": {
+                this.#renderVisibilityEditor(
+                    $(target).closest(
+                        '[data-glpi-form-editor-visibility-editor]'
+                    )
+                );
+                break;
+            }
+
+            // Delete the selected conditon and re-render the visibility editor
+            case "delete-condition": {
+                this.#deleteCondition(
+                    $(target).closest('[data-glpi-form-editor-visibility-editor]'),
+                    $(target)
+                        .closest('[data-glpi-form-editor-condition]')
+                        .data('glpi-form-editor-condition-index')
+                );
+                break;
+            }
+
+            // Add a new empty condition and re-render the visibility editor
+            case "add-condition": {
+                this.#addNewEmptyCondition(
+                    $(target).closest('[data-glpi-form-editor-visibility-editor]')
+                );
+                break;
+            }
 
             // Unknown action
             default:
@@ -438,7 +532,7 @@ export class GlpiFormEditorController
                 s_index
             );
             this.#setItemRank($(section), s_index);
-            this.#remplaceEmptyIdByUuid($(section));
+            this.#setUuid($(section));
 
             // Find all items for this section (both questions and comments)
             const items = $(section).find("[data-glpi-form-editor-question], [data-glpi-form-editor-comment]");
@@ -454,7 +548,7 @@ export class GlpiFormEditorController
                     global_block_indices[itemType]
                 );
                 this.#setItemRank($(item), index);
-                this.#remplaceEmptyIdByUuid($(item));
+                this.#setUuid($(item));
                 this.#setParentSection($(item), $(section));
 
                 // Increment the index for this item type
@@ -562,13 +656,12 @@ export class GlpiFormEditorController
      *
      * @param {jQuery} item Section or question
      */
-    #remplaceEmptyIdByUuid(item) {
-        const id = this.#getItemInput(item, "id");
+    #setUuid(item) {
+        const uuid = this.#getItemInput(item, "uuid");
 
-        if (id == 0) {
+        if (uuid == '') {
             // Replace by UUID
-            this.#setItemInput(item, "id", getUUID());
-            this.#setItemInput(item, "_use_uuid", 1);
+            this.#setItemInput(item, "uuid", getUUID());
         }
     }
 
@@ -582,15 +675,8 @@ export class GlpiFormEditorController
      *
      */
     #setParentSection(question, section) {
-        const id = this.#getItemInput(section, "id");
-        this.#setItemInput(question, "forms_sections_id", id);
-
-        // If parent is using a UUID, we need to indicate it in the question too
-        this.#setItemInput(
-            question,
-            "_use_uuid_for_sections_id",
-            this.#getItemInput(section, "_use_uuid")
-        );
+        const uuid = this.#getItemInput(section, "uuid");
+        this.#setItemInput(question, "forms_sections_uuid", uuid);
     }
 
     /**
@@ -968,6 +1054,24 @@ export class GlpiFormEditorController
             );
         }
 
+        // When an input/label are coupled using id/for properties, we must update
+        // them to make sure they are unique too.
+        copy.find('input[id]').each(function() {
+            const id = $(this).attr('id');
+            const labels = copy.find(`label[for=${id}]`);
+            if (labels.length == 0) {
+                return;
+            }
+
+            const rand = getUUID();
+            const new_id = `${id}_${rand}`;
+
+            $(this).attr('id', new_id);
+            labels.each(function() {
+                $(this).attr('for', new_id);
+            });
+        });
+
         // Insert the new question
         switch (action) {
             case "append":
@@ -1216,7 +1320,61 @@ export class GlpiFormEditorController
             extracted_default_value
         );
 
+        // Update sub question types
+        if (this.#question_subtypes_options[type] !== undefined) {
+            const sub_types_select = question.find("[data-glpi-form-editor-question-sub-type-selector]");
+
+            // Show sub question type selector
+            sub_types_select.closest("div").removeClass("d-none");
+            sub_types_select.attr('disabled', false);
+
+            // Remove current sub types options
+            sub_types_select.find('optgroup, option').remove();
+
+            // Find sub types available for the new type
+            const new_sub_types = this.#question_subtypes_options[type].subtypes;
+
+            // Copy the new sub types options into the dropdown
+            for (const category in new_sub_types) {
+                const optgroup = $(`<optgroup label="${category}"></optgroup>`);
+                for (const [sub_type, label] of Object.entries(new_sub_types[category])) {
+                    const option = $(`<option value="${sub_type}">${label}</option>`);
+                    optgroup.append(option);
+                }
+                sub_types_select.append(optgroup);
+            }
+
+            // Set the default sub type
+            if (this.#question_subtypes_options[type].default_value) {
+                sub_types_select.val(this.#question_subtypes_options[type].default_value);
+            }
+
+            // Update the field name and aria-label
+            sub_types_select.attr("name", this.#question_subtypes_options[type].field_name);
+            sub_types_select.attr("aria-label", this.#question_subtypes_options[type].field_aria_label);
+
+            // Remove the "original-name" data attribute to avoid conflicts
+            sub_types_select.removeAttr("data-glpi-form-editor-original-name");
+
+            // Trigger sub type change
+            sub_types_select.trigger("change");
+        } else {
+            // Hide sub question type selector
+            question.find("[data-glpi-form-editor-question-sub-type-selector]")
+                .attr('disabled', true)
+                .closest("div").addClass("d-none");
+        }
+
         $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);
+    }
+
+    /**
+     * Handle the change of the sub type of the given question.
+     * @param {jQuery} question Question to update
+     * @param {string} sub_type New sub type
+     */
+    #changeQuestionSubType(question, sub_type) {
+        $(document).trigger('glpi-form-editor-question-sub-type-changed', [question, sub_type]);
     }
 
     /**
@@ -1687,11 +1845,11 @@ export class GlpiFormEditorController
         const new_section = this.#copy_template(section, section, "after", true);
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_section, "id", 0);
+        this.#setItemInput(new_section, "uuid", '');
         new_section
             .find("[data-glpi-form-editor-question]")
             .each((index, question) => {
-                this.#setItemInput($(question), "id", 0);
+                this.#setItemInput($(question), "uuid", '');
             })
         ;
 
@@ -1709,7 +1867,7 @@ export class GlpiFormEditorController
         const new_question = this.#copy_template(question, question, "after", true);
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_question, "id", 0);
+        this.#setItemInput(new_question, "uuid", '');
         this.#setActiveItem(new_question);
 
         $(document).trigger('glpi-form-editor-question-duplicated', [question, new_question]);
@@ -1725,7 +1883,7 @@ export class GlpiFormEditorController
         const new_comment = this.#copy_template(comment, comment, "after");
         this.#enableTinyMce(ids);
 
-        this.#setItemInput(new_comment, "id", 0);
+        this.#setItemInput(new_comment, "uuid", '');
         this.#setActiveItem(new_comment);
     }
 
@@ -1801,5 +1959,163 @@ export class GlpiFormEditorController
     #setFormDetailsAsActive() {
         const form_details = $(this.#target).find("[data-glpi-form-editor-form-details]");
         this.#setActiveItem(form_details);
+    }
+
+    #showVisibilityDropdown(container) {
+        container
+            .find('[data-glpi-form-editor-visibility-dropdown-container]')
+            .removeClass('d-none')
+        ;
+
+        const dropdown = container
+            .find('[data-glpi-form-editor-visibility-dropdown-container]')
+            .find('[data-glpi-form-editor-visibility-dropdown]')
+        ;
+        bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
+    }
+
+    #setVisibilityValue(container, value) {
+        // Show/hide badges in the container
+        container.find('[data-glpi-editor-visibility-badge]')
+            .removeClass('d-flex')
+            .addClass('d-none')
+        ;
+        container.find(`[data-glpi-editor-visibility-badge=${value}]`)
+            .removeClass('d-none')
+            .addClass('d-flex')
+        ;
+
+        // Show/hide the condition editor
+        const should_displayed_editor = (container
+            .find(`[data-glpi-form-editor-visibility-editor-display-for-${value}]`)
+            .length
+        ) > 0;
+        container.find(`[data-glpi-form-editor-visibility-editor]`)
+            .toggleClass('d-none', !should_displayed_editor)
+        ;
+    }
+
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
+     * This method compute the available questions of the forms, the defined
+     * conditions and the current selected item.
+     */
+    #getFormStateForVisibilityEditor(container) {
+        this.computeState();
+
+        const form_data = {
+            'questions': [],
+            'conditions': [],
+            'selected_item_uuid': this.#getItemInput(
+                container.closest('[data-glpi-form-editor-block], [data-glpi-form-editor-section-details]'),
+                'uuid',
+            ),
+            // For now, the type is hardcoded to 'question' but we will support
+            // conditions on section and comments too
+            'selected_item_type': container.closest(
+                '[data-glpi-form-editor-condition-type]'
+            ).data('glpi-form-editor-condition-type'),
+        };
+
+        // Extract all questions
+        $(this.#target)
+            .find("[data-glpi-form-editor-question]")
+            .each((_index, question) => {
+                form_data.questions.push({
+                    'uuid': this.#getItemInput($(question), "uuid"),
+                    'name': this.#getItemInput($(question), "name"),
+                    'type': this.#getItemInput($(question), "type"),
+                });
+            })
+        ;
+
+        // Extract already defined conditions for the current question
+        container.find('[data-glpi-form-editor-condition]')
+            .each((_index, condition) => {
+                const condition_data = {};
+
+                // Try to find a selected logic operator
+                const condition_logic_operator = $(condition).find(
+                    '[data-glpi-form-editor-condition-logic-operator]'
+                );
+                if (condition_logic_operator.length > 0) {
+                    condition_data.logic_operator = condition_logic_operator.val();
+                }
+
+                // Try to find a selected item
+                const condition_item = $(condition).find(
+                    '[data-glpi-form-editor-condition-item]'
+                );
+                if (condition_item.length > 0) {
+                    condition_data.item = condition_item.val();
+                }
+
+                // Try to find a selected value operator
+                const condition_value_operator = $(condition).find(
+                    '[data-glpi-form-editor-condition-value-operator]'
+                );
+                if (condition_value_operator.length > 0) {
+                    condition_data.value_operator = condition_value_operator.val();
+                }
+
+                // Try to find a selected value
+                const condition_value = $(condition).find(
+                    '[data-glpi-form-editor-condition-value]'
+                );
+                if (condition_value.length > 0) {
+                    condition_data.value = condition_value.val();
+                }
+
+                form_data.conditions.push(condition_data);
+            })
+        ;
+
+        return form_data;
+    }
+
+    async #renderVisibilityEditor(container, form_data = null) {
+        if (form_data === null) {
+            form_data = this.#getFormStateForVisibilityEditor(container);
+        }
+
+        const content = await $.post('/ajax/Form/ConditionalVisibilityEditor', {
+            form_data: form_data,
+        });
+        container.html(content);
+    }
+
+    #addNewEmptyCondition(container) {
+        const form_data = this.#getFormStateForVisibilityEditor(container);
+
+        // Add new empty condition
+        form_data.conditions.push({
+            'item': '',
+        });
+
+        this.#renderVisibilityEditor(container, form_data);
+    }
+
+    #deleteCondition(container, condition_index) {
+        const form_data = this.#getFormStateForVisibilityEditor(container);
+
+        // Remove the condition from the list
+        form_data.conditions = form_data.conditions.filter((_condition, index) => {
+            return index != condition_index;
+        });
+
+        this.#renderVisibilityEditor(container, form_data);
+    }
+
+    #refreshCheckedInputs() {
+        $(this.#target)
+            .find('[data-glpi-editor-refresh-checked]')
+            .removeProp('checked')
+        ;
+        $(this.#target)
+            .find('[data-glpi-editor-refresh-checked]')
+            .prop('checked', true)
+        ;
     }
 }

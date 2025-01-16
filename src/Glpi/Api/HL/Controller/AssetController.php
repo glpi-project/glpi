@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -564,6 +564,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'printer_models' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of printer models that can use this cartridge',
@@ -671,6 +673,8 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                 'consumables' => [
                     'type' => Doc\Schema::TYPE_ARRAY,
                     'description' => 'List of consumables',
@@ -1680,6 +1684,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['GET'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1694,7 +1699,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Cartridge', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Cartridge/{cartridgeitems_id}', methods: ['POST'], tags: ['Assets'], requirements: [
+        'cartridgeitems_id' => '\d+'
+    ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a cartridge',
@@ -1712,6 +1719,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['PATCH'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1731,6 +1739,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Cartridge/{cartridgeitems_id}/{id}', methods: ['DELETE'], requirements: [
+        'cartridgeitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1820,6 +1829,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['GET'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1834,7 +1844,9 @@ final class AssetController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('Consumable', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], tags: ['Assets'])]
+    #[Route(path: '/Consumable/{consumableitems_id}', methods: ['POST'], requirements: [
+        'consumableitems_id' => '\d+'
+    ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a consumable',
@@ -1852,6 +1864,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['PATCH'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -1871,6 +1884,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Consumable/{consumableitems_id}/{id}', methods: ['DELETE'], requirements: [
+        'consumableitems_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -2546,6 +2560,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['GET'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -2590,6 +2605,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['PATCH'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]
@@ -2609,6 +2625,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/Software/{software_id}/Version/{id}', methods: ['DELETE'], requirements: [
+        'software_id' => '\d+',
         'id' => '\d+'
     ], tags: ['Assets'])]
     #[RouteVersion(introduced: '2.0')]

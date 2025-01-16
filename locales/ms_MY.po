@@ -5,8 +5,8 @@
 # 
 # Translators:
 # mohd fattah <punkrock@outlook.com>, 2023
-# Cédric Anne, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
+# Cédric Anne, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
@@ -4497,7 +4497,7 @@ msgstr[0] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Item berkaitan"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -8553,7 +8553,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Peranti"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -14919,7 +14919,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17492,7 +17492,7 @@ msgstr "Selain"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Selain"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20424,7 +20424,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Isi semula"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -24414,7 +24414,7 @@ msgstr "Jumlah"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Jumlah"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017

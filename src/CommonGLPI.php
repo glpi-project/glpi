@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -853,10 +853,8 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURLWithID($id = 0, $full = true)
     {
-
-        $itemtype = get_called_class();
-        $link     = $itemtype::getFormURL($full);
-        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . $id;
+        $link     = static::getFormURL($full);
+        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . ((int) $id);
         return $link;
     }
 
@@ -1181,10 +1179,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $name = '';
         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-            $name = $this->getName();
-            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
-            }
+            $name = sprintf(__('%1$s - ID %2$d'), $this->getName(), $this->fields['id']);
         }
 
         return $name;

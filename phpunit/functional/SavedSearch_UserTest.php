@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,10 +85,12 @@ class SavedSearch_UserTest extends DbTestCase
                 'sort'             => '2',
                 'order'            => 'DESC',
                 'savedsearches_id' => $bk_id,
-                'criteria'         => [0 => ['field' => '5',
-                    'searchtype' => 'equals',
-                    'value' => $uid
-                ]
+                'criteria'         => [
+                    0 => [
+                        'field' => '5',
+                        'searchtype' => 'equals',
+                        'value' => $uid
+                    ]
                 ],
                 'reset'            => 'reset',
             ],

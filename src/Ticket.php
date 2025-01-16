@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -138,10 +138,7 @@ class Ticket extends CommonITILObject
 
     public function canAssign()
     {
-        if (
-            isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
-        ) {
+        if ($this->isDeleted() || (!$this->isNewItem() && $this->isClosed())) {
             return false;
         }
         return Session::haveRight(static::$rightname, self::ASSIGN);
@@ -1474,8 +1471,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
@@ -1782,8 +1779,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
@@ -3135,6 +3132,24 @@ JAVASCRIPT;
             }
         }
 
+        $tab[] = [
+            'id'                 => '111',
+            'table'              => ProjectTask::getTable(),
+            'field'              => 'name',
+            'name'               => ProjectTask::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => ProjectTask_Ticket::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
@@ -3542,13 +3557,16 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
+        $initial_creation = static::isNewID($ID) && !$this->hasSavedInput();
+
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
         }
 
-        if (!$ID) {
+        if ($initial_creation) {
+            // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
@@ -3739,7 +3757,6 @@ JAVASCRIPT;
             'canpriority'               => $canpriority,
             'canassign'                 => $canassign,
             'canassigntome'             => $canassigntome,
-            'load_kb_sol'               => $options['load_kb_sol'] ?? 0,
             'userentities'              => $userentities,
             'cancreateuser'             => $cancreateuser,
             'canreadnote'               => Session::haveRight('entity', READNOTE),
@@ -4302,13 +4319,13 @@ JAVASCRIPT;
                                 'link'     => 'AND',
                                 'criteria' => [
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'morethan',
                                         'value'       => 'NOW',
                                         'link'        => 'OR'
                                     ],
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'empty',
                                         'value'       => 'NULL',
                                         'link'        => 'OR'
@@ -4639,6 +4656,11 @@ JAVASCRIPT;
             $opt['criteria'][1]['criteria'][3]['link']       = 'OR';
             $opt['criteria'][1]['link']       = 'AND';
 
+            $opt['criteria'][2]['field']      = 12; // ticket status
+            $opt['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][2]['value']      = Ticket::CLOSED;
+            $opt['criteria'][2]['link']       = 'AND NOT';
+
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
                 'text'    => __('Tickets waiting for your approval'),
@@ -4779,21 +4801,13 @@ JAVASCRIPT;
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-                    echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __s('Last tickets') . "</th></tr>";
-                    echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __s('Child groups') . "&nbsp;";
-                    Dropdown::showYesNo(
-                        'tree',
-                        $tree,
-                        -1,
-                        ['on_change' => 'reloadTab("start=0&tree="+this.value)']
-                    );
+                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                        'tree' => $tree
+                    ]);
                 } else {
                     $tree = 0;
                 }
-                echo "</td></tr></table>";
                 break;
         }
         Item_Ticket::showListForItem($item, $withtemplate, $options);

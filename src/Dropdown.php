@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
+use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -1219,6 +1220,7 @@ JAVASCRIPT;
                     'PlanningExternalEventTemplate' => null,
                     'PlanningEventCategory' => null,
                     'PendingReason' => null,
+                    Category::class => null,
                 ],
 
                 _n('Type', 'Types', Session::getPluralNumber()) => [
@@ -2333,7 +2335,11 @@ JAVASCRIPT;
                     $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' .  htmlescape($param["width"]) . '"';
+            if ($param['tooltip']) {
+                $output .= ' title="' . htmlescape($param['tooltip']) . '"';
+            }
+            $output .= '>' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected

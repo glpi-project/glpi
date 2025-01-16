@@ -7,10 +7,10 @@
 # Eugenijus Januškevičius <eugenijus.januskevicius@vgtu.lt>, 2022
 # Paulius Misevičius <strongis@gmail.com>, 2022
 # Povilas Mankevičius <povilas.mankevicius@gmail.com>, 2022
-# Arūnas Paulauskas <arunas.paulauskas@gmail.com>, 2022
 # Egidijus Z., 2022
 # Tomas Brudnius <tomas.brudnius@gmail.com>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
+# Arūnas Paulauskas <arunas.paulauskas@gmail.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
@@ -4697,7 +4697,7 @@ msgstr[3] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Susiję elementai"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5405,7 +5405,7 @@ msgstr "Prekinis ženklas"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Prekinis ženklas"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -9003,7 +9003,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Įrenginių"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9436,7 +9436,7 @@ msgstr "Dokumentas"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Dokumentas"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15687,7 +15687,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Pagrindinis"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -16247,7 +16247,7 @@ msgstr[3] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Vaizduoklis"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -18365,7 +18365,7 @@ msgstr "Kitas"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Kitas"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -21520,7 +21520,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Atkurti"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -22240,7 +22240,7 @@ msgstr ""
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Antrinis"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23964,7 +23964,7 @@ msgstr "Sistema"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25674,7 +25674,7 @@ msgstr "Viso"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Viso"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27606,7 +27606,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Rodiniai"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

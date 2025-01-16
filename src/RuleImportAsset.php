@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -446,7 +446,7 @@ class RuleImportAsset extends Rule
         $this->link_criteria_port = false;
 
         if (!$this->preComputeCriteria($input)) {
-            // logged in place, just exit
+            // logged in place, just ignore
             return false;
         }
 
@@ -943,7 +943,7 @@ class RuleImportAsset extends Rule
                     }
 
                     $back_class = Unmanaged::class;
-                    if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                    if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
@@ -991,7 +991,7 @@ class RuleImportAsset extends Rule
                         }
 
                         $back_class = Unmanaged::class;
-                        if (is_a($class, \Glpi\Inventory\Asset\MainAsset::class)) {
+                        if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
                             $back_class = $class->getItemtype();
                         }
 
@@ -1057,7 +1057,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get itemtypes have state_type and unmanaged devices
+     * Get itemtypes
      *
      * @global array $CFG_GLPI
      * @return array
@@ -1068,7 +1068,7 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         $types = [];
-        foreach ($CFG_GLPI["state_types"] as $itemtype) {
+        foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
             if (class_exists($itemtype)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();

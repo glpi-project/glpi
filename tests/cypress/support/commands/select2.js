@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,15 +70,22 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
 ) => {
     cy.wrap(subject).click();
 
-    // Reduce the scope to the dropdown
-    if (subject.hasClass('select2-selection--multiple')) {
-        cy.wrap(subject).find('.select2-search__field').then(($input) => {
-            cy.get(`#${$input.attr('aria-controls')}`)
-                .findByRole('option', { name: new_value })
-                .click();
-        });
-    } else {
-        const select2_id = subject.get(0).children[0].id.replace('-container', '');
-        cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: new_value }).click();
-    }
+    // Select2 content is displayed at the root of the DOM, we must thus
+    // "recalibrate" the within function using the entire document.
+    // Without this, any call inside a `within` block would fail as the select2
+    // content will be unreachable.
+    cy.document().its('body').within(() => {
+        // Reduce the scope to the dropdown
+        if (subject.hasClass('select2-selection--multiple')) {
+            cy.wrap(subject).find('.select2-search__field').then(($input) => {
+                cy.get(`#${$input.attr('aria-controls')}`)
+                    .findByRole('option', { name: new_value })
+                    .click();
+            });
+        } else {
+            const select2_id = subject.get(0).children[0].id.replace('-container', '');
+            cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: new_value }).click();
+        }
+    });
+
 });

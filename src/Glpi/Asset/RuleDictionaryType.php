@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,13 +40,13 @@ use Toolbox;
 abstract class RuleDictionaryType extends RuleDictionnaryDropdown
 {
     /**
-     * Asset definition.
+     * Asset definition system name.
      *
      * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
      * Must be defined by child class too to ensure that assigning a value to this property will affect
      * each child classe independently.
      */
-    protected static AssetDefinition $definition;
+    protected static string $definition_system_name;
 
     /**
      * Get the asset definition related to concrete class.
@@ -55,11 +55,12 @@ abstract class RuleDictionaryType extends RuleDictionnaryDropdown
      */
     public static function getDefinition(): AssetDefinition
     {
-        if (!(static::$definition instanceof AssetDefinition)) {
+        $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
+        if (!($definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
-        return static::$definition;
+        return $definition;
     }
 
     public function getCriterias()

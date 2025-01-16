@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -79,26 +79,18 @@ class LocationField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . LocationFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
                 'empty_label'     => __("Select a location..."),
                 'value'           => $config->getSpecificLocationID(),
-                'input_name'      => $input_name . "[" . LocationFieldConfig::LOCATION_ID . "]",
+                'input_name'      => $input_name . "[" . LocationFieldConfig::SPECIFIC_LOCATION_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . LocationFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . LocationFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getLocationQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -114,8 +106,11 @@ class LocationField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $location_id = $config->getStrategy()->getLocationID($config, $answers_set);
+        $location_id = $strategy->getLocationID($config, $answers_set);
 
         // Do not edit input if invalid value was found
         if (Location::getById($location_id) === false) {
@@ -135,7 +130,7 @@ class LocationField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (LocationFieldStrategy::cases() as $strategies) {

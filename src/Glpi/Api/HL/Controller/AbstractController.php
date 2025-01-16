@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -127,7 +127,7 @@ abstract class AbstractController
     }
 
     /**
-     * @return array<string, Doc\Schema>
+     * @return array<string, array>
      */
     protected static function getRawKnownSchemas(): array
     {
@@ -138,7 +138,7 @@ abstract class AbstractController
      * Get all known schemas for this controller for the requested API version
      * @param ?string $api_version The API version or null if all versions should be returned
      * @return array
-     * @phpstan-return array<string, Doc\Schema>
+     * @phpstan-return array<string, array>
      */
     final public static function getKnownSchemas(?string $api_version): array
     {
@@ -226,12 +226,12 @@ abstract class AbstractController
      * @param string $status
      * @phpstan-param self::ERROR_* $status
      * @param string $title
-     * @param ?string $detail
+     * @param string|array|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
      * @return array
      * @phpstan-return ErrorResponseBody
      */
-    public static function getErrorResponseBody(string $status, string $title, ?string $detail = null, array $additionalMessages = []): array
+    public static function getErrorResponseBody(string $status, string $title, string|array|null $detail = null, array $additionalMessages = []): array
     {
         $body = [
             'status' => $status,

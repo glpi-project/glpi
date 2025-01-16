@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,6 @@
  */
 
 use Glpi\Helpdesk\DefaultDataManager;
-use Glpi\Form\Form;
 use Glpi\Rules\RulesManager;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
@@ -44,7 +43,6 @@ use Glpi\Toolbox\VersionParser;
  **/
 class Update
 {
-    private $args = [];
     private $DB;
     /**
      * @var Migration
@@ -65,37 +63,12 @@ class Update
      * Constructor
      *
      * @param object $DB   Database instance
-     * @param array  $args Command line arguments; default to empty array
      * @param string $migrations_directory
      */
-    public function __construct($DB, $args = [], string $migrations_directory = GLPI_ROOT . '/install/migrations/')
+    public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
-        $this->args = $args;
         $this->migrations_directory = $migrations_directory;
-    }
-
-    /**
-     * Initialize session for update
-     *
-     * @return void
-     */
-    public function initSession()
-    {
-        if (Session::canWriteSessionFiles()) {
-            Session::setPath();
-        } else {
-            if (isCommandLine()) {
-                die("Can't write in " . GLPI_SESSION_DIR . "\n");
-            }
-        }
-        Session::start();
-
-        if (isCommandLine()) {
-           // Init debug variable
-            $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-        }
     }
 
     /**
@@ -203,7 +176,8 @@ class Update
         }
 
         if (version_compare($current_version, '0.85.5', 'lt')) {
-            die('Upgrade from version < 0.85.5 is not supported!');
+            echo('Upgrade from version < 0.85.5 is not supported!');
+            exit(1);
         }
 
         $DB = $this->DB;
@@ -249,10 +223,10 @@ class Update
             );
             if (isCommandLine()) {
                 echo "$message\n";
-                die(1);
+                exit(1);
             } else {
                 $this->migration->displayWarning($message, true);
-                die(1);
+                exit(1);
             }
         }
 
@@ -267,7 +241,7 @@ class Update
                     __('An error occurred during the update. The error was: %s'),
                     $e->getMessage()
                 ));
-                die(1);
+                exit(1);
             }
 
             if ($key !== array_key_last($migrations)) {

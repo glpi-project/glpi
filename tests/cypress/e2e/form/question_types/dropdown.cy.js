@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -146,6 +146,10 @@ describe('Dropdown form question type', () => {
 
         // Click on the question
         cy.get("@question").click('top');
+
+        // TODO: Investigate why this 'wait' is needed and fix it.
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(200);
 
         // Check selected options and option labels
         checkSelectedOptions([2]);

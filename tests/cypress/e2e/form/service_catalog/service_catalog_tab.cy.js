@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,21 +42,33 @@ describe('Service catalog tab', () => {
     });
 
     it('can configure service catalog', () => {
+        const uid = new Date().getTime();
+        const category_name = `Category ${uid}`;
+        const category_dropdown_value = `»${category_name}`; // GLPI add "»" prefix to common tree dropdown values
+
+        cy.createWithAPI('Glpi\\Form\\Category', {
+            'name': category_name,
+            'description': "my description",
+        });
+
         // Make sure the values we are about to apply are are not already set to
         // prevent false negative.
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('not.contain.text', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('not.contain.text', 'My description');
+        cy.getDropdownByLabelText("Category").should('not.have.text', category_name);
 
         // Set values
-        cy.findByRole("textbox", {'name': 'Illustration'}).type('request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().type('My description');
+        cy.getDropdownByLabelText('Category').selectDropdownValue(category_dropdown_value);
 
         // Save changes
         cy.findByRole('button', {'name': "Save changes"}).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
 
         // Validate values
-        cy.findByRole("textbox", {'name': 'Illustration'}).should('have.value', 'request-service.svg');
         cy.findByLabelText("Description").awaitTinyMCE().should('contain.text', 'My description');
+        cy.getDropdownByLabelText("Category").should('have.text', category_name);
+
+        // Note: picking an illustration is not validated here as it is already
+        // done in the illustration_picker.cy.js test.
     });
 });

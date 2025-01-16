@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,41 +70,6 @@ class SessionsConfiguration extends \GLPITestCase
          ->isEqualTo(
              [
                  '"session.auto_start" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
-             ]
-         );
-    }
-
-    public function testCheckWithUseTransId()
-    {
-
-        $this->function->ini_get = function ($name) {
-            return $name == 'session.use_trans_sid' ? '1' : '0';
-        };
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
-             [
-                 '"session.use_trans_sid" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
-             ]
-         );
-    }
-
-    public function testCheckWithAutostartAndUseTransId()
-    {
-
-        $this->function->ini_get = '1';
-
-        $this->newTestedInstance();
-        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-        $this->array($this->testedInstance->getValidationMessages())
-         ->isEqualTo(
-             [
-                 '"session.auto_start" and "session.use_trans_sid" must be set to off.',
-                 'See .htaccess file in the GLPI root for more information.',
              ]
          );
     }

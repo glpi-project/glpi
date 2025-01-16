@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,8 @@ use Glpi\Console\Application;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -433,29 +435,7 @@ class Html
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
-
-        $toadd = '';
-
-        if (!headers_sent() && !Toolbox::isAjax()) {
-            header("Location: " . addslashes($dest), true, $http_response_code);
-            exit();
-        }
-
-        if (strpos($dest, "?") !== false) {
-            $toadd = '&tokonq=' . Toolbox::getRandomString(5);
-        } else {
-            $toadd = '?tokonq=' . Toolbox::getRandomString(5);
-        }
-
-        echo "<script type='text/javascript'>
-            NomNav = navigator.appName;
-            if (NomNav=='Konqueror') {
-               window.location=" . json_encode($dest . $toadd) . ";
-            } else {
-               window.location=" . json_encode($dest) . ";
-            }
-         </script>";
-        exit();
+        throw new RedirectException($dest, $http_response_code);
     }
 
     /**
@@ -980,6 +960,33 @@ HTML;
         }
     }
 
+    /**
+     * Returns a static progress bar HTML snippet.
+     *
+     * @param float $percentage
+     * @param string $label
+     *
+     * @return string
+     */
+    public static function getProgressBar(float $percentage, ?string $label = null): string
+    {
+        if ($label === null) {
+            $label = floor($percentage) . ' %';
+        }
+
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(
+            <<<TWIG
+              <div class="progress" style="height: 15px; min-width: 50px;">
+                 <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
+                    aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
+              </div>
+TWIG,
+            [
+                'percentage' => $percentage,
+                'label'      => $label,
+            ]
+        );
+    }
 
     /**
      * Include common HTML headers
@@ -1006,9 +1013,8 @@ HTML;
     ) {
         /**
          * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $CFG_GLPI;
 
         // complete title with id if exist
         if ($add_id && isset($_GET['id']) && $_GET['id']) {
@@ -1029,11 +1035,13 @@ HTML;
         $theme = ThemeManager::getInstance()->getCurrentTheme();
 
         $tpl_vars = [
-            'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title'     => $title,
-            'theme'     => $theme,
-            'css_files' => [],
-            'js_files'  => [],
+            'lang'               => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'title'              => $title,
+            'theme'              => $theme,
+            'is_anonymous_page'  => false,
+            'css_files'          => [],
+            'js_files'           => [],
+            'custom_header_tags' => [],
         ];
 
         $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
@@ -1105,7 +1113,6 @@ HTML;
 
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
-                Html::requireJs('dashboard');
             }
 
             if (in_array('marketplace', $jslibs)) {
@@ -1123,7 +1130,6 @@ HTML;
 
             if (in_array('gridstack', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'lib/gridstack.css'];
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/gridstack-grids.scss'];
                 Html::requireJs('gridstack');
             }
 
@@ -1181,30 +1187,6 @@ HTML;
             $tpl_vars['high_contrast'] = true;
         }
 
-       // Add specific css for plugins
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_CSS]) && count($PLUGIN_HOOKS[Hooks::ADD_CSS])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_CSS] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $file) {
-                    $tpl_vars['css_files'][] = [
-                        'path' => "{$CFG_GLPI['root_doc']}/plugins/{$plugin}/{$file}",
-                        'options' => [
-                            'version' => $plugin_version,
-                        ]
-                    ];
-                }
-            }
-        }
-
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
@@ -1217,18 +1199,6 @@ HTML;
             $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
             $tpl_vars['css_files'][] = ['path' => $theme_path];
         }
-
-        // Add specific meta tags for plugins
-        $custom_header_tags = [];
-        if (isset($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG]) && count($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG])) {
-            foreach ($PLUGIN_HOOKS[Hooks::ADD_HEADER_TAG] as $plugin => $plugin_header_tags) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                array_push($custom_header_tags, ...$plugin_header_tags);
-            }
-        }
-        $tpl_vars['custom_header_tags'] = $custom_header_tags;
 
 
         $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
@@ -1292,7 +1262,7 @@ HTML;
             'helpdesk' => [
                 'title' => __('Assistance'),
                 'types' => [
-                    'Ticket', 'Problem', 'Change',
+                    'Ticket', ServiceCatalog::class, 'Problem', 'Change',
                     'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
                 ],
                 'icon'    => 'ti ti-headset'
@@ -1496,7 +1466,7 @@ HTML;
 
         if (Session::haveRight("ticket", CREATE)) {
             $menu['create_ticket'] = [
-                'default' => '/ServiceCatalog',
+                'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
                 'icon'    => 'ti ti-plus',
             ];
@@ -1521,7 +1491,7 @@ HTML;
             ];
 
             if (Session::haveRight("ticket", CREATE)) {
-                $menu['tickets']['content']['ticket']['links']['add'] = '/ServiceCatalog';
+                $menu['tickets']['content']['ticket']['links']['add'] = ServiceCatalog::getSearchURL(false);
             }
         }
 
@@ -1629,7 +1599,7 @@ HTML;
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-            return self::popHeader($title, $url, false, $sector, $item, $option);
+            return self::popHeader($title, '', false, $sector, $item, $option);
         }
         // Print a nice HTML-head for every page
         if ($HEADER_LOADED) {
@@ -1686,9 +1656,8 @@ HTML;
         /**
          * @var array $CFG_GLPI
          * @var bool $FOOTER_LOADED
-         * @var array $PLUGIN_HOOKS
          */
-        global $CFG_GLPI, $FOOTER_LOADED, $PLUGIN_HOOKS;
+        global $CFG_GLPI, $FOOTER_LOADED;
 
        // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1719,6 +1688,7 @@ HTML;
 
         $tpl_vars = [
             'js_files' => [],
+            'js_modules' => [],
         ];
 
        // On demand scripts
@@ -1746,59 +1716,9 @@ HTML;
 
         $tpl_vars['js_files'][] = ['path' => 'js/misc.js'];
 
-        if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_files'][] = [
-                            'path' => "/plugins/{$plugin}/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
-                }
-            }
-        }
-        if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
-                if (!Plugin::isPluginActive($plugin)) {
-                    continue;
-                }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
-                $plugin_version  = Plugin::getPluginFilesVersion($plugin);
-
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-                foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        $tpl_vars['js_modules'][] = [
-                            'path' => "/plugins/{$plugin}/{$file}",
-                            'options' => [
-                                'version' => $plugin_version,
-                            ]
-                        ];
-                    } else {
-                        trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
-                    }
-                }
-            }
-        }
-
         $tpl_vars['debug_info'] = null;
 
+        self::displayMessageAfterRedirect();
         \Glpi\Debug\Profiler::getInstance()->stopAll();
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
             $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
@@ -1952,7 +1872,7 @@ HTML;
             : 'helpdesk_doc_url';
         $help_url = !empty($CFG_GLPI[$help_url_key])
             ? $CFG_GLPI[$help_url_key]
-            : 'http://glpi-project.org/documentation';
+            : 'https://glpi-project.org/documentation';
 
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
@@ -2041,7 +1961,6 @@ HTML;
 
         self::includeHeader($title, $sector, $item, $option); // Body
         echo "<body class='" . ($in_modal ? "in_modal" : "") . "'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>"; // Force legacy styles for now
     }
 
@@ -2075,7 +1994,6 @@ HTML;
 
         self::includeHeader($title, $sector, $item, $option, true, true);
         echo "<body class='iframed'>";
-        self::displayMessageAfterRedirect();
         echo "<div id='page'>";
     }
 
@@ -2095,6 +2013,7 @@ HTML;
 
        // Print foot
         self::loadJavascript();
+        self::displayMessageAfterRedirect();
         echo "</body></html>";
     }
 
@@ -2522,10 +2441,15 @@ HTML;
                 !$p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])
             ) {
-                $out .= "<span class='b'>";
-                $out .= __s('Selection too large, massive action disabled.') . "</span>";
+                $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
+                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
+                            . __s('Selection too large, massive action disabled.') .
+                        "</span>";
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                    $out .= __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+                    $out .= Html::showToolTip(
+                        __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
+                        ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
+                    );
                 }
             }
         } else {
@@ -3459,7 +3383,7 @@ JS;
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: '" . htmlescape($CFG_GLPI['root_doc'] . $param['url']) . "',
+                    url: " . json_encode($CFG_GLPI['root_doc'] . $param['url'])  . ",
                     type: 'GET',
                     data: {},
                 },
@@ -5096,24 +5020,25 @@ HTML;
      *
      * @param string  $url      File to include (relative to GLPI_ROOT)
      * @param array   $options  Array of HTML attributes
-     * @param bool    $no_debug Ignore the debug mode of GLPI (usefull for install/update process)
      *
      * @return string CSS link tag
+     *
+     * @since 11.0.0 The `$no_debug` parameter has bbeen removed.
      **/
-    public static function scss($url, $options = [], bool $no_debug = false)
+    public static function scss($url, $options = [])
     {
         $prod_file = self::getScssCompilePath($url);
 
         if (
             file_exists($prod_file)
-            && ($no_debug || $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE)
+            && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
         ) {
             $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
             $url .= '?file=' . $file;
-            if (!$no_debug && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                 $url .= '&debug';
             }
         }
@@ -5947,9 +5872,6 @@ HTML;
             case 'fuzzy':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
                 break;
-            case 'dashboard':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/dashboard.js';
-                break;
             case 'marketplace':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
                 break;
@@ -6063,20 +5985,15 @@ HTML;
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo Html::script("/plugins/{$plugin}/{$file}", [
-                            'version'   => $version,
-                            'type'      => 'text/javascript'
-                        ]);
-                    } else {
-                        trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
-                    }
+                    echo Html::script("/plugins/{$plugin}/{$file}", [
+                        'version'   => $version,
+                        'type'      => 'text/javascript'
+                    ]);
                 }
             }
         }
@@ -6086,20 +6003,15 @@ HTML;
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $plugin_root_dir = Plugin::getPhpDir($plugin, true);
                 $version = Plugin::getPluginFilesVersion($plugin);
                 if (!is_array($files)) {
                     $files = [$files];
                 }
                 foreach ($files as $file) {
-                    if (file_exists($plugin_root_dir . "/{$file}")) {
-                        echo self::script("/plugins/{$plugin}/{$file}", [
-                            'version'   => $version,
-                            'type'      => 'module'
-                        ]);
-                    } else {
-                        trigger_error("{$file} file not found from plugin {$plugin}!", E_USER_WARNING);
-                    }
+                    echo self::script("/plugins/{$plugin}/{$file}", [
+                        'version'   => $version,
+                        'type'      => 'module'
+                    ]);
                 }
             }
         }
@@ -6181,7 +6093,7 @@ HTML;
      *
      * @return string
      */
-    final public static function getPrefixedUrl($url)
+    final public static function getPrefixedUrl(string $url): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -6227,7 +6139,7 @@ HTML;
     /**
      * Get all options for the menu fuzzy search
      * @return array
-     * @phpstan-return array{url: string, title: string}
+     * @phpstan-return array<array{url: string, title: string}>
      * @since 11.0.0
      */
     public static function getMenuFuzzySearchList(): array
@@ -6239,7 +6151,7 @@ HTML;
             if (isset($firstlvl['default'])) {
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
-                        'url'   => $firstlvl['default'],
+                        'url'   => self::getPrefixedUrl($firstlvl['default']),
                         'title' => $firstlvl['title']
                     ];
                 }
@@ -6248,7 +6160,7 @@ HTML;
             if (isset($firstlvl['default_dashboard'])) {
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
-                        'url'   => $firstlvl['default_dashboard'],
+                        'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
                         'title' => $firstlvl['title'] . " > " . __('Dashboard')
                     ];
                 }
@@ -6258,7 +6170,7 @@ HTML;
                 foreach ($firstlvl['content'] as $menu) {
                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
                         $fuzzy_entries[] = [
-                            'url'   => $menu['page'],
+                            'url'   => self::getPrefixedUrl($menu['page']),
                             'title' => $firstlvl['title'] . " > " . $menu['title']
                         ];
 
@@ -6266,7 +6178,7 @@ HTML;
                             foreach ($menu['options'] as $submenu) {
                                 if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
                                     $fuzzy_entries[] = [
-                                        'url'   => $submenu['page'],
+                                        'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > " .
                                             $menu['title'] . " > " .
                                             $submenu['title']

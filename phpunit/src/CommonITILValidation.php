@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -754,8 +754,15 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertGreaterThan(0, (int) $validations_id);
         $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
 
+        $itil_item_2 = $this->createItem($itil_class, [
+            'name' => __FUNCTION__ . '2',
+            'content' => __FUNCTION__ . '2',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'status' => \CommonITILObject::INCOMING,
+        ]);
+
         $validations_id = $validation->add([
-            $itil_class::getForeignKeyField() => $itil_item->getID(),
+            $itil_class::getForeignKeyField() => $itil_item_2->getID(),
             'itemtype_target' => 'Group',
             'items_id_target' => $group->getID(),
             'status' => \CommonITILValidation::WAITING,

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,6 +48,7 @@ use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GuzzleHttp;
 use Item_DeviceSimcard;
+use NetworkPort_NetworkPort;
 use Notepad;
 use QueuedNotification;
 use TicketTemplate;
@@ -318,7 +319,6 @@ class APIRest extends atoum
         $this->array($data['session'])
             ->hasKey('glpiID')
             ->hasKey('glpiname')
-            ->hasKey('glpiroot')
             ->hasKey('glpilanguage')
             ->hasKey('glpilist_limit');
     }
@@ -2240,6 +2240,126 @@ class APIRest extends atoum
             400,
             'ERROR_JSON_PAYLOAD_INVALID'
         );
+    }
+
+    public function testGetItemWithContacts()
+    {
+        $computers = $this->createComputers(['Computer 1', 'Computer 2']);
+        $this->assertComputersCreated($computers);
+
+        $networkports = [];
+        foreach ($computers as $computer_id) {
+            $this->assertComputerNetworkPorts($computer_id, true);
+            $this->createNetworkPort($computer_id);
+            $networkports[] = $this->assertComputerNetworkPorts($computer_id, false);
+        }
+
+        $this->linkNetworkPorts($networkports);
+        $this->assertNetworkPortLink($computers, $networkports);
+    }
+
+    private function createComputers(array $names)
+    {
+        $data = $this->query(
+            'createItems',
+            [
+                'verb' => 'POST',
+                'itemtype' => 'Computer',
+                'headers' => ['Session-Token' => $this->session_token],
+                'json' => ['input' => array_map(fn($name) => ['name' => $name], $names)]
+            ],
+            201
+        );
+
+        $this->variable($data)->isNotFalse();
+        return array_column($data, 'id');
+    }
+
+    private function assertComputersCreated(array $computers)
+    {
+        foreach ($computers as $computer_id) {
+            $computer = new Computer();
+            $this->boolean((bool)$computer->getFromDB($computer_id))->isTrue();
+        }
+    }
+
+    private function assertComputerNetworkPorts($computer_id, $shouldBeEmpty)
+    {
+        $data = $this->query(
+            'getItem',
+            [
+                'itemtype' => 'Computer',
+                'id' => $computer_id,
+                'headers' => ['Session-Token' => $this->session_token],
+                'query' => ['with_networkports' => true]
+            ]
+        );
+
+        $this->variable($data)->isNotFalse();
+        $this->array($data)->hasKey('id')->hasKey('name')->hasKey('_networkports');
+        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
+
+        if ($shouldBeEmpty) {
+            $this->array($data['_networkports']['NetworkPortEthernet'])->isEmpty();
+            return null;
+        } else {
+            $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
+            $networkport = $data['_networkports']['NetworkPortEthernet'][0];
+            $this->array($networkport)->hasKey('NetworkName')->hasKey('networkports_id_opposite')->hasKey('netport_id');
+            $this->variable($networkport['networkports_id_opposite'])->isNull();
+            $this->integer($networkport['netport_id'])->isGreaterThan(0);
+            return $networkport['netport_id'];
+        }
+    }
+
+    private function linkNetworkPorts(array $networkports)
+    {
+        $data = $this->query(
+            'createItems',
+            [
+                'verb' => 'POST',
+                'itemtype' => 'NetworkPort_NetworkPort',
+                'headers' => ['Session-Token' => $this->session_token],
+                'json' => [
+                    'input' => [
+                        [
+                            'networkports_id_1' => $networkports[0],
+                            'networkports_id_2' => $networkports[1]
+                        ]
+                    ]
+                ]
+            ],
+            201
+        );
+
+        $this->variable($data)->isNotFalse();
+        $data = $data[0];
+        $this->array($data)->hasKey('id')->hasKey('message');
+        $this->integer((int)$data['id'])->isGreaterThan(0);
+
+        $networkport_networkport = new NetworkPort_NetworkPort();
+        $this->boolean((bool)$networkport_networkport->getFromDB($data['id']))->isTrue();
+    }
+
+    private function assertNetworkPortLink(array $computers, array $networkports)
+    {
+        $data = $this->query(
+            'getItem',
+            [
+                'itemtype' => 'Computer',
+                'id' => $computers[0],
+                'headers' => ['Session-Token' => $this->session_token],
+                'query' => ['with_networkports' => true]
+            ]
+        );
+
+        $this->variable($data)->isNotFalse();
+        $this->array($data)->hasKey('id')->hasKey('name')->hasKey('_networkports');
+        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
+        $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
+        $networkport = $data['_networkports']['NetworkPortEthernet'][0];
+        $this->array($networkport)->hasKey('NetworkName')->hasKey('networkports_id_opposite')->hasKey('netport_id');
+        $this->integer($networkport['networkports_id_opposite'])->isEqualTo($networkports[1]);
     }
 
     /**

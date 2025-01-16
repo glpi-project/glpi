@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -296,7 +296,15 @@ class Schema implements \ArrayAccess
                 $prop = $prop['items'];
             }
             if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT) {
-                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
+                $is_mapped_obj = isset($prop['x-mapped-from']);
+                $new_props = self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
+                if ($is_mapped_obj) {
+                    foreach ($new_props as &$new_prop_data) {
+                        $new_prop_data['x-mapped-property'] = true;
+                    }
+                    unset($new_prop_data);
+                }
+                $flattened += $new_props;
             } else {
                 $flattened[$prefix . $name] = [
                     ...$prop,

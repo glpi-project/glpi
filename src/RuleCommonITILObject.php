@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -323,6 +323,18 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                         ) {
                             $output['_groups_id_requester'] = $output['users_default_groups'];
                         }
+                        if (
+                            ( $action->fields['field'] == '_groups_id_observer')
+                            && isset($output['users_default_groups'])
+                        ) {
+                            $output['_groups_id_observer'] = $output['users_default_groups'];
+                        }
+                        if (
+                            ( $action->fields['field'] == '_groups_id_assign')
+                            && isset($output['users_default_groups'])
+                        ) {
+                            $output['_groups_id_assign'] = $output['users_default_groups'];
+                        }
                         break;
 
                     case 'fromitem':
@@ -331,6 +343,18 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                             && isset($output['_groups_id_of_item'])
                         ) {
                             $output['_groups_id_requester'] = $output['_groups_id_of_item'];
+                        }
+                        if (
+                            $action->fields['field'] == '_groups_id_observer'
+                            && isset($output['_groups_id_of_item'])
+                        ) {
+                            $output['_groups_id_observer'] = $output['_groups_id_of_item'];
+                        }
+                        if (
+                            $action->fields['field'] == '_groups_id_assign'
+                            && isset($output['_groups_id_of_item'])
+                        ) {
+                            $output['_groups_id_assign'] = $output['_groups_id_of_item'];
                         }
                         break;
 
@@ -797,7 +821,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
         $actions['_groups_id_assign']['condition']                  = ['is_assign' => 1];
-        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result'];
+        $actions['_groups_id_assign']['force_actions']              = ['assign', 'append', 'regex_result', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_assign']['permitseveral']              = ['append'];
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
 
@@ -830,7 +854,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
         $actions['_groups_id_observer']['condition']                = ['is_watcher' => 1];
-        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result'];
+        $actions['_groups_id_observer']['force_actions']            = ['assign', 'append', 'regex_result', 'fromitem', 'defaultfromuser','regex_result'];
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 

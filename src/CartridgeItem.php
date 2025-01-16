@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -62,6 +62,16 @@ class CartridgeItem extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Cartridge model', 'Cartridge models', $nb);
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
     }
 
     public static function getMenuName()

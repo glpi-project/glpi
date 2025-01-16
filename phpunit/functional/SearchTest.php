@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -520,7 +520,6 @@ class SearchTest extends DbTestCase
             "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(1=0\s*\)/"
         ];
 
         foreach ($regexps as $regexp) {
@@ -535,6 +534,219 @@ class SearchTest extends DbTestCase
             $data['sql']['search']
         );
     }
+
+    public static function testViewCriterionProvider(): array
+    {
+        return [
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9
+            ],
+            [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'view',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1
+            ],
+        ];
+    }
+
+    #[DataProvider('testViewCriterionProvider')]
+    public function testViewCriterionNew(string $itemtype, array $criteria, int $expected)
+    {
+        $data = $this->doSearch($itemtype, [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => $criteria
+        ]);
+
+        $this->assertSame($expected, $data['data']['totalcount']);
+    }
+
 
     public function testSearchOnRelationTable()
     {
@@ -687,6 +899,11 @@ class SearchTest extends DbTestCase
                     in_array($so['datatype'], $valid_datatypes),
                     sprintf('Unexpected `%s` search option datatype in `%s` class.', $so['datatype'], $class)
                 );
+
+                if ($so['datatype'] === 'count') {
+                    // Must have `usehaving` = true because an aggregate function will be used
+                    $this->assertTrue($so['usehaving'] ?? false);
+                }
             }
         }
     }
@@ -1141,9 +1358,10 @@ class SearchTest extends DbTestCase
         $this->assertEquals(
             [
                 'reset'        => 1,
+                'itemtype'     => 'Ticket',
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 19,
+                'order'        => ['DESC'],
+                'sort'         => [19],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -1189,8 +1407,8 @@ class SearchTest extends DbTestCase
             [
                 'reset'        => 1,
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 2,
+                'order'        => ['DESC'],
+                'sort'         => [2],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -1214,9 +1432,10 @@ class SearchTest extends DbTestCase
         $this->assertEquals(
             [
                 'reset'      => 1,
+                'itemtype'   => 'Computer',
                 'start'      => 0,
-                'order'      => 'ASC',
-                'sort'       => 0,
+                'order'      => ['ASC'],
+                'sort'       => [0],
                 'is_deleted' => 0,
                 'criteria'   => [
                     [
@@ -1264,8 +1483,8 @@ class SearchTest extends DbTestCase
             [
                 'reset'        => 1,
                 'start'        => 0,
-                'order'        => 'DESC',
-                'sort'         => 31,
+                'order'        => ['DESC'],
+                'sort'         => [31],
                 'is_deleted'   => 0,
                 'criteria'     => [
                     0 => [
@@ -3361,8 +3580,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=number
@@ -3375,8 +3594,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=number (usehaving=true)
@@ -3397,8 +3616,8 @@ class SearchTest extends DbTestCase
                 'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL AND `glpi_budgets`.`value` <> '')",
             ];
             // log for both AND and AND NOT cases
-            $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-            $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
 
             // datatype=decimal (usehaving=true)
             yield [
@@ -3419,8 +3638,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=mio (usehaving=true)
@@ -3451,8 +3670,8 @@ class SearchTest extends DbTestCase
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
-                $this->hasSqlLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
+                $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
             }
 
             // datatype=timestamp (usehaving=true)
@@ -4760,7 +4979,7 @@ class SearchTest extends DbTestCase
                     'value' => __FUNCTION__,
                 ],
                 [
-                    'field' => 72, // satisfaction end date
+                    'field' => 75, // satisfaction end date
                     'searchtype' => 'contains',
                     'value' => '',
                 ],
@@ -4774,7 +4993,7 @@ class SearchTest extends DbTestCase
         foreach ($data['data']['rows'] as $row) {
             $items[] = [
                 $row['raw']['ITEM_Ticket_2'],
-                $row['raw']['ITEM_Ticket_72'],
+                $row['raw']['ITEM_Ticket_75'],
             ];
         }
         $expected = [
@@ -4800,6 +5019,76 @@ class SearchTest extends DbTestCase
             ],
         ];
         $this->assertEquals($expected, $items);
+    }
+
+    public function testInvalidCriteria()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->assertGreaterThan(8, $data['data']['totalcount']);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ],
+                [
+                    'field' => 1, // name
+                    'searchtype' => 'contains',
+                    'value' => '_test_pc_with_encoded_comment'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        // Only the valid 'name' criterion should be taken into account
+        $this->assertEquals(1, $data['data']['totalcount']);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+    }
+
+    public function testInvalidMetacriteria()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'criteria'     => [
+                [
+                    'itemtype' => 'Agent',
+                    'field' => 10000, // Not a valid search option
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->assertGreaterThan(8, $data['data']['totalcount']);
+        $this->hasSessionMessages(WARNING, ['Some search criteria were removed because they are invalid']);
+    }
+
+    public function testInvalidSort()
+    {
+        $search_params = [
+            'is_deleted'   => 0,
+            'sort'         => [10000], // Not a valid search option
+            'order' => ['ASC']
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+        $this->assertEquals([0], $data['search']['sort']);
     }
 }
 

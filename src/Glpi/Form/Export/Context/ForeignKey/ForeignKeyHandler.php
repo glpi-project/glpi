@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -74,7 +74,7 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
     public function replaceForeignKeysByNames(array $serialized_data): array
     {
         if (!$this->keyExistInSerializedData($serialized_data)) {
-            return [];
+            return $serialized_data;
         }
 
         $foreign_key = $serialized_data[$this->key];
@@ -83,6 +83,8 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
         $item = new $this->itemtype();
         if ($item->getFromDB($foreign_key)) {
             $serialized_data[$this->key] = $item->getName();
+        } else {
+            unset($serialized_data[$this->key]);
         }
 
         return $serialized_data;
@@ -93,7 +95,7 @@ final class ForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
         DatabaseMapper $mapper,
     ): array {
         if (!$this->keyExistInSerializedData($serialized_data)) {
-            return [];
+            return $serialized_data;
         }
 
         // Replace name by its database id

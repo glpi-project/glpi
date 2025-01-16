@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1440,6 +1440,7 @@ class Provider
         $n_fields = [
             "$ug_table.firstname as first",
             "$ug_table.realname as second",
+            "$ug_table.name as username"
         ];
 
         $where = [
@@ -1543,7 +1544,7 @@ class Provider
             $s_params['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
                 'number' => $result['nb_tickets'],
-                'label'  => $result['first'] . " " . ($result['second'] ?? ""),
+                'label'  => formatUserName($result['actor_id'], $result['username'], $result['second'], $result['first']),
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
         }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,13 @@
 namespace Glpi\Form\Export\Serializer;
 
 use Entity;
-use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
 use Glpi\Form\Export\Result\ExportResult;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Result\ImportResult;
@@ -48,6 +50,7 @@ use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
+use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
 use Glpi\Form\Export\Specification\QuestionContentSpecification;
@@ -213,6 +216,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportComments($form, $form_spec);
         $form_spec = $this->exportQuestions($form, $form_spec);
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
+        $form_spec = $this->exportDestinations($form, $form_spec);
 
         return $form_spec;
     }
@@ -247,6 +251,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importComments($form, $form_spec);
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
+        $form = $this->importDestinations($form, $form_spec, $mapper);
 
         return $form;
     }
@@ -296,12 +301,21 @@ final class FormSerializer extends AbstractFormSerializer
         $spec               = new FormContentSpecification();
         $spec->id           = $form_export_id;
         $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'] ?? "";
+        $spec->header       = $form->fields['header'];
+        $spec->description  = $form->fields['description'];
+        $spec->illustration = $form->fields['illustration'];
         $spec->is_recursive = $form->fields['is_recursive'];
+        $spec->is_active    = $form->fields['is_active'];
 
         $entity = Entity::getById($form->fields['entities_id']);
         $spec->entity_name = $entity->fields['name'];
         $spec->addDataRequirement(Entity::class, $entity->fields['name']);
+
+        $category = new Category();
+        if ($category->getFromDB($form->fields[Category::getForeignKeyField()])) {
+            $spec->category_name = $category->fields['name'];
+            $spec->addDataRequirement(Category::class, $category->fields['name']);
+        }
 
         return $spec;
     }
@@ -311,14 +325,21 @@ final class FormSerializer extends AbstractFormSerializer
         DatabaseMapper $mapper,
     ): Form {
         // Get ids from mapper
-        $entities_id = $mapper->getItemId(Entity::class, $spec->entity_name);
+        $entities_id   = $mapper->getItemId(Entity::class, $spec->entity_name);
+        if (!empty($spec->category_name)) {
+            $categories_id = $mapper->getItemId(Category::class, $spec->category_name);
+        }
 
         $form = new Form();
         $id = $form->add([
             'name'                  => $spec->name,
-            'header'                => $spec->header,
+            'header'                => $spec->header ?? null,
+            'description'           => $spec->description ?? null,
+            'illustration'          => $spec->illustration,
+            'forms_categories_id'   => $categories_id ?? 0,
             'entities_id'           => $entities_id,
             'is_recursive'          => $spec->is_recursive,
+            'is_active'             => $spec->is_active,
             '_do_not_init_sections' => true,
         ]);
         if (!$form->getFromDB($id)) {
@@ -336,7 +357,7 @@ final class FormSerializer extends AbstractFormSerializer
             $section_spec = new SectionContentSpecification();
             $section_spec->name = $section->fields['name'];
             $section_spec->rank = $section->fields['rank'];
-            $section_spec->description = $section->fields['description'] ?? "";
+            $section_spec->description = $section->fields['description'];
 
             $form_spec->sections[] = $section_spec;
         }
@@ -372,7 +393,7 @@ final class FormSerializer extends AbstractFormSerializer
         Form $form,
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
-        foreach ($form->getComments() as $comment) {
+        foreach ($form->getFormComments() as $comment) {
             $comment_spec = new CommentContentSpecification();
             $comment_spec->name = $comment->fields['name'];
             $comment_spec->rank = $comment->fields['rank'];
@@ -508,9 +529,16 @@ final class FormSerializer extends AbstractFormSerializer
                 'forms_sections_id' => $section->fields['id'],
             ]);
 
-            if (!$id) {
+            if (!$id || $question->getFromDB($id) === false) {
                 throw new RuntimeException("Failed to create question");
             }
+
+            // Questions can be required for other items, so we need to map them
+            $mapper->addMappedItem(
+                Question::class,
+                $question->getUniqueIDInForm(),
+                $id
+            );
         }
 
         // Reload form to clear lazy loaded data
@@ -591,6 +619,88 @@ final class FormSerializer extends AbstractFormSerializer
 
             if (!$id) {
                 throw new RuntimeException("Failed to create access control");
+            }
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    private function exportDestinations(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        foreach ($form->getDestinations() as $destination) {
+            $destination_spec           = new DestinationContentSpecification();
+            $destination_spec->itemtype = $destination->fields['itemtype'];
+            $destination_spec->name     = $destination->fields['name'];
+            $destination_spec->config   = $destination->getConfig();
+
+            $config = $destination->getConfig();
+            foreach ($config as $field_key => $field_config_data) {
+                $field = (new $destination->fields['itemtype']())->getConfigurableFieldByKey($field_key);
+                if ($field === null) {
+                    continue;
+                }
+
+                $field_config_class = $field->getConfigClass();
+                $field_config = $field_config_class::jsonDeserialize($field_config_data);
+                if ($field_config instanceof ConfigWithForeignKeysInterface) {
+                    $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                        $field_config::listForeignKeysHandlers($destination_spec),
+                        $field_config_data
+                    );
+                    array_push($form_spec->data_requirements, ...$requirements);
+
+                    $destination_spec->config[$field_key] = $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                        $field_config::listForeignKeysHandlers($destination_spec),
+                        $field_config_data
+                    );
+                }
+            }
+
+            $form_spec->destinations[] = $destination_spec;
+        }
+
+        return $form_spec;
+    }
+
+    private function importDestinations(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($form_spec->destinations as $destination_spec) {
+            $config = $destination_spec->config;
+            foreach ($config as $field_key => $field_config_data) {
+                $field = (new $destination_spec->itemtype())->getConfigurableFieldByKey($field_key);
+                if ($field === null) {
+                    continue;
+                }
+
+                $field_config_class = $field->getConfigClass();
+                if (is_a($field_config_class, ConfigWithForeignKeysInterface::class, true)) {
+                    $field_config_data = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                        $field_config_class::listForeignKeysHandlers($destination_spec),
+                        $field_config_data,
+                        $mapper
+                    );
+                    $config[$field_key] = $field_config_data;
+                }
+            }
+
+            $destination = new FormDestination();
+            $id = $destination->add([
+                '_from_import'             => true,
+                'itemtype'                 => $destination_spec->itemtype,
+                'name'                     => $destination_spec->name,
+                'config'                   => $config,
+                Form::getForeignKeyField() => $form->getID(),
+            ]);
+
+            if (!$id) {
+                throw new RuntimeException("Failed to create destination");
             }
         }
 

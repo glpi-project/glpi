@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,15 +55,18 @@ class SoftwareLicenseTest extends DbTestCase
     {
         $license = new \SoftwareLicense();
 
-       //Without softwares_id, import refused
+       //Without softwares_id, accepted (since GLPI 11.0.0)
         $input = [
             'name'         => 'not_inserted_software_license',
             'entities_id'  => 0
         ];
-        $this->assertFalse($license->prepareInputForAdd($input));
-        $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
+        $expected = [ 'name' => 'not_inserted_software_license', 'entities_id' => 0,
+            'softwarelicenses_id' => 0, 'level' => 1,
+            'completename' => 'not_inserted_software_license'
+        ];
+        $this->assertSame($expected, $license->prepareInputForAdd($input));
 
-       //With a softwares_id, import ok
+       //With a softwares_id
         $input = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1];
         $license->input['softwares_id'] = 1;
         $expected = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1,
@@ -108,10 +111,12 @@ class SoftwareLicenseTest extends DbTestCase
         $this->login();
 
         $license = new \SoftwareLicense();
-        $input = [ 'name' => 'not_inserted_software_license_child'];
+        $input = [
+            'name' => 'not_inserted_software_license_child',
+            'entities_id'  => 0
+        ];
 
-        $this->assertFalse($license->add($input));
-        $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
+        $this->assertGreaterThan(0, $license->add($input));
 
         $software     = $this->createSoft();
 

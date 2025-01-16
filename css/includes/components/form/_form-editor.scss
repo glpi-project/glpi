@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -288,5 +288,49 @@
                 margin-bottom: 0 !important;
             }
         }
+    }
+}
+
+.logic-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-pink-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.question-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-indigo-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-teal-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-selector {
+    border: 0 !important;
+    background-color: var(--tblr-yellow-lt) !important;
+}
+
+.visibility-dropdown-card {
+    width: 600px;
+}
+
+// Fix a weird scrolling issue on the form editor where the body scrolls instead of the form editor
+html {
+    // Only apply the overflow hidden on the body when active tab contains the form editor
+    &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
+        overflow: hidden;
     }
 }

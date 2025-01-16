@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,10 +61,16 @@ class RequesterField extends ITILActorField
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): ITILActorFieldConfig
+    public function getConfigClass(): string
     {
-        return new ITILActorFieldConfig(
-            ITILActorFieldStrategy::FORM_FILLER,
+        return RequesterFieldConfig::class;
+    }
+
+    #[Override]
+    public function getDefaultConfig(Form $form): RequesterFieldConfig
+    {
+        return new RequesterFieldConfig(
+            [ITILActorFieldStrategy::FORM_FILLER],
         );
     }
 

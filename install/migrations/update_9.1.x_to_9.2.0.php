@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryExpression;
 /**
  * Update from 9.1 to 9.2
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update91xto920()
 {

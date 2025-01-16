@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,6 +43,7 @@ describe('Assignee configuration', () => {
             const assignee_name = `Test Assignee - ${form_id}`;
             cy.createWithAPI('User', {
                 name: assignee_name,
+                _profiles_id: 6, // Technician
             }).as('assignee_id');
 
             cy.findByRole('button', {'name': "Add a new question"}).click();

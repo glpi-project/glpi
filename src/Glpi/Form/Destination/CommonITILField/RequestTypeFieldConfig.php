@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,20 +36,35 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class RequestTypeFieldConfig implements JsonFieldInterface
+final class RequestTypeFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
-    public const QUESTION_ID = 'question_id';
-    public const REQUEST_TYPE = 'request_type';
+    public const SPECIFIC_QUESTION_ID = 'specific_question_id';
+    public const SPECIFIC_REQUEST_TYPE = 'specific_request_type';
 
     public function __construct(
         private RequestTypeFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_request_type = null,
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
     }
 
     #[Override]
@@ -62,8 +77,8 @@ final class RequestTypeFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::QUESTION_ID],
-            specific_request_type: $data[self::REQUEST_TYPE],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_request_type: $data[self::SPECIFIC_REQUEST_TYPE] ?? null,
         );
     }
 
@@ -72,14 +87,23 @@ final class RequestTypeFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY => $this->strategy->value,
-            self::QUESTION_ID => $this->specific_question_id,
-            self::REQUEST_TYPE => $this->specific_request_type,
+            self::SPECIFIC_QUESTION_ID => $this->specific_question_id,
+            self::SPECIFIC_REQUEST_TYPE => $this->specific_request_type,
         ];
     }
 
-    public function getStrategy(): RequestTypeFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<RequestTypeFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificQuestionId(): ?int

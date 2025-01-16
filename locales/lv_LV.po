@@ -8,9 +8,9 @@
 # Aleksejs Jukums <jukums.aleksejs@gmail.com>, 2022
 # Raivo Mahņovs <raivo.mahnovs@vid.gov.lv>, 2022
 # ulcha <uldis+transifex@rom.lv>, 2022
-# Qubit Bit, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # Andrejs <andrew.k2@gmail.com>, 2024
+# Qubit Bit, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
 #, fuzzy
@@ -4637,7 +4637,7 @@ msgstr[2] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Saistītie ieraksti"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5337,7 +5337,7 @@ msgstr "Ražotājs"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Ražotājs"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6109,7 +6109,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Izmainīts"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8864,7 +8864,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Ierīces"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9271,7 +9271,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Vai vēlaties atjaunot atlasīto pārskatu?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9293,7 +9293,7 @@ msgstr "Dokuments"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Dokuments"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15462,7 +15462,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Galvenā"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -16018,7 +16018,7 @@ msgstr[2] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Monitors"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -18113,7 +18113,7 @@ msgstr "Cits"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Cits"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -21200,7 +21200,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Atjaunot"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23619,7 +23619,7 @@ msgstr "Sistēma"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistēma"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25311,7 +25311,7 @@ msgstr "Pavisam"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Pavisam"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27223,7 +27223,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Skatījumi"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

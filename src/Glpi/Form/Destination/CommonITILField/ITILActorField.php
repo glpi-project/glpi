@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,6 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use InvalidArgumentException;
 use Override;
 
@@ -48,12 +47,6 @@ abstract class ITILActorField extends AbstractConfigField
 {
     abstract public function getAllowedQuestionType(): string;
     abstract public function getActorType(): string;
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return ITILActorFieldConfig::class;
-    }
 
     public function getAllowedActorTypes(): array
     {
@@ -85,19 +78,11 @@ abstract class ITILActorField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select actors..."),
                 'values'          => $specific_actors,
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::ITILACTORS_IDS . "]",
+                'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS . "]",
                 'allowed_types'   => $this->getAllowedActorTypes(),
             ],
 
@@ -105,7 +90,7 @@ abstract class ITILActorField extends AbstractConfigField
             'specific_answer_extra_field' => [
                 'aria_label'      => __("Select questions..."),
                 'values'          => $config->getSpecificQuestionIds() ?? [],
-                'input_name'      => $input_name . "[" . ITILActorFieldConfig::QUESTION_IDS . "]",
+                'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getITILActorQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -121,20 +106,18 @@ abstract class ITILActorField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategy
-        $itilactors_ids = $config->getStrategy()->getITILActorsIDs(
-            $this,
-            $config,
-            $answers_set
-        );
+        // Compute value according to strategies
+        foreach ($config->getStrategies() as $strategy) {
+            $itilactors_ids = $strategy->getITILActorsIDs($this, $config, $answers_set);
 
-        if (!empty($itilactors_ids)) {
-            foreach ($itilactors_ids as $itemtype => $ids) {
-                foreach ($ids as $id) {
-                    $input['_actors'][$this->getActorType()][] = [
-                        'itemtype' => $itemtype,
-                        'items_id' => $id,
-                    ];
+            if (!empty($itilactors_ids)) {
+                foreach ($itilactors_ids as $itemtype => $ids) {
+                    foreach ($ids as $id) {
+                        $input['_actors'][$this->getActorType()][] = [
+                            'itemtype' => $itemtype,
+                            'items_id' => $id,
+                        ];
+                    }
                 }
             }
         }
@@ -143,24 +126,20 @@ abstract class ITILActorField extends AbstractConfigField
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): ITILActorFieldConfig
-    {
-        return new ITILActorFieldConfig(
-            ITILActorFieldStrategy::FROM_TEMPLATE,
-        );
-    }
-
-    #[Override]
     public function prepareInput(array $input): array
     {
         $input = parent::prepareInput($input);
 
+        if (!isset($input[$this->getKey()][ITILActorFieldConfig::STRATEGIES])) {
+            return $input;
+        }
+
         // Ensure that itilactors_ids is an array
-        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS]);
+        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] ?? null)) {
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = null;
         } else {
-            $input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS] = array_reduce(
-                $input[$this->getKey()][ITILActorFieldConfig::ITILACTORS_IDS],
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = array_reduce(
+                $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
                 function ($carry, $value) {
                     $parts = explode("-", $value);
                     $carry[getItemtypeForForeignKeyField($parts[0])][] = (int) $parts[1];
@@ -171,14 +150,14 @@ abstract class ITILActorField extends AbstractConfigField
         }
 
         // Ensure that question_ids is an array
-        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::QUESTION_IDS] ?? null)) {
-            unset($input[$this->getKey()][ITILActorFieldConfig::QUESTION_IDS]);
+        if (!is_array($input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_QUESTION_IDS] ?? null)) {
+            $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_QUESTION_IDS] = null;
         }
 
         return $input;
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILActorFieldStrategy::cases() as $strategies) {
@@ -197,5 +176,11 @@ abstract class ITILActorField extends AbstractConfigField
             },
             []
         );
+    }
+
+    #[Override]
+    public function canHaveMultipleStrategies(): bool
+    {
+        return true;
     }
 }

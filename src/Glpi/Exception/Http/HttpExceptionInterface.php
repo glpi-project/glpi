@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,4 +40,14 @@ interface HttpExceptionInterface extends \Symfony\Component\HttpKernel\Exception
      * Get the message to display.
      */
     public function getMessageToDisplay(): ?string;
+
+    /**
+     * Get the specific link text.
+     */
+    public function getLinkText(): ?string;
+
+    /**
+     * Get the specific link URL.
+     */
+    public function getLinkUrl(): ?string;
 }

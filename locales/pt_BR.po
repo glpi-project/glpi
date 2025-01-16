@@ -10,17 +10,17 @@
 # Matheus Rafael, 2023
 # Juranir Santos <juranir.santos@gmail.com>, 2023
 # Guilherme Montelo, 2024
-# Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2024
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # Daniel Berton <danielsberton@gmail.com>, 2024
-# Diego Nobre <diego@koruma.com.br>, 2024
 # Eduardo Scott <edu.scott01@gmail.com>, 2024
-# Eduardo Spinola <eduardo.spinola@gmail.com>, 2024
-# DOMBRE Julien <moyo@indepnet.net>, 2024
 # Rubenil de Castro Oliveira <kastro1525@gmail.com>, 2024
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
+# Diego Nobre <diego@koruma.com.br>, 2024
+# Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2024
+# DOMBRE Julien <moyo@indepnet.net>, 2024
 # Cédric Anne, 2024
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2024
+# Eduardo Spinola <eduardo.spinola@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-06 16:39+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2024\n"
+"Last-Translator: Eduardo Spinola <eduardo.spinola@gmail.com>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4585,7 +4585,7 @@ msgstr "Itens associáveis a um chamado"
 
 #: src/Profile.php:1261 src/Profile.php:1641 src/Profile.php:3392
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "Itens associáveis a chamados, mudanças e problemas"
 
 #: templates/generic_show_form.html.twig src/Software.php:481
 #: src/Appliance.php:332 src/RuleDictionnarySoftware.php:103
@@ -4695,7 +4695,7 @@ msgstr[2] "Tipos de itens associados"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Ativos associados"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5149,7 +5149,7 @@ msgstr "Tempo médio para se levar em conta"
 #: src/Toolbox.php:824 js/common.js:650
 msgctxt "size"
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:391
 msgid "BNC"
@@ -5403,7 +5403,7 @@ msgstr "Marca"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Marca"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6197,7 +6197,7 @@ msgstr "Alterar a visibilidade em entidades filhas."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Carregando"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -6475,6 +6475,8 @@ msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
 msgstr ""
+"Limpeza de documentos órfãos: exclui todos os documentos que não estão "
+"associados a nenhum item."
 
 #: src/QueuedNotification.php:529
 msgid "Clean stale queued browser notifications"
@@ -8986,7 +8988,7 @@ msgstr "Device_id"
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Periféricos"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9404,7 +9406,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Deseja restaurar a revisão selecionada?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9426,7 +9428,7 @@ msgstr "Documento"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Documento"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15679,7 +15681,7 @@ msgstr "Ações em massa"
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Mestre"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -18351,7 +18353,7 @@ msgstr "Outro"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -19052,7 +19054,7 @@ msgstr ""
 #: src/Toolbox.php:829 js/common.js:655
 msgctxt "size"
 msgid "PiB"
-msgstr ""
+msgstr "PiB"
 
 #: src/Glpi/Helpdesk/Tile/TilesManager.php:69
 msgid "Pick an available asset and reserve it for a given date."
@@ -20064,7 +20066,7 @@ msgstr[2] "Tarefas do projeto"
 
 #: src/NotificationTargetProjectTask.php:64
 msgid "Project task team group"
-msgstr ""
+msgstr "Grupo da equipe de tarefas do projeto"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
@@ -21488,7 +21490,7 @@ msgstr "API Rest"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Restaurar"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23930,7 +23932,7 @@ msgstr "Sistema"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -25688,7 +25690,7 @@ msgstr "Total"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -27631,7 +27633,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Visualizações"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"
@@ -28273,7 +28275,7 @@ msgstr "Ontem"
 #: src/Toolbox.php:832 js/common.js:658
 msgctxt "size"
 msgid "YiB"
-msgstr ""
+msgstr "YiB"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:105
 #, php-format
@@ -28628,7 +28630,7 @@ msgstr ""
 
 #: js/impact.js:2601
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Você precisa selecionar pelo menos 1 ativo para formar um grupo"
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:66
 msgid ""

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +35,8 @@
 namespace Glpi\Kernel;
 
 use GLPI;
-use Glpi\Application\ConfigurationConstants;
-use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviders;
-use Glpi\Http\PluginsRouterListener;
+use Glpi\Application\SystemConfigurator;
+use Glpi\Http\Listener\PluginsRouterListener;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -58,10 +55,10 @@ final class Kernel extends BaseKernel
 
     public function __construct(?string $env = null)
     {
-        // Initialize configuration constants.
+        // Initialize system configuration.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
         // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
-        (new ConfigurationConstants($this->getProjectDir()))->computeConstants($env);
+        (new SystemConfigurator($this->getProjectDir(), $env))();
 
         // TODO: refactor the GLPI class.
         $glpi = (new GLPI());
@@ -111,30 +108,14 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
-    public function loadCommonGlobalConfig(): void
+    public function boot(): void
     {
-        $this->boot();
+        $dispatch_postboot = !$this->booted;
 
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderWithRequestInterface) {
-                continue;
-            }
-            $provider->execute();
-        }
-    }
+        parent::boot();
 
-    public function loadCliConsoleOnlyConfig(): void
-    {
-        $this->boot();
-
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
-                $provider->execute();
-            }
+        if ($dispatch_postboot) {
+            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
     }
 
@@ -143,7 +124,6 @@ final class Kernel extends BaseKernel
         $projectDir = $this->getProjectDir();
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
-        $container->import($projectDir . '/dependency_injection/legacyConfigProviders.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }

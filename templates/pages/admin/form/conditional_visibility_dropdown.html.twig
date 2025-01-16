@@ -1,0 +1,187 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Compute strategy, with a fallback to "Always visible" for new questions #}
+{% if item is null %}
+    {% set question_strategy = enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+{% else %}
+    {% set question_strategy = item.getConfiguredVisibilityStrategy() %}
+{% endif %}
+
+{# Spacing div (ms-auto must be applied to an item that is always visible) #}
+<div class="ms-auto"></div>
+
+<div
+    data-glpi-form-editor-visibility-dropdown-container
+
+    {% set hide = question_strategy == enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+    class="btn-group {{ hide ? 'd-none' : '' }}"
+
+    {# May be displayed on section, comment and question #}
+    {# We can't use instanceOf here as `item` may be null #}
+    {% if type == "Glpi\\Form\\Question" %}
+        data-glpi-form-editor-question-extra-details
+    {% elseif type == "Glpi\\Form\\Section" %}
+        data-glpi-form-editor-section-extra-details
+    {% elseif type == "Glpi\\Form\\Comment" %}
+        data-glpi-form-editor-comment-extra-details
+    {% endif %}
+>
+    <button
+        title="{{ __('Configure visibility') }}"
+        data-bs-toggle="dropdown"
+        data-bs-auto-close="outside"
+        class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
+        data-bs-placement="top"
+        type="button"
+        data-glpi-form-editor-visibility-dropdown
+    >
+        {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+            {% set is_visible = question_strategy == strategy %}
+            {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
+            <div
+                class="{{ display_class }} align-items-center"
+                data-glpi-editor-visibility-badge="{{ strategy.value }}"
+            >
+                <i class="{{ strategy.getIcon() }} me-1"></i>
+                <span>{{ strategy.getLabel() }}</span>
+            </div>
+        {% endfor %}
+    </button>
+    <div
+        class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
+    >
+        <div class="card visibility-dropdown-card">
+            <div class="card-body">
+                <h3 class="card-title d-flex align-items-center">
+                    <i class="ti ti-circuit-changeover me-2"></i>
+                    {{ __('Conditional visibility') }}
+                </h3>
+
+                <div class="btn-group" role="group">
+                    {# Display strategy picker #}
+                    {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+                        {% set rand = random() %}
+                        <input
+                            id="visibility_strategy_{{ rand }}"
+                            type="radio"
+                            class="btn-check"
+                            name="visibility_strategy"
+                            value="{{ strategy.value }}"
+                            autocomplete="off"
+                            {% if question_strategy == strategy %}
+                                checked
+                                data-glpi-editor-refresh-checked
+                            {% endif %}
+                        >
+                        <label
+                            data-glpi-form-editor-on-click="set-visiblity-value"
+                            for="visibility_strategy_{{ rand }}"
+                            class="btn btn-outline-secondary"
+                        >
+                            <i class="{{ strategy.getIcon() }} me-2"></i>
+                            {{ strategy.getLabel() }}
+                        </label>
+                    {% endfor %}
+                </div>
+
+                {% set is_visible = question_strategy.showEditor() %}
+                {% set visibility_class = is_visible ? '' : 'd-none' %}
+                <div
+                    class="{{ visibility_class }} mt-4"
+                    data-glpi-form-editor-visibility-editor
+                    {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+                        {% if strategy.showEditor() %}
+                            data-glpi-form-editor-visibility-editor-display-for-{{ strategy.value }}
+                        {% endif %}
+                    {% endfor %}
+                >
+                    {# This div will be rendered using AJAX when the dropdown is opened #}
+                    <div class="card-body placeholder-glow">
+                        <div class="placeholder col-12 mb-2"></div>
+                        <div class="placeholder col-12 mb-2"></div>
+                        <div class="placeholder col-12 mb-2"></div>
+                        <div class="placeholder col-12 mb-2"></div>
+                        <div class="placeholder col-12 mb-2"></div>
+                    </div>
+                    {% if item is not null %}
+                        {# Initial values #}
+                        {% for condition in item.getConfiguredConditionsData() %}
+                            {% if condition.getItemUuid() != 0 %}
+                                <div data-glpi-form-editor-condition>
+                                    {% if not loop.first %}
+                                        <input
+                                            type="hidden"
+                                            name="_conditions[{{ loop.index0 }}][logic_operator]"
+                                            value="{{ condition.getLogicOperator().value }}"
+                                            data-glpi-form-editor-condition-logic-operator
+                                        />
+                                    {% endif %}
+                                    <input
+                                        type="hidden"
+                                        name="_conditions[{{ loop.index0 }}][item]"
+                                        value="{{ condition.getItemDropdownKey() }}"
+                                        data-glpi-form-editor-condition-item
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="_conditions[{{ loop.index0 }}][item_uuid]"
+                                        value="{{ condition.getItemUuid() }}"
+                                        data-glpi-form-editor-condition-item-uuid
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="_conditions[{{ loop.index0 }}][item_type]"
+                                        value="{{ condition.getItemType() }}"
+                                        data-glpi-form-editor-condition-item-type
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="_conditions[{{ loop.index0 }}][value_operator]"
+                                        value="{{ condition.getValueOperator().value }}"
+                                        data-glpi-form-editor-condition-value-operator
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="_conditions[{{ loop.index0 }}][value]"
+                                        value="{{ condition.getValue() }}"
+                                        data-glpi-form-editor-condition-value
+                                    />
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

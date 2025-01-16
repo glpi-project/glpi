@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,13 @@
 
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
+// Keep in sync with the dynamicConstantNames config option in the PHPStan config file
 
 // Directories constants
 define('GLPI_CACHE_DIR', null);
 define('GLPI_CONFIG_DIR', null);
 define('GLPI_CRON_DIR', null);
 define('GLPI_DOC_DIR', null);
-define('GLPI_DUMP_DIR', null);
 define('GLPI_GRAPH_DIR', null);
 define('GLPI_INVENTORY_DIR', null);
 define('GLPI_LOCAL_I18N_DIR', null);
@@ -60,7 +60,6 @@ define('GLPI_VAR_DIR', null);
 // Optionnal constants
 define('GLPI_FORCE_MAIL', null);
 define('GLPI_LOG_LVL', null);
-define('GLPI_SQL_DEBUG', null);
 define('GLPI_STRICT_DEPRECATED', null);
 
 // Other constants
@@ -84,4 +83,5 @@ define('GLPI_SERVERSIDE_URL_ALLOWLIST', []);
 define('GLPI_TELEMETRY_URI', null);
 define('GLPI_TEXT_MAXSIZE', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
+define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', 0);
 define('PLUGINS_DIRECTORIES', ['/a', '/b', '/c']);

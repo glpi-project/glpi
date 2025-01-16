@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -108,15 +108,16 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * Executes the query
      *
      * @param array   $criteria Query criteria
-     * @param boolean $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
+     *
+     * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute($criteria, $debug = false): self
+    public function execute($criteria): self
     {
-        ['criteria' => $criteria, 'debug' => $debug] = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
+        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
 
-        $this->buildQuery($criteria, $debug);
+        $this->buildQuery($criteria);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
@@ -127,13 +128,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * Builds the query
      *
      * @param array   $criteria Query criteria
-     * @param boolean $log      To log the request (default false)
      *
      * @return void
+     *
+     * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery($criteria, $log = false): void
+    public function buildQuery($criteria): void
     {
-        ['criteria' => $criteria, 'debug' => $log] = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
+        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
 
         $this->sql = null;
         $this->res = false;
@@ -328,11 +330,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         //LIMIT & OFFSET
         $this->sql .= $this->handleLimits($limit, $start);
-
-
-        if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
-            Toolbox::logSqlDebug("Generated query:", $this->getSql());
-        }
     }
 
     /**
@@ -889,7 +886,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if (is_array($args[0])) {
             // The new signature ($criteria, $debug = false) is already used
             $criteria = $args[0];
-            $debug    = $args[1] ?? false;
         } else {
             // The old signature ($tableorsql, $crit = "", $debug = false) is still used
             Toolbox::deprecated(
@@ -901,13 +897,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     ? ['WHERE' => [new QueryExpression($criteria)]]
                     : [];
             }
-            $debug    = $args[2] ?? false;
             $criteria['FROM'] = $args[0];
         }
 
-        return [
-            'criteria' => $criteria,
-            'debug'    => $debug,
-        ];
+        return $criteria;
     }
 }

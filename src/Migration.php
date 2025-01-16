@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -365,6 +365,10 @@ class Migration
                 $format = "INT " . DBConnection::getDefaultPrimaryKeySignOption() . " NOT NULL DEFAULT 0";
                 break;
 
+            case 'json':
+                $format = "JSON NOT NULL";
+                break;
+
             default:
                 $format = $type;
                 break;
@@ -680,12 +684,7 @@ class Migration
                 $newtable,
                 ($DB->tableExists($newtable) ? __('nok') : __('ok'))
             );
-            if (isCommandLine()) {
-                throw new \RuntimeException($message);
-            } else {
-                echo htmlescape($message) . "\n";
-                die(1);
-            }
+            throw new \RuntimeException($message);
         }
     }
 

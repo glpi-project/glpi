@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,10 +54,15 @@ return static function (ContainerConfigurator $container): void {
         ->instanceof(PublicService::class)->public()
     ;
 
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+    $services->load('Glpi\Kernel\\Listener\\', $projectDir . '/src/Glpi/Kernel/Listener');
     $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
+    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress')->exclude($projectDir . '/src/Glpi/Progress/SessionProgress.php');
+    $services->load(
+        'Glpi\Form\ConditionalVisiblity\\',
+        $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'
+    );
 
     /**
      * Override Symfony's logger.

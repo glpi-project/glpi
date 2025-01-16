@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -140,7 +140,6 @@ class ITILSolution extends CommonDBChild
      * @param $ID integer ID of the item
      * @param $options array
      *     - item: CommonITILObject instance
-     *     - kb_id_toload: load new item content from KB entry
      *
      * @return boolean item found
      **/
@@ -148,13 +147,6 @@ class ITILSolution extends CommonDBChild
     {
         if ($this->isNewItem()) {
             $this->getEmpty();
-        }
-
-        if (isset($options['kb_id_toload']) && $options['kb_id_toload'] > 0) {
-            $kb = new KnowbaseItem();
-            if ($kb->getFromDB($options['kb_id_toload'])) {
-                $this->fields['content'] = $kb->getField('answer');
-            }
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_solution.html.twig', [

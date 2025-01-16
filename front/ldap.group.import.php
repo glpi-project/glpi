@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);
 AuthLDAP::manageRequestValues(false);
 
-Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
+Html::header(__('LDAP directory link'), '', "admin", "group", "ldap");
 
 $authldap = new AuthLDAP();
 $authldap->getFromDB($_REQUEST['authldaps_id'] ?? 0);
@@ -48,7 +48,6 @@ if (
     && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
 ) {
     AuthLDAP::showLdapGroups(
-        $_SERVER['PHP_SELF'],
         $_REQUEST['start'] ?? 0,
         0,
         $_REQUEST["ldap_group_filter"] ?? '',

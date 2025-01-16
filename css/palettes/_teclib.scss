@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,11 @@
     --tblr-primary-rgb: 188, 218, 26;
     --tblr-primary-fg: #353b17;
     --tblr-link-color-rgb: 169, 88, 185;
-    --glpi-mainmenu-bg: #a958b9;
+    --glpi-mainmenu-bg: #a958b9; // hsl(290deg, 41%, 54%)
+    --glpi-helpdesk-header: hsl(291deg, 37%, 85%);
     --glpi-mainmenu-fg: #fff;
+    --glpi-palette-color-1: #ba77c8;
+    --glpi-palette-color-2: #8e21a1;
+    --glpi-palette-color-3: #f1f1f2;
+    --glpi-palette-color-4: #bcda1a;
 }

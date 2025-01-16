@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -173,6 +173,8 @@ class MassiveAction
      */
     private $current_itemtype;
 
+    private $from_single_item = false;
+
     /**
      * Constructor of massive actions.
      * There is three stages and each one have its own objectives:
@@ -191,6 +193,8 @@ class MassiveAction
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        $this->from_single_item = $GET['_from_single_item'] ?? false;
 
         if (!empty($POST)) {
             if (!isset($POST['is_deleted'])) {
@@ -1922,5 +1926,13 @@ class MassiveAction
         }
 
         $this->updateProgressBars();
+    }
+
+    /**
+     * @return bool True if massive actions are running from a single item context such as the item's form.
+     */
+    public function isFromSingleItem(): bool
+    {
+        return $this->from_single_item;
     }
 }

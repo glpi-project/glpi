@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,6 +46,11 @@ abstract class AbstractType implements TypeInterface
     ) {
     }
 
+    public function getLabel(): string
+    {
+        return $this->custom_field->getFriendlyName();
+    }
+
     public function normalizeValue(mixed $value): mixed
     {
         return $value;
@@ -67,6 +72,7 @@ abstract class AbstractType implements TypeInterface
             new BooleanOption($this->custom_field, 'full_width', __('Full width'), false),
             new BooleanOption($this->custom_field, 'readonly', __('Readonly'), false),
             new BooleanOption($this->custom_field, 'required', __('Mandatory'), false),
+            new BooleanOption($this->custom_field, 'disabled', __('Disabled'), false), // Not exposed in the UI. Only used in field order preview
         ];
     }
 

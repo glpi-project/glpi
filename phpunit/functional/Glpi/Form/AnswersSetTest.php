@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,6 +47,7 @@ use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
@@ -191,9 +192,24 @@ class AnswersSetTest extends DbTestCase
                     'is_date_enabled' => 1,
                     'is_time_enabled' => 1
                 ]))
-                ->addQuestion("Requester", QuestionTypeRequester::class)
-                ->addQuestion("Observer", QuestionTypeObserver::class)
-                ->addQuestion("Assignee", QuestionTypeAssignee::class)
+                ->addQuestion(
+                    "Requester",
+                    QuestionTypeRequester::class,
+                    '',
+                    json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
+                )
+                ->addQuestion(
+                    "Observer",
+                    QuestionTypeObserver::class,
+                    '',
+                    json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
+                )
+                ->addQuestion(
+                    "Assignee",
+                    QuestionTypeAssignee::class,
+                    '',
+                    json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
+                )
                 ->addQuestion("Urgency", QuestionTypeUrgency::class)
                 ->addQuestion("Request type", QuestionTypeRequestType::class)
                 ->addQuestion("Radio", QuestionTypeRadio::class, '123', json_encode([
@@ -224,6 +240,13 @@ class AnswersSetTest extends DbTestCase
         $question = Question::getById($this->getQuestionId($form, "File"));
         $_POST['_prefix_' . $question->getEndUserInputName()] = $unique_id;
 
+        // Create a group and a supplier to test the assignee question type
+        $group = $this->createItem(Group::class, ['name' => 'Group']);
+        $supplier = $this->createItem(Supplier::class, [
+            'name' => 'Supplier',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
             $this->getQuestionId($form, "Age") => 20,
@@ -233,17 +256,17 @@ class AnswersSetTest extends DbTestCase
             $this->getQuestionId($form, "Time") => "12:00",
             $this->getQuestionId($form, "DateTime") => "2021-01-01 12:00:00",
             $this->getQuestionId($form, "Requester") => [
-                User::getForeignKeyField() . '-1',
-                Group::getForeignKeyField() . '-1'
+                sprintf('%s-%d', User::getForeignKeyField(), getItemByTypeName(User::class, 'glpi', true)),
+                sprintf('%s-%d', Group::getForeignKeyField(), $group->getID())
             ],
             $this->getQuestionId($form, "Observer") => [
-                User::getForeignKeyField() . '-1',
-                Group::getForeignKeyField() . '-1'
+                sprintf('%s-%d', User::getForeignKeyField(), getItemByTypeName(User::class, 'glpi', true)),
+                sprintf('%s-%d', Group::getForeignKeyField(), $group->getID()),
             ],
             $this->getQuestionId($form, "Assignee") => [
-                User::getForeignKeyField() . '-1',
-                Group::getForeignKeyField() . '-1',
-                Supplier::getForeignKeyField() . '-1'
+                sprintf('%s-%d', User::getForeignKeyField(), getItemByTypeName(User::class, 'glpi', true)),
+                sprintf('%s-%d', Group::getForeignKeyField(), $group->getID()),
+                sprintf('%s-%d', Supplier::getForeignKeyField(), $supplier->getID())
             ],
             $this->getQuestionId($form, "Urgency") => 2,
             $this->getQuestionId($form, "Request type") => 1,

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -400,7 +400,7 @@ class RuleLocationTest extends DbTestCase
         // intercepts the output of echo functions
         // as showRulePreviewResultsForm is also in charge of displaying the result (in addition to testing the rule)
         ob_start();
-        $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
+        $rule->showRulePreviewResultsForm($input, $params);
         ob_end_clean();
 
         // check that location was not created

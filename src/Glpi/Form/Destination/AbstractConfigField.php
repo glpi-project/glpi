@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@ use LogicException;
 use Override;
 use Toolbox;
 
-abstract class AbstractConfigField implements ConfigFieldInterface
+abstract class AbstractConfigField implements DestinationFieldInterface
 {
     #[Override]
     final public static function getKey(): string
@@ -97,6 +97,32 @@ abstract class AbstractConfigField implements ConfigFieldInterface
     #[Override]
     public function prepareInput(array $input): array
     {
+        $config_class = $this->getConfigClass();
+
+        /**
+         * All strategies are submitted as an array, even if the field can only have one strategy at a time.
+         * The field should handle this and only use the first strategy if it can only have one.
+         */
+        if (is_subclass_of($config_class, ConfigFieldWithStrategiesInterface::class)) {
+            /** @var class-string<ConfigFieldWithStrategiesInterface> $config_class */
+            if (
+                $this->canHaveMultipleStrategies() === false
+                && is_array($input[$this->getKey()][$config_class::getStrategiesInputName()] ?? null)
+            ) {
+                $input[$this->getKey()][$config_class::getStrategiesInputName()] = $input[$this->getKey()][$config_class::getStrategiesInputName()][0];
+            }
+        }
+
         return $input;
+    }
+
+    public function getStrategiesForDropdown(): array
+    {
+        return [];
+    }
+
+    public function canHaveMultipleStrategies(): bool
+    {
+        return false;
     }
 }

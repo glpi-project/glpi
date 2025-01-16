@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -495,6 +495,23 @@ class CommonDBTM extends CommonGLPI
     {
     }
 
+    public function getFormFields(): array
+    {
+        // NOTE: Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5
+        $fields = [
+            'name', 'firstname', 'template_name', '_template_is_active', 'states_id', static::getForeignKeyField(), 'is_helpdesk_visible',
+            '_dc_breadcrumbs', 'locations_id', 'item_type', 'itemtype', 'date_domaincreation', $this->getTypeForeignKeyField(),
+            'usertitles_id', 'registration_number', 'phone', 'phone2', 'phonenumber', 'mobile', 'fax', 'website', 'email',
+            'address', 'postalcode', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
+            'manufacturers_id', 'groups_id_tech', $this->getModelForeignKeyField(), 'contact_num', 'serial', 'contact', 'otherserial',
+            'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
+            'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
+        ];
+        return array_filter($fields, function ($f) {
+            return $f !== null && (str_starts_with($f, '_') || $this->isField($f));
+        });
+    }
+
     /**
      * Print the item generic form
      * Use a twig template to detect automatically fields and display them in a two column layout
@@ -522,6 +539,7 @@ class CommonDBTM extends CommonGLPI
             'params' => $options,
             'no_header' => !$new_item && !$in_modal,
             'cluster' => $cluster,
+            'field_order' => $this->getFormFields()
         ]);
         return true;
     }
@@ -1196,6 +1214,14 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
+     * @return bool true if input data is saved in the session
+     */
+    protected function hasSavedInput(): bool
+    {
+        return isset($_SESSION['saveInput'][static::class]);
+    }
+
+    /**
      * Get the data saved in the session
      *
      * @since 0.84
@@ -1373,7 +1399,6 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    Webhook::raise('new', $this);
                     $this->post_addItem();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
@@ -1423,6 +1448,7 @@ class CommonDBTM extends CommonGLPI
                         Infocom::manageDateOnStatusChange($this);
                     }
                     Plugin::doHook(Hooks::ITEM_ADD, $this);
+                    Webhook::raise('new', $this);
 
                     // As add have succeeded, clean the old input value
                     if (isset($this->input['_add'])) {
@@ -2846,7 +2872,7 @@ class CommonDBTM extends CommonGLPI
      * @param array   $options Array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return integer|void value of withtemplate option (exit of no right)
+     * @return integer|void value of withtemplate option (throw an exception if not enough rights)
      **/
     public function initForm($ID, array $options = [])
     {
@@ -3139,6 +3165,35 @@ class CommonDBTM extends CommonGLPI
                 throw new AccessDeniedHttpException($info);
             }
         }
+    }
+
+    /** @param int[] $entities_ids */
+    public function isAccessibleFromEntities(array $entities_ids): bool
+    {
+        if (!$this->isEntityAssign()) {
+            // Item does not have any entity so it is always visible.
+            return true;
+        }
+
+        // Check if the item entity is in the list of given entities.
+        if (in_array($this->getEntityID(), $entities_ids)) {
+            return true;
+        }
+
+        // If the item is recursive, we also check if it is accessible from any
+        // of the ancestors of the given entities.
+        if (
+            $this->maybeRecursive()
+            && $this->fields['is_recursive']
+            && in_array(
+                $this->getEntityID(),
+                getAncestorsOf("glpi_entities", $entities_ids),
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -6665,7 +6720,7 @@ TWIG, $twig_params);
         \Glpi\Debug\Profiler::getInstance()->start('Html::header');
         Html::header(
             $title,
-            $_SERVER['PHP_SELF'],
+            '',
             $menus[0] ?? 'none',
             $menus[1] ?? 'none',
             $menus[2] ?? '',
@@ -6800,5 +6855,15 @@ TWIG, $twig_params);
             'unglobalize' => 'form',
             default => null,
         };
+    }
+
+    public static function getByUuid(string $uuid): ?self
+    {
+        $item = new static();
+        if ($item->getFromDBByCrit(['uuid' => $uuid])) {
+            return $item;
+        }
+
+        return null;
     }
 }

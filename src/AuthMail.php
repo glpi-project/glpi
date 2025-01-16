@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -206,10 +206,11 @@ class AuthMail extends CommonDBTM
 
         if ($this->getFromDB($ID)) {
             $twig_params = [
-                'title' => __('Test connection to email server'),
-                'login' => __('Login'),
-                'password' => __('Password'),
-                'test' => _x('button', 'Test'),
+                'title'          => __('Test connection to email server'),
+                'login'          => __('Login'),
+                'password'       => __('Password'),
+                'test'           => _x('button', 'Test'),
+                'connect_string' => $this->fields['connect_string'] ?? ''
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -232,6 +233,7 @@ class AuthMail extends CommonDBTM
                                 autocomplete: 'password'
                             }
                         }) }}
+                        {{ fields.hiddenField('imap_string', connect_string) }}
                         <div>
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,9 @@ use AbstractRightsDropdown;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Category;
+use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
@@ -86,23 +89,30 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
 
-        // Assert: only active forms must be found
+        // Assert: only active forms must be found.
         $this->assertEquals([
             "Active form 1",
             "Active form 2",
         ], $forms_names);
     }
 
-    public function testFormsAreOrderedByNames(): void
+    public function testItemsAreOrderedByNames(): void
     {
-        // Arrange: create forms with unordered names
+        // Arrange: create forms and categories with unordered names
+        $category_1 = $this->createItem(Category::class, ['name' => 'BBB']);
+        $category_2 = $this->createItem(Category::class, ['name' => 'QQQ']);
         $builders = [
             new FormBuilder("ZZZ"),
             new FormBuilder("AAA"),
             new FormBuilder("CCC"),
+            // This two forms won't be displayed, they are needed to make sure
+            // the categories are not empty.
+            (new FormBuilder("child 1"))->setCategory($category_1->getID()),
+            (new FormBuilder("child 2"))->setCategory($category_2->getID()),
         ];
         foreach ($builders as $builder) {
             $builder->allowAllUsers();
@@ -112,43 +122,18 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
+        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: forms must be ordered by name
         $this->assertEquals([
             "AAA",
             "CCC",
             "ZZZ",
-        ], $forms_names);
-    }
-
-    public function testFormsNamesAreUniques(): void
-    {
-        // Arrange: create forms with duplicated names
-        $builders = [
-            new FormBuilder("My form"),
-            new FormBuilder("My form"),
-            new FormBuilder("My other form"),
-            new FormBuilder("My form"),
-        ];
-        foreach ($builders as $builder) {
-            $builder->allowAllUsers();
-            $builder->setIsActive(true);
-            $this->createForm($builder);
-        }
-
-        // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
-
-        // Assert: names must be uniques
-        $this->assertEquals([
-            "My form",
-            "My form (1)",
-            "My form (2)",
-            "My other form",
+            // Categories are always at the end
+            "BBB",
+            "QQQ",
         ], $forms_names);
     }
 
@@ -168,7 +153,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must be found
@@ -184,7 +170,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
@@ -207,7 +194,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
@@ -265,7 +253,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             user_id: getItemByTypeName(User::class, $user, true),
         );
         $access_parameters = new FormAccessParameters($session_info, []);
-        $forms = self::$manager->getForms($access_parameters);
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
         $nb_forms = count($forms);
 
         // Assert: list should be empty if we don't expect the user to see the form
@@ -360,10 +349,173 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Act: filter the forms
         $access_parameters = $this->getDefaultParametersForTestUser();
-        $forms = self::$manager->getForms($access_parameters, $filter);
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: $filter,
+        );
+        $forms = self::$manager->getItems($item_request);
 
         // Assert: only the expected forms must be found
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
         $this->assertEquals($expected_forms_names, $forms_names);
+    }
+
+    public function testRootContent(): void
+    {
+        // Arrange: create a few forms with and without categories
+        $category_a = $this->createItem(Category::class, ['name' => 'Category A']);
+        $category_b = $this->createItem(Category::class, [
+            'name' => 'Category B',
+            Category::getForeignKeyField() => $category_a->getID(),
+        ]);
+        $builders = [
+            new FormBuilder("Root form 1"),
+            new FormBuilder("Root form 2"),
+            (new FormBuilder("Form from category A"))->setCategory($category_a->getID()),
+            (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the root items from the catalog manager and extract their names
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $items = self::$manager->getItems($item_request);
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: only root items must be found
+        $this->assertEquals([
+            "Root form 1",
+            "Root form 2",
+            "Category A",
+        ], $items_names);
+    }
+
+    public function testCategoryContent(): void
+    {
+        // Arrange: create a few forms with and without categories
+        $category_a = $this->createItem(Category::class, ['name' => 'Category A']);
+        $category_b = $this->createItem(Category::class, [
+            'name' => 'Category B',
+            Category::getForeignKeyField() => $category_a->getID(),
+        ]);
+        $builders = [
+            new FormBuilder("Root form 1"),
+            new FormBuilder("Root form 2"),
+            (new FormBuilder("Form from category A"))->setCategory($category_a->getID()),
+            (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the items from the category A and extract their names
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            category: $category_a,
+        );
+        $items = self::$manager->getItems($item_request);
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: only forms and categories inside "Category A" must be found.
+        $this->assertEquals([
+            "Form from category A",
+            "Category B",
+        ], $items_names);
+    }
+
+    public function testCategoriesCanBeFiltered(): void
+    {
+        // Arrange: create a few forms with categories
+        $category_a = $this->createItem(Category::class, ['name' => 'A']);
+        $category_b = $this->createItem(Category::class, ['name' => 'B']);
+        $category_c1 = $this->createItem(Category::class, ['name' => 'C1']);
+        $category_c2 = $this->createItem(Category::class, ['name' => 'C2']);
+        $builders = [
+            (new FormBuilder("Form from category A"))->setCategory($category_a->getID()),
+            (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
+            (new FormBuilder("Form from category C1"))->setCategory($category_c1->getID()),
+            (new FormBuilder("Form from category C2"))->setCategory($category_c2->getID()),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the items using a filter
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: 'C',
+        );
+        $items = self::$manager->getItems($item_request);
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: only categories that contains "C" must be found
+        $this->assertEquals([
+            "C1",
+            "C2",
+        ], $items_names);
+    }
+
+    public function testEmptyCategoriesAreNotFound(): void
+    {
+        // Arrange: create a few forms with categories
+        // Category A -> has a form
+        // Category B -> no forms
+        // Category C -> Category C1 -> no forms
+        // Category D -> Category D1 -> has a form
+        $category_a = $this->createItem(Category::class, ['name' => 'Category A']);
+        $this->createItem(Category::class, ['name' => 'Category B']);
+        $category_c = $this->createItem(Category::class, ['name' => 'Category C']);
+        $this->createItem(Category::class, [
+            'name' => 'Category C1',
+            Category::getForeignKeyField() => $category_c->getID(),
+        ]);
+        $category_d = $this->createItem(Category::class, ['name' => 'Category D']);
+        $category_d1 = $this->createItem(Category::class, [
+            'name' => 'Category D1',
+            Category::getForeignKeyField() => $category_d->getID(),
+        ]);
+        $builders = [
+            (new FormBuilder("Form from category A"))->setCategory($category_a->getID()),
+            (new FormBuilder("Form from category D1"))->setCategory($category_d1->getID()),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the root items
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $items = self::$manager->getItems($item_request);
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: only categories with (direct or indirect) children must be found
+        $this->assertEquals([
+            "Category A",
+            "Category D",
+        ], $items_names);
     }
 }

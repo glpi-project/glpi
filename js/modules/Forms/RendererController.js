@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_info */
+/* global glpi_toast_info, tinymce, glpi_toast_error */
 
 /**
  * Client code to handle users actions on the form_renderer template
@@ -113,6 +113,13 @@ export class GlpiFormRendererController
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
         try {
+            // Update tinymce values
+            if (window.tinymce !== undefined) {
+                tinymce.get().forEach(editor => {
+                    editor.save();
+                });
+            }
+
             // Submit form using AJAX
             const response = await $.post({
                 url: $(this.#target).prop("action"),
@@ -142,8 +149,11 @@ export class GlpiFormRendererController
                 `)
                 .addClass("d-none");
 
-        } catch {
-            // Failure (TODO)
+        } catch (e) {
+            console.error(e);
+            glpi_toast_error(
+                __("Failed to submit form, please contact your administrator.")
+            );
         }
     }
 

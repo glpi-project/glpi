@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,7 +47,7 @@ if (isset($_POST["update"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", "others");
+Html::header(__('External authentication sources'), '', "config", "auth", "others");
 
 Auth::showOtherAuthList();
 
