@@ -55,8 +55,8 @@ class SessionsSecurityConfiguration extends AbstractRequirement
     {
         $is_cli = isCommandLine();
 
-        $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $cookie_samesite = ini_get('session.cookie_samesite');
+        $cookie_secure   = filter_var($this->getCookiesSecure(), FILTER_VALIDATE_BOOLEAN);
+        $cookie_samesite = $this->getCookiesSamesite();
 
         $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
 
@@ -89,5 +89,20 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         if (!$is_cli && $this->validated) {
             $this->validation_messages[] = __('Sessions configuration is secured.');
         }
+    }
+
+    protected function getCookiesSecure()
+    {
+        return ini_get('session.cookie_secure');
+    }
+
+    protected function getCookiesHttpOnly()
+    {
+        return ini_get('session.cookie_httponly');
+    }
+
+    protected function getCookiesSamesite(): string
+    {
+        return ini_get('session.cookie_samesite');
     }
 }

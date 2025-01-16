@@ -33,38 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\System\Requirement;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\System\Requirement\MemoryLimit;
+
+class MemoryLimitTest extends \GLPITestCase
 {
-    public function __construct()
+    public function testCheckWithEnoughMemory()
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        $instance = new MemoryLimit(32 * 1024 * 1024);
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Allocated memory is sufficient.'],
+            $instance->getValidationMessages()
         );
     }
 
-    protected function check()
+    public function testCheckWithNotEnoughMemory()
     {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
-
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
-
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $instance = new MemoryLimit(16 * 1024 * 1024 * 1024);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            [
+                'Allocated memory: ' . \Toolbox::getSize(\Toolbox::getMemoryLimit()),
+                'A minimum of 16 GiB is commonly required for GLPI.',
+                'Try increasing the memory_limit parameter in the php.ini file.'
+            ],
+            $instance->getValidationMessages()
+        );
     }
 }

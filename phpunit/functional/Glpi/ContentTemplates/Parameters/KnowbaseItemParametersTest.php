@@ -33,38 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\System\Requirement;
+namespace tests\units\Glpi\ContentTemplates\Parameters;
 
-final class IntegerSize extends AbstractRequirement
+use Glpi\ContentTemplates\Parameters\KnowbaseItemParameters;
+
+include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
+
+class KnowbaseItemParametersTest extends AbstractParameters
 {
-    public function __construct()
+    public function testGetValues(): void
     {
-        parent::__construct(
-            __('PHP maximal integer size'),
-            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).')
+        $this->login();
+
+        $this->createItem('KnowbaseItem', [
+            'name'        => 'kbi_testGetValues',
+            'answer'      => "test answer' \"testGetValues",
+        ]);
+
+        $kbi_id = getItemByTypeName('KnowbaseItem', 'kbi_testGetValues', true);
+
+        $parameters = new KnowbaseItemParameters();
+        $values = $parameters->getValues(getItemByTypeName('KnowbaseItem', 'kbi_testGetValues'));
+        $this->assertEquals(
+            [
+                'id'     => $kbi_id,
+                'name'   => 'kbi_testGetValues',
+                'answer' => "test answer' \"testGetValues",
+                'link'   => '<a href="/glpi/front/knowbaseitem.form.php?id=' . $kbi_id . '" title="kbi_testGetValues">kbi_testGetValues</a>',
+            ],
+            $values
         );
-    }
 
-    protected function check()
-    {
-        $extension_loaded = $this->isExtensionLoaded();
-        $driver_is_mysqlnd = $this->isMysqlND();
-        if (PHP_INT_SIZE < 8) {
-            $this->validated = false;
-            $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
-        } else {
-            $this->validated = true;
-            $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
-        }
-    }
-
-    protected function isExtensionLoaded(): bool
-    {
-        return extension_loaded('mysqli');
-    }
-
-    protected function isMysqlND(): bool
-    {
-        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
     }
 }
