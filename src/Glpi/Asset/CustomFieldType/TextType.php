@@ -48,7 +48,7 @@ class TextType extends AbstractType
     {
         $opts = parent::getOptions();
         $opts[] = new BooleanOption($this->custom_field, 'enable_richtext', __('Rich text'), true, false);
-        $opts[] = new BooleanOption($this->custom_field, 'enable_images', __('Allow images'), true, false);
+        $opts[] = new BooleanOption($this->custom_field, 'enable_images', __('Allow images'), false, false);
         return $opts;
     }
 
