@@ -35,9 +35,11 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseKeysChecker extends \GLPITestCase
+use Glpi\System\Diagnostic\DatabaseKeysChecker;
+
+class DatabaseKeysCheckerTest extends \GLPITestCase
 {
-    protected function sqlProvider()
+    public static function sqlProvider()
     {
         return [
             [
@@ -320,7 +322,6 @@ SQL
         array $expected_useless,
         $item_class = null
     ) {
-
         global $DB;
 
         $itemtype = sprintf('Test%s', uniqid());
@@ -332,15 +333,15 @@ SQL
         }
         class_alias(get_class($item_class), $itemtype);
 
-        $this->newTestedInstance($DB);
+        $instance = new DatabaseKeysChecker($DB);
         $DB->doQuery(sprintf($create_table_sql, $table_name));
-        $missing_keys  = $this->testedInstance->getMissingKeys($table_name);
-        $misnamed_keys = $this->testedInstance->getMisnamedKeys($table_name);
-        $useless_keys = $this->testedInstance->getUselessKeys($table_name);
+        $missing_keys  = $instance->getMissingKeys($table_name);
+        $misnamed_keys = $instance->getMisnamedKeys($table_name);
+        $useless_keys = $instance->getUselessKeys($table_name);
         $DB->doQuery(sprintf('DROP TABLE `%s`', $table_name));
 
-        $this->array($missing_keys)->isEqualTo($expected_missing);
-        $this->array($misnamed_keys)->isEqualTo($expected_misnamed);
-        $this->array($useless_keys)->isEqualTo($expected_useless);
+        $this->assertEquals($expected_missing, $missing_keys);
+        $this->assertEquals($expected_misnamed, $misnamed_keys);
+        $this->assertEquals($expected_useless, $useless_keys);
     }
 }
