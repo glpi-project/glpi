@@ -38,6 +38,7 @@ use DbTestCase;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Helpdesk\Tile\Profile_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
@@ -252,5 +253,172 @@ final class TilesManagerTest extends DbTestCase
             "Form inside current entity",
             "Form inside recursive parent entity",
         ], $form_names);
+    }
+
+    public function testTilesAreOrderedByRanks(): void
+    {
+        // Arrange: create three tiles and modify their orders
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $profile_tile_id = $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "FAQ",
+            'description'  => "Link to the FAQ",
+            'illustration' => "browse-kb",
+            'page'         => GlpiPageTile::PAGE_FAQ,
+        ]);
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "Support",
+            'description'  => "Link to teclib support",
+            'illustration' => "report-issue",
+            'url'          => "https://support.teclib.org",
+        ]);
+
+        // Get the second tile and move it at the end
+        $this->updateItem(Profile_Tile::class, $profile_tile_id, [
+            'rank' => 10,
+        ]);
+
+        // Act: get tiles
+        $session = new SessionInfo(profile_id: $profile->getID());
+        $tiles = $manager->getTiles($session);
+
+        // Assert: tiles must be in the expected order
+        $this->assertCount(3, $tiles);
+
+        $first_tile = $tiles[0];
+        $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
+        $this->assertEquals("GLPI project", $first_tile->getTitle());
+        $this->assertEquals("Link to GLPI project website", $first_tile->getDescription());
+        $this->assertEquals("request-service", $first_tile->getIllustration());
+        $this->assertEquals("https://glpi-project.org", $first_tile->getTileUrl());
+
+        $second_tile = $tiles[1];
+        $this->assertInstanceOf(ExternalPageTile::class, $second_tile);
+        $this->assertEquals("Support", $second_tile->getTitle());
+        $this->assertEquals("Link to teclib support", $second_tile->getDescription());
+        $this->assertEquals("report-issue", $second_tile->getIllustration());
+        $this->assertEquals("https://support.teclib.org", $second_tile->getTileUrl());
+
+        $third_tile = $tiles[2];
+        $this->assertInstanceOf(GlpiPageTile::class, $third_tile);
+        $this->assertEquals("FAQ", $third_tile->getTitle());
+        $this->assertEquals("Link to the FAQ", $third_tile->getDescription());
+        $this->assertEquals("browse-kb", $third_tile->getIllustration());
+        $this->assertEquals("/glpi/front/helpdesk.faq.php", $third_tile->getTileUrl());
+    }
+
+    public function testTilesOrderCanBeSet(): void
+    {
+        // Arrange: create three tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+        $profile_tile_id_1 = $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $profile_tile_id_2 = $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "FAQ",
+            'description'  => "Link to the FAQ",
+            'illustration' => "browse-kb",
+            'page'         => GlpiPageTile::PAGE_FAQ,
+        ]);
+        $profile_tile_id_3 = $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "Support",
+            'description'  => "Link to teclib support",
+            'illustration' => "report-issue",
+            'url'          => "https://support.teclib.org",
+        ]);
+
+        // Act: set a new order
+        $manager->setOrderForProfile($profile, [
+            $profile_tile_id_3,
+            $profile_tile_id_1,
+            $profile_tile_id_2,
+        ]);
+
+        // Assert: confirm the new order
+        $session = new SessionInfo(profile_id: $profile->getID());
+        $tiles = $manager->getTiles($session);
+
+        $first_tile = $tiles[0];
+        $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
+        $this->assertEquals("Support", $first_tile->getTitle());
+        $this->assertEquals("Link to teclib support", $first_tile->getDescription());
+        $this->assertEquals("report-issue", $first_tile->getIllustration());
+        $this->assertEquals("https://support.teclib.org", $first_tile->getTileUrl());
+
+        $second_tile = $tiles[1];
+        $this->assertInstanceOf(ExternalPageTile::class, $second_tile);
+        $this->assertEquals("GLPI project", $second_tile->getTitle());
+        $this->assertEquals("Link to GLPI project website", $second_tile->getDescription());
+        $this->assertEquals("request-service", $second_tile->getIllustration());
+        $this->assertEquals("https://glpi-project.org", $second_tile->getTileUrl());
+
+        $third_tile = $tiles[2];
+        $this->assertInstanceOf(GlpiPageTile::class, $third_tile);
+        $this->assertEquals("FAQ", $third_tile->getTitle());
+        $this->assertEquals("Link to the FAQ", $third_tile->getDescription());
+        $this->assertEquals("browse-kb", $third_tile->getIllustration());
+        $this->assertEquals("/glpi/front/helpdesk.faq.php", $third_tile->getTileUrl());
+    }
+
+    public function testDeleteTile(): void
+    {
+        // Arrange: create a profile with some tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+        $profile_tile_id_2 = $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "FAQ",
+            'description'  => "Link to the FAQ",
+            'illustration' => "browse-kb",
+            'page'         => GlpiPageTile::PAGE_FAQ,
+        ]);
+        $manager->addTile($profile, ExternalPageTile::class, [
+            'title'        => "Support",
+            'description'  => "Link to teclib support",
+            'illustration' => "report-issue",
+            'url'          => "https://support.teclib.org",
+        ]);
+
+        // Act: delete the second tile
+        $profile_tile = Profile_Tile::getById($profile_tile_id_2);
+        $tile_id = $profile_tile->fields['items_id'];
+        $this->getManager()->deleteTile(GlpiPageTile::getById($tile_id));
+
+        // Assert: the tile must not be found and must be cleared from the DB
+        $session = new SessionInfo(profile_id: $profile->getID());
+        $tiles = $manager->getTiles($session);
+        $this->assertCount(2, $tiles);
+
+        $first_tile = $tiles[0];
+        $second_tile = $tiles[1];
+        $this->assertNotEquals("FAQ", $first_tile->getTitle());
+        $this->assertNotEquals("FAQ", $second_tile->getTitle());
+
+        $this->assertFalse(Profile_Tile::getById($profile_tile_id_2));
+        $this->assertFalse(GlpiPageTile::getById($tile_id));
     }
 }

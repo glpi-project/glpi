@@ -229,9 +229,11 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
             `profiles_id` int unsigned NOT NULL DEFAULT '0',
             `itemtype` varchar(255) DEFAULT NULL,
             `items_id` int unsigned NOT NULL DEFAULT '0',
+            `rank` int NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            KEY `profiles_id` (`profiles_id`),
-            KEY `item` (`itemtype`,`items_id`)
+            UNIQUE KEY `unicity` (`profiles_id`, `rank`),
+            KEY `item` (`itemtype`,`items_id`),
+            KEY `rank` (`rank`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
