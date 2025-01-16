@@ -4383,7 +4383,7 @@ class Profile extends CommonDBTM
         return true;
     }
 
-    public function showHelpdeskHomeConfig(): bool
+    private function showHelpdeskHomeConfig(): bool
     {
         // Load tiles of the current profile
         $tiles_manager = new TilesManager();
