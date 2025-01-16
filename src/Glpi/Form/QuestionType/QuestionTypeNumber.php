@@ -62,4 +62,10 @@ final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer
     {
         return 30;
     }
+
+    #[Override]
+    public function getInputAttributes(): array
+    {
+        return ['step' => 'any'];
+    }
 }
