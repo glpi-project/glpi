@@ -68,7 +68,7 @@ final class TilesManager
             }
 
             // Make sure the tile is valid for the given session and entity details
-            if (!$check_availability && !$tile->isAvailable($session_info)) {
+            if ($check_availability && !$tile->isAvailable($session_info)) {
                 continue;
             }
 
