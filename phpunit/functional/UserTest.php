@@ -2057,7 +2057,8 @@ class UserTest extends \DbTestCase
         $this->assertEquals(['name' => 'test'], $fields);
     }
 
-    public function testReapplyRightRules() {
+    public function testReapplyRightRules()
+    {
         $this->login();
         $entities_id = $this->getTestRootEntity(true);
 
