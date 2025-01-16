@@ -37,16 +37,12 @@ namespace Glpi\Controller\Config\Helpdesk;
 use Config;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Session\SessionInfo;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use User;
 
 final class FetchTilesController extends AbstractController
 {
