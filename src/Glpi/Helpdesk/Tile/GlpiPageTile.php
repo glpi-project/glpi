@@ -89,7 +89,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     }
 
     #[Override]
-    public function isValid(SessionInfo $session_info): bool
+    public function isAvailable(SessionInfo $session_info): bool
     {
         return match ($this->fields['page']) {
             self::PAGE_SERVICE_CATALOG => true,

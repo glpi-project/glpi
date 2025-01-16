@@ -46,7 +46,7 @@ interface TileInterface
 
     public function getTileUrl(): string;
 
-    public function isValid(SessionInfo $session_info): bool;
+    public function isAvailable(SessionInfo $session_info): bool;
 
     public function getDatabaseId(): int;
 }

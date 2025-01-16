@@ -110,7 +110,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     }
 
     #[Override]
-    public function isValid(SessionInfo $session_info): bool
+    public function isAvailable(SessionInfo $session_info): bool
     {
         $form_access_manager = FormAccessControlManager::getInstance();
 

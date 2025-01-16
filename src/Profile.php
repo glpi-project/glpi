@@ -4389,7 +4389,7 @@ class Profile extends CommonDBTM
         $tiles_manager = new TilesManager();
         $tiles = $tiles_manager->getTiles(new SessionInfo(
             profile_id: $this->getID(),
-        ), bypass_rights: true);
+        ), check_availability: false);
 
         // Render content
         $twig = TemplateRenderer::getInstance();

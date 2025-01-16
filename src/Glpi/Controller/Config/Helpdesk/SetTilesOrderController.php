@@ -76,7 +76,7 @@ final class SetTilesOrderController extends AbstractController
         // Reload tiles
         $tiles = $this->tiles_manager->getTiles(new SessionInfo(
             profile_id: $profile_id,
-        ), bypass_rights: true);
+        ), check_availability: false);
         return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
             'tiles' => $tiles,

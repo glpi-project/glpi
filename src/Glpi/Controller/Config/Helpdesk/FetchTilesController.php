@@ -67,7 +67,7 @@ final class FetchTilesController extends AbstractController
         $profile_id = $request->query->getInt('profile_id');
         $tiles = $this->tiles_manager->getTiles(new SessionInfo(
             profile_id: $profile_id,
-        ), bypass_rights: true);
+        ), check_availability: false);
 
         return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
