@@ -1531,4 +1531,130 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //8 connections on port, but one related to existing equipment
         $this->assertCount(7, $unmanaged->find());
     }
+
+    public function testDefaultInstantiationType()
+    {
+        global $DB;
+        $json_str = '
+        {
+            "action": "inventory",
+            "content": {
+                "accesslog": {
+                  "logdate": "2023-12-11 09:39:16"
+                },
+                "bios": {
+                  "assettag": "Asset-1234567890",
+                  "bdate": "2013-10-29",
+                  "bmanufacturer": "American Megatrends Inc.",
+                  "bversion": "1602",
+                  "mmanufacturer": "ASUSTeK COMPUTER INC.",
+                  "mmodel": "Z87-A",
+                  "msn": "131219362301208",
+                  "skunumber": "All",
+                  "smanufacturer": "ASUS",
+                  "smodel": "All Series"
+                },
+                "hardware": {
+                  "chassis_type": "Desktop",
+                  "datelastloggeduser": "Mon Dec 11 09:34",
+                  "defaultgateway": "192.168.1.1",
+                  "dns": "127.0.0.53",
+                  "lastloggeduser": "teclib",
+                  "memory": 32030,
+                  "name": "teclib-asus-desktop",
+                  "swap": 2047,
+                  "uuid": "31042c80-d7da-11dd-93d0-bcee7b8de946",
+                  "vmsystem": "Physical",
+                  "workgroup": "home"
+                },
+                "networks": [
+                  {
+                    "description": "vmk1",
+                    "ipaddress": "10.15.55.81",
+                    "ipmask": "255.255.254.0",
+                    "mac": "00:50:56:6b:fa:c6",
+                    "mtu": 1500,
+                    "status": "up",
+                    "virtualdev": true
+                  }
+                ],
+                "operatingsystem": {
+                    "arch": "x86_64",
+                    "boot_time": "2023-12-11 08:36:20",
+                    "dns_domain": "home",
+                    "fqdn": "teclib-asus-desktop.home",
+                    "full_name": "Ubuntu 22.04.3 LTS",
+                    "hostid": "007f0101",
+                    "install_date": "2023-09-11 08:40:42",
+                    "kernel_name": "linux",
+                    "kernel_version": "5.15.0-89-generic",
+                    "name": "Ubuntu",
+                    "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv\/aqNaZ6Xk6m",
+                    "timezone": {
+                        "name": "Europe\/Paris",
+                        "offset": "+0100"
+                    },
+                    "version": "22.04.3 LTS (Jammy Jellyfish)"
+                },
+                "versionclient": "GLPI-Agent_v1.4-1"
+            },
+            "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
+            "itemtype": "Computer"
+        }';
+
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+        $this->assertIsArray($agent);
+        $this->assertSame('teclib-asus-desktop-2022-09-20-16-43-09', $agent['deviceid']);
+        $this->assertSame('teclib-asus-desktop-2022-09-20-16-43-09', $agent['name']);
+        $this->assertSame('Computer', $agent['itemtype']);
+        $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
+        $this->assertGreaterThan(0, $agent['items_id']);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->assertGreaterThan(0, $computers_id);
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //check created networkport
+        $networkport1 = new \NetworkPort();
+
+        // vmk2 -> ethernet -> NetworkPortEthernet
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk1',
+                'instantiation_type'  => 'NetworkPortEthernet'
+            ]
+        ));
+
+        // update vmk1 to set instantiation_type to null to test update case
+        $this->assertTrue($networkport1->update([
+            'id'                  => $networkport1->fields['id'],
+            'instantiation_type'  => null,
+            'is_dynamic'          => 1 // prevent lock
+        ]));
+
+        //redo inventory
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        // vmk2 -> ethernet -> NetworkPortEthernet
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk1',
+                'instantiation_type'  => 'NetworkPortEthernet'
+            ]
+        ));
+    }
 }
