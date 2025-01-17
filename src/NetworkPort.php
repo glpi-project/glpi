@@ -1452,6 +1452,15 @@ class NetworkPort extends CommonDBChild
             echo "<tr class='tab_bg_1'><th colspan='4'>" . $instantiation->getTypeName(1) . "</th></tr>\n";
             $instantiation->showInstantiationForm($this, $options, $recursiveItems);
             unset($instantiation);
+        } else {
+            // display minimal information if needed
+            if (!empty($this->fields['mac'])) {
+                echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Port') . "</th></tr>\n";
+                echo "<tr class='tab_bg_1'>\n";
+                echo "<td>" . __('MAC') . "</td>\n<td>";
+                echo Html::input('mac', ['value' => $this->fields['mac']]);
+                echo "</td>\n";
+            }
         }
 
         if (!$options['several']) {
