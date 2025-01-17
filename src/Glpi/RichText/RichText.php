@@ -345,6 +345,19 @@ HTML;
      */
     private static function loadImagesLazy(string $content): string
     {
+        if (isset($_GET['token'])) {
+            $content = preg_replace(
+                [
+                    '/<img([^>]+src=["\'])([^"\']+)(["\'][^>]*)>/',
+                    '/<a([^>]+href=["\'])([^"\']+)(["\'][^>]*)>/'
+                ],
+                [
+                    '<img$1$2&token=' . $_GET['token'] . '$3>',
+                    '<a$1$2&token=' . $_GET['token'] . '$3>'
+                ],
+                $content
+            );
+        }
         return preg_replace(
             '/<img([\w\W]+?)\/+>/',
             '<img$1 loading="lazy">',

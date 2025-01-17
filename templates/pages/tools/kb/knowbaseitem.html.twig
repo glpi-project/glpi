@@ -68,6 +68,14 @@
         {{ fields.nullField() }}
     {% endif %}
 
+    {{ fields.dropdownYesNo('is_token_url', item.fields['is_token_url'], __('Share with a unique URL')) }}
+    {% if item.fields['is_token_url'] %}
+        {% set token_url = config('url_base') ~ '/front/helpdesk.faq.php?id=' ~ item.fields['id'] ~ '&token=' ~ item.fields['token'] %}
+        {{ fields.htmlField('', token_url, __('Unique URL')) }}
+    {% else %}
+        {{ fields.nullField() }}
+    {% endif %}
+
     {% if linked_item is defined and linked_item is not null and not linked_item.isNewItem() %}
         {{ inputs.hidden('_itemtype', get_class(linked_item)) }}
         {{ inputs.hidden('_items_id', linked_item.getID()) }}

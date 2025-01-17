@@ -69,3 +69,6 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     );
     $migration->addKey($table, $field_to_add);
 }
+
+$migration->addField('glpi_knowbaseitems', 'is_token_url', 'tinyint', ['value' => 0]);
+$migration->addField('glpi_knowbaseitems', 'token', 'text');
