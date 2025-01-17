@@ -158,7 +158,6 @@
         start.value = 0;
     });
 
-    //TODO This watch can be made a "Once watcher" in Vue 3.4
     watch(() => props.tree, (new_value, old_value) => {
         if (old_value.length !== 0) {
             return;
@@ -186,7 +185,7 @@
         }
         preprocess(new_value);
         tree_data.value = new_value;
-    }, { flush: 'post' });
+    }, { flush: 'post', once: true });
 
     onMounted(() => {
         const tree_el = $(`#tree_data${props.rand}`);
@@ -214,8 +213,8 @@
         tree_el.on('click', '.collapse-item', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const cell = $(e.target).closest('td');
-            const node_id = cell.attr('data-node-id');
+            const node_el = $(e.target).closest('div[data-node-id]');
+            const node_id = node_el.attr('data-node-id');
 
             // Need to walk the tree to find the node and toggle its expanded state.
             function toggleExpanded(data, id) {
@@ -255,34 +254,24 @@
 <template>
     <div class="flexbox-item-grow data_tree" :style="`height: calc(20px + ${22 * max_items}px)`">
         <div class="w-100 h-100 overflow-x-auto overflow-y-hidden">
-            <table :id="`tree_data${rand}`" class="w-100" :aria-label="label">
-                <colgroup>
-                    <col>
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="parent-path"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="node in visible_in_dom" :key="node.key" :class="node.selected ? 'fw-bold' : ''">
-                        <td :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap">
-                            <span v-if="node.folder" class="me-1 cursor-pointer collapse-item">
-                                <i v-if="node.expanded === 'true'" :class="icons.expanded"></i>
-                                <i v-else :class="icons.collapsed"></i>
-                            </span>
-                            <span v-if="node.folder" class="me-1">
-                                <i v-if="node.expanded === 'true'" :class="icons.folder_open"></i>
-                                <i v-else :class="icons.folder_closed"></i>
-                            </span>
-                            <span v-else class="me-1">
-                                <i :class="icons.item"></i>
-                            </span>
-                            <span :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" v-html="node.title"></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <ul :id="`tree_data${rand}`" class="w-100 list-group" :aria-label="label">
+                <li v-for="node in visible_in_dom" :key="node.key" :class="`${node.selected ? 'fw-bold' : ''} list-group-item p-0 border-0`">
+                    <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex">
+                        <span v-if="node.folder" class="me-1 cursor-pointer collapse-item">
+                            <i v-if="node.expanded === 'true'" :class="icons.expanded"></i>
+                            <i v-else :class="icons.collapsed"></i>
+                        </span>
+                        <span v-if="node.folder" class="me-1">
+                            <i v-if="node.expanded === 'true'" :class="icons.folder_open"></i>
+                            <i v-else :class="icons.folder_closed"></i>
+                        </span>
+                        <span v-else class="me-1">
+                            <i :class="icons.item"></i>
+                        </span>
+                        <span :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" v-html="node.title"></span>
+                    </div>
+                </li>
+            </ul>
         </div>
         <div :id="`verticalScrollbar-${rand}`" class="position-absolute overflow-auto" style="height:100%; width: 16px; top: 0; right: 0;">
             <div class="fake-scrollbar-inner" style="height: 100%; width: 100%;">
