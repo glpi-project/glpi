@@ -76,3 +76,6 @@ $migration->addField('glpi_knowbaseitems', 'is_pinned', 'tinyint NOT NULL DEFAUL
 $migration->addField('glpi_knowbaseitems', 'show_in_service_catalog', 'tinyint NOT NULL DEFAULT 0', ['after' => 'view']);
 
 $migration->addKey('glpi_knowbaseitems', 'forms_categories_id');
+
+$migration->addField('glpi_knowbaseitems', 'is_token_url', 'tinyint', ['value' => 0]);
+$migration->addField('glpi_knowbaseitems', 'token', 'text');

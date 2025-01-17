@@ -138,6 +138,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
+        if ($this->fields["is_token_url"] && (isset($_GET['token']) && $this->fields["token"] == $_GET['token'])) {
+            return true;
+        }
+
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                   && $this->haveVisibilityAccess())
@@ -564,14 +568,30 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            $where = ['is_faq' => 1];
+            $where = [
+                'OR' => [
+                    ['is_faq' => 1],
+                    [
+                        'is_token_url' => 1,
+                        'token' => $_GET['token'] ?? '',
+                    ],
+                ],
+            ];
             if (Session::isMultiEntitiesMode()) {
                 $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
             }
         } else {
             $where = self::getVisibilityCriteriaKB();
-            $where['is_faq'] = 1;
+            $where[] = [
+                'OR' => [
+                    ['is_faq' => 1],
+                    [
+                        'is_token_url' => 1,
+                        'token' => $_GET['token'] ?? '',
+                    ],
+                ],
+            ];
         }
 
         return $where;
@@ -709,10 +729,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function prepareInputForAdd($input)
     {
-        // set title for question if empty
-        if (isset($input["name"]) && empty($input["name"])) {
-            $input["name"] = __('New item');
-        }
+        $input = self::prepareInputForUpdate($input);
 
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
@@ -735,6 +752,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
+
+        if (isset($input['is_token_url']) && $input['is_token_url'] && empty($this->fields['token'])) {
+            $input['token'] = Toolbox::getRandomString(20);
+        }
+
         return $input;
     }
 
@@ -1087,6 +1109,13 @@ TWIG, $twig_params);
                     'glpi_knowbaseitems.is_faq' => 1,
                     'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
                 ],
+            ];
+        }
+
+        if (isset($_GET['token'])) {
+            $criteria['WHERE']['OR'][] = [
+                'glpi_knowbaseitems.is_token_url'   => 1,
+                'glpi_knowbaseitems.token'          => $_GET['token'],
             ];
         }
 

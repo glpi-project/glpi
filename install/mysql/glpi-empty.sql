@@ -4051,6 +4051,8 @@ CREATE TABLE `glpi_knowbaseitems` (
   `name` text,
   `answer` longtext,
   `is_faq` tinyint NOT NULL DEFAULT '0',
+  `is_token_url` tinyint NOT NULL DEFAULT '0',
+  `token` text,
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `view` int NOT NULL DEFAULT '0',
   `show_in_service_catalog` tinyint NOT NULL DEFAULT '0',
