@@ -410,6 +410,11 @@ trait InventoryNetworkPort
                     $networkport->update(Sanitizer::sanitize($criteria));
                 }
 
+                // force NetworkPortEthernet type if no instantiation_type and mac is set
+                if (!property_exists($data, 'instantiation_type') && property_exists($data, 'mac') && !empty($data->mac)) {
+                    $data->instantiation_type = 'NetworkPortEthernet';
+                }
+
                 //check for instantiation_type switch for NetworkPort
                 if (
                     property_exists($data, 'instantiation_type')
