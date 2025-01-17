@@ -1578,24 +1578,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                     "virtualdev": true
                   }
                 ],
-                "operatingsystem": {
-                    "arch": "x86_64",
-                    "boot_time": "2023-12-11 08:36:20",
-                    "dns_domain": "home",
-                    "fqdn": "teclib-asus-desktop.home",
-                    "full_name": "Ubuntu 22.04.3 LTS",
-                    "hostid": "007f0101",
-                    "install_date": "2023-09-11 08:40:42",
-                    "kernel_name": "linux",
-                    "kernel_version": "5.15.0-89-generic",
-                    "name": "Ubuntu",
-                    "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv\/aqNaZ6Xk6m",
-                    "timezone": {
-                        "name": "Europe\/Paris",
-                        "offset": "+0100"
-                    },
-                    "version": "22.04.3 LTS (Jammy Jellyfish)"
-                },
                 "versionclient": "GLPI-Agent_v1.4-1"
             },
             "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
