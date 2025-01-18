@@ -317,7 +317,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
@@ -388,7 +388,7 @@ HTML;
                 <div class='filters_toolbar m-2 {{ is_placeholder ? "d-none" : "" }}'>
                     <span class='filters'></span>
                     <span class='filters-control'>
-                        <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
+                        <i class="btn btn-sm btn-ghost-secondary ti ti-plus plus-sign add-filter">
                             <span class='add-filter-lbl'>{{ messages['add_filter'] }}</span>
                         </i>
                     </span>
@@ -396,7 +396,7 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fa-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
@@ -701,7 +701,7 @@ HTML;
         echo "</div>"; // .field
 
         echo Html::submit(_x('button', "Add"), [
-            'icon'  => 'fas fa-plus',
+            'icon'  => 'ti ti-plus',
             'class' => 'btn btn-primary submit-new-dashboard'
         ]);
 
@@ -819,7 +819,7 @@ HTML;
         echo "</div>"; // .field
 
         echo Html::submit(_x('button', "Add"), [
-            'icon'  => 'fas fa-plus',
+            'icon'  => 'ti ti-plus',
             'class' => 'btn btn-primary mt-2'
         ]);
         echo "</form>"; // form.card.display-filter-form
@@ -910,7 +910,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='far fa-save'></i>
+         <i class='ti ti-device-floppy'></i>
          <span>" . __("Save") . "</span>
       </a>";
 
@@ -942,11 +942,11 @@ HTML;
 
        // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='fas fa-exclamation-triangle'></i>" .
+         <i class='ti ti-alert-triangle'></i>" .
          __('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='fas fa-exclamation-triangle'></i>" .
+         <i class='ti ti-alert-triangle'></i>" .
          __('Error rendering card!') .
             "</br>" .
             $card_id .

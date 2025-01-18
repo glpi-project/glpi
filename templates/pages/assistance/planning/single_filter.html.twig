@@ -40,7 +40,7 @@
     {% set label_title %}
         {{ title }}
         {% if filter_data.type == 'external' and (not filter_data.url|default('') is url_safe) %}
-            <i class="fas fa-exclamation-triangle" title="{{ __('URL "%s" is not allowed by your administrator.')|format(filter_data.url) }}"></i>
+            <i class="ti ti-alert-triangle" title="{{ __('URL "%s" is not allowed by your administrator.')|format(filter_data.url) }}"></i>
         {% endif %}
     {% endset %}
     {{ inputs.label(label_title, filter_key) }}

@@ -5901,7 +5901,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id=" .
                             $data["refID"] . "' title=\"" . __s('See planning') . "\">" .
-                            "<i class='far fa-calendar-alt'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
+                            "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
@@ -5963,21 +5963,21 @@ final class SQLProvider implements SearchProviderInterface
                         ],
                     ]);
                     $name = $data[$ID][0]['name'];
-                    $fa_class = "";
-                    $fa_title = "";
+                    $icon_class = "";
+                    $icon_title = "";
                     $href = \KnowbaseItem::getFormURLWithID($data[$ID][0]['id']);
                     if (count($result) > 0) {
                         foreach ($result as $row) {
                             if ($row['is_faq']) {
-                                $fa_class = "fa-question-circle faq";
-                                $fa_title = __s("This item is part of the FAQ");
+                                $icon_class = "ti ti-help faq";
+                                $icon_title = __s("This item is part of the FAQ");
                             }
                         }
                     } else {
-                        $fa_class = "fa-eye-slash not-published";
-                        $fa_title = __s("This item is not published yet");
+                        $icon_class = "ti ti-eye-off not-published";
+                        $icon_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a href='$href'>" . \htmlescape($name) . "</a></div>";
+                    return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='$href'>" . \htmlescape($name) . "</a></div>";
             }
         }
 

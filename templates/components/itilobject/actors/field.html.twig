@@ -92,9 +92,9 @@
                 case "User":
                     if (items_id == 0) {
                         text = alt_email;
-                        icon = `<i class="ti  fa-fw ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
+                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
                     } else {
-                        icon = `<i class="ti  fa-fw ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
+                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
                     }
                     if ("{{ actortype }}" == "assign") {
                         fk = "users_id_assign";
@@ -105,7 +105,7 @@
                     }
                     break;
                 case "Group":
-                    icon = `<i class="ti  fa-fw ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
+                    icon = `<i class="ti ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
                     if ("{{ actortype }}" == "assign") {
                         fk = "groups_id_assign";
                     } else if ("{{ actortype }}" == "requester") {
@@ -115,7 +115,7 @@
                     }
                     break;
                 case "Supplier":
-                    icon = `<i class="ti fa-fw ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
+                    icon = `<i class="ti ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
                     fk   = "suppliers_id_assign";
                     break;
             }
@@ -124,13 +124,13 @@
             {% if canupdate %}
             if (['User', 'Supplier', 'Email'].includes(itemtype)
                 && is_selection) {
-                const fa_class = use_notif ? "fas" : "far";
+                const icon_class = use_notif ? "ti-bell-filled" : "ti-bell";
                 actions = `
                     <button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
                               title="{{ __('Email followup') }}"
                               type="button">
-                        <i class="${fa_class} fa-bell notify-icon"></i>
+                        <i class="ti ${icon_class} notify-icon"></i>
                     </button>`;
             }
             {% endif %}

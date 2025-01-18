@@ -317,7 +317,7 @@ class Dropdown
                            title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='fa-fw ti ti-plus'></i>
+              <i class='ti ti-plus'></i>
               <span class='sr-only'>" . __s('Add') . "</span>
                 </span>";
             $add_item_icon .= '</div>';
@@ -400,7 +400,7 @@ class Dropdown
             if ($itemtype == 'Location') {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='$field_id' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
-                $location_icon .= "<i class='fa-fw ti ti-map'></i></div>";
+                $location_icon .= "<i class='ti ti-map'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
@@ -410,7 +410,7 @@ class Dropdown
                     && ($rack = $item->getParentRack())
                 ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
-                    $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
+                    $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
                     $paramscomment['with_dc_position'] = $breadcrumb_id;
                     $icon_array[] = $dc_icon;
@@ -2766,7 +2766,7 @@ JAVASCRIPT;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' " .
              " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='far fa-save'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+             "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
     }
 
 

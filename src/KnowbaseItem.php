@@ -1538,7 +1538,7 @@ TWIG, $twig_params);
                         $href = " href=\"" . self::getFormURLWithID($data["id"]) . "\" ";
                     }
 
-                    $fa_class = "";
+                    $icon_class = "";
                     $fa_title = "";
                     if (
                         $data['is_faq']
@@ -1546,18 +1546,18 @@ TWIG, $twig_params);
                             || (isset($data['visibility_count'])
                                 && $data['visibility_count'] > 0))
                     ) {
-                        $fa_class = "fa-question-circle faq";
+                        $icon_class = "ti-help faq";
                         $fa_title = __s("This item is part of the FAQ");
                     } else if (
                         isset($data['visibility_count'])
                         && $data['visibility_count'] <= 0
                     ) {
-                        $fa_class = "fa-eye-slash not-published";
+                        $icon_class = "ti-eye-off not-published";
                         $fa_title = __s("This item is not published yet");
                     }
                     echo Search::showItem(
                         $output_type,
-                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                        "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
                                        <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
                         $item_num,
                         $row_num

@@ -2102,34 +2102,34 @@ class Ticket extends CommonITILObject
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
-                 = "<i class='fa-fw ti ti-git-merge'></i>" .
+                 = "<i class='ti ti-git-merge'></i>" .
                  __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='fa-fw fas fa-plus'></i>" .
+                = "<i class='ti ti-plus'></i>" .
                  _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Approval request');
             }
 
@@ -2139,16 +2139,16 @@ class Ticket extends CommonITILObject
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='fa-fw ti ti-user'></i>" . __s('Add an actor');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                        = "<i class='fa-fw fas fa-link'></i>" .
+                        = "<i class='ti ti-link'></i>" .
                         _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                        = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
+                        = "<i class='" . Contract::getIcon() . "'></i>" .
                         _sx('button', 'Add contract');
                 }
 
@@ -2157,7 +2157,7 @@ class Ticket extends CommonITILObject
 
             if (self::canUpdate()) {
                 $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-                = "<i class='fa-fw fas fa-check'></i>" .
+                = "<i class='ti ti-check'></i>" .
                 __s("Resolve selected tickets");
             }
         }
@@ -4446,11 +4446,11 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
                                         htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
                                         $d['alternative_email'];
                                 }
                             }
@@ -4461,7 +4461,7 @@ JAVASCRIPT;
                             && count($job->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
@@ -4664,7 +4664,7 @@ JAVASCRIPT;
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
                 'text'    => __('Tickets waiting for your approval'),
-                'icon'    => 'fas fa-check',
+                'icon'    => 'ti ti-check',
                 'count'   => $number_waitapproval
             ];
         }
@@ -4684,7 +4684,7 @@ JAVASCRIPT;
         $twig_params['items'][] = [
             'link'   => self::getSearchURL() . "?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
-            'icon'   => 'fas fa-trash bg-red-lt',
+            'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted
         ];
 
@@ -5415,19 +5415,19 @@ JAVASCRIPT;
 
         if ($sla->getFromDB($this->fields['slas_id_tto'])) {
             $sla_tto_link = "<a href='" . $sla->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
         if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
             $sla_ttr_link = "<a href='" . $sla->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
         if ($ola->getFromDB($this->fields['olas_id_tto'])) {
             $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
         }
         if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
             $ola_ttr_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
         }
 
         $dates = [

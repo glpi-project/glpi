@@ -255,7 +255,7 @@ function step4($databasename, $newdatabasename)
         echo "<input type='hidden' name='update' value='no'>";
         echo "<input type='hidden' name='install' value='Etape_2'>";
         echo "<button type='submit' name='submit' class='btn btn-warning' " . ($disabled ? 'disabled="disabled"' : '') . ">";
-        echo "<i class='fas fa-chevron-left me-1 fa-2x alert-icon'></i>";
+        echo "<i class='ti ti-chevron-left me-1 fs-2x alert-icon'></i>";
         echo __s("Back");
         echo "</button>";
         Html::closeForm();
@@ -267,7 +267,7 @@ function step4($databasename, $newdatabasename)
         echo "<input type='hidden' name='install' value='Etape_4'>";
         echo "<button type='submit' name='submit' class='btn btn-primary' " . ($disabled ? 'disabled="disabled"' : '') . ">";
         echo __s('Continue');
-        echo "<i class='fas fa-chevron-right ms-1'></i>";
+        echo "<i class='ti ti-chevron-right ms-1'></i>";
         echo "</button>";
         Html::closeForm();
     };

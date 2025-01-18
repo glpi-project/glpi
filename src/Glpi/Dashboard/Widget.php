@@ -465,7 +465,7 @@ HTML;
         if ($nodata) {
             $numbers_html = "<span class='line empty-card no-data'>
                <span class='content'>
-                  <i class='icon fas fa-alert-triangle'></i>
+                  <i class='icon ti ti-alert-triangle'></i>
                </span>
                <span class='label'>" . __('No data found') . "</span>
             <span>";
@@ -1745,7 +1745,7 @@ HTML;
             : "";
 
             $author = strlen($entry['author'])
-            ? "<i class='fas fa-user'></i>&nbsp;{$entry['author']}"
+            ? "<i class='ti ti-user'></i>&nbsp;{$entry['author']}"
             : "";
 
             $content_size = strlen($entry['content']);
@@ -1772,14 +1772,14 @@ HTML;
         if ($nodata) {
             $list_html = "<span class='line empty-card no-data'>
             <span class='content'>
-               <i class='icon fas fa-exclamation-triangle'></i>
+               <i class='icon ti ti-alert-triangle'></i>
             </span>
             <span class='label'>" . __('No data found') . "</span>
          <span>";
         }
 
         $view_all = strlen($p['url'])
-         ? "<a href='{$p['url']}'><i class='fas fa-eye' title='" . __("See all") . "'></i></a>"
+         ? "<a href='{$p['url']}'><i class='ti ti-eye' title='" . __("See all") . "'></i></a>"
          : "";
 
         $html = <<<HTML
@@ -1788,7 +1788,7 @@ HTML;
             background-color: $bg_color_2;
          }
 
-         #chart-{$p['rand']} .fa-eye {
+         #chart-{$p['rand']} .ti-eye {
             color: {$fg_color};
          }
       </style>

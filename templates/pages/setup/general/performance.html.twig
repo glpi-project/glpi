@@ -41,11 +41,11 @@
 {% endmacro %}
 
 {% macro success_icon_msg(message) %}
-   {{ _self.icon_msg(message, 'fa fa-check-circle text-success') }}
+   {{ _self.icon_msg(message, 'ti ti-circle-check text-success') }}
 {% endmacro %}
 
 {% macro warning_icon_msg(message) %}
-   {{ _self.icon_msg(message, 'fa fa-info-circle text-warning') }}
+   {{ _self.icon_msg(message, 'ti ti-info-circle text-warning') }}
 {% endmacro %}
 
 {% if opcache_enabled %}
@@ -64,7 +64,7 @@
          <th class="fw-normal">{{ msg }}</th>
          <td>{{ opcache_version }}</td>
          <td></td>
-         {{ _self.icon_msg(short_msg, "fa fa-check-circle text-" ~ opcache_enabled ? 'success' : 'danger') }}
+         {{ _self.icon_msg(short_msg, "ti ti-circle-check text-" ~ (opcache_enabled ? 'success' : 'danger')) }}
       </tr>
       {% if opcache_enabled %}
          {% set free = opcache_info['memory_usage']['free_memory'] %}

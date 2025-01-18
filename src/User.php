@@ -2632,7 +2632,7 @@ class User extends CommonDBTM
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="ti ti-id fa-lg"></i>
+               <i class="ti ti-id fs-2"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -2650,7 +2650,7 @@ HTML;
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
-                            <i class="ti ti-spy fa-lg"></i>
+                            <i class="ti ti-spy fs-2"></i>
                         </button>
                     </form>
 HTML;
@@ -2675,7 +2675,7 @@ JAVASCRIPT;
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
                        title="{$error_message}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="ti ti-spy fa-lg"></i>
+                  <i class="ti ti-spy fs-2"></i>
                </button>
 HTML;
                 $toolbar[] = $impersonate_btn;
@@ -3704,15 +3704,17 @@ JAVASCRIPT;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='fas fa-users'></i>" .
+                                                         = "<i class='ti ti-users-plus'></i>" .
                                                            __s('Associate to a group');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __s('Dissociate from a group');
+                                                         = "<i class='ti ti-users-minus'></i>" .
+                                                           __s('Dissociate from a group');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='fas fa-user-shield'></i>" .
+                                                         = "<i class='ti ti-shield-plus'></i>" .
                                                            __s('Associate to a profile');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __s('Dissociate from a profile');
+                                                         = "<i class='ti ti-shield-minus'></i>" .
+                                                           __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
                                                          = "<i class='fas fa-users-cog'></i>" .
                                                            __s("Move to group");
@@ -3720,13 +3722,13 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            $actions[$prefix . 'change_authtype']        = "<i class='fas fa-user-cog'></i>" .
+            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog'></i>" .
                                                       _sx('button', 'Change the authentication method');
-            $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
+            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>" .
                                                       __s('Force synchronization');
             $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
                                                     __s('Clean LDAP fields and force synchronisation');
-            $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
+            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>" .
                                                       __s('Disable 2FA');
         }
         return $actions;
@@ -4977,7 +4979,7 @@ JAVASCRIPT;
             );
             $icons .= "<span title=\"" . __s('Import a user') . "\"" .
             " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
-            <i class='fas fa-plus fa-fw '></i>
+            <i class='ti ti-plus'></i>
             <span class='sr-only'>" . __s('Import a user') . "</span>
          </span>";
             $icons .= '</div>';
