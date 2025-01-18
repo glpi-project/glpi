@@ -75,10 +75,9 @@
                                 class="btn-text"
                                 data-glpi-icon-picker-pagination-text
                             >{{ i }}</span>
-                            <i
-                                class="btn-text-loading ti ti-loader-2 fa-spin d-none"
-                                data-glpi-icon-picker-pagination-loading-icon
-                            ></i>
+                            <span class="spinner-border spinner-border-sm d-none" role="status"
+                                  aria-hidden="true" data-glpi-icon-picker-pagination-loading-icon
+                            ></span>
                         </button>
                     {% endif %}
                 {% endfor %}

@@ -428,7 +428,7 @@ HTML;
                 updateCurrentTab();
                 return;
             }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+            $(target).html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
 
             $.get(url, function(data) {
                $(target).html(data);
