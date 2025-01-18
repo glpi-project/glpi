@@ -144,7 +144,7 @@ describe("Custom Assets - Custom Fields", () => {
                     cy.findByLabelText('Multiple values').check();
                 }
                 if (options.has('readonly')) {
-                    cy.findByLabelText('Readonly').check();
+                    cy.findByLabelText('Readonly').selectDropdownValue('Super-Admin');
                 }
                 if (options.has('mandatory')) {
                     cy.findByLabelText('Mandatory').check();
