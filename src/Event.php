@@ -61,7 +61,9 @@ class Event extends CommonDBTM
     public static function getMenuContent()
     {
         $menu = parent::getMenuContent();
-        unset($menu['links']['search'], $menu['links']['lists']);
+        if ($menu !== false) {
+            unset($menu['links']['search'], $menu['links']['lists']);
+        }
         return $menu;
     }
 
