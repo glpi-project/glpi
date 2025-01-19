@@ -125,7 +125,7 @@ class Hooks
     const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
-    const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
+    const TIMELINE_ITEMS          = 'timeline_items';  // (keys: item)
     const SET_ITEM_IMPACT_ICON    = 'set_item_impact_icon'; // (keys: itemtype, items_id)
 
    // Security hooks (data to encypt)
