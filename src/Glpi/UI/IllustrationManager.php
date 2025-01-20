@@ -35,6 +35,7 @@
 namespace Glpi\UI;
 
 use Glpi\Application\View\TemplateRenderer;
+use RuntimeException;
 
 final class IllustrationManager
 {
@@ -54,8 +55,11 @@ final class IllustrationManager
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
             . '/public/lib/glpi-project/illustrations/icons.json'
         ;
-        $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations.svg'
+        $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
         ;
+
+        $this->checkIconFile($this->icons_definition_file);
+        $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
     }
 
     /**
@@ -139,5 +143,12 @@ final class IllustrationManager
         }
 
         return $size . "px";
+    }
+
+    private function checkIconFile(string $file): void
+    {
+        if (!is_readable($file)) {
+            throw new RuntimeException("Failed to read file: $file");
+        }
     }
 }
