@@ -572,30 +572,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            $where = [
-                'OR' => [
-                    ['is_faq' => 1],
-                    [
-                        'is_token_url' => 1,
-                        'token' => $_GET['token'] ?? '',
-                    ],
-                ],
-            ];
+            $where = ['is_faq' => 1];
             if (Session::isMultiEntitiesMode()) {
                 $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
             }
         } else {
             $where = self::getVisibilityCriteriaKB();
-            $where[] = [
-                'OR' => [
-                    ['is_faq' => 1],
-                    [
-                        'is_token_url' => 1,
-                        'token' => $_GET['token'] ?? '',
-                    ],
-                ],
-            ];
+            $where['is_faq'] = 1;
         }
 
         return $where;
@@ -757,7 +741,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             $input["name"] = __('New item');
         }
 
-        if (isset($input['is_token_url']) && $input['is_token_url'] && empty($this->fields['token'])) {
+        if (
+            (
+                isset($input['is_token_url'])
+                && $input['is_token_url']
+                && empty($this->fields['token'])
+            ) || (
+                isset($input['_reset_token_url'])
+                && $input['_reset_token_url']
+            )
+        ) {
             $input['token'] = Toolbox::getRandomString(20);
         }
 
@@ -910,7 +903,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
          */
         global $CFG_GLPI, $DB;
 
-        if (!$this->can($this->fields['id'], READ)) {
+        if (
+            $this->fields['is_token_url']
+            && isset($options['token'])
+            && $this->fields['token'] == $options['token']
+        ) {
+            $this->fields['answer'] = preg_replace(
+                [
+                    '/<img([^>]+src=["\'])([^"\']+)(["\'][^>]*)>/',
+                    '/<a([^>]+href=["\'])([^"\']+)(["\'][^>]*)>/'
+                ],
+                [
+                    '<img$1$2&token=' . $options['token'] . '$3>',
+                    '<a$1$2&token=' . $options['token'] . '$3>'
+                ],
+                $this->fields['answer']
+            );
+        } elseif (!$this->can($this->fields['id'], READ)) {
             return false;
         }
 
