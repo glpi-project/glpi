@@ -1643,7 +1643,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $json = json_decode($json_str);
         $this->doInventory($json);
 
-        // vmk2 -> ethernet -> NetworkPortEthernet
+        // vmk1 -> ethernet -> NetworkPortEthernet
         $this->assertTrue($networkport1->getFromDbByCrit(
             [
                 'itemtype'            => 'Computer',
