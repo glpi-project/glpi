@@ -183,6 +183,11 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
             $input['forms_sections_uuid'] = $section->fields['uuid'];
         }
 
+        // Set horizontal rank to null if not set
+        if (!isset($input['horizontal_rank'])) {
+            $input['horizontal_rank'] = 'NULL';
+        }
+
         // If the question is being imported, we don't need to format the input
         // because it is already formatted. So we skip this step.
         if ($input['_from_import'] ?? false) {
