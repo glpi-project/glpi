@@ -648,19 +648,24 @@ PLAINTEXT;
 
     public function testMyTasksURL()
     {
-        $this->login('post-only', 'postonly');
-        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
-        $this->string(\Project::getAdditionalMenuContent()['project']['page'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
-
+        // Allowed to read all projects -> no specific additional menu content
         $this->login();
-        $this->boolean(\Project::getAdditionalMenuContent())->isFalse();
+        $this->assertFalse(\Project::getAdditionalMenuContent());
+
+        // Only allowed to read own tasks -> specific additional menu content
+        $this->login();
+        $_SESSION['glpiactiveprofile']['project'] = 0;
+        $_SESSION['glpiactiveprofile']['projecttask'] = \ProjectTask::READMY;
+
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), \Project::getAdditionalMenuContent()['project']['page']);
 
         $menu_options = \Project::getAdditionalMenuOptions();
-        $this->string($menu_options['task']['page'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
-        $this->string($menu_options['task']['links']['search'])->isIdenticalTo(\ProjectTask::getMyTasksURL(false));
+
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['page']);
+        $this->assertEquals(\ProjectTask::getMyTasksURL(false), $menu_options['ProjectTask']['links']['search']);
 
         $menu_links = \Project::getAdditionalMenuLinks();
         $has_my_tasks_link = in_array(\ProjectTask::getMyTasksURL(false), $menu_links, true);
-        $this->boolean($has_my_tasks_link)->isTrue();
+        $this->assertTrue($has_my_tasks_link);
     }
 }
