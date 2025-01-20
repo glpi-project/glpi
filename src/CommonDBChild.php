@@ -868,7 +868,7 @@ abstract class CommonDBChild extends CommonDBConnexity
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-            $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
+            $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'" .
               " title=\"" . __s('Add') . "\"" .
                 "\" onClick=\"var row = $('#" . $div_id . "');
                              row.append('<br>" .

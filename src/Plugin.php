@@ -2484,7 +2484,7 @@ class Plugin extends CommonDBTM
                    // Configuration button for activated or configurable plugins
                     $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
-                    . '<i class="fas fa-wrench fa-2x"></i>'
+                    . '<i class="ti ti-tool fs-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
                     . '</a>'
                     . '&nbsp;';
@@ -2497,7 +2497,7 @@ class Plugin extends CommonDBTM
                         ['action' => 'unactivate'],
                         _x('button', 'Disable'),
                         ['id' => $ID],
-                        'fa-fw fa-toggle-on fa-2x enabled'
+                        'ti-toggle-right-filled fs-2x enabled'
                     ) . '&nbsp;';
                 } else if ($state === self::NOTACTIVATED) {
                    // Activate button for configured and up to date plugins
@@ -2522,7 +2522,7 @@ class Plugin extends CommonDBTM
                             ['action' => 'activate'],
                             _x('button', 'Enable'),
                             ['id' => $ID],
-                            'fa-fw fa-toggle-off fa-2x disabled'
+                            'ti-toggle-right-filled fs-2x disabled'
                         ) . '&nbsp;';
                     }
                 }
@@ -2555,7 +2555,7 @@ class Plugin extends CommonDBTM
                                 'plugin_name' => $plugin->getField('name'),
                                 'to_version' => $plugin->getField('version'),
                                 'modal_id' => 'updateModal' . $plugin->getField('directory'),
-                                'open_btn' => '<a class="pointer"><span class="fas fa-fw fa-folder-plus fa-2x me-1"
+                                'open_btn' => '<a class="pointer"><span class="ti ti-caret-up fs-2x me-1"
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#updateModal' . $plugin->getField('directory') . '"
                                                           title="' . __s("Update") . '">
@@ -2578,7 +2578,7 @@ class Plugin extends CommonDBTM
                                     ['action' => 'install'],
                                     $msg,
                                     ['id' => $ID],
-                                    'fa-fw fa-folder-plus fa-2x me-1'
+                                    'ti-folder-plus fs-2x me-1'
                                 );
                             }
                         }
@@ -2600,7 +2600,7 @@ class Plugin extends CommonDBTM
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
                         $uninstall_label = __s("Uninstall");
                         $output .= <<<TWIG
-                            <a class="pointer"><span class="fas fa-fw fa-folder-minus fa-2x me-1"
+                            <a class="pointer"><span class="ti ti-folder-minus fs-2x me-1"
                                 data-bs-toggle="modal"
                                 data-bs-target="#uninstallModal{$plugin->getField('directory')}"
                                 title="{$uninstall_label}">
@@ -2637,7 +2637,7 @@ TWIG;
                         ['action' => 'clean'],
                         _x('button', 'Clean'),
                         ['id' => $ID],
-                        'fa-fw fas fa-broom fa-2x'
+                        'fas fa-broom fs-2x'
                     );
                 }
 
@@ -2651,7 +2651,7 @@ TWIG;
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='fas fa-external-link-alt fa-2x'></i><span class='sr-only'>$value</span>
+                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";
@@ -2789,16 +2789,16 @@ TWIG;
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-            = "<i class='fas fa-code-branch'></i>" .
+            = "<i class='ti ti-folder-plus'></i>" .
             __s('Install');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-            = "<i class='fas fa-code-branch'></i>" .
+            = "<i class='ti ti-folder-minus'></i>" .
             __s('Uninstall');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
-            = "<i class='fas fa-code-branch'></i>" .
+            = "<i class='ti ti-toggle-right-filled'></i>" .
             __s('Enable');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
-            = "<i class='fas fa-code-branch'></i>" .
+            = "<i class='ti ti-toggle-left-filled'></i>" .
             __s('Disable');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
             = "<i class='fas fa-broom'></i>" .

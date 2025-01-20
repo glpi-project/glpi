@@ -4259,12 +4259,12 @@ class CommonDBTM extends CommonGLPI
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
                 $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
+                "<i class='" . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
-                "<i class='fa-fw ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
         }
 
@@ -5850,7 +5850,7 @@ TWIG, $twig_params);
             }
         }
         if ($title !== null) {
-            $mark = "<i class='fa fa-magic' title='$title'></i>";
+            $mark = "<i class='ti ti-wand' title='$title'></i>";
         }
         return $mark;
     }
@@ -6038,7 +6038,8 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "fas fa-empty-icon";
+        // Generic icon that is not visible, but still takes up space to allow proper alignment in lists
+        return "ti ti-square bs-invisible";
     }
 
     /**

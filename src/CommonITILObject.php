@@ -4105,10 +4105,10 @@ abstract class CommonITILObject extends CommonDBTM
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                    = "<i class='fa-fw fas fa-link'></i>" .
+                    = "<i class='ti ti-link'></i>" .
                     _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                    = "<i class='fa-fw fas fa-link'></i>" .
+                    = "<i class='ti ti-unlink'></i>" .
                     _sx('button', 'Unlink ITIL Object');
             }
         }
@@ -5134,64 +5134,20 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getStatusClass($status)
     {
-        $class = null;
-        $solid = true;
+        $class = match ($status) {
+            self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
+            self::ASSIGNED, self::SOLVED, self::EVALUATION => 'circle',
+            self::PLANNED => 'calendar',
+            self::ACCEPTED => 'check-circle-filled',
+            self::OBSERVED => 'eye',
+            self::APPROVAL, self::TEST => 'help',
+            self::QUALIFICATION => 'circle',
+            Change::REFUSED => 'circle-x',
+            Change::CANCELED => 'ban',
+            default => null
+        };
 
-        switch ($status) {
-            case self::INCOMING:
-                $class = 'circle';
-                break;
-            case self::ASSIGNED:
-                $class = 'circle';
-                $solid = false;
-                break;
-            case self::PLANNED:
-                $class = 'calendar';
-                $solid = false;
-                break;
-            case self::WAITING:
-                $class = 'circle';
-                break;
-            case self::SOLVED:
-                $class = 'circle';
-                $solid = false;
-                break;
-            case self::CLOSED:
-                $class = 'circle';
-                break;
-            case self::ACCEPTED:
-                $class = 'check-circle';
-                break;
-            case self::OBSERVED:
-                $class = 'eye';
-                break;
-            case self::EVALUATION:
-                $class = 'circle';
-                $solid = false;
-                break;
-            case self::APPROVAL:
-                $class = 'question-circle';
-                break;
-            case self::TEST:
-                $class = 'question-circle';
-                break;
-            case self::QUALIFICATION:
-                $class = 'circle';
-                $solid = false;
-                break;
-            case Change::REFUSED:
-                $class = 'times-circle';
-                $solid = false;
-                break;
-            case Change::CANCELED:
-                $class = 'ban';
-                break;
-        }
-
-        return $class === null
-         ? ''
-         : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class .
-         " " . static::getStatusKey($status);
+        return $class === null ? '' : 'itilstatus ti ti-' . $class . " " . static::getStatusKey($status);
     }
 
     /**
@@ -7877,7 +7833,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if (strlen($log_row['field']) > 0) {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
-                $content = "<i class='fas fa-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
                 $user_id = 0;
                 // try to extract ID from "user_name" (which was created using User::getNameForLog)
                 if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {

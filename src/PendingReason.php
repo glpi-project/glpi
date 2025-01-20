@@ -277,7 +277,7 @@ class PendingReason extends CommonDropdown
                 ),
                 [
                     'display' => false,
-                    'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
+                    'awesome-class' => 'ti ti-alert-triangle fs-2',
                 ]
             ) : '',
         ]);

@@ -1321,7 +1321,7 @@ TWIG,
             'preference' => [
                 'title'   => __('My settings'),
                 'default' => '/front/preference.php',
-                'icon'    => 'fas fa-user-cog',
+                'icon'    => 'ti ti-user-cog',
                 'display' => false,
             ],
         ];
@@ -1460,7 +1460,7 @@ TWIG,
             'home' => [
                 'default' => '/Helpdesk',
                 'title'   => __('Home'),
-                'icon'    => 'fas fa-home',
+                'icon'    => 'ti ti-home',
             ],
         ];
 
@@ -2587,14 +2587,14 @@ TWIG,
          : "";
 
         $calendar_btn = $p['calendar_btn']
-         ? "<a class='input-button' data-toggle>
-               <i class='input-group-text far fa-calendar-alt fa-lg pointer'></i>
-            </a>"
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Show date picker') . "'>
+                <i class='ti ti-calendar'></i>
+            </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
-         ? "<a data-clear  title='" . __s('Clear') . "'>
-               <i class='input-group-text fas fa-times-circle pointer'></i>
-            </a>"
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
+                    <i class='ti ti-circle-x' data-clear></i>
+                </button>"
          : "";
 
         $mode = $p['range']
@@ -2603,7 +2603,7 @@ TWIG,
 
         $name = htmlescape($name);
         $output = <<<HTML
-      <div class="input-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
+      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
                 {$required} {$disabled} data-input placeholder="{$p['placeholder']}" class="form-control rounded-start ps-2">
          $calendar_btn
@@ -2787,16 +2787,21 @@ JS;
          ? " disabled='disabled'"
          : "";
         $clear    = $p['maybeempty'] && $p['canedit']
-         ? "<i class='input-group-text fas fa-times-circle fa-lg pointer' data-clear role='button' title='" . __s('Clear') . "'></i>"
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
+                    <i class='ti ti-circle-x' data-clear></i>
+                </button>"
          : "";
 
         $name = htmlescape($name);
         $value = htmlescape($p['value']);
+        $show_datepicker_label = __s('Show date picker');
         $output = <<<HTML
-         <div class="input-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
+         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
-            <i class="input-group-text far fa-calendar-alt fa-lg pointer" data-toggle="" role="button"></i>
+            <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='{$show_datepicker_label}'>
+                <i class='ti ti-calendar-time'></i>
+            </button>
             $clear
          </div>
 HTML;
@@ -3770,7 +3775,7 @@ JAVASCRIPT
             $params['id'] = $link_id;
         }
 
-        $text = __s('Available variables') . ' <i class="fas fa-question-circle"></i>';
+        $text = __s('Available variables') . ' <i class="ti ti-help"></i>';
 
         echo Html::link($text, $link, $params);
     }
@@ -3857,9 +3862,9 @@ JAVASCRIPT
        // Back and fast backward button
         if (!$start == 0) {
             $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0$additional_params\");'>
-                     <i class='fa fa-step-backward' title=\"" . __s('Start') . "\"></i></a></th>";
+                     <i class='ti ti-chevrons-left' title=\"" . __s('Start') . "\"></i></a></th>";
             $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back$additional_params\");'>
-                     <i class='fa fa-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
+                     <i class='ti ti-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3879,9 +3884,9 @@ JAVASCRIPT
        // Forward and fast forward button
         if ($forward < $numrows) {
             $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward$additional_params\");'>
-                     <i class='fa fa-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
+                     <i class='ti ti-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
             $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end$additional_params\");'>
-                     <i class='fa fa-step-forward' title=\"" . __s('End') . "\"></i></a></th>";
+                     <i class='ti ti-chevrons-right' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
        // End pager
@@ -4031,11 +4036,11 @@ JAVASCRIPT
             echo "<th class='left'>";
             echo "<a href='$fulltarget&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Start') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='fa fa-step-backward'></i>";
+            echo "<i class='ti ti-chevrons-left'></i>";
             echo "</a>";
             echo "<a href='$fulltarget&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Previous') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='fa fa-chevron-left'></i>";
+            echo "<i class='ti ti-chevron-left'></i>";
             echo "</a></th>";
         }
 
@@ -4096,11 +4101,11 @@ JAVASCRIPT
             echo "<th class='right'>";
             echo "<a href='$fulltarget&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('Next') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>
-               <i class='fa fa-chevron-right'></i>";
+               <i class='ti ti-chevron-right'></i>";
             echo "</a>";
             echo "<a href='$fulltarget&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('End') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='fa fa-step-forward'></i>";
+            echo "<i class='ti ti-chevrons-right'></i>";
             echo "</a>";
             echo "</th>";
         }
@@ -4181,8 +4186,8 @@ JAVASCRIPT
      * @param string $btlabel  Button label
      * @param array $fields    Field name => field  value
      * @param string $btimage  Button image uri (optional)   (default '')
-     *                           If image name starts with "fa-", il will be turned into
-     *                           a font awesome element rather than an image.
+     *                           If image name starts with "fa-" or "ti-", it will be turned into
+     *                           a FontAwesone/Tabler icon rather than an image.
      * @param string $btoption Optional button option        (default '')
      * @param string $confirm  Optional confirm message      (default '')
      *
@@ -5445,7 +5450,7 @@ HTML;
                     1 => $upload['id'] . '2',
                 ]);
                 $deleteUpload = "deleteImagePasted({$domItems}, {$textTag}, {$getEditor})";
-                $display .= '<span class="fas fa-times-circle pointer" onclick="' . htmlescape($deleteUpload) . '"></span>';
+                $display .= '<button class="btn btn-icon btn-sm btn-link ti ti-circle-x" onclick="' . htmlescape($deleteUpload) . '"></span>';
 
                 $display .= "</p>";
             }

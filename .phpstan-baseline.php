@@ -680,20 +680,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Change.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'circle\' and null will always evaluate to false\\.$#',
-	'identifier' => 'equal.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type Group\\.$#',
 	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always true\\.$#',
-	'identifier' => 'ternary.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Change.php',
 ];

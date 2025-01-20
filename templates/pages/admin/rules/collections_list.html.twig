@@ -44,7 +44,7 @@
                <div class="list-group list-group-flush">
                   {% for rule in rules_block['entries'] %}
                      <a class="list-group-item list-group-item-action" href="{{ rule['link'] }}">
-                        <i class="fa-fw {{ rule['icon'] }} me-1"></i>
+                        <i class="{{ rule['icon'] }} me-1"></i>
                         <span>{{ rule['label'] }}</span>
                      </a>
                   {% endfor %}

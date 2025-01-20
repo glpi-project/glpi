@@ -73,7 +73,7 @@
                 navigator.clipboard.writeText(codes.join(newline));
                 const btn = $(this);
 
-                btn.find('i').removeClass('ti ti-copy').addClass('fas fa-check');
+                btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
                 btn.removeClass('btn-outline-secondary').addClass('btn-success');
                 btn.text('{{ __('Copied') }}');
             });

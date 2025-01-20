@@ -35,7 +35,7 @@
 <div class="card m-n2 border-0 shadow-none">
    <div class="card-header">
       <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-         <i class="fas fa-cloud-download-alt"></i>
+         <i class="ti ti-cloud-download"></i>
       </div>
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
@@ -46,11 +46,11 @@
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
             data-bs-toggle="tooltip" data-bs-placement="right"
             title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
-            <i class="fas fa-download"></i>
+            <i class="ti ti-download"></i>
          </a>
       {% else %}
          <span class="ms-auto" title="{{ __('Inventory file missing') }}">
-            <i class="fas fa-ban"></i>
+            <i class="ti ti-ban"></i>
             <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
          </span>
       {% endif %}

@@ -695,7 +695,7 @@ class MassiveAction
             && !isAPI()
         ) {
             $actions[__CLASS__ . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                  = "<i class='fa-fw fas fa-level-up-alt'></i>" .
+                  = "<i class='ti ti-corner-right-up'></i>" .
                     _x('button', 'Add to transfer list');
         }
     }
@@ -813,12 +813,12 @@ class MassiveAction
            // Amend comment for objects with a 'comment' field
             $item->getEmpty();
             if ($canupdate && isset($item->fields['comment'])) {
-                $actions[$self_pref . 'amend_comment'] = "<i class='fa-fw far fa-comment'></i>" . __("Amend comment");
+                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle'></i>" . __("Amend comment");
             }
 
            // Add a note for objects with the UPDATENOTE rights
             if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-                $actions[$self_pref . 'add_note'] = "<i class='fa-fw far fa-sticky-note'></i>" . __("Add note");
+                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note'></i>" . __("Add note");
             }
 
            // Plugin Specific actions
@@ -931,7 +931,7 @@ class MassiveAction
     {
         echo Html::submit(_x('button', 'Post'), [
             'name'  => 'massiveaction',
-            'icon'  => 'fas fa-save',
+            'icon'  => 'ti ti-device-floppy',
             'class' => 'btn btn-sm btn-primary',
         ]);
     }
@@ -1254,7 +1254,7 @@ class MassiveAction
                     $submitname = $ma->POST['submitname'];
                 } else {
                     $submitname = _x('button', 'Post');
-                    $submit_options['icon'] = 'fas fa-save';
+                    $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
 
@@ -1286,7 +1286,7 @@ class MassiveAction
                     $submitname = $ma->POST['submitname'];
                 } else {
                     $submitname = _x('button', 'Post');
-                    $submit_options['icon'] = 'fas fa-save';
+                    $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
 
@@ -1312,7 +1312,7 @@ class MassiveAction
                     $submitname = $ma->POST['submitname'];
                 } else {
                     $submitname = _x('button', 'Post');
-                    $submit_options['icon'] = 'fas fa-save';
+                    $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
 
@@ -1327,7 +1327,7 @@ class MassiveAction
                 echo "<br><br>";
                 echo Html::submit(_x('button', 'Add'), [
                     'name'  => 'massiveaction',
-                    'icon'  => 'fas fa-plus',
+                    'icon'  => 'ti ti-plus',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 
@@ -1342,7 +1342,7 @@ class MassiveAction
                 echo ("<br><br>");
                 echo Html::submit(_x('button', 'Update'), [
                     'name'  => 'massiveaction',
-                    'icon'  => 'fas fa-save',
+                    'icon'  => 'ti ti-device-floppy',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 
@@ -1357,7 +1357,7 @@ class MassiveAction
                 echo ("<br><br>");
                 echo Html::submit(_x('button', 'Add'), [
                     'name'  => 'massiveaction',
-                    'icon'  => 'fas fa-plus',
+                    'icon'  => 'ti ti-plus',
                     'class' => 'btn btn-sm btn-primary',
                 ]);
 

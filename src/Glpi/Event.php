@@ -573,7 +573,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="fa-fw text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+            return '<i class="text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

@@ -137,22 +137,22 @@ final class KnowbaseItemController extends AbstractController
         $results = [];
 
         foreach ($it as $data) {
-            $fa_class = "";
-            $fa_title = "";
+            $icon_class = "";
+            $icon_title = "";
             if (
                 $data['is_faq']
                 && (!Session::isMultiEntitiesMode()
                     || (isset($data['visibility_count'])
                         && $data['visibility_count'] > 0))
             ) {
-                $fa_class = "fa-question-circle faq";
-                $fa_title = __s("This item is part of the FAQ");
+                $icon_class = "ti ti-help faq";
+                $icon_title = __s("This item is part of the FAQ");
             } else if (
                 isset($data['visibility_count'])
                 && $data['visibility_count'] <= 0
             ) {
-                $fa_class = "fa-eye-slash not-published";
-                $fa_title = __s("This item is not published yet");
+                $icon_class = "ti ti-eye-off not-published";
+                $icon_title = __s("This item is not published yet");
             }
 
             $results[] = [
@@ -167,8 +167,8 @@ final class KnowbaseItemController extends AbstractController
                     length: GLPI_TEXT_MAXSIZE
                 ),
                 'url' => KnowbaseItem::getFormURLWithID($data['id']),
-                'icon' => $fa_class,
-                'icon_title' => $fa_title,
+                'icon' => $icon_class,
+                'icon_title' => $icon_title,
             ];
         }
 

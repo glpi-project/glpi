@@ -292,7 +292,7 @@ JS);
             echo '<thead>';
             echo '<tr class="noHover">';
             echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlescape($label) . '';
-            echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
+            echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems-master impact-pointer"></i></h3></th>';
             echo '</tr>';
             echo '<tr class="noHover">';
             echo '<th>' . _sn('Item', 'Items', 1) . '</th>';
@@ -313,7 +313,7 @@ JS);
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
                 echo '<a>' . htmlescape($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
-                echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
+                echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems impact-pointer"></i>';
                 echo '</td>';
                 echo '</tr>';
 
@@ -335,7 +335,7 @@ JS);
                             $path[] = htmlescape($node['label']);
                         }
                     }
-                    $separator = '<i class="fas fa-angle-right"></i>';
+                    $separator = '<i class="ti ti-chevron-right"></i>';
                     echo implode(" $separator ", $path);
 
                     echo '</div></td>';
@@ -378,11 +378,11 @@ JS);
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
             echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlescape($impact_item->fields['itemtype']) . '&items_id=' . htmlescape($impact_item->fields['items_id']) . '">';
-            echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
+            echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
             echo '</a>';
         }
         if ($can_update && $impact_context) {
-            echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
+            echo '<i id="impact-list-settings" class="ti ti-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
         }
         echo '</div>';
 
@@ -436,21 +436,21 @@ JS);
             {# jQuery doesn't allow slide animation on table elements, we need to apply the animation to each cells content and then remove the padding to get the desired "slide" animation #}
             <script>
                 function impactListUp(target) {
-                    target.removeClass("fa-caret-down");
-                    target.addClass("fa-caret-up");
+                    target.removeClass("ti-caret-down-filled");
+                    target.addClass("ti-caret-up-filled");
                     target.closest("tbody").find('tr:gt(0) td').animate({padding: '0px'}, {duration: 400});
                     target.closest("tbody").find('tr:gt(0) div').slideUp("400");
                 }
 
                 function impactListDown(target) {
-                    target.addClass("fa-caret-down");
-                    target.removeClass("fa-caret-up");
+                    target.addClass("ti-caret-down-filled");
+                    target.removeClass("ti-caret-up-filled");
                     target.closest("tbody").find('tr:gt(0) td').animate({padding: '8px 5px'}, {duration: 400});
                     target.closest("tbody").find('tr:gt(0) div').slideDown("400");
                 }
 
                 $(document).on("click", ".impact-toggle-subitems", (e) => {
-                    if ($(e.target).hasClass("fa-caret-up")) {
+                    if ($(e.target).hasClass("ti-caret-up-filled")) {
                         impactListDown($(e.target));
                     } else {
                         impactListUp($(e.target));
@@ -459,14 +459,14 @@ JS);
 
                 $(document).on("click", ".impact-toggle-subitems-master", (e) => {
                     $(e.target).closest("table").find(".impact-toggle-subitems").each((i, elem) => {
-                        if ($(e.target).hasClass("fa-caret-up")) {
+                        if ($(e.target).hasClass("ti-caret-up-filled")) {
                             impactListDown($(elem));
                         } else {
                             impactListUp($(elem));
                         }
                     });
-                    $(e.target).toggleClass("fa-caret-up");
-                    $(e.target).toggleClass("fa-caret-down");
+                    $(e.target).toggleClass("ti-caret-up-filled");
+                    $(e.target).toggleClass("ti-caret-down-filled");
                 });
 
                 $(document).on("impactUpdated", () => {
@@ -1046,7 +1046,7 @@ JS);
         echo '</div>'; // <div class="impact-side-select-itemtype">
 
         echo '<div class="impact-side-search">';
-        echo '<h4><i class="fas fa-chevron-left"></i><img><span></span></h4>';
+        echo '<h4><i class="ti ti-chevron-left"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
             'id' => 'impact-side-filter-assets',
             'placeholder' => __s('Filter assets...'),
@@ -1056,7 +1056,7 @@ JS);
         echo '<div class="impact-side-search-results"></div>';
 
         echo '<div class="impact-side-search-more">';
-        echo '<h4><i class="fas fa-chevron-down"></i>' . __s("More...") . '</h4>';
+        echo '<h4><i class="ti ti-chevron-down"></i>' . __s("More...") . '</h4>';
         echo '</div>'; // <div class="impact-side-search-more">
 
         echo '<div class="impact-side-search-no-results">';
@@ -1121,21 +1121,21 @@ JS);
         echo '<div class="impact-side-search-footer"></div>';
         echo '</div>'; // div class="impact-side-panel">
 
-        echo '<ul>';
-        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="fa-fw far fa-save"></i></li>';
+        echo '<ul class="fs-1">';
+        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="ti ti-device-floppy"></i></li>';
         echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="fa-fw fas fa-undo"></i></li>';
         echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="fa-fw fas fa-redo"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="fa-fw ti ti-plus"></i></li>';
-        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="fa-fw ti ti-line"></i></li>';
-        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-fw fa-object-group"></i></li>';
-        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="fa-fw ti ti-trash"></i></li>';
+        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="ti ti-plus"></i></li>';
+        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="ti ti-line"></i></li>';
+        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-object-group"></i></li>';
+        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="ti ti-trash"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="fa-fw ti ti-download"></i></li>';
-        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="fa-fw ti ti-maximize"></i></li>';
-        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="fa-fw ti ti-adjustments"></i></li>';
+        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="ti ti-download"></i></li>';
+        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="ti ti-maximize"></i></li>';
+        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="ti ti-adjustments"></i></li>';
         echo '</ul>';
-        echo '<span class="impact-side-toggle"><i class="fa-fw ti ti-chevron-left"></i></span>';
+        echo '<span class="impact-side-toggle"><i class="ti ti-chevron-left"></i></span>';
         echo '</div>'; // <div class="impact-side impact-side-expanded">
         echo "</td></tr>";
         echo "</table>";

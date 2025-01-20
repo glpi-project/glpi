@@ -1037,26 +1037,6 @@ class Change extends CommonITILObject
         return Change_Item::class;
     }
 
-    public static function getStatusClass($status)
-    {
-        $class = null;
-        $solid = true;
-
-        switch ($status) {
-            case self::REFUSED:
-            case self::CANCELED:
-                $class = 'circle';
-                break;
-            default:
-                return parent::getStatusClass($status);
-        }
-
-        return $class == null
-         ? ''
-         : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class .
-         " " . static::getStatusKey($status);
-    }
-
     public static function getStatusKey($status)
     {
         switch ($status) {
@@ -1333,11 +1313,11 @@ class Change extends CommonITILObject
                         ) {
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
                                         htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
                                         $d['alternative_email'];
                                 }
                             }
@@ -1348,7 +1328,7 @@ class Change extends CommonITILObject
                             && count($change->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
@@ -1515,7 +1495,7 @@ class Change extends CommonITILObject
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
-            'icon'   => 'fas fa-trash bg-red-lt',
+            'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted
         ];
 
