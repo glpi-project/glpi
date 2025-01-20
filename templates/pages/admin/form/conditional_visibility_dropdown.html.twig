@@ -32,7 +32,7 @@
 
 {# Compute strategy, with a fallback to "Always visible" for new questions #}
 {% if item is null %}
-    {% set question_strategy = enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+    {% set question_strategy = enum('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy').ALWAYS_VISIBLE %}
 {% else %}
     {% set question_strategy = item.getConfiguredVisibilityStrategy() %}
 {% endif %}
@@ -43,7 +43,7 @@
 <div
     data-glpi-form-editor-visibility-dropdown-container
 
-    {% set hide = question_strategy == enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+    {% set hide = question_strategy == enum('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy').ALWAYS_VISIBLE %}
     class="btn-group {{ hide ? 'd-none' : '' }}"
 
     {# May be displayed on section, comment and question #}
@@ -65,7 +65,7 @@
         type="button"
         data-glpi-form-editor-visibility-dropdown
     >
-        {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+        {% for strategy in enum_cases('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy') %}
             {% set is_visible = question_strategy == strategy %}
             {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
             <div
@@ -89,7 +89,7 @@
 
                 <div class="btn-group" role="group">
                     {# Display strategy picker #}
-                    {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+                    {% for strategy in enum_cases('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy') %}
                         {% set rand = random() %}
                         <input
                             id="visibility_strategy_{{ rand }}"
@@ -119,7 +119,7 @@
                 <div
                     class="{{ visibility_class }} mt-4"
                     data-glpi-form-editor-visibility-editor
-                    {% for strategy in enum_cases('Glpi\\Form\\QuestionVisibilityStrategy') %}
+                    {% for strategy in enum_cases('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy') %}
                         {% if strategy.showEditor() %}
                             data-glpi-form-editor-visibility-editor-display-for-{{ strategy.value }}
                         {% endif %}
@@ -161,7 +161,7 @@
                                     <input
                                         type="hidden"
                                         name="_conditions[{{ loop.index0 }}][item_type]"
-                                        value="{{ condition.getItemType() }}"
+                                        value="{{ condition.getItemType().value }}"
                                         data-glpi-form-editor-condition-item-type
                                     />
                                     <input

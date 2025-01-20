@@ -3658,6 +3658,13 @@ JS;
                             // Propagate event to the document to allow other components to listen to it
                             $(document).trigger('tinyMCEChange', [e]);
                         });
+
+                        editor.on('input', function (e) {
+                            // Propagate event to allow other components to listen to it
+                            const textarea = $('#' + e.target.dataset.id);
+                            textarea.trigger('tinyMCEInput', [e]);
+                        });
+
                         // ctrl + enter submit the parent form
                         editor.addShortcut('ctrl+13', 'submit', function() {
                             editor.save();
