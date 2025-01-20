@@ -1539,9 +1539,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         {
             "action": "inventory",
             "content": {
-                "accesslog": {
-                  "logdate": "2023-12-11 09:39:16"
-                },
                 "bios": {
                   "assettag": "Asset-1234567890",
                   "bdate": "2013-10-29",
@@ -1573,6 +1570,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                     "ipaddress": "10.15.55.81",
                     "ipmask": "255.255.254.0",
                     "mac": "00:50:56:6b:fa:c6",
+                    "mtu": 1500,
+                    "status": "up",
+                    "virtualdev": true
+                  },
+                  {
+                    "description": "vmk2",
+                    "ipaddress": "10.15.55.81",
+                    "ipmask": "255.255.254.0",
                     "mtu": 1500,
                     "status": "up",
                     "virtualdev": true
@@ -1608,7 +1613,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //check created networkport
         $networkport1 = new \NetworkPort();
 
-        // vmk2 -> ethernet -> NetworkPortEthernet
+        // vmk1 -> ethernet -> NetworkPortEthernet
         $this->assertTrue($networkport1->getFromDbByCrit(
             [
                 'itemtype'            => 'Computer',
@@ -1618,6 +1623,15 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             ]
         ));
 
+        // vmk2 -> no mac -> no instantiation type
+        $this->assertTrue($networkport1->getFromDbByCrit(
+            [
+                'itemtype'            => 'Computer',
+                'items_id'            => $computers_id,
+                'name'                => 'vmk2',
+                'instantiation_type'  => null
+            ]
+        ));
         // update vmk1 to set instantiation_type to null to test update case
         $this->assertTrue($networkport1->update([
             'id'                  => $networkport1->fields['id'],
