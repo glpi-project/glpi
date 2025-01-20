@@ -92,6 +92,16 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
         JS;
     }
 
+    /**
+     * Provide additional attributes for the input field
+     *
+     * @return array
+     */
+    public function getInputAttributes(): array
+    {
+        return [];
+    }
+
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
@@ -103,6 +113,9 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
                 aria-label="{{ __('Default value') }}"
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             />
 TWIG;
 
@@ -111,6 +124,7 @@ TWIG;
             'question'          => $question,
             'input_type'        => $this->getInputType(),
             'input_placeholder' => $this->getName(),
+            'attributes'        => $this->getInputAttributes(),
         ]);
     }
 
@@ -126,6 +140,9 @@ TWIG;
                 value="{{ question.fields.default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             >
 TWIG;
 
@@ -134,6 +151,7 @@ TWIG;
             'question'   => $question,
             'input_type' => $this->getInputType(),
             'label'      => $question->fields['name'],
+            'attributes' => $this->getInputAttributes(),
         ]);
     }
 
