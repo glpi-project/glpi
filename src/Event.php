@@ -58,6 +58,15 @@ class Event extends CommonDBTM
         return _n('Log', 'Logs', $nb);
     }
 
+    public static function getMenuContent()
+    {
+        $menu = parent::getMenuContent();
+        if ($menu !== false) {
+            unset($menu['links']['search'], $menu['links']['lists']);
+        }
+        return $menu;
+    }
+
     public function prepareInputForAdd($input)
     {
         /** @var array $CFG_GLPI */
