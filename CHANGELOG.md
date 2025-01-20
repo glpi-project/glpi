@@ -35,6 +35,7 @@ The present file will list all changes made to the project; according to the
 - CLI commands for creating local GLPI users, enabling/disabling/deleting users, resetting local GLPI user passwords and granting profile assignments.
 - Cloning templates (such as computer templates)
 - Creating a template from an existing item (such as a computer). This action is only available from the Actions menu within the item form (bulk action not allowed).
+- Massive action for users to reapply authorization assignment rules.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.

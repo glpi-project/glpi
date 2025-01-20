@@ -1354,6 +1354,34 @@ class User extends CommonDBTM
     }
 
     /**
+     * Force authorization assignment rules to be processed for this user
+     * @return void
+     */
+    public function reapplyRightRules()
+    {
+        $rules  = new RuleRightCollection();
+        $this->applyRightRules();
+        $groups = Group_User::getUserGroups($this->getID());
+        $groups_id = array_column($groups, 'id');
+        $result = $rules->processAllRules(
+            $groups_id,
+            $this->fields,
+            [
+                'type' => $this->fields['authtype'],
+                'login' => $this->fields['name'],
+                'email' => UserEmail::getDefaultForUser($this->getID())
+            ]
+        );
+
+        $this->input = $result;
+        $this->willProcessRuleRight();
+        $this->syncLdapGroups();
+        $this->syncDynamicEmails();
+        $this->applyGroupsRules();
+        $this->applyRightRules();
+    }
+
+    /**
      * Apply rules to determine dynamic rights of the user.
      *
      * @return boolean true if rules are applied, false otherwise
@@ -3728,6 +3756,8 @@ JAVASCRIPT;
                                                     __s('Clean LDAP fields and force synchronisation');
             $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
                                                       __s('Disable 2FA');
+            $actions[$prefix . 'reapply_rights']            = "<i class='" . Profile::getIcon() . "'></i>" .
+                                                      __s('Reapply authorization assignment rules');
         }
         return $actions;
     }
@@ -3850,6 +3880,18 @@ JAVASCRIPT;
                     $totp->disable2FAForUser($id);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
+                break;
+            case 'reapply_rights':
+                $user = new self();
+                foreach ($ids as $id) {
+                    if ($user->getFromDB($id)) {
+                        $user->reapplyRightRules();
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+                    }
+                }
+                break;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
