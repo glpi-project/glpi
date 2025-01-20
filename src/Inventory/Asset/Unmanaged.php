@@ -194,7 +194,9 @@ class Unmanaged extends MainAsset
                         $items_id = $result['id'];
                         $itemtype = $result['itemtype'];
                         //do not override device name if it's a managed device
-                        unset($val->name);
+                        if (property_exists($val, 'name')) {
+                            unset($val->name);
+                        }
                     } else {
                         $need_to_add = true;
                     }
