@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -5767,6 +5767,65 @@ HTML
         $this->assertEquals('_test_group_1', $assignees[1]['text']);
     }
 
+    public function testGetActorsForTypeNoDuplicates()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket->getEmpty();
+        $tech_id = getItemByTypeName('User', 'tech', true);
+        $postonly_id = getItemByTypeName('User', 'post-only', true);
+
+        $params = [
+            '_template_changed'  => true,
+            '_users_id_requester' => $postonly_id,
+            '_users_id_observer'  => $postonly_id,
+            '_users_id_assign'    => $tech_id,
+            '_predefined_fields' => [
+                '_users_id_requester' => $postonly_id,
+                '_users_id_observer'  => $postonly_id,
+                '_users_id_assign'    => $tech_id,
+                '_groups_id_requester' => 1,
+                '_groups_id_observer'  => 1,
+                '_groups_id_assign'    => 1,
+            ],
+        ];
+
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params));
+
+        $ticket->getEmpty();
+        $params = [
+            '_skip_default_actor' => true,
+            '_actors'             => [
+                'requester' => [
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'User',  'items_id' => $postonly_id],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'Group', 'items_id' => 1]
+                ],
+                'observer'  => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                ],
+                'assign'    => [
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                    ['itemtype' => 'User',  'items_id' => $tech_id],
+                    ['itemtype' => 'Group', 'items_id' => 1],
+                ],
+            ]
+        ];
+
+        $this->assertCount(3, $ticket->getActorsForType(\CommonITILActor::REQUESTER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::OBSERVER, $params));
+        $this->assertCount(2, $ticket->getActorsForType(\CommonITILActor::ASSIGN, $params));
+    }
+
 
     public function testNeedReopen()
     {
@@ -7698,5 +7757,105 @@ HTML
         $t = new Ticket();
         $t->getFromDB($ticket->getID());
         $this->assertEquals($expected, $t->fields['takeintoaccount_delay_stat']);
+    }
+
+    public function testCanAssign()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_skip_auto_assign' => true,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+
+        // Assigning technician during creation of closed ticket should work
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::CLOSED,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ],
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertEquals(\CommonITILObject::CLOSED, $ticket->fields['status']);
+
+        // Assigning technician in same update as closing should work
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $ticket->update([
+            'id' => $tickets_id,
+            'status' => \CommonITILObject::CLOSED,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]);
+        $ticket->loadActors();
+        $this->assertEquals(1, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertEquals(\CommonITILObject::CLOSED, $ticket->fields['status']);
+
+        // Assigning technician after ticket is already closed should be blocked
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::CLOSED,
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertFalse($ticket->update([
+            'id' => $tickets_id,
+            '_actors' => [
+                'assign' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => getItemByTypeName('User', 'tech', true),
+                        'use_notification' => 0,
+                        'alternative_email' => '',
+                    ]
+                ]
+            ]
+        ]));
+        $ticket->loadActors();
+        $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
     }
 }

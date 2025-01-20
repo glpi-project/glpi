@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,12 @@
 
 class Domain_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = "Domain";
     public static $items_id_1 = 'domains_id';
 
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
-
-    public static $rightname = 'domain';
 
     public static function getTypeName($nb = 0)
     {

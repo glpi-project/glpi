@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -462,6 +462,41 @@ class Lock extends CommonGLPI
                 }
                 echo "<td class='left'>" . $url . "</td>";
                 echo "<td class='left'>" . Dropdown::getYesNo($computer_vm->fields['is_dynamic']) . "</td>";
+                echo "</tr>\n";
+            }
+
+            $remote_management = new Item_RemoteManagement();
+            $params = [
+                'is_dynamic'   => 1,
+                'is_deleted'   => 1,
+                'items_id'     => $ID,
+                'itemtype'     => $itemtype
+            ];
+            $params['FIELDS'] = ['id', 'remoteid'];
+            $first  = true;
+            $data = $DB->request($remote_management->getTable(), $params);
+            foreach ($data as $line) {
+                if ($first) {
+                    echo "<tr>";
+                    echo "<th width='10'></th>";
+                    echo "<th>" . $remote_management->getTypeName(Session::getPluralNumber()) . "</th>";
+                    echo "<th>" . _n('Type', 'Types', 1) . "</th>";
+                    echo "<th>" . __('Automatic inventory') . "</th>";
+                    echo "</tr>";
+                    $first = false;
+                }
+
+                $remote_management->getFromDB($line['id']);
+                echo "<tr class='tab_bg_1'>";
+                echo "<td class='center' width='10'>";
+                if ($remote_management->can($line['id'], UPDATE) || $remote_management->can($line['id'], PURGE)) {
+                    $header = true;
+                    echo "<input type='checkbox' name='Item_RemoteManagement[" . $line['id'] . "]'>";
+                }
+                echo "</td>";
+                echo "<td class='left'><a href='" . $remote_management->getLinkURL() . "'>" . $remote_management->fields['remoteid'] . "</a></td>";
+                echo "<td class='left'>" . $remote_management->fields['type'] . "</td>";
+                echo "<td class='left'>" . Dropdown::getYesNo($remote_management->fields['is_dynamic']) . "</td>";
                 echo "</tr>\n";
             }
         }

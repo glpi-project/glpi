@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -48,14 +48,14 @@
    {# prevent robots to index GLPI instances #}
    <meta name="robots" content="noindex, nofollow" />
 
-    {# Custom header tags for plugins #}
-    {% for header_tag in custom_header_tags %}
+    {# Custom header tags #}
+    {% for header_tag in custom_header_tags|merge(get_plugins_header_tags(is_anonymous_page|default(false))) %}
         <{{ header_tag.tag }} {% for key, value in header_tag.properties %}{{ key }}="{{ value }}" {% endfor %}/>
     {% endfor %}
 
    <meta property="glpi:csrf_token" content="{{ csrf_token(true) }}" />
 
-   {% for css_file in css_files %}
+   {% for css_file in css_files|merge(get_plugins_css_files(is_anonymous_page|default(false))) %}
       <link rel="stylesheet" type="text/css" href="{{ css_path(css_file.path, css_file.options ?? []) }}" />
    {% endfor %}
 

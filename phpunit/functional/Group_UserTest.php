@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -212,5 +212,49 @@ class Group_UserTest extends \DbTestCase
         $this->assertTrue($group_user->getFromDB($group_users_id));
         $this->assertTrue(\Group_User::isUserInGroup(getItemByTypeName('User', 'tech', true), $groups_id));
         $this->assertFalse(\Group_User::isUserInGroup(getItemByTypeName('User', 'glpi', true), $groups_id));
+    }
+
+    public function testDeleteUserDefaultGroup()
+    {
+        $group = new \Group();
+        $gid = (int)$group->add([
+            'name' => 'Test group'
+        ]);
+        $this->assertGreaterThan(0, $gid);
+
+        $user = getItemByTypeName('User', 'tech');
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int)$group_user->add(
+                [
+                    'groups_id' => $gid,
+                    'users_id'  => $user->getID()
+                ]
+            )
+        );
+
+        $this->assertTrue(
+            $user->update(
+                [
+                    'id' => $user->getID(),
+                    'groups_id' => $gid
+                ]
+            )
+        );
+
+        $group_users = \Group_User::getGroupUsers($gid);
+        $this->assertCount(1, $group_users);
+        $this->assertSame($user->getID(), (int)$group_users[0]['id']);
+
+        //cleanup
+        $this->assertTrue($group->delete(['id' => $gid], true));
+
+        $group_users = \Group_User::getGroupUsers($gid);
+        $this->assertCount(0, $group_users);
+
+        $user = getItemByTypeName('User', 'tech');
+        $this->assertEquals(0, $user->fields['groups_id']);
     }
 }

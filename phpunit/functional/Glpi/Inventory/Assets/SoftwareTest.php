@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1631,5 +1631,93 @@ class SoftwareTest extends AbstractInventoryAsset
         $first_soft = array_pop($softs);
 
         $this->assertSame($categories_id, $first_soft['softwarecategories_id']);
+    }
+
+    public function testIsHelpdeskVisible()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $computer = new \Computer();
+        $soft = new \Software();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS>GNU Image Manipulation Program</COMMENTS>
+      <FILESIZE>67382735</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>03/10/2021</INSTALLDATE>
+      <NAME>gimp</NAME>
+      <PUBLISHER>Fedora Project</PUBLISHER>
+      <SYSTEM_CATEGORY>Web App</SYSTEM_CATEGORY>
+      <VERSION>2.10.28-1.fc34</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc012302</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>sd65f4sd6f4</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        //software import behave differently: non-dynamic are not handled at all.
+        //create manually a computer
+        $computers_id = $computer->add([
+            'name'   => 'pc012302',
+            'serial' => 'sd65f4sd6f4',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        // set software to not be helpdesk visible
+        $CFG_GLPI["default_software_helpdesk_visible"] = 0;
+        $this->doInventory($xml_source, true);
+
+        //check that software has been created and is_helpdesk_visible false
+        $softs = $soft->find(['is_helpdesk_visible' => false, 'name' => 'gimp']);
+        $this->assertCount(1, $softs);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <SOFTWARES>
+              <ARCH>x86_64</ARCH>
+              <COMMENTS>GNU Image Manipulation Program</COMMENTS>
+              <FILESIZE>67382735</FILESIZE>
+              <FROM>rpm</FROM>
+              <INSTALLDATE>03/10/2021</INSTALLDATE>
+              <NAME>other_soft</NAME>
+              <PUBLISHER>Fedora Project</PUBLISHER>
+              <SYSTEM_CATEGORY>Web App</SYSTEM_CATEGORY>
+              <VERSION>2.10.28-1.fc34</VERSION>
+            </SOFTWARES>
+            <HARDWARE>
+              <NAME>pc012302</NAME>
+            </HARDWARE>
+            <BIOS>
+              <SSN>sd65f4sd6f4</SSN>
+            </BIOS>
+            <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>test-pc002</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        // retry with default_software_helpdesk_visible = 1
+        $CFG_GLPI["default_software_helpdesk_visible"] = 1;
+        $this->doInventory($xml_source, true);
+
+        //check that software has been created and is_helpdesk_visible false
+        $softs = $soft->find(['is_helpdesk_visible' => true, 'name' => 'other_soft']);
+        $this->assertCount(1, $softs);
     }
 }

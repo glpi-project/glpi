@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -302,6 +302,7 @@ class Software extends InventoryAsset
 
         $db_software = [];
         $db_software_wo_version = [];
+        $db_software_data = [];
 
         //Load existing software versions from db. Grab required fields
         //to build comparison key @see getFullCompareKey
@@ -393,19 +394,8 @@ class Software extends InventoryAsset
 
             $dedup_vkey = $key_w_version . $this->getVersionKey($val, 0);
 
-            //update softwarecategories if needed
-            //reconciles the software without the version (no needed here)
-            $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
-            if (
-                isset($db_software_data[$key_wo_version])
-                && $db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)
-            ) {
-                $software_to_update = new GSoftware();
-                $software_to_update->update([
-                    "id" => $db_software_data[$key_wo_version]['softid'],
-                    "softwarecategories_id" => ($this->known_links[$sckey] ?? 0)
-                ], 0);
-            }
+
+            $this->updateSoftwareFieldsIfNeeded($db_software_data, $key_wo_version, $val);
 
             if (isset($db_software[$key_w_version])) {
                 // software exist with the same version
@@ -466,6 +456,40 @@ class Software extends InventoryAsset
             $this->storeAssetLink();
         } catch (\Throwable $e) {
             throw $e;
+        }
+    }
+
+
+    /**
+     * Updates software fields if needed.
+     *
+     * @param array $db_software_data The current database data for the software.
+     * @param string $key_wo_version The key to access software data without version information.
+     * @param object $val The current software data being processed.
+     */
+    private function updateSoftwareFieldsIfNeeded(array $db_software_data, string $key_wo_version, object $val): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!isset($db_software_data[$key_wo_version])) {
+            return; // No data to process
+        }
+
+        $fields_to_update = [];
+        $soft_id = $db_software_data[$key_wo_version]['softid'];
+
+        // Check if the softwarecategories_id needs to be updated
+        $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
+        if ($db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)) {
+            $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
+        }
+
+        // Perform the update if there are fields to update
+        if (!empty($fields_to_update)) {
+            $fields_to_update['id'] = $soft_id;
+            $software_to_update = new GSoftware();
+            $software_to_update->update($fields_to_update, 0);
         }
     }
 
@@ -713,6 +737,9 @@ class Software extends InventoryAsset
         /** @var \DBmysql $DB */
         global $DB;
 
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $software = new GSoftware();
         $soft_fields = $DB->listFields($software->getTable());
         $stmt = $stmt_types = null;
@@ -725,6 +752,7 @@ class Software extends InventoryAsset
                 $software->handleCategoryRules($stmt_columns, true);
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
+                $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -3127,5 +3127,97 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             ]);
             $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
         }
+    }
+
+    public function testStackedExtremeNetworks3650GTS()
+    {
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_3650GTS.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            '18OL0530E253' => 51, //42
+            '17OL07000107' => 27,  //42
+            '17OL07000020' => 27  //42
+        ];
+
+        foreach ($server_serial as $serial => $nb_port) {
+            $this->assertTrue(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial]),
+                "Switch s/n $serial doesn't exist"
+            );
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
+        }
+    }
+
+    public function testManuelNetworkPortUpdateToDynamic()
+    {
+        // create NetworkEquipment manually
+        $networkEquipment = new \NetworkEquipment();
+        $networkequipments_id = $networkEquipment->add([
+            'name'        => 'SWITCH.network.teclib.org',
+            'serial'      => 'DKFJG3541DF',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $networkequipments_id);
+
+        // create NetworkPortAggregate manually
+        $networkport = new \NetworkPort();
+        $networkport_id = $networkport->add([
+            'name'                => 'Management',
+            'logical_number'      => '0',
+            'instantiation_type'  => 'NetworkPortAggregate',
+            'items_id'            => $networkequipments_id,
+            'itemtype'            => 'NetworkEquipment',
+            'mac'                 => '08:f3:fb:a1:04:00',
+            'entities_id'         => 0,
+        ]);
+
+        $this->assertGreaterThan(0, $networkport_id);
+
+        // reload NetworkPortAggregate and check if not dynamic
+        $networkport->getFromDB($networkport_id);
+        $this->assertEquals(0, $networkport->fields['is_dynamic']);
+
+        // do inventory
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        // reload NetworkPortAggregate and check if dynamic
+        $networkport->getFromDB($networkport_id);
+        $this->assertEquals(1, $networkport->fields['is_dynamic']);
     }
 }

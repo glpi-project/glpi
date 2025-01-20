@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1146,9 +1146,10 @@ class User extends CommonDBTM
             }
         }
 
-       // Security on default group  update
+        // Security on default group update
         if (
             isset($input['groups_id'])
+            && $input['groups_id'] > 0
             && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
         ) {
             unset($input['groups_id']);

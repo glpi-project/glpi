@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,15 +50,15 @@ class SessionsConfiguration extends AbstractRequirement
     protected function check()
     {
        // Check session extension
-        if (!extension_loaded('session')) {
+        if (!$this->isExtensionLoaded()) {
             $this->validated = false;
             $this->validation_messages[] = __('session extension is not installed.');
             return;
         }
 
        // Check configuration values
-        $is_autostart_on   = ini_get('session.auto_start') == 1;
-        $is_usetranssid_on = ini_get('session.use_trans_sid') == 1
+        $is_autostart_on   = $this->isAutostartOn();
+        $is_usetranssid_on = $this->isUsetranssidOn()
          || isset($_POST[session_name()]) || isset($_GET[session_name()]);
 
         if ($is_autostart_on || $is_usetranssid_on) {
@@ -78,5 +78,21 @@ class SessionsConfiguration extends AbstractRequirement
 
         $this->validated = true;
         $this->validation_messages[] = __s('Sessions configuration is OK.');
+    }
+
+    protected function isExtensionLoaded(): bool
+    {
+        return extension_loaded('session');
+    }
+
+    protected function isAutostartOn(): bool
+    {
+        return ini_get('session.auto_start') == 1;
+    }
+
+    protected function isUsetranssidOn(): bool
+    {
+        return ini_get('session.use_trans_sid') == 1 || isset($_POST[session_name()]) || isset($_GET[session_name()]);
+        ;
     }
 }

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,6 +44,19 @@ window.GLPI.Search.Table = class Table extends GenericView {
         super(element_id);
 
         this.shiftSelectAllCheckbox();
+        this.toggleSavedSearch(true);
+    }
+
+    toggleSavedSearch(isDisable) {
+        if (isDisable) {
+            $('.bookmark_record')
+                .attr('title', __('Submit current search before saving it'))
+                .prop('disabled', true);
+        } else {
+            $('.bookmark_record')
+                .attr('title', __('Save current search'))
+                .prop('disabled', false);
+        }
     }
 
     getElement() {
@@ -199,6 +212,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+                this.toggleSavedSearch(false);
             }, () => {
                 handle_search_failure();
             });

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -908,5 +908,73 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame('13.2.3', $database->fields['version']);
         $this->assertSame($newmanufacturers_id, $database->fields['manufacturers_id']);
         $this->assertSame(['manufacturers_id' => 'PostgreSQL'], $lockedfield->getLockedValues($database->getType(), $database->fields['id']));
+    }
+
+    public function testPurgeLockedField()
+    {
+        $this->login('glpi', 'glpi');
+
+        $computer = new \Computer();
+        $cid = (int)$computer->add([
+            'name'         => 'Computer from inventory',
+            'serial'       => '123456',
+            'otherserial'  => '789012',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1
+        ]);
+        $this->assertGreaterThan(0, $cid);
+
+        $lockedfield = new \Lockedfield();
+        $this->assertTrue($lockedfield->isHandled($computer));
+        $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $cid));
+
+        //update computer manually, to add a locked field
+        $this->assertTrue(
+            $computer->update(['id' => $cid, 'otherserial' => 'AZERTY'])
+        );
+
+        $global_lockedfield = new \Lockedfield();
+        $global_lockedfield_id = (int)$global_lockedfield->add([
+            'item' => 'Computer - manufacturers_id'
+        ]);
+        $this->assertGreaterThan(0, $global_lockedfield_id);
+
+        $this->assertTrue($computer->getFromDB($cid));
+        $this->assertSame(['manufacturers_id' => null, 'otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+
+        // change to child entity
+        $entities_id_child = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $this->assertTrue(\Session::changeActiveEntities($entities_id_child));
+
+        // Check for computer lockedfield
+        $this->assertTrue($lockedfield->getFromDBByCrit(['itemtype' => \Computer::class, "items_id" => $cid]));
+        $this->assertFalse($lockedfield->canPurgeItem());
+        $this->assertFalse($lockedfield->can($lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertFalse(\Lockedfield::isMassiveActionAllowed($lockedfield->fields['id']));
+
+        //check for global lockedfield
+        $this->assertTrue($global_lockedfield->canPurgeItem());
+        $this->assertTrue($global_lockedfield->can($global_lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
+
+        $this->login('glpi', 'glpi');
+
+        // move back to root entity
+        $this->assertTrue(\Session::changeActiveEntities(0));
+
+        // Check for computer lockedfield
+        $this->assertTrue($lockedfield->getFromDBByCrit(['itemtype' => \Computer::class, "items_id" => $cid]));
+        $this->assertTrue($lockedfield->canPurgeItem());
+        $this->assertTrue($lockedfield->can($lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($lockedfield->fields['id']));
+
+        //check for global lockedfield
+        $this->assertTrue($global_lockedfield->canPurgeItem());
+        $this->assertTrue($global_lockedfield->can($global_lockedfield->fields['id'], PURGE));
+        // check if massive action is displayed
+        $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
     }
 }

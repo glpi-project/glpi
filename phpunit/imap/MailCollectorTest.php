@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1281,5 +1281,47 @@ PLAINTEXT,
         } else {
             $this->assertNull($storage);
         }
+    }
+
+
+
+    public static function cleanContentProvider()
+    {
+        return [
+            [
+                'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>',
+                'mail_content' => 'Text before<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local&gt;</a>Text after',
+                'expected' => 'Text beforeText after',
+            ],
+            [
+                'filter' => '<a href="mailto:test@mail.local%3cmailto:test@mail.local">test@mail.local&lt;mailto:test@mail.local</a>&gt;',
+                'mail_content' => 'Text before<a href="mailto:test2@mail.local%3cmailto:test2@mail.local">test2@mail.local&lt;mailto:test2@mail.local&gt;</a>Text after',
+                'expected' => 'Text before<a href="mailto:test2@mail.local%3cmailto:test2@mail.local">test2@mail.local&lt;mailto:test2@mail.local&gt;</a>Text after',
+            ],
+        ];
+    }
+
+
+    /**
+     * @dataProvider cleanContentProvider
+     */
+    public function testCleanContent(
+        string $filter,
+        string $mail_content,
+        string $expected
+    ) {
+        $this->createItem(
+            'BlacklistedMailContent',
+            [
+                'name' => __METHOD__,
+                'content' => $filter
+            ]
+        );
+
+        $original = $mail_content;
+
+        $mailcollector = new \MailCollector();
+        $result = $mailcollector->cleanContent($original);
+        $this->assertEquals($expected, $result);
     }
 }
