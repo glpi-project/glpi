@@ -113,7 +113,9 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
                 aria-label="{{ __('Default value') }}"
-                {{ attributes|map((value, key) => '%s=%s'|format(key, value))|join(' ') }}
+                {% for key, value in attributes %}
+                    {{ key|e }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             />
 TWIG;
 
@@ -138,7 +140,9 @@ TWIG;
                 value="{{ question.fields.default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
-                {{ attributes|map((value, key) => '%s=%s'|format(key, value))|join(' ') }}
+                {% for key, value in attributes %}
+                    {{ key|e }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             >
 TWIG;
 
