@@ -1334,9 +1334,7 @@ PLAINTEXT,
     }
 
 
-    /**
-     * @dataProvider cleanContentProvider
-     */
+    #[DataProvider('cleanContentProvider')]
     public function testCleanContent(
         string $filter,
         string $mail_content,

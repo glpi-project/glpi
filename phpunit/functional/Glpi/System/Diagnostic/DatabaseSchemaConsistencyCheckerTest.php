@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use Glpi\System\Diagnostic\DatabaseSchemaConsistencyChecker;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DatabaseSchemaConsistencyCheckerTest extends \GLPITestCase
 {
@@ -85,9 +86,7 @@ SQL
         ];
     }
 
-    /**
-     * @dataProvider sqlProvider
-     */
+    #[DataProvider('sqlProvider')]
     public function testGetMissingFields(
         string $create_table_sql,
         array $expected_missing

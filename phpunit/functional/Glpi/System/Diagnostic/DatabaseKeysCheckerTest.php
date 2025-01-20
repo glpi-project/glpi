@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use Glpi\System\Diagnostic\DatabaseKeysChecker;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DatabaseKeysCheckerTest extends \GLPITestCase
 {
@@ -312,9 +313,7 @@ SQL
         ];
     }
 
-    /**
-     * @dataProvider sqlProvider
-     */
+    #[DataProvider('sqlProvider')]
     public function testMissingMisnamedUseless(
         string $create_table_sql,
         array $expected_missing,
