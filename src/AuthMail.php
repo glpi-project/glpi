@@ -156,6 +156,15 @@ class AuthMail extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_default',
+            'name'               => __('Default server'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => static::getTable(),
             'field'              => 'date_mod',
