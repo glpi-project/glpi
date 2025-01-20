@@ -114,7 +114,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 value="{{ question is not null ? question.fields.default_value : '' }}"
                 aria-label="{{ __('Default value') }}"
                 {% for key, value in attributes %}
-                    {{ key|e }}="{{ value|e('html_attr') }}"
+                    {{ key }}="{{ value|e('html_attr') }}"
                 {% endfor %}
             />
 TWIG;
@@ -141,7 +141,7 @@ TWIG;
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
                 {% for key, value in attributes %}
-                    {{ key|e }}="{{ value|e('html_attr') }}"
+                    {{ key }}="{{ value|e('html_attr') }}"
                 {% endfor %}
             >
 TWIG;
