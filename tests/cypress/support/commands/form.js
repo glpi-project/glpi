@@ -62,6 +62,9 @@ Cypress.Commands.add('saveFormEditorAndReload', () => {
         .should('contain.text', 'Item successfully updated')
     ;
     cy.reload();
+
+    // Wait for the form to be reloaded
+    cy.findByRole('button', { 'name': 'Save' }).should('exist');
 });
 
 Cypress.Commands.add('addQuestion', (name) => {

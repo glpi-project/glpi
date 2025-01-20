@@ -166,4 +166,47 @@ describe ('Form editor', () => {
             });
         });
     });
+
+    it('can remove a horizontal block and verify the questions are still displayed', () => {
+        cy.findByRole('button', {'name': 'Add a horizontal layout'}).click();
+        cy.findByRole('region', {'name': 'Horizontal blocks layout'}).within(() => {
+            // Focus the first placeholder
+            cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
+
+            // Add a new question
+            cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
+                .findByRole('button', {'name': 'Add a new question'}).click();
+            cy.findByRole('region', {'name': 'Question details'}).within(() => {
+                cy.findByRole('textbox', {'name': 'Question name'}).type('First question');
+            });
+
+            // Focus the second placeholder
+            cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
+
+            // Add a new question
+            cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
+                .findByRole('button', {'name': 'Add a new question'}).click();
+            cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+                cy.findByRole('textbox', {'name': 'Question name'}).type('Second question');
+            });
+        });
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Remove the horizontal block
+        cy.findByRole('button', {'name': 'Remove horizontal layout'}).click();
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Check that the questions are displayed and not in a horizontal block
+        cy.findAllByRole('region', {'name': 'Horizontal blocks layout'}).should('not.exist');
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(0).within(() => {
+            cy.findByRole('textbox', {'name': 'Question name'}).should('have.value', 'First question');
+        });
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+            cy.findByRole('textbox', {'name': 'Question name'}).should('have.value', 'Second question');
+        });
+    });
 });
