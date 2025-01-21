@@ -542,12 +542,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ajax.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
@@ -842,12 +836,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthLDAP\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AuthLDAP\\:\\:ldapStamp2UnixStamp\\(\\) should return int but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -896,12 +884,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method AuthMail\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthMail.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'connect_string\' on string in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -924,12 +906,6 @@ $ignoreErrors[] = [
 	'identifier' => 'nullCoalesce.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Blacklist.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Budget\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Budget.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Budget\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -1106,12 +1082,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CartridgeItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Central\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$checkitem \\(null\\) of method Certificate\\:\\:getSpecificMassiveActions\\(\\) should be compatible with parameter \\$checkitem \\(object\\) of method CommonDBTM\\:\\:getSpecificMassiveActions\\(\\)$#',
 	'identifier' => 'method.childParameterType',
 	'count' => 1,
@@ -1144,12 +1114,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'circle\' and null will always evaluate to false\\.$#',
 	'identifier' => 'equal.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Change\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Change.php',
 ];
@@ -1556,12 +1520,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILRecurrent\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
@@ -1748,12 +1706,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Config\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -1872,12 +1824,6 @@ $ignoreErrors[] = [
 	'identifier' => 'function.resultUnused',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Contract_Supplier.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CronTaskLog\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTaskLog.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
@@ -2216,12 +2162,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DisplayPreference.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DisplayPreference\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DisplayPreference.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -2268,12 +2208,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.childReturnType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Document_Item\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document_Item.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Document_Item\\:\\:getTypeItemsQueryParams\\(\\) should return DBmysqlIterator but returns array\\.$#',
@@ -2504,12 +2438,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Entity\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Entity\\:\\:isRecursive\\(\\) should return int but returns true\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2592,12 +2520,6 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIPDF.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Group\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Group.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between HTMLTableHeader and HTMLTableHeader will always evaluate to true\\.$#',
@@ -2804,12 +2726,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/IPNetwork.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ITILCategory\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ITILCategory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
@@ -2820,12 +2736,6 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 2,
 	'path' => __DIR__ . '/src/ITILSolution.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method ITILTemplate\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method ITILTemplate\\:\\:showCentralPreview\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -3182,12 +3092,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Conf\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Inventory/Conf.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'label\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
@@ -3380,12 +3284,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareLicense\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_SoftwareLicense\\:\\:showForLicense\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -3400,12 +3298,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'d\'\\|\'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\'\\|\'v\' and \'_\' will always evaluate to false\\.$#',
 	'identifier' => 'equal.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareVersion\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
@@ -3452,20 +3344,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Itil_Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Knowbase\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Knowbase.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'ASC\' and \'ASC\' will always evaluate to true\\.$#',
 	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
@@ -3508,12 +3388,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method KnowbaseItemTranslation\\:\\:showVisibility\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItemTranslation\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
 ];
@@ -3564,12 +3438,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Link_Itemtype.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Location\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Location.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Location\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -3702,12 +3570,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Marketplace\\\\View\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Marketplace/View.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -4010,12 +3872,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NotificationSetting\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationSetting.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method NotificationTarget\\:\\:showForGroup\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -4238,12 +4094,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Planning\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Planning\\:\\:showCentral\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -4406,12 +4256,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Problem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Problem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Problem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Problem\\:\\:showListForItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 2,
@@ -4432,12 +4276,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between 2 and 2 will always evaluate to true\\.$#',
 	'identifier' => 'equal.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Profile\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
@@ -4474,12 +4312,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with class\\-string\\<static\\(Project\\)\\> and \'getFormUrl\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Project\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Project.php',
 ];
@@ -4574,12 +4406,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RSSFeed.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RSSFeed\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RSSFeed.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-list\\<string\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -4652,12 +4478,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Reminder\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reminder.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'plan\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 2,
@@ -4676,12 +4496,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method ReservationItem\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ReservationItem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -4691,12 +4505,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 8,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
@@ -4760,12 +4568,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'entity\' on array\\{entity\\: true, criterias\\?\\: non\\-empty\\-list\\<mixed\\>, actions\\?\\: non\\-empty\\-list\\<mixed\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -4800,24 +4602,6 @@ $ignoreErrors[] = [
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method RuleImportAssetCollection\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<string, mixed\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \\(list\\<string\\>\\|string\\) on string in isset\\(\\) does not exist\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -5210,12 +4994,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Ticket\\:\\:showForm\\(\\) should return bool but empty return statement found\\.$#',
 	'identifier' => 'return.empty',
 	'count' => 1,
@@ -5434,12 +5212,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:getTabNameForItem\\(\\) should return string but returns array\\<int, string\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
