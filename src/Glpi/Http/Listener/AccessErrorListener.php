@@ -72,18 +72,14 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
 
         $response = null;
 
-        if (
-            $throwable instanceof SessionExpiredException
-            || (!Session::isAuthenticated() && $throwable instanceof AccessDeniedHttpException)
-        ) {
+        if ($throwable instanceof SessionExpiredException) {
             Session::destroy(); // destroy the session to prevent pesistence of unexpected data
 
             $response = new RedirectResponse(
                 sprintf(
-                    '%s/?redirect=%s%s',
+                    '%s/?redirect=%s&error=3',
                     $request->getBasePath(),
-                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString()),
-                    $throwable instanceof SessionExpiredException ? '&error=3' : '',
+                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
                 )
             );
         } elseif (
