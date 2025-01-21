@@ -1130,6 +1130,7 @@ TWIG,
 
             if (in_array('gridstack', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'lib/gridstack.css'];
+                $tpl_vars['css_files'][] = ['path' => 'lib/gridstack-extra.css'];
                 Html::requireJs('gridstack');
             }
 
