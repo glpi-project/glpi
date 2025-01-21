@@ -8211,10 +8211,8 @@ abstract class CommonITILObject extends CommonDBTM
                 'itemtype'                  => $this->getType(),
                 'items_id'                  => $this->getID(),
                 '_disablenotif'             => true,
+            '_do_not_compute_status' => $this->input['_do_not_compute_status'] ?? 0,
             ];
-            if (isset($this->input['_do_not_compute_status'])) {
-                $values['_do_not_compute_status'] = $this->input['_do_not_compute_status'];
-            }
            // Insert new followup from template
             $fup = new ITILFollowup();
             $fup->add($values);
