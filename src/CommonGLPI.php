@@ -606,7 +606,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @param CommonGLPI $item         Item on which the tab need to be displayed
      * @param integer    $withtemplate is a template object ? (default 0)
      *
-     *  @return string tab name
+     *  @return string|array tab name
      **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
