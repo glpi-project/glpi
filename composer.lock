@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0226236bfac59ecfd8321a2b87cefcf5",
+    "content-hash": "7d3ef89fff994fb241798a675b138cd3",
     "packages": [
         {
             "name": "brick/math",
@@ -279,16 +279,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.36",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be"
+                "reference": "cb5793011cf68a9aae7f5a06da83666881567c29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/b0bd6b08805c8fa6690ee3576edbba8803f724be",
-                "reference": "b0bd6b08805c8fa6690ee3576edbba8803f724be",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/cb5793011cf68a9aae7f5a06da83666881567c29",
+                "reference": "cb5793011cf68a9aae7f5a06da83666881567c29",
                 "shasum": ""
             },
             "require": {
@@ -299,7 +299,7 @@
                 "ext-simplexml": "*",
                 "php": ">=7.4",
                 "seld/jsonlint": "^1.11",
-                "swaggest/json-schema": "^0.12.42",
+                "swaggest/json-schema": "^0.12.43",
                 "symfony/polyfill-php81": "^1.31"
             },
             "require-dev": {
@@ -307,7 +307,7 @@
                 "phpstan/phpstan": "^1.12",
                 "phpstan/phpstan-deprecation-rules": "^1.2",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^3.10"
+                "squizlabs/php_codesniffer": "^3.11"
             },
             "bin": [
                 "bin/convert",
@@ -323,6 +323,7 @@
             },
             "autoload": {
                 "files": [
+                    "lib/php/Schema.php",
                     "lib/php/Converter.php",
                     "lib/php/FilesToJSON.php"
                 ]
@@ -347,7 +348,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2024-11-05T13:37:20+00:00"
+            "time": "2025-01-21T12:19:15+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3331,21 +3332,21 @@
         },
         {
             "name": "swaggest/json-schema",
-            "version": "v0.12.42",
+            "version": "v0.12.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/php-json-schema.git",
-                "reference": "d23adb53808b8e2da36f75bc0188546e4cbe3b45"
+                "reference": "1f3a77a382c5d273a0f1fe34be3b8af4060a88cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/d23adb53808b8e2da36f75bc0188546e4cbe3b45",
-                "reference": "d23adb53808b8e2da36f75bc0188546e4cbe3b45",
+                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/1f3a77a382c5d273a0f1fe34be3b8af4060a88cd",
+                "reference": "1f3a77a382c5d273a0f1fe34be3b8af4060a88cd",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=5.4",
+                "php": ">=7.1",
                 "phplang/scope-exit": "^1.0",
                 "swaggest/json-diff": "^3.8.2",
                 "symfony/polyfill-mbstring": "^1.19"
@@ -3376,9 +3377,9 @@
             "support": {
                 "email": "vearutop@gmail.com",
                 "issues": "https://github.com/swaggest/php-json-schema/issues",
-                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.42"
+                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.43"
             },
-            "time": "2023-09-12T14:43:42+00:00"
+            "time": "2024-12-22T21:18:27+00:00"
         },
         {
             "name": "symfony/cache",
@@ -4051,8 +4052,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
@@ -4205,8 +4206,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {

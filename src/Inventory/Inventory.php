@@ -125,12 +125,13 @@ class Inventory
         }
 
         $converter = new Converter();
+        $schema = $converter->getSchema();
         if (method_exists($this, 'getSchemaExtraProps')) {
-            $converter->setExtraProperties($this->getSchemaExtraProps());
+            $schema->setExtraProperties($this->getSchemaExtraProps());
         }
 
         if (method_exists($this, 'getSchemaExtraSubProps')) {
-            $converter->setExtraSubProperties($this->getSchemaExtraSubProps());
+            $schema->setExtraSubProperties($this->getSchemaExtraSubProps());
         }
 
         if (Request::XML_MODE === $format) {
@@ -145,7 +146,7 @@ class Inventory
         }
 
         try {
-            $converter->validate($data);
+            $schema->validate($data);
         } catch (\RuntimeException $e) {
             $this->errors[] = preg_replace(
                 '|\$ref\[file~2//.*/vendor/glpi-project/inventory_format/inventory.schema.json\]|',
@@ -263,7 +264,7 @@ class Inventory
             }
 
             $converter = new Converter();
-            $schema = $converter->buildSchema();
+            $schema = $converter->getSchema()->build();
 
             $properties = array_keys((array)$schema->properties->content->properties);
             $properties = array_filter(
