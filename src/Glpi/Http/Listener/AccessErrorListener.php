@@ -63,8 +63,8 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        if ($request->isXmlHttpRequest()) {
-            // Do not redirect AJAX requests.
+        if ($request->isXmlHttpRequest() || $request->getPreferredFormat() !== 'html') {
+            // Do not redirect AJAX requests nor requests that expect the response to be something else than HTML.
             return;
         }
 
@@ -72,14 +72,18 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
 
         $response = null;
 
-        if ($throwable instanceof SessionExpiredException) {
-            Session::destroy(); // destroy the session to prevent pesistence of unexcpected data
+        if (
+            $throwable instanceof SessionExpiredException
+            || (!Session::isAuthenticated() && $throwable instanceof AccessDeniedHttpException)
+        ) {
+            Session::destroy(); // destroy the session to prevent pesistence of unexpected data
 
             $response = new RedirectResponse(
                 sprintf(
-                    '%s/?redirect=%s&error=3',
+                    '%s/?redirect=%s%s',
                     $request->getBasePath(),
-                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
+                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString()),
+                    $throwable instanceof SessionExpiredException ? '&error=3' : '',
                 )
             );
         } elseif (

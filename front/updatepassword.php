@@ -33,16 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`
 // considers it as an invalid session.
 if (Session::getLoginUserID() === false) {
-    Html::redirectToLogin();
+    throw new AccessDeniedHttpException();
 }
 
 switch (Session::getCurrentInterface()) {

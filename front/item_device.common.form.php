@@ -54,8 +54,6 @@ if (!($item_device instanceof Item_Devices)) {
     throw new BadRequestHttpException();
 }
 if (!$item_device->canView()) {
-   // Gestion timeout session
-    Session::redirectIfNotLoggedIn();
     throw new AccessDeniedHttpException();
 }
 

@@ -41,6 +41,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
@@ -997,22 +998,6 @@ class Session
         return false;
     }
 
-
-    /**
-     * Redirect User to login if not logged in
-     *
-     * @since 0.85
-     *
-     * @return void
-     **/
-    public static function redirectIfNotLoggedIn()
-    {
-
-        if (!self::isAuthenticated()) {
-            Html::redirectToLogin();
-        }
-    }
-
     /**
      * Global check of session to prevent PHP vulnerability
      *
@@ -1038,60 +1023,56 @@ class Session
         $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
         $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
 
-        $valid_user = true;
-
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
-            $valid_user = false;
-        } else {
-            $user_table = User::getTable();
-            $pu_table   = Profile_User::getTable();
-            $profile_table = Profile::getTable();
-            $result = $DB->request(
-                [
-                    'COUNT'     => 'count',
-                    'SELECT'    => [$profile_table . '.last_rights_update'],
-                    'FROM'      => $user_table,
-                    'LEFT JOIN' => [
-                        $pu_table => [
-                            'FKEY'  => [
-                                Profile_User::getTable() => 'users_id',
-                                $user_table         => 'id'
-                            ]
-                        ],
-                        $profile_table => [
-                            'FKEY'  => [
-                                $pu_table => 'profiles_id',
-                                $profile_table => 'id'
-                            ]
-                        ]
-                    ],
-                    'WHERE'     => [
-                        $user_table . '.id'         => $user_id,
-                        $user_table . '.is_active'  => 1,
-                        $user_table . '.is_deleted' => 0,
-                        $pu_table . '.profiles_id'  => $profile_id,
-                    ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
-                    'GROUPBY'   => [$profile_table . '.id'],
-                ]
-            );
-
-            $row = $result->current();
-
-            if ($row === null || $row['count'] === 0) {
-                $valid_user = false;
-            } elseif (
-                $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
-            ) {
-                Session::reloadCurrentProfile();
-                $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
-            }
+            throw new SessionExpiredException();
         }
 
-        if (!$valid_user) {
-            Session::destroy();
-            Auth::setRememberMeCookie('');
-            Html::redirectToLogin();
+        $user_table = User::getTable();
+        $pu_table   = Profile_User::getTable();
+        $profile_table = Profile::getTable();
+        $result = $DB->request(
+            [
+                'COUNT'     => 'count',
+                'SELECT'    => [$profile_table . '.last_rights_update'],
+                'FROM'      => $user_table,
+                'LEFT JOIN' => [
+                    $pu_table => [
+                        'FKEY'  => [
+                            Profile_User::getTable() => 'users_id',
+                            $user_table         => 'id'
+                        ]
+                    ],
+                    $profile_table => [
+                        'FKEY'  => [
+                            $pu_table => 'profiles_id',
+                            $profile_table => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'     => [
+                    $user_table . '.id'         => $user_id,
+                    $user_table . '.is_active'  => 1,
+                    $user_table . '.is_deleted' => 0,
+                    $pu_table . '.profiles_id'  => $profile_id,
+                ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
+                'GROUPBY'   => [$profile_table . '.id'],
+            ]
+        );
+
+        $row = $result->current();
+
+        if ($row === null || $row['count'] === 0) {
+            // The current profile cannot be found for the current user in the database.
+            // The session information are stale, therefore the session should be considered as expired.
+            throw new SessionExpiredException();
+        }
+
+        if (
+            $row['last_rights_update'] !== null
+            && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
+        ) {
+            Session::reloadCurrentProfile();
+            $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
         }
 
         return true;
@@ -1106,8 +1087,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "central") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
@@ -1141,8 +1120,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "helpdesk") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
@@ -1156,8 +1133,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!isset($_SESSION["glpiname"])) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
@@ -1230,8 +1205,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRight($module, $right)) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
             throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
@@ -1249,7 +1222,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
@@ -1292,8 +1264,6 @@ class Session
         }
 
         if (!$valid) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);

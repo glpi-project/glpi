@@ -48,7 +48,6 @@ final readonly class LegacyPostRequestActionsListener implements EventSubscriber
 
     public function onFinishRequest(): void
     {
-        \Html::resetAjaxParam();
         \Session::resetAjaxParam();
     }
 }

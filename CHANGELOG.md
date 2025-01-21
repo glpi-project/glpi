@@ -529,6 +529,8 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 - `Session::buildSessionName()`
+- `Session::redirectIfNotLoggedIn()`
+- `Session::redirectToLogin()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
