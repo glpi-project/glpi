@@ -131,10 +131,12 @@ trait ParentStatus
             ) {
                //check if lifecycle allowed new status
                 if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
-                    || (isset($input['_do_not_compute_status']) && !$input['_do_not_compute_status'])
+                    (
+                        Session::isCron()
+                        || Session::getCurrentInterface() == "helpdesk"
+                        || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                    )
+                    && (!isset($input['_do_not_compute_status']) || !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
@@ -151,10 +153,12 @@ trait ParentStatus
             } else {
                //check if lifecycle allowed new status
                 if (
-                    Session::isCron()
-                    || Session::getCurrentInterface() == "helpdesk"
-                    || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
-                    || (isset($input['_do_not_compute_status']) && !$input['_do_not_compute_status'])
+                    (
+                        Session::isCron()
+                        || Session::getCurrentInterface() == "helpdesk"
+                        || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                    )
+                    && (!isset($input['_do_not_compute_status']) || !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     $update['status'] = CommonITILObject::INCOMING;
