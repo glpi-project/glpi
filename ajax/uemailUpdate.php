@@ -35,9 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 

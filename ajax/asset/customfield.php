@@ -35,9 +35,6 @@
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight(CustomFieldDefinition::$rightname, READ);
 
 if (isset($_POST['action'])) {

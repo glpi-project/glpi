@@ -37,9 +37,6 @@ use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight(AssetDefinition::$rightname, READ);
 Session::writeClose();
 
