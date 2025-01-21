@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight("config", UPDATE);
 
 if (isset($_POST["test_smtp_send"])) {

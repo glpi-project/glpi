@@ -52,4 +52,8 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
     'glpi_dropdown_form',
 ));
 
-DropdownFormController::loadDropdownForm($this->request, $dropdown, $options ?? []);
+DropdownFormController::loadDropdownForm(
+    $this->getRequest(), // @phpstan-ignore method.private
+    $dropdown,
+    $options ?? []
+);

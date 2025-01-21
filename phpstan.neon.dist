@@ -62,9 +62,6 @@ parameters:
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
         - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
-        - { message: '~Variable \$this might not be defined~', paths: [ 'inc/includes.php' ] }
-        - { message: '~Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController.~', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
-        - { message: '~Access to protected property~', paths: [ 'front/dropdown.common.form.php' ] }
         - { message: '~LDAP\\Connection~', reportUnmatched: false }
         -
             message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
