@@ -6735,8 +6735,8 @@ JAVASCRIPT;
         $table  = self::getTable();
         return QueryFunction::if(
             condition: [
-                "$table.$first" => ['<>' => ''],
-                "$table.$second" => ['<>' => '']
+                "$table.$first" => ['<>', ''],
+                "$table.$second" => ['<>', '']
             ],
             true_expression: QueryFunction::concat(["$table.$first", new QueryExpression($DB::quoteValue(' ')), "$table.$second"]),
             false_expression: $table . '.' . self::getNameField(),

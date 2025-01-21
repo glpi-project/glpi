@@ -783,7 +783,7 @@ JAVASCRIPT;
                 'glpi_softwarelicenses.name AS license',
                 'glpi_softwarelicenses.id AS vID',
                 'glpi_softwarelicenses.softwares_id AS softid',
-                "$users_table.name AS itemname",
+                User::getFriendlyNameFields('itemname'),
                 "$users_table.id AS iID",
                 new QueryExpression($DB::quoteValue(User::class), 'item_type'),
                 new QueryExpression($DB::quoteValue(''), "serial"),
