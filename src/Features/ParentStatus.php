@@ -120,7 +120,6 @@ trait ParentStatus
             && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
             && $input['_status'] == $parentitem->fields["status"]
             && !$is_set_pending
-            && (isset($input['_do_not_compute_status']) && !$input['_do_not_compute_status'])
         ) {
             if (
                 isset($parentitem::getAllStatusArray($parentitem->getType())[CommonITILObject::ASSIGNED])
@@ -135,6 +134,7 @@ trait ParentStatus
                     Session::isCron()
                     || Session::getCurrentInterface() == "helpdesk"
                     || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                    || (isset($input['_do_not_compute_status']) && !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     // If begin date is defined, the status must be planned if it exists, rather than assigned.
@@ -154,6 +154,7 @@ trait ParentStatus
                     Session::isCron()
                     || Session::getCurrentInterface() == "helpdesk"
                     || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                    || (isset($input['_do_not_compute_status']) && !$input['_do_not_compute_status'])
                 ) {
                     $needupdateparent = true;
                     $update['status'] = CommonITILObject::INCOMING;
