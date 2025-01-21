@@ -8206,14 +8206,18 @@ abstract class CommonITILObject extends CommonDBTM
 
        // Add tasks in itilfollowup template if defined in itiltemplate
         foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
-           // Insert new followup from template
-            $fup = new ITILFollowup();
-            $fup->add([
+            $values = [
                 '_itilfollowuptemplates_id' => $fup_templates_id,
                 'itemtype'                  => $this->getType(),
                 'items_id'                  => $this->getID(),
                 '_disablenotif'             => true,
-            ]);
+            ];
+            if (isset($this->input['_do_not_compute_status'])) {
+                $values['_do_not_compute_status'] = $this->input['_do_not_compute_status'];
+            }
+           // Insert new followup from template
+            $fup = new ITILFollowup();
+            $fup->add($values);
         }
     }
 

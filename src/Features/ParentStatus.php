@@ -120,6 +120,7 @@ trait ParentStatus
             && in_array($parentitem->fields["status"], $parentitem::getReopenableStatusArray())
             && $input['_status'] == $parentitem->fields["status"]
             && !$is_set_pending
+            && $input['_do_not_compute_status'] != true
         ) {
             if (
                 isset($parentitem::getAllStatusArray($parentitem->getType())[CommonITILObject::ASSIGNED])
