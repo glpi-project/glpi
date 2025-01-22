@@ -892,7 +892,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             && isset($options['token'])
             && $this->fields['token'] == $options['token']
         ) {
-            $this->fields['answer'] = preg_replace(
+            $answer = preg_replace(
                 [
                     '/<img([^>]+src=["\'])([^"\']+)(["\'][^>]*)>/',
                     '/<a([^>]+href=["\'])([^"\']+)(["\'][^>]*)>/'
@@ -901,7 +901,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     '<img$1$2&token=' . $options['token'] . '$3>',
                     '<a$1$2&token=' . $options['token'] . '$3>'
                 ],
-                $this->fields['answer']
+                $this->getAnswer()
             );
         } elseif (!$this->can($this->fields['id'], READ)) {
             return false;
@@ -975,7 +975,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'item' => $this,
             'categories' => $article_categories,
             'subject' => KnowbaseItemTranslation::getTranslatedValue($this, 'name'),
-            'answer' => $this->getAnswer(),
+            'answer' => $answer ?? $this->getAnswer(),
             'attachments' => $attachments,
             'writer_link' => $writer_link,
         ]);
