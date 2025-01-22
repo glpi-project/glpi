@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;
+use IPAddress;
 use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
@@ -193,9 +194,14 @@ class Unmanaged extends MainAsset
                         $this->item = $converted_object;
                         $items_id = $result['id'];
                         $itemtype = $result['itemtype'];
-                        //do not override device name if it's a managed device
                         if (property_exists($val, 'name')) {
-                            unset($val->name);
+                            $curname = new IPAddress($this->item->fields['name']);
+                            $newname = new IPAddress($val->name);
+                            //if new name is an IP address but current asset name isn't
+                            if ($newname->is_valid() && !$curname->is_valid()) {
+                                //do not override device name
+                                unset($val->name);
+                            }
                         }
                     } else {
                         $need_to_add = true;
