@@ -3665,6 +3665,7 @@ class RuleTicketTest extends DbTestCase
         ]);
         $this->checkInput($followuptemplate, $templateid, $templateinput);
 
+        // Create the rule to change status and add a followup template
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
         $ruleaction = new \RuleAction();
@@ -3712,7 +3713,7 @@ class RuleTicketTest extends DbTestCase
         $this->assertGreaterThan(0, $user2->getID());
 
         $ticket = new \Ticket();
-        // Assigning technician after ticket is already closed should be blocked
+        // Create ticket with two actors (requester and technician)
         $tickets_id = $ticket->add([
             'name' => 'test ticket ' . __FUNCTION__,
             'content' => __FUNCTION__,
@@ -3738,6 +3739,7 @@ class RuleTicketTest extends DbTestCase
 
         $this->assertEquals(\CommonITILObject::WAITING, $ticket->fields['status']);
 
+        // Create followup without _do_not_compute_status
         $this->createItem('ITILFollowup', [
             'itemtype'               => $ticket::getType(),
             'items_id'               => $tickets_id,

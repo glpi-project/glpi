@@ -7827,7 +7827,7 @@ HTML
         $this->assertGreaterThan(0, $user2->getID());
 
         $ticket = new \Ticket();
-        // Assigning technician after ticket is already closed should be blocked
+        // Create ticket with two actors (requester and technician)
         $tickets_id = $ticket->add([
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,
