@@ -3151,13 +3151,9 @@ class CommonDBTM extends CommonGLPI
     {
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
-           // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
             throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
-               // Gestion timeout session
-                Session::redirectIfNotLoggedIn();
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::getType();
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
@@ -3232,8 +3228,6 @@ class CommonDBTM extends CommonGLPI
     public function checkGlobal(int $right): void
     {
         if (!$this->canGlobal($right)) {
-           // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = static::getType();
             $right_name = Session::getRightNameForError($itemtype::$rightname, $right);

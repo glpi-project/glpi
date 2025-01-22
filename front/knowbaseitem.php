@@ -39,7 +39,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 global $CFG_GLPI;
 
 if (!Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
-    Session::redirectIfNotLoggedIn();
     throw new AccessDeniedHttpException();
 }
 if (isset($_GET["id"])) {

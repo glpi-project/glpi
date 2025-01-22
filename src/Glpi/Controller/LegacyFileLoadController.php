@@ -67,7 +67,6 @@ final class LegacyFileLoadController implements PublicService
         $this->getRequest()->attributes->set('_glpi_ajax', true);
 
         \Session::setAjax();
-        \Html::setAjax();
     }
 
     private function getRequest(): ?Request

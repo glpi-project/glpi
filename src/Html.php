@@ -57,12 +57,6 @@ use ScssPhp\ScssPhp\Compiler;
 class Html
 {
     /**
-     * Indicates whether the request is made in an AJAX context.
-     * @FIXME This flag is actually not set to true by all AJAX requests.
-     */
-    private static bool $is_ajax_request = false;
-
-    /**
      * Recursivly execute html_entity_decode on an array
      *
      * @param string|array $value
@@ -436,43 +430,6 @@ class Html
     public static function redirect($dest, $http_response_code = 302): never
     {
         throw new RedirectException($dest, $http_response_code);
-    }
-
-    /**
-     * Redirection to Login page
-     *
-     * @param string $params  param to add to URL (default '')
-     * @since 0.85
-     *
-     * @return void
-     **/
-    public static function redirectToLogin($params = '')
-    {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
-
-        $dest = $CFG_GLPI["root_doc"] . "/index.php";
-
-        if (!self::$is_ajax_request) {
-            $url_dest = preg_replace(
-                '/^' . preg_quote($CFG_GLPI["root_doc"], '/') . '/',
-                '',
-                $_SERVER['REQUEST_URI']
-            );
-            $dest .= "?redirect=" . rawurlencode($url_dest);
-        }
-
-        if (!empty($params)) {
-            if (str_contains($dest, '?')) {
-                $dest .= '&' . $params;
-            } else {
-                $dest .= '?' . $params;
-            }
-        }
-
-        self::redirect($dest);
     }
 
 
@@ -6584,22 +6541,6 @@ CSS;
 
             return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         }
-    }
-
-    /**
-     * Indicates that the request is made in an AJAX context.
-     */
-    public static function setAjax(): void
-    {
-        self::$is_ajax_request = true;
-    }
-
-    /**
-     * Unset the flag that indicates that the request is made in an AJAX context.
-     */
-    public static function resetAjaxParam(): void
-    {
-        self::$is_ajax_request = false;
     }
 
     /**
