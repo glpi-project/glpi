@@ -32,36 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Security\Attribute;
 
-use Glpi\Http\Firewall;
-use Glpi\Http\HeaderlessStreamedResponse;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-
-final class CaldavController extends AbstractController
+#[\Attribute(\Attribute::TARGET_METHOD)]
+final readonly class DisableCsrfChecks
 {
-    #[Route(
-        "/caldav.php{request_parameters}",
-        name: "glpi_caldav",
-        requirements: [
-            'request_parameters' => '.*',
-        ]
-    )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(Request $request): Response
-    {
-        return new HeaderlessStreamedResponse(function () {
-            /** @var array $CFG_GLPI */
-            global $CFG_GLPI;
-
-            $server = new \Glpi\CalDAV\Server();
-            $server->setBaseUri($CFG_GLPI['root_doc'] . '/caldav.php');
-            $server->start();
-        });
-    }
 }
