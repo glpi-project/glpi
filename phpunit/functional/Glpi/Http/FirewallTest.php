@@ -92,6 +92,9 @@ class FirewallTest extends \DbTestCase
                             ],
                             'foo.php' => '',
                         ],
+                        'public' => [
+                            'css.php' => '',
+                        ],
                         'index.php' => '',
                     ]
                 ],
@@ -129,6 +132,8 @@ class FirewallTest extends \DbTestCase
             '/marketplace/myplugin/ajax/foo.php'        => $default_for_plugins_legacy,
             '/marketplace/myplugin/front/dir/bar.php'   => $default_for_plugins_legacy,
             '/marketplace/myplugin/front/foo.php'       => $default_for_plugins_legacy,
+            '/marketplace/myplugin/public/css.php'      => $default_for_plugins_legacy, // /public/css.php file accessed with its legacy path
+            '/marketplace/myplugin/css.php'             => $default_for_plugins_legacy, // /public/css.php file accessed with the expected path
             '/marketplace/myplugin/index.php'           => $default_for_plugins_legacy,
             '/marketplace/myplugin/PluginRoute'         => $default_for_symfony_routes,
 

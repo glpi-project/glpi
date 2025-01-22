@@ -67,6 +67,9 @@ class LegacyRouterListener extends \GLPITestCase
                                 'file.test.php' => '<?php echo("/marketplace/myplugin/front/some.dir/file.test.php");',
                             ],
                         ],
+                        'public' => [
+                            'css.php' => '<?php echo("/marketplace/myplugin/public/css.php");',
+                        ],
                     ],
                 ],
                 'plugins' => [
@@ -195,6 +198,14 @@ class LegacyRouterListener extends \GLPITestCase
         yield '/plugins/mystaleplugin/front/page.php5' => [
             'path'            => '/plugins/mystaleplugin/front/page.php5',
             'target_path'     => '/plugins/mystaleplugin/front/page.php5',
+            'target_pathinfo' => null,
+            'included'        => true,
+        ];
+
+        // Path to a PHP script located in the `/public` dir of a plugin
+        yield '/plugins/myplugin/front/some.dir/file.test.php/path/to/item' => [
+            'path'            => '/plugins/myplugin/css.php',
+            'target_path'     => '/marketplace/myplugin/public/css.php',
             'target_pathinfo' => null,
             'included'        => true,
         ];
@@ -605,6 +616,42 @@ class LegacyRouterListener extends \GLPITestCase
 
         $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
         $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
+    }
+
+    public function testRunLegacyRouterFromDeprecatedPublicPath(): void
+    {
+        $structure = [
+            'plugins' => [
+                'myplugin' => [
+                    'public' => [
+                        'test.php' => '<?php echo("/plugins/myplugin/public/test.php");',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $this->newTestedInstance(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $event = $this->getRequestEvent('/plugins/myplugin/public/test.php');
+
+        $this->when(
+            function () use ($event) {
+                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
+                $this->testedInstance->onKernelRequest($event);
+                \error_reporting($reporting_level); // restore previous level
+            }
+        )->error
+            ->withMessage('Plugins URLs containing the `/public` path are deprecated. You should remove the `/public` prefix from the URL.')
+            ->withType(E_USER_DEPRECATED)
+            ->exists();
+
+        $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
+        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/myplugin/public/test.php'));
     }
 
     public function testRunLegacyRouterFromPluginInMultipleDirectories(): void
