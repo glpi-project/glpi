@@ -586,4 +586,60 @@ class RuleAssetTest extends DbTestCase
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertEquals($group_id, $computer->getField('groups_id'));
     }
+
+    public function testAddComputerWithSubEntityRule()
+    {
+        $this->login();
+
+        $sub_entity = $this->createItem(
+            \Entity::class,
+            [
+                'name'          => 'Subentity',
+                'entities_id'   => 0
+            ]
+        );
+
+        $ruleasset  = new \RuleAsset();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleasset->add($ruletinput = [
+            'name'         => 'Change computer name',
+            'entities_id'  => $sub_entity->getID(),
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleasset, $ruletid, $ruletinput);
+
+        //create criteria to check if group requester already define
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'ComputerSubEntity',
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        //create action to put default user group as group requester
+        $action_id = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'comment',
+            'value'       => 'Comment changed',
+        ]);
+        $this->checkInput($ruleaction, $action_id, $action_input);
+
+        $computer = new \Computer();
+        $computers_id = (int)$computer->add([
+            'name'        => 'ComputerSubEntity',
+            'entities_id' => $sub_entity->getID()
+        ]);
+
+        $computer->getFromDB($computers_id);
+
+        $this->assertSame('Comment changed', $computer->fields['comment']);
+    }
 }
