@@ -51,6 +51,12 @@ class IsProjectAssetCapacity extends AbstractCapacity
         return Project::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be associated to a project");
+    }
+
     public function getCloneRelations(): array
     {
         return [

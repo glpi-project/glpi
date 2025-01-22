@@ -46,6 +46,12 @@ class AllowedInGlobalSearchCapacity extends AbstractCapacity
         return 'ti ti-search';
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List in the results of a gobal search (from the header bar)");
+    }
+
     public function isUsed(string $classname): bool
     {
         return false; // Prevent a warning on deactivation

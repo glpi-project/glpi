@@ -51,6 +51,12 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         return Item_RemoteManagement::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Generate remote links for common services");
+    }
+
     public function getCloneRelations(): array
     {
         return [

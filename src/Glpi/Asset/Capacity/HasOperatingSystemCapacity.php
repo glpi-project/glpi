@@ -52,6 +52,12 @@ class HasOperatingSystemCapacity extends AbstractCapacity
         return OperatingSystem::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Display operating system information found by automatic inventory");
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

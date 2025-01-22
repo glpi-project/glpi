@@ -51,6 +51,12 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         return Asset_PeripheralAsset::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be connected to external peripherals or monitors");
+    }
+
     public function getCloneRelations(): array
     {
         return [

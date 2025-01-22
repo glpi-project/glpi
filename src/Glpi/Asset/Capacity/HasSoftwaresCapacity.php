@@ -55,6 +55,12 @@ class HasSoftwaresCapacity extends AbstractCapacity
         return Software::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List installed softwares found by automatic inventory");
+    }
+
     public function getCloneRelations(): array
     {
         return [

@@ -58,6 +58,12 @@ class HasNetworkPortCapacity extends AbstractCapacity
         ];
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has network ports. Usually reported by automatic inventory");
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

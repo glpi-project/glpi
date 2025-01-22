@@ -51,6 +51,12 @@ class HasVolumesCapacity extends AbstractCapacity
         return Item_Disk::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List storage volumes found by automatic inventory");
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Item_Disk::rawSearchOptionsToAdd($classname::getType());

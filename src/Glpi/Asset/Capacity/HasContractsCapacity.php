@@ -52,6 +52,12 @@ class HasContractsCapacity extends AbstractCapacity
         return Contract::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Link contracts to the asset");
+    }
+
     public function getCloneRelations(): array
     {
         return [

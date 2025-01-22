@@ -52,6 +52,12 @@ class IsReservableCapacity extends AbstractCapacity
         return Reservation::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("End users can reserve this asset");
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

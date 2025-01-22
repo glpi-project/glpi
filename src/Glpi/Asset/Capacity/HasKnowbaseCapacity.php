@@ -53,6 +53,12 @@ class HasKnowbaseCapacity extends AbstractCapacity
         return KnowbaseItem::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("KB articles can be associated to this asset");
+    }
+
     public function getCloneRelations(): array
     {
         return [

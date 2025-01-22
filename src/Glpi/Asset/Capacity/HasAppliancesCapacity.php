@@ -52,6 +52,12 @@ class HasAppliancesCapacity extends AbstractCapacity
         return Appliance::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be set as part of an appliance");
+    }
+
     public function getCloneRelations(): array
     {
         return [

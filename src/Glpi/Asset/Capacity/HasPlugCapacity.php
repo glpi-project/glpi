@@ -52,6 +52,12 @@ class HasPlugCapacity extends AbstractCapacity
         return Plug::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has power plugs");
+    }
+
     public function getCloneRelations(): array
     {
         return [

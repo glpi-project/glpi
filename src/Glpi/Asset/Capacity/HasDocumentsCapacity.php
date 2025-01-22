@@ -52,6 +52,12 @@ class HasDocumentsCapacity extends AbstractCapacity
         return Document::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Upload and attach files");
+    }
+
     public function getCloneRelations(): array
     {
         return [

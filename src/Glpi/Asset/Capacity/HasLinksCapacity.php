@@ -53,6 +53,12 @@ class HasLinksCapacity extends AbstractCapacity
         return ManualLink::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Define clickable links");
+    }
+
     public function getCloneRelations(): array
     {
         return [

@@ -53,6 +53,12 @@ class HasImpactCapacity extends AbstractCapacity
         return Impact::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Enable \"Impact analysis\" tab and the asset can also be displayed in the impact tab of other asset types");
+    }
+
     private function countImpactRelations(string $classname): int
     {
         return countElementsInTable(ImpactRelation::getTable(), [

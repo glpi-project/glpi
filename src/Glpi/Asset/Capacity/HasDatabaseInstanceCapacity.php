@@ -52,6 +52,12 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
         return Database::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List database instances found by automatic inventory");
+    }
+
     public function getCloneRelations(): array
     {
         return [

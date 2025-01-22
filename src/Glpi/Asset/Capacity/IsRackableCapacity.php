@@ -51,6 +51,12 @@ class IsRackableCapacity extends AbstractCapacity
         return Rack::getIcon();
     }
 
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("It can be inserted in a datacenter rack");
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Rack::rawSearchOptionsToAdd($classname::getType());
