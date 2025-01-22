@@ -46,6 +46,7 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('glpi.default_secret', bin2hex(random_bytes(32)));
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
+
     $parameters->set('debug.error_handler.throw_at', ErrorHandler::FATAL_ERRORS);
 
     $services = $services
@@ -65,9 +66,7 @@ return static function (ContainerConfigurator $container): void {
         $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'
     );
 
-    /**
-     * Override Symfony's logger.
-     * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
-     */
+    // Prevent Symfony to register its own default logger.
+    // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
     $services->set('logger')->synthetic();
 };

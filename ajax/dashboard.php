@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorUtils;
 use Glpi\Dashboard\Grid;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!isset($_REQUEST["action"])) {
@@ -208,8 +208,7 @@ switch ($_REQUEST['action']) {
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
             } catch (\Throwable $e) {
                 // Send exception to logger without actually exiting.
-                // Use quiet mode to not break JSON result.
-                ErrorUtils::logException($e);
+                ErrorHandler::logCaughtException($e);
             }
         }
         \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');

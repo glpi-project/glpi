@@ -36,10 +36,10 @@
 // Needed for signal handler to handle SIGTERM in CLI mode
 declare(ticks=1);
 
-use Glpi\Application\ErrorUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 
 /**
@@ -881,8 +881,8 @@ class CronTask extends CommonDBTM
                             try {
                                   $retcode = $function($crontask);
                             } catch (\Throwable $e) {
-                                ErrorUtils::logException($e);
-                                ErrorUtils::outputExceptionMessage($e);
+                                ErrorHandler::logCaughtException($e);
+                                ErrorHandler::displayCaughtExceptionMessage($e);
                                 Toolbox::logInFile(
                                     'cron',
                                     sprintf(

@@ -42,10 +42,17 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 
+// @phpstan-ignore class.extendsFinalByPhpDoc
 final class ErrorHandler extends BaseErrorHandler
 {
+    /**
+     * Errors that will be converted to exceptions.
+     */
     public const FATAL_ERRORS = E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR;
 
+    /**
+     * Map between error codes and log levels.
+     */
     private const ERROR_LEVEL_MAP = [
         E_ERROR             => LogLevel::CRITICAL,
         E_WARNING           => LogLevel::WARNING,
@@ -63,30 +70,13 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
-    private const ERROR_CODE_MESSAGE = [
-        E_ERROR             => 'Error',
-        E_WARNING           => 'Warning',
-        E_PARSE             => 'Parsing Error',
-        E_NOTICE            => 'Notice',
-        E_CORE_ERROR        => 'Core Error',
-        E_CORE_WARNING      => 'Core Warning',
-        E_COMPILE_ERROR     => 'Compile Error',
-        E_COMPILE_WARNING   => 'Compile Warning',
-        E_USER_ERROR        => 'User Error',
-        E_USER_WARNING      => 'User Warning',
-        E_USER_NOTICE       => 'User Notice',
-        E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-        E_DEPRECATED        => 'Deprecated function',
-        E_USER_DEPRECATED   => 'User deprecated function',
-    ];
-
     private static LoggerInterface $currentLogger;
 
     private string $env;
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === \GLPI::ENV_DEVELOPMENT);
+        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
 
         $this->env = \GLPI_ENVIRONMENT_TYPE;
 
@@ -98,7 +88,9 @@ final class ErrorHandler extends BaseErrorHandler
         $this->setDefaultLogger($logger, self::ERROR_LEVEL_MAP);
 
         self::$currentLogger = $logger;
-        $this->configureErrorDisplay();
+
+        $this->configureErrorReporting();
+        $this->disableNativeErrorDisplaying();
     }
 
     public static function getCurrentLogger(): LoggerInterface
@@ -125,16 +117,20 @@ final class ErrorHandler extends BaseErrorHandler
         ];
     }
 
-    public static function displayErrorMessage(string $error_type, string $message, string $log_level, string $env = \GLPI_ENVIRONMENT_TYPE): void
+    /**
+     * Display a message corresponding to the given error.
+     */
+    public static function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
         foreach (self::getOutputHandlers() as $handler) {
-            if ($handler->canOutput($log_level, $env)) {
-                $handler->displayErrorMessage($error_type, $message, $log_level, $env);
+            if ($handler->canOutput()) {
+                $handler->displayErrorMessage($error_label, $message, $log_level);
                 break; // Only one display per handler
             }
         }
     }
 
+    #[\Override()]
     public function handleError(int $type, string $message, string $file, int $line): bool
     {
         if (0 === (error_reporting() & $type)) {
@@ -144,11 +140,28 @@ final class ErrorHandler extends BaseErrorHandler
 
         parent::handleError($type, $message, $file, $line);
 
+        $error_type = match ($type) {
+            E_ERROR             => 'Error',
+            E_WARNING           => 'Warning',
+            E_PARSE             => 'Parsing Error',
+            E_NOTICE            => 'Notice',
+            E_CORE_ERROR        => 'Core Error',
+            E_CORE_WARNING      => 'Core Warning',
+            E_COMPILE_ERROR     => 'Compile Error',
+            E_COMPILE_WARNING   => 'Compile Warning',
+            E_USER_ERROR        => 'User Error',
+            E_USER_WARNING      => 'User Warning',
+            E_USER_NOTICE       => 'User Notice',
+            E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+            E_DEPRECATED        => 'Deprecated function',
+            E_USER_DEPRECATED   => 'User deprecated function',
+            default             => 'Unknown error',
+        };
+
         self::displayErrorMessage(
-            \sprintf('PHP %s (%s)', self::ERROR_CODE_MESSAGE[$type] ?? 'Unknown error', $type),
+            \sprintf('PHP %s (%s)', $error_type, $type),
             \sprintf('%s in %s at line %s', $message, $file, $line),
             self::ERROR_LEVEL_MAP[$type],
-            $this->env,
         );
 
         // Never forward any error to the PHP native PHP error handler.
@@ -157,10 +170,49 @@ final class ErrorHandler extends BaseErrorHandler
         return true;
     }
 
-    private function configureErrorDisplay(): void
+    /**
+     * Log an exception previously caught.
+     */
+    public static function logCaughtException(\Throwable $exception): void
     {
-        // Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
-        // actually reported, and to prevent reporting other errors.
+        $message = $exception->getMessage();
+
+        if ($exception instanceof \Error) {
+            $message = 'Caught Error: '.$message;
+        } elseif ($exception instanceof \ErrorException) {
+            $message = 'Caught '.$message;
+        } else {
+            $message = 'Caught Exception: '.$message;
+        }
+
+        self::$currentLogger->error($message, ['exception' => $exception]);
+    }
+
+    /**
+     * Displays an error message corresponding to a caught exception.
+     *
+     * @FIXME Usages of this method should be reviewed to display a message that make sense for the end-user
+     *        (e.g. "An error occurred during the operation, please try again later")
+     *        rather than this generic error message.
+     *        Indeed, if the developer caught this exception, then it probably means that it is a legitimate case and
+     *        a custom message should then be displayed, to indicate to the end user what happens or what he can
+     *        do to fix this error.
+     */
+    public static function displayCaughtExceptionMessage(\Throwable $exception): void
+    {
+        self::displayErrorMessage(
+            \sprintf('Caught %s', \get_class($exception)),
+            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            LogLevel::ERROR,
+        );
+    }
+
+    /**
+     * Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
+     * actually reported, and to prevent reporting other errors.
+     */
+    private function configureErrorReporting(): void
+    {
         $reporting_level = E_ALL;
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             if (
@@ -188,7 +240,14 @@ final class ErrorHandler extends BaseErrorHandler
         }
         \error_reporting($reporting_level);
 
-        // Disable native error displaying as it will be handled by `self::displayErrorMessage()`.
+    }
+
+    /**
+     * Disable native error displaying.
+     * It will be handled by `self::displayErrorMessage()`.
+     */
+    private function disableNativeErrorDisplaying(): void
+    {
         \ini_set('display_errors', 'Off');
     }
 }

@@ -60,7 +60,8 @@ final class Kernel extends BaseKernel
     {
         // Initialize system configuration.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
-        // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
+        // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence
+        // and as it initializes the error handler that will catch errors that may happen during the boot sequence.
         $configurator = new SystemConfigurator($this->getProjectDir(), $env);
         $this->logger = $configurator->getLogger();
 
@@ -113,7 +114,7 @@ final class Kernel extends BaseKernel
 
         parent::boot();
 
-        // Override Symfony's logger
+        // Define synthetic logger service
         $this->container->set('logger', $this->logger);
 
         if ($dispatch_postboot) {

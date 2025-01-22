@@ -2564,16 +2564,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\Error\\\\ErrorHandler extends @final class Symfony\\\\Component\\\\ErrorHandler\\\\ErrorHandler\\.$#',
-	'identifier' => 'class.extendsFinalByPhpDoc',
+	'message' => '#^Negated boolean expression is always true\\.$#',
+	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorDisplayHandler/HtmlErrorDisplayHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#4 \\$env \\(null\\) of method Glpi\\\\Error\\\\ErrorHandler\\:\\:displayErrorMessage\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
+	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
+	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorDisplayHandler/HtmlErrorDisplayHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Error\\\\ErrorHandler\\:\\:\\$env \\(string\\) does not accept null\\.$#',
@@ -3095,13 +3095,13 @@ $ignoreErrors[] = [
 	'message' => '#^Match arm comparison between null and \'development\' is always false\\.$#',
 	'identifier' => 'match.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Log/GlpiLogHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Log/ErrorLogHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Match arm comparison between null and \'testing\' is always false\\.$#',
 	'identifier' => 'match.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Log/GlpiLogHandler.php',
+	'path' => __DIR__ . '/src/Glpi/Log/ErrorLogHandler.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',

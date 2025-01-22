@@ -36,7 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
-use Glpi\Application\ErrorUtils;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
@@ -103,7 +103,7 @@ final class ApiController extends AbstractController
                 400
             );
         } catch (\Throwable $e) {
-            ErrorUtils::logException($e);
+            ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }
 

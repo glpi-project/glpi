@@ -38,9 +38,9 @@ namespace Glpi\Dashboard;
 use Config;
 use Dropdown;
 use GLPI;
-use Glpi\Application\ErrorUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
@@ -1039,7 +1039,7 @@ HTML;
         } catch (\Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
-            ErrorUtils::logException($e);
+            ErrorHandler::logCaughtException($e);
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 

@@ -37,7 +37,6 @@ namespace Glpi\Console;
 
 use DBmysql;
 use GLPI;
-use Glpi\Application\ErrorUtils;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;

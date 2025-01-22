@@ -40,14 +40,14 @@ use Monolog\LogRecord;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class GlpiLogHandler extends StreamHandler
+class ErrorLogHandler extends StreamHandler
 {
     public function __construct()
     {
         if (\defined('GLPI_LOG_LVL')) {
-            $log_level = GLPI_LOG_LVL;
+            $log_level = \GLPI_LOG_LVL;
         } else {
-            $log_level = match (GLPI_ENVIRONMENT_TYPE) {
+            $log_level = match (\GLPI_ENVIRONMENT_TYPE) {
                 \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
                 \GLPI::ENV_TESTING => LogLevel::DEBUG,
                 default => LogLevel::WARNING,
@@ -59,6 +59,7 @@ class GlpiLogHandler extends StreamHandler
         $this->setFormatter(new LogLineFormatter());
     }
 
+    #[\Override()]
     public function isHandling(LogRecord $record): bool
     {
         if (!$this->canHandle($record)) {
@@ -68,6 +69,7 @@ class GlpiLogHandler extends StreamHandler
         return parent::isHandling($record);
     }
 
+    #[\Override()]
     public function handle(LogRecord $record): bool
     {
         if (!$this->canHandle($record)) {
@@ -78,24 +80,22 @@ class GlpiLogHandler extends StreamHandler
     }
 
     /**
-     * The goal here is mostly to disable logging Symfony's Kernel events.
-     * It avoid flooding the debug logs with "Notified event {...}" messages.
+     * Checks whether the current handler should handle the given record.
      */
     public function canHandle(LogRecord $record): bool
     {
-        // Do not log "Notified event {...}" messages
+        // Do not log "Notified event {...}" messages.
         if (isset($record->context['event']) && $record->level === Level::Debug) {
             return false;
         }
 
-        // Do not log "Matched route "{...}"" messages
+        // Do not log "Matched route "{...}"" messages.
         if (isset($record->context['route']) && $record->level === Level::Info) {
             return false;
         }
 
-        /**
-         * @see \Glpi\Controller\ErrorController::logHttpException
-         */
+        // Do not log access errors.
+        // @see \Glpi\Controller\ErrorController::logHttpException
         if (isset($record->context['exception'])) {
             /** @var \Throwable $exception */
             $exception = $record->context['exception'];

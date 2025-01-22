@@ -37,7 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Http\Firewall;
 use Session;
 use Glpi\Api\HL\Router;
-use Glpi\Application\ErrorUtils;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -62,7 +62,7 @@ final class StatusController extends AbstractController
         try {
             $response = Router::getInstance()->handleRequest($request);
         } catch (\Throwable $e) {
-            ErrorUtils::logException($e);
+            ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }
 

@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorUtils;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
 /**
@@ -129,8 +129,8 @@ class SavedSearch_Alert extends CommonDBChild
                 $count = $data['data']['totalcount'];
             }
         } catch (\RuntimeException $e) {
-            ErrorUtils::logException($e);
-            ErrorUtils::outputExceptionMessage($e);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/alert.html.twig', [
@@ -451,8 +451,8 @@ class SavedSearch_Alert extends CommonDBChild
                     }
                 } catch (\Throwable $e) {
                     self::restoreContext($context);
-                    ErrorUtils::logException($e);
-                    ErrorUtils::outputExceptionMessage($e);
+                    ErrorHandler::logCaughtException($e);
+                    ErrorHandler::displayCaughtExceptionMessage($e);
                 }
             }
             return 1;

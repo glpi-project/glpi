@@ -34,34 +34,66 @@
 
 namespace Glpi\Log;
 
-use Glpi\Error\StackTraceFormatter;
 use Monolog\Formatter\LineFormatter;
 
 final class LogLineFormatter extends LineFormatter
 {
     public function __construct()
     {
-        parent::__construct("[%datetime%] %channel%.%level_name%: %message% %context.exception% %context% %extra%\n", 'Y-m-d H:i:s', true, true);
+        parent::__construct(
+            "[%datetime%] %channel%.%level_name%: %message% %context.exception% %context% %extra%\n",
+            'Y-m-d H:i:s',
+            true,
+            true
+        );
 
-        $this->setBasePath(GLPI_ROOT);
+        $this->setBasePath(\GLPI_ROOT);
         $this->allowInlineLineBreaks();
         $this->ignoreEmptyContextAndExtra();
-        $this->indentStacktraces('  ');
-        $this->includeStacktraces();
     }
 
+    #[\Override()]
     protected function normalizeException(\Throwable $e, int $depth = 0): string
     {
-        $message = $e->getMessage() . "\n" . StackTraceFormatter::getTraceAsString($e->getTrace());
+        $message = "  Backtrace :\n" . $e->getMessage() . "\n" . $this->getTraceAsString($e->getTrace());
 
         if (($previous = $e->getPrevious()) instanceof \Throwable) {
             do {
                 $depth++;
-                $message .= "\n Previous: " . $previous->getMessage() . "\n" . StackTraceFormatter::getTraceAsString($previous->getTrace());
+                $message .= "  Previous: " . $previous->getMessage() . "\n" . $this->getTraceAsString($previous->getTrace());
                 if ($depth > $this->maxNormalizeDepth) {
                     break;
                 }
             } while ($previous = $previous->getPrevious());
+        }
+
+        return $message;
+    }
+
+    private function getTraceAsString(array $trace): string
+    {
+        if (empty($trace)) {
+            return '';
+        }
+
+        $message = '';
+
+        foreach ($trace as $item) {
+            $script = ($item['file'] ?? '') . ':' . ($item['line'] ?? '');
+            if (\str_starts_with($script, \GLPI_ROOT)) {
+                $script = \substr($script, \strlen(\GLPI_ROOT) + 1);
+            }
+            if (\strlen($script) > 50) {
+                $script = '...' . \substr($script, -47);
+            } else {
+                $script = \str_pad($script, 50);
+            }
+
+            $call = ($item['class'] ?? '') . ($item['type'] ?? '') . ($item['function'] ?? '');
+            if (!empty($call)) {
+                $call .= '()';
+            }
+            $message .= "  $script $call\n";
         }
 
         return $message;

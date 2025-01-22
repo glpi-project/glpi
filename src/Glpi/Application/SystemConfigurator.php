@@ -36,7 +36,7 @@
 namespace Glpi\Application;
 
 use Glpi\Error\ErrorHandler;
-use Glpi\Log\GlpiLogHandler;
+use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -49,6 +49,7 @@ final class SystemConfigurator
         $this->computeConstants();
         $this->setSessionConfiguration();
         $this->initLogger();
+        $this->registerErrorHandler();
     }
 
     public function getLogger(): LoggerInterface
@@ -263,11 +264,14 @@ final class SystemConfigurator
         global $PHPLOGGER;
 
         $PHPLOGGER = new Logger('glpi');
-        $PHPLOGGER->pushHandler(new GlpiLogHandler());
+        $PHPLOGGER->pushHandler(new ErrorLogHandler());
 
         $this->logger = $PHPLOGGER;
+    }
 
-        $errorHandler = new ErrorHandler($PHPLOGGER);
+    private function registerErrorHandler(): void
+    {
+        $errorHandler = new ErrorHandler($this->logger);
         $errorHandler::register($errorHandler);
     }
 }

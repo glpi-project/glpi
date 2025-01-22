@@ -62,8 +62,6 @@ parameters:
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
         - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
-        - '~Call to( deprecated)? method logException\(\) of( deprecated)? class Glpi\\Application\\ErrorUtils.~'
-        - '~Call to( deprecated)? method outputExceptionMessage\(\) of( deprecated)? class Glpi\\Application\\ErrorUtils.~'
         - { message: '~Variable \$this might not be defined~', paths: [ 'inc/includes.php' ] }
         - { message: '~Call to protected method setAjax\(\) of class Glpi\\Controller\\LegacyFileLoadController.~', paths: [ 'ajax/*', 'front/*', 'inc/includes.php' ] }
         - { message: '~Access to protected property~', paths: [ 'front/dropdown.common.form.php' ] }

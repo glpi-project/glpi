@@ -33,14 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Log\LogLineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Psr\Log\LogLevel;
-
 /**
- *  GLPI (instantiation and so on)
- **/
+ * @FIXME Find a better place for these constants.
+ */
 class GLPI
 {
     /**

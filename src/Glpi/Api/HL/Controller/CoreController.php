@@ -40,9 +40,9 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Application\ErrorUtils;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -437,7 +437,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
         } catch (\Throwable $exception) {
-            ErrorUtils::logException($exception);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }
@@ -456,7 +456,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
-            ErrorUtils::logException($exception);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }

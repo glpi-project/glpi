@@ -34,6 +34,8 @@
 
 namespace Glpi\Error\ErrorDisplayHandler;
 
+use GLPI;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 
 final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
@@ -45,32 +47,31 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
         self::$currentRequest = $request;
     }
 
-    public function canOutput(string $log_level, string $env): bool
+    public function canOutput(): bool
     {
         if (!self::$currentRequest) {
             return false;
         }
-        $is_dev_env         = $env === \GLPI::ENV_DEVELOPMENT;
-        $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+
+        $is_dev_env    = GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT;
+        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
 
         if (
-            !$is_dev_env             // error messages are always displayed in development environment
-            && !$is_debug_mode        // error messages are always displayed in debug mode
+            !$is_dev_env       // error messages are always displayed in development environment
+            && !$is_debug_mode // error messages are always displayed in debug mode
         ) {
             return false;
         }
 
-        /**
-         * @see Request::initializeFormats
-         */
-        $type = self::$currentRequest->getPreferredFormat();
-
-        return $type === 'html';
+        return self::$currentRequest->getPreferredFormat() === 'html';
     }
 
-    public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void
+    public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
-        echo '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000">'
-            . '<span class="b">' . \htmlescape($error_type) . ': </span>' . \htmlescape($message) . '</div>';
+        echo \sprintf(
+            '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000"><span class="fw-bold">%s: </span>%s</div>',
+            \htmlescape($error_label),
+            \htmlescape($message)
+        );
     }
 }

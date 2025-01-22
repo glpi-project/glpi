@@ -34,9 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorUtils;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
@@ -233,7 +232,6 @@ class Auth extends CommonGLPI
             return false;
         }
 
-        $oldlevel = error_reporting(16);
         // No retry (avoid lock account when password is not correct)
         try {
             $config = Toolbox::parseMailServerConnectString($host);
@@ -263,8 +261,6 @@ class Auth extends CommonGLPI
         } catch (\Throwable $e) {
             $this->addToError($e->getMessage());
             return false;
-        } finally {
-            error_reporting($oldlevel);
         }
     }
 
@@ -315,7 +311,7 @@ class Auth extends CommonGLPI
                     'user_dn'           => $this->user_dn
                 ]);
             } catch (\Throwable $e) {
-                ErrorUtils::logException($e);
+                ErrorHandler::logCaughtException($e);
                 $info = false;
             }
 
@@ -883,7 +879,7 @@ class Auth extends CommonGLPI
                                     ],
                                 ]);
                             } catch (\RuntimeException $e) {
-                                ErrorUtils::logException($e);
+                                ErrorHandler::logCaughtException($e);
                                 $user_dn = false;
                             }
                             if ($user_dn) {

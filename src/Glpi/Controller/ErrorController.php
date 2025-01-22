@@ -56,7 +56,7 @@ class ErrorController extends AbstractController
             return new Response('', 500);
         }
 
-        $this->logHttpException($exception, $request);
+        $this->logAccessError($exception, $request);
 
         return $this->getErrorResponse($exception, $request);
     }
@@ -64,9 +64,9 @@ class ErrorController extends AbstractController
     /**
      * @TODO: create a specific handler in our logger so that HTTP errors are logged differently according to this method ⬇
      *
-     * @see \Glpi\Log\GlpiLogHandler::canHandle
+     * @see \Glpi\Log\ErrorLogHandler::canHandle
      */
-    private function logHttpException(\Throwable $exception, Request $request): void
+    private function logAccessError(\Throwable $exception, Request $request): void
     {
         if (
             $exception instanceof HttpExceptionInterface
@@ -82,23 +82,29 @@ class ErrorController extends AbstractController
 
             $user_id = Session::getLoginUserID() ?: 'Anonymous';
 
-            $message = match ($exception::class) {
-                AccessDeniedHttpException::class => sprintf(
-                    'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
-                    $user_id,
-                    $requested_uri
-                ),
-                NotFoundHttpException::class => sprintf(
-                    'User ID: `%s` tried to access a non-existent item on `%s`.',
-                    $user_id,
-                    $requested_uri
-                ),
-                default => sprintf(
-                    'User ID: `%s` tried to execute an invalid request on `%s`.',
-                    $user_id,
-                    $requested_uri
-                ),
-            };
+            switch ($exception::class) {
+                case AccessDeniedHttpException::class:
+                    $message = sprintf(
+                        'User ID: `%s` tried to access or perform an action on `%s` with insufficient rights.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+                case NotFoundHttpException::class:
+                    $message = sprintf(
+                        'User ID: `%s` tried to access a non-existent item on `%s`.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+                default:
+                    $message = sprintf(
+                        'User ID: `%s` tried to execute an invalid request on `%s`.',
+                        $user_id,
+                        $requested_uri
+                    );
+                    break;
+            }
 
             if (($exception_message = $exception->getMessage()) !== '') {
                 $message .= sprintf('Additional information: %s', $exception_message);

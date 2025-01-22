@@ -46,12 +46,12 @@ final class ConsoleErrorDisplayHandler implements ErrorDisplayHandler
         self::$output = $output;
     }
 
-    public function canOutput(string $log_level, string $env): bool
+    public function canOutput(): bool
     {
         return self::$output !== null;
     }
 
-    public function displayErrorMessage(string $error_type, string $message, string $log_level, mixed $env): void
+    public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
         $format = 'comment';
         switch ($log_level) {
@@ -75,6 +75,13 @@ final class ConsoleErrorDisplayHandler implements ErrorDisplayHandler
                 break;
         }
 
-        self::$output->writeln(\sprintf('<%1$s>%2$s</%1$s>', $format, $error_type . ': ' . $message), $verbosity);
+        self::$output->writeln(
+            \sprintf(
+                '<%1$s>%2$s</%1$s>',
+                $format,
+                $error_label . ': ' . $message
+            ),
+            $verbosity
+        );
     }
 }
