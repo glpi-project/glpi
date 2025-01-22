@@ -2120,4 +2120,102 @@ class UserTest extends \DbTestCase
         $user->reapplyRightRules();
         $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
     }
+
+    public static function testGetFriendlyNameFieldsProvider()
+    {
+        return [
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname firstname',
+            ],
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname lastname',
+            ],
+        ];
+    }
+
+    #[DataProvider('testGetFriendlyNameFieldsProvider')]
+    public function testGetFriendlyNameFields(
+        array $input,
+        int $names_format,
+        string $expected
+    ) {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        \Config::setConfigurationValues('core', ['names_format' => $names_format]);
+
+        $user = $this->createItem('User', $input);
+
+        $query = [
+            'SELECT' => [
+                User::getFriendlyNameFields(),
+            ],
+            'FROM' => [
+                User::getTable(),
+            ],
+            'WHERE' => [
+                'id' => $user->fields['id'],
+            ]
+        ];
+        $result = $DB->request($query)->current();
+        $this->assertSame($expected, $result['name']);
+    }
 }
