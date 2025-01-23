@@ -323,6 +323,7 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `Appliance::getMassiveActionsForItemtype()`
 - `AuthLDAP::ldapChooseDirectory()`
 - `AuthLDAP::displayLdapFilter()`
 - `AuthLDAP::dropdownUserDeletedActions()`
