@@ -1220,12 +1220,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
 	'count' => 2,
@@ -1342,12 +1336,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Right side of \\|\\| is always false\\.$#',
 	'identifier' => 'booleanOr.rightAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and false will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
