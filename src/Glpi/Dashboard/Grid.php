@@ -153,7 +153,7 @@ class Grid
 
             $card_html    = <<<HTML
             <div class="loading-card">
-               <i class="fas fa-spinner fa-spin fa-3x"></i>
+               <span class="spinner-border spinner-border" role="status" aria-hidden="true"></span>
             </div>
 HTML;
             $this->addGridItem(

@@ -1064,7 +1064,7 @@ JS);
         echo '</div>'; // <div class="impact-side-search-no-results">
 
         echo '<div class="impact-side-search-spinner">';
-        echo '<i class="fas fa-spinner fa-2x fa-spin"></i>';
+        echo '<span class="spinner-border spinner-border m-3" role="status" aria-hidden="true"></span>';
         echo '</div>'; // <div class="impact-side-search-spinner">
 
         echo '</div>'; // <div class="impact-side-search-panel">

@@ -191,13 +191,13 @@
                 } else if ("{{ actortype }}" == "requester") {
                     label = "{{ __('Number of tickets as requester') }}";
                 }
-                const existing_element = $(
-                    `<span class="assign_infos ms-1" title="${label}"
-                     data-bs-toggle="tooltip" data-bs-placement="top"
-                     data-id="${items_id}" data-fk="${fk}">
-                  <i class="fas fa-spinner fa-spin"></i>
-               </span>`
-                );
+                const existing_element = $(`
+                    <span class="assign_infos ms-1" title="${label}"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        data-id="${items_id}" data-fk="${fk}">
+                        <span class="spinner-border" role="status" aria-hidden="true"></span>
+                    </span>
+                `);
                 option_element.append(existing_element);
 
                 $.get("{{ path('/ajax/actorinformation.php') }}", {

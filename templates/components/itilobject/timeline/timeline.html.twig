@@ -237,7 +237,7 @@ $(function() {
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
          .find(".ajax-content")
-         .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+         .html('<span class="spinner-border ms-auto" role="status" aria-hidden="true"></span>')
          .load("{{ path('/ajax/timeline.php') }}", {
             'action'     : 'viewsubitem',
             'type'       : itemtype,

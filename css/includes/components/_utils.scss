@@ -44,13 +44,6 @@
     transition: border-color 0.3s;
 }
 
-// Apply the same font-size and line-height as btn-text.
-// Useful when replacing a btn-text content by a loading icon.
-.btn-text-loading {
-    font-size: var(--tblr-btn-font-size) !important;
-    line-height: var(--tblr-btn-line-height) !important;
-}
-
 .w-fit-content {
     width: fit-content !important;
 }

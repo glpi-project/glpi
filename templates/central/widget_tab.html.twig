@@ -67,7 +67,7 @@
             'widget': this_obj.data('widget'),
             'params': this_obj.data('params')
          };
-         this_obj.html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+         this_obj.html('<span class="spinner-border ms-auto" role="status" aria-hidden="true"></span>')
             .load('{{ path('/ajax/central.php') }}', params, function(response, status, xhr) {
                const parent = this_obj.closest('.grid-item').parent();
 
