@@ -260,6 +260,7 @@ class AssetDefinitionTest extends DbTestCase
             if (
                 ($char >= "A" && $char <= "Z") // A -> Z
                 || ($char >= "a" && $char <= "z") // a -> z
+                || ($char >= "0" && $char <= "9") // 0 -> 9
             ) {
                 yield [
                     'input'    => [
@@ -334,6 +335,19 @@ class AssetDefinitionTest extends DbTestCase
                 'messages' => [],
             ];
         }
+
+        // System name must not start with a number
+        yield [
+            'input'    => [
+                'system_name' => '3DPrinter',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: &quot;System name&quot;.',
+                ],
+            ],
+        ];
 
         // System name must not end with `Model` suffix
         yield [

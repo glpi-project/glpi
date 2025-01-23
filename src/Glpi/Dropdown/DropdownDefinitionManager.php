@@ -95,13 +95,14 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
 
     public function autoloadClass(string $classname): void
     {
-        $ns = static::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+        $definition_class = self::getDefinitionClass();
+        $ns = $definition_class::getCustomObjectNamespace() . '\\';
 
         if (!\str_starts_with($classname, $ns)) {
             return;
         }
 
-        $pattern = '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/';
+        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_class::SYSTEM_NAME_PATTERN . ')$/';
 
         if (preg_match($pattern, $classname) === 1) {
             $system_name = preg_replace($pattern, '$1', $classname);

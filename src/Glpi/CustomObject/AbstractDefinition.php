@@ -40,7 +40,6 @@ use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\CustomFieldDefinition;
 use Profile;
 use ProfileRight;
@@ -52,6 +51,14 @@ use Session;
  */
 abstract class AbstractDefinition extends CommonDBTM
 {
+    /**
+     * System name regex pattern.
+     *
+     * 1. Must start with a letter.
+     * 2. Must contain only letters or numbers.
+     */
+    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9]*';
+
     public static $rightname = 'config';
 
     /**
@@ -434,7 +441,10 @@ abstract class AbstractDefinition extends CommonDBTM
         $has_errors = false;
 
         if (array_key_exists('system_name', $input)) {
-            if (!is_string($input['system_name']) || preg_match('/^[a-z]+$/i', $input['system_name']) !== 1) {
+            if (
+                !is_string($input['system_name'])
+                || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
+            ) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),

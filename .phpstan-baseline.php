@@ -3074,12 +3074,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{0\\: string, 1\\: string, 2\\: string, 3\\: numeric\\-string, 4\\?\\: string, 5\\?\\: non\\-empty\\-string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
