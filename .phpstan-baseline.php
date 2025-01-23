@@ -50,12 +50,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/css.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
@@ -122,12 +116,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_device.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/locale.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -138,24 +126,6 @@ $ignoreErrors[] = [
 	'identifier' => 'match.unhandled',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.graph.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/empty_data.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'testing\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/empty_data.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always false\\.$#',
-	'identifier' => 'ternary.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type DBmysql is not subtype of native type DB\\.$#',
@@ -636,12 +606,6 @@ $ignoreErrors[] = [
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CartridgeItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Central.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Certificate\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
@@ -1328,30 +1292,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createMainConfig\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#10 \\$config_dir \\(null\\) of method DBConnection\\:\\:createSlaveConnectionFile\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#3 \\$config_dir \\(null\\) of method DBConnection\\:\\:updateConfigProperties\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#4 \\$config_dir \\(null\\) of method DBConnection\\:\\:updateConfigProperty\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBConnection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method DBConnection\\:\\:showAllReplicateDelay\\(\\) should return string\\|null but return statement is missing\\.$#',
 	'identifier' => 'return.missing',
 	'count' => 1,
@@ -1802,12 +1742,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPI.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#1 \\$config_dir \\(null\\) of method GLPIKey\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method GLPIKey\\:\\:keyExists\\(\\) should return string but returns bool\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -1830,18 +1764,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot cast list\\<string\\>\\|null to string\\.$#',
-	'identifier' => 'cast.string',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Expression in empty\\(\\) is always falsy\\.$#',
-	'identifier' => 'empty.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
@@ -2144,12 +2066,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$env \\(null\\) of method Glpi\\\\Application\\\\ErrorHandler\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instanceof between Psr\\\\Log\\\\LoggerInterface and Psr\\\\Log\\\\LoggerInterface will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
@@ -2166,18 +2082,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/ErrorHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$cachedir \\(null\\) of method Glpi\\\\Application\\\\View\\\\TemplateRenderer\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'production\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between null and 2 will always evaluate to false\\.$#',
@@ -2254,18 +2158,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#1 \\$config_dir \\(null\\) of method Glpi\\\\Cache\\\\CacheManager\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$cache_dir \\(null\\) of method Glpi\\\\Cache\\\\CacheManager\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
 ];
@@ -2378,12 +2270,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -2412,12 +2298,6 @@ $ignoreErrors[] = [
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Build/GenerateCodeManifestCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
@@ -2504,12 +2384,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ErrorController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\LegacyFileLoadController\\:\\:getRequest\\(\\) never returns null so it can be removed from the return type\\.$#',
 	'identifier' => 'return.unusedType',
 	'count' => 1,
@@ -2556,12 +2430,6 @@ $ignoreErrors[] = [
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/DatesModFilter.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'development\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
@@ -3086,64 +2954,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function in_array\\(\\) with arguments null, array\\{\'development\', \'testing\'\\} and true will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Kernel\\\\Kernel\\:\\:getLogDir\\(\\) should return string but returns null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Left side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between int and false will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between 0 and 1 will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between 0 and 2 will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'CLOUD\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\{client_id\\: string, user_id\\: string, scopes\\: string\\[\\]\\}\\)\\: Unexpected token "\\{", expected type at offset 79 on line 4$#',
@@ -3154,12 +2968,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
 ];
@@ -3185,12 +2993,6 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
@@ -3434,28 +3236,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#1 \\$directory \\(null\\) of method Glpi\\\\System\\\\Log\\\\LogParser\\:\\:__construct\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\System\\\\Log\\\\LogViewer\\:\\:getMenuContent\\(\\) never returns false so it can be removed from the return type\\.$#',
 	'identifier' => 'return.unusedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Log/LogViewer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/RequirementsManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\UI\\\\ThemeManager\\:\\:getCustomThemesDirectory\\(\\) should return string but returns null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Group\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
@@ -3544,7 +3328,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -3567,12 +3351,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between float and \'\\-\' will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and \'development\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -5456,12 +5234,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#3 \\$config_dir \\(null\\) of method Toolbox\\:\\:writeConfig\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
@@ -5510,12 +5282,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Result of \\|\\| is always true\\.$#',
 	'identifier' => 'booleanOr.alwaysTrue',
 	'count' => 1,
@@ -5524,12 +5290,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between null and CommonDBTM will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and true will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
