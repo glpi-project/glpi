@@ -186,6 +186,21 @@ class ErrorController extends AbstractController
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
                 $trace .= "\n" . $exception->getTraceAsString();
             }
+
+            $current = $exception;
+            $depth   = 0;
+            while ($depth < 10 && $previous = $current->getPrevious()) {
+                $trace .= sprintf(
+                    "\n\nPrevious: %s\nIn %s(%s)",
+                    $previous->getMessage() ?: $previous::class,
+                    $previous->getFile(),
+                    $previous->getLine()
+                );
+                $trace .= "\n" . $previous->getTraceAsString();
+
+                $current = $previous;
+                $depth++;
+            }
         }
 
         if ($request->getPreferredFormat() === 'json') {
