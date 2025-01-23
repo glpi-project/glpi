@@ -111,7 +111,7 @@
             </div>
 
             <TreeView :label="__('Entity tree')" :tree="entity_data" :rand="rand" :max_items="15" :virtual_dom="true"
-                      :search_filter="search_filter" :icons="icons"/>
+                      :search_filter="search_filter" :icons="icons" class="mt-2"/>
         </div>
     </div>
 </template>

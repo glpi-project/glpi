@@ -255,8 +255,8 @@
     <div class="flexbox-item-grow data_tree" :style="`height: calc(20px + ${22 * max_items}px)`">
         <div class="w-100 h-100 overflow-x-auto overflow-y-hidden">
             <ul :id="`tree_data${rand}`" class="w-100 list-group" :aria-label="label">
-                <li v-for="node in visible_in_dom" :key="node.key" :class="`${node.selected ? 'fw-bold' : ''} list-group-item p-0 border-0`">
-                    <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex">
+                <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0`" :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`">
+                    <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-end">
                         <span v-if="node.folder" class="me-1 cursor-pointer collapse-item">
                             <i v-if="node.expanded === 'true'" :class="icons.expanded"></i>
                             <i v-else :class="icons.collapsed"></i>
