@@ -58,7 +58,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add/Update fields input. Filled during add/update process.
      *
-     * @var mixed[]|bool
+     * @var mixed[]|false
      */
     public $input = [];
 
