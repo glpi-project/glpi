@@ -1467,7 +1467,7 @@ class NotificationTarget extends CommonDBChild
 
         if ($p['tag']) {
             if (is_array($p['events'])) {
-                $events = $this->getEvents();
+                $events = $this->getAllEvents();
                 $tmp = [];
 
                 foreach ($p['events'] as $event) {
