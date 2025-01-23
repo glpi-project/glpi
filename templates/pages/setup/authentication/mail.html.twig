@@ -34,7 +34,13 @@
 {% extends 'generic_show_form.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% block more_fields %}
+{% block form_fields %}
+    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
+
+    {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server'), field_options) }}
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
     {{ fields.nullField() }}
 
     {{ fields.smallTitle(__('Server configuration')) }}
