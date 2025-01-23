@@ -307,7 +307,7 @@ HTML;
             ]);
         }
 
-        $dashboard_title = $this->dashboard->getTitle();
+        $dashboard_title = htmlspecialchars($this->dashboard->getTitle());
 
         $l_tb_icons   = "";
         $r_tb_icons   = "";
