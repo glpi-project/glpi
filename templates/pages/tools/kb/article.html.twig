@@ -100,7 +100,7 @@
                 {{ item.fields['is_faq'] ? __('This item is part of the FAQ') : __('This item is not part of the FAQ') }}
             </div>
         </div>
-        {% if item.fields['is_token_url'] %}
+        {% if item.fields['allow_access_using_token'] %}
         <div class="d-flex row">
             <div class="col-sm-6 col-12">
                 {% set token_url = config('url_base') ~ '/front/helpdesk.faq.php?id=' ~ item.fields['id'] ~ '&token=' ~ item.fields['token'] %}

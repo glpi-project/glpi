@@ -68,13 +68,13 @@
         {{ fields.nullField() }}
     {% endif %}
 
-    {{ fields.dropdownYesNo('is_token_url',
-        item.fields['is_token_url'],
+    {{ fields.dropdownYesNo('allow_access_using_token',
+        item.fields['allow_access_using_token'],
         __('Share with a unique URL'),
         {
             'full_width': true
         }) }}
-    {% if item.fields['is_token_url'] %}
+    {% if item.fields['allow_access_using_token'] %}
         {% set token_url = config('url_base') ~ '/front/helpdesk.faq.php?id=' ~ item.fields['id'] ~ '&token=' ~ item.fields['token'] %}
         {{ fields.htmlField('', token_url, __('Unique URL')) }}
         {{ fields.checkboxField(

@@ -70,5 +70,5 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addKey($table, $field_to_add);
 }
 
-$migration->addField('glpi_knowbaseitems', 'is_token_url', 'bool');
+$migration->addField('glpi_knowbaseitems', 'allow_access_using_token', 'bool');
 $migration->addField('glpi_knowbaseitems', 'token', 'text');
