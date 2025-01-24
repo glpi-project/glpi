@@ -747,8 +747,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 && $input['allow_access_using_token']
                 && empty($this->fields['token'])
             ) || (
-                isset($input['_reset_token_url'])
-                && $input['_reset_token_url']
+                isset($input['_regenerate_token'])
+                && $input['_regenerate_token'] == 'on'
             )
         ) {
             $input['token'] = Toolbox::getRandomString(20);
