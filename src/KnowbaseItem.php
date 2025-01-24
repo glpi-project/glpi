@@ -914,8 +914,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         ) {
             $answer = preg_replace(
                 [
-                    '/<img([^>]+src=["\'])([^"\']+)(["\'][^>]*)>/',
-                    '/<a([^>]+href=["\'])([^"\']+)(["\'][^>]*)>/'
+                    '/<img([^>]+src=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/',
+                    '/<a([^>]+href=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/'
                 ],
                 [
                     '<img$1$2&token=' . $options['token'] . '$3>',
