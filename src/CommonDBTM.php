@@ -6861,4 +6861,22 @@ TWIG, $twig_params);
 
         return null;
     }
+
+    /**
+     * @param 'ASC'|'DESC' $order
+     */
+    public static function displayList(
+        array $criteria,
+        int $sort_search_option_id,
+        string $order = 'ASC'
+    ): void {
+        Search::showList(static::class, [
+            'criteria'           => $criteria,
+            'showmassiveactions' => false,
+            'hide_controls'      => true,
+            'sort'               => $sort_search_option_id,
+            'order'              => $order,
+            'as_map'             => false,
+        ]);
+    }
 }
