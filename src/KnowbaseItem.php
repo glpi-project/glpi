@@ -129,7 +129,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         if (
             $this->fields["allow_access_using_token"]
             && isset($_GET['token'])
-            && $this->fields["token"] == $_GET['token']
+            && hash_equals($_GET['token'], $this->fields["token"])
         ) {
             return true;
         }
