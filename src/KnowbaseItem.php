@@ -138,7 +138,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
-        if ($this->fields["is_token_url"] && (isset($_GET['token']) && $this->fields["token"] == $_GET['token'])) {
+        if (
+            $this->fields["allow_access_using_token"]
+            && isset($_GET['token'])
+            && $this->fields["token"] == $_GET['token']
+        ) {
             return true;
         }
 
@@ -739,8 +743,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         if (
             (
-                isset($input['is_token_url'])
-                && $input['is_token_url']
+                isset($input['allow_access_using_token'])
+                && $input['allow_access_using_token']
                 && empty($this->fields['token'])
             ) || (
                 isset($input['_reset_token_url'])
@@ -888,7 +892,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $CFG_GLPI, $DB;
 
         if (
-            $this->fields['is_token_url']
+            $this->fields['allow_access_using_token']
             && isset($options['token'])
             && $this->fields['token'] == $options['token']
         ) {
@@ -1123,8 +1127,8 @@ TWIG, $twig_params);
 
         if (isset($_GET['token'])) {
             $criteria['WHERE']['OR'][] = [
-                'glpi_knowbaseitems.is_token_url'   => 1,
-                'glpi_knowbaseitems.token'          => $_GET['token'],
+                'glpi_knowbaseitems.allow_access_using_token' => 1,
+                'glpi_knowbaseitems.token'                    => $_GET['token'],
             ];
         }
 

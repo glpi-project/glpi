@@ -77,5 +77,5 @@ $migration->addField('glpi_knowbaseitems', 'show_in_service_catalog', 'tinyint N
 
 $migration->addKey('glpi_knowbaseitems', 'forms_categories_id');
 
-$migration->addField('glpi_knowbaseitems', 'is_token_url', 'bool');
+$migration->addField('glpi_knowbaseitems', 'allow_access_using_token', 'bool');
 $migration->addField('glpi_knowbaseitems', 'token', 'text');
