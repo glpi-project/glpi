@@ -70,8 +70,7 @@
 
     {{ fields.dropdownYesNo('allow_access_using_token',
         item.fields['allow_access_using_token'],
-        __('Share with a unique URL')
-    ) }}
+        __('Share with a unique URL')) }}
     {% if item.fields['allow_access_using_token'] %}
         {% set token_url = config('url_base') ~ '/front/helpdesk.faq.php?id=' ~ item.fields['id'] ~ '&token=' ~ item.fields['token'] %}
         {{ fields.urlField('token', token_url, __('Unique URL'), {
