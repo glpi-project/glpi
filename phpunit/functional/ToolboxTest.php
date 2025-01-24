@@ -943,7 +943,7 @@ HTML;
         $expected_result  = <<<HTML
             Some contents with <a href="http://example.org/">a link</a>
             and a first image <a href="{$expected_url_1}" target="_blank"><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /></a> inside a link
-            then a second image surrounded by links <a href="http://www.example.org/">link1</a> <a href="{$image_2_src}" target="_blank" ><img alt="{$img_2_tag}" width="10" src="{$image_2_src}" /></a> <a href="http://www.example.org/2">link2</a>
+            then a second image surrounded by links <a href="http://www.example.org/">link1</a> <img alt="{$img_2_tag}" width="10" src="{$image_2_src}" /> <a href="http://www.example.org/2">link2</a>
 HTML;
 
         $docs_data = [
