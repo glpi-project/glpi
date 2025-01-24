@@ -178,6 +178,17 @@ class AuthLDAP extends CommonDBTM
      */
     private static ?int $last_errno;
 
+    /**
+     * @todo this is just a proxy, temporary fix because I havn't took any architecture decision
+     * see \AuthMail::getDefaultAuth() comments for details
+     *
+     * @return AuthLDAP|AuthMail|null
+     */
+    public static function getDefaultAuth()
+    {
+        return \AuthMail::getDefaultAuth();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('LDAP directory', 'LDAP directories', $nb);
@@ -3778,10 +3789,13 @@ TWIG, $twig_params);
     /**
      * Get default ldap
      *
-     * @return integer
+     * @deprecated Only search on AuthLDAP but default state is now shared with AuthMail, use getDefaultAuth() instead
+     * @todo at the moment, I did not try to fix the usage of this method, not sure how to change it at the moment, need more work.
+     * @return integer AuthLDAP ID or 0 if not found
      */
     public static function getDefault()
     {
+        // @todo trigger deprecation ?
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -3793,38 +3807,36 @@ TWIG, $twig_params);
         return count($it) ? $it->current()['id'] : 0;
     }
 
+    /**
+     * @return void
+     */
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (in_array('is_default', $this->updates, true) && (int) $this->input["is_default"] === 1) {
-            $DB->update(
-                static::getTable(),
-                ['is_default' => 0],
-                ['id' => ['<>', $this->input['id']]]
-            );
+        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
         }
+
+        parent::post_updateItem($history);
     }
 
+    /**
+     * @return void
+     */
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (isset($this->fields['is_default']) && (int) $this->fields["is_default"] === 1) {
-            $DB->update(
-                static::getTable(),
-                ['is_default' => 0],
-                ['id' => ['<>', $this->fields['id']]]
-            );
+        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
         }
+
+        // @todo notice the previous implementation did not call the parent, does it trigger side effect ? should it not be fixed ?
+        parent::post_addItem();
     }
 
     public function prepareInputForAdd($input)
     {
-        // If it's the first ldap directory then set it as the default directory
-        if (!self::getNumberOfServers()) {
+        // If there no other AuthLDAP or AuthMail, set it as default
+        // @todo the same behavior is not defined for AuthMail, it should be, maybe. Should I create an issue or is it not important ?
+        if (is_null(static::getDefaultAuth())) {
             $input['is_default'] = 1;
         }
 
@@ -4369,5 +4381,27 @@ TWIG, $twig_params);
             (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '')
         );
         return $message;
+    }
+
+    private function removeDefaultFromOtherItems(int $id): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (isset($this->fields['is_default']) && (int) $this->fields["is_default"] === 1) {
+            // remove from authmails tables
+            $DB->update(
+                static::getTable(),
+                ['is_default' => 0],
+                ['id' => ['<>', $id]]
+            );
+
+            // remove from AuthMail table
+            $DB->update(
+                AuthMail::getTable(),
+                ['is_default' => 0],
+                ['id' => ['!=', '-1']] // @todo maybe there is a better way to do this! ?
+            );
+        }
     }
 }
