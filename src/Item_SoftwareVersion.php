@@ -987,7 +987,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             return;
         }
 
-        $items_id      = $item->getField('id');
+        $items_id      = (int) $item->getField('id');
         $itemtype      = $item->getType();
         $rand          = mt_rand();
         $filters       = $_GET['filters'] ?? [];

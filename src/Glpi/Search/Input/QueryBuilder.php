@@ -351,7 +351,7 @@ final class QueryBuilder implements SearchInputInterface
                 }
                 break;
             case 'empty':
-                echo "<input type='hidden' name='$inputname' value='null'>";
+                echo "<input type='hidden' name='".htmlescape($inputname)."' value='null'>";
                 $display = true;
                 break;
         }
