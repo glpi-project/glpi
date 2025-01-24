@@ -250,7 +250,7 @@ class View extends CommonGLPI
             $clean_plugin = [
                 'key'           => $key,
                 'name'          => $plugin['name'],
-                'logo_url'      => $apidata['logo_url'] ?? "",
+                'logo_url'      => self::getLogo($apidata, $key),
                 'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
                 'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
                 'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
@@ -268,6 +268,44 @@ class View extends CommonGLPI
         self::displayList($plugins, "installed", $only_lis);
     }
 
+    /**
+     * Get the logo of a plugin
+     * Useful for custom plugins which will be used internally only and are not published in the internet
+     *
+     * @param array   $apidata  collected data of the plugin
+     * @param string  $key      plugins directory name
+     *
+     * @return string url to the plugins logo or empty string
+     */
+    public static function getLogo(array $apidata, string $key): string
+    {
+
+        // found a logo from online resource?
+        if (isset($apidata['logo_url']) && strpos(strtolower($apidata['logo_url']), '.png') !== false) return $apidata['logo_url'];
+
+        // absolute path to the plugin directory (for checking if a local file exists)
+        $pluginDir = GLPI_ROOT . '/plugins/' . $key . '/';
+
+        // relative path to the plugin directory (for html view)
+        $pluginPath = '../plugins/' . $key . '/';
+
+        // try to find a local logo
+        $logo = $pluginDir . $key . '.png';
+
+        // logo named as the key found?
+        if (file_exists($logo) && is_readable($logo)) return $pluginPath . basename($logo);
+
+        // try again with "logo.png"
+        $logo = $pluginDir . 'logo.png';
+
+         // logo named as "logo.png" found?
+         if (file_exists($logo) && is_readable($logo)) return $pluginPath . basename($logo);
+
+        // no logo found at all
+        return '';
+
+    }
+    
     /**
      * Display discover tab (all availble plugins)
      *
