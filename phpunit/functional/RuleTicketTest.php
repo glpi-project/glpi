@@ -35,6 +35,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use CommonITILValidation;
 use Contract;
 use ContractType;
@@ -3651,5 +3652,104 @@ class RuleTicketTest extends DbTestCase
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertEquals($user_id, (int)$ticket->getField('users_id_recipient'));
         $this->assertEquals($requesttypes_id, (int)$ticket->getField('requesttypes_id'));
+    }
+
+    public function testDoNotComputeStatusFollowupWithRule()
+    {
+        $this->login('glpi', 'glpi');
+
+        $followuptemplate = new \ITILFollowupTemplate();
+        $templateid = $followuptemplate->add($templateinput = [
+            'name' => 'followuptemplate_' . __FUNCTION__,
+            'content' => 'Test',
+        ]);
+        $this->checkInput($followuptemplate, $templateid, $templateinput);
+
+        // Create the rule to change status and add a followup template
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test do not compute status followup',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => 'test',
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'status',
+            'value'       => CommonITILObject::WAITING,
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+        $act2_id = $ruleaction->add($act2_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'append',
+            'field'       => 'itilfollowup_template',
+            'value'       => $templateid,
+        ]);
+        $this->checkInput($ruleaction, $act2_id, $act2_input);
+
+        $user1 = new \User();
+        $user1->getFromDBbyName('glpi');
+        $this->assertGreaterThan(0, $user1->getID());
+
+        $user2 = new \User();
+        $user2->getFromDBbyName('tech');
+        $this->assertGreaterThan(0, $user2->getID());
+
+        $ticket = new \Ticket();
+        // Create ticket with two actors (requester and technician)
+        $tickets_id = $ticket->add([
+            'name' => 'test ticket ' . __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'items_id' => $user1->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'items_id' => $user2->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::WAITING, $ticket->fields['status']);
+
+        // Create followup without _do_not_compute_status
+        $this->createItem('ITILFollowup', [
+            'itemtype'               => $ticket::getType(),
+            'items_id'               => $tickets_id,
+            'content'                => 'simple followup content',
+            'date'                   => '2015-01-01 00:00:00',
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
 }

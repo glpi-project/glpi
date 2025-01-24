@@ -7813,4 +7813,65 @@ HTML
         $ticket->loadActors();
         $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
     }
+
+    public function testDoNotComputeStatusFollowup()
+    {
+        $this->login('glpi', 'glpi');
+
+        $user1 = new \User();
+        $user1->getFromDBbyName('glpi');
+        $this->assertGreaterThan(0, $user1->getID());
+
+        $user2 = new \User();
+        $user2->getFromDBbyName('tech');
+        $this->assertGreaterThan(0, $user2->getID());
+
+        $ticket = new \Ticket();
+        // Create ticket with two actors (requester and technician)
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::WAITING,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'items_id' => $user1->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'items_id' => $user2->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype'               => $ticket::getType(),
+            'items_id'               => $tickets_id,
+            'content'                => 'do not compute status followup content',
+            'date'                   => '2015-01-01 00:00:00',
+            '_do_not_compute_status' => 1
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::WAITING, $ticket->fields['status']);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype'               => $ticket::getType(),
+            'items_id'               => $tickets_id,
+            'content'                => 'simple followup content',
+            'date'                   => '2015-01-01 00:00:00',
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
+    }
 }
