@@ -55,6 +55,70 @@ class AuthMail extends CommonDBTM
         return ['config', Auth::class, self::class];
     }
 
+    /**
+     * Get default AuthMail | AuthLDAP
+     *
+     * Only available if active
+     *
+     * @todo maybe this method should be moved to an Auth class, a parent class, or ...
+     * @todo maybe an Auth Interface (or a base abstract class) is needed for response type
+     *
+     * @return AuthMail|AuthLDAP|null Auth ID or null if not found
+     */
+    public static function getDefaultAuth(): AuthMail|AuthLDAP|null
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // @todo it may be possible to use a UnionQuery here, maybe not...
+
+        $authMailsIterator = $DB->request([
+            'FROM' => AuthMail::getTable(),
+            'WHERE' => ['is_default' => 1, 'is_active' => 1],
+//            'LIMIT' => 1,
+        ]);
+        $authMailId = $authMailsIterator->count() ? $authMailsIterator->current()['id'] : null;
+
+        $authLdapIterator = $DB->request([
+            'FROM' => AuthLDAP::getTable(),
+            'WHERE' => ['is_default' => 1, 'is_active' => 1],
+//            'LIMIT' => 1,
+        ]);
+        $authLdapId = $authLdapIterator->count() ? $authLdapIterator->current()['id'] : null;
+
+        if (is_null($authLdapId ?? $authMailId)) {
+            // no default AuthMail | AuthLDAP found
+            // this can happen if there is no active AuthMail | AuthLDAP at all
+            return null;
+        }
+
+        if ($authLdapIterator->count() > 1) {
+            // @todo maybe too hard, app should be more resilient and just log the problem
+            throw new \Exception('More than one default AuthLDAP found');
+        }
+
+        if ($authMailsIterator->count() > 1) {
+            // @todo maybe too hard, app should be more resilient and just log the problem
+            throw new \Exception('More than one default AuthMail found');
+        }
+
+        if ($authLdapId && $authMailId) {
+//            dump($authMailsIterator->getSql(), $authLdapIterator->getSql());
+//            Toolbox::logInfo('More than one default AuthMail | AuthLDAP found');
+            // @todo maybe too hard and we should return null or even one of them ...
+            throw new \Exception('More than one default AuthMail | AuthLDAP found');
+        }
+
+        if ($authMailId) {
+            return AuthMail::getById($authMailId);
+        } elseif ($authLdapId) {
+            return AuthLDAP::getById($authLdapId);
+        } else {
+            throw new \LogicException('Unexpected Auth source');
+        }
+    }
+
+
     public function prepareInputForUpdate($input)
     {
         if (empty($input['name'])) {
@@ -202,6 +266,30 @@ class AuthMail extends CommonDBTM
             'item' => $this,
             'params' => $options
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_updateItem($history = true)
+    {
+        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
+        }
+
+        parent::post_updateItem($history);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_addItem()
+    {
+        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
+        }
+
+        parent::post_addItem();
     }
 
     /**
@@ -374,5 +462,27 @@ TWIG, $twig_params);
     public static function getIcon()
     {
         return "far fa-envelope";
+    }
+
+    private function removeDefaultFromOtherItems(int $id): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (isset($this->fields['is_default']) && (int) $this->fields["is_default"] === 1) {
+            // remove from authmails tables
+            $DB->update(
+                static::getTable(),
+                ['is_default' => 0],
+                ['id' => ['<>', $id]]
+            );
+
+            // remove from authldap table
+            $DB->update(
+                AuthLDAP::getTable(),
+                ['is_default' => 0],
+                ['id' => ['!=', '-1']] // @todo maybe there is a better way to do this! ?
+            );
+        }
     }
 }
