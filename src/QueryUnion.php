@@ -40,7 +40,7 @@ class QueryUnion extends Glpi\DBAL\QueryUnion
 {
     public function __construct($expression)
     {
-        Toolbox::deprecated();
+        Toolbox::deprecated('\QueryUnion is deprecated, use \Glpi\DBAL\QueryUnion instead');
         parent::__construct($expression);
     }
 }
