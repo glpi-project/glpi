@@ -4383,7 +4383,7 @@ TWIG, $twig_params);
         return $message;
     }
 
-    private function removeDefaultFromOtherItems(int $id): void
+    private function removeDefaultFromOtherItems(int $authldaps_id): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -4393,7 +4393,7 @@ TWIG, $twig_params);
             $DB->update(
                 static::getTable(),
                 ['is_default' => 0],
-                ['id' => ['<>', $id]]
+                ['id' => ['<>', $authldaps_id]]
             );
 
             // remove from AuthMail table
