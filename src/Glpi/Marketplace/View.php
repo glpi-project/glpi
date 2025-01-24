@@ -37,6 +37,7 @@ namespace Glpi\Marketplace;
 
 use CommonGLPI;
 use Config;
+use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
@@ -224,6 +225,10 @@ class View extends CommonGLPI
         bool $only_lis = false,
         string $string_filter = ""
     ) {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
         $plugin_inst->init(true); // reload plugins
@@ -247,10 +252,16 @@ class View extends CommonGLPI
                 continue;
             }
 
+            $logo_url = $apidata['logo_url'] ?? '';
+            if (Document::isImage(\sprintf('%s/logo.png', Plugin::getPhpDir($key)))) {
+                // Use the local logo.png file if it exists.
+                $logo_url = sprintf('%s/Plugin/%s/Logo', $CFG_GLPI['root_doc'], $key);
+            }
+
             $clean_plugin = [
                 'key'           => $key,
                 'name'          => $plugin['name'],
-                'logo_url'      => $apidata['logo_url'] ?? "",
+                'logo_url'      => $logo_url,
                 'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
                 'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
                 'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
