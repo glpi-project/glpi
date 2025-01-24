@@ -70,20 +70,16 @@
 
     {{ fields.dropdownYesNo('allow_access_using_token',
         item.fields['allow_access_using_token'],
-        __('Share with a unique URL'),
-        {
-            'full_width': true
-        }) }}
+        __('Share with a unique URL')
+    ) }}
     {% if item.fields['allow_access_using_token'] %}
         {% set token_url = config('url_base') ~ '/front/helpdesk.faq.php?id=' ~ item.fields['id'] ~ '&token=' ~ item.fields['token'] %}
-        {{ fields.htmlField('', token_url, __('Unique URL')) }}
-        {{ fields.checkboxField(
-            '_reset_token_url',
-            item.isNewItem() ? 1 : 0,
-            __('Regenerate')
-        ) }}
-    {% else %}
-        {{ fields.nullField() }}
+        {{ fields.urlField('token', token_url, __('Unique URL'), {
+            readonly: true,
+            full_width: true,
+            can_regenerate: true,
+            is_copyable: true
+        }) }}
     {% endif %}
 
     {% if linked_item is defined and linked_item is not null and not linked_item.isNewItem() %}
