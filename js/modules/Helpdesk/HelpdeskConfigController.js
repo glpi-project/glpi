@@ -497,6 +497,10 @@ export class GlpiHelpdeskConfigController
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                }
             });
 
             // Handle server errors

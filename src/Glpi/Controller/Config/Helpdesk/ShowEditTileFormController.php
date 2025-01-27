@@ -55,7 +55,7 @@ final class ShowEditTileFormController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!Session::haveRight(Config::$rightname, UPDATE)) {
+        if (!FormTile::canUpdate()) {
             throw new AccessDeniedHttpException();
         }
 

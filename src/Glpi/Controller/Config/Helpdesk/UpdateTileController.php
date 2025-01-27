@@ -60,7 +60,7 @@ final class UpdateTileController extends AbstractController
     }
 
     #[Route(
-        "/ajax/Config/Helpdesk/UpdateTile",
+        "/Config/Helpdesk/UpdateTile",
         name: "glpi_config_helpdesk_update_tile",
         methods: "POST"
     )]
