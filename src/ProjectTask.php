@@ -1889,6 +1889,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'genical'             => false,
             'color'               => '',
             'event_type_color'    => '',
+            'state_done'          => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -1940,12 +1941,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ];
         }
 
-        if (!isset($options['display_done_events']) || !$options['display_done_events']) {
+        if ($options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
-            $ADDWHERE[] = ['OR' => [
-                ['glpi_projectstates.is_finished'  => 0],
-                ['glpi_projectstates.is_finished'  => null]
-            ]
+            $ADDWHERE[] = [
+                'OR' => [
+                    ['glpi_projectstates.is_finished' => 0],
+                    ['glpi_projectstates.is_finished' => null]
+                ]
             ];
         }
 

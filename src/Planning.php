@@ -640,7 +640,7 @@ TWIG, ['options' => $options]);
 
         return array_merge(
             $CFG_GLPI['planning_types'],
-            ['NotPlanned', 'OnlyBgEvents']
+            ['NotPlanned', 'OnlyBgEvents', 'StateDone']
         );
     }
 
@@ -672,7 +672,7 @@ TWIG, ['options' => $options]);
         $filters = &$_SESSION['glpi_plannings']['filters'];
         $index_color = 0;
         foreach (self::getPlanningTypes() as $planning_type) {
-            if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']) || $planning_type::canView()) {
+            if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents', 'StateDone']) || $planning_type::canView()) {
                 if (!isset($filters[$planning_type])) {
                     $filters[$planning_type] = [
                         'color'   => self::getPaletteColor('ev', $index_color),
@@ -787,6 +787,8 @@ TWIG, ['options' => $options]);
                 $title = __('Not planned tasks');
             } else if ($filter_key === 'OnlyBgEvents') {
                 $title = __('Only background events');
+            } else if ($filter_key === 'StateDone') {
+                $title = __('Done elements');
             } else {
                 if (!getItemForItemtype($filter_key)) {
                     return;
@@ -1545,7 +1547,6 @@ TWIG, $twig_params);
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      *  - end: mandatory, planning end.
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - display_done_events: default true, show also events tagged as done
      *  - force_all_events: even if the range is big, don't reduce the returned set
      * @return array $events : array with events in fullcalendar.io format
      */
@@ -1557,8 +1558,8 @@ TWIG, $twig_params);
         $param['start']               = '';
         $param['end']                 = '';
         $param['view_name']           = '';
-        $param['display_done_events'] = true;
         $param['force_all_events']    = false;
+        $param['state_done']          = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1584,6 +1585,10 @@ TWIG, $twig_params);
 
         $param['begin'] = date("Y-m-d H:i:s", $time_begin);
         $param['end']   = date("Y-m-d H:i:s", $time_end);
+
+        if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
+            $param['state_done'] = false;
+        }
 
         $raw_events = [];
         $not_planned = [];
