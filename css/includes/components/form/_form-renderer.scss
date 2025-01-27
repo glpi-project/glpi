@@ -66,7 +66,12 @@
         gap: 0 0.5rem;
 
         &:not(:last-of-type) {
-            margin-bottom: 1rem;
+            // Apply the margin on the items instead of the row itself, to make
+            // sure it doesn't take space when all the items inside of the row
+            // are hidden by the condition engine.
+            section:last-of-type {
+                margin-bottom: 1rem;
+            }
         }
 
         &:has(> :nth-child(2)) {
@@ -78,5 +83,12 @@
                 }
             }
         }
+    }
+
+    // Special tag used to mark an item as hidden by the condition engine.
+    // It is safer than directly interacting the "display: none" class as it might
+    // conflict with other features that hide items like the section pagination.
+    [data-glpi-form-renderer-hidden-by-condition] {
+        display: none;
     }
 }

@@ -2272,7 +2272,7 @@ export class GlpiFormEditorController
             form_data = this.#getFormStateForVisibilityEditor(container);
         }
 
-        const content = await $.post('/ajax/Form/ConditionalVisibilityEditor', {
+        const content = await $.post('/Form/ConditionalVisibility/Editor', {
             form_data: form_data,
         });
         container.html(content);

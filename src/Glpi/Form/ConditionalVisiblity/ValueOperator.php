@@ -58,4 +58,14 @@ enum ValueOperator: string
             self::NOT_CONTAINS => __("Do not contains"),
         };
     }
+
+    public function applyForString(string $a, string $b): bool
+    {
+        return match ($this) {
+            self::EQUALS       => $a === $b,
+            self::NOT_EQUALS   => $a !== $b,
+            self::CONTAINS     => str_contains($b, $a),
+            self::NOT_CONTAINS => !str_contains($b, $a),
+        };
+    }
 }

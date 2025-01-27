@@ -34,7 +34,7 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\QuestionVisibilityStrategy;
+use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
 use JsonException;
 
 trait ConditionnableTrait
@@ -61,10 +61,10 @@ trait ConditionnableTrait
         return $form_data->getConditionsData();
     }
 
-    public function getConfiguredVisibilityStrategy(): QuestionVisibilityStrategy
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
     {
         $strategy_value = $this->fields['visibility_strategy'] ?? "";
-        $strategy = QuestionVisibilityStrategy::tryFrom($strategy_value);
-        return $strategy ?? QuestionVisibilityStrategy::ALWAYS_VISIBLE;
+        $strategy = VisibilityStrategy::tryFrom($strategy_value);
+        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 }

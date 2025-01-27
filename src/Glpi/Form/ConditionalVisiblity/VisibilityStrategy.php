@@ -34,51 +34,45 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-final class ConditionData
+enum VisibilityStrategy: string
 {
-    public function __construct(
-        private string $item_uuid,
-        private string $item_type,
-        private ?string $value_operator,
-        private mixed $value,
-        private ?string $logic_operator = null,
-    ) {
+    case ALWAYS_VISIBLE = 'always_visible';
+    case VISIBLE_IF = 'visible_if';
+    case HIDDEN_IF = 'hidden_if';
+
+    public function getLabel(): string
+    {
+        return match ($this) {
+            self::ALWAYS_VISIBLE => __('Always visible'),
+            self::VISIBLE_IF     => __('Visible if...'),
+            self::HIDDEN_IF      => __("Hidden if..."),
+        };
     }
 
-    /**
-     * Itemtype + uuid, used for dropdowns to allow selecting type + item using
-     * a single dropdown
-     */
-    public function getItemDropdownKey(): string
+    public function getIcon(): string
     {
-        return $this->item_type . '-' . $this->item_uuid;
+        return match ($this) {
+            self::ALWAYS_VISIBLE => 'ti ti-eye',
+            self::VISIBLE_IF     => 'ti ti-eye-cog',
+            self::HIDDEN_IF      => 'ti ti-eye-off',
+        };
     }
 
-    public function getItemUuid(): string
+    public function showEditor(): bool
     {
-        return $this->item_uuid;
+        return match ($this) {
+            self::ALWAYS_VISIBLE => false,
+            self::VISIBLE_IF     => true,
+            self::HIDDEN_IF      => true,
+        };
     }
 
-    public function getItemType(): Type
+    public function mustBeVisible(bool $conditions_result): bool
     {
-        return Type::tryFrom($this->item_type ?? "") ?? Type::QUESTION;
-    }
-
-    public function getValue(): mixed
-    {
-        return $this->value;
-    }
-
-    public function getLogicOperator(): LogicOperator
-    {
-        // Fallback to "AND" if no value is set.
-        return LogicOperator::tryFrom($this->logic_operator ?? "") ?? LogicOperator::AND;
-    }
-
-    public function getValueOperator(): ?ValueOperator
-    {
-        // No follback here as an empty value is valid if the condition is not
-        // fully specified yet.
-        return ValueOperator::tryFrom($this->value_operator ?? "");
+        return match ($this) {
+            self::ALWAYS_VISIBLE => true,
+            self::VISIBLE_IF     => $conditions_result,
+            self::HIDDEN_IF      => !$conditions_result,
+        };
     }
 }

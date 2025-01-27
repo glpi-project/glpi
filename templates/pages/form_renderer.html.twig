@@ -67,6 +67,10 @@
                 <div
                     class="{{ is_first_section ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
+                    data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
+                    {% if not visibility_engine_output.isSectionVisible(section.getID()) %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
                 >
                     {% if not is_single_section_form %}
                         <div
@@ -129,6 +133,24 @@
                                                 class="{{ is_first_section ? "" : "d-none" }}"
                                                 style="flex: 1;"
                                                 data-glpi-form-renderer-parent-section="{{ section_index }}"
+                                                data-glpi-form-renderer-id="{{ form_block.fields.id }}"
+                                                data-glpi-form-renderer-uuid="{{ form_block.fields.uuid }}"
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    data-glpi-form-renderer-question
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
+                                                    data-glpi-form-renderer-comment
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\ConditionalVisiblity\\UsedAsCriteriaInterface') %}
+                                                    data-glpi-form-renderer-criteria
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and not visibility_engine_output.isQuestionVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') and not visibility_engine_output.isCommentVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% endif %}
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
                                                     {{ form_block.fields.name|default(__('Untitled question')) }}
@@ -236,10 +258,15 @@
         <input type="hidden" name="token" value="{{ token }}" />
     {% endif %}
 
-    <script>
-        import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {
-            new m.GlpiFormRendererController($('#forms_form_answers'));
-        });
-    </script>
+    <script>(async () => {
+        // Load renderer controller
+        const mod = await import(
+            "{{ js_path('js/modules/Forms/RendererController.js') }}"
+        );
+        new mod.GlpiFormRendererController(
+            '#forms_form_answers',
+            {{ form.getID() }}
+        );
+    })();</script>
 
 {% endblock content_body %}

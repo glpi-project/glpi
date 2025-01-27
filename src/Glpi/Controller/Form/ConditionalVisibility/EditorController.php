@@ -32,38 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Controller\Form\ConditionalVisibility;
 
-enum QuestionVisibilityStrategy: string
+use Glpi\Controller\AbstractController;
+use Glpi\Form\ConditionalVisiblity\EditorManager;
+use Glpi\Form\ConditionalVisiblity\FormData;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class EditorController extends AbstractController
 {
-    case ALWAYS_VISIBLE = 'always_visible';
-    case VISIBLE_IF = 'visible_if';
-    case HIDDEN_IF = 'hidden_if';
-
-    public function getLabel(): string
-    {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => __('Always visible'),
-            self::VISIBLE_IF     => __('Visible if...'),
-            self::HIDDEN_IF      => __("Hidden if..."),
-        };
+    public function __construct(
+        private EditorManager $editor_manager,
+    ) {
     }
 
-    public function getIcon(): string
+    #[Route(
+        "/Form/ConditionalVisibility/Editor",
+        name: "glpi_form_conditional_visibility_editor",
+        methods: "POST"
+    )]
+    public function __invoke(Request $request): Response
     {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => 'ti ti-eye',
-            self::VISIBLE_IF     => 'ti ti-eye-cog',
-            self::HIDDEN_IF      => 'ti ti-eye-off',
-        };
-    }
+        $form_data = $request->request->all()['form_data'];
+        $this->editor_manager->setFormData(new FormData($form_data));
 
-    public function showEditor(): bool
-    {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => false,
-            self::VISIBLE_IF     => true,
-            self::HIDDEN_IF      => true,
-        };
+        return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
+            'manager'            => $this->editor_manager,
+            'defined_conditions' => $this->editor_manager->getDefinedConditions(),
+            'items_values'       => $this->editor_manager->getItemsDropdownValues(),
+        ]);
     }
 }

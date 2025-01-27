@@ -32,37 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\ConditionalVisibilityEditor;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Form\ConditionalVisiblity\EditorManager;
-use Glpi\Form\ConditionalVisiblity\FormData;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Glpi\Form\Form;
+use Glpi\Form\Question;
 
-final class IndexController extends AbstractController
+final class EngineInput
 {
     public function __construct(
-        private EditorManager $editor_manager,
+        private array $answers,
     ) {
     }
 
-    #[Route(
-        // Need '/ajax' prefix due to legacy CSRF constraints.
-        "/ajax/Form/ConditionalVisibilityEditor",
-        name: "glpi_form_conditional_visibility_editor",
-        methods: "POST"
-    )]
-    public function __invoke(Request $request): Response
+    /**
+     * Construct an input using default values from the database.
+     * Useful when computing data that was not yet modified by the user.
+     */
+    public static function fromForm(Form $form): self
     {
-        $form_data = $request->request->all()['form_data'];
-        $this->editor_manager->setFormData(new FormData($form_data));
+        $answers = [];
 
-        return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
-            'manager'            => $this->editor_manager,
-            'defined_conditions' => $this->editor_manager->getDefinedConditions(),
-            'items_values'       => $this->editor_manager->getItemsDropdownValues(),
-        ]);
+        // Get questions that can be used as a criteria
+        $questions = array_filter(
+            $form->getQuestions(),
+            fn (Question $q): bool => $q->getQuestionType() instanceof UsedAsCriteriaInterface,
+        );
+
+        foreach ($questions as $question) {
+            $answers[$question->getID()] = $question->fields['default_value'];
+        }
+
+        return new self(answers: $answers);
+    }
+
+    public function getAnswers(): array
+    {
+        return $this->answers;
     }
 }
