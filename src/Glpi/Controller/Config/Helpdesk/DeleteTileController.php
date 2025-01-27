@@ -57,7 +57,7 @@ final class DeleteTileController extends AbstractController
     }
 
     #[Route(
-        "/ajax/Config/Helpdesk/DeleteTile",
+        "/Config/Helpdesk/DeleteTile",
         name: "glpi_config_helpdesk_delete_tile",
         methods: "POST"
     )]

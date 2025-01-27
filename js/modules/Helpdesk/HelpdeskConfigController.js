@@ -251,7 +251,7 @@ export class GlpiHelpdeskConfigController
             ;
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/ajax/Config/Helpdesk/SetTilesOrder`;
+            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/SetTilesOrder`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
@@ -326,7 +326,7 @@ export class GlpiHelpdeskConfigController
             );
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/ajax/Config/Helpdesk/DeleteTile`;
+            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/DeleteTile`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
@@ -411,7 +411,7 @@ export class GlpiHelpdeskConfigController
             const form_data = new FormData(form);
 
             // Send request
-            const url = `${CFG_GLPI.root_doc}/ajax/Config/Helpdesk/UpdateTile`;
+            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/UpdateTile`;
             const response = await fetch(url, {
                 method: 'POST',
                 body: form_data,
