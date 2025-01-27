@@ -1453,6 +1453,47 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(7, $unmanaged->find());
     }
 
+    public function testNetworkEquipmentsNoConnections()
+    {
+        //using same file as testNetworkEquipmentsConnections, but without importing unmanageds
+        $this->login();
+
+        //unset import of unmanaged equipments
+        $config = new \Glpi\Inventory\Conf();
+        $config->saveConf(['import_unmanaged' => false]);
+
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        //checks there are no unmanageds
+        $unmanaged = new \Unmanaged();
+        $this->assertCount(0, $unmanaged->find());
+
+        // Import the network equipment
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $equipment2 = new \NetworkEquipment();
+        $this->assertTrue(
+            $equipment2->getFromDBByCrit(['serial' => '9876543210'])
+        );
+
+        //still no unmanageds
+        $this->assertCount(0, $unmanaged->find());
+    }
+
     public function testNetworkEquipmentsConnectionsConverted(): void
     {
         /** @var array $CFG_GLPI */
