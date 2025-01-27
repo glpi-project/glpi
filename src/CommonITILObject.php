@@ -7930,8 +7930,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
         }
 
-        // TODO: Remove SHOW_IN_TIMELINE hook in next major release after GLPI 11.0
-        Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]);
+        Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]); // @phpstan-ignore classConstant.deprecated
         Plugin::doHook(Hooks::TIMELINE_ITEMS, ['item' => $this, 'timeline' => &$timeline]);
 
         //sort timeline items by date. If items have the same date, sort by id

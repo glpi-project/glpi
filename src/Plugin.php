@@ -1537,6 +1537,10 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
+                    if ($name === Hooks::SHOW_IN_TIMELINE) { // @phpstan-ignore classConstant.deprecated
+                        Toolbox::deprecated('`show_in_timeline` hook is deprecated, use `timeline_items` instead.');
+                    }
+
                     if (isset($tab[$itemtype])) {
                         \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:{$name}", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
                         self::includeHook($plugin_key);

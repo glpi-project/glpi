@@ -125,7 +125,10 @@ class Hooks
     const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
-    const SHOW_IN_TIMELINE        = 'show_in_timeline'; // Old constant of hook for BC. Replaced by TIMELINE_ITEMS in GLPI 11.0
+    /**
+     * @deprecated 11.0.0 Use `TIMELINE_ITEMS` instead.
+     */
+    const SHOW_IN_TIMELINE        = 'show_in_timeline';
     const TIMELINE_ITEMS          = 'timeline_items';  // (keys: item)
     const SET_ITEM_IMPACT_ICON    = 'set_item_impact_icon'; // (keys: itemtype, items_id)
 
