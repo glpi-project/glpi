@@ -1,6 +1,6 @@
-tests/LDAP/ldif/glpi-ldap.ldif provides :
-- 3 branches, to simulate 3 differents directories
-- users stored in using 2 differents objectclasses : person & inetOrgPerson
+phpunit/LDAP/ldif/glpi-ldap.ldif provides :
+- 3 branches, to simulate 3 different directories
+- users stored in using 2 different objectclasses : person & inetOrgPerson
 - groups : groupOfNames & posixGroup
 - a lot of users in order to test ldap sizelimit
 
