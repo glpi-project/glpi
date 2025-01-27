@@ -77,6 +77,12 @@ class Phone extends CommonDBTM
             KnowbaseItem_Item::class,
             Item_RemoteManagement::class,
             ItemAntivirus::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
 
@@ -134,6 +140,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('Item_Project', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
+        $this->addStandardTab('Certificate_Item', $ong, $options);
         $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('Reservation', $ong, $options);

@@ -50,14 +50,14 @@ class SessionsConfiguration extends AbstractRequirement
     protected function check()
     {
        // Check session extension
-        if (!extension_loaded('session')) {
+        if (!$this->isExtensionLoaded()) {
             $this->validated = false;
             $this->validation_messages[] = __('session extension is not installed.');
             return;
         }
 
        // Check configuration values
-        $is_autostart_on = filter_var(ini_get('session.auto_start'), FILTER_VALIDATE_BOOLEAN);
+        $is_autostart_on   = $this->isAutostartOn();
 
         if ($is_autostart_on) {
             $this->validation_messages[] = __('"session.auto_start" must be set to off.');
@@ -67,5 +67,21 @@ class SessionsConfiguration extends AbstractRequirement
 
         $this->validated = true;
         $this->validation_messages[] = __s('Sessions configuration is OK.');
+    }
+
+    protected function isExtensionLoaded(): bool
+    {
+        return extension_loaded('session');
+    }
+
+    protected function isAutostartOn(): bool
+    {
+        return ini_get('session.auto_start') == 1;
+    }
+
+    protected function isUsetranssidOn(): bool
+    {
+        return ini_get('session.use_trans_sid') == 1 || isset($_POST[session_name()]) || isset($_GET[session_name()]);
+        ;
     }
 }

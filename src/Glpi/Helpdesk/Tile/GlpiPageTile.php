@@ -42,10 +42,18 @@ use TicketValidation;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface
 {
+    public static $rightname = 'config';
+
     public const PAGE_SERVICE_CATALOG = 'service_catalog';
     public const PAGE_FAQ = 'faq';
     public const PAGE_RESERVATION = 'reservation';
     public const PAGE_APPROVAL = 'approval';
+
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return self::canUpdate();
+    }
 
     #[Override]
     public function getTitle(): string
@@ -81,7 +89,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     }
 
     #[Override]
-    public function isValid(SessionInfo $session_info): bool
+    public function isAvailable(SessionInfo $session_info): bool
     {
         return match ($this->fields['page']) {
             self::PAGE_SERVICE_CATALOG => true,
@@ -93,5 +101,11 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
             ]),
             default                    => false,
         };
+    }
+
+    #[Override]
+    public function getDatabaseId(): int
+    {
+        return $this->fields['id'];
     }
 }

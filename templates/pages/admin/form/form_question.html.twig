@@ -49,7 +49,6 @@
 
 <section
     role="option"
-    class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').QUESTION.value }}"
@@ -60,7 +59,7 @@
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
-        class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        class="card flex-grow-1 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
         aria-label="{{ __("Question details") }}"
     >
         <div
@@ -192,85 +191,88 @@
             </div>
 
             <div
-                class="d-flex align-items-center mt-2"
+                class="d-flex flex-wrap align-items-center gap-2 mt-2"
                 data-glpi-form-editor-question-extra-details
                 data-fix-dropdown-flex
             >
-                {% set categories = {} %}
-                {% for category in question_types_manager.getCategories() %}
-                    {% set categories = categories|merge({(category.value): category.getLabel()}) %}
-                {% endfor %}
+                <div class="question-type-dropdown-group">
+                    {% set categories = {} %}
+                    {% for category in question_types_manager.getCategories() %}
+                        {% set categories = categories|merge({(category.value): category.getLabel()}) %}
+                    {% endfor %}
 
-                {{ fields.dropdownArrayField(
-                    '_type_category',
-                    question_type.getCategory().value,
-                    categories,
-                    '',
-                    {
-                        'init'                 : question is not null,
-                        'no_label'             : true,
-                        'mb'                   : '',
-                        'field_class'          : 'me-2',
-                        'class'                : 'form-select form-select-sm',
-                        'width'                : 'auto',
-                        'aria_label'           : __('Question type'),
-                        'add_data_attributes'  : {
-                            'glpi-form-editor-on-change': 'change-question-type-category'
-                        },
-                        'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
-                        'templateResult'       : question_types_manager.getTemplateResultForCategories(),
-                    }
-                ) }}
-
-                {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-                {% for possible_question_type in types %}
-                    {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
-                {% endfor %}
-
-                {{ fields.dropdownArrayField(
-                    'type',
-                    get_class(question_type),
-                    types,
-                    question_type.getName(),
-                    {
-                        'init'                 : question is not null,
-                        'no_label'             : true,
-                        'mb'                   : '',
-                        'field_class'          : 'me-2' ~ (types|length == 1 ? ' d-none' : ''),
-                        'class'                : 'form-select form-select-sm',
-                        'width'                : 'auto',
-                        'aria_label'           : __('Question sub type'),
-                        'add_data_attributes'  : {
-                            'glpi-form-editor-on-change'             : 'change-question-type',
-                            'glpi-form-editor-question-type-selector': ''
-                        },
-                        'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
-                        'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
-                    }
-                ) }}
-
-                {% set sub_types = question_type.getSubTypes() %}
-                {{ fields.dropdownArrayField(
-                    question_type.getSubTypeFieldName(),
-                    question_type.getSubTypeDefaultValue(question),
-                    question_type.getSubTypes(),
-                    '',
-                    {
-                        'init'                 : question is not null,
-                        'no_label'             : true,
-                        'mb'                   : '',
-                        'field_class'          : 'me-2' ~ (sub_types is empty ? ' d-none' : ''),
-                        'class'                : 'form-select form-select-sm',
-                        'width'                : 'auto',
-                        'disabled'             : sub_types is empty,
-                        'aria_label'           : question_type.getSubTypeFieldAriaLabel(),
-                        'add_data_attributes'  : {
-                            'glpi-form-editor-on-change'                   : 'change-question-sub-type',
-                            'glpi-form-editor-question-sub-type-selector'  : '',
-                            'glpi-form-editor-specific-question-extra-data': ''
+                    {{ fields.dropdownArrayField(
+                        '_type_category',
+                        question_type.getCategory().value,
+                        categories,
+                        '',
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'dropdownCssClass'     : 'question-type-dropdown-group-dropdown-select',
+                            'aria_label'           : __('Question type'),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change': 'change-question-type-category'
+                            },
+                            'templateSelection'    : question_types_manager.getTemplateSelectionForCategories(),
+                            'templateResult'       : question_types_manager.getTemplateResultForCategories(),
                         }
-                    }
-                ) }}
+                    ) }}
+
+                    {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
+                    {% for possible_question_type in types %}
+                        {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
+                    {% endfor %}
+
+                    {{ fields.dropdownArrayField(
+                        'type',
+                        get_class(question_type),
+                        types,
+                        question_type.getName(),
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : types|length == 1 ? ' d-none' : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'aria_label'           : __('Question sub type'),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change'             : 'change-question-type',
+                                'glpi-form-editor-question-type-selector': ''
+                            },
+                            'templateSelection'    : question_types_manager.getTemplateSelectionForQuestionTypes(),
+                            'templateResult'       : question_types_manager.getTemplateResultForQuestionTypes(),
+                        }
+                    ) }}
+
+                    {% set sub_types = question_type.getSubTypes() %}
+                    {{ fields.dropdownArrayField(
+                        question_type.getSubTypeFieldName(),
+                        question_type.getSubTypeDefaultValue(question),
+                        question_type.getSubTypes(),
+                        '',
+                        {
+                            'init'                 : question is not null,
+                            'no_label'             : true,
+                            'mb'                   : '',
+                            'field_class'          : sub_types is empty ? ' d-none' : '',
+                            'class'                : 'form-select form-select-sm',
+                            'width'                : 'auto',
+                            'disabled'             : sub_types is empty,
+                            'aria_label'           : question_type.getSubTypeFieldAriaLabel(),
+                            'add_data_attributes'  : {
+                                'glpi-form-editor-on-change'                   : 'change-question-sub-type',
+                                'glpi-form-editor-question-sub-type-selector'  : '',
+                                'glpi-form-editor-specific-question-extra-data': ''
+                            }
+                        }
+                    ) }}
+                </div>
 
                 {# Render the specific question options #}
                 <div class="ms-auto" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
@@ -305,8 +307,13 @@
         />
         <input
             type="hidden"
-            name="rank"
-            value="{{ question is not null ? question.fields.rank : 0 }}"
+            name="vertical_rank"
+            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="horizontal_rank"
+            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
         />
         <input
             type="hidden"
@@ -322,8 +329,10 @@
 
     <div data-glpi-form-editor-question-extra-details>
         {{ include('pages/admin/form/form_toolbar.html.twig', {
-            'can_update': can_update,
-            'form': form,
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': false
         }, with_context = false) }}
     </div>
+    <div data-glpi-form-editor-question-drag-merge></div>
 </section>

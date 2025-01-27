@@ -324,7 +324,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
-                    $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
+                    $result .= " <i class='ti ti-circle-x pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
                 }
                 if ($params['kblink']) {
                     $result .= ' ' . $item->getKBLinks();

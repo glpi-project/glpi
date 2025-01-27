@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
 use LDAP\Connection;
 
@@ -2746,7 +2746,8 @@ TWIG, $twig_params);
                     ];
                 }
             } catch (\RuntimeException $e) {
-                ErrorHandler::getInstance()->handleException($e, false);
+                ErrorHandler::logCaughtException($e);
+                ErrorHandler::displayCaughtExceptionMessage($e);
                 return false;
             }
         }

@@ -54,7 +54,9 @@ class PDU extends CommonDBTM
         return [
             Item_Plug::class,
             Item_Devices::class,
-            NetworkPort::class
+            NetworkPort::class,
+            Contract_Item::class,
+            Infocom::class,
         ];
     }
 

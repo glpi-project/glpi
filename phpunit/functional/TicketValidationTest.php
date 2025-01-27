@@ -342,7 +342,16 @@ class TicketValidationTest extends CommonITILValidation
                     'name'      => 'Ticket_Closed_With_Validation_Request',
                     'content'   => 'Ticket_Closed_With_Validation_Request',
                 ],
-                'expected'  => 1,
+                'expected'  => true,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+            [
+                'input'     => [
+                    'name' => 'Ticket_With_Validation_Request',
+                    'content' => 'Ticket_With_Validation_Request',
+                    'status' =>  CommonITILObject::SOLVED
+                ],
+                'expected'  => false,
                 'user_id'   => getItemByTypeName('User', 'glpi', true)
             ],
             [
@@ -351,7 +360,7 @@ class TicketValidationTest extends CommonITILValidation
                     'content' => 'Ticket_With_Validation_Request',
                     'status' =>  CommonITILObject::CLOSED
                 ],
-                'expected'  => 0,
+                'expected'  => false,
                 'user_id'   => getItemByTypeName('User', 'glpi', true)
             ],
         ];
@@ -360,10 +369,12 @@ class TicketValidationTest extends CommonITILValidation
     #[DataProvider('testgetNumberToValidateProvider')]
     public function testgetNumberToValidate(
         array $input,
-        int $expected,
+        bool $expected,
         int $user_id
     ): void {
         $this->login();
+
+        $initial_count = \TicketValidation::getNumberToValidate($user_id);
 
         /** Create a ticket, approval requested */
         $ticket = $this->createItem('Ticket', $input);
@@ -374,6 +385,6 @@ class TicketValidationTest extends CommonITILValidation
             'items_id_target' => $user_id,
         ]);
 
-        $this->assertEquals($expected, \TicketValidation::getNumberToValidate($user_id));
+        $this->assertEquals($expected ? ($initial_count + 1) : $initial_count, \TicketValidation::getNumberToValidate($user_id));
     }
 }

@@ -45,7 +45,7 @@ class QueryExpression extends Glpi\DBAL\QueryExpression
      */
     public function __construct($expression)
     {
-        Toolbox::deprecated();
+        Toolbox::deprecated('\QueryExpression is deprecated, use \Glpi\DBAL\QueryExpression instead');
         parent::__construct($expression);
     }
 }

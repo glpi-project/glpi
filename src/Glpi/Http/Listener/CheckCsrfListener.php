@@ -34,35 +34,47 @@
 
 namespace Glpi\Http\Listener;
 
+use Glpi\Security\Attribute\DisableCsrfChecks;
 use Session;
-use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class CheckCsrfListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
-        ];
+        return [KernelEvents::CONTROLLER => 'onKernelController'];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelController(ControllerEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;
         }
 
-        $request = $event->getRequest();
-
-        // Security : check CSRF token
-        if (isAPI() || !$request->request->count()) {
+        /** @var DisableCsrfChecks[] $attributes */
+        $attributes = $event->getAttributes(DisableCsrfChecks::class);
+        if (\count($attributes) > 0) {
+            // CSRF checks are explicitely disabled for this controller.
             return;
         }
 
-        if (preg_match('~(/(plugins|marketplace)/[^/]*|)/ajax/~', $request->getPathInfo()) === 1) {
+        $request = $event->getRequest();
+
+        $bodyless_methods = [
+            Request::METHOD_GET,
+            Request::METHOD_HEAD,
+            Request::METHOD_OPTIONS,
+            Request::METHOD_TRACE,
+        ];
+        if (in_array($request->getRealMethod(), $bodyless_methods)) {
+            // No CSRF checks if method is not supposed to have a body.
+            return;
+        }
+
+        if ($request->isXmlHttpRequest()) {
             // Keep CSRF token as many AJAX requests may be made at the same time.
             // This is due to the fact that read operations are often made using POST method (see #277).
             define('GLPI_KEEP_CSRF_TOKEN', true);

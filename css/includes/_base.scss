@@ -480,3 +480,8 @@ body pre {
 .accordion-button:hover, .accordion-button:focus {
     z-index: unset;
 }
+
+// The definition from tabler doesn't seem to take into account our primary color. Bug?
+.border-primary {
+    border-color: var(--tblr-primary) !important;
+}

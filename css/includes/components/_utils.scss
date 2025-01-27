@@ -44,13 +44,6 @@
     transition: border-color 0.3s;
 }
 
-// Apply the same font-size and line-height as btn-text.
-// Useful when replacing a btn-text content by a loading icon.
-.btn-text-loading {
-    font-size: var(--tblr-btn-font-size) !important;
-    line-height: var(--tblr-btn-line-height) !important;
-}
-
 .w-fit-content {
     width: fit-content !important;
 }
@@ -58,4 +51,28 @@
 .force-full-width {
     width: 100vw;
     margin-left: calc(50% - 50vw);
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+// Alternative to d-flex, does not includes "!important".
+// This is needed when dealing with libraries that will attempt to hide an item
+// by changing its style to "display: none" (like html5sortable), which will fail
+// if the current property is marked as "!important".
+.d-flex-soft {
+    display: flex;
+}
+
+.fs-2x {
+    font-size: 2em !important;
+}
+
+.fs-3x {
+    font-size: 3em !important;
+}
+
+.fs-5x {
+    font-size: 5em !important;
 }

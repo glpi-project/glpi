@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global getAjaxCsrfToken */
+
 import { ProgressBar } from './ProgressBar.js';
 
 export async function init_database(progress_key)
@@ -74,7 +76,15 @@ export async function init_database(progress_key)
     }, 1500);
 
     try {
-        await fetch(`${CFG_GLPI.root_doc}/install/init_database`, {method: 'POST'});
+        await fetch(`${CFG_GLPI.root_doc}/install/init_database`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded;',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+            },
+        });
     } catch {
         // DB installation is really long and can result in a `Proxy timeout` error.
         // It does not mean that the process is killed, it just mean that the proxy did not wait for the response

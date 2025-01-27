@@ -142,9 +142,10 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
     public function getUniqueIDInForm(): string
     {
         return sprintf(
-            "%s-%s",
+            "%s-%s-%s",
             $this->getItem()->fields['rank'],
-            $this->fields['rank']
+            $this->fields['vertical_rank'],
+            $this->fields['horizontal_rank']
         );
     }
 
@@ -180,6 +181,11 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
         ) {
             $section = Section::getById($input['forms_sections_id']);
             $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
+        // Set horizontal rank to null if not set
+        if (!isset($input['horizontal_rank'])) {
+            $input['horizontal_rank'] = 'NULL';
         }
 
         // If the question is being imported, we don't need to format the input

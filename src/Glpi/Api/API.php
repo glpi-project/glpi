@@ -162,9 +162,6 @@ abstract class API
         $api_version_info = reset($api_version_info);
         self::$api_url = trim($api_version_info['endpoint'], "/");
 
-       // Don't display error in result
-        ini_set('display_errors', 'Off');
-
        // Avoid keeping messages between api calls
         $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 

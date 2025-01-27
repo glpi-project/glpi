@@ -35,9 +35,9 @@
 namespace Glpi\Controller;
 
 use Glpi\Api\APIRest;
-use Glpi\Application\ErrorHandler;
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
+use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,15 +52,13 @@ final class ApiRestController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
+    #[DisableCsrfChecks()]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
         return new HeaderlessStreamedResponse(function () {
-            // Ensure errors will not break API output.
-            ErrorHandler::getInstance()->disableOutput();
-
             $api = new APIRest();
             $api->call();
         });

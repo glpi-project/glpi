@@ -63,6 +63,8 @@ class Contract extends CommonDBTM
             Contract_Item::class,
             Contract_Supplier::class,
             ContractCost::class,
+            KnowbaseItem_Item::class,
+            ManualLink::class,
         ];
     }
 
@@ -1650,7 +1652,7 @@ class Contract extends CommonDBTM
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+                $actions[$action_prefix . 'add']    = "<i class='" . self::getIcon() . "'></i>" .
                                                 _sx('button', 'Add a contract');
                 $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a contract');
             }

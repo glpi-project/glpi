@@ -67,6 +67,14 @@ class IsInventoriableCapacity extends AbstractCapacity
         return $tab;
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_Process::class,
+            Item_Environment::class,
+        ];
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

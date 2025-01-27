@@ -166,6 +166,6 @@ class NotificationMailingSetting extends NotificationSetting
 
     public static function getIcon()
     {
-        return "far fa-envelope";
+        return "ti ti-mail";
     }
 }

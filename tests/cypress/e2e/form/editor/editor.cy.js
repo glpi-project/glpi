@@ -677,6 +677,8 @@ describe ('Form editor', () => {
                     cy.findByRole('textbox', {'name': 'Question name'}).should('have.value', question.name);
                     cy.findByRole('checkbox', {'name': 'Mandatory'}).should('be.checked');
                     cy.findByLabelText("Question description").awaitTinyMCE().should('have.text', question.description);
+
+                    cy.findByRole('textbox', {'name': question.type}).scrollIntoView();
                     cy.getDropdownByLabelText("Question type").should('have.text', question.type);
                 });
             });

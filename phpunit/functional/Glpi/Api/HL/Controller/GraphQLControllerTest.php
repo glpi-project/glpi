@@ -158,13 +158,8 @@ class GraphQLControllerTest extends \HLAPITestCase
             'name' => '_test_printer_model',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
         ]));
-        $cartridge_item = new \CartridgeItem();
-        $this->assertGreaterThan(0, $cartridge_item->add([
-            'name' => '_test_cartridge_item',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
-        ]));
         $this->assertGreaterThan(0, (new \CartridgeItem_PrinterModel())->add([
-            'cartridgeitems_id' => $cartridge_item->getID(),
+            'cartridgeitems_id' => \getItemByTypeName(\CartridgeItem::class, '_test_cartridgeitem01', true),
             'printermodels_id'  => $printer_model->getID()
         ]));
 

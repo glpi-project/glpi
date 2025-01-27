@@ -67,6 +67,15 @@ class Event extends CommonDBTM
         return ['admin', LogViewer::class, self::class];
     }
 
+    public static function getMenuContent()
+    {
+        $menu = parent::getMenuContent();
+        if ($menu !== false) {
+            unset($menu['links']['search'], $menu['links']['lists']);
+        }
+        return $menu;
+    }
+
     public function prepareInputForAdd($input)
     {
         /** @var array $CFG_GLPI */
@@ -564,7 +573,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="fa-fw text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+            return '<i class="text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

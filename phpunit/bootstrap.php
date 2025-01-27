@@ -33,14 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-
-ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
-error_reporting(E_ALL);
 
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
@@ -95,8 +91,3 @@ $tu_oauth_client = new OAuthClient();
 $tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
 define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
 define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);
-
-// There is no need to pollute the output with error messages.
-ini_set('display_errors', 'Off');
-ErrorHandler::getInstance()->disableOutput();
-ErrorHandler::getInstance()->setForwardToInternalHandler(false);

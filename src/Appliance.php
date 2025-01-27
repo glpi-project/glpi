@@ -63,7 +63,11 @@ class Appliance extends CommonDBTM
             Document_Item::class,
             Infocom::class,
             Notepad::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
         ];
     }
 
@@ -505,22 +509,6 @@ class Appliance extends CommonDBTM
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
 
         return $actions;
-    }
-
-    public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
-        ?CommonDBTM $checkitem = null
-    ) {
-        if (in_array($itemtype, self::getTypes())) {
-            if (self::canUpdate()) {
-                $action_prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-file-contract'></i>" .
-                                                _sx('button', 'Add to an appliance');
-                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove from an appliance');
-            }
-        }
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)

@@ -333,9 +333,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function getStatusIcon($status): string
     {
         if ($status) {
-            return '<i class="fa-solid fa-triangle-exclamation fa-beat fa-lg" style="color: #ff0000;"></i>';
+            return '<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i>';
         } else {
-            return '<i class="fa-solid fa-circle-check fa-beat fa-lg" style="color: #36d601;"></i>';
+            return '<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i>';
         }
     }
 

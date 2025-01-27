@@ -84,6 +84,15 @@ class Computer extends CommonDBTM
             KnowbaseItem_Item::class,
             Item_RemoteManagement::class,
             ItemAntivirus::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // DatabaseInstance::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ItemVirtualMachine::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
 
@@ -386,19 +395,19 @@ class Computer extends CommonDBTM
                 'Item_OperatingSystem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'update'
                 => OperatingSystem::getTypeName(),
                 Asset_PeripheralAsset::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='fa-fw ti ti-plug'></i>" .
+                => "<i class='ti ti-plug'></i>" .
                   _sx('button', 'Connect'),
                 'Item_SoftwareVersion' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='fa-fw fas fa-laptop-medical'></i>" .
+                => "<i class='" . Software::getIcon() . "'></i>" .
                   _sx('button', 'Install'),
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-                => "<i class='fa-fw " . SoftwareLicense::getIcon() . "'></i>" .
+                => "<i class='" . SoftwareLicense::getIcon() . "'></i>" .
                   _sx('button', 'Add a license'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'
-                => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
+                => "<i class='" . Domain::getIcon() . "'></i>" .
                     _sx('button', 'Add a domain'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_domain'
-                => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
+                => "<i class='" . Domain::getIcon() . "'></i>" .
                     _sx('button', 'Remove a domain'),
             ];
 

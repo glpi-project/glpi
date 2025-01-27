@@ -40,6 +40,14 @@ use Override;
 
 final class ExternalPageTile extends CommonDBTM implements TileInterface
 {
+    public static $rightname = 'config';
+
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return self::canUpdate();
+    }
+
     #[Override]
     public function getTitle(): string
     {
@@ -65,8 +73,14 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     }
 
     #[Override]
-    public function isValid(SessionInfo $session_info): bool
+    public function isAvailable(SessionInfo $session_info): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function getDatabaseId(): int
+    {
+        return $this->fields['id'];
     }
 }

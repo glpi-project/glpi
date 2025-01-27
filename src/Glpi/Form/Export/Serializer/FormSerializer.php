@@ -396,7 +396,8 @@ final class FormSerializer extends AbstractFormSerializer
         foreach ($form->getFormComments() as $comment) {
             $comment_spec = new CommentContentSpecification();
             $comment_spec->name = $comment->fields['name'];
-            $comment_spec->rank = $comment->fields['rank'];
+            $comment_spec->vertical_rank = $comment->fields['vertical_rank'];
+            $comment_spec->horizontal_rank = $comment->fields['horizontal_rank'];
             $comment_spec->description = $comment->fields['description'];
             $comment_spec->section_rank = $form->getSections()[$comment->fields['forms_sections_id']]->fields['rank'];
 
@@ -422,7 +423,8 @@ final class FormSerializer extends AbstractFormSerializer
             $id = $comment->add([
                 'name'               => $comment_spec->name,
                 'description'        => $comment_spec->description,
-                'rank'               => $comment_spec->rank,
+                'vertical_rank'      => $comment_spec->vertical_rank,
+                'horizontal_rank'    => $comment_spec->horizontal_rank,
                 'forms_sections_id'  => $section->fields['id'],
             ]);
 
@@ -445,7 +447,8 @@ final class FormSerializer extends AbstractFormSerializer
             $question_spec->name = $question->fields['name'];
             $question_spec->type = $question->fields['type'];
             $question_spec->is_mandatory = $question->fields['is_mandatory'];
-            $question_spec->rank = $question->fields['rank'];
+            $question_spec->vertical_rank = $question->fields['vertical_rank'];
+            $question_spec->horizontal_rank = $question->fields['horizontal_rank'];
             $question_spec->description = $question->fields['description'];
             $question_spec->default_value = $question->fields['default_value'];
             $question_spec->extra_data = $question->fields['extra_data'];
@@ -522,7 +525,8 @@ final class FormSerializer extends AbstractFormSerializer
                 'name'              => $question_spec->name,
                 'type'              => $question_spec->type,
                 'is_mandatory'      => $question_spec->is_mandatory,
-                'rank'              => $question_spec->rank,
+                'vertical_rank'     => $question_spec->vertical_rank,
+                'horizontal_rank'   => $question_spec->horizontal_rank,
                 'description'       => $question_spec->description,
                 'default_value'     => $question_spec->default_value,
                 'extra_data'        => $question_spec->extra_data,

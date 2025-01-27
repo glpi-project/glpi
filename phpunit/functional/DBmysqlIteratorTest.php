@@ -1483,7 +1483,7 @@ class DBmysqlIteratorTest extends DbTestCase
     #[DataProvider('resultProvider')]
     public function testAutoUnsanitize(array $db_data, array $result): void
     {
-        //PHPUnit cannot mack native functions.
+        //PHPUnit cannot mock native functions.
         $mysqli_result = $this->createMock(\mysqli_result::class);
         $mysqli_result->method('fetch_assoc')->willReturn($db_data);
         $mysqli_result->method('data_seek')->willReturn(true);

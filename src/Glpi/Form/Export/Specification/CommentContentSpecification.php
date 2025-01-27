@@ -39,6 +39,7 @@ final class CommentContentSpecification
 {
     public string $name;
     public string $description;
-    public int $rank;
+    public int $vertical_rank;
+    public ?int $horizontal_rank;
     public int $section_rank;
 }

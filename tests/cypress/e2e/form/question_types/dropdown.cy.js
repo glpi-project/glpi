@@ -90,15 +90,16 @@ describe('Dropdown form question type', () => {
     function checkSelectedOptions(indexes, multiple = false) {
         // Check in the select preview
         const selector = multiple ? ".multiple-preview-dropdown select" : ".single-preview-dropdown select";
-        cy.get('@question').find(selector).find("option").each((el, i) => {
-            // Skip the empty option
-            if (i === 0 && !multiple) return;
+        cy.get('@question').find(selector).find("option").should((options) => {
+            options.each((i, el) => {
+                if (i === 0 && !multiple) return;
 
-            if (indexes.includes(i - (!multiple ? 1 : 0))) {
-                cy.wrap(el).should('be.selected');
-            } else {
-                cy.wrap(el).should('not.be.selected');
-            }
+                if (indexes.includes(i - (!multiple ? 1 : 0))) {
+                    expect(el).to.be.selected;
+                } else {
+                    expect(el).not.to.be.selected;
+                }
+            });
         });
     }
 
@@ -146,10 +147,6 @@ describe('Dropdown form question type', () => {
 
         // Click on the question
         cy.get("@question").click('top');
-
-        // TODO: Investigate why this 'wait' is needed and fix it.
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(200);
 
         // Check selected options and option labels
         checkSelectedOptions([2]);

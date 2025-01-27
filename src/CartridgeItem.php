@@ -51,6 +51,7 @@ class CartridgeItem extends CommonDBTM
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
     }
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Cartridge', 'Infocom'];
@@ -58,6 +59,14 @@ class CartridgeItem extends CommonDBTM
     protected $usenotepad               = true;
 
     public static $rightname                   = 'cartridge';
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class,
+            ManualLink::class,
+        ];
+    }
 
     public static function getTypeName($nb = 0)
     {

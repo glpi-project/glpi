@@ -34,8 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use RRule\RRule;
@@ -114,7 +112,7 @@ class Planning extends CommonGLPI
 
         if (self::canView()) {
             $title     = htmlescape(self::getTypeName(Session::getPluralNumber()));
-            $planning  = "<i class='fa far fa-calendar-alt pointer' title='$title'>
+            $planning  = "<i class='ti ti-calendar pointer' title='$title'>
                         <span class='sr-only'>$title</span>
                        </i>";
 
@@ -123,7 +121,7 @@ class Planning extends CommonGLPI
 
         if (PlanningExternalEvent::canView()) {
             $ext_title = htmlescape(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
-            $external  = "<i class='fa fas fa-calendar-week pointer' title='$ext_title'>
+            $external  = "<i class='ti ti-calendar-week pointer' title='$ext_title'>
                         <span class='sr-only'>$ext_title</span>
                        </i>";
 
@@ -132,7 +130,7 @@ class Planning extends CommonGLPI
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $caldav_title = __s('CalDAV browser interface');
-            $caldav  = "<i class='fa fas fa-sync pointer' title='$caldav_title'>
+            $caldav  = "<i class='ti ti-refresh pointer' title='$caldav_title'>
                         <span class='sr-only'>$caldav_title</span>
                        </i>";
 
@@ -1356,7 +1354,7 @@ TWIG, $twig_params);
         if (count($append_params) > 1) {
             $rand = mt_rand();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
-            echo "<i class='far fa-calendar-alt'></i>";
+            echo "<i class='ti ti-calendar'></i>";
             echo "<span class='sr-only'>" . __s('Availability') . "</span>";
             echo "</a>";
             Ajax::createIframeModalWindow(
@@ -1697,6 +1695,11 @@ TWIG, $twig_params);
                 'state'       => $event['state'] ?? "",
             ];
 
+            // if duration is full day and start is midnight, force allDay to true
+            if (date('H:i:s', strtotime($begin)) === '00:00:00' && (int) $ms_duration % (DAY_TIMESTAMP * 1000) === 0) {
+                $new_event['allDay'] = true;
+            }
+
             // if we can't update the event, pass the editable key
             if (!$event['editable']) {
                 $new_event['editable'] = false;
@@ -1745,7 +1748,7 @@ TWIG, $twig_params);
                     )
                 );
                 $new_event = array_merge($new_event, [
-                    'icon'     => 'fas fa-history',
+                    'icon'     => 'ti ti-history',
                     'icon_alt' => $hr_rrule_o->humanReadable(),
                 ]);
 
@@ -1880,8 +1883,6 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupt JSON output
-
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
@@ -1953,8 +1954,6 @@ TWIG, $twig_params);
                 ];
             }
         }
-
-        ErrorHandler::getInstance()->unsuspendOutput(); // Restore error output state
 
         return $raw_events;
     }

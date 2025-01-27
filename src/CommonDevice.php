@@ -142,7 +142,7 @@ abstract class CommonDevice extends CommonDropdown
                                 $key::getTypeName(1)
                             );
 
-                            $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                            $listLabel = '<i class="ti ti-list pointer" title="' . $itemTypeName . '"></i>'
                             . '<span class="sr-only">' . $itemTypeName . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
@@ -423,7 +423,7 @@ abstract class CommonDevice extends CommonDropdown
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
-            $content .= "&nbsp;<span class='fa fa-plus pointer' title='" . __s('Add') . "'
+            $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
                       onClick=\"$('#" . $field_name . "').show();\"
                       ><span class='sr-only'>" .  __s('Add') . "</span></span>";
             $content .= "<span id='$field_name' style='display:none'><br>";

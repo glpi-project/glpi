@@ -255,7 +255,7 @@ class Line extends CommonDBTM
 
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            $actions[$action_prefix . 'add']    = "<i class='" . self::getIcon() . "'></i>" .
                 _sx('button', 'Add a line');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a line');
         }

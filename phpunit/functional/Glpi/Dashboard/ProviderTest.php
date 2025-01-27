@@ -139,7 +139,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -196,7 +196,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -256,7 +256,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -332,7 +332,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
     }
@@ -450,7 +450,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -507,7 +507,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -567,7 +567,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
 
@@ -643,7 +643,7 @@ class ProviderTest extends DbTestCase
                     ]
                 ]
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'ti ti-stopwatch'
         ];
         $this->assertEquals($expected, $output);
     }

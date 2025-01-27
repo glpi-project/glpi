@@ -52,6 +52,14 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
         return Database::getIcon();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // DatabaseInstance::class,
+        ];
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

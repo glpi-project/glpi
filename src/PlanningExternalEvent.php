@@ -171,11 +171,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             if ($this->can($ID, PURGE)) {
                 $options['addbuttons']['purge'] = [
                     'text' => __("Delete serie"),
-                    'icon' => 'fas fa-trash-alt',
+                    'icon' => 'ti ti-trash',
                 ];
                 $options['addbuttons']['purge_instance'] = [
                     'text' => __("Delete instance"),
-                    'icon' => 'far fa-trash-alt',
+                    'icon' => 'ti ti-trash',
                 ];
             }
         }

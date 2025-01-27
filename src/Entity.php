@@ -166,7 +166,9 @@ class Entity extends CommonTreeDropdown
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [
+            KnowbaseItem_Item::class,
+        ];
     }
 
     public function pre_updateInDB()

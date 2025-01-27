@@ -167,7 +167,6 @@ function step2($update)
 function step3($host, $user, $password, $update)
 {
 
-    error_reporting(16);
     mysqli_report(MYSQLI_REPORT_OFF);
 
    //Check if the port is in url
@@ -255,7 +254,7 @@ function step4($databasename, $newdatabasename)
         echo "<input type='hidden' name='update' value='no'>";
         echo "<input type='hidden' name='install' value='Etape_2'>";
         echo "<button type='submit' name='submit' class='btn btn-warning' " . ($disabled ? 'disabled="disabled"' : '') . ">";
-        echo "<i class='fas fa-chevron-left me-1 fa-2x alert-icon'></i>";
+        echo "<i class='ti ti-chevron-left me-1 fs-2x alert-icon'></i>";
         echo __s("Back");
         echo "</button>";
         Html::closeForm();
@@ -267,7 +266,7 @@ function step4($databasename, $newdatabasename)
         echo "<input type='hidden' name='install' value='Etape_4'>";
         echo "<button type='submit' name='submit' class='btn btn-primary' " . ($disabled ? 'disabled="disabled"' : '') . ">";
         echo __s('Continue');
-        echo "<i class='fas fa-chevron-right ms-1'></i>";
+        echo "<i class='ti ti-chevron-right ms-1'></i>";
         echo "</button>";
         Html::closeForm();
     };
@@ -482,13 +481,6 @@ function update1($dbname)
     }
 }
 
-
-
-//------------Start of install script---------------------------
-
-error_reporting(0); // we want to check system before affraid the user.
-
-
 /**
  * @since 0.84.2
  **/
@@ -508,6 +500,10 @@ function checkConfigFile()
 
     Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
 }
+
+
+//------------Start of install script---------------------------
+
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     $_SESSION = [];

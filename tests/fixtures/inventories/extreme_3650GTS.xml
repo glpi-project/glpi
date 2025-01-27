@@ -1,0 +1,4457 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <DESCRIPTION>Ethernet Routing Switch 3650GTS-PWR+ Stack</DESCRIPTION>
+          <FIRMWARE>6.1.0.0</FIRMWARE>
+          <FRU>2</FRU>
+          <INDEX>1</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>3650GTS-PWR+</MODEL>
+          <NAME>stack</NAME>
+          <REVISION>04</REVISION>
+          <SERIAL>18OL0530E253</SERIAL>
+          <TYPE>stack</TYPE>
+          <VERSION>v6.5.6.009</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>Ethernet Routing Switch 3650GTS-PWR+</DESCRIPTION>
+          <FIRMWARE>6.1.0.0</FIRMWARE>
+          <FRU>1</FRU>
+          <INDEX>2</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>3650GTS-PWR+</MODEL>
+          <NAME>switch-1</NAME>
+          <REVISION>04</REVISION>
+          <SERIAL>18OL0530E253</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>v6.5.6.009</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>3</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-1</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>4</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-2</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>5</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-3</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>6</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-4</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>7</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-5</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>8</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-6</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>9</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-7</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>10</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-8</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>11</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-9</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>12</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-10</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>13</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-11</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>14</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-12</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>15</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-13</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>16</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-14</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>17</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-15</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>18</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-16</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>19</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-17</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>20</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-18</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>21</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-19</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>22</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-20</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>23</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-21</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>24</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-22</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>25</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-23</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>26</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-24</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>27</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-25</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>28</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-26</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>29</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-27</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>30</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-28</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>31</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-29</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>32</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-30</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>33</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-31</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>34</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-32</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>35</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-33</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>36</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-34</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>37</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-35</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>38</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-36</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>39</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-37</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>40</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-38</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>41</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-39</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>42</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-40</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>43</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-41</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>44</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-42</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>45</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-43</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>46</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-44</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>47</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-45</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>48</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-46</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>49</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-47</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>50</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-48</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>103</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-0</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>104</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-1</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>103</CONTAINEDININDEX>
+          <DESCRIPTION>SX GBIC</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>137</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>AA1419048-E6</MODEL>
+          <NAME>gbic</NAME>
+          <REVISION>1</REVISION>
+          <SERIAL>JDSUCNCH39DT00A</SERIAL>
+          <TYPE>module</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>137</CONTAINEDININDEX>
+          <DESCRIPTION>1000-Base SX Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>169</INDEX>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-port-49</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>2</CONTAINEDININDEX>
+          <DESCRIPTION>8 port CASCADE Module</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>199</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>400-ST1</MODEL>
+          <NAME>cascade</NAME>
+          <TYPE>module</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>Ethernet Routing Switch 3626GTS-PWR+</DESCRIPTION>
+          <FIRMWARE>6.1.0.0</FIRMWARE>
+          <FRU>1</FRU>
+          <INDEX>208</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>3626GTS-PWR+</MODEL>
+          <NAME>switch-2</NAME>
+          <REVISION>01</REVISION>
+          <SERIAL>17OL07000107</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>v6.5.6.009</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>209</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-1</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>210</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-2</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>211</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-3</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>212</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-4</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>213</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-5</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>214</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-6</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>215</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-7</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>216</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-8</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>217</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-9</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>218</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-10</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>219</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-11</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>220</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-12</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>221</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-13</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>222</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-14</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>223</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-15</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>224</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-16</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>225</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-17</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>226</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-18</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>227</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-19</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>228</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-20</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>229</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-21</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>230</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-22</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>231</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-23</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>232</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-24</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>309</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-0</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>310</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-1</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>309</CONTAINEDININDEX>
+          <DESCRIPTION>SX GBIC</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>343</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>AA1419048-E6</MODEL>
+          <NAME>gbic</NAME>
+          <REVISION>1</REVISION>
+          <SERIAL>JDSUCNCH39DT269</SERIAL>
+          <TYPE>module</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>343</CONTAINEDININDEX>
+          <DESCRIPTION>1000-Base SX Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>375</INDEX>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-port-25</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>208</CONTAINEDININDEX>
+          <DESCRIPTION>8 port CASCADE Module</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>405</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>400-ST1</MODEL>
+          <NAME>cascade</NAME>
+          <TYPE>module</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>Ethernet Routing Switch 3626GTS-PWR+</DESCRIPTION>
+          <FIRMWARE>6.1.0.0</FIRMWARE>
+          <FRU>1</FRU>
+          <INDEX>414</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>3626GTS-PWR+</MODEL>
+          <NAME>switch-3</NAME>
+          <REVISION>01</REVISION>
+          <SERIAL>17OL07000020</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>v6.5.6.009</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>415</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-1</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>416</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-2</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>417</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-3</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>418</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-4</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>419</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-5</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>420</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-6</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>421</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-7</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>422</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-8</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>423</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-9</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>424</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-10</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>425</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-11</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>426</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-12</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>427</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-13</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>428</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-14</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>429</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-15</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>430</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-16</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>431</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-17</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>432</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-18</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>433</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-19</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>434</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-20</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>435</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-21</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Multi-Speed Ethernet Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>436</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Multi-Speed Port</MODEL>
+          <NAME>port-22</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>437</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-23</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>Combo Port</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>438</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Combo Port</MODEL>
+          <NAME>port-24</NAME>
+          <TYPE>port</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>515</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-0</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>GBIC Slot</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>516</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>Pluggable Port</MODEL>
+          <NAME>gbic-slot-1</NAME>
+          <TYPE>container</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>414</CONTAINEDININDEX>
+          <DESCRIPTION>8 port CASCADE Module</DESCRIPTION>
+          <FRU>2</FRU>
+          <INDEX>611</INDEX>
+          <MANUFACTURER>Extreme Networks</MANUFACTURER>
+          <MODEL>400-ST1</MODEL>
+          <NAME>cascade</NAME>
+          <TYPE>module</TYPE>
+        </COMPONENT>
+      </COMPONENTS>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <NAME>3650GTS-PWR+</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>v6.5.6.009</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Ethernet Routing Switch 3650GTS-PWR+  HW:04       FW:6.1.0.0   SW:v6.5.6.009 BN:09 (c) Extreme Networks</COMMENTS>
+        <CONTACT>PRIVATE</CONTACT>
+        <FIRMWARE>v6.5.6.009</FIRMWARE>
+        <ID>1</ID>
+        <IPS>
+          <IP>110.234.40.181</IP>
+          <IP>68.26.151.15</IP>
+          <IP>139.147.78.190</IP>
+          <IP>79.93.174.254</IP>
+        </IPS>
+        <LOCATION>PRIVATE</LOCATION>
+        <MAC>40:9e:7f:2a:29:a7</MAC>
+        <MODEL>3650GTS-PWR+</MODEL>
+        <NAME>SRC-3600-16</NAME>
+        <SERIAL>18OL0530E253</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>138 days, 06:22:57.71</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>ba:66:d5:11:31:87</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>73670574</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:24.06</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/1</IFNAME>
+          <IFNUMBER>1</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2146521613</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>1e:98:4a:4a:3d:90</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1566042630</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>126 days, 09:50:07.94</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/2</IFNAME>
+          <IFNUMBER>2</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2551631951</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>25:f2:a8:82:02:bb</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>0e:a8:6c:12:36:48</MAC>
+              <MAC>5a:d7:bb:6e:5c:c7</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3224214684</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>1 minute, 54.14</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4153216532</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ec:b5:b9:41:f2:f1</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>9c:73:d5:b1:5d:c5</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>400814571</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:01:47.79</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/4</IFNAME>
+          <IFNUMBER>4</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3254961069</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>f4:2d:81:99:1c:b9</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>92:0e:9e:c4:e2:03</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1097019229</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:00:45.43</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/5</IFNAME>
+          <IFNUMBER>5</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>631205904</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b4:28:7f:c7:1a:ff</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>20:5b:bd:ef:8c:26</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>62464322</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>132 days, 11:19:14.45</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/6</IFNAME>
+          <IFNUMBER>6</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1701803199</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>8d:69:ee:86:60:db</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>65:74:bc:dc:ce:29</MAC>
+              <MAC>13:4f:dc:b3:ec:cc</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1176863579</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>1 minute, 55.14</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/7</IFNAME>
+          <IFNUMBER>7</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3426636845</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>df:a9:b7:2d:81:b3</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>557027841</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:35:51.06</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/8</IFNAME>
+          <IFNUMBER>8</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>242649664</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>91:0d:3d:5c:7e:45</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>308729380</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>4 minutes, 00.83</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/9</IFNAME>
+          <IFNUMBER>9</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2492190321</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>fc:4d:72:fb:d9:af</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1832081746</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>4 minutes, 01.99</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/10</IFNAME>
+          <IFNUMBER>10</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2283710026</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>00:aa:f8:dd:23:82</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>656671188</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>100 days, 11:27:14.95</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/11</IFNAME>
+          <IFNUMBER>11</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3304305460</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:ca:29:a4:03:20</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3354060534</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>100 days, 11:27:10.16</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/12</IFNAME>
+          <IFNUMBER>12</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>451814465</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>63:b0:2a:fd:20:1a</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2601929953</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>4 minutes, 00.88</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/13</IFNAME>
+          <IFNUMBER>13</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4208372694</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b2:59:b0:5c:93:23</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>20:b6:8f:60:27:a2</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>90739681</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:24.41</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/14</IFNAME>
+          <IFNUMBER>14</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2099703932</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ba:84:9e:d5:e6:69</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>17:90:f7:4b:55:71</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2507774709</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:41:40.08</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/15</IFNAME>
+          <IFNUMBER>15</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2072943226</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>50:9d:fa:60:54:e0</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>55:78:be:c2:4c:cc</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3618625267</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 23:10:43.19</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/16</IFNAME>
+          <IFNUMBER>16</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2056233233</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b5:80:3b:03:f1:3b</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>3a:7e:39:ff:fb:4e</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>193222817</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:01:46.42</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/17</IFNAME>
+          <IFNUMBER>17</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1985150319</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>f2:74:4f:57:61:97</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>b6:c0:08:b4:ce:97</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2655763021</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>84 days, 10:38:01.88</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/18</IFNAME>
+          <IFNUMBER>18</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>530474217</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>dc:6d:93:ba:f1:28</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.25 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/19</IFNAME>
+          <IFNUMBER>19</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>94:d9:ce:d2:79:27</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>9c:9b:93:ea:1d:84</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>122890560</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>1 minute, 57.15</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/20</IFNAME>
+          <IFNUMBER>20</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2526603570</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>92:60:86:00:26:b9</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.25 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/21</IFNAME>
+          <IFNUMBER>21</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ea:46:f0:dd:e2:8d</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>51:2e:88:37:1a:26</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>402950078</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 22:55:44.21</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/22</IFNAME>
+          <IFNUMBER>22</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1384153880</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>61:35:7e:49:2d:76</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>3f:9d:da:77:a9:df</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>667315155</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:11:28.47</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/23</IFNAME>
+          <IFNUMBER>23</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1083472228</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6b:38:0f:91:7a:00</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>a7:a7:03:08:d9:65</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>72502048</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:24.08</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/24</IFNAME>
+          <IFNUMBER>24</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2126327385</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>15:c9:5b:42:42:3b</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3698506994</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:39:30.78</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/25</IFNAME>
+          <IFNUMBER>25</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>767863728</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>18:cf:0a:cc:f6:2c</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>4108550556</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:39:53.63</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/26</IFNAME>
+          <IFNUMBER>26</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3383173009</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>dd:36:c2:31:3b:3f</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>6e:52:b9:75:38:06</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>2</IFINERRORS>
+          <IFINOCTETS>2872989081</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 20:26:30.48</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/27</IFNAME>
+          <IFNUMBER>27</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1962151352</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6a:d4:21:4c:ae:0b</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>91:e1:9c:17:06:b4</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>73572454</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:42:52.83</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/28</IFNAME>
+          <IFNUMBER>28</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>973126361</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>cf:76:4a:fb:76:54</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>8e:c4:69:59:d5:21</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>209856180</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>130 days, 04:17:50.15</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/29</IFNAME>
+          <IFNUMBER>29</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2288058207</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>5c:73:c3:00:18:c1</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>46:b6:49:b3:d6:86</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>2</IFINERRORS>
+          <IFINOCTETS>3963050812</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 20:58:21.66</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/30</IFNAME>
+          <IFNUMBER>30</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2583442475</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b6:2e:9d:fd:47:83</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>ed:44:86:26:40:0d</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3833872462</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 22:40:49.05</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/31</IFNAME>
+          <IFNUMBER>31</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1188050421</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>de:a7:51:22:23:46</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>4b:f3:28:4b:2f:08</MAC>
+              <MAC>57:8a:c3:8e:00:77</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2155982046</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 00.16</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/32</IFNAME>
+          <IFNUMBER>32</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1150954189</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>1a:a4:25:0d:4d:83</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>18:b2:ea:b4:c3:c3</MAC>
+              <MAC>16:eb:c8:1f:aa:e5</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>84392</IFINERRORS>
+          <IFINOCTETS>770268800</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 00.16</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/33</IFNAME>
+          <IFNUMBER>33</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3588440109</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>9e:77:39:0f:c3:36</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>6e:cf:f1:2c:c4:9f</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2015667534</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 22:11:50.98</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/34</IFNAME>
+          <IFNUMBER>34</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1261272775</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ff:28:ba:ea:99:94</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>52:68:94:c3:41:3e</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>66492732</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:24.07</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/35</IFNAME>
+          <IFNUMBER>35</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1958859605</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>7f:8c:ca:b3:af:bc</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>b7:1d:3b:01:e0:5d</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2409692687</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:46:06.47</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/36</IFNAME>
+          <IFNUMBER>36</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3023891101</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>7c:10:a8:3c:2d:92</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>b9:b0:2b:42:a7:bb</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>256680919</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 22:55:48.23</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/37</IFNAME>
+          <IFNUMBER>37</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2151736463</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>41:94:ae:ab:01:66</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>77:c5:d6:84:2d:bc</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3865259991</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 23:11:57.09</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/38</IFNAME>
+          <IFNUMBER>38</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2226111487</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>50:38:61:9f:fa:13</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>ef:28:63:ea:26:7a</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>202297145</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>130 days, 04:51:52.26</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/39</IFNAME>
+          <IFNUMBER>39</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4154980032</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>27:f9:61:ba:c4:62</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.25 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/40</IFNAME>
+          <IFNUMBER>40</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ab:dd:6b:af:e4:92</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>e6:04:8e:ec:50:b7</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3742531400</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 21:41:45.75</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/41</IFNAME>
+          <IFNUMBER>41</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2676963803</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>76:66:3c:d5:d5:e7</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>41:44:72:25:44:84</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2928929694</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 03.17</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/42</IFNAME>
+          <IFNUMBER>42</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2722087336</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>65:6c:90:98:b9:65</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>37:d9:ac:8c:86:ff</MAC>
+              <MAC>37:80:49:be:0e:47</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3151560625</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 03.17</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/43</IFNAME>
+          <IFNUMBER>43</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1504848350</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>2b:5e:91:9a:1f:0e</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>4</IFINERRORS>
+          <IFINOCTETS>79742</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>117 days, 04:49:30.71</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/44</IFNAME>
+          <IFNUMBER>44</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2365153973</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:1b:14:ee:fe:08</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>e0:3b:9a:ca:e2:1d</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>62159280</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:24.10</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/45</IFNAME>
+          <IFNUMBER>45</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1823965701</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>9c:f6:4c:aa:e2:16</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>60:a3:af:80:5c:0d</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>276906003</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:01:47.65</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/46</IFNAME>
+          <IFNUMBER>46</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2400399430</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>5a:a1:a2:83:b2:4c</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>a9:b7:82:5d:e4:fe</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2516743483</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 20:58:53.27</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/47</IFNAME>
+          <IFNUMBER>47</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3842352679</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>93:10:59:b2:a8:4c</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>59:50:af:a6:0f:8b</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>6669061</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>114 days, 17:42:52.20</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/48</IFNAME>
+          <IFNUMBER>48</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2903320990</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>1b:01:10:00:2b:36</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>1/10</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>798473695</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 04.17</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/49</IFNAME>
+          <IFNUMBER>49</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3136617416</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b3:aa:bf:e9:a7:83</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-122</NAME>
+              <NUMBER>122</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-18</NAME>
+              <NUMBER>18</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-57</NAME>
+              <NUMBER>57</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-6</NAME>
+              <NUMBER>6</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.25 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>1/50</IFNAME>
+          <IFNUMBER>50</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>66:95:f1:45:d9:94</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>7c:91:4b:32:56:89</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>3</IFINERRORS>
+          <IFINOCTETS>3727731623</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>98 days, 05:27:35.77</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/1</IFNAME>
+          <IFNUMBER>65</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1161105722</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>f7:72:cc:18:d7:24</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>2b:2b:aa:9e:95:96</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2814523119</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>98 days, 05:36:23.90</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/2</IFNAME>
+          <IFNUMBER>66</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>190983904</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>2e:3a:b0:9c:70:fa</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>82:82:2a:13:21:91</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>137305393</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>97 days, 09:32:30.85</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/3</IFNAME>
+          <IFNUMBER>67</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1880409201</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>7c:82:b3:14:5f:92</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>a5:0b:4e:b7:46:7d</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>797896840</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>97 days, 10:45:50.36</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/4</IFNAME>
+          <IFNUMBER>68</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2549039534</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>35:85:29:f3:8b:04</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>a0:c4:89:22:ab:e1</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>156138216</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>98 days, 04:42:45.71</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/5</IFNAME>
+          <IFNUMBER>69</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1430450509</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>01:00:31:aa:5f:9b</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>23:f3:85:40:74:d0</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2513423316</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>97 days, 11:06:30.28</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/6</IFNAME>
+          <IFNUMBER>70</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>24515420</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>29:8f:70:94:4e:a8</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>6c:ea:d4:b3:28:42</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>155841413</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>97 days, 09:00:51.51</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/7</IFNAME>
+          <IFNUMBER>71</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1307535655</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>da:3d:7e:40:b7:4e</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>67:99:0c:52:87:36</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>129449640</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 08.15</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/8</IFNAME>
+          <IFNUMBER>72</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>102787564</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3f:71:1a:fd:d3:7e</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>e1:27:eb:03:1b:36</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>167659281</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 08.15</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/9</IFNAME>
+          <IFNUMBER>73</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>141539580</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>f6:b0:ad:87:2c:b1</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>36197</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>105 days, 06:37:47.06</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/10</IFNAME>
+          <IFNUMBER>74</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>619107</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>fd:fd:60:8d:a4:6f</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>36880</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>105 days, 06:36:52.91</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/11</IFNAME>
+          <IFNUMBER>75</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>678629</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>e1:a3:27:6b:3b:8d</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>38832</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>105 days, 06:36:31.14</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/12</IFNAME>
+          <IFNUMBER>76</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>729594</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>4e:13:fa:47:10:b3</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>14:fa:bc:b9:1b:fb</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>4156014959</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>88 days, 10:06:58.46</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/13</IFNAME>
+          <IFNUMBER>77</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4139988710</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>29:1b:0e:17:b8:3c</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>18:5b:71:51:44:dd</MAC>
+              <MAC>38:81:59:24:3b:16</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>2625136625</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>67 days, 04:14:07.87</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/14</IFNAME>
+          <IFNUMBER>78</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2186197869</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>26:06:dd:8a:79:a8</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>af:b2:50:2f:d6:d4</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>225801660</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>131 days, 05:54:38.53</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/15</IFNAME>
+          <IFNUMBER>79</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>10110668</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>32:5b:75:5c:e0:2e</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1860657727</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:35:56.37</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/16</IFNAME>
+          <IFNUMBER>80</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1532817403</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>4c:14:86:db:63:91</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>03:1b:9b:8c:78:7b</MAC>
+              <MAC>27:a3:56:e4:b3:d2</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1743578229</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 10.19</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/17</IFNAME>
+          <IFNUMBER>81</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1448793486</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6e:86:a4:be:13:b0</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>9c:65:a1:ec:29:4a</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>7</IFINERRORS>
+          <IFINOCTETS>251272252</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 10.19</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/18</IFNAME>
+          <IFNUMBER>82</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>228900505</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>4c:96:f4:72:f1:da</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>82:c1:d0:e9:ab:8e</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>142856657</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 10.19</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/19</IFNAME>
+          <IFNUMBER>83</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>119913372</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>de:2c:82:3d:23:c8</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>36:e6:ee:10:7b:7c</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3354819966</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>50 days, 16:20:21.48</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/20</IFNAME>
+          <IFNUMBER>84</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2522744417</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>d8:89:86:4d:e5:bd</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.26 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/21</IFNAME>
+          <IFNUMBER>85</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>6c:58:37:76:f8:63</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>773372306</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:35:40.05</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/22</IFNAME>
+          <IFNUMBER>86</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>3959847638</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>66:5f:12:97:f5:c3</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>690159688</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>28 days, 03:35:47.46</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/23</IFNAME>
+          <IFNUMBER>87</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1636105922</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>04:f9:ea:85:a4:0a</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>ge1</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>504410124</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>4 minutes, 01.32</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/24</IFNAME>
+          <IFNUMBER>88</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1125970187</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b9:51:05:ce:c7:c4</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CDP>1</CDP>
+            <CONNECTION>
+              <IFDESCR>1/10</IFDESCR>
+              <SYSMAC>00:00:00:00:00:00</SYSMAC>
+              <SYSNAME>PRIVATE</SYSNAME>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1652881716</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 11.19</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/25</IFNAME>
+          <IFNUMBER>89</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>262534556</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>52:8a:2e:a6:41:8a</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-122</NAME>
+              <NUMBER>122</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-18</NAME>
+              <NUMBER>18</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-57</NAME>
+              <NUMBER>57</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-6</NAME>
+              <NUMBER>6</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.26 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>2/26</IFNAME>
+          <IFNUMBER>90</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>35:e6:bb:58:81:a0</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-122</NAME>
+              <NUMBER>122</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-18</NAME>
+              <NUMBER>18</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-40</NAME>
+              <NUMBER>40</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-50</NAME>
+              <NUMBER>50</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-6</NAME>
+              <NUMBER>6</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-70</NAME>
+              <NUMBER>70</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-71</NAME>
+              <NUMBER>71</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/1</IFNAME>
+          <IFNUMBER>129</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3d:06:d9:a1:82:49</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-134</NAME>
+              <NUMBER>134</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-200</NAME>
+              <NUMBER>200</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-203</NAME>
+              <NUMBER>203</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-68</NAME>
+              <NUMBER>68</NUMBER>
+              <TAGGED>1</TAGGED>
+            </VLAN>
+            <VLAN>
+              <NAME>VLAN-7</NAME>
+              <NUMBER>7</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/2</IFNAME>
+          <IFNUMBER>130</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ea:b0:93:50:24:e1</MAC>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>9b:c0:24:9c:b5:c3</MAC>
+              <MAC>5a:2c:8d:72:64:8f</MAC>
+              <MAC>25:db:2a:df:7b:b7</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>271722690</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>111 days, 02:00:11.86</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/3</IFNAME>
+          <IFNUMBER>131</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2451325087</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>0b:42:33:87:b5:ca</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN-57</NAME>
+              <NUMBER>57</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>c6:ae:95:8f:b1:98</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>276605224</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>137 days, 20:41:11.00</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/4</IFNAME>
+          <IFNUMBER>132</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1676777007</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>e6:b7:95:2a:c1:4c</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/5</IFNAME>
+          <IFNUMBER>133</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>9d:eb:42:6a:1f:8f</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/6</IFNAME>
+          <IFNUMBER>134</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ad:1d:0b:de:f4:bf</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/7</IFNAME>
+          <IFNUMBER>135</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>35:19:cc:a5:a7:e6</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/8</IFNAME>
+          <IFNUMBER>136</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>e6:8b:71:e7:5b:09</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/9</IFNAME>
+          <IFNUMBER>137</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>05:ec:38:52:a9:9e</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/10</IFNAME>
+          <IFNUMBER>138</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>a0:46:86:87:b9:69</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/11</IFNAME>
+          <IFNUMBER>139</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>db:19:96:48:81:6e</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/12</IFNAME>
+          <IFNUMBER>140</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>7b:90:1f:e9:c7:f4</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/13</IFNAME>
+          <IFNUMBER>141</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>07:3f:01:f5:c6:2c</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/14</IFNAME>
+          <IFNUMBER>142</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>ef:7f:3a:ee:f0:24</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/15</IFNAME>
+          <IFNUMBER>143</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>8e:86:ac:8f:dd:73</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/16</IFNAME>
+          <IFNUMBER>144</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>99:8e:b9:64:54:02</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/17</IFNAME>
+          <IFNUMBER>145</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>7b:0c:c7:29:a6:b0</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/18</IFNAME>
+          <IFNUMBER>146</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>db:9b:a3:28:0b:a0</MAC>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN #1</NAME>
+              <NUMBER>1</NUMBER>
+              <TAGGED>0</TAGGED>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/19</IFNAME>
+          <IFNUMBER>147</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>77:de:8e:3d:d1:c1</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/20</IFNAME>
+          <IFNUMBER>148</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>98:a2:e9:c8:fe:41</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/21</IFNAME>
+          <IFNUMBER>149</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>9a:8f:42:84:6f:7e</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/22</IFNAME>
+          <IFNUMBER>150</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>a1:0d:e7:7e:85:f1</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/23</IFNAME>
+          <IFNUMBER>151</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>de:d9:05:e7:2c:86</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/24</IFNAME>
+          <IFNUMBER>152</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>1000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>b7:fd:b1:5d:c2:e5</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/25</IFNAME>
+          <IFNUMBER>153</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>e4:c9:f5:cb:ee:e7</MAC>
+        </PORT>
+        <PORT>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>51.27 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>3/26</IFNAME>
+          <IFNUMBER>154</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>f0:68:74:28:14:e1</MAC>
+        </PORT>
+        <PORT>
+          <IFALIAS>PRIVATE</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>2 minutes, 19.25</IFLASTCHANGE>
+          <IFMTU>1514</IFMTU>
+          <IFNAME>11/2</IFNAME>
+          <IFNUMBER>8193</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>54</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN #1</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10001 VLAN #1</IFNAME>
+          <IFNUMBER>10001</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-6</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10006 VLAN #6</IFNAME>
+          <IFNUMBER>10006</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-7</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10007 VLAN #7</IFNAME>
+          <IFNUMBER>10007</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-18</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>53.43 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10018 VLAN #18</IFNAME>
+          <IFNUMBER>10018</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>136</IFTYPE>
+          <IP>54.161.62.42</IP>
+          <IPS>
+            <IP>123.65.109.36</IP>
+            <IP>81.94.201.176</IP>
+            <IP>117.210.178.234</IP>
+            <IP>180.42.95.30</IP>
+          </IPS>
+          <MAC>18:71:84:1d:96:94</MAC>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-40</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10040 VLAN #40</IFNAME>
+          <IFNUMBER>10040</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-50</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10050 VLAN #50</IFNAME>
+          <IFNUMBER>10050</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-57</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10057 VLAN #57</IFNAME>
+          <IFNUMBER>10057</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-68</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10068 VLAN #68</IFNAME>
+          <IFNUMBER>10068</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-70</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10070 VLAN #70</IFNAME>
+          <IFNUMBER>10070</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-71</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10071 VLAN #71</IFNAME>
+          <IFNUMBER>10071</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-122</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10122 VLAN #122</IFNAME>
+          <IFNUMBER>10122</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-134</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10134 VLAN #134</IFNAME>
+          <IFNUMBER>10134</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-200</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10200 VLAN #200</IFNAME>
+          <IFNUMBER>10200</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+        <PORT>
+          <IFALIAS>VLAN-203</IFALIAS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>40.56 seconds</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>ifc10203 VLAN #203</IFNAME>
+          <IFNUMBER>10203</IFNUMBER>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>135</IFTYPE>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>6.4</MODULEVERSION>
+    <PROCESSNUMBER>2</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>PRIVATE-2025-01-14-10-49-18</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>

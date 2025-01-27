@@ -62,7 +62,7 @@
         {% endset %}
     {% endif %}
     {% if item.fields['users_id'] %}
-        {% set user_field = call('getUserName', [item.fields['users_id'], has_profile_right('user', constant('READ')) ? 1 : 0]) %}
+        {% set user_field = call('getUserLink', [item.fields['users_id']]) %}
         {{ fields.htmlField('', user_field, __('Writer')) }}
     {% else %}
         {{ fields.nullField() }}

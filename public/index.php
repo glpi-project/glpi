@@ -55,6 +55,6 @@ $request = Request::createFromGlobals();
 
 $response = $kernel->handle($request);
 
-$kernel->sendResponse($request, $response);
+$response->send();
 
 $kernel->terminate($request, $response);

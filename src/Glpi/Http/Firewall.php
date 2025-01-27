@@ -241,6 +241,9 @@ final class Firewall
         foreach ($this->plugins_dirs as $plugin_dir) {
             $expected_filenames = [
                 $plugin_dir . '/' . $plugin_key . $plugin_resource,
+
+                // A PHP script located in the `/public` directory of a plugin will not have the `/public` prefix in its URL
+                $plugin_dir . '/' . $plugin_key . '/public' . $plugin_resource,
             ];
             $resource_matches = [];
             if (\preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {

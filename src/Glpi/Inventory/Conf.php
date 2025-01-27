@@ -381,7 +381,7 @@ class Conf extends CommonGLPI
         if ($config['enabled_inventory'] == false) {
             echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
             echo "<span class='ms-2'>";
-            echo "<i class='fas fa-info-circle'> </i> &nbsp;";
+            echo "<i class='ti ti-info-circle'> </i> &nbsp;";
             echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";

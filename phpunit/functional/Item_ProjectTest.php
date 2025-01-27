@@ -36,36 +36,47 @@
 namespace tests\units;
 
 use DbTestCase;
-
-/* Test for inc/itil_project.class.php */
+use Glpi\Asset\Capacity\IsProjectAssetCapacity;
+use Glpi\Features\Clonable;
+use Item_Project;
+use Toolbox;
 
 class Item_ProjectTest extends DbTestCase
 {
-    /**
-     * Test the presence of the Item_Project tab in the $CFG_GLPI["project_asset_types"]
-     *
-     * @return void
-     */
-    public function testItemProjectTab()
+    public function testRelatedItemHasTab()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->login();
+        $this->initAssetDefinition(capacities: [IsProjectAssetCapacity::class]);
 
-        foreach ($CFG_GLPI["project_asset_types"] as $itemtype) {
-            $item = new $itemtype();
-            $item_id = $item->add(
-                [
-                    'name' => 'Test project',
-                    'entities_id' => 0
-                ]
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['project_asset_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
             );
-            $this->assertGreaterThan(0, $item_id);
 
-            $item->getFromDB($item_id);
-            $tabs = $item->defineTabs();
-            $this->assertArrayHasKey('Item_Project$1', $tabs);
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Item_Project$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [IsProjectAssetCapacity::class]);
+
+        foreach ($CFG_GLPI['project_asset_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Item_Project::class, $item->getCloneRelations(), $itemtype);
         }
     }
 }

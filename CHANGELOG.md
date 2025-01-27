@@ -35,6 +35,7 @@ The present file will list all changes made to the project; according to the
 - CLI commands for creating local GLPI users, enabling/disabling/deleting users, resetting local GLPI user passwords and granting profile assignments.
 - Cloning templates (such as computer templates)
 - Creating a template from an existing item (such as a computer). This action is only available from the Actions menu within the item form (bulk action not allowed).
+- Massive action for users to reapply authorization assignment rules.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -75,6 +76,9 @@ The present file will list all changes made to the project; according to the
 - Notifications can now specify exclusions for recipients.
 - Warranty expiration alerts no longer trigger for deleted items.
 - New UI for searching for Ticket/Change/Problem solutions from the Knowledgebase.
+- Validations are only allowed on Tickets and Changes that are not solved or closed.
+- Searching project tasks in the legacy API is no longer restricted to only tasks the user is assigned to.
+- Renamed `From email header` and `To email header` criteria in the mails receiver rules to `From email address` and `To email address` respectively.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -163,7 +167,6 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
 - Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 - The `helper` property of form fields will not support anymore the presence of HTML code.
-- `Glpi\Application\ErrorHandler` constructor visibility has been changed to private.
 - `GLPI::initErrorHandler()` does not return any value anymore.
 - The `inc/autoload.function.php`, `inc/based_config.php`, `inc/config.php`, `inc/db.function.php` and `inc/define.php` files have been removed and the `inc/includes.php` file has been almost emptied.
   The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding GLPI boostraping logic is now executed automatically.
@@ -320,6 +323,7 @@ The present file will list all changes made to the project; according to the
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `Appliance::getMassiveActionsForItemtype()`
 - `AuthLDAP::ldapChooseDirectory()`
 - `AuthLDAP::displayLdapFilter()`
 - `AuthLDAP::dropdownUserDeletedActions()`
@@ -393,11 +397,11 @@ The present file will list all changes made to the project; according to the
 - `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`
+- `GLPI::initErrorHandler()`
+- `GLPI::initLogger()`
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
-- `Glpi\Application\ErrorHandler::handleSqlError()`
-- `Glpi\Application\ErrorHandler::handleSqlWarnings()`
-- `Glpi\Application\ErrorHandler::handleTwigError()`
+- `Glpi\Application\ErrorHandler` class
 - `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
@@ -526,6 +530,8 @@ The present file will list all changes made to the project; according to the
 - `Search::outputData()`
 - `Search::sylk_clean()`
 - `Session::buildSessionName()`
+- `Session::redirectIfNotLoggedIn()`
+- `Session::redirectToLogin()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`

@@ -35,12 +35,58 @@
 
 namespace tests\units;
 
-/* Test for inc/infocom.class.php */
-
+use Cartridge;
+use Consumable;
+use DbTestCase;
+use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Features\Clonable;
+use Infocom;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Toolbox;
 
-class InfocomTest extends \DBTestCase
+class InfocomTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasInfocomCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+            if (in_array($itemtype, [Cartridge::class, Consumable::class], true)) {
+                continue;
+            }
+
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Infocom$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasInfocomCapacity::class]);
+
+        foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Infocom::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public static function dataLinearAmortise()
     {
         return [

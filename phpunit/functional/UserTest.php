@@ -2056,4 +2056,166 @@ class UserTest extends \DbTestCase
 
         $this->assertEquals(['name' => 'test'], $fields);
     }
+
+    public function testReapplyRightRules()
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $user = new \User();
+        $user->getFromDB($_SESSION['glpiID']);
+
+        // Create a group that will be used to add a profile
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        // Create a profile that will be added to the user
+        $profile = new \Profile();
+        $profiles_id = $profile->add([
+            'name' => __FUNCTION__,
+        ]);
+
+        // Create a rule that associates the profile to users with the group
+        $rule = new \RuleRight();
+        $rules_id = $rule->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'match' => 'AND',
+        ]);
+        (new \RuleCriteria())->add([
+            'rules_id' => $rules_id,
+            'criteria' => '_groups_id',
+            'condition' => 0,
+            'pattern' => $groups_id,
+        ]);
+        $action = new \RuleAction();
+        $action->add([
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'profiles_id',
+            'value' => $profiles_id,
+        ]);
+        $action->add([
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'entities_id',
+            'value' => $entities_id,
+        ]);
+
+        $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+
+        $group_user = new \Group_User();
+        $group_user_id = $group_user->add([
+            'groups_id' => $groups_id,
+            'users_id' => $user->getID(),
+        ]);
+
+        $user->reapplyRightRules();
+        $this->assertContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+
+        $group_user->delete(['id' => $group_user_id]);
+        $user->reapplyRightRules();
+        $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+    }
+
+    public static function testGetFriendlyNameFieldsProvider()
+    {
+        return [
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname firstname',
+            ],
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname lastname',
+            ],
+        ];
+    }
+
+    #[DataProvider('testGetFriendlyNameFieldsProvider')]
+    public function testGetFriendlyNameFields(
+        array $input,
+        int $names_format,
+        string $expected
+    ) {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        \Config::setConfigurationValues('core', ['names_format' => $names_format]);
+
+        $user = $this->createItem('User', $input);
+
+        $query = [
+            'SELECT' => [
+                User::getFriendlyNameFields(),
+            ],
+            'FROM' => [
+                User::getTable(),
+            ],
+            'WHERE' => [
+                'id' => $user->fields['id'],
+            ]
+        ];
+        $result = $DB->request($query)->current();
+        $this->assertSame($expected, $result['name']);
+    }
 }

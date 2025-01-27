@@ -60,20 +60,27 @@ class DbTimezones extends AbstractRequirement
 
     protected function check()
     {
-        $mysql_db_res = $this->db->doQuery('SHOW DATABASES LIKE ' . $this->db->quoteValue('mysql'));
-        if ($this->db->numrows($mysql_db_res) === 0) {
+        $mysql_db_res = $this->db->request([
+            'FROM'   => 'information_schema.schemata',
+            'WHERE'  => [
+                'schema_name' => 'mysql'
+            ]
+        ]);
+        if ($mysql_db_res->count() === 0) {
             $this->validated = false;
             $this->validation_messages[] = __('Access to timezone database (mysql) is not allowed.');
             return;
         }
 
-        $tz_table_res = $this->db->doQuery(
-            'SHOW TABLES FROM '
-            . $this->db->quoteName('mysql')
-            . ' LIKE '
-            . $this->db->quoteValue('time_zone_name')
-        );
-        if ($this->db->numrows($tz_table_res) === 0) {
+        $tz_table_res = $this->db->request([
+            'FROM'   => 'information_schema.tables',
+            'WHERE'  => [
+                'table_schema' => 'mysql',
+                'table_type'   => 'BASE TABLE',
+                'table_name'   => ['LIKE', 'time_zone_name']
+            ]
+        ]);
+        if ($tz_table_res->count() === 0) {
             $this->validated = false;
             $this->validation_messages[] = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
             return;

@@ -35,14 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
-use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -50,7 +50,6 @@ use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
 use League\OAuth2\Server\Exception\OAuthServerException;
-use Glpi\UI\ThemeManager;
 use Session;
 
 final class CoreController extends AbstractController
@@ -438,7 +437,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new Response());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }
@@ -457,7 +456,7 @@ HTML;
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(new JSONResponse());
         } catch (\Throwable $exception) {
-            ErrorHandler::getInstance()->handleException($exception, true);
+            ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
     }

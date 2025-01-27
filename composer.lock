@@ -3650,16 +3650,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "3.7.0",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "2fc12fdc58d39297c7b8c72d65b37a1a25d65ab5"
+                "reference": "949c799c3538f3158bcf6c5f4d8a403027be0fbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/2fc12fdc58d39297c7b8c72d65b37a1a25d65ab5",
-                "reference": "2fc12fdc58d39297c7b8c72d65b37a1a25d65ab5",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/949c799c3538f3158bcf6c5f4d8a403027be0fbd",
+                "reference": "949c799c3538f3158bcf6c5f4d8a403027be0fbd",
                 "shasum": ""
             },
             "require": {
@@ -3748,9 +3748,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/3.7.0"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/3.8.0"
             },
-            "time": "2024-12-27T05:34:47+00:00"
+            "time": "2025-01-12T03:48:58+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -11760,5 +11760,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

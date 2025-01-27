@@ -50,6 +50,15 @@ class Item_DeviceSimcard extends Item_Devices
 
     public static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
+    public function getCloneRelations(): array
+    {
+        $relations = parent::getCloneRelations();
+
+        $relations[] = Infocom::class;
+
+        return $relations;
+    }
+
     public static function getSpecificities($specif = '')
     {
         return [

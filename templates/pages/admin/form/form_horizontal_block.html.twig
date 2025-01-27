@@ -1,0 +1,104 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var blocks Glpi\Form\Block[] #}
+{# @var can_update bool #}
+{# @var form Glpi\Form\Form #}
+
+{# Add a small div to avoid an issue with the html5sortable library which
+   otherwise does not allow placing an element before the horizontal layout block
+   if there is no element other than a horizontal layout block
+#}
+<div
+    data-glpi-form-editor-horizontal-blocks-fix-sortable-issue
+    style="height: 1px;">
+</div>
+
+<section
+    data-glpi-form-editor-horizontal-blocks-container
+    aria-label="{{ __("Horizontal blocks layout") }}"
+>
+    <section
+        data-glpi-form-editor-horizontal-blocks
+        aria-label="{{ __("Horizontal blocks") }}"
+    >
+        {% set previous_index = -1 %}
+        {% for form_block in blocks %}
+            {# Only 4 blocks are allowed in a horizontal layout #}
+            {% if loop.index <= 4 %}
+                {% if form_block.fields.horizontal_rank > previous_index + 1 %}
+                    {% for i in 1..(form_block.fields.horizontal_rank - (previous_index + 1)) %}
+                        {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                            'can_update'     : can_update,
+                            'form'           : form,
+                        }, with_context = false) }}
+                    {% endfor %}
+                {% endif %}
+                {% set previous_index = form_block.fields.horizontal_rank %}
+
+                {{ form_block.displayBlockForEditor() }}
+            {% endif %}
+        {% endfor %}
+
+        {% if blocks|length == 0 %}
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                'can_update'     : can_update,
+                'form'           : form,
+            }, with_context = false) }}
+        {% endif %}
+        {{ include('pages/admin/form/form_horizontal_block_toolbar.html.twig', {
+            'can_update'                   : can_update,
+            'form'                         : form,
+        }, with_context = false) }}
+        {% if blocks|length == 0 %}
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                'can_update'     : can_update,
+                'form'           : form,
+            }, with_context = false) }}
+        {% endif %}
+    </section>
+    {{ include('pages/admin/form/form_toolbar.html.twig', {
+        'can_update'     : can_update,
+        'form'           : form,
+        'vertical_layout': false,
+    }, with_context = false) }}
+</section>
+
+{# Add a small div to avoid an issue with the html5sortable library which
+   otherwise does not allow placing an element after the horizontal layout block
+   if there is no element other than a horizontal layout block
+#}
+<div
+    data-glpi-form-editor-horizontal-blocks-fix-sortable-issue
+    style="height: 1px;">
+</div>

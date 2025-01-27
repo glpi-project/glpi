@@ -97,7 +97,7 @@ class NeedsUpdateController extends AbstractController
                             {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
                                 <form action="{{ path('index.php') }}" method="post">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-redo"></i>{{ try_again }}
+                                        <i class="ti ti-reload"></i>{{ try_again }}
                                     </button>
                                 </form>
                             {% endif %}
@@ -112,7 +112,7 @@ class NeedsUpdateController extends AbstractController
                                             {{ update_needed }}
                                         </p>
                                         <button type="submit" name="from_update" class="btn btn-primary">
-                                            <i class="fas fa-check"></i>{{ upgrade }}
+                                            <i class="ti ti-check"></i>{{ upgrade }}
                                         </button>
                                     </form>
                                 {% else %}

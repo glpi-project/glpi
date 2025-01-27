@@ -1851,6 +1851,7 @@ function setupAdaptDropdown(config)
         placeholder: config.placeholder,
         width: config.width,
         dropdownAutoWidth: true,
+        dropdownCssClass: config.dropdown_css_class,
         dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,

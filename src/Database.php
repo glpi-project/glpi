@@ -59,6 +59,15 @@ class Database extends CommonDBChild
         return ['management', self::class];
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Appliance_Item::class,
+            Domain_Item::class,
+            ImpactRelation::class,
+        ];
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];

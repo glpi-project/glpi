@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
+use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +51,7 @@ final class CaldavController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
+    #[DisableCsrfChecks()]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {

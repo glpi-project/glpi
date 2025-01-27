@@ -165,6 +165,20 @@ trait LegacyRouterTrait
                 $path = $filepath;
                 break;
             }
+
+            // All plugins public resources should now be accessed without explicitely using the `/public` path,
+            // e.g. `/plugins/myplugin/public/css.php` -> `/plugins/myplugin/css.php`.
+            $path_matches = [];
+            if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)/public(?<plugin_resource>/.+)$#', $filepath, $path_matches) === 1) {
+                $new_path = sprintf('/plugins/%s%s', $path_matches['plugin_key'], $path_matches['plugin_resource']);
+                if ($this->getTargetFile($new_path) !== null) {
+                    // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
+                    // please do not remove this behaviour before, at least, 2030 (about 5 years after GLPI 11.0.0 release).
+                    Toolbox::deprecated('Plugins URLs containing the `/public` path are deprecated. You should remove the `/public` prefix from the URL.');
+                    $path = $new_path;
+                    break;
+                }
+            }
         }
 
         if ($path === '') {

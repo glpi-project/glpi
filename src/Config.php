@@ -583,7 +583,9 @@ class Config extends CommonDBTM
             'legacy_doc_url' => $legacy_version['endpoint'],
             'legacy_api_url' => $legacy_version['endpoint'],
         ]);
-        TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        if ($CFG_GLPI['enable_api']) {
+            TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        }
     }
 
 

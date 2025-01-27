@@ -79,6 +79,15 @@ class Item_Devices extends CommonDBRelation
 
     public static $rightname = 'device';
 
+    public function getCloneRelations(): array
+    {
+        $relations = parent::getCloneRelations();
+
+        $relations[] = Contract_Item::class;
+
+        return $relations;
+    }
+
     protected function computeFriendlyName()
     {
         $itemtype = static::$itemtype_2;

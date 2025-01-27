@@ -41,7 +41,7 @@
             data-bs-toggle="tooltip" data-bs-placement="bottom"
          {% endif %}
       >
-         <i class="far fa-clock me-1"></i>
+         <i class="ti ti-clock me-1"></i>
          <a href="#{{ anchor }}">
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
                {{ date_creation|relative_datetime }}
@@ -98,7 +98,7 @@
                data-bs-toggle="tooltip" data-bs-placement="bottom"
             {% endif %}
          >
-            <i class="far fa-clock me-1"></i>
+            <i class="ti ti-clock me-1"></i>
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
                {{ date_mod|relative_datetime }}
             {% else %}

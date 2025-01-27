@@ -953,6 +953,10 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             return false;
         }
         if ($ID > 0) {
+            $twig_params = [
+                'add_label' => __('Add cartridges'),
+                'cartridgeitems_id' => $ID,
+            ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -966,6 +970,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                             }) }}
                             {% set btn %}
                                 <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
+                                <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
@@ -976,7 +981,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                         </div>
                     </form>
                 </div>
-TWIG, ['add_label' => __('Add cartridges')]);
+TWIG, $twig_params);
         }
     }
 

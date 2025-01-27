@@ -43,7 +43,7 @@ class SolutionType extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-check";
+        return "ti ti-check";
     }
 
     public function getAdditionalFields()

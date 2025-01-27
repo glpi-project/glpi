@@ -220,7 +220,7 @@
             {% endfor %}
 
             {% if has_picture_field %}
-                {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'fas fa-image') }}
+                {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'ti ti-photo') }}
             {% endif %}
             {# Show pictures at the bottom of the form #}
             {% for field in additional_fields %}
@@ -240,7 +240,7 @@
                         }) }}
                         {% endif %}
                     {% elseif type == 'picture_gallery' %}
-                        {{ fields.smallTitle(__('Other pictures'), 'fas fa-images') }}
+                        {{ fields.smallTitle(__('Other pictures'), 'ti ti-library-photo') }}
                         {% set pictures = call('importArrayFromDB', [item.fields[field['name']]]) %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}

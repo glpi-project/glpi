@@ -239,7 +239,7 @@ final class FakeProvider extends Provider
                 ],
                 'labels' => self::getFakeNames(),
             ],
-            'icon' => 'fas fa-stopwatch',
+            'icon' => 'ti ti-stopwatch',
         ];
     }
 
@@ -274,7 +274,7 @@ final class FakeProvider extends Provider
                     _x('fake_data', 'Helpdesk team'),
                 ],
             ],
-            'icon' => 'fas fa-stopwatch',
+            'icon' => 'ti ti-stopwatch',
         ];
     }
 

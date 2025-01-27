@@ -1,3 +1,4 @@
+
 {#
  # ---------------------------------------------------------------------
  #
@@ -90,47 +91,65 @@
                                 </div>
                             {% endif %}
 
-                            {% for form_block in section.getBlocks() %}
-                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                    {% set question_type = form_block.getQuestionType() %}
+                            {% for form_group_blocks in section.getBlocks() %}
+                                {# Ensure form_group_blocks is iterable (may be a single question) #}
+                                {% if form_group_blocks is not iterable %}
+                                    {% set form_group_blocks = [form_group_blocks] %}
                                 {% endif %}
 
-                                {% set skip_question = false %}
-
-                                {# Skip unknown types (may be a disabled plugin) #}
-                                {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
-                                    {% set skip_question = true %}
-                                {% endif %}
-
-                                {# Skip questions not allowed for anonymous forms #}
-                                {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
-                                    {% set skip_question = true %}
-                                {% endif %}
-
-                                {% if not skip_question %}
-                                    <section
-                                        aria-label="{{ form_block.fields.name }}"
-                                        class="{{ loop.last ? "" : "mb-3" }} {{ is_first_section ? "" : "d-none" }}"
-                                        data-glpi-form-renderer-parent-section="{{ section_index }}"
-                                    >
-                                        <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
-                                            {{ form_block.fields.name|default(__('Untitled question')) }}
-                                            {% if form_block.fields.is_mandatory %}
-                                                <span class="text-danger">*</span>
-                                            {% endif %}
-                                        </h3>
+                                <section data-glpi-form-renderer-horizontal-blocks>
+                                    {% set previous_index = -1 %}
+                                    {% for form_block in form_group_blocks %}
+                                        {% if form_block.fields.horizontal_rank > previous_index + 1 %}
+                                            {% for i in 1..(form_block.fields.horizontal_rank - (previous_index + 1)) %}
+                                            <div style="flex: 1;"></div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% set previous_index = form_block.fields.horizontal_rank %}
 
                                         {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                            <div class="mb-2">
-                                                {{ question_type.renderEndUserTemplate(form_block)|raw }}
-                                            </div>
+                                            {% set question_type = form_block.getQuestionType() %}
                                         {% endif %}
 
-                                        <div class="text-muted block-description">
-                                            {{ form_block.fields.description|safe_html }}
-                                        </div>
-                                    </section>
-                                {% endif %}
+                                        {% set skip_question = false %}
+
+                                        {# Skip unknown types (may be a disabled plugin) #}
+                                        {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {# Skip questions not allowed for anonymous forms #}
+                                        {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {% if not skip_question %}
+                                            <section
+                                                aria-label="{{ form_block.fields.name }}"
+                                                class="{{ is_first_section ? "" : "d-none" }}"
+                                                style="flex: 1;"
+                                                data-glpi-form-renderer-parent-section="{{ section_index }}"
+                                            >
+                                                <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
+                                                    {{ form_block.fields.name|default(__('Untitled question')) }}
+                                                    {% if form_block.fields.is_mandatory %}
+                                                        <span class="text-danger">*</span>
+                                                    {% endif %}
+                                                </h3>
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    <div class="mb-2">
+                                                        {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="text-muted block-description">
+                                                    {{ form_block.fields.description|safe_html }}
+                                                </div>
+                                            </section>
+                                        {% endif %}
+                                    {% endfor %}
+                                </section>
                             {% endfor %}
                         </div>
                     </div>

@@ -173,7 +173,7 @@
                         {% if matching_types|length > 0 %}
                            {% set timeline_itemtype = matching_types|first %}
                            {% if timeline_itemtype.template is defined %}
-                              {{ include(timeline_itemtype.template, {'form_mode': 'view'}) }}
+                              {{ include(timeline_itemtype.template, {'form_mode': 'view', 'subitem': timeline_itemtype.item}) }}
                            {% endif %}
                         {% endif %}
                      {% else %}
@@ -237,7 +237,7 @@ $(function() {
       content_block.find(".read-only-content").hide();
       content_block.find(".edit-content").show()
          .find(".ajax-content")
-         .html('<i class="fas fa-3x fa-spinner fa-spin ms-auto"></i>')
+         .html('<span class="spinner-border ms-auto" role="status" aria-hidden="true"></span>')
          .load("{{ path('/ajax/timeline.php') }}", {
             'action'     : 'viewsubitem',
             'type'       : itemtype,

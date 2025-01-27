@@ -146,7 +146,7 @@
                   fail_info.onAdd = function (map) {
                       this._div = L.DomUtil.create('div', 'fail_info');
                       const reload_message = escapeMarkupText(__('Reload'));
-                      this._div.innerHTML = _message + `<br/><span id='reload_data'><i class='fa fa-sync'></i>${reload_message}</span>`;
+                      this._div.innerHTML = _message + `<br/><span id='reload_data'><i class='ti ti-refresh'></i>${reload_message}</span>`;
                       return this._div;
                   };
                   fail_info.addTo(map_elt);

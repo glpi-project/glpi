@@ -1038,11 +1038,11 @@ class Problem extends CommonITILObject
                         ) {
                             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
                                         htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
                                         $d['alternative_email'];
                                 }
                             }
@@ -1053,7 +1053,7 @@ class Problem extends CommonITILObject
                             && count($problem->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
@@ -1220,7 +1220,7 @@ class Problem extends CommonITILObject
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
-            'icon'   => 'fas fa-trash bg-red-lt',
+            'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted
         ];
 

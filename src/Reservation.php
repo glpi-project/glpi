@@ -458,7 +458,7 @@ class Reservation extends CommonDBChild
 
             $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>" .
                __s('View all items') .
-               "&nbsp;<i class='fas fa-eye'></i>" .
+               "&nbsp;<i class='ti ti-eye'></i>" .
             "</a>";
         } else {
             $type = "";

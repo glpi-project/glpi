@@ -654,9 +654,9 @@ class MailCollectorTest extends DbTestCase
 
         $expected_logged_errors = [
             // 05-empty-from.eml
-            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::CRITICAL,
+            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::ERROR,
             // 17-malformed-email.eml
-            'Header with Name date or date not found' => LogLevel::CRITICAL,
+            'Header with Name date or date not found' => LogLevel::ERROR,
         ];
 
         $msg = $this->collector->collect($this->mailgate_id);
@@ -1334,9 +1334,7 @@ PLAINTEXT,
     }
 
 
-    /**
-     * @dataProvider cleanContentProvider
-     */
+    #[DataProvider('cleanContentProvider')]
     public function testCleanContent(
         string $filter,
         string $mail_content,

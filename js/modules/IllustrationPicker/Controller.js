@@ -167,16 +167,9 @@ export class GlpiIllustrationPickerController
         const button = this.#container
             .querySelector(`[data-glpi-icon-picker-go-to-page="${page}"]`)
         ;
-        const button_text = button.querySelector(
-            '[data-glpi-icon-picker-pagination-text'
-        );
-        const button_loading_indicator = button.querySelector(
-            '[data-glpi-icon-picker-pagination-loading-icon'
-        );
 
         button.classList.add('active');
-        button_text.classList.add('d-none');
-        button_loading_indicator.classList.remove('d-none');
+        button.classList.add('btn-loading');
 
         // Apply loading indicator to the search results
         this.#getSearchResultsDiv().style.opacity = 0.7;
@@ -225,13 +218,13 @@ export class GlpiIllustrationPickerController
 
     #getSearchDefaultIcon()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-filter-default-icon')
+        return this.#container.querySelector('[data-glpi-icon-picker-filter-default-icon]')
         ;
     }
 
     #getSearchLoadingIcon()
     {
-        return this.#container.querySelector('[data-glpi-icon-picker-filter-loading-icon');
+        return this.#container.querySelector('[data-glpi-icon-picker-filter-loading-icon]');
     }
 
     #getSearchResultsDiv()

@@ -123,14 +123,14 @@
                                 <button class="btn btn-sm btn-ghost-danger delete-note" name="purge" type="submit" value="1"
                                         onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
                                         data-id="{{ id }}">
-                                    <i class="fa-fw ti ti-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                     <span>{{ __('Delete') }}</span>
                                 </button>
 
                                 <button class="btn btn-sm btn-ghost-secondary edit-note" type="button"
                                         data-id="{{ id }}"
                                         data-bs-toggle="modal" data-bs-target="#edit-{{ id }}">
-                                    <i class="fa-fw ti ti-edit"></i>
+                                    <i class="ti ti-edit"></i>
                                     <span>{{ __('Edit') }}</span>
                                 </button>
                             </span>

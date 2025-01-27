@@ -129,7 +129,7 @@ trait Inventoriable
             );
 
             echo sprintf(
-                "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
+                "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
                 \htmlescape($href),
                 \htmlescape($title)
             );
@@ -143,13 +143,13 @@ trait Inventoriable
                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                 style="float: right;margin-right: .5em;"
                                 formaction="{$url}">
-                           <i class="fas fa-redo"></i>
+                           <i class="ti ti-reload"></i>
                         </button>
 HTML;
             }
         } else {
             echo sprintf(
-                "<span style='float: right;'><i class='fas fa-ban'></i> <span class='sr-only'>%s</span></span>",
+                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='sr-only'>%s</span></span>",
                 __s('Inventory file missing')
             );
         }
@@ -201,11 +201,11 @@ HTML;
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . __s('Agent status');
-        echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
         echo '<td>' .  __s('Request inventory');
-        echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
         echo '</tr>';

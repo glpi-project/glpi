@@ -71,14 +71,7 @@
                             aria-label="{{ __('Go to page %s')|format(i) }}"
                             data-glpi-icon-picker-go-to-page="{{ i }}"
                         >
-                            <span
-                                class="btn-text"
-                                data-glpi-icon-picker-pagination-text
-                            >{{ i }}</span>
-                            <i
-                                class="btn-text-loading ti ti-loader-2 fa-spin d-none"
-                                data-glpi-icon-picker-pagination-loading-icon
-                            ></i>
+                            <span class="btn-text" data-glpi-icon-picker-pagination-text>{{ i }}</span>
                         </button>
                     {% endif %}
                 {% endfor %}

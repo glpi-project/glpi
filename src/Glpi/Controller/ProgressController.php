@@ -48,7 +48,7 @@ class ProgressController extends AbstractController
     ) {
     }
 
-    #[Route("/progress/check/{key}", methods: 'POST')]
+    #[Route("/progress/check/{key}", methods: 'GET')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function check(string $key): Response
     {

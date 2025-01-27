@@ -428,14 +428,21 @@ Cypress.Commands.add('enableDebugMode', () => {
         return;
     }
 
-    cy.request({
-        method: 'POST',
-        url: '/ajax/switchdebug.php',
-        body: {
-            'debug': 'on',
-        },
-    }).then(() => {
-        cy.reload();
+    cy.getCsrfToken().then((csrf) => {
+        cy.request({
+            method: 'POST',
+            url: '/ajax/switchdebug.php',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': csrf,
+            },
+            body: {
+                'debug': 'on',
+            },
+        }).then(() => {
+            cy.reload();
+        });
     });
 });
 
@@ -448,14 +455,22 @@ Cypress.Commands.add('disableDebugMode', () => {
     if (Cypress.$('#debug-toolbar-applet').length === 0) {
         return;
     }
-    cy.request({
-        method: 'POST',
-        url: '/ajax/switchdebug.php',
-        body: {
-            'debug': 'off',
-        },
-    }).then(() => {
-        cy.reload();
+
+    cy.getCsrfToken().then((csrf) => {
+        cy.request({
+            method: 'POST',
+            url: '/ajax/switchdebug.php',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': csrf,
+            },
+            body: {
+                'debug': 'off',
+            },
+        }).then(() => {
+            cy.reload();
+        });
     });
 });
 

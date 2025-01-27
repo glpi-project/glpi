@@ -36,11 +36,30 @@
 namespace tests\units;
 
 use DbTestCase;
-
-/* Test for inc/item_softwarelicense.class.php */
+use Glpi\Asset\Capacity\HasSoftwaresCapacity;
+use Glpi\Features\Clonable;
+use Item_SoftwareLicense;
+use Toolbox;
 
 class Item_SoftwareLicenseTest extends DbTestCase
 {
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+
+        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Item_SoftwareLicense::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testCountForLicense()
     {
         $this->login();

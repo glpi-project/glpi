@@ -85,6 +85,6 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "far fa-comment-alt";
+        return "ti ti-message";
     }
 }

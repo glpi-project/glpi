@@ -3151,13 +3151,9 @@ class CommonDBTM extends CommonGLPI
     {
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
-           // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
             throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
-               // Gestion timeout session
-                Session::redirectIfNotLoggedIn();
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::getType();
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
@@ -3232,8 +3228,6 @@ class CommonDBTM extends CommonGLPI
     public function checkGlobal(int $right): void
     {
         if (!$this->canGlobal($right)) {
-           // Gestion timeout session
-            Session::redirectIfNotLoggedIn();
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = static::getType();
             $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
@@ -3560,7 +3554,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $field field name
      *
-     * @return mixed value of the field / false if not exists
+     * @return mixed value of the field or 'N/A' if it does not exist
      **/
     public function getField($field)
     {
@@ -4259,12 +4253,12 @@ class CommonDBTM extends CommonGLPI
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
                 $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
+                "<i class='" . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
-                "<i class='fa-fw ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
         }
 
@@ -5850,7 +5844,7 @@ TWIG, $twig_params);
             }
         }
         if ($title !== null) {
-            $mark = "<i class='fa fa-magic' title='$title'></i>";
+            $mark = "<i class='ti ti-wand' title='$title'></i>";
         }
         return $mark;
     }
@@ -6038,7 +6032,8 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "fas fa-empty-icon";
+        // Generic icon that is not visible, but still takes up space to allow proper alignment in lists
+        return "ti ti-square bs-invisible";
     }
 
     /**

@@ -122,7 +122,8 @@ if (!$DB->tableExists('glpi_forms_questions')) {
             `name` varchar(255) NOT NULL DEFAULT '',
             `type` varchar(255) NOT NULL DEFAULT '',
             `is_mandatory` tinyint NOT NULL DEFAULT '0',
-            `rank` int NOT NULL DEFAULT '0',
+            `vertical_rank` int NOT NULL DEFAULT '0',
+            `horizontal_rank` int DEFAULT NULL,
             `description` longtext,
             `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
             `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
@@ -145,7 +146,8 @@ if (!$DB->tableExists('glpi_forms_comments')) {
             `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
-            `rank` int NOT NULL DEFAULT '0',
+            `vertical_rank` int NOT NULL DEFAULT '0',
+            `horizontal_rank` int DEFAULT NULL,
             `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
             `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),
@@ -227,9 +229,11 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
             `profiles_id` int unsigned NOT NULL DEFAULT '0',
             `itemtype` varchar(255) DEFAULT NULL,
             `items_id` int unsigned NOT NULL DEFAULT '0',
+            `rank` int NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            KEY `profiles_id` (`profiles_id`),
-            KEY `item` (`itemtype`,`items_id`)
+            UNIQUE KEY `unicity` (`profiles_id`, `rank`),
+            KEY `item` (`itemtype`,`items_id`),
+            KEY `rank` (`rank`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }

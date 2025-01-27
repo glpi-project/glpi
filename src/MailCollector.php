@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
@@ -43,6 +42,7 @@ use Laminas\Mail\Storage;
 use Laminas\Mail\Storage\Folder;
 use Laminas\Mail\Storage\Message;
 use LitEmoji\LitEmoji;
+use Glpi\Error\ErrorHandler;
 
 /**
  * MailCollector class
@@ -256,7 +256,8 @@ class MailCollector extends CommonDBTM
                 $folders[] = $this->extractFolderData($folder);
             }
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
         }
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/folder_list.html.twig', [
             'item' => $this,
@@ -440,7 +441,8 @@ class MailCollector extends CommonDBTM
                 try {
                      $collector->connect();
                 } catch (\Throwable $e) {
-                    ErrorHandler::getInstance()->handleException($e, false);
+                    ErrorHandler::logCaughtException($e);
+                    ErrorHandler::displayCaughtExceptionMessage($e);
                     continue;
                 }
 
@@ -537,7 +539,7 @@ class MailCollector extends CommonDBTM
             try {
                 $this->connect();
             } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
                     __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
                     false,
@@ -614,7 +616,8 @@ class MailCollector extends CommonDBTM
 
                         $messages[$message_id] = $message;
                     } catch (\Throwable $e) {
-                        ErrorHandler::getInstance()->handleException($e, false);
+                        ErrorHandler::logCaughtException($e);
+                        ErrorHandler::displayCaughtExceptionMessage($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(
@@ -662,7 +665,8 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (\Throwable $e) {
                         $error++;
-                        ErrorHandler::getInstance()->handleException($e, false);
+                        ErrorHandler::logCaughtException($e);
+                        ErrorHandler::displayCaughtExceptionMessage($e);
                         Toolbox::logInFile(
                             'mailgate',
                             sprintf(

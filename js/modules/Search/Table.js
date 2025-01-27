@@ -62,6 +62,19 @@ window.GLPI.Search.Table = class Table extends GenericView {
         }
 
         this.shiftSelectAllCheckbox();
+        this.toggleSavedSearch(true);
+    }
+
+    toggleSavedSearch(isDisable) {
+        if (isDisable) {
+            $('.bookmark_record')
+                .attr('title', __('Submit current search before saving it'))
+                .prop('disabled', true);
+        } else {
+            $('.bookmark_record')
+                .attr('title', __('Save current search'))
+                .prop('disabled', false);
+        }
     }
 
     getElement() {
@@ -230,6 +243,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
                 displaySessionMessages();
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
+                this.toggleSavedSearch(false);
             }, () => {
                 handle_search_failure();
             });

@@ -288,7 +288,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            = "<i class='" . self::getIcon() . "'></i>" .
               _sx('button', 'Link knowledgebase article');
         }
 

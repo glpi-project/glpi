@@ -69,7 +69,16 @@ class NetworkEquipment extends CommonDBTM
             NetworkPort::class,
             Contract_Item::class,
             Document_Item::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Disk::class,
+            Item_Project::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
     /** /RELATIONS */

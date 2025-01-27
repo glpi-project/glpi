@@ -615,10 +615,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='fas fa-arrows-alt-v'></i>"
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
                 . __s('Move');
         }
-        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='fas fa-file-download'></i>"
+        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
             . _sx('button', 'Export');
 
         return $actions;

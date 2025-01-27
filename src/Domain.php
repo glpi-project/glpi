@@ -69,6 +69,8 @@ class Domain extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Notepad::class,
+            Certificate_Item::class,
+            ManualLink::class,
         ];
     }
 

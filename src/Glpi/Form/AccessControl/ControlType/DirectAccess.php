@@ -168,7 +168,7 @@ final class DirectAccess implements ControlTypeInterface
             return false;
         }
 
-        return $config->getToken() === $token;
+        return hash_equals($config->getToken(), $token);
     }
 
     public function allowUnauthenticated(JsonFieldInterface $config): bool

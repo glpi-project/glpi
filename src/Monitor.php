@@ -67,7 +67,14 @@ class Monitor extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Asset_PeripheralAsset::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Appliance_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
+            ManualLink::class,
+            NetworkPort::class,
         ];
     }
 

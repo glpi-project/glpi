@@ -71,7 +71,8 @@ class SoftwareLicense extends CommonTreeDropdown
             Contract_Item::class,
             Document_Item::class,
             KnowbaseItem_Item::class,
-            Notepad::class
+            Notepad::class,
+            Certificate_Item::class,
         ];
     }
 

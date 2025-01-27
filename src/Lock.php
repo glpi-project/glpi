@@ -91,7 +91,7 @@ class Lock extends CommonGLPI
         // language=Twig
         $list_info_alert_template = <<<TWIG
             <div class="alert alert-info d-flex align-items-center" role="alert">
-                <i class="fas fa-info-circle fa-xl"></i>
+                <i class="ti ti-info-circle fs-1"></i>
                 <span class="ms-2">
                     <span class="alert-title">{{ alert_title }}</span>
                     <br>
@@ -1072,7 +1072,7 @@ TWIG, $twig_params);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
-                    <i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>
+                    <i class='fas fa-level-up-alt fa-flip-horizontal fs-2 mx-2'></i>
                     <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
                     <span>/</span>
                     <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
