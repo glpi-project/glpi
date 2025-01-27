@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;
+use Override;
 use Session;
 use Software;
 use SoftwareLicense;

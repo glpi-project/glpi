@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_Disk;
+use Override;
 use Session;
 
 class HasVolumesCapacity extends AbstractCapacity

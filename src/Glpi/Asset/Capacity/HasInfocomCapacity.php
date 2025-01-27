@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Infocom;
+use Override;
 
 class HasInfocomCapacity extends AbstractCapacity
 {

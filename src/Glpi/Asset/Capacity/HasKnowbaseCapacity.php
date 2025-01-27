@@ -39,6 +39,7 @@ use CommonGLPI;
 use Knowbase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
+use Override;
 use Session;
 
 class HasKnowbaseCapacity extends AbstractCapacity

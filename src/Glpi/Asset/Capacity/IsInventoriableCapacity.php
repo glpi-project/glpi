@@ -39,6 +39,7 @@ use CommonGLPI;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
+use Override;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity

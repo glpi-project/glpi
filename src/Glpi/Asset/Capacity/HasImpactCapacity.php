@@ -39,6 +39,7 @@ use Config;
 use Impact;
 use ImpactItem;
 use ImpactRelation;
+use Override;
 use Toolbox;
 
 class HasImpactCapacity extends AbstractCapacity

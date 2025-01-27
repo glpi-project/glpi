@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use Item_Rack;
+use Override;
 use Rack;
 use Session;
 

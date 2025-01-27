@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Glpi\Asset\Asset;
 use Notepad;
+use Override;
 use ReflectionClass;
 use Session;
 

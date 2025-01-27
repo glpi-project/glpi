@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use NetworkPort;
+use Override;
 use Session;
 
 class HasNetworkPortCapacity extends AbstractCapacity

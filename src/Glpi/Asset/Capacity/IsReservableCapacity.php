@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Override;
 use Reservation;
 use ReservationItem;
 use Session;

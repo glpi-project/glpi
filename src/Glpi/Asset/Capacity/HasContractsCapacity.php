@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Contract;
 use Contract_Item;
+use Override;
 
 class HasContractsCapacity extends AbstractCapacity
 {

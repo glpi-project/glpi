@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Override;
 use Session;
 
 class HasPeripheralAssetsCapacity extends AbstractCapacity

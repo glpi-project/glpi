@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Database;
 use DatabaseInstance;
+use Override;
 use Session;
 
 class HasDatabaseInstanceCapacity extends AbstractCapacity

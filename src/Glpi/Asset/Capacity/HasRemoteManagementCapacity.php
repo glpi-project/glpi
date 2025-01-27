@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_RemoteManagement;
+use Override;
 use Session;
 
 class HasRemoteManagementCapacity extends AbstractCapacity

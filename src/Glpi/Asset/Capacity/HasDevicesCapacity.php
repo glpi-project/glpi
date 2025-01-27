@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonDevice;
 use CommonGLPI;
 use Item_Devices;
+use Override;
 use Session;
 
 class HasDevicesCapacity extends AbstractCapacity

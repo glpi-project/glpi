@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Domain;
 use Domain_Item;
+use Override;
 use Session;
 
 class HasDomainsCapacity extends AbstractCapacity

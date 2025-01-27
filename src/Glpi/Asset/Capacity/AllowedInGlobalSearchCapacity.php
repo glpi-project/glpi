@@ -34,6 +34,8 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Override;
+
 class AllowedInGlobalSearchCapacity extends AbstractCapacity
 {
     public function getLabel(): string

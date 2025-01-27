@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use Certificate;
 use Certificate_Item;
 use CommonGLPI;
+use Override;
 use Session;
 
 class HasCertificatesCapacity extends AbstractCapacity

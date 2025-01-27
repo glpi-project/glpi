@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_Plug;
+use Override;
 use Plug;
 use Session;
 

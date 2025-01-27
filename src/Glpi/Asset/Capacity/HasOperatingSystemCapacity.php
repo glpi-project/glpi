@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Item_OperatingSystem;
 use OperatingSystem;
+use Override;
 
 class HasOperatingSystemCapacity extends AbstractCapacity
 {

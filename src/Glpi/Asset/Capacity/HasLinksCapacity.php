@@ -39,6 +39,7 @@ use CommonGLPI;
 use Link;
 use Link_Itemtype;
 use ManualLink;
+use Override;
 use Session;
 
 class HasLinksCapacity extends AbstractCapacity

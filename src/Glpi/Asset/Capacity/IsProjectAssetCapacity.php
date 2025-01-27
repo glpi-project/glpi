@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Project;
 use Item_Project;
+use Override;
 
 class IsProjectAssetCapacity extends AbstractCapacity
 {

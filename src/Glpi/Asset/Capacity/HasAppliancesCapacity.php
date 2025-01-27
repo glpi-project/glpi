@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use Appliance;
 use Appliance_Item;
 use CommonGLPI;
+use Override;
 use Session;
 
 class HasAppliancesCapacity extends AbstractCapacity

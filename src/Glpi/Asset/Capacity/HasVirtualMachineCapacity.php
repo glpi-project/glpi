@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use ItemVirtualMachine;
+use Override;
 use Session;
 
 class HasVirtualMachineCapacity extends AbstractCapacity
