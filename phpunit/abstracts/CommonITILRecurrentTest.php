@@ -493,8 +493,14 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
     public function testComputeNextCreationDate()
     {
+        // Always use a known date to a get a determinist result.
+        // If there are some specific dates for which these tests always fails,
+        // it should be confirmed by using these dates as `current_date` in a
+        // new entry of the data provider (and be fixed properly).
+        $_SESSION['glpi_currenttime'] = "2025-01-27 15:57:00";
+
         $provider = $this->computeNextCreationDateProvider();
-        foreach ($provider as $row) {
+        foreach ($provider as $i => $row) {
             $begin_date = $row['begin_date'];
             $end_date = $row['end_date'];
             $periodicity = $row['periodicity'];
@@ -505,9 +511,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             $current_date = $row['current_date'] ?? null;
 
             // Handle dynamic date
-            $date_to_restore = null;
             if (!is_null($current_date)) {
-                $date_to_restore = Session::getCurrentTime();
                 $_SESSION['glpi_currenttime'] = $current_date;
             }
 
@@ -521,15 +525,11 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 $calendars_id
             );
 
-            $this->assertSame($expected_value, $value);
+            $this->assertSame($expected_value, $value, 'Test case #' . $i);
             if ($messages === null) {
                 $this->hasNoSessionMessage(ERROR);
             } else {
                 $this->hasSessionMessages(ERROR, $messages);
-            }
-
-            if (!is_null($date_to_restore)) {
-                $_SESSION['glpi_currenttime'] = $date_to_restore;
             }
         }
     }
