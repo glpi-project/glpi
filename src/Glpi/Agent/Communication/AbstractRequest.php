@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Inventory\Conf;
-use Glpi\Application\ErrorHandler;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -94,24 +93,24 @@ abstract class AbstractRequest
     const COMPRESS_BR   = 3;
     const COMPRESS_DEFLATE = 4;
 
-    /** @var integer */
-    protected $mode;
+    /** @var ?integer */
+    protected ?int $mode = null;
     /** @var string */
-    private $deviceid;
-    /** @var DOMDocument */
-    private $response;
-    /** @var integer */
-    private $compression;
+    private string $deviceid;
+    /** @var DOMDocument|array|null */
+    private DOMDocument|array|null $response = null;
+    /** @var ?integer */
+    private ?int $compression = null;
     /** @var boolean */
-    private $error = false;
+    private bool $error = false;
     /** @var boolean */
-    protected $test_rules = false;
-    /** @var \Glpi\Agent\Communication\Headers\Common */
-    protected $headers;
+    protected bool $test_rules = false;
+    /** @var Common */
+    protected Common $headers;
     /** @var int */
-    private $http_response_code = 200;
+    private int $http_response_code = 200;
     /** @var string */
-    protected $query;
+    protected string $query;
 
     public function __construct()
     {
@@ -130,7 +129,7 @@ abstract class AbstractRequest
      *
      * @throw RuntimeException
      */
-    protected function setMode($mode)
+    protected function setMode(int $mode): void
     {
         $this->mode = $mode;
         switch ($mode) {
@@ -152,9 +151,11 @@ abstract class AbstractRequest
     /**
      * Guess import mode
      *
+     * @param mixed $contents
+     *
      * @return void
      */
-    private function guessMode($contents): void
+    private function guessMode(mixed $contents): void
     {
         // In the case handleContentType() didn't set mode, just check $contents first char
         if ($contents[0] === '{') {
@@ -168,7 +169,8 @@ abstract class AbstractRequest
     /**
      * Display module name
      *
-     * @param string $internalModule
+     * @param ?string $internalModule
+     *
      * @return string readable method name
      */
     public static function getModuleName(?string $internalModule): string
@@ -191,9 +193,9 @@ abstract class AbstractRequest
     /**
      * Handle request headers
      *
-     * @param $data
+     * @return void
      */
-    public function handleHeaders()
+    public function handleHeaders(): void
     {
         $req_headers = getallheaders();
         $this->headers->setHeaders($req_headers);
@@ -206,7 +208,7 @@ abstract class AbstractRequest
      *
      * @return boolean
      */
-    public function handleRequest($data): bool
+    public function handleRequest(mixed $data): bool
     {
         $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
@@ -256,7 +258,7 @@ abstract class AbstractRequest
             }
         }
 
-        // Some network inventories may request may contains lots of information.
+        // Some network inventories may request may contain lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
         // and GLPI will consume about 500MB of memory to handle it,
         // and may take up to 2 minutes on server that has low performances.
@@ -302,25 +304,22 @@ abstract class AbstractRequest
         }
 
        //load and check data
-        switch ($this->mode) {
-            case self::XML_MODE:
-                return $this->handleXMLRequest($data);
-            case self::JSON_MODE:
-                return $this->handleJSONRequest($data);
-        }
-
-        return false;
+        return match ($this->mode) {
+            self::XML_MODE => $this->handleXMLRequest($data),
+            self::JSON_MODE => $this->handleJSONRequest($data),
+            default => false,
+        };
     }
 
     /**
      * Handle Query
      *
      * @param string $action  Action (one of self::*_ACTION)
-     * @param mixed  $content Contents, optional
+     * @param ?mixed $content Contents, optional
      *
      * @return boolean
      */
-    abstract protected function handleAction($action, $content = null): bool;
+    abstract protected function handleAction(string $action, mixed $content = null): bool;
 
     /**
      * Handle Task
@@ -329,7 +328,7 @@ abstract class AbstractRequest
      *
      * @return array
      */
-    abstract protected function handleTask($task): array;
+    abstract protected function handleTask(string $task): array;
 
     /**
      * Handle XML request
@@ -338,7 +337,7 @@ abstract class AbstractRequest
      *
      * @return boolean
      */
-    public function handleXMLRequest($data): bool
+    public function handleXMLRequest(string $data): bool
     {
         libxml_use_internal_errors(true);
 
@@ -348,13 +347,15 @@ abstract class AbstractRequest
         $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
         if (!$xml) {
             $xml_errors = libxml_get_errors();
-           /* @var \LibXMLError $xml_error */
+            /* @var \LibXMLError $xml_error */
             foreach ($xml_errors as $xml_error) {
-                ErrorHandler::getInstance()->handleError(
-                    E_USER_WARNING,
-                    $xml_error->message,
-                    $xml_error->file,
-                    $xml_error->line
+                \trigger_error(
+                    \sprintf(
+                        'XML error `%s` at line %d.',
+                        $xml_error->message,
+                        $xml_error->line
+                    ),
+                    E_USER_WARNING
                 );
             }
             $this->addError('XML not well formed!', 400);
@@ -377,7 +378,7 @@ abstract class AbstractRequest
      *
      * @return boolean
      */
-    public function handleJSONRequest($data): bool
+    public function handleJSONRequest(string $data): bool
     {
         if (!\Toolbox::isJSON($data)) {
             $this->addError('JSON not well formed!', 400);
@@ -402,7 +403,7 @@ abstract class AbstractRequest
      *
      * @return null|integer One of self::*_MODE
      */
-    public function getMode()
+    public function getMode(): ?int
     {
         return $this->mode;
     }
@@ -410,12 +411,12 @@ abstract class AbstractRequest
     /**
      * Adds an error
      *
-     * @param string  $message Error message
+     * @param ?string $message Error message
      * @param integer $code    HTTP response code
      *
      * @return void
      */
-    public function addError($message, $code = 500)
+    public function addError(?string $message, int $code = 500): void
     {
         if ($code >= 400) {
             $this->error = true;
@@ -448,7 +449,7 @@ abstract class AbstractRequest
      *
      * @return void
      */
-    public function addToResponse(array $entries)
+    public function addToResponse(array $entries): void
     {
         if ($this->mode === self::XML_MODE) {
             $root = $this->response->documentElement;
@@ -472,12 +473,12 @@ abstract class AbstractRequest
      * Add node to response for XML_MODE
      *
      * @param DOMElement        $parent  Parent element
-     * @param string            $name    Element name to create
-     * @param string|array|null $content Element contents, if any
+     * @param ?mixed            $name    Element name to create
+     * @param array|string|null $content Element contents, if any
      *
      * @return void
      */
-    private function addNode(DOMElement $parent, $name, $content)
+    private function addNode(DOMElement $parent, mixed $name, array|string|null $content): void
     {
         if (is_array($content) && !isset($content['content']) && !isset($content['attributes'])) {
             $node = is_string($name)
@@ -544,14 +545,11 @@ abstract class AbstractRequest
             }
         }
 
-        switch ($this->mode) {
-            case self::XML_MODE:
-                return 'application/xml';
-            case self::JSON_MODE:
-                return 'application/json';
-            default:
-                throw new \RuntimeException("Unknown mode " . $this->mode);
-        }
+        return match ($this->mode) {
+            self::XML_MODE => 'application/xml',
+            self::JSON_MODE => 'application/json',
+            default => throw new \RuntimeException("Unknown mode " . $this->mode),
+        };
     }
 
     /**
@@ -568,16 +566,11 @@ abstract class AbstractRequest
                 throw new \RuntimeException("Mode has not been set");
             }
 
-            switch ($this->mode) {
-                case self::XML_MODE:
-                    $data = trim($this->response->saveXML());
-                    break;
-                case self::JSON_MODE:
-                    $data = json_encode($this->response);
-                    break;
-                default:
-                    throw new \UnexpectedValueException("Unknown mode " . $this->mode);
-            }
+            $data = match ($this->mode) {
+                self::XML_MODE => trim($this->response->saveXML()),
+                self::JSON_MODE => json_encode($this->response),
+                default => throw new \UnexpectedValueException("Unknown mode " . $this->mode),
+            };
 
             if ($this->compression === null) {
                 throw new \RuntimeException("Compression has not been set");
@@ -620,7 +613,7 @@ abstract class AbstractRequest
      *
      * @return void
      */
-    public function handleContentType($type)
+    public function handleContentType(string $type): void
     {
         switch (strtolower($type)) {
             case 'application/x-zlib':
@@ -634,7 +627,9 @@ abstract class AbstractRequest
             case 'application/x-br':
             case 'application/x-compress-br':
                 if (!function_exists('brotli_compress')) {
-                    $this->addError('Brotli PHP extension is missing!', 415);
+                    $exception = new \Glpi\Exception\Http\HttpException(415, 'Brotli PHP extension is missing!');
+                    $exception->setMessageToDisplay('Unsupported compression');
+                    throw $exception;
                 } else {
                     $this->compression = self::COMPRESS_BR;
                 }
@@ -663,7 +658,7 @@ abstract class AbstractRequest
      *
      * @return boolean
      */
-    public function inError()
+    public function inError(): bool
     {
         return $this->error;
     }
@@ -698,7 +693,7 @@ abstract class AbstractRequest
      *
      * @return void
      */
-    private function prepareHeaders()
+    private function prepareHeaders(): void
     {
         $headers = [
             'Content-Type' => $this->getContentType(),
@@ -713,7 +708,7 @@ abstract class AbstractRequest
      *
      * @return array
      */
-    public function getHeaders($legacy = true): array
+    public function getHeaders(bool $legacy = true): array
     {
         return $this->headers->getHeaders($legacy);
     }

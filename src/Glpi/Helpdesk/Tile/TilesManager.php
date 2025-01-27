@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,76 +34,162 @@
 
 namespace Glpi\Helpdesk\Tile;
 
-use Glpi\Form\Form;
+use CommonDBTM;
+use Glpi\Session\SessionInfo;
+use InvalidArgumentException;
+use RuntimeException;
+use Profile;
 
 final class TilesManager
 {
     /** @return TileInterface[] */
-    public function getTiles(): array
-    {
+    public function getTiles(
+        SessionInfo $session_info,
+        bool $check_availability = true
+    ): array {
+        // Load tiles for the given profile
+        $profile_tiles = (new Profile_Tile())->find([
+            'profiles_id' => $session_info->getProfileId(),
+        ], ['rank']);
+
         $tiles = [];
+        foreach ($profile_tiles as $row) {
+            // Validate tile itemtype
+            $itemtype = $row['itemtype'];
+            $tile = getItemForItemtype($itemtype);
+            if (!($tile instanceof TileInterface)) {
+                continue;
+            }
 
-        $tiles[] = new Tile(
-            title: __("Browse help articles"),
-            description: __("See all available help articles and our FAQ."),
-            illustration: "browse-help.svg",
-            link: "/front/helpdesk.faq.php"
-        );
+            // Try to load tile from database
+            $tile = new $itemtype();
+            if (!$tile->getFromDb($row['items_id'])) {
+                continue;
+            }
 
-        $incident_form = $this->getIncidentForm();
-        if ($incident_form !== null) {
-            $tiles[] = new FormTile(
-                form: $incident_form,
-            );
+            // Make sure the tile is valid for the given session and entity details
+            if ($check_availability && !$tile->isAvailable($session_info)) {
+                continue;
+            }
+
+            // The tile is valid, add it to the list
+            $tiles[] = $tile;
         }
-
-        $tiles[] = new Tile(
-            title: __("Request a service"),
-            description: __("Ask for a service to be provided by our team."),
-            illustration: "request-service.svg",
-            link: "/ServiceCatalog"
-        );
-
-        $tiles[] = new Tile(
-            title: __("Make a reservation"),
-            description: __("Pick an available asset and reserve it for a given date."),
-            illustration: "make-reservation.svg",
-            link: "/front/reservationitem.php"
-        );
-
-        $tiles[] = new Tile(
-            title: __("View approval requests"),
-            description: __("View all tickets waiting for your validation."),
-            illustration: "approval-request.svg",
-            // TODO: apply correct search filter
-            link: "/front/ticket.php"
-        );
-
-        $tiles[] = new Tile(
-            title: __("View RSS feeds"),
-            description: __("Checkout new data from your saved RSS feeds."),
-            illustration: "view-feed.svg",
-            // TODO: replace this default tile by something more useful, rss
-            // feeds are already displayed on the home page using a tab
-            link: "/Helpdesk"
-        );
 
         return $tiles;
     }
 
-    private function getIncidentForm(): ?Form
-    {
-        // TODO: form will be loaded using its id later once default tiles are
-        // created during GLPI's installation
-        $rows = (new Form())->find(['name' => 'Report an issue']);
-
-        // TODO: once tile are saved to database, deleting a form should also
-        // delete the associated tile.
-        if (count($rows) === 0) {
-            return null;
+    public function addTile(
+        Profile $profile,
+        string $tile_class,
+        array $params
+    ): int {
+        if ($profile->fields['interface'] !== 'helpdesk') {
+            throw new InvalidArgumentException("Only helpdesk profiles can have tiles");
         }
 
-        $row = array_pop($rows);
-        return Form::getById($row['id']);
+        $tile = new $tile_class();
+        $id = $tile->add($params);
+        if (!$id) {
+            throw new RuntimeException("Failed to create tile");
+        }
+
+        $profile_tile = new Profile_Tile();
+        $id = $profile_tile->add([
+            'profiles_id' => $profile->getID(),
+            'items_id'    => $id,
+            'itemtype'    => $tile_class,
+            'rank'        => countElementsInTable(Profile_Tile::getTable(), [
+                'profiles_id' => $profile->getID(),
+            ]),
+        ]);
+        if (!$id) {
+            throw new RuntimeException("Failed to link tile to profile");
+        }
+
+        return $id;
+    }
+
+    public function getProfileTileForTile(TileInterface $tile): Profile_Tile
+    {
+        $profile_tile = new Profile_Tile();
+        $get_by_crit_success = $profile_tile->getFromDBByCrit([
+            'itemtype' => $tile::class,
+            'items_id' => $tile->getDatabaseId(),
+        ]);
+
+        if (!$get_by_crit_success) {
+            throw new RuntimeException("Missing Profile_Tile data");
+        }
+
+        return $profile_tile;
+    }
+
+    /**
+     * @param int[] $order Ids of the Profile_Tile entries, sorted into the desired ranks
+     */
+    public function setOrderForProfile(Profile $profile, array $order): void
+    {
+        // Increase the original ranks to avoid unicity conflicts when setting
+        // the new ranks.
+        $max_rank = $this->getMaxUsedRankForProfile($profile);
+        $profile_tiles = (new Profile_Tile())->find([
+            'profiles_id' => $profile->getID()
+        ]);
+        $profile_tiles_ids = array_column($profile_tiles, 'id');
+        foreach ($profile_tiles_ids as $i => $id) {
+            $profile_tile = new Profile_Tile();
+            $profile_tile->update([
+                'id' => $id,
+                'rank' => $i + ++$max_rank,
+            ]);
+        }
+
+        // Set new ranks
+        foreach (array_values($order) as $rank => $id) {
+            // Find the associated Profile_Tile
+            $profile_tile = new Profile_Tile();
+            $profile_tile->update([
+                'id' => $id,
+                'rank' => $rank,
+            ]);
+        }
+    }
+
+    public function deleteTile(CommonDBTM&TileInterface $tile): void
+    {
+        // First, find and delete the relevant Profile_Tile row
+        $profile_tiles = (new Profile_Tile())->find([
+            'items_id' => $tile->getDatabaseId(),
+            'itemtype' => $tile::class,
+        ]);
+        foreach ($profile_tiles as $profile_tile_row) {
+            $id = $profile_tile_row['id'];
+            $delete = (new Profile_Tile())->delete(['id' => $id]);
+            if (!$delete) {
+                throw new RuntimeException("Failed to delete profile tile ($id)");
+            }
+        }
+
+        // Then delete the tile itself
+        $id =  $tile->getDatabaseId();
+        $delete = $tile->delete(['id' => $id]);
+        if (!$delete) {
+            throw new RuntimeException("Failed to delete tile ($id)");
+        }
+    }
+
+    private function getMaxUsedRankForProfile(Profile $profile): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $rank = $DB->request([
+            'SELECT' => ['MAX' => "rank AS max_rank"],
+            'FROM'   => Profile_Tile::getTable(),
+            'WHERE'  => ['profiles_id' => $profile->getID()],
+        ])->current();
+
+        return $rank['max_rank'];
     }
 }

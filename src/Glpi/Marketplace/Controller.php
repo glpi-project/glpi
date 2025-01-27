@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -159,7 +159,7 @@ class Controller extends CommonGLPI
      * @param ?string $version Download a specific version of the plugin
      * @return bool
      */
-    public function downloadPlugin($auto_install = true, string $version = null): bool
+    public function downloadPlugin($auto_install = true, ?string $version = null): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -464,7 +464,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function canBeDownloaded(string $version = null)
+    public function canBeDownloaded(?string $version = null)
     {
         $api        = self::getAPI();
         $api_plugin = $api->getPlugin($this->plugin_key);

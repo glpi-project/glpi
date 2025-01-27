@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,7 +55,7 @@ trait Inventoriable
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
-           //file does not exists
+           //file does not exist
             return true;
         }
 
@@ -81,7 +81,7 @@ trait Inventoriable
         $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
 
         $conf = new Conf();
-        //Check for JSON file, and the XML if JSON does not exists
+        //Check for JSON file, and the XML if JSON does not exist
         $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'json');
         if (!file_exists($inventory_dir_path . $filename)) {
             $filename = $conf->buildInventoryFileName($itemtype, $items_id, 'xml');
@@ -129,21 +129,27 @@ trait Inventoriable
             );
 
             echo sprintf(
-                "<a href='%s' style='float: right;' target='_blank'><i class='fas fa-download' title='%s'></i></a>",
+                "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
                 \htmlescape($href),
                 \htmlescape($title)
             );
 
-            if (static::class == RefusedEquipment::class) {
-                echo sprintf(
-                    "<a href='%s' target='_blank' style='float: right;margin-right: .5em;'><i class='fas fa-redo' title='%s'></i></a>",
-                    $CFG_GLPI['root_doc'] . '/front/inventory.php?refused=' . $this->fields['id'],
-                    __s('Try a reimport from stored inventory file')
-                );
+            if (static::class === RefusedEquipment::class) { //@phpstan-ignore-line - phpstan bug with traits
+                $url = $CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment';
+                $title = __s('Try a reimport from stored inventory file');
+                echo <<<HTML
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"
+                                title="{$title}"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                style="float: right;margin-right: .5em;"
+                                formaction="{$url}">
+                           <i class="ti ti-reload"></i>
+                        </button>
+HTML;
             }
         } else {
             echo sprintf(
-                "<span style='float: right;'><i class='fas fa-ban'></i> <span class='sr-only'>%s</span></span>",
+                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='sr-only'>%s</span></span>",
                 __s('Inventory file missing')
             );
         }
@@ -190,16 +196,16 @@ trait Inventoriable
         echo '<td>' . __s('Inventory tag') . '</td>';
         echo '<td>' . htmlescape($this->agent->fields['tag']) . '</td>';
         echo '<td>' . __s('Last inventory') . '</td>';
-        echo '<td>' . Html::convDateTime($this->agent->fields['last_contact']) . '</td>';
+        echo '<td>' . htmlescape(Html::convDateTime($this->agent->fields['last_contact'])) . '</td>';
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . __s('Agent status');
-        echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
         echo '<td>' .  __s('Request inventory');
-        echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
         echo '</tr>';

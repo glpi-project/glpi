@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -257,11 +257,12 @@ class Group extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']            = "<i class='fas fa-user-plus'></i>" .
+            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>" .
                                               _sx('button', 'Add a user');
             $actions[$prefix . 'add_supervisor'] = "<i class='fas fa-user-tie'></i>" .
                                               _sx('button', 'Add a manager');
-            $actions[$prefix . 'remove']         = _sx('button', 'Remove a user');
+            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>" .
+                                              _sx('button', 'Remove a user');
         }
 
         return $actions;

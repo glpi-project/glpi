@@ -2680,7 +2680,7 @@ msgstr ""
 #: src/WifiNetwork.php:75
 msgctxt "wifi_card_mode"
 msgid "Ad-hoc"
-msgstr ""
+msgstr "Ad-hoc"
 
 #: src/WifiNetwork.php:91
 msgid "Ad-hoc (without access point)"
@@ -4565,7 +4565,7 @@ msgstr[1] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Yhdistetyt kohteet"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5257,7 +5257,7 @@ msgstr "Tuotemerkki"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Tuotemerkki"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6007,7 +6007,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Muuttunut"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8710,7 +8710,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Laitteet"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9114,7 +9114,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Palautetaanko valittu versio?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9135,7 +9135,7 @@ msgstr "Asiakirja"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Asiakirja"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15200,7 +15200,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Isäntä"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -15748,7 +15748,7 @@ msgstr[1] ""
 #: src/WifiNetwork.php:80
 msgctxt "wifi_card_mode"
 msgid "Monitor"
-msgstr ""
+msgstr "Näyttö"
 
 #: src/Rule.php:307 src/MonitorModel.php:41
 msgid "Monitor model"
@@ -17810,7 +17810,7 @@ msgstr "Muu"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Muu"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20820,7 +20820,7 @@ msgstr "Rest-API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Palauta"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -21530,7 +21530,7 @@ msgstr "Toinen kohde"
 #: src/WifiNetwork.php:79
 msgctxt "wifi_card_mode"
 msgid "Secondary"
-msgstr ""
+msgstr "Toissijainen"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind primary:"
@@ -23209,7 +23209,7 @@ msgstr "Järjestelmä"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "Järjestelmä"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -23427,7 +23427,7 @@ msgstr[1] ""
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Team members"
-msgstr ""
+msgstr "Tiimin jäsenet"
 
 #: phpunit/functional/RuleTest.php:324 front/stat.graph.php:94
 #: src/CommonITILTask.php:976 src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -24878,7 +24878,7 @@ msgstr "Yhteensä"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Yhteensä"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26769,7 +26769,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Näkymät"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,6 +45,7 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +55,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SubmitAnswerController extends AbstractController
 {
-    #[SecurityStrategy('no_check')] // Some forms can be accessed anonymously
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/SubmitAnswers",
         name: "glpi_form_submit_answers",
@@ -99,7 +100,7 @@ final class SubmitAnswerController extends AbstractController
             // Load current user session info and URL parameters.
             $parameters = new FormAccessParameters(
                 session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
+                url_parameters: $request->request->all(),
             );
         }
 
@@ -113,16 +114,22 @@ final class SubmitAnswerController extends AbstractController
         Request $request
     ): AnswersSet {
         $post = $request->request->all();
-        $answers = (new EndUserInputNameProvider())->getAnswers($post);
+        $provider = new EndUserInputNameProvider();
+
+        $answers = $provider->getAnswers($post);
+        $files = $provider->getFiles($post, $answers);
         if (empty($answers)) {
             throw new BadRequestHttpException();
         }
 
         $handler = AnswersHandler::getInstance();
-        return $handler->saveAnswers(
+        $answers = $handler->saveAnswers(
             $form,
             $answers,
-            Session::getLoginUserID()
+            Session::getLoginUserID(),
+            $files,
         );
+
+        return $answers;
     }
 }

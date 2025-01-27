@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -34,11 +34,11 @@
 {% set timeline_btns_cls = left_regular_cls %}
 {% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-lg" %}
 {% set timeline_btn_layout = session('glpitimeline_action_btn_layout') %}
-{% set switch_btn_cls    = "fa-caret-left" %}
+{% set switch_btn_cls    = "ti ti-caret-left-filled" %}
 {% if is_expanded %}
     {% set timeline_btns_cls = left_expanded_cls %}
     {% set form_btns_cls     = right_expanded_cls %}
-    {% set switch_btn_cls    = "fa-caret-right" %}
+    {% set switch_btn_cls    = "ti ti-caret-right filled" %}
 {% endif %}
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">
@@ -52,7 +52,7 @@
             {% if item.isNotSolved() and default_action_data != false %}
                {% if main_actions_itemtypes|length > 1 %}
                   {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
-                  <div class="{{ btn_class }} me-2 main-actions" style="{{ load_kb_sol > 0 ? 'display:none;' : '' }}">
+                  <div class="{{ btn_class }} me-2 main-actions">
                {% else %}
                   {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
                   <div class="main-actions" style="display:inline-flex">
@@ -112,10 +112,10 @@
          <span class="d-none d-lg-block ms-n3"
                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
             <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0">
-               <i class="fas {{ switch_btn_cls }}"></i>
+               <i class="{{ switch_btn_cls }}"></i>
             </button>
             <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1">
-               <i class="fas fa-caret-right"></i>
+               <i class="ti ti-caret-right-filled"></i>
             </button>
          </span>
 
@@ -123,7 +123,7 @@
          {% if item.isNewItem() %}
             <button class="btn btn-primary" type="submit" name="add" form="itil-form"
                   title="{{ _x('button', 'Add') }}">
-               <i class="fas fa-plus"></i>
+               <i class="ti ti-plus"></i>
                <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
             </button>
          {% else %}
@@ -134,7 +134,7 @@
                {% if display_save_btn %}
                   <button class="btn btn-primary" type="submit" name="update" form="itil-form"
                         title="{{ _x('button', 'Save') }}">
-                     <i class="far fa-save"></i>
+                     <i class="ti ti-device-floppy"></i>
                      <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                   </button>
                {% endif %}
@@ -143,7 +143,7 @@
                   {% if item.isDeleted() %}
                      <button class="btn btn-outline-secondary" type="submit" name="restore" form="itil-form"
                            title="{{ _x('button', 'Restore') }}">
-                        <i class="fas fa-trash-restore-alt"></i>
+                        <i class="ti ti-trash-off"></i>
                         <span class="d-none d-lg-block">{{ _x('button', 'Restore') }}</span>
                      </button>
 

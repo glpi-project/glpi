@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
+use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -316,7 +317,7 @@ class Dropdown
                            title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . $field_id . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='fa-fw ti ti-plus'></i>
+              <i class='ti ti-plus'></i>
               <span class='sr-only'>" . __s('Add') . "</span>
                 </span>";
             $add_item_icon .= '</div>';
@@ -399,7 +400,7 @@ class Dropdown
             if ($itemtype == 'Location') {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='$field_id' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
-                $location_icon .= "<i class='fa-fw ti ti-map'></i></div>";
+                $location_icon .= "<i class='ti ti-map'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
@@ -409,7 +410,7 @@ class Dropdown
                     && ($rack = $item->getParentRack())
                 ) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
-                    $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
+                    $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
                     $paramscomment['with_dc_position'] = $breadcrumb_id;
                     $icon_array[] = $dc_icon;
@@ -1219,6 +1220,7 @@ JAVASCRIPT;
                     'PlanningExternalEventTemplate' => null,
                     'PlanningEventCategory' => null,
                     'PendingReason' => null,
+                    Category::class => null,
                 ],
 
                 _n('Type', 'Types', Session::getPluralNumber()) => [
@@ -1880,7 +1882,11 @@ JAVASCRIPT;
         if (array_key_exists('default_itemtype', $options)) {
             $out .= "<script type='text/javascript' >\n";
             $out .= "$(function() {";
-            $out .= Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
+            $out .= sprintf(
+                '$("#%s").trigger("setValue", "%s");',
+                htmlescape($field_id),
+                htmlescape($params['default_itemtype'])
+            );
             $out .= "});</script>\n";
 
             $p_ajax["idtable"] = $params['default_itemtype'];
@@ -2282,6 +2288,7 @@ JAVASCRIPT;
         $param['init']                = true;
         $param['aria_label']          = '';
         $param['add_data_attributes'] = '';
+        $param['dropdownCssClass']    = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2329,7 +2336,11 @@ JAVASCRIPT;
                     $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '">' . implode(', ', $to_display) . '</span>';
+            $output .= '<span class="form-control" readonly style="width: ' .  htmlescape($param["width"]) . '"';
+            if ($param['tooltip']) {
+                $output .= ' title="' . htmlescape($param['tooltip']) . '"';
+            }
+            $output .= '>' . implode(', ', $to_display) . '</span>';
         } else {
             if ($param['multiple']) {
                 // Fix for multiple select not sending any form data when no option is selected
@@ -2478,6 +2489,7 @@ JAVASCRIPT;
            // Width set on select
             $adapt_params = [
                 'width'             => $param["width"],
+                'dropdownCssClass'  => $param["dropdownCssClass"],
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
                 'init'              => $param["init"],
@@ -2754,7 +2766,7 @@ JAVASCRIPT;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' " .
              " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='far fa-save'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+             "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
     }
 
 

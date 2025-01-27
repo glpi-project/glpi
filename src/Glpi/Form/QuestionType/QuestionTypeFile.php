@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -75,6 +75,7 @@ final class QuestionTypeFile extends AbstractQuestionType
                     'init'           : question is not null ? true: false,
                     'no_label'       : true,
                     'full_width'     : true,
+                    'mb'             : '',
                 }
             ) }}
 TWIG;
@@ -105,6 +106,7 @@ TWIG;
                     'init'                 : true,
                     'no_label'             : true,
                     'full_width'           : true,
+                    'mb'                   : '',
                 }
             ) }}
 TWIG;

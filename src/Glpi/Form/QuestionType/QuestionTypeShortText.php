@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,11 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
+use Glpi\Form\ConditionalVisiblity\ValueOperator;
 use Override;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer
+final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getInputType(): string
@@ -61,5 +63,16 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
+        ];
     }
 }

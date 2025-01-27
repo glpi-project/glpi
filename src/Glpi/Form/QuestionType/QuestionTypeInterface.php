@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -212,4 +212,33 @@ interface QuestionTypeInterface
      * @return ?JsonFieldInterface
      */
     public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface;
+
+    /**
+     * Retrieve the allowed sub-types for the question type
+     *
+     * @return array
+     */
+    public function getSubTypes(): array;
+
+    /**
+     * Retrieve the sub-type field name for the question type
+     *
+     * @return string
+     */
+    public function getSubTypeFieldName(): string;
+
+    /**
+     * Retrieve the sub-type field label for the question type
+     *
+     * @return string
+     */
+    public function getSubTypeFieldAriaLabel(): string;
+
+    /**
+     * Retrieve the default value for the sub-type field
+     *
+     * @param Question|null $question The question to get the default value for
+     * @return null|string
+     */
+    public function getSubTypeDefaultValue(?Question $question): ?string;
 }

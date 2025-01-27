@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -61,15 +61,11 @@
    <input type="hidden" name="is_template" value="1" />
 {% elseif item.isNewItem() %}
    {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
-{% else %}
-   {% if noid == false and (session('glpiis_ids_visible') or nametype|length == 0) %}
-      {% set nametype = __('%1$s - %2$s')|format(nametype, item.fields['id']) %}
-   {% endif %}
 {% endif %}
 
 {% if item.canEdit(item.fields['id']) %}
    <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-         action="{{ path('/front/massiveaction.php') }}" data-submit-once>
+         action="{{ path('/front/massiveaction.php') }}?_from_single_item=1" data-submit-once>
       <div id="massive_container_{{ rand }}"></div>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    </form>

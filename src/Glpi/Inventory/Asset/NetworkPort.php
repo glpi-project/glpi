@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -68,7 +68,7 @@ class NetworkPort extends InventoryAsset
         $this->aggregates = [];
         $this->vlans = [];
 
-        $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()] = null;
+        $this->extra_data['\Glpi\Inventory\MainAsset\\' . $this->item->getType()] = null;
         $mapping = [
             'ifname'       => 'name',
             'ifnumber'     => 'logical_number',
@@ -624,7 +624,7 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        $this->ports += $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts();
+        $this->ports += $this->extra_data['\Glpi\Inventory\MainAsset\\' . $this->item->getType()]->getManagementPorts();
         $this->handlePorts();
     }
 
@@ -788,12 +788,12 @@ class NetworkPort extends InventoryAsset
 
     public function handlePorts($itemtype = null, $items_id = null)
     {
-        $mainasset = $this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()];
+        $mainasset = $this->extra_data['\Glpi\Inventory\MainAsset\\' . $this->item->getType()];
 
         //remove management port for Printer on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
         if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
-            if (empty($this->extra_data['\Glpi\Inventory\Asset\\' . $this->item->getType()]->getManagementPorts())) {
+            if (empty($this->extra_data['\Glpi\Inventory\MainAsset\\' . $this->item->getType()]->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
@@ -814,7 +814,7 @@ class NetworkPort extends InventoryAsset
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    preg_match('@[\w\s+]+(\d+)/[\w]@', $val->name, $matches)
+                    preg_match('@[\w\s+]*(\d+)/[\w]@', $val->name, $matches)
                 ) {
                     //reset increment when name lenght differ
                     //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,12 +47,8 @@ abstract class SLMField extends AbstractConfigField
 {
     abstract public function getSLMClass(): string;
     abstract public function getType(): int;
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return SLMFieldConfig::class;
-    }
+    /** @return class-string<SLMFieldConfig> */
+    abstract public function getConfigClass(): string;
 
     #[Override]
     public function renderConfigForm(
@@ -73,14 +69,6 @@ abstract class SLMField extends AbstractConfigField
 
             // General display options
             'options' => $display_options,
-
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . SLMFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
@@ -103,8 +91,11 @@ abstract class SLMField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $slm_id = $config->getStrategy()->getSLMID($config);
+        $slm_id = $strategy->getSLMID($config);
 
         // Do not edit input if invalid value was found
         $slm_class = $this->getSLMClass();
@@ -120,12 +111,12 @@ abstract class SLMField extends AbstractConfigField
     #[Override]
     public function getDefaultConfig(Form $form): SLMFieldConfig
     {
-        return new SLMFieldConfig(
+        return new ($this->getConfigClass())(
             SLMFieldStrategy::FROM_TEMPLATE
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (SLMFieldStrategy::cases() as $strategies) {

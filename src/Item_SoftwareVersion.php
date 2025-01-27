@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -737,8 +737,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                 }
 
                 if ($crit == "softwares_id") {
-                    echo "<td><a href='" . SoftwareVersion::getFormURLWithID($data['vID']) . "'>" .
-                     $data['version'] . "</a></td>";
+                    echo "<td><a href='" . htmlescape(SoftwareVersion::getFormURLWithID($data['vID'])) . "'>" .
+                     htmlescape($data['version']) . "</a></td>";
                 }
 
                 $itemname = $data['itemname'];
@@ -750,7 +750,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
                 $itemname = htmlescape($itemname);
                 if ($canshowitems[$data['item_type']]) {
-                    echo "<td><a href='" . $data['item_type']::getFormURLWithID($data['iID']) . "'>$itemname</a></td>";
+                    echo "<td><a href='" . htmlescape($data['item_type']::getFormURLWithID($data['iID'])) . "'>$itemname</a></td>";
                 } else {
                     echo "<td>" . $itemname . "</td>";
                 }

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -93,7 +93,6 @@
         max-width: 820px;
         min-width: 100%;
         word-break: break-word;
-        border: 1px solid transparent;
 
         @include media-breakpoint-up(sm) {
             &::before {
@@ -424,7 +423,8 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
-            &.KnowbaseItemComment {
+            &.KnowbaseItemComment,
+            &.ITILReminder {
                 display: none;
             }
 

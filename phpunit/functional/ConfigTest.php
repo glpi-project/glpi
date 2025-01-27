@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -461,7 +461,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dbEngineProvider')]
+    #[DataProvider('dbEngineProvider')]
     public function testCheckDbEngine($raw, $version, $compat)
     {
         global $DB;
@@ -524,7 +524,7 @@ class ConfigTest extends DbTestCase
      * @param string $key
      * @param string $itemtype
      */
-    #[dataProvider('itemtypeLinkedToConfigurationProvider')]
+    #[DataProvider('itemtypeLinkedToConfigurationProvider')]
     public function testCleanRelationDataOfLinkedItems($key, $itemtype)
     {
 
@@ -781,7 +781,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('logConfigChangeProvider')]
+    #[DataProvider('logConfigChangeProvider')]
     public function testLogConfigChange(string $context, string $name, bool $is_secured, string $old_value_prefix, string $itemtype)
     {
         global $PLUGIN_HOOKS;
@@ -883,38 +883,6 @@ class ConfigTest extends DbTestCase
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
             $this->assertFalse($infocom_exists);
         }
-    }
-
-    public function testDetectRooDoc(): void
-    {
-        global $CFG_GLPI;
-        $bkp_root_doc = $CFG_GLPI['root_doc'];
-
-        $uri_to_scriptname = [
-            '/'                        => '/index.php',
-            '/front/index.php?a=b'     => '/front/index.php',
-            '/api.php/endpoint/method' => '/api.php',
-            '//whatever/path/is'       => '/index.php', // considered as `path=/` + `pathinfo=/whatever/path/is` by GLPI router
-        ];
-
-        foreach (['', '/glpi', '/whatever/alias/is'] as $prefix) {
-            foreach ($uri_to_scriptname as $uri => $script_name) {
-                unset($CFG_GLPI['root_doc']);
-
-                chdir(GLPI_ROOT . dirname($script_name)); // cwd is expected to be the executed script dir
-
-                $server_bck = $_SERVER;
-                $_SERVER['REQUEST_URI'] = $prefix . $uri;
-                $_SERVER['SCRIPT_NAME'] = $prefix . $script_name;
-                \Config::detectRootDoc();
-                $_SERVER = $server_bck;
-
-                $this->assertEquals($prefix, $CFG_GLPI['root_doc']);
-            }
-        }
-
-        //reset root_doc
-        $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
     public function testConfigLogNotEmpty()

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -144,6 +144,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'user_mention'      => __('User mentioned'),
             'auto_reminder'     => ITILReminder::getTypeName(1),
             'add_document'      => __('New document'),
+            'pendingreason_add' => __('Pending reason added'),
+            'pendingreason_del' => __('Pending reason removed'),
+            'pendingreason_close' => __('Pending reason auto close'),
         ];
 
         asort($events);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 use Glpi\Toolbox\URL;
@@ -241,29 +242,7 @@ final class Transfer extends CommonDBTM
             // Simulate transfers To know which items need to be transfer
             $this->simulateTransfer($items);
 
-            // Inventory Items : MONITOR....
-            $INVENTORY_TYPES = [
-                'Software', // Software first (to avoid copy during computer transfer)
-                'Computer', // Computer before all other items
-                'CartridgeItem',
-                'ConsumableItem',
-                'Monitor',
-                'NetworkEquipment',
-                'Peripheral',
-                'Phone',
-                'Printer',
-                'SoftwareLicense',
-                'Certificate',
-                'Contact',
-                'Contract',
-                'Document',
-                'Supplier',
-                'Group',
-                'Link',
-                'Ticket',
-                'Problem',
-                'Change'
-            ];
+            $INVENTORY_TYPES = $this->getItemtypes();
 
             foreach ($INVENTORY_TYPES as $itemtype) {
                 if (isset($items[$itemtype]) && count($items[$itemtype])) {
@@ -295,7 +274,8 @@ final class Transfer extends CommonDBTM
             if (!$intransaction && $DB->inTransaction()) {
                 $DB->rollBack();
             }
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
         }
     }
 
@@ -1140,12 +1120,9 @@ final class Transfer extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Init types :
-        $types = ['Computer', 'CartridgeItem', 'Change', 'ConsumableItem', 'Certificate', 'Contact',
-            'Contract', 'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral',
-            'Phone', 'Printer', 'Problem', 'Software', 'SoftwareLicense',
-            'SoftwareVersion', 'Supplier', 'Ticket'
-        ];
+        // Init types :
+        $types = $this->getItemtypes();
+
         $types = array_merge($types, $CFG_GLPI['device_types']);
         $types = array_merge($types, Item_Devices::getDeviceTypes());
 
@@ -3830,6 +3807,7 @@ final class Transfer extends CommonDBTM
 
         $options['target'] = URL::sanitizeURL($options['target']);
 
+        $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
             'item' => $this,
             'edit_mode' => $edit_form,
@@ -3854,11 +3832,12 @@ final class Transfer extends CommonDBTM
             foreach ($_SESSION['glpitransfer_list'] as $itemtype => $tab) {
                 if (!empty($tab)) {
                     $table = $itemtype::getTable();
-
+                    $name_field = $itemtype::getNameField();
+                    $table_name_field = sprintf('%1$s.%2$s', $table, $name_field);
                     $iterator = $DB->request([
                         'SELECT' => [
                             "$table.id",
-                            "$table.name",
+                            $table_name_field,
                             'entities.completename AS entname',
                             'entities.id AS entID'
                         ],
@@ -3872,7 +3851,7 @@ final class Transfer extends CommonDBTM
                             ]
                         ],
                         'WHERE' => ["$table.id" => $tab],
-                        'ORDERBY' => ['entname', "$table.name"]
+                        'ORDERBY' => ['entname', $table_name_field]
                     ]);
 
                     foreach ($iterator as $data) {
@@ -3891,5 +3870,44 @@ final class Transfer extends CommonDBTM
     public static function getIcon()
     {
         return "fas fa-level-up-alt";
+    }
+
+    public function getItemtypes(): array
+    {
+        $itemtypes = [
+            'Software', // Software first (to avoid copy during computer transfer)
+            'Computer', // Computer before all other items
+        ];
+
+        $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
+        foreach ($definitions as $definition) {
+            $itemtypes[] = $definition->getAssetClassName();
+        }
+
+        $itemtypes = array_merge(
+            $itemtypes,
+            [
+                'CartridgeItem',
+                'ConsumableItem',
+                'Monitor',
+                'NetworkEquipment',
+                'Peripheral',
+                'Phone',
+                'Printer',
+                'SoftwareLicense',
+                'Certificate',
+                'Contact',
+                'Contract',
+                'Document',
+                'Supplier',
+                'Group',
+                'Link',
+                'Ticket',
+                'Problem',
+                'Change'
+            ]
+        );
+
+        return $itemtypes;
     }
 }

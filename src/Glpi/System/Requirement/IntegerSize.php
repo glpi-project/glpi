@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,6 +47,8 @@ final class IntegerSize extends AbstractRequirement
 
     protected function check()
     {
+        $extension_loaded = $this->isExtensionLoaded();
+        $driver_is_mysqlnd = $this->isMysqlND();
         if (PHP_INT_SIZE < 8) {
             $this->validated = false;
             $this->validation_messages[] = __('OS or PHP is not relying on 64 bits integers.');
@@ -54,5 +56,15 @@ final class IntegerSize extends AbstractRequirement
             $this->validated = true;
             $this->validation_messages[] = __('OS and PHP are relying on 64 bits integers.');
         }
+    }
+
+    protected function isExtensionLoaded(): bool
+    {
+        return extension_loaded('mysqli');
+    }
+
+    protected function isMysqlND(): bool
+    {
+        return defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
     }
 }

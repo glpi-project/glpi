@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -74,7 +74,7 @@ class CacheManagerTest extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('contextProvider')]
+    #[DataProvider('contextProvider')]
     public function testIsContextValid(string $context, bool $is_valid, bool $is_configurable): void
     {
         vfsStream::setup('glpi', null, ['config' => [], 'files' => ['_cache' => []]]);
@@ -218,7 +218,7 @@ class CacheManagerTest extends \GLPITestCase
         }
     }
 
-    #[dataProvider('configurationProvider')]
+    #[DataProvider('configurationProvider')]
     public function testSetConfiguration(
         string $context,
         $dsn,
@@ -315,7 +315,7 @@ class CacheManagerTest extends \GLPITestCase
         $this->assertEquals($expected_config, include($config_file));
     }
 
-    #[dataProvider('configurationProvider')]
+    #[DataProvider('configurationProvider')]
     public function testGetConfigurableCache(
         string $context,
         $dsn,
@@ -365,7 +365,7 @@ class CacheManagerTest extends \GLPITestCase
         }
     }
 
-    #[dataProvider('contextProvider')]
+    #[DataProvider('contextProvider')]
     public function testGetCacheInstanceDefault(string $context, bool $is_valid, bool $is_configurable): void
     {
         if (!$is_valid) {
@@ -435,7 +435,7 @@ class CacheManagerTest extends \GLPITestCase
         ];
     }
 
-    #[dataProvider('dsnProvider')]
+    #[DataProvider('dsnProvider')]
     public function testIsDsnValid($dsn, bool $is_valid, ?string $scheme = null): void
     {
 
@@ -449,7 +449,7 @@ class CacheManagerTest extends \GLPITestCase
         $this->assertSame($is_valid, $instance->isDsnValid($dsn));
     }
 
-    #[dataProvider('dsnProvider')]
+    #[DataProvider('dsnProvider')]
     public function testExtractScheme($dsn, bool $is_valid, ?string $scheme = null): void
     {
 

@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -46,7 +46,7 @@
                     <h3>
                         {{ headings[filter_heading] }}
                         {% if filter_heading == 'plannings' %}
-                            <a class="planning_link planning_add_filter" href="{{ path('/ajax/planning.php?action=add_planning_form') }}">
+                            <a class="planning_link planning_add_filter" href="{{ path('/ajax/planning.php?action=add_planning_form') }}" title="{{ __('Add a calendar') }}">
                                 <i class="ti ti-circle-plus"></i>
                             </a>
                         {% endif %}

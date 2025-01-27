@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -121,23 +121,6 @@ if (isset($_POST["add"])) {
 }
 
 if ($handled) {
-    if (isset($_POST['kb_linked_id'])) {
-       //if followup should be linked to selected KB entry
-        $params = [
-            'knowbaseitems_id' => $_POST['kb_linked_id'],
-            'itemtype'         => $itemtype,
-            'items_id'         => $task->getField($fk)
-        ];
-        $existing = $DB->request([
-            'FROM' => 'glpi_knowbaseitems_items',
-            'WHERE' => $params
-        ]);
-        if ($existing->numrows() == 0) {
-            $kb_item_item = new KnowbaseItem_Item();
-            $kb_item_item->add($params);
-        }
-    }
-
     if ($track->can($task->getField($fk), READ)) {
         $toadd = '';
        // Copy followup to KB redirect to KB

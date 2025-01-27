@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -375,7 +375,15 @@ final class Search
 
         // Handle RSQL filter
         if (isset($this->request_params['filter']) && !empty($this->request_params['filter'])) {
-            $criteria['WHERE'] = [$this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']))];
+            $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->request_params['filter']));
+            // Fail the request if any of the filters are invalid
+            if (!empty($filter_result->getInvalidFilters())) {
+                throw new RSQLException(
+                    message: 'RSQL query has invalid filters',
+                    details: array_map(static fn ($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
+                );
+            }
+            $criteria['WHERE'] = [$filter_result->getSQLCriteria()];
         }
 
         // Handle entity and other visibility restrictions
@@ -971,7 +979,7 @@ final class Search
                                 return false;
                             }
                             $prop_field = $prop_params['x-field'] ?? $prop_name;
-                            $mapped_from_other = isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field;
+                            $mapped_from_other = isset($prop_params['x-mapped-property']) || (isset($prop_params['x-mapped-from']) && $prop_params['x-mapped-from'] !== $prop_field);
                             // We aren't handling joins or mapped fields here
                             $prop_name = str_replace(chr(0x1F), '.', $prop_name);
                             $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
@@ -1087,6 +1095,7 @@ final class Search
         $mapped_props = array_filter($search->getFlattenedProperties(), static function ($prop) {
             return isset($prop['x-mapper']);
         });
+
         foreach ($results as &$result) {
             // Handle mapped fields
             foreach ($mapped_props as $mapped_prop_name => $mapped_prop) {
@@ -1097,6 +1106,29 @@ final class Search
                         value: $mapped_prop['x-mapper'](ArrayPathAccessor::getElementByArrayPath($result, $mapped_prop['x-mapped-from']))
                     );
                 }
+            }
+            // Handle mapped objects
+            $mapped_objs = [];
+            foreach ($search->getFlattenedProperties() as $prop_name => $prop) {
+                if (isset($prop['x-mapped-property'])) {
+                    $parent_obj_path = substr($prop_name, 0, strrpos($prop_name, '.'));
+                    if (isset($mapped_objs[$parent_obj_path])) {
+                        // Parent object already mapped
+                        continue;
+                    }
+                    $parent_obj = ArrayPathAccessor::getElementByArrayPath($schema['properties'], $parent_obj_path);
+                    if ($parent_obj === null) {
+                        continue;
+                    }
+                    $mapper = $parent_obj['items']['x-mapper'] ?? $parent_obj['x-mapper'];
+                    $mapped_from = $parent_obj['items']['x-mapped-from'] ?? $parent_obj['x-mapped-from'];
+                    $mapped_objs[$parent_obj_path] = $mapper(ArrayPathAccessor::getElementByArrayPath($result, $mapped_from));
+                }
+            }
+            foreach ($mapped_objs as $path => $data) {
+                $existing_data = ArrayPathAccessor::getElementByArrayPath($result, $path) ?? [];
+                $data = array_merge($existing_data, $data);
+                ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
             $result = Doc\Schema::fromArray($schema)->castProperties($result);
         }
@@ -1152,9 +1184,9 @@ final class Search
         try {
             $results = self::getSearchResultsBySchema($schema, $request_params);
         } catch (RSQLException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage()), 400);
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -224,10 +224,12 @@ class ManualLink extends CommonDBChild
 
         $target = $fields['open_window'] == 1 ? '_blank' : '_self';
         $html .= '<a href="' . htmlescape($fields['url']) . '" target="' . $target . '">';
-        if (!empty($fields['icon'])) {
+        if (str_starts_with($fields['icon'] ?? '', 'fa-')) {
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
-            $html .= '<i class="fa-lg fa-fw fa ' . htmlescape($fields['icon']) . '"'
+            $html .= '<i class="fs-2 fa ' . htmlescape($fields['icon']) . '"'
             . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
+        } else if (str_starts_with($fields['icon'] ?? '', 'ti-')) {
+            $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '"></i>&nbsp;';
         }
         $html .= htmlescape(!empty($fields['name']) ? $fields['name'] : $fields['url']);
         $html .= '</a>';
@@ -237,6 +239,6 @@ class ManualLink extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-link";
+        return "ti ti-link";
     }
 }

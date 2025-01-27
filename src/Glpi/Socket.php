@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -143,12 +143,18 @@ class Socket extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['items_id']) && empty($input['items_id'])) {
+            unset($input['itemtype'], $input['items_id']);
+        }
         $input = $this->retrievedataFromNetworkPort($input);
         return $input;
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,14 +39,13 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 global $CFG_GLPI;
 
 if (!Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
-    Session::redirectIfNotLoggedIn();
     throw new AccessDeniedHttpException();
 }
 if (isset($_GET["id"])) {
     Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));
 }
 
-Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+Html::header(KnowbaseItem::getTypeName(1), '', "tools", "knowbaseitem");
 
 // Search a solution
 if (

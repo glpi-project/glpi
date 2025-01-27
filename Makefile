@@ -69,8 +69,8 @@ locales: ## Compile locales
 .PHONY: locales
 
 kill: ## Stop and remove all containers
-	@$(DOCKER_COMPOSE) kill
-	@$(DOCKER_COMPOSE) down --volumes --remove-orphans
+	@$(COMPOSE) kill
+	@$(COMPOSE) down --volumes --remove-orphans
 .PHONY: kill
 
 reset: ## Reset and start a fresh install of the project

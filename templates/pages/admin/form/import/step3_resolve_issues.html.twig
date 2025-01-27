@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -58,14 +58,20 @@
                     {% for issue in issues %}
                         {% set original_name = issue.default_name ?? issue.name %}
 
+                        <script>
+                            console.log("{{ issue|json_encode() }}");
+                        </script>
+
                         <tr>
                             <td class="px-4 align-middle">
                                 <span>{{ original_name }}</span>
                             </td>
                             <td class="px-4">
+                                <input type="hidden" name="replacements[{{ loop.index0 }}][itemtype]" value="{{ issue.itemtype }}"/>
+                                <input type="hidden" name="replacements[{{ loop.index0 }}][original_name]" value="{{ original_name }}"/>
                                 {{ fields.dropdownField(
                                     issue.itemtype,
-                                    'replacements[' ~ issue.itemtype ~ '][' ~ original_name ~ ']',
+                                    'replacements[' ~ loop.index0 ~ '][replacement_id]',
                                     issue.replacement_id|default(''),
                                     '',
                                     {

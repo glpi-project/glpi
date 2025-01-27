@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,9 +52,11 @@ abstract class AbstractRightsDropdown
     /**
      * To be redefined by subclasses, specify enabled types
      *
+     * @param array $options Additional options
+     *
      * @return array
      */
-    abstract protected static function getTypes(): array;
+    abstract protected static function getTypes(array $options = []): array;
 
     protected static function addAllUsersOption(): bool
     {
@@ -65,12 +67,13 @@ abstract class AbstractRightsDropdown
      * Check if a given type is enabled
      *
      * @param string $type Class to check
+     * @param array $options Additional options
      *
      * @return bool
      */
-    protected static function isTypeEnabled(string $type): bool
+    protected static function isTypeEnabled(string $type, array $options = []): bool
     {
-        $types = array_flip(static::getTypes());
+        $types = array_flip(static::getTypes($options));
         return isset($types[$type]);
     }
 
@@ -119,10 +122,11 @@ abstract class AbstractRightsDropdown
      * Get possible data for profiles
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    public static function fetchValues(string $text = ""): array
+    public static function fetchValues(string $text = "", array $options = []): array
     {
         $possible_rights = [];
 
@@ -137,13 +141,13 @@ abstract class AbstractRightsDropdown
         }
 
        // Add users if enabled
-        if (self::isTypeEnabled(User::getType())) {
-            $possible_rights[User::getType()] = self::getUsers($text);
+        if (self::isTypeEnabled(User::getType(), $options)) {
+            $possible_rights[User::getType()] = self::getUsers($text, $options);
         }
 
        // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType())) {
-            $possible_rights[Group::getType()] = self::getGroups($text);
+        if (self::isTypeEnabled(Group::getType(), $options)) {
+            $possible_rights[Group::getType()] = self::getGroups($text, $options);
         }
 
         // Add contacts if enabled
@@ -258,10 +262,11 @@ abstract class AbstractRightsDropdown
      * Get possible values for users
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    protected static function getUsers(string $text): array
+    protected static function getUsers(string $text, array $options): array
     {
         $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
         $users_items = [];
@@ -283,16 +288,22 @@ abstract class AbstractRightsDropdown
      * Get possible values for groups
      *
      * @param string $text Search string
+     * @param array $options Additional options
      *
      * @return array
      */
-    protected static function getGroups(string $text): array
+    protected static function getGroups(string $text, array $options): array
     {
+        $additional_conditions = [];
+        if (isset($options['group_conditions'])) {
+            $additional_conditions = $options['group_conditions'];
+        }
+
         $group_item = new Group();
         $groups = $group_item->find(
             [
                 'name' => ["LIKE", "%$text%"]
-            ] + getEntitiesRestrictCriteria(Group::getTable()),
+            ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
             [],
             self::LIMIT
         );

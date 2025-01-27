@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -79,7 +79,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('slugifyProvider')]
+    #[DataProvider('slugifyProvider')]
     public function testSlugify($string, $expected)
     {
         $this->assertSame($expected, \Toolbox::slugify($string));
@@ -128,7 +128,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('filenameProvider')]
+    #[DataProvider('filenameProvider')]
     public function testFilename($name, $expected)
     {
         $this->assertSame($expected, \Toolbox::filename($name));
@@ -149,7 +149,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataGetSize')]
+    #[DataProvider('dataGetSize')]
     public function testGetSize($input, $expected)
     {
         $this->assertSame($expected, \Toolbox::getSize($input));
@@ -213,7 +213,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('cleanIntegerProvider')]
+    #[DataProvider('cleanIntegerProvider')]
     public function testCleanInteger($value, $expected)
     {
         $this->assertSame($expected, \Toolbox::cleanInteger($value));
@@ -229,7 +229,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('jsonDecodeProvider')]
+    #[DataProvider('jsonDecodeProvider')]
     public function testJsonDecode($json, $expected)
     {
         $this->assertSame($expected, \Toolbox::jsonDecode($json, true));
@@ -270,7 +270,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('isJSONProvider')]
+    #[DataProvider('isJSONProvider')]
     public function testIsJSON($json, bool $expected)
     {
         $this->assertSame(
@@ -298,7 +298,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('ucProvider')]
+    #[DataProvider('ucProvider')]
     public function testUcfirst($in, $out)
     {
         $this->assertSame($out, \Toolbox::ucfirst($in));
@@ -314,7 +314,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('shortcutProvider')]
+    #[DataProvider('shortcutProvider')]
     public function testShortcut($string, $letter, $expected)
     {
         $this->assertSame($expected, \Toolbox::shortcut($string, $letter));
@@ -335,7 +335,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('strposProvider')]
+    #[DataProvider('strposProvider')]
     public function testStrpos($string, $search, $offset, $expected)
     {
         $this->assertSame(
@@ -357,7 +357,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('padProvider')]
+    #[DataProvider('padProvider')]
     public function testStr_pad($string, $length, $char, $pad, $expected)
     {
         $this->assertSame(
@@ -374,7 +374,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('strlenProvider')]
+    #[DataProvider('strlenProvider')]
     public function testStrlen($string, $length)
     {
         $this->assertSame($length, \Toolbox::strlen($string));
@@ -392,7 +392,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('substrProvider')]
+    #[DataProvider('substrProvider')]
     public function testSubstr($string, $start, $length, $expected)
     {
         $this->assertSame(
@@ -410,7 +410,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('lowercaseProvider')]
+    #[DataProvider('lowercaseProvider')]
     public function testStrtolower($upper, $lower)
     {
         $this->assertSame($lower, \Toolbox::strtolower($upper));
@@ -425,7 +425,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('uppercaseProvider')]
+    #[DataProvider('uppercaseProvider')]
     public function testStrtoupper($lower, $upper)
     {
         $this->assertSame($upper, \Toolbox::strtoupper($lower));
@@ -441,7 +441,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-     #[dataProvider('utfProvider')]
+     #[DataProvider('utfProvider')]
     public function testSeems_utf8($string, $utf)
     {
         $this->assertSame($utf, @\Toolbox::seems_utf8($string));
@@ -494,7 +494,7 @@ class ToolboxTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('getPictureUrlProvider')]
+    #[DataProvider('getPictureUrlProvider')]
     public function testGetPictureUrl($path, $url)
     {
         $this->assertSame($url, \Toolbox::getPictureUrl($path));
@@ -553,7 +553,7 @@ class ToolboxTest extends DbTestCase
     /**
      * Check conversion of tags to images.
      */
-    #[dataProvider('convertTagToImageProvider')]
+    #[DataProvider('convertTagToImageProvider')]
     public function testConvertTagToImage($item, $expected_url)
     {
 
@@ -609,7 +609,7 @@ class ToolboxTest extends DbTestCase
     /**
      * Check base url handling in conversion of tags to images.
      */
-    #[dataProvider('convertTagToImageBaseUrlProvider')]
+    #[DataProvider('convertTagToImageBaseUrlProvider')]
     public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url)
     {
 
@@ -894,7 +894,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('shortenNumbers')]
+    #[DataProvider('shortenNumbers')]
     public function testShortenNumber($number, int $precision, string $expected)
     {
         $this->assertEquals(
@@ -950,7 +950,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('colors')]
+    #[DataProvider('colors')]
     public function testGetFgColor(string $bg_color, int $offset, string $fg_color)
     {
         $this->assertEquals(
@@ -981,7 +981,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('testIsCommonDBTMProvider')]
+    #[DataProvider('testIsCommonDBTMProvider')]
     public function testIsCommonDBTM(string $class, bool $is_commondbtm)
     {
         $this->assertSame(
@@ -1012,7 +1012,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('testIsAPIDeprecatedProvider')]
+    #[DataProvider('testIsAPIDeprecatedProvider')]
     public function testIsAPIDeprecated(string $class, bool $is_deprecated)
     {
         $this->assertSame(
@@ -1028,7 +1028,6 @@ HTML;
             ['https://localhost', true],
             ['https;//localhost', false],
             ['https://glpi-project.org', true],
-            ['https://glpi+project-org', false],
             [' http://my.host.com', false],
             ['http://my.host.com', true],
             ['http://my.host.com/', true],
@@ -1048,14 +1047,15 @@ HTML;
             ['http://127.0.0.1:8080/', true],
             ['http://127.0.0.1 :8080/', false],
             ['http://127.0.0.1 :8080 /', false],
-            ['http://::1', true],
-            ['http://::1/glpi', true],
-            ['http://::1:8080/', true],
-            ['http://::1:8080/', true],
-            ['HTTPS://::1:8080/', true],
+            ['http://::1', false], // IPv6 addresses must be in square brackets
+            ['http://[::1]', true],
+            ['http://[::1]/glpi', true],
+            ['http://[::1]:8080/', true],
+            ['http://[::1]:8080/', true],
+            ['HTTPS://[::1]:8080/', true],
             ['www.my.host.com', false],
             ['127.0.0.1', false],
-            ['::1', false],
+            ['[::1]', false],
             ['http://my.host.com/subdir/glpi/', true],
             ['http://my.host.com/~subdir/glpi/', true],
             ['https://localhost<', false],
@@ -1064,10 +1064,11 @@ HTML;
             ['https://localhost?test=true', true],
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
+            ['https://localhost/this+is+a+test', true] // + to denote a space allowed
         ];
     }
 
-    #[dataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testIsValidWebUrl(string $url, bool $result)
     {
         $this->assertSame(
@@ -1079,7 +1080,10 @@ HTML;
 
     public function testDeprecated()
     {
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1089,7 +1093,10 @@ HTML;
     public function testDeprecatedPast()
     {
         // Test planned deprecation in the past
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1099,7 +1106,10 @@ HTML;
     public function testDeprecatedCurrent()
     {
         // Test planned deprecation in current version
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+        \error_reporting($reporting_level); // restore previous level
+
         $this->hasPhpLogRecordThatContains(
             'Calling this function is deprecated',
             LogLevel::INFO
@@ -1109,7 +1119,10 @@ HTML;
     public function testFutureDeprecated()
     {
         // Test planned deprecation in the future does NOT throw an error
+        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
         \Toolbox::deprecated('Calling this function is deprecated', true, '99.0');
+        \error_reporting($reporting_level); // restore previous level
+
         $this->assertTrue(true); //non empty test
     }
 
@@ -1131,7 +1144,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('hasTraitProvider')]
+    #[DataProvider('hasTraitProvider')]
     public function testHasTrait(string $class, string $trait, bool $result)
     {
         $this->assertSame($result, \Toolbox::hasTrait($class, $trait));
@@ -1216,7 +1229,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('appendParametersProvider')]
+    #[DataProvider('appendParametersProvider')]
     public function testAppendParameters(array $params, string $separator, string $expected)
     {
         $this->assertEquals($expected, \Toolbox::append_params($params, $separator));
@@ -1297,7 +1310,7 @@ HTML;
      *
      * @return void
      */
-    #[dataProvider('isFloatProvider')]
+    #[DataProvider('isFloatProvider')]
     public function testIsFloat($value, bool $expected, ?string $warning = null): void
     {
         $result = \Toolbox::isFloat($value);
@@ -1380,7 +1393,7 @@ HTML;
      *
      * @return void
      */
-    #[dataProvider('getDecimalNumbersProvider')]
+    #[DataProvider('getDecimalNumbersProvider')]
     public function testGetDecimalNumbers($value, int $decimals, ?string $warning = null): void
     {
         $result = \Toolbox::getDecimalNumbers($value);
@@ -1464,7 +1477,7 @@ HTML;
      *
      * @return void
      */
-    #[dataProvider('getMioSizeFromStringProvider')]
+    #[DataProvider('getMioSizeFromStringProvider')]
     public function testGetMioSizeFromString(string $size, $expected): void
     {
         $result = \Toolbox::getMioSizeFromString($size);
@@ -1544,7 +1557,7 @@ HTML;
     }
 
 
-    #[dataProvider('safeUrlProvider')]
+    #[DataProvider('safeUrlProvider')]
     public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null): void
     {
         $params = [$url];
@@ -1552,5 +1565,64 @@ HTML;
             $params[] = $allowlist;
         }
         $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
+    }
+
+
+    public static function redirectProvider(): iterable
+    {
+        foreach (['helpdesk', 'central'] as $interface) {
+            // Redirect to absolute URLs.
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://notglpi/',
+                'result'    => null,
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://localhost:80/',
+                'result'    => 'http://localhost:80/',
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => 'http://localhost:80/front/computer.php?id=15',
+                'result'    => 'http://localhost:80/front/computer.php?id=15',
+            ];
+
+            // Redirect to relative URLs.
+            yield [
+                'interface' => $interface,
+                'where'     => '/',
+                'result'    => '/glpi/',
+            ];
+            yield [
+                'interface' => $interface,
+                'where'     => '/front/computer.php?id=15',
+                'result'    => '/glpi/front/computer.php?id=15',
+            ];
+
+            // Redirect to a ticket.
+            yield [
+                'interface' => $interface,
+                'where'     => 'ticket_35341',
+                'result'    => '/glpi/front/ticket.form.php?id=35341&',
+            ];
+
+            // Redirect to a ticket tab.
+            yield [
+                'interface' => $interface,
+                'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
+                'result'    => '/glpi/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
+            ];
+        }
+    }
+
+    #[DataProvider('redirectProvider')]
+    public function testComputeRedirect(string $interface, string $where, ?string $result): void
+    {
+        $_SESSION['glpiactiveprofile']['interface'] = $interface;
+
+        $instance = new \Toolbox();
+
+        $this->assertSame($result, $instance->computeRedirect($where));
     }
 }

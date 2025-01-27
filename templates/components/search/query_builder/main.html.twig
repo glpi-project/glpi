@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -71,7 +71,7 @@
                   <input type="checkbox" class="form-check-input ms-0 me-1 mt-0 default-filter" role="button"
                         {{ p.nodefault is defined ? '' : 'checked' }} autocomplete="off" {{ (can_disablefilter) ? '' : 'disabled' }} />
                   <span class="form-check-label mb-1 mb-sm-0">
-                     <i class="ti fa-lg ti-filter"></i>
+                     <i class="fs-2 ti ti-filter"></i>
                   </span>
                </label>
                <span title="{{ p.defaultfilter['comment'] }}">{{ p.defaultfilter['name'] }}</span>

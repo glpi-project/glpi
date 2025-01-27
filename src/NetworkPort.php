@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -709,7 +709,7 @@ class NetworkPort extends CommonDBChild
                 DisplayPreference::GENERAL
             ])
         ) {
-            $search_config_top .= "<span class='fa fa-wrench pointer' title='" .
+            $search_config_top .= "<span class='ti ti-table-row cursor-pointer' title='" .
             __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
             <span class='sr-only'>" .  __s('Select default items to show') . "</span></span>";
 
@@ -952,20 +952,20 @@ class NetworkPort extends CommonDBChild
                             $state_title = __('Unknown');
                             switch ($port[$option['field']]) {
                                 case 1: //up
-                                    $state_class = 'green';
+                                    $state_class = 'text-green';
                                     $state_title = __('Up');
                                     break;
                                 case 2: //down
-                                    $state_class = 'red';
+                                    $state_class = 'text-red';
                                     $state_title = __('Down');
                                     break;
                                 case 3: //testing
-                                    $state_class = 'orange';
+                                    $state_class = 'text-orange';
                                     $state_title = __('Test');
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="fas fa-circle %s" title="%s"></i> <span class="sr-only">%s</span>',
+                                '<i class="ti ti-circle-filled %s" title="%s"></i> <span class="sr-only">%s</span>',
                                 htmlescape($state_class),
                                 htmlescape($state_title),
                                 htmlescape($state_title)
@@ -1052,7 +1052,7 @@ class NetworkPort extends CommonDBChild
                                     $output .= ($row['tagged'] == 1 ? 'T' : 'U');
                                     if ($canedit) {
                                         $output .= '<a title="' . __s('Delete') . '" href="' . NetworkPort::getFormURLWithID($row['id']) . '&amp;unassign_vlan=unassigned">'
-                                            . '<i class="fas fa-trash"></i>'
+                                            . '<i class="ti ti-trash"></i>'
                                             . '<span class="sr-only">' . __s('Delete') . '</span>'
                                             . '</a>';
                                     }
@@ -1143,29 +1143,29 @@ class NetworkPort extends CommonDBChild
                             $co_class = '';
                             switch ($port['ifstatus']) {
                                 case 1: //up
-                                    $co_class = 'fa-link netport green';
+                                    $co_class = 'ti-link netport text-green';
                                     $title = __('Connected');
                                     break;
                                 case 2: //down
-                                    $co_class = 'fa-unlink netport red';
+                                    $co_class = 'ti-unlink netport text-red';
                                     $title = __('Not connected');
                                     break;
                                 case 3: //testing
-                                    $co_class = 'fa-link netport orange';
+                                    $co_class = 'ti-link netport text-orange';
                                     $title = __('Testing');
                                     break;
                                 case 5: //dormant
-                                    $co_class = 'fa-link netport grey';
+                                    $co_class = 'ti-link netport text-gray';
                                     $title = __('Dormant');
                                     break;
                                 case 4: //unknown
                                 default:
-                                    $co_class = 'fa-question-circle';
+                                    $co_class = 'ti-help';
                                     $title = __('Unknown');
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="fas %s" title="%s"></i> <span class="sr-only">%s</span>',
+                                '<i class="ti %s" title="%s"></i> <span class="sr-only">%s</span>',
                                 htmlescape($co_class),
                                 htmlescape($title),
                                 htmlescape($title)
@@ -1173,7 +1173,7 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 41:
                             if ($port['ifstatus'] == 1) {
-                                $output .= sprintf("<i class='fa fa-circle green' title='%s'></i>", __s('Connected'));
+                                $output .= sprintf("<i class='ti ti-circle-filled text-green' title='%s'></i>", __s('Connected'));
                             } else if (!empty($port['lastup'])) {
                                 $time = strtotime(date('Y-m-d H:i:s')) - strtotime($port['lastup']);
                                 $output .= Html::timestampToString($time, false);

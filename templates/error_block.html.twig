@@ -1,0 +1,54 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="card">
+    <div class="card-body">
+        <div role="alert" class="alert alert-danger alert-important">
+            <div class="d-flex">
+                <div class="me-2">
+                    <i class="ti ti-alert-triangle fs-2x"></i>
+                </div>
+                <div>
+                    {{ message }}
+                    {% if link_url is not empty %}
+                        <br>
+                        <a href="{{ link_url }}">{{ link_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if trace is not empty %}
+            <pre data-testid="stack-trace">{{ trace }}</pre>
+        {% endif %}
+    </div>
+</div>

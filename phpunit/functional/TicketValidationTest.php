@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,9 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use Glpi\PHPUnit\Tests\CommonITILValidation;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for src/TicketValidation.php */
 class TicketValidationTest extends CommonITILValidation
@@ -330,5 +332,59 @@ class TicketValidationTest extends CommonITILValidation
 
         $this->assertTrue($ticket->getFromDB($tid));
         $this->assertEquals(\CommonITILValidation::ACCEPTED, (int)$ticket->getField('global_validation'));
+    }
+
+    public static function testgetNumberToValidateProvider(): array
+    {
+        return [
+            [
+                'input'     => [
+                    'name'      => 'Ticket_Closed_With_Validation_Request',
+                    'content'   => 'Ticket_Closed_With_Validation_Request',
+                ],
+                'expected'  => true,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+            [
+                'input'     => [
+                    'name' => 'Ticket_With_Validation_Request',
+                    'content' => 'Ticket_With_Validation_Request',
+                    'status' =>  CommonITILObject::SOLVED
+                ],
+                'expected'  => false,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+            [
+                'input'     => [
+                    'name' => 'Ticket_With_Validation_Request',
+                    'content' => 'Ticket_With_Validation_Request',
+                    'status' =>  CommonITILObject::CLOSED
+                ],
+                'expected'  => false,
+                'user_id'   => getItemByTypeName('User', 'glpi', true)
+            ],
+        ];
+    }
+
+    #[DataProvider('testgetNumberToValidateProvider')]
+    public function testgetNumberToValidate(
+        array $input,
+        bool $expected,
+        int $user_id
+    ): void {
+        $this->login();
+
+        $initial_count = \TicketValidation::getNumberToValidate($user_id);
+
+        /** Create a ticket, approval requested */
+        $ticket = $this->createItem('Ticket', $input);
+
+        $this->createItem('TicketValidation', [
+            'tickets_id'      => $ticket->getID(),
+            'itemtype_target' => 'User',
+            'items_id_target' => $user_id,
+        ]);
+
+        $this->assertEquals($expected ? ($initial_count + 1) : $initial_count, \TicketValidation::getNumberToValidate($user_id));
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -175,13 +175,20 @@ class Ajax
 
         $rand = mt_rand();
 
+        $domid  = htmlescape($domid);
+        $url    = htmlescape($url);
+        $title  = htmlescape($param['title']);
+        $class  = htmlescape($param['dialog_class']);
+        $height = (int) $param['height'];
+        $width  = (int) $param['width'];
+
         $html = <<<HTML
          <div id="$domid" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog {$param['dialog_class']}">
+            <div class="modal-dialog {$class}">
                <div class="modal-content">
                   <div class="modal-header">
                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                     <h3>{$param['title']}</h3>
+                     <h3>{$title}</h3>
                   </div>
                   <div class="modal-body">
                      <iframe id='iframe$domid' class="iframe hidden"
@@ -217,16 +224,8 @@ HTML;
          }
 
          document.getElementById('iframe$domid').onload = function() {
-            if ({$param['height']} !== 'undefined') {
-               var h =  {$param['height']};
-            } else {
-               var h =  $('#iframe{$domid}').contents().height();
-            }
-            if ({$param['width']} !== 'undefined') {
-               var w =  {$param['width']};
-            } else {
-               var w =  $('#iframe{$domid}').contents().width();
-            }
+            var h = {$height};
+            var w = {$width};
 
             $('#iframe{$domid}')
                .height(h);
@@ -245,7 +244,7 @@ HTML;
       });
 JAVASCRIPT;
 
-        $out = "<script type='text/javascript'>$js</script>" . trim($html);
+        $out = Html::scriptBlock($js) . trim($html);
 
         if ($param['display']) {
             echo $out;
@@ -429,7 +428,7 @@ HTML;
                 updateCurrentTab();
                 return;
             }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+            $(target).html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
 
             $.get(url, function(data) {
                $(target).html(data);
@@ -452,6 +451,8 @@ HTML;
                     // unset hash (to avoid scrolling when changing tabs)
                     url_hash   = '';
                 }
+            }).fail(function(data) {
+               $(target).html(data.responseText);
             });
          };
 
@@ -677,31 +678,24 @@ JS;
         $output = '';
         foreach ($zones as $zone) {
             foreach ($events as $event) {
+                $event   = htmlescape($event);
+                $zone_id = htmlescape(Html::cleanId($zone));
+
                 if ($buffertime > 0) {
                     $output .= "var last$zone$event = 0;";
                 }
-                $output .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".on(
-               '$event',
-               function(event) {";
-               // TODO manage buffer time !!?
-               // if ($buffertime > 0) {
-               //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
-               //          last$zone$event = new Date().getTime();
-               //          if (elapsed < $buffertime) {
-               //             return;
-               //          }";
-               // }
 
+                $output .= "$('#$zone_id').on('$event', function(event) {";
                 $condition = '';
                 if ($minsize >= 0) {
-                    $condition = Html::jsGetElementbyID(Html::cleanId($zone)) . ".val().length >= $minsize ";
+                    $condition = "$('#$zone_id').val().length >= $minsize ";
                 }
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                              $condition .= " || ";
                         }
-                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".val() == '$value'";
+                        $condition .= "$('#$zone_id').val() == '$value'";
                     }
                 }
                 if (!empty($condition)) {
@@ -712,7 +706,7 @@ JS;
                     $output .= "}";
                 }
                 $output .=  "}";
-                $output .= ");\n";
+                $output .= ");";
             }
         }
         if ($display) {
@@ -818,7 +812,7 @@ JS;
         $display = true
     ) {
 
-        $out = Html::jsGetElementbyID($toupdate) . ".load('$url'\n";
+        $out = sprintf('$("#%s").load("%s"', htmlescape($toupdate), htmlescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;
@@ -837,9 +831,9 @@ JS;
                 $out .= $key . ":";
                 $regs = [];
                 if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
-                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
                 } else if (is_string($val) && $val === "__VALUE__") {
-                    $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
+                    $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve)));
                 } else {
                     $out .=  json_encode($val);
                 }

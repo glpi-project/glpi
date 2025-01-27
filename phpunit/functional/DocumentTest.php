@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,7 +70,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('canApplyOnProvider')]
+    #[DataProvider('canApplyOnProvider')]
     public function testCanApplyOn($item, $can)
     {
         $doc = new \Document();
@@ -327,7 +327,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('validDocProvider')]
+    #[DataProvider('validDocProvider')]
     public function testIsValidDoc($filename, $expected)
     {
         $this->assertSame($expected, \Document::isValidDoc($filename));
@@ -367,7 +367,7 @@ class DocumentTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('isImageProvider')]
+    #[DataProvider('isImageProvider')]
     public function testIsImage($file, $expected)
     {
         $this->assertSame($expected, \Document::isImage($file));
@@ -658,7 +658,7 @@ class DocumentTest extends DbTestCase
     /**
      * Check visibility of document attached to ITIL objects.
      */
-    #[dataProvider('itilTypeProvider')]
+    #[DataProvider('itilTypeProvider')]
     public function testCanViewItilFile($itemtype)
     {
 
@@ -792,7 +792,7 @@ class DocumentTest extends DbTestCase
     /**
      * Check visibility of document inlined in ITIL followup, tasks, solutions.
      */
-    #[dataProvider('ticketChildClassProvider')]
+    #[DataProvider('ticketChildClassProvider')]
     public function testCanViewTicketChildFile($itil_itemtype, $child_itemtype)
     {
 

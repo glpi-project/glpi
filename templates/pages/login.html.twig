@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -53,11 +53,13 @@
                     <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1"/>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label" for="login_password">
-                        {{ __('Password') }}
+                    <div class="d-flex">
+                        <label class="form-label" for="login_password">
+                            {{ __('Password') }}
+                        </label>
 
                         {% if show_lost_password %}
-                            <span class="form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
+                            <span class="ms-auto form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
                                 <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
                                     {{ __('Forgotten password?') }}
                                 </a>
@@ -79,7 +81,7 @@
                                 </script>
                             {% endif %}
                         {% endif %}
-                    </label>
+                    </div>
                     <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
                 </div>
 
@@ -115,7 +117,7 @@
         {% if config('use_public_faq') %}
             <div class="text-center mt-4 border-top">
                 <a class="btn btn-outline-secondary mt-4" href="{{ path('front/helpdesk.faq.php') }}">
-                    <i class="fas fa-question"></i>&nbsp;
+                    <i class="ti ti-help"></i>&nbsp;
                     {{ __('FAQ') }}
                 </a>
             </div>

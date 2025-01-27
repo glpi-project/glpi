@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ namespace Glpi\Tests;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -48,6 +49,7 @@ use Glpi\Form\Tag\Tag;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Profile;
+use Session;
 use Ticket;
 use User;
 
@@ -75,6 +77,7 @@ trait FormTesterTrait
             'is_active'             => $builder->getIsActive(),
             'header'                => $builder->getHeader(),
             'is_draft'              => $builder->getIsDraft(),
+            'forms_categories_id'   => $builder->getCategory(),
             '_do_not_init_sections' => true, // We will handle sections ourselves
         ]);
 
@@ -99,7 +102,7 @@ trait FormTesterTrait
                     'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
-                    'rank'              => $question_rank++,
+                    'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
                 ]);
@@ -112,7 +115,7 @@ trait FormTesterTrait
                     'forms_sections_id' => $section->getID(),
                     'name'              => $comment_data['name'],
                     'description'       => $comment_data['description'],
-                    'rank'              => $comment_rank++,
+                    'vertical_rank'     => $comment_rank++,
                 ]);
             }
         }
@@ -159,7 +162,7 @@ trait FormTesterTrait
     protected function getQuestionId(
         Form $form,
         string $question_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());
@@ -237,13 +240,13 @@ trait FormTesterTrait
     protected function getCommentId(
         Form $form,
         string $comment_name,
-        string $section_name = null,
+        ?string $section_name = null,
     ): int {
         // Make sure form is up to date
         $form->getFromDB($form->getID());
 
         // Get comments
-        $comments = $form->getComments();
+        $comments = $form->getFormComments();
 
         if ($section_name === null) {
             // Search by name
@@ -348,10 +351,10 @@ trait FormTesterTrait
         return $comment;
     }
 
-    protected function sendFormAndGetCreatedTicket(
-        Form $form, // We assume $form has a single "Ticket" destination
+    protected function sendFormAndGetAnswerSet(
+        Form $form,
         array $answers = [],
-    ): Ticket {
+    ): AnswersSet {
         // The provider use a simplified answer format to be more readable.
         // Rewrite answers into expected format.
         $formatted_answers = [];
@@ -366,11 +369,18 @@ trait FormTesterTrait
 
         // Submit form
         $answers_handler = AnswersHandler::getInstance();
-        $answers = $answers_handler->saveAnswers(
+        return $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
             getItemByTypeName(User::class, TU_USER, true)
         );
+    }
+
+    protected function sendFormAndGetCreatedTicket(
+        Form $form, // We assume $form has a single "Ticket" destination
+        array $answers = [],
+    ): Ticket {
+        $answers = $this->sendFormAndGetAnswerSet($form, $answers);
 
         // Get created ticket
         $created_items = $answers->getCreatedItems();
@@ -420,11 +430,12 @@ trait FormTesterTrait
     {
         // Export and import process
         $json = $this->exportForm($form);
-        $form_copy = $this->importForm(
-            $json,
-            new DatabaseMapper([$this->getTestRootEntity(only_id: true)]),
-            [],
-        );
+        $active_entities = Session::getActiveEntities();
+        $mapper = !empty($active_entities)
+            ? new DatabaseMapper($active_entities)
+            : new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
+
+        $form_copy = $this->importForm($json, $mapper, []);
 
         // Make sure it was not the same form object that was returned.
         $this->assertNotEquals($form_copy->getId(), $form->getId());

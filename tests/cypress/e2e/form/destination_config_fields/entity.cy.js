@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -67,6 +67,12 @@ describe('Entity configuration', () => {
         // Make sure hidden dropdowns are not displayed
         cy.get('@config').getDropdownByLabelText('Select an entity...').should('not.exist');
         cy.get('@config').getDropdownByLabelText('Select a question...').should('not.exist');
+
+        // Switch to "Form filler"
+        cy.get('@entity_dropdown').selectDropdownValue('Active entity of the form filler');
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@entity_dropdown').should('have.text', 'Active entity of the form filler');
 
         // Switch to "From form"
         cy.get('@entity_dropdown').selectDropdownValue('From form');

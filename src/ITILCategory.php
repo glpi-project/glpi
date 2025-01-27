@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -256,6 +256,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of tickets'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -269,6 +270,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of problems'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -276,12 +278,13 @@ class ITILCategory extends CommonTreeDropdown
         ];
 
         $tab[] = [
-            'id'                 => '98',
+            'id'                 => '151',
             'table'              => 'glpi_changes',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of changes'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'

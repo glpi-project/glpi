@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -321,8 +321,13 @@ class Unmanaged extends CommonDBTM
                 $unmanaged = new self();
                 foreach ($ids as $id) {
                     $itemtype = $_POST['itemtype'];
-                    $unmanaged->convert($id, $itemtype);
+                    $new_asset_id = $unmanaged->convert($id, $itemtype);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    if ($ma->isFromSingleItem()) {
+                        $ma->setRedirect($itemtype::getFormURLWithID($new_asset_id));
+                    } else {
+                        $ma->setRedirect($item::getSearchURL());
+                    }
                 }
                 break;
         }
@@ -334,7 +339,7 @@ class Unmanaged extends CommonDBTM
      * @param int         $items_id ID of Unmanaged equipment
      * @param string|null $itemtype Item type to convert to. Will take Unmanaged value if null
      */
-    public function convert(int $items_id, ?string $itemtype = null)
+    public function convert(int $items_id, ?string $itemtype = null): int
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -412,6 +417,7 @@ class Unmanaged extends CommonDBTM
             $lockfield->update($row);
         }
         $this->deleteFromDB(1);
+        return $assets_id;
     }
 
     public function useDeletedToLockIfDynamic()

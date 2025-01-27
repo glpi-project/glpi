@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -115,16 +115,22 @@
     --tblr-gray-900: var(--tblr-dark);
     --tblr-gray-50: var(--tblr-gray-200);
     --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
-    --glpi-zindex-dropdown: $zindex-dropdown;
-    --glpi-zindex-sticky: $zindex-sticky;
-    --glpi-zindex-fixed: $zindex-fixed;
-    --glpi-zindex-offcanvas-backdrop: $zindex-offcanvas-backdrop;
-    --glpi-zindex-offcanvas: $zindex-offcanvas;
-    --glpi-zindex-modal-backdrop: $zindex-modal-backdrop;
-    --glpi-zindex-modal: $zindex-modal;
-    --glpi-zindex-popover: $zindex-popover;
-    --glpi-zindex-tooltip: $zindex-tooltip;
-    --glpi-zindex-toast: $zindex-toast;
+    --glpi-zindex-dropdown: #{$zindex-dropdown};
+    --glpi-zindex-sticky: #{$zindex-sticky};
+    --glpi-zindex-fixed: #{$zindex-fixed};
+    --glpi-zindex-offcanvas-backdrop: #{$zindex-offcanvas-backdrop};
+    --glpi-zindex-offcanvas: #{$zindex-offcanvas};
+    --glpi-zindex-modal-backdrop: #{$zindex-modal-backdrop};
+    --glpi-zindex-modal: #{$zindex-modal};
+    --glpi-zindex-popover: #{$zindex-popover};
+    --glpi-zindex-tooltip: #{$zindex-tooltip};
+    --glpi-zindex-toast: #{$zindex-toast};
+
+    // Variables for @glpi-project/illustrations
+    --glpi-illustrations-background: white;
+    --glpi-illustrations-header-dark: var(--glpi-mainmenu-bg);
+    --glpi-illustrations-header-light: var(--glpi-helpdesk-header);
+    --glpi-illustrations-primary: var(--tblr-primary);
 }
 
 @media(prefers-reduced-motion) {
@@ -393,7 +399,7 @@ body input {
     visibility: hidden !important;
 }
 
-&:-webkit-autofill {
+:-webkit-autofill {
    -webkit-text-fill-color: var(--tblr-body-color);
 }
 
@@ -421,7 +427,8 @@ body .toast {
 }
 
 .tooltip {
-    --tblr-tooltip-color: var(--tblr-body-color);
+    --tblr-tooltip-color: var(--tblr-body-bg); /* Text color */
+    --tblr-tooltip-bg: var(--tblr-body-color); /* Background color */
 }
 
 body pre {
@@ -451,4 +458,30 @@ body pre {
     .text-muted-menu {
         color: var(--tblr-muted) !important;
     }
+}
+
+.remove-last-tinymce-margin {
+    // Remove annoying margin from tinymce's last paragraph
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+// Missing class from tabler, probably need to update it ?
+.btn-check:checked+.btn {
+    color           : var(--tblr-btn-hover-color) !important;
+    background-color: var(--tblr-btn-active-bg) !important;
+}
+
+.w-fit-content {
+    width: fit-content;
+}
+
+.accordion-button:hover, .accordion-button:focus {
+    z-index: unset;
+}
+
+// The definition from tabler doesn't seem to take into account our primary color. Bug?
+.border-primary {
+    border-color: var(--tblr-primary) !important;
 }

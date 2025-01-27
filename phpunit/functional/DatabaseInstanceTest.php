@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,53 @@
 
 namespace tests\units;
 
+use DatabaseInstance;
 use DbTestCase;
-
-/* Test for inc/databaseinstance.class.php */
+use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
+use Glpi\Features\Clonable;
+use Toolbox;
 
 class DatabaseInstanceTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasDatabaseInstanceCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('DatabaseInstance$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasDatabaseInstanceCapacity::class]);
+
+        foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            // FIXME DatabaseInstance must be a CommonDBChild to be clonable
+            // $item = \getItemForItemtype($itemtype);
+            // $this->assertContains(DatabaseInstance::class, $item->getCloneRelations(), $itemtype);
+            $this->assertTrue(true);
+        }
+    }
+
     public function testDelete()
     {
         $instance = new \DatabaseInstance();

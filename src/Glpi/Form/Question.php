@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,18 +38,22 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
+use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
+use Ramsey\Uuid\Uuid;
 use ReflectionClass;
-use Session;
 
 /**
  * Question of a given helpdesk form's section
  */
-final class Question extends CommonDBChild implements BlockInterface
+final class Question extends CommonDBChild implements BlockInterface, ConditionnableInterface
 {
+    use ConditionnableTrait;
+
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
@@ -59,6 +63,12 @@ final class Question extends CommonDBChild implements BlockInterface
     public static function getTypeName($nb = 0)
     {
         return _n('Question', 'Questions', $nb);
+    }
+
+    #[Override]
+    public function isEntityAssign()
+    {
+        return false;
     }
 
     #[Override]
@@ -129,24 +139,59 @@ final class Question extends CommonDBChild implements BlockInterface
         return (new EndUserInputNameProvider())->getEndUserInputName($this);
     }
 
+    public function getUniqueIDInForm(): string
+    {
+        return sprintf(
+            "%s-%s-%s",
+            $this->getItem()->fields['rank'],
+            $this->fields['vertical_rank'],
+            $this->fields['horizontal_rank']
+        );
+    }
+
+    #[Override]
     public function prepareInputForAdd($input)
     {
-        $this->prepareInput($input);
-        return parent::prepareInputForUpdate($input);
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
-        $this->prepareInput($input);
+        $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
     }
 
-    private function prepareInput(&$input)
+    private function prepareInput($input): array
     {
+        // Set parent UUID
+        if (
+            isset($input['forms_sections_id'])
+            && !isset($input['forms_sections_uuid'])
+        ) {
+            $section = Section::getById($input['forms_sections_id']);
+            $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
+        // Set horizontal rank to null if not set
+        if (!isset($input['horizontal_rank'])) {
+            $input['horizontal_rank'] = 'NULL';
+        }
+
         // If the question is being imported, we don't need to format the input
         // because it is already formatted. So we skip this step.
         if ($input['_from_import'] ?? false) {
-            return;
+            return $input;
         }
 
         $question_type = $this->getQuestionType();
@@ -189,6 +234,13 @@ final class Question extends CommonDBChild implements BlockInterface
                 $input['extra_data'] = json_encode($extra_data);
             }
         }
+
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        return $input;
     }
 
     /**

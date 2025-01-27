@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Error\ErrorHandler;
 
 /**
  * @var array $CFG_GLPI
@@ -78,7 +78,7 @@ try {
     $messages = $TRANSLATE->getAllMessages($_GET['domain']);
 } catch (\Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
-    ErrorHandler::getInstance()->handleException($e, true);
+    ErrorHandler::logCaughtException($e);
 }
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
    // No TextDomain found means that there is no translations for given domain.

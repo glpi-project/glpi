@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,7 +57,7 @@ class AutoloadTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataItemType')]
+    #[DataProvider('dataItemType')]
     public function testIsPluginItemType($type, $plug, $class)
     {
         $res = isPluginItemType($type);
@@ -72,14 +72,6 @@ class AutoloadTest extends DbTestCase
         } else {
             $this->assertFalse($res);
         }
-    }
-
-    /**
-     * Checks autoload of some class located in Glpi namespace.
-     */
-    public function testAutoloadGlpiEvent()
-    {
-        $this->assertTrue(class_exists('Glpi\\Event'));
     }
 
     #[RunInSeparateProcess]

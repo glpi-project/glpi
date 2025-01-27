@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -102,6 +102,10 @@ class GLPIDashboard {
         this.cache_key = "";
         this.filters = "{}";
         this.filters_selector = "";
+
+        GridStack.renderCB = (el, w) => {
+            el.parentElement.innerHTML = w.content;
+        };
 
         // get passed options and merge it with default ones
         let options = (typeof params !== 'undefined') ? params: {};
@@ -562,8 +566,10 @@ class GLPIDashboard {
         // prepare options
         form_data.card_options.color        = form_data.color || null;
         form_data.card_options.widgettype   = form_data.widgettype || null;
+        form_data.card_options.palette      = form_data.palette || null;
         form_data.card_options.use_gradient = form_data.use_gradient || 0;
         form_data.card_options.point_labels = form_data.point_labels || 0;
+        form_data.card_options.legend       = form_data.legend || 0;
         form_data.card_options.limit        = form_data.limit || 7;
 
         // specific case for markdown
@@ -624,25 +630,23 @@ class GLPIDashboard {
         const height       = parseInt(p.height || 2);
         const options      = p.card_options || {};
 
-        const html = ' \
-      <div class="grid-stack-item"> \
-         <span class="controls"> \
-            <i class="refresh-item ti ti-refresh" title="'+__("Refresh this card")+'"></i> \
-            <i class="edit-item ti ti-edit" title="'+__("Edit this card")+'"></i> \
-            <i class="delete-item ti ti-x" title="'+__("Delete this card")+'"></i> \
-         </span> \
-         <div class="grid-stack-item-content"> \
-         </div> \
-      </div>';
+        const html = `
+            <span class="controls">
+                <i class="refresh-item ti ti-refresh" title="${__("Refresh this card")}"></i>
+                <i class="edit-item ti ti-edit" title="${__("Edit this card")}"></i>
+                <i class="delete-item ti ti-x" title="${__("Delete this card")}"></i>
+            </span>
+            <div class="grid-stack-item-content"></div>`;
 
         // add the widget to the grid
-        const widget = this.grid.addWidget(html, {
+        const widget = this.grid.addWidget({
             'x': x,
             'y': y,
             'w': width,
             'h': height,
             'autoPosition': x < 0 || y < 0,
             'id': gridstack_id,
+            'content': html
         });
 
         // append options

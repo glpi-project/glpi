@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,54 +44,19 @@ use ReflectionClass;
 
 class Session extends \DbTestCase
 {
-    protected function testUniqueSessionNameProvider(): iterable
-    {
-        // Same host, different path
-        yield [
-            \Session::buildSessionName("/var/www/localhost/glpi1", 'localhost', '80'),
-            \Session::buildSessionName("/var/www/localhost/glpi2", 'localhost', '80'),
-            \Session::buildSessionName("/var/www/localhost/glpi3", 'localhost', '80'),
-            \Session::buildSessionName("/var/www/localhost/glpi4", 'localhost', '80'),
-        ];
-
-        // Same path, different full domains
-        yield [
-            \Session::buildSessionName("/var/www/glpi", 'test.localhost', '80'),
-            \Session::buildSessionName("/var/www/glpi", 'preprod.localhost', '80'),
-            \Session::buildSessionName("/var/www/glpi", 'prod.localhost', '80'),
-            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
-        ];
-
-        // Same host and path but different ports
-        yield [
-            \Session::buildSessionName("/var/www/glpi", 'localhost', '80'),
-            \Session::buildSessionName("/var/www/glpi", 'localhost', '8000'),
-            \Session::buildSessionName("/var/www/glpi", 'localhost', '8008'),
-        ];
-    }
-
-    /**
-     * @dataProvider testUniqueSessionNameProvider
-     */
-    public function testUniqueSessionName(
-        ...$cookie_names
-    ): void {
-        // Each cookie name must be unique
-        $this->array($cookie_names)->isEqualTo(array_unique($cookie_names));
-    }
     public function testAddMessageAfterRedirect()
     {
         $err_msg = 'Something is broken. Weird.';
         $warn_msg = 'There was a warning. Be carefull.';
         $info_msg = 'All goes well. Or not... Who knows ;)';
 
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //test add message in cron mode
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
        //adding a message in "cron mode" does not add anything in the session
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //set not running from cron
         unset($_SESSION['glpicronuserrunning']);
@@ -1571,5 +1536,26 @@ class Session extends \DbTestCase
                 \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
             }
         )->isInstanceOf(AccessDeniedHttpException::class);
+    }
+
+    public function testRightCheckBypass()
+    {
+        $this->login();
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        \Session::callAsSystem(function () {
+            $this->boolean(\Session::isRightChecksDisabled())->isTrue();
+            $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isTrue();
+        });
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        // Try throwing an exception inside the callAsSystem callable to make sure right checks are still re-enabled after it runs
+        $this->exception(function () {
+            \Session::callAsSystem(function () {
+                throw new \Exception('test');
+            });
+        })->hasMessage('test');
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
     }
 }

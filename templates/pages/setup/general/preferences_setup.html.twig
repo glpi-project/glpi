@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -123,12 +123,75 @@
    }, __('CSV delimiter'), field_options) }}
 
    <script>
+       function getThemeRules() {
+           // Calculate list of relevant CSS rules only once
+           if (window._theme_rules === undefined) {
+               window._theme_rules = [];
+               const stylesheets = document.styleSheets;
+                for (let i = 0; i < stylesheets.length; i++) {
+                     if (stylesheets[i].href) {
+                          const rules = stylesheets[i].cssRules;
+                          for (let j = 0; j < rules.length; j++) {
+                            if (rules[j]['selectorText'] !== undefined && rules[j]['selectorText'].includes('data-glpi-theme')) {
+                                 window._theme_rules.push(rules[j]);
+                            }
+                          }
+                     }
+                }
+           }
+           return window._theme_rules;
+       }
+
+       function getThemePreviewURL(theme_id) {
+           const resolve_color_value = (palette_rule, prop_name) => {
+               let value = palette_rule.getPropertyValue(prop_name).trim();
+               if (value.startsWith('var(')) {
+                   // The color is a CSS variable, resolve it
+                   value = resolve_color_value(palette_rule, value.substring(4, value.length - 1).trim());
+               }
+               return value;
+           }
+
+           const theme_rules = getThemeRules();
+           const palette_colors = {};
+
+           for (let j = 0; j < theme_rules.length; j++) {
+               if (theme_rules[j]['selectorText'] !== undefined && theme_rules[j]['selectorText'].includes(`data-glpi-theme="${theme_id}"`)) {
+                   for (let k = 1; k < 5; k++) {
+                       const color = resolve_color_value(theme_rules[j].style, `--glpi-palette-color-${k}`);
+                       if (color !== '') {
+                           palette_colors[`--glpi-palette-color-${k}`] = color;
+                       }
+                   }
+               }
+           }
+
+           if (Object.keys(palette_colors).length === 4) {
+               const canvas = document.createElement('canvas');
+               canvas.width = 60;
+               canvas.height = 20;
+               const ctx = canvas.getContext('2d');
+               // draw the 4 colors as quadrants
+               ctx.fillStyle = palette_colors['--glpi-palette-color-1'] ?? 'white';
+               ctx.fillRect(0, 0, 30, 10);
+               ctx.fillStyle = palette_colors['--glpi-palette-color-2'] ?? 'white';
+               ctx.fillRect(30, 0, 30, 10);
+               ctx.fillStyle = palette_colors['--glpi-palette-color-3'] ?? 'white';
+               ctx.fillRect(0, 10, 30, 10);
+               ctx.fillStyle = palette_colors['--glpi-palette-color-4'] ?? 'white';
+               ctx.fillRect(30, 10, 30, 10);
+               return canvas.toDataURL();
+           }
+           return `{{ path('/front/palette_preview.php') }}?key=${theme_id}`;
+       }
+
        function formatThemes(theme) {
            if (!theme.id) {
                return theme.text;
            }
+
            return $('<span></span>').html(
-               `<img src="{{ path('/front/palette_preview.php') }}?key=${theme.id}" /> ${theme.text}`
+               `<img src="${getThemePreviewURL(theme.id)}" /> ${theme.text}`
            );
        }
        $('select[name="palette"]').on('change', function(e) {

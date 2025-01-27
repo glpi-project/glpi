@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -353,6 +353,29 @@ class VirtualMachine extends InventoryAsset
                 if (isset($this->allports[$vm->uuid])) {
                     $this->ports = $this->allports[$vm->uuid];
                     $this->handlePorts('Computer', $computers_vm_id);
+                } elseif (property_exists($vm, 'ipaddress')) {
+                    $net_val = new \stdClass();
+                    if (property_exists($vm, 'ipaddress')) {
+                        $net_val->ip = [$vm->ipaddress];
+                    }
+
+                    if (property_exists($vm, 'mac')) {
+                        $net_val->instantiation_type = 'NetworkPortEthernet';
+                        $net_val->mac = strtolower($vm->mac);
+                        if (isset($this->allports[$vm->uuid][$vm->name])) {
+                            if (property_exists($net_val, 'ip')  && $net_val->ip != '') {
+                                $net_val->ipaddress = $net_val->ip;
+                                $this->allports[$vm->uuid][$vm->name] = $net_val;
+                            }
+                        } else {
+                            if (property_exists($net_val, 'ip') && $net_val->ip != '') {
+                                $net_val->ipaddress = $net_val->ip;
+                                $this->allports[$vm->uuid][$vm->name] = $net_val;
+                            }
+                        }
+                        $this->ports = $this->allports[$vm->uuid];
+                        $this->handlePorts('Computer', $computers_vm_id);
+                    }
                 }
 
                 //manage operating system

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,12 +42,12 @@ class NotificationAjaxSetting extends NotificationSetting
 {
     public static function getTypeName($nb = 0)
     {
-        return __('Browser followups configuration');
+        return __('Browser notifications configuration');
     }
 
     public function getEnableLabel()
     {
-        return __('Enable followups from browser');
+        return __('Enable browser notifications');
     }
 
     public static function getMode()
@@ -85,6 +85,6 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "far fa-comment-alt";
+        return "ti ti-message";
     }
 }

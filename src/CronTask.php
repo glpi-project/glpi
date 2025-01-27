@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,10 +36,10 @@
 // Needed for signal handler to handle SIGTERM in CLI mode
 declare(ticks=1);
 
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 
 /**
@@ -213,7 +213,7 @@ class CronTask extends CommonDBTM
             $_SESSION["glpicronuserrunning"] = '';
             self::release_lock();
             Toolbox::logInFile('cron', __('Action aborted') . "\n");
-            exit;
+            exit();
         }
     }
 
@@ -881,7 +881,8 @@ class CronTask extends CommonDBTM
                             try {
                                   $retcode = $function($crontask);
                             } catch (\Throwable $e) {
-                                ErrorHandler::getInstance()->handleException($e, false);
+                                ErrorHandler::logCaughtException($e);
+                                ErrorHandler::displayCaughtExceptionMessage($e);
                                 Toolbox::logInFile(
                                     'cron',
                                     sprintf(

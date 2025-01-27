@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -142,7 +142,7 @@ abstract class CommonDevice extends CommonDropdown
                                 $key::getTypeName(1)
                             );
 
-                            $listLabel = '<i class="fa fa-list pointer" title="' . $itemTypeName . '"></i>'
+                            $listLabel = '<i class="ti ti-list pointer" title="' . $itemTypeName . '"></i>'
                             . '<span class="sr-only">' . $itemTypeName . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
@@ -423,7 +423,7 @@ abstract class CommonDevice extends CommonDropdown
 
         if ($options['canedit']) {
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
-            $content .= "&nbsp;<span class='fa fa-plus pointer' title='" . __s('Add') . "'
+            $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
                       onClick=\"$('#" . $field_name . "').show();\"
                       ><span class='sr-only'>" .  __s('Add') . "</span></span>";
             $content .= "<span id='$field_name' style='display:none'><br>";
@@ -541,6 +541,7 @@ abstract class CommonDevice extends CommonDropdown
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
+        $this->addStandardTab('Item_Project', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 

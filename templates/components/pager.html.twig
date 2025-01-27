@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -65,29 +65,39 @@
 {% set current_page = ((current_start - 1) / limit)|round(0, 'ceil') + 1 %}
 
 {% set short_display = short_display|default(false) %}
+{% set no_limit_display = no_limit_display|default(false) %}
 
 {# limit the number of adjacents links displayed #}
 {% set adjacents = 2 %}
 {% set skip_adjacents = false %}
+{% set rand = rand|default(random()) %}
 
 <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap  align-items-center justify-content-between mb-2 search-pager">
-    {% if not short_display %}
-        <span class="search-limit d-none d-md-block">
+    {% if not no_limit_display %}
+        {% if not short_display %}
+            <span class="search-limit d-none d-md-block">
+                {% include 'components/dropdown/limit.html.twig' with {
+                    'no_onchange': fluid_search|default(false),
+                    'select_class': 'search-limit-dropdown',
+                    'href': href|replace({'%start%': start}),
+                    'additional_attributes': short_display ? {
+                        'title': __('Rows per page'),
+                    } : {
+                        'aria-labelledby': 'list_limit' ~ rand ~ '_label',
+                    },
+                    'rand': rand,
+                } %}
+                <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
+            </span>
+        {% endif %}
+        <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
             {% include 'components/dropdown/limit.html.twig' with {
                 'no_onchange': fluid_search|default(false),
                 'select_class': 'search-limit-dropdown',
                 'href': href|replace({'%start%': start}),
             } %}
-            {{ __('rows / page') }}
         </span>
     {% endif %}
-    <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
-        {% include 'components/dropdown/limit.html.twig' with {
-            'no_onchange': fluid_search|default(false),
-            'select_class': 'search-limit-dropdown',
-            'href': href|replace({'%start%': start}),
-        } %}
-    </span>
 
     {% if not short_display %}
         <p class="m-0 text-muted d-none d-md-block page-infos">

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,7 @@
 
 namespace Glpi\CalDAV\Traits;
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Error\ErrorHandler;
 use Glpi\RichText\RichText;
 use RRule\RRule;
 use Sabre\VObject\Component;
@@ -165,7 +165,7 @@ trait VobjectConverterTrait
                 $rrule = new RRule($rrule_specs);
                 $vcomp->RRULE = $rrule->rfcString();
             } catch (\InvalidArgumentException $e) {
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::logCaughtException($e);
             }
         }
 

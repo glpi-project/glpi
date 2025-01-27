@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;
 
@@ -58,7 +58,7 @@ if (isset($_POST["update"])) {
                 $_SESSION['smtp_oauth2_state'] = $provider->getState();
                 Html::redirect($auth_url);
             } catch (\Throwable $e) {
-                ErrorHandler::getInstance()->handleException($e, true);
+                ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),
                     false,

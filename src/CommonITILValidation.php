@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -657,13 +657,13 @@ abstract class CommonITILValidation extends CommonDBChild
             $classes = null;
             switch ($value) {
                 case self::WAITING:
-                    $classes = 'waiting far fa-clock';
+                    $classes = 'waiting ti ti-clock';
                     break;
                 case self::ACCEPTED:
-                    $classes = 'accepted fas fa-check';
+                    $classes = 'accepted ti ti-check';
                     break;
                 case self::REFUSED:
-                    $classes = 'refused fas fa-times';
+                    $classes = 'refused ti ti-x';
                     break;
             }
 
@@ -711,16 +711,27 @@ abstract class CommonITILValidation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $row = $DB->request([
-            'FROM'   => static::getTable(),
+        $it = $DB->request([
+            'FROM'   => static::$itemtype::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
-                'status' => self::WAITING,
-                static::getTargetCriteriaForUser($users_id)
+                [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => static::$items_id,
+                        'FROM'   => static::getTable(),
+                        'WHERE'  => [
+                            'status' => self::WAITING,
+                            static::getTargetCriteriaForUser($users_id),
+                        ]
+                    ])
+                ],
+                'NOT' => [
+                    'status' => [...static::$itemtype::getSolvedStatusArray(), ...static::$itemtype::getClosedStatusArray()],
+                ],
             ]
-        ])->current();
+        ]);
 
-        return $row['cpt'];
+        return $it->current()['cpt'];
     }
 
     /**
@@ -1044,7 +1055,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 ]);
 
                 $script = <<<HTML
-                    <span class="far fa-edit" style="cursor:pointer" title="{$edit_title}" 
+                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}" 
                           onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
                           id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
                     </span>
@@ -1919,7 +1930,7 @@ HTML;
                   <div class="alert alert-warning" role="alert">
                      <div class="d-flex">
                         <div class="me-2">
-                           <i class="fas fa-2x fa-exclamation-triangle"></i>
+                           <i class="ti ti-alert-triangle fs-2x"></i>
                         </div>
                         <div>
                            <h4 class="alert-title">$title</h4>

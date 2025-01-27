@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,12 +69,12 @@ class PrinterTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}'
+                'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW", "is_deleted": 0}'
             ]
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -111,7 +111,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $result = $main->prepare();
@@ -215,7 +215,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $result = $main->prepare();
@@ -301,7 +301,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $result = $main->prepare();
@@ -1492,7 +1492,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $main->setDiscovery(true);
@@ -1560,7 +1560,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $main->setDiscovery(true);
@@ -1703,7 +1703,7 @@ class PrinterTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Printer($printer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Printer($printer, $json);
         $main->setAgent($agent)->setExtraData($data);
         $main->checkConf(new \Glpi\Inventory\Conf());
         $result = $main->prepare();

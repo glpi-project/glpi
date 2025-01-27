@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -92,17 +92,30 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
         JS;
     }
 
+    /**
+     * Provide additional attributes for the input field
+     *
+     * @return array
+     */
+    public function getInputAttributes(): array
+    {
+        return [];
+    }
+
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
             <input
-                class="form-control mb-2"
+                class="form-control"
                 type="{{ input_type }}"
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
                 aria-label="{{ __('Default value') }}"
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             />
 TWIG;
 
@@ -111,6 +124,7 @@ TWIG;
             'question'          => $question,
             'input_type'        => $this->getInputType(),
             'input_placeholder' => $this->getName(),
+            'attributes'        => $this->getInputAttributes(),
         ]);
     }
 
@@ -126,6 +140,9 @@ TWIG;
                 value="{{ question.fields.default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
+                {% for key, value in attributes %}
+                    {{ key }}="{{ value|e('html_attr') }}"
+                {% endfor %}
             >
 TWIG;
 
@@ -134,6 +151,7 @@ TWIG;
             'question'   => $question,
             'input_type' => $this->getInputType(),
             'label'      => $question->fields['name'],
+            'attributes' => $this->getInputAttributes(),
         ]);
     }
 

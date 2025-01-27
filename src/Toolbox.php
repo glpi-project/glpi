@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
@@ -256,14 +257,16 @@ class Toolbox
     /**
      * Log in 'php-errors' all args
      *
-     * @param LoggerInterface   $logger Logger instance, if any
-     * @param integer           $level  Log level (defaults to warning)
-     * @param array             $args   Arguments (message to log, ...)
+     * @param mixed $level  The log level (a Monolog, PSR-3 or RFC 5424 level)
+     * @param array $args   Arguments (message to log, ...)
      *
      * @return void
      **/
-    private static function log(LoggerInterface $logger = null, $level = LogLevel::WARNING, $args = null)
+    private static function log($level = LogLevel::WARNING, $args = null)
     {
+        /** @var \Monolog\Logger $PHPLOGGER */
+        global $PHPLOGGER;
+
         static $tps = 0;
 
         $extra = [];
@@ -307,25 +310,11 @@ class Toolbox
 
         $tps = microtime(true);
 
-        if ($logger === null) {
-            /** @var \Monolog\Logger $PHPLOGGER */
-            global $PHPLOGGER;
-            $logger = $PHPLOGGER;
-        }
-
         try {
-            $logger->log($level, $msg, $extra);
+            $PHPLOGGER->log($level, $msg, $extra);
         } catch (\Throwable $e) {
            //something went wrong, make sure logging does not cause fatal
             error_log($e);
-        }
-
-        /** @var \Monolog\Logger $SQLLOGGER */
-        global $SQLLOGGER;
-        if (isCommandLine() && $level >= LogLevel::WARNING && $logger !== $SQLLOGGER) {
-           // Do not output related messages to $SQLLOGGER as they are redundant with
-           // output made by "ErrorHandler::handleSql*()" methods.
-            echo $msg;
         }
     }
 
@@ -334,7 +323,7 @@ class Toolbox
      */
     public static function logDebug()
     {
-        self::log(null, LogLevel::DEBUG, func_get_args());
+        self::log(LogLevel::DEBUG, func_get_args());
     }
 
     /**
@@ -342,40 +331,7 @@ class Toolbox
      */
     public static function logInfo()
     {
-        self::log(null, LogLevel::INFO, func_get_args());
-    }
-
-    /**
-     * SQL debug log
-     */
-    public static function logSqlDebug()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::DEBUG, $args);
-    }
-
-    /**
-     * SQL warning log
-     */
-    public static function logSqlWarning()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::WARNING, $args);
-    }
-
-    /**
-     * SQL error log
-     */
-    public static function logSqlError()
-    {
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
-        global $SQLLOGGER;
-        $args = func_get_args();
-        self::log($SQLLOGGER, LogLevel::ERROR, $args);
+        self::log(LogLevel::INFO, func_get_args());
     }
 
 
@@ -491,6 +447,7 @@ class Toolbox
             isset($_SESSION['glpi_use_mode'])
             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
             && isCommandLine()
+            && !defined('TU_USER')
         ) {
             $stderr = fopen('php://stderr', 'w');
             fwrite($stderr, $text);
@@ -556,16 +513,14 @@ class Toolbox
             if ($return_response) {
                 return new Response(403);
             }
-            echo "Security attack!!!";
-            die(1);
+            throw new AccessDeniedHttpException();
         }
 
         if (!file_exists($file)) {
             if ($return_response) {
                 return new Response(404);
             }
-            echo "Error file $file does not exist";
-            die(1);
+            throw new NotFoundHttpException();
         }
 
        // if $mime is defined, ignore mime type by extension
@@ -592,19 +547,22 @@ class Toolbox
         $etag = md5_file($file);
         $lastModified = filemtime($file);
 
-        // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
-        // If there is any extra data, the sent file will be corrupted.
-        // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
-        $ob_config = ini_get('output_buffering');
-        $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
-            ? 1
-            : 0;
-        while (ob_get_level() > $max_buffering_level) {
-            ob_end_clean();
-        }
-        // 2. Clean any buffered output in remaining level (output_buffering="on" case).
-        if (ob_get_level() > 0) {
-            ob_clean();
+        // No need to clear the output buffer if we are returning a Response object.
+        if (!$return_response) {
+            // Make sure there is nothing in the output buffer (In case stuff was added by core or misbehaving plugin).
+            // If there is any extra data, the sent file will be corrupted.
+            // 1. Turn off any extra buffering level. Keep one buffering level if PHP output_buffering directive is not "off".
+            $ob_config = ini_get('output_buffering');
+            $max_buffering_level = $ob_config !== false && (strtolower($ob_config) === 'on' || (is_numeric($ob_config) && (int)$ob_config > 0))
+                ? 1
+                : 0;
+            while (ob_get_level() > $max_buffering_level) {
+                ob_end_clean();
+            }
+            // 2. Clean any buffered output in remaining level (output_buffering="on" case).
+            if (ob_get_level() > 0) {
+                ob_clean();
+            }
         }
 
         $headers = [
@@ -638,14 +596,14 @@ class Toolbox
                 return $response;
             }
             $response->send();
-            exit;
+            return;
         }
         $content = file_get_contents($file);
         if ($content === false) {
             if ($return_response) {
                 return new Response(500);
             }
-            die("Error opening file $file");
+            throw new \RuntimeException();
         }
         $response = new Response(200, $headers, $content);
         if ($return_response) {
@@ -748,7 +706,7 @@ class Toolbox
      *
      * @param string $ininame  name of the ini ooption to retrieve (since 9.1)
      *
-     * @return integer memory limit
+     * @return integer|string memory limit
      **/
     public static function getMemoryLimit($ininame = 'memory_limit')
     {
@@ -797,7 +755,7 @@ class Toolbox
     {
 
         $mem = self::getMemoryLimit();
-        if ($mem == "") {
+        if ($mem === "") {
             return 0;
         }
         if ($mem == "-1") {
@@ -854,7 +812,7 @@ class Toolbox
     {
 
         if (file_exists($dir)) {
-            chmod($dir, 0777);
+            chmod($dir, 0755);
 
             if (is_dir($dir)) {
                 $id_dir = opendir($dir);
@@ -1479,7 +1437,6 @@ class Toolbox
         }
     }
 
-
     /**
      * Manage login redirection
      *
@@ -1492,150 +1449,165 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!empty($where)) {
-            if (Session::getCurrentInterface()) {
-                // redirect to URL : URL must be rawurlencoded
-                $decoded_where = rawurldecode($where);
-                $matches = [];
+        if (empty($where) || !Session::getCurrentInterface()) {
+            return;
+        }
 
-                // redirect to full url -> check if it's based on glpi url
-                if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
-                    if ($matches[1] !== $CFG_GLPI['url_base']) {
-                        Session::addMessageAfterRedirect(__s('Redirection failed'));
-                        if (Session::getCurrentInterface() === "helpdesk") {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                        } else {
-                            Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                        }
-                    } else {
-                        Html::redirect($decoded_where);
-                    }
-                }
+        // redirect to URL : URL must be rawurlencoded
+        $decoded_where = rawurldecode($where);
 
-                // Redirect to relative url
-                if ($decoded_where[0] == '/') {
-                    // prevent exploit (//example.com) and force a redirect from glpi root
-                    $redirect_to = $CFG_GLPI["root_doc"] . "/" . ltrim($decoded_where, '/');
-                    Html::redirect($redirect_to);
-                }
+        $redirect = self::computeRedirect($decoded_where);
 
-                // explode with limit 3 to preserve the last part of the url
-                // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
-                $data = explode("_", $where, 3);
-                $forcetab = '';
-                // forcetab for simple items
-                if (isset($data[2])) {
-                    $forcetab = 'forcetab=' . $data[2];
-                }
-
-                switch (Session::getCurrentInterface()) {
-                    case "helpdesk":
-                        switch (strtolower($data[0])) {
-                              // Use for compatibility with old name
-                            case "tracking":
-                            case "ticket":
-                                $data[0] = 'Ticket';
-                             // redirect to item
-                                if (
-                                    isset($data[1])
-                                    && is_numeric($data[1])
-                                    && ($data[1] > 0)
-                                ) {
-                                    // Check entity
-                                    if (
-                                        ($item = getItemForItemtype($data[0]))
-                                        && $item->isEntityAssign()
-                                    ) {
-                                        if ($item->getFromDB($data[1])) {
-                                            if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                                Session::changeActiveEntities($item->getEntityID(), 1);
-                                            }
-                                        }
-                                    }
-                                  // force redirect to timeline when timeline is enabled and viewing
-                                  // Tasks or Followups
-                                    $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-                                    $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-                                    $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-                                    Html::redirect(Ticket::getFormURLWithID($data[1]) . "&$forcetab");
-                                } else if (!empty($data[0])) { // redirect to list
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        $searchUrl = $item->getSearchURL();
-                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-                                        $searchUrl .= $forcetab;
-                                        Html::redirect($searchUrl);
-                                    }
-                                }
-
-                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            case "preference":
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            case "reservation":
-                                Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-                                // phpcs doesn't understand that the script will exit here so we need a comment to avoid the fallthrough warning
-
-                            default:
-                                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
-                        }
-                        // @phpstan-ignore deadCode.unreachable (defensive programming)
-                        break;
-
-                    case "central":
-                        switch (strtolower($data[0])) {
-                            case "preference":
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-
-                           // Use for compatibility with old name
-                           // no break
-                            case "tracking":
-                                $data[0] = "Ticket";
-                             //var defined, use default case
-
-                            default:
-                             // redirect to item
-                                if (
-                                    !empty($data[0])
-                                    && isset($data[1])
-                                    && is_numeric($data[1])
-                                    && ($data[1] > 0)
-                                ) {
-                                    // Check entity
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        if ($item->isEntityAssign()) {
-                                            if ($item->getFromDB($data[1])) {
-                                                if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                                    Session::changeActiveEntities($item->getEntityID(), 1);
-                                                }
-                                            }
-                                        }
-                                    // force redirect to timeline when timeline is enabled
-                                        $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-                                        $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-                                        $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-                                        Html::redirect($item->getFormURLWithID($data[1]) . "&$forcetab");
-                                    }
-                                } else if (!empty($data[0])) { // redirect to list
-                                    if ($item = getItemForItemtype($data[0])) {
-                                        $searchUrl = $item->getSearchURL();
-                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-                                        $searchUrl .= $forcetab;
-                                        Html::redirect($searchUrl);
-                                    }
-                                }
-
-                                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-                        }
-                        // @phpstan-ignore deadCode.unreachable (defensive programming)
-                        break;
-                }
+        if ($redirect === null) {
+            Session::addMessageAfterRedirect(__s('Redirection failed'));
+            if (Session::getCurrentInterface() === "helpdesk") {
+                Html::redirect($CFG_GLPI["root_doc"] . "/Helpdesk");
+            } else {
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
             }
+        } else {
+            Html::redirect($redirect);
         }
     }
 
+    /**
+     * Compute the redirection target.
+     *
+     * @param string $where
+     * @return string|null
+     */
+    public static function computeRedirect(string $where): ?string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $matches = [];
+
+        // redirect to full url -> check if it's based on glpi url
+        if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $where, $matches)) {
+            if ($matches[1] !== $CFG_GLPI['url_base']) {
+                return null;
+            }
+
+            return $where;
+        }
+
+        // Redirect to relative url
+        if ($where[0] === '/') {
+            // prevent exploit (//example.com) and force a redirect from glpi root
+            return $CFG_GLPI["root_doc"] . "/" . ltrim($where, '/');
+        }
+
+        // explode with limit 3 to preserve the last part of the url
+        // /index.php?redirect=ticket_2_Ticket$main#TicketValidation_1 (preserve anchor)
+        $data = explode("_", $where, 3);
+        $forcetab = '';
+        // forcetab for simple items
+        if (isset($data[2])) {
+            $forcetab = 'forcetab=' . $data[2];
+        }
+
+        switch (Session::getCurrentInterface()) {
+            case "helpdesk":
+                switch (strtolower($data[0])) {
+                    case "tracking": // Used for compatibility with old name
+                        // similar to "ticket" case
+
+                    case "ticket":
+                        $data[0] = 'Ticket';
+                        // redirect to item
+                        if (
+                            isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)
+                        ) {
+                            // Check entity
+                            if (
+                                ($item = getItemForItemtype($data[0]))
+                                && $item->isEntityAssign()
+                                && $item->getFromDB($data[1])
+                                && !Session::haveAccessToEntity($item->getEntityID())
+                            ) {
+                                Session::changeActiveEntities($item->getEntityID(), 1);
+                            }
+                            // force redirect to timeline when timeline is enabled and viewing
+                            // Tasks or Followups
+                            $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
+
+                            return Ticket::getFormURLWithID($data[1]) . "&$forcetab";
+                        }
+
+                        if ($item = getItemForItemtype($data[0])) {
+                            $searchUrl = $item::getSearchURL();
+                            $searchUrl .= !str_contains($searchUrl, '?') ? '?' : '&';
+                            $searchUrl .= $forcetab;
+                            return $searchUrl;
+                        }
+
+                        return null;
+
+                    case "preference":
+                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+
+                    case "reservation":
+                        return Reservation::getFormURLWithID($data[1]) . "&$forcetab";
+                }
+
+                break;
+
+            case "central":
+                switch (strtolower($data[0])) {
+                    case "preference":
+                        return $CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab";
+
+                    // Use for compatibility with old name
+                    // no break
+                    case "tracking":
+                        $data[0] = "Ticket";
+                        // var defined, use default case
+
+                    default:
+                        // redirect to item
+                        if (
+                            !empty($data[0])
+                            && isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)
+                        ) {
+                            // Check entity
+                            if ($item = getItemForItemtype($data[0])) {
+                                if (
+                                    $item->isEntityAssign()
+                                    && $item->getFromDB($data[1])
+                                    && !Session::haveAccessToEntity($item->getEntityID())
+                                ) {
+                                    Session::changeActiveEntities($item->getEntityID(), 1);
+                                }
+                                // force redirect to timeline when timeline is enabled
+                                $forcetab = str_replace(['TicketFollowup$1', 'TicketTask$1', 'ITILFollowup$1'], 'Ticket$1', $forcetab);
+
+                                return $item::getFormURLWithID($data[1]) . "&$forcetab";
+                            }
+                        } else if (
+                            !empty($data[0])
+                            && $item = getItemForItemtype($data[0])
+                        ) {
+                            // redirect to list
+                            $searchUrl = $item::getSearchURL();
+                            $searchUrl .= !str_contains($searchUrl, '?') ? '?' : '&';
+                            $searchUrl .= $forcetab;
+                            return $searchUrl;
+                        }
+
+                        return null;
+                }
+
+                // @phpstan-ignore deadCode.unreachable (defensive programming)
+                break;
+        }
+
+        return null;
+    }
 
     /**
      * Convert a value in byte, kbyte, megabyte etc...
@@ -1768,29 +1740,6 @@ class Toolbox
 
         return $tab;
     }
-
-
-    /**
-     * Display a mail server configuration form
-     *
-     * @param string $value  host connect string ex {localhost:993/imap/ssl}INBOX
-     *
-     * @return string  type of the server (imap/pop)
-     **/
-    public static function showMailServerConfig($value)
-    {
-        if (!Config::canUpdate()) {
-            return '';
-        }
-
-        $tab = Toolbox::parseMailServerConnectString($value);
-        TemplateRenderer::getInstance()->display('pages/setup/mailcollector/server_config_fields.html.twig', [
-            'connect_opts' => $tab,
-            'host' => $value
-        ]);
-        return $tab['type'];
-    }
-
 
     /**
      * @param array $input
@@ -2086,16 +2035,24 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @param ?Closure $progressCallback
      *
      * @return void
+     *
+     * @internal
      *
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!$progressCallback) {
+            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
+            };
+        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2109,84 +2066,116 @@ class Toolbox
         /** @var \DBmysql $DB */
         $DB = $database;
 
-        if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
-            echo "Errors occurred inserting default database";
-        } else {
-           //dataset
-            Session::loadLanguage($lang, false); // Load default language locales to translate empty data
-            $tables = require_once(__DIR__ . '/../install/empty_data.php');
-            Session::loadLanguage('', false); // Load back session language
+        $structure_queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
-            foreach ($tables as $table => $data) {
-                $reference = array_replace(
-                    $data[0],
-                    array_fill_keys(
-                        array_keys($data[0]),
-                        new QueryParam()
-                    )
-                );
+        //dataset
+        Session::loadLanguage($lang, false); // Load default language locales to translate empty data
+        $tables = require_once(__DIR__ . '/../install/empty_data.php');
+        Session::loadLanguage('', false); // Load back session language
 
-                $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+        $done_steps = 0;
 
-                $types = str_repeat('s', count($data[0]));
-                foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
-                        $msg = $stmt->error;
-                        $msg .= "\nError execution statement in table $table\n";
-                        $msg .= print_r($row, true);
-                        throw new \RuntimeException($msg);
-                    }
-                    if (!isCommandLine()) {
-                         // Flush will prevent proxy to timeout as it will receive data.
-                         // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                         // will be shown as a single one on browser.
-                         echo ' ';
-                         Html::glpi_flush();
-                    }
-                }
-            }
+        $number_of_steps = \count($structure_queries);
+        foreach ($tables as $data) {
+            $number_of_steps += \count($data);
+        }
 
-            // Create default forms
-            $default_forms_manager = new DefaultDataManager();
-            $default_forms_manager->initializeData();
+        // For post install steps
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the install process
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the install process
+        $default_lang_weight = 1;
+        $cron_config_weight = 1;
+        $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_steps += $cron_config_weight;
+        }
 
-            // Initalize rules
-            RulesManager::initializeRules();
+        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
 
-            // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
-            \Glpi\OAuth\Server::generateKeys();
+        foreach ($structure_queries as $query) {
+            $DB->doQuery($query);
 
-           // update default language
-            Config::setConfigurationValues(
-                'core',
-                [
-                    'language'      => $lang,
-                    'version'       => GLPI_VERSION,
-                    'dbversion'     => GLPI_SCHEMA_VERSION,
-                ]
+            $done_steps++;
+            $progressCallback($done_steps);
+        }
+
+        $progressCallback($done_steps, null, __('Adding empty data…'));
+
+        foreach ($tables as $table => $data) {
+            $reference = array_replace(
+                $data[0],
+                array_fill_keys(
+                    array_keys($data[0]),
+                    new QueryParam()
+                )
             );
 
-            if (defined('GLPI_SYSTEM_CRON')) {
-               // Downstream packages may provide a good system cron
-                $DB->update(
-                    'glpi_crontasks',
-                    [
-                        'mode'   => 2
-                    ],
-                    [
-                        'name'      => ['!=', 'watcher'],
-                        'allowmode' => ['&', 2]
-                    ]
-                );
+            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+
+            $types = str_repeat('s', count($data[0]));
+            foreach ($data as $row) {
+                $res = $stmt->bind_param($types, ...array_values($row));
+                if (false === $res) {
+                    $msg = "Error binding params in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+                $res = $stmt->execute();
+                if (false === $res) {
+                    $msg = $stmt->error;
+                    $msg .= "\nError execution statement in table $table\n";
+                    $msg .= print_r($row, true);
+                    throw new \RuntimeException($msg);
+                }
+
+                $done_steps++;
+                $progressCallback($done_steps);
             }
         }
+
+        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $default_forms_manager = new DefaultDataManager();
+        $default_forms_manager->initializeData();
+        $done_steps += $init_form_weight;
+
+        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        RulesManager::initializeRules();
+        $done_steps += $init_rules_weight;
+
+        $progressCallback($done_steps, null, __('Generating keys…'));
+        // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
+        \Glpi\OAuth\Server::generateKeys();
+        $done_steps += $generate_keys_weight;
+
+        $progressCallback($done_steps, null, __('Updating default language…'));
+        Config::setConfigurationValues(
+            'core',
+            [
+                'language'      => $lang,
+                'version'       => GLPI_VERSION,
+                'dbversion'     => GLPI_SCHEMA_VERSION,
+            ]
+        );
+        $done_steps += $default_lang_weight;
+
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
+           // Downstream packages may provide a good system cron
+            $DB->update(
+                'glpi_crontasks',
+                [
+                    'mode'   => 2
+                ],
+                [
+                    'name'      => ['!=', 'watcher'],
+                    'allowmode' => ['&', 2]
+                ]
+            );
+            $done_steps += $cron_config_weight;
+        }
+
+        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
 
@@ -2533,7 +2522,7 @@ class Toolbox
     public static function jsonDecode($encoded, $assoc = false)
     {
         if (!is_string($encoded)) {
-            self::log(null, LogLevel::NOTICE, ['Only strings can be json to decode!']);
+            self::log(LogLevel::NOTICE, ['Only strings can be json to decode!']);
             return $encoded;
         }
 
@@ -2543,7 +2532,7 @@ class Toolbox
         }
 
         if ($json_data === null) {
-            self::log(null, LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
+            self::log(LogLevel::NOTICE, ['Unable to decode JSON string! Is this really JSON?']);
             return $encoded;
         }
 
@@ -3086,13 +3075,31 @@ HTML;
      */
     public static function isValidWebUrl($url): bool
     {
-       // Verify absence of known disallowed characters.
-       // It is still possible to have false positives, but a fireproof check would be too complex
-       // (or would require usage of a dedicated lib).
-        return (preg_match(
-            "/^(?:http[s]?:\/\/(?:[^\s`!(){};'\",<>«»“”‘’+]+|[^\s`!()\[\]{};:'\".,<>?«»“”‘’+]))$/iu",
-            $url
-        ) === 1);
+        // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
+        $pattern = '~^
+            (https?)://                                 # protocol
+            (((?:[\_\.\pL\pN-]|%%[0-9A-Fa-f]{2})+:)?((?:[\_\.\pL\pN-]|%%[0-9A-Fa-f]{2})+)@)?  # basic auth
+            (
+                (?:
+                    (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++            # a domain name using punycode
+                        |
+                    (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++          # a multi-level domain name
+                        |
+                    [a-z0-9\-\_]++                                    # a single-level domain name
+                )\.?
+                    |                                                 # or
+                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                    # an IP address
+                    |                                                 # or
+                \[
+                    (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
+                \]  # an IPv6 address
+            )
+            (:[0-9]+)?                              # a port (optional)
+            (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%%[0-9A-Fa-f]{2})* )*    # a path
+            (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?   # a query (optional)
+            (?:\# (?:[\pL\pN\-._\~!$&\'()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?       # a fragment (optional)
+        $~ixuD';
+        return preg_match($pattern, $url) === 1;
     }
 
     /**

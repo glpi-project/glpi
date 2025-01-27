@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -92,6 +92,9 @@ class FirewallTest extends \DbTestCase
                             ],
                             'foo.php' => '',
                         ],
+                        'public' => [
+                            'css.php' => '',
+                        ],
                         'index.php' => '',
                     ]
                 ],
@@ -129,6 +132,8 @@ class FirewallTest extends \DbTestCase
             '/marketplace/myplugin/ajax/foo.php'        => $default_for_plugins_legacy,
             '/marketplace/myplugin/front/dir/bar.php'   => $default_for_plugins_legacy,
             '/marketplace/myplugin/front/foo.php'       => $default_for_plugins_legacy,
+            '/marketplace/myplugin/public/css.php'      => $default_for_plugins_legacy, // /public/css.php file accessed with its legacy path
+            '/marketplace/myplugin/css.php'             => $default_for_plugins_legacy, // /public/css.php file accessed with the expected path
             '/marketplace/myplugin/index.php'           => $default_for_plugins_legacy,
             '/marketplace/myplugin/PluginRoute'         => $default_for_symfony_routes,
 
@@ -151,21 +156,6 @@ class FirewallTest extends \DbTestCase
             }
 
             // Hardcoded strategies
-            // `/front/central.php` has a specific strategy only if some get parameters are defined
-            $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/central.php',
-                expected_strategy: $default_for_core_legacy,
-            );
-
-            $_GET['embed'] = '1';
-            $_GET['dashboard'] = 'central';
-            $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/central.php',
-                expected_strategy: 'no_check',
-            );
-            unset($_GET['embed'], $_GET['dashboard']);
 
             // `/front/planning.php` has a specific strategy only if some get parameters are defined
             $this->dotestComputeFallbackStrategy(
@@ -198,7 +188,6 @@ class FirewallTest extends \DbTestCase
                 '/front/cron.php',
                 '/front/css.php',
                 '/front/document.send.php',
-                '/front/inventory.php',
                 '/front/locale.php',
                 '/front/login.php',
                 '/front/logout.php',

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,6 +40,9 @@ use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ObserverField;
+use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
@@ -54,19 +57,26 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Helpdesk\Tile\TilesManager;
 use ITILCategory;
 use Location;
+use Profile;
 use Ticket;
 
 final class DefaultDataManager
 {
     private AnswerTagProvider $answer_tag_provider;
+    private TilesManager $tiles_manager;
 
     public function __construct()
     {
         $this->answer_tag_provider = new AnswerTagProvider();
+        $this->tiles_manager = new TilesManager();
     }
 
     public function initializeDataIfNeeded(): void
@@ -80,8 +90,58 @@ final class DefaultDataManager
 
     public function initializeData(): void
     {
-        $this->createIncidentForm();
+        $incident_form = $this->createIncidentForm();
         $this->createRequestForm();
+
+        foreach ($this->getHelpdeskProfiles() as $profile) {
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Browse help articles"),
+                'description'  => __("See all available help articles and our FAQ."),
+                'illustration' => "browse-kb",
+                'page'         => GlpiPageTile::PAGE_FAQ,
+            ]);
+
+            $this->tiles_manager->addTile($profile, FormTile::class, [
+                'forms_forms_id' => $incident_form->getID(),
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Request a service"),
+                'description'  => __("Ask for a service to be provided by our team."),
+                'illustration' => "request-service",
+                'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("Make a reservation"),
+                'description'  => __("Pick an available asset and reserve it for a given date."),
+                'illustration' => "reservation",
+                'page'         => GlpiPageTile::PAGE_RESERVATION,
+            ]);
+
+            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
+                'title'        => __("View approval requests"),
+                'description'  => __("View all tickets waiting for your validation."),
+                'illustration' => "approve-requests",
+                'page'         => GlpiPageTile::PAGE_APPROVAL,
+            ]);
+        }
+    }
+
+    /** @return Profile[] */
+    private function getHelpdeskProfiles(): array
+    {
+        $profiles = [];
+        $profiles_data = (new Profile())->find(['interface' => 'helpdesk']);
+
+        foreach ($profiles_data as $row) {
+            $profile = new Profile();
+            $profile->getFromResultSet($row);
+            $profile->post_getFromDB();
+            $profiles[] = $profile;
+        }
+
+        return $profiles;
     }
 
     private function dataHasBeenInitialized(): bool
@@ -89,13 +149,13 @@ final class DefaultDataManager
         return countElementsInTable(Form::getTable()) > 0;
     }
 
-    private function createIncidentForm(): void
+    private function createIncidentForm(): Form
     {
         // Create form
         $form = $this->createForm(
             name: __('Report an issue'),
             description: __("Ask for support from our helpdesk team."),
-            illustration: 'report-issue.svg',
+            illustration: 'report-issue',
         );
 
         // Get first section
@@ -105,7 +165,7 @@ final class DefaultDataManager
         // Add questions
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
-        // TODO: associated items (not possible yet)
+        $this->addQuestion($section, $this->getUserDevicesQuestionData());
         $this->addQuestion($section, $this->getWatchersQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
@@ -136,7 +196,12 @@ final class DefaultDataManager
             RequestTypeField::getKey() => (new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: Ticket::INCIDENT_TYPE,
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
+
+            // Set last valid answer as observer
+            ObserverField::getKey() => (new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::LAST_VALID_ANSWER],
+            ))->jsonSerialize(),
         ];
 
         // Add ticket destination
@@ -144,6 +209,8 @@ final class DefaultDataManager
 
         // Allow all users
         $this->allowAllUsers($form);
+
+        return $form;
     }
 
     private function createRequestForm(): void
@@ -151,7 +218,7 @@ final class DefaultDataManager
         $form = $this->createForm(
             name: __('Request a service'),
             description: __("Ask for a service to be provided by our team."),
-            illustration: 'request-service.svg',
+            illustration: 'request-service',
         );
 
         // Get first section
@@ -161,7 +228,7 @@ final class DefaultDataManager
         // Add questions
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
-        // TODO: associated items (not possible yet)
+        $this->addQuestion($section, $this->getUserDevicesQuestionData());
         $this->addQuestion($section, $this->getWatchersQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
@@ -192,7 +259,12 @@ final class DefaultDataManager
             RequestTypeField::getKey() => (new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: Ticket::DEMAND_TYPE,
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
+
+            // Set last valid answer as observer
+            ObserverField::getKey() => (new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::LAST_VALID_ANSWER],
+            ))->jsonSerialize(),
         ];
 
         // Add ticket destination
@@ -235,7 +307,7 @@ final class DefaultDataManager
         $section->getFromDB($section->getID());
 
         // Set common values
-        $question_data['rank'] = count($section->getQuestions());
+        $question_data['vertical_rank'] = count($section->getQuestions());
         $question_data[Section::getForeignKeyField()] = $section->getID();
 
         // Create question
@@ -273,6 +345,16 @@ final class DefaultDataManager
             'name' => _n('Category', 'Categories', 1),
             'default_value' => 0,
             'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
+        ];
+    }
+
+    private function getUserDevicesQuestionData(): array
+    {
+        return [
+            'type' => QuestionTypeUserDevice::class,
+            'name' => __("User devices"),
+            'default_value' => 0,
+            'extra_data' => json_encode(['is_multiple_devices' => false]),
         ];
     }
 

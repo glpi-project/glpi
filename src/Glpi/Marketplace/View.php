@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -200,7 +200,7 @@ class View extends CommonGLPI
 
         if (count($messages)) {
             echo "<div class='alert alert-important alert-warning d-flex'>";
-            echo "<i class='fa-3x ti ti-alert-triangle'></i>";
+            echo "<i class='fs-3x ti ti-alert-triangle'></i>";
             echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
             echo "</div>";
         }
@@ -367,7 +367,7 @@ class View extends CommonGLPI
                 // Not completely offline. Do not treat as fully offline.
                 $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
             }
-            $messages = '<li class="warning"><i class="fa fa-exclamation-triangle fa-3x"></i>' . $msg . '</li>';
+            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x"></i>' . $msg . '</li>';
         }
 
         $plugins_li = "";
@@ -379,7 +379,7 @@ class View extends CommonGLPI
         if (!$only_lis) {
            // check writable state
             if (!Controller::hasWriteAccess()) {
-                echo "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle fa-5x'></i>"
+                echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x'></i>"
                       . sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)
                       . "<br>"
                       . __("If you want to ease the plugins download, please check permissions and ownership of this directory.")
@@ -420,32 +420,32 @@ HTML;
                     <select class='sort-control form-select form-select-sm'>
                         <option value='sort-alpha-asc'
                                 " . ($sort == "sort-alpha-asc" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-sort-ascending-letters'>
+                                data-icon='fs-2 ti ti-sort-ascending-letters'>
                             " . __("Alpha ASC") . "
                         </option>
                         <option value='sort-alpha-desc'
                                 " . ($sort == "sort-alpha-desc" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-sort-descending-letters'>
+                                data-icon='fs-2 ti ti-sort-descending-letters'>
                             " . __("Alpha DESC") . "
                         </option>
                         <option value='sort-dl'
                                 " . ($sort == "sort-dl'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-cloud-download'>
+                                data-icon='fs-2 ti ti-cloud-download'>
                             " . __("Most popular") . "
                         </option>
                         <option value='sort-update'
                                 " . ($sort == "sort-update'" ? "selected" : "") . "
-                                data-icon='fa-fw fas fa-lg fa-history'>
+                                data-icon='fs-2 ti ti-history'>
                             " . __("Last updated") . "
                         </option>
                         <option value='sort-added'
                                 " . ($sort == "sort-added'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-calendar-time'>
+                                data-icon='fs-2 ti ti-calendar-time'>
                             " . __("Most recent") . "
                         </option>
                         <option value='sort-note'
                                 " . ($sort == "sort-note'" ? "selected" : "") . "
-                                data-icon='fa-fw fa-lg ti ti-star'>
+                                data-icon='fs-2 ti ti-star'>
                             " . __("Best notes") . "
                         </option>
                     </select>";
@@ -473,7 +473,7 @@ HTML;
                         </ul>
                         $pagination
                         <a href="mailto:{$networkmail}" class="network-mail" target="_blank">
-                            $yourplugin&nbsp;<i class="far fa-envelope"></i>
+                            $yourplugin&nbsp;<i class="ti ti-mail"></i>
                         </a>
                     </div>
                 </div>
@@ -533,17 +533,17 @@ JS;
         $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
         $authors_title = htmlescape($authors);
         $authors = strlen($authors)
-            ? "<i class='fa-fw ti ti-users'></i>{$authors}"
+            ? "<i class='ti ti-users'></i>{$authors}"
             : "";
 
         $licence = Toolbox::stripTags($plugin['license'] ?? '');
         $licence = strlen($licence)
-            ? "<i class='fa-fw ti ti-license'></i>{$licence}"
+            ? "<i class='ti ti-license'></i>{$licence}"
             : "";
 
         $version = Toolbox::stripTags($plugin['version'] ?? '');
         $version = strlen($version)
-            ? "<i class='fa-fw ti ti-git-branch'></i>{$version}"
+            ? "<i class='ti ti-git-branch'></i>{$version}"
             : "";
 
         $stars = ($plugin['note'] ?? -1) > 0
@@ -660,11 +660,11 @@ HTML;
         $stars = "";
         for ($i = 1; $i < 6; $i++) {
             if ($value >= $i) {
-                $stars .= "<i class='fas fa-star'></i>";
+                $stars .= "<i class='ti ti-star-filled'></i>";
             } else if ($value + 0.5 == $i) {
-                $stars .= "<i class='fas fa-star-half-alt'></i>";
+                $stars .= "<i class='ti ti-star-half-filled'></i>";
             } else {
-                $stars .= "<i class='far fa-star'></i>";
+                $stars .= "<i class='ti ti-star'></i>";
             }
         }
 
@@ -788,14 +788,14 @@ HTML;
                         : $plugin_data['installation_url'];
 
                     $buttons .= "<a href='{$download_url}' target='_blank'>
-                            <button title='$warning' class='add_tooltip download_manually'><i class='fas fa-archive'></i></button>
+                            <button title='$warning' class='add_tooltip download_manually'><i class='ti ti-archive'></i></button>
                         </a>";
                 } else {
                     $warning = __s("The plugin has an available update but its local directory contains source versioning.") . "<br>";
                     $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
 
                     $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
-                        <i class='fas fa-ban'></i>
+                        <i class='ti ti-ban'></i>
                     </button>";
                 }
             }
@@ -838,7 +838,7 @@ HTML;
 
              $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
                     <button class='add_tooltip need_offers' title='$warning'>
-                        <i class='fas fa-exclamation-triangle'></i>
+                        <i class='ti ti-alert-triangle'></i>
                     </button>
                 </a>";
         }
@@ -848,7 +848,7 @@ HTML;
             $icon = "ti ti-folder-plus";
             if ($has_local_update) {
                 $title = __s("Update");
-                $icon = "far fa-caret-square-up";
+                $icon = "ti ti-caret-up";
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
                     'plugin_name' => $plugin_inst->getField('name'),
                     'to_version' => $plugin_inst->getField('version'),
@@ -879,13 +879,13 @@ HTML;
                     $buttons .= "<button class='modify_plugin'
                                          data-action='disable_plugin'
                                          title='" . __s("Disable") . "'>
-                            <i class='fas fa-toggle-on'></i>
+                            <i class='ti ti-toggle-right-filled'></i>
                         </button>";
                 } else {
                     $buttons .= "<button class='modify_plugin'
                                          data-action='enable_plugin'
                                          title='" . __s("Enable") . "'>
-                            <i class='fas fa-toggle-off'></i>
+                            <i class='ti ti-toggle-left-filled'></i>
                         </button>";
                 }
             }
@@ -980,7 +980,7 @@ HTML;
                     <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
                        class='badge glpi-network'
                        title='" . sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network') . "'>
-                        <i class='fas fa-star'></i>GLPI Network
+                        <i class='ti ti-star-filled'></i>GLPI Network
                     </a>
                     <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
                        class='badge bg-azure $offerkey'
@@ -1067,7 +1067,7 @@ HTML;
         if (!$only_li) {
             $html .= "<ul class='pagination'>";
         }
-        $html .= "<li data-page='$prev' $p_cls><i class='fas fa-angle-left'></i></li>";
+        $html .= "<li data-page='$prev' $p_cls><i class='ti ti-chevron-left'></i></li>";
         $dots = false;
         for ($i = 1; $i <= $nb_pages; $i++) {
             if (
@@ -1089,7 +1089,7 @@ HTML;
                 : "";
             $html .= "<li data-page='$i' $current>$i</li>";
         }
-        $html .= "<li data-page='$next' $n_cls><i class='fas fa-angle-right'></i></li>";
+        $html .= "<li data-page='$next' $n_cls><i class='ti ti-chevron-right'></i></li>";
         $html .= "<li class='nb_plugin'>" . sprintf(_n("%s plugin", "%s plugins", $total), $total) . "</li>";
         if (!$only_li) {
             $html .= "</ul>";
@@ -1147,17 +1147,20 @@ HTML;
             echo "<b>" . __("Do you want to replace the plugins setup page by the new marketplace?") . "</b>";
             echo "</div>";
             echo "<div class='card-footer'>";
-            echo Html::submit("<i class='fa fa-check'></i>&nbsp;" . __('Yes'), [
-                'name' => 'marketplace_replace_plugins_yes',
+            echo Html::submit(__('Yes'), [
+                'name'  => 'marketplace_replace_plugins_yes',
+                'icon'  => 'ti ti-check',
                 'class' => 'btn btn-primary'
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-times'></i>&nbsp;" . __('No'), [
+            echo Html::submit(__('No'), [
                 'name' => 'marketplace_replace_plugins_never',
+                'icon' => 'ti ti-x',
             ]);
             echo "&nbsp;";
-            echo Html::submit("<i class='fa fa-clock'></i>&nbsp;" . __('Later'), [
+            echo Html::submit(__('Later'), [
                 'name'  => 'marketplace_replace_plugins_later',
+                'icon' => 'ti ti-clock',
             ]);
             echo "</div>";
             echo Html::hidden('marketplace_replace');

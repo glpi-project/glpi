@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,6 @@ class Variables
             'GLPI_CACHE_DIR',
             'GLPI_CRON_DIR',
             'GLPI_DOC_DIR',
-            'GLPI_DUMP_DIR',
             'GLPI_GRAPH_DIR',
             'GLPI_LOCK_DIR',
             'GLPI_LOG_DIR',

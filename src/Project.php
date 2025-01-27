@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -212,7 +212,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             && Session::haveRight('projecttask', ProjectTask::READMY)
         ) {
             $menu['project']['title'] = self::getTypeName(Session::getPluralNumber());
-            $menu['project']['page']  = ProjectTask::getSearchURL(false);
+            $menu['project']['page']  = ProjectTask::getMyTasksURL(false);
 
             return $menu;
         }
@@ -224,9 +224,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return [
             ProjectTask::class => [
                 'title' => __('My tasks'),
-                'page'  => ProjectTask::getSearchURL(false),
+                'page'  => ProjectTask::getMyTasksURL(false),
                 'links' => [
-                    'search' => ProjectTask::getSearchURL(false),
+                    'search' => ProjectTask::getMyTasksURL(false),
                 ]
             ]
         ];
@@ -246,7 +246,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             </span>
          ';
 
-            $links[$pic_validate] = ProjectTask::getSearchURL(false);
+            $links[$pic_validate] = ProjectTask::getMyTasksURL(false);
 
             $links['summary_kanban'] = self::getFormURL(false) . '?showglobalkanban=1';
         }
@@ -1039,6 +1039,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name'               => __('Real end date'),
             'datatype'           => 'datetime',
             'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'splititems'         => true,
             'joinparams'         => [
                 'jointype'  => 'child'
             ]
@@ -2853,7 +2855,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         ),
                     ],
                     [
-                        'content' => $project->fields['percent_done'] . '%',
+                        'content' => Html::getProgressBar((float)$project->fields['percent_done'])
                     ]
                 ]
             ];

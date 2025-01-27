@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -272,6 +272,7 @@ $RELATION = [
         '_glpi_contracts_suppliers' => 'contracts_id',
         'glpi_entities'             => 'contracts_id_default',
         '_glpi_tickets_contracts'   => 'contracts_id',
+        '_glpi_contracts_users'    => 'contracts_id',
     ],
 
     'glpi_contracttypes' => [
@@ -705,11 +706,17 @@ $RELATION = [
         "_glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
     ],
 
+    'glpi_forms_categories' => [
+        'glpi_forms_categories' => 'forms_categories_id',
+        'glpi_forms_forms' => 'forms_categories_id',
+    ],
+
     'glpi_forms_forms' => [
         "_glpi_forms_accesscontrols_formaccesscontrols" => "forms_forms_id",
         "_glpi_forms_answerssets"                       => "forms_forms_id",
         "_glpi_forms_destinations_formdestinations"     => "forms_forms_id",
         "_glpi_forms_sections"                          => "forms_forms_id",
+        "_glpi_helpdesks_tiles_formtiles"               => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [
@@ -1160,12 +1167,13 @@ $RELATION = [
     ],
 
     'glpi_profiles' => [
-        '_glpi_knowbaseitems_profiles' => 'profiles_id',
-        '_glpi_profilerights'          => 'profiles_id',
-        '_glpi_profiles_reminders'     => 'profiles_id',
-        '_glpi_profiles_rssfeeds'      => 'profiles_id',
-        '_glpi_profiles_users'         => 'profiles_id',
-        'glpi_users'                   => 'profiles_id',
+        '_glpi_helpdesks_tiles_profiles_tiles' => 'profiles_id',
+        '_glpi_knowbaseitems_profiles'         => 'profiles_id',
+        '_glpi_profilerights'                  => 'profiles_id',
+        '_glpi_profiles_reminders'             => 'profiles_id',
+        '_glpi_profiles_rssfeeds'              => 'profiles_id',
+        '_glpi_profiles_users'                 => 'profiles_id',
+        'glpi_users'                           => 'profiles_id',
     ],
 
     'glpi_projects' => [
@@ -1308,6 +1316,7 @@ $RELATION = [
     'glpi_softwarelicenses' => [
         '_glpi_items_softwarelicenses'     => 'softwarelicenses_id',
         '_glpi_softwarelicenses'           => 'softwarelicenses_id',
+        '_glpi_softwarelicenses_users'             => 'softwarelicenses_id',
     ],
 
     'glpi_softwarelicensetypes' => [
@@ -1649,6 +1658,8 @@ $RELATION = [
             'users_id',
             'users_id_substitute',
         ],
+        '_glpi_softwarelicenses_users'          => 'users_id',
+        '_glpi_contracts_users'         => 'users_id',
     ],
 
     'glpi_usertitles' => [

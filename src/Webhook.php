@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -333,9 +333,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function getStatusIcon($status): string
     {
         if ($status) {
-            return '<i class="fa-solid fa-triangle-exclamation fa-beat fa-lg" style="color: #ff0000;"></i>';
+            return '<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i>';
         } else {
-            return '<i class="fa-solid fa-circle-check fa-beat fa-lg" style="color: #36d601;"></i>';
+            return '<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i>';
         }
     }
 
@@ -479,7 +479,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $router->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
         $path = rtrim($path, '/');
         $request = new Request('GET', $path);
-        $response = $router->handleRequest($request);
+        $response = Session::callAsSystem(static fn () => $router->handleRequest($request));
         if ($response->getStatusCode() === 200) {
             $body = (string)$response->getBody();
             try {
@@ -898,7 +898,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
 
         if ($controller_class === null || $schema_name === null) {
-            echo __('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
+            echo __s('This itemtype is not supported by the API. Maybe a plugin is missing/disabled?');
             return null;
         }
         // TODO Allow pinning webhooks to specific API versions

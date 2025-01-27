@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,9 +54,14 @@ Cypress.Commands.add('injectAndCheckA11y', {prevSubject: 'optional'}, (subject) 
             ['.alert'], // Default Bootstrap/Tabler alert colors don't meet contrast requirements at any level of WCAG.
             ['.nav-pills .nav-link.active'],
             ['span[aria-label]'], // aria-label attribute cannot be used on a span with no valid role attribute. Done by bootstrap.
-
             // Below are items that do not need to be validated
             ['.sf-toolbar'], // Symfony profiler
+            ['.flatpickr input[type="text"]'], // Input labels broken when using altInput option
+            ['*[data-hasqtip]'], // Popper tooltips aren't created as labels for the elements they are attached to, but we use them instead of title attributes.
+            ['aside.navbar.sidebar a.dropdown-item'], // Duplicate accesskeys
+            ['.fancytree-container .fancytree-expander'], // Expand/collapse 'buttons' have no label
+            ['.fancytree-container thead > tr > th'], // Fancytree adds an empty header row to the table
+            ['.search-header .search-controls .show_export_menu'], // Wrapper element that triggers the tooltip is not valid
         ]
     };
     if (subject) {
@@ -64,4 +69,31 @@ Cypress.Commands.add('injectAndCheckA11y', {prevSubject: 'optional'}, (subject) 
         context.include = subject;
     }
     cy.checkA11y(context, null, terminalLog);
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method disableAnimations
+ * @description Disable animations on the page
+ * @returns Chainable
+ */
+Cypress.Commands.add('disableAnimations', () => {
+    cy.get('body').invoke('append', Cypress.$(`
+        <style id="__cypress-animation-disabler">
+            *, *:before, *:after {
+              transition: none !important;
+              animation: none !important;
+            }
+        </style>
+    `));
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method enableAnimations
+ * @description Enable animations on the page
+ * @returns Chainable
+ */
+Cypress.Commands.add('enableAnimations', () => {
+    Cypress.$('#__cypress-animation-disabler').remove();
 });

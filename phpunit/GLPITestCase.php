@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
-use Monolog\Logger;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -49,16 +48,12 @@ class GLPITestCase extends TestCase
     private $str;
     protected $has_failed = false;
     private ?array $config_copy = null;
+    private array $superglobals_copy = [];
 
     /**
      * @var TestHandler
      */
-    private $php_log_handler;
-
-    /**
-     * @var TestHandler
-     */
-    private $sql_log_handler;
+    private $log_handler;
 
     public function setUp(): void
     {
@@ -77,13 +72,11 @@ class GLPITestCase extends TestCase
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
-        // Init log handlers
-        global $PHPLOGGER, $SQLLOGGER;
+        // Init log handler
+        global $PHPLOGGER;
         /** @var \Monolog\Logger $PHPLOGGER */
-        $this->php_log_handler = new TestHandler(LogLevel::DEBUG);
-        $PHPLOGGER->setHandlers([$this->php_log_handler]);
-        $this->sql_log_handler = new TestHandler(LogLevel::DEBUG);
-        $SQLLOGGER->setHandlers([$this->sql_log_handler]);
+        $this->log_handler = new TestHandler(LogLevel::DEBUG);
+        $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
     }
@@ -109,28 +102,26 @@ class GLPITestCase extends TestCase
         }
 
         if (!$this->has_failed) {
-            foreach ([$this->php_log_handler, $this->sql_log_handler] as $log_handler) {
-                $this->assertIsArray($log_handler->getRecords());
-                $clean_logs = array_map(
-                    static function (\Monolog\LogRecord $entry): array {
-                        return [
-                            'channel' => $entry->channel,
-                            'level'   => $entry->level->name,
-                            'message' => $entry->message,
-                        ];
-                    },
-                    $log_handler->getRecords()
-                );
-                $this->assertEmpty(
-                    $clean_logs,
-                    sprintf(
-                        "Unexpected entries in log in %s::%s:\n%s",
-                        static::class,
-                        __METHOD__/*$method*/,
-                        print_r($clean_logs, true)
-                    )
-                );
-            }
+            $this->assertIsArray($this->log_handler->getRecords());
+            $clean_logs = array_map(
+                static function (\Monolog\LogRecord $entry): array {
+                    return [
+                        'channel' => $entry->channel,
+                        'level'   => $entry->level->name,
+                        'message' => $entry->message,
+                    ];
+                },
+                $this->log_handler->getRecords()
+            );
+            $this->assertEmpty(
+                $clean_logs,
+                sprintf(
+                    "Unexpected entries in log in %s::%s:\n%s",
+                    static::class,
+                    __METHOD__/*$method*/,
+                    print_r($clean_logs, true)
+                )
+            );
         }
     }
 
@@ -260,32 +251,6 @@ class GLPITestCase extends TestCase
      */
     protected function hasPhpLogRecordThatContains(string $message, string $level): void
     {
-        $this->hasLogRecordThatContains($this->php_log_handler, $message, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatContains(string $message, string $level): void
-    {
-        $this->hasLogRecordThatContains($this->sql_log_handler, $message, $level);
-    }
-
-    /**
-     * Check given log handler for a record that contains given message.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatContains(TestHandler $handler, string $message, string $level): void
-    {
         $this->has_failed = true;
 
         $records = array_map(
@@ -296,7 +261,7 @@ class GLPITestCase extends TestCase
                     'message' => $record['message'],
                 ];
             },
-            $handler->getRecords()
+            $this->log_handler->getRecords()
         );
 
         $matching = null;
@@ -314,7 +279,7 @@ class GLPITestCase extends TestCase
             sprintf("Message not found in log records\n- %s\n+ %s", $message, print_r($records, true))
         );
 
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }
@@ -329,36 +294,10 @@ class GLPITestCase extends TestCase
      */
     protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
     {
-        $this->hasLogRecordThatMatches($this->php_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check in SQL log for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    protected function hasSqlLogRecordThatMatches(string $pattern, string $level): void
-    {
-        $this->hasLogRecordThatMatches($this->sql_log_handler, $pattern, $level);
-    }
-
-    /**
-     * Check given log handler for a record that matches given pattern.
-     *
-     * @param string $message
-     * @param string $level
-     *
-     * @return void
-     */
-    private function hasLogRecordThatMatches(TestHandler $handler, string $pattern, string $level): void
-    {
         $this->has_failed = true;
 
         $matching = null;
-        foreach ($handler->getRecords() as $record) {
+        foreach ($this->log_handler->getRecords() as $record) {
             if (
                 Level::fromValue($record['level']) === Level::fromName($level)
                 && preg_match($pattern, $record['message']) === 1
@@ -371,7 +310,7 @@ class GLPITestCase extends TestCase
             $matching,
             'No matching log found.'
         );
-        $handler->dropFromRecords($matching['message'], $matching['level']);
+        $this->log_handler->dropFromRecords($matching['message'], $matching['level']);
 
         $this->has_failed = false;
     }
@@ -441,6 +380,12 @@ class GLPITestCase extends TestCase
     {
         global $CFG_GLPI;
 
+        // Super globals
+        $this->superglobals_copy['GET'] = $_GET;
+        $this->superglobals_copy['POST'] = $_POST;
+        $this->superglobals_copy['REQUEST'] = $_REQUEST;
+        $this->superglobals_copy['SERVER'] = $_SERVER;
+
         if ($this->config_copy === null) {
             $this->config_copy = $CFG_GLPI;
         }
@@ -453,9 +398,18 @@ class GLPITestCase extends TestCase
      */
     private function resetGlobalsAndStaticValues(): void
     {
+        // Super globals
+        $_GET = $this->superglobals_copy['GET'];
+        $_POST = $this->superglobals_copy['POST'];
+        $_REQUEST = $this->superglobals_copy['REQUEST'];
+        $_SERVER = $this->superglobals_copy['SERVER'];
+
         // Globals
-        global $CFG_GLPI;
+        global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
         $CFG_GLPI = $this->config_copy;
+        $FOOTER_LOADED = false;
+        $HEADER_LOADED = false;
+
 
         // Statics values
         Log::$use_queue = false;
@@ -477,5 +431,62 @@ class GLPITestCase extends TestCase
         $date = new DateTime(Session::getCurrentTime());
         $date->modify($modification);
         $_SESSION['glpi_currenttime'] = $date->format("Y-m-d H:i:s");
+    }
+
+    /**
+     * Return the minimal fields required for the creation of an item of the given class.
+     *
+     * @param string $class
+     * @return array
+     */
+    protected function getMinimalCreationInput(string $class): array
+    {
+        if (!is_a($class, CommonDBTM::class, true)) {
+            return [];
+        }
+
+        $input = [];
+
+        $item = new $class();
+
+        if ($item->isField($class::getNameField())) {
+            $input[$class::getNameField()] = $this->getUniqueString();
+        }
+
+        if ($item->isField('entities_id')) {
+            $input['entities_id'] = $this->getTestRootEntity(true);
+        }
+
+        switch ($class) {
+            case Cartridge::class:
+                $input['cartridgeitems_id'] = getItemByTypeName(CartridgeItem::class, '_test_cartridgeitem01', true);
+                break;
+            case Change::class:
+                $input['content'] = $this->getUniqueString();
+                break;
+            case Consumable::class:
+                $input['consumableitems_id'] = getItemByTypeName(ConsumableItem::class, '_test_consumableitem01', true);
+                break;
+            case Item_DeviceSimcard::class:
+                $input['itemtype']          = Computer::class;
+                $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
+                $input['devicesimcards_id'] = getItemByTypeName(DeviceSimcard::class, '_test_simcard_1', true);
+                break;
+            case Problem::class:
+                $input['content'] = $this->getUniqueString();
+                break;
+            case SoftwareLicense::class:
+                $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
+                break;
+            case Ticket::class:
+                $input['content'] = $this->getUniqueString();
+                break;
+        }
+
+        if (is_a($class, Item_Devices::class, true)) {
+            $input[$class::$items_id_2] = 1; // Valid ID is not required (yet)
+        }
+
+        return $input;
     }
 }

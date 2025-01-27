@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,9 +36,16 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class UrgencyFieldConfig implements JsonFieldInterface
+final class UrgencyFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
     public const STRATEGY = 'strategy';
@@ -53,6 +60,14 @@ final class UrgencyFieldConfig implements JsonFieldInterface
     }
 
     #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
+        ];
+    }
+
+    #[Override]
     public static function jsonDeserialize(array $data): self
     {
         $strategy = UrgencyFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
@@ -62,8 +77,8 @@ final class UrgencyFieldConfig implements JsonFieldInterface
 
         return new self(
             strategy: $strategy,
-            specific_question_id: $data[self::SPECIFIC_QUESTION_ID],
-            specific_urgency_value: $data[self::SPECIFIC_URGENCY_VALUE],
+            specific_question_id: $data[self::SPECIFIC_QUESTION_ID] ?? null,
+            specific_urgency_value: $data[self::SPECIFIC_URGENCY_VALUE] ?? null,
         );
     }
 
@@ -77,9 +92,19 @@ final class UrgencyFieldConfig implements JsonFieldInterface
         ];
     }
 
-    public function getStrategy(): UrgencyFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGY;
+    }
+
+    /**
+     * @return array<UrgencyFieldStrategy>
+     */
+    #[Override]
+    public function getStrategies(): array
+    {
+        return [$this->strategy];
     }
 
     public function getSpecificUrgency(): ?int

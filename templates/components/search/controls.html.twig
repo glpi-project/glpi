@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -63,7 +63,7 @@
                     </button>
                     {% if not user_pref('show_search_form') %}
                         {% set active_filter_class = is_filter_active ? "btn-active-search" : "btn-ghost-secondary" %}
-                        <button class="btn btn-sm py-1 {{ active_filter_class }} btn-ghost-secondary dropdown-toggle" type="button"
+                        <button class="btn btn-sm py-1 show-search-filters {{ active_filter_class }} btn-ghost-secondary dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside">
                             <i class="ti ti-list-search"></i>
                             {% if active_search_name|length %}
@@ -82,7 +82,7 @@
 
                 {% if data['search']['as_map'] != 1 %}
                     {% set active_sort_class = active_sort ? "btn-active-sort" : "" %}
-                    <button class="btn btn-sm py-1 {{ active_sort_class }} btn-ghost-secondary dropdown-toggle me-1 me-xl-2" type="button"
+                    <button class="btn btn-sm py-1 show-search-sorts {{ active_sort_class }} btn-ghost-secondary dropdown-toggle me-1 me-xl-2" type="button"
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-arrows-sort"></i>
                         {% set sort_names = (active_sort_name|length ? active_sort_name : __("Sort")) %}

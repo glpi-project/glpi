@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,11 +71,11 @@ class RuleMailCollector extends Rule
         $criterias['content']['table']                  = '';
         $criterias['content']['type']                   = 'text';
 
-        $criterias['from']['name']                      = __('From email header');
+        $criterias['from']['name']                      = __('From email address');
         $criterias['from']['table']                     = '';
         $criterias['from']['type']                      = 'text';
 
-        $criterias['to']['name']                        = __('To email header');
+        $criterias['to']['name']                        = __('To email address');
         $criterias['to']['table']                       = '';
         $criterias['to']['type']                        = 'text';
 

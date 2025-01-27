@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -432,7 +432,7 @@ class Certificate_Item extends CommonDBRelation
                  ]);
 
                  echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
+                 echo Html::submit(_x('button', 'Associate'), ['name' => 'add']);
                  echo "</td>";
                  echo "</tr>";
                  echo "</table>";

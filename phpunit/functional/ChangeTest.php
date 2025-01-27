@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -317,5 +317,118 @@ class ChangeTest extends DbTestCase
 
         $item = $change->getById($changes_id);
         $this->assertSame(\CommonITILObject::INCOMING, $item->fields['status']);
+    }
+
+    public function testSearchOptions()
+    {
+        $this->login();
+
+        $last_followup_date = '2016-01-01 00:00:00';
+        $last_task_date = '2017-01-01 00:00:00';
+        $last_solution_date = '2018-01-01 00:00:00';
+
+        $change = new \Change();
+        $change_id = $change->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'  => $change::getType(),
+            'items_id' => $change_id,
+            'content'    => 'followup content',
+            'date'       => '2015-01-01 00:00:00',
+        ]);
+
+        $followup->add([
+            'itemtype'  => $change::getType(),
+            'items_id' => $change_id,
+            'content'    => 'followup content',
+            'date'       => '2015-02-01 00:00:00',
+        ]);
+
+        $task = new \ChangeTask();
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'changes_id'   => $change_id,
+                'content'      => 'A simple Task',
+                'date'         => '2015-01-01 00:00:00',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'changes_id'   => $change_id,
+                'content'      => 'A simple Task',
+                'date'         => $last_task_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'changes_id'   => $change_id,
+                'content'      => 'A simple Task',
+                'date'         => '2016-01-01 00:00:00',
+            ])
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $change::getType(),
+                'items_id' => $change_id,
+                'content'    => 'solution content',
+                'date_creation' => '2017-01-01 00:00:00',
+                'status' => 2,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$followup->add([
+                'itemtype'  => $change::getType(),
+                'items_id'  => $change_id,
+                'add_reopen'   => '1',
+                'content'      => 'This is required',
+                'date'         => $last_followup_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $change::getType(),
+                'items_id' => $change_id,
+                'content'    => 'solution content',
+                'date_creation' => $last_solution_date,
+            ])
+        );
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'field' => 2,
+                'searchtype' => 'contains',
+                'value' => $change_id,
+            ]
+        ];
+        $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [72,73,74]);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $change_with_so = $data['data']['rows'][0]['raw'];
+        $this->assertEquals($change_id, $change_with_so['id']);
+        $this->assertTrue(array_key_exists('ITEM_Change_72', $change_with_so));
+        $this->assertEquals($last_followup_date, $change_with_so['ITEM_Change_72']);
+        $this->assertTrue(array_key_exists('ITEM_Change_73', $change_with_so));
+        $this->assertEquals($last_task_date, $change_with_so['ITEM_Change_73']);
+        $this->assertTrue(array_key_exists('ITEM_Change_74', $change_with_so));
+        $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,7 +45,26 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 
-#[Route(path: '/Rule', tags: ['Rule'])]
+#[Route(path: '/Rule', tags: ['Rule'], requirements: [
+    'collection' => [self::class, 'getRuleCollections'],
+    'rule_id' => '\d+',
+    'id' => '\d+'
+])]
+#[Doc\Route(
+    parameters: [
+        [
+            'name' => 'collection',
+            'description' => 'Rule Collection',
+            'location' => Doc\Parameter::LOCATION_PATH,
+            'schema' => ['type' => Doc\Schema::TYPE_STRING]
+        ],
+        [
+            'name' => 'rule_id',
+            'description' => 'Rule Collection',
+            'location' => Doc\Parameter::LOCATION_PATH
+        ]
+    ]
+)]
 final class RuleController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
@@ -246,6 +265,29 @@ final class RuleController extends AbstractController
             ],
         ];
         return $schemas;
+    }
+
+    public static function getRuleCollections(): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        /** @var class-string<\RuleCollection>[] $collections */
+        $collections = $CFG_GLPI['rulecollections_types'];
+        $visible_collections = [];
+        foreach ($collections as $collection) {
+            /** @var \RuleCollection $instance */
+            $instance = new $collection();
+            if ($instance->canList()) {
+                $rule_class = $instance::getRuleClassName();
+                if (str_starts_with($rule_class, 'Rule')) {
+                    // Only handle rules from the core in the global namespace here
+                    $visible_collections[] = substr($rule_class, 4);
+                }
+            }
+        }
+
+        return $visible_collections;
     }
 
     private function checkCollectionAccess(Request $request, int $right): Response|null

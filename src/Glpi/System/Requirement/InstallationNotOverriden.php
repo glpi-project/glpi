@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,7 +45,7 @@ final class InstallationNotOverriden extends AbstractRequirement
     /**
      * Database instance.
      *
-     * @var DBmysql
+     * @var DBmysql|null
      */
     private $db;
 
@@ -80,7 +80,7 @@ final class InstallationNotOverriden extends AbstractRequirement
 
         if ($version_files_count == 0) {
             // Cannot do the check.
-            // Indicating that `version` directory is missing would be useless, as it would probably incitate administrator
+            // Indicating that `version` directory is missing would be useless, as it would probably encourage administrator
             // to restore it, and it would result in a "false positive" type validation.
             $this->out_of_context = true;
             return;

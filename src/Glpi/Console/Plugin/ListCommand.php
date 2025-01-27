@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 namespace Glpi\Console\Plugin;
 
 use Glpi\Console\AbstractCommand;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Marketplace\Controller;
 use Plugin;
 use Symfony\Component\Console\Helper\Table;
@@ -45,7 +44,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
-class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+class ListCommand extends AbstractCommand
 {
     protected function configure()
     {
@@ -106,10 +105,5 @@ class ListCommand extends AbstractCommand implements ForceNoPluginsOptionCommand
             $table->render();
         }
         return 0;
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-        return true;
     }
 }

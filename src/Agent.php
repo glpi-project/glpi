@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -34,14 +34,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
-use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -751,7 +749,7 @@ class Agent extends CommonDBTM
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {
@@ -772,7 +770,7 @@ class Agent extends CommonDBTM
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
         } catch (\Throwable $e) {

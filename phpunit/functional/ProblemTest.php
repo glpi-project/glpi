@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -193,5 +193,118 @@ class ProblemTest extends DbTestCase
         foreach ($roles as $role) {
             $this->assertNotEmpty(\Problem::getTeamRoleName($role));
         }
+    }
+
+    public function testSearchOptions()
+    {
+        $this->login();
+
+        $last_followup_date = '2016-01-01 00:00:00';
+        $last_task_date = '2017-01-01 00:00:00';
+        $last_solution_date = '2018-01-01 00:00:00';
+
+        $problem = new \Problem();
+        $problem_id = $problem->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $followup = new \ITILFollowup();
+        $followup->add([
+            'itemtype'  => $problem::getType(),
+            'items_id' => $problem_id,
+            'content'    => 'followup content',
+            'date'       => '2015-01-01 00:00:00',
+        ]);
+
+        $followup->add([
+            'itemtype'  => $problem::getType(),
+            'items_id' => $problem_id,
+            'content'    => 'followup content',
+            'date'       => '2015-02-01 00:00:00',
+        ]);
+
+        $task = new \ProblemTask();
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'problems_id'   => $problem_id,
+                'content'      => 'A simple Task',
+                'date'         => '2015-01-01 00:00:00',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'problems_id'   => $problem_id,
+                'content'      => 'A simple Task',
+                'date'         => $last_task_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$task->add([
+                'problems_id'   => $problem_id,
+                'content'      => 'A simple Task',
+                'date'         => '2016-01-01 00:00:00',
+            ])
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $problem::getType(),
+                'items_id' => $problem_id,
+                'content'    => 'solution content',
+                'date_creation' => '2017-01-01 00:00:00',
+                'status' => 2,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$followup->add([
+                'itemtype'  => $problem::getType(),
+                'items_id'  => $problem_id,
+                'add_reopen'   => '1',
+                'content'      => 'This is required',
+                'date'         => $last_followup_date,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int)$solution->add([
+                'itemtype'  => $problem::getType(),
+                'items_id' => $problem_id,
+                'content'    => 'solution content',
+                'date_creation' => $last_solution_date,
+            ])
+        );
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'field' => 2,
+                'searchtype' => 'contains',
+                'value' => $problem_id,
+            ]
+        ];
+        $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [72,73,74]);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $problem_with_so = $data['data']['rows'][0]['raw'];
+        $this->assertEquals($problem_id, $problem_with_so['id']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_72', $problem_with_so));
+        $this->assertEquals($last_followup_date, $problem_with_so['ITEM_Problem_72']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_73', $problem_with_so));
+        $this->assertEquals($last_task_date, $problem_with_so['ITEM_Problem_73']);
+        $this->assertTrue(array_key_exists('ITEM_Problem_74', $problem_with_so));
+        $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_74']);
     }
 }

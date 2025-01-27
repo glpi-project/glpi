@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +60,7 @@ TWIG, $twig_params);
 
     public function normalizeValue(mixed $value): ?string
     {
-        if ($value === null || $value === '') {
+        if (empty($value)) {
             return null;
         }
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
@@ -71,7 +71,7 @@ TWIG, $twig_params);
 
     public function formatValueFromDB(mixed $value): ?string
     {
-        if ($value === null) {
+        if (empty($value)) {
             return null;
         }
         return date('Y-m-d', strtotime($value . ' UTC'));

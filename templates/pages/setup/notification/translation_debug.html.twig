@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -59,7 +59,7 @@
         </div>
     {% else %}
         <div class="alert alert-info d-flex align-items-center m-0" role="alert">
-            <i class="fas fa-info-circle me-1"></i>
+            <i class="ti ti-info-circle me-1"></i>
             {{ __('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number())) }}
         </div>
     {% endif %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -62,13 +62,13 @@ abstract class Asset extends CommonDBTM
     use \Glpi\Features\Inventoriable;
 
     /**
-     * Asset definition.
+     * Asset definition system name.
      *
      * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
      * Must be defined by child class too to ensure that assigning a value to this property will affect
      * each child classe independently.
      */
-    protected static AssetDefinition $definition;
+    protected static string $definition_system_name;
 
     final public function __construct()
     {
@@ -84,11 +84,12 @@ abstract class Asset extends CommonDBTM
      */
     public static function getDefinition(): AssetDefinition
     {
-        if (!(static::$definition instanceof AssetDefinition)) {
+        $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
+        if (!($definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
-        return static::$definition;
+        return $definition;
     }
 
     public static function getDefinitionClass(): string
@@ -320,15 +321,34 @@ abstract class Asset extends CommonDBTM
         return $not_allowed;
     }
 
+    public function getFormFields(): array
+    {
+        $all_fields = array_keys(static::getDefinition()->getAllFields());
+        $fields_display = static::getDefinition()->getDecodedFieldsField();
+        $shown_fields = array_column($fields_display, 'key');
+        return array_filter($shown_fields, static fn ($f) => in_array($f, $all_fields, true));
+    }
+
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
+        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
+        $fields_display = static::getDefinition()->getDecodedFieldsField();
+        $core_field_options = [];
+
+        foreach ($fields_display as $field) {
+            $core_field_options[$field['key']] = $field['field_options'] ?? [];
+        }
+
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
             [
                 'item'   => $this,
                 'params' => $options,
-                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
+                'custom_fields' => $custom_fields,
+                'field_order' => $this->getFormFields(),
+                'additional_field_options' => $core_field_options,
             ]
         );
         return true;
@@ -357,7 +377,7 @@ abstract class Asset extends CommonDBTM
         $custom_fields = $this->getDecodedCustomFields();
 
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             if (!isset($input[$custom_field_name])) {
                 continue;
             }
@@ -386,7 +406,7 @@ abstract class Asset extends CommonDBTM
         }
 
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-            $f_name = 'custom_' . $custom_field->fields['name'];
+            $f_name = 'custom_' . $custom_field->fields['system_name'];
             $this->fields[$f_name] = $custom_field->fields['default_value'];
         }
         return true;
@@ -402,7 +422,7 @@ abstract class Asset extends CommonDBTM
         $custom_field_values = $this->getDecodedCustomFields();
 
         foreach ($custom_field_definitions as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             $value = $custom_field_values[$custom_field->getID()] ?? $custom_field->fields['default_value'];
 
             $this->fields[$custom_field_name] = $custom_field->getFieldType()->formatValueFromDB($value);
@@ -415,7 +435,7 @@ abstract class Asset extends CommonDBTM
         // Fill old values for custom fields
         $custom_field_definitions = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_field_definitions as $custom_field) {
-            $custom_field_name = 'custom_' . $custom_field->fields['name'];
+            $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
             $this->oldvalues[$custom_field_name] = $this->fields[$custom_field_name];
         }
     }
@@ -425,7 +445,7 @@ abstract class Asset extends CommonDBTM
         $this->post_updateItemFromAssignableItem($history);
         if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {
             foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-                $custom_field_name = 'custom_' . $custom_field->fields['name'];
+                $custom_field_name = 'custom_' . $custom_field->fields['system_name'];
                 $field_type = $custom_field->getFieldType();
                 $old_value = $field_type->formatValueFromDB($this->oldvalues[$custom_field_name] ?? $field_type->getDefaultValue());
                 $current_value = $field_type->formatValueFromDB($this->fields[$custom_field_name] ?? null);
@@ -450,7 +470,7 @@ abstract class Asset extends CommonDBTM
     public function getNonLoggedFields(): array
     {
         $ignored_fields = array_map(
-            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['name'],
+            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
             static::getDefinition()->getCustomFieldDefinitions()
         );
         $ignored_fields[] = 'custom_fields';

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use Config;
 use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
-use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\System\Requirement\DbTimezones;
 use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -49,7 +48,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-abstract class AbstractConfigureCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+abstract class AbstractConfigureCommand extends AbstractCommand
 {
     /**
      * Error code returned if DB configuration succeed.
@@ -349,12 +348,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                   $this->clearSchemaCache();
             }
         };
-    }
-
-    public function getNoPluginsOptionValue()
-    {
-
-        return true;
     }
 
     /**

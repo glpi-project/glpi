@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -38,13 +38,13 @@
                 <div class="card-header search-header pe-0">
                     <div class='btn-group flex-wrap mb-3'>
                         <span class="btn bg-blue-lt pe-none" aria-disabled="true">
-                            <i class='fas fa-check fa-lg me-2'></i>
+                            <i class='ti ti-check fs-2 me-2'></i>
                             {{ __('Import process is complete.') }}
                         </span>
                     </div>
                     <div class='btn-group flex-wrap mb-3 ms-2'>
                         <a href="javascript:history.back();" class="btn btn-primary">
-                        <i class='fas fa-backward fa-lg me-2'></i>
+                        <i class='ti ti-player-track-prev-filled fs-2 me-2'></i>
                             {{ __('Back') }}
                         </a>
                     </div>
@@ -62,7 +62,7 @@
                                 <td>{{ filename }}</td>
                                 <td>
                                     <span class="{{ result['success'] ? 'text-success' : 'text-danger' }}">
-                                        <i class="fas {{ result['success'] ? 'fa-check' : 'fa-exclamation-triangle' }}"></i>
+                                        <i class="ti {{ result['success'] ? 'ti-check' : 'ti-alert-triange' }}"></i>
                                         {{ result['message'] }}
                                     </span>
                                 </td>

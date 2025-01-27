@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 
 /**
@@ -129,7 +129,8 @@ class SavedSearch_Alert extends CommonDBChild
                 $count = $data['data']['totalcount'];
             }
         } catch (\RuntimeException $e) {
-            ErrorHandler::getInstance()->handleException($e, false);
+            ErrorHandler::logCaughtException($e);
+            ErrorHandler::displayCaughtExceptionMessage($e);
         }
 
         TemplateRenderer::getInstance()->display('pages/tools/savedsearch/alert.html.twig', [
@@ -450,7 +451,8 @@ class SavedSearch_Alert extends CommonDBChild
                     }
                 } catch (\Throwable $e) {
                     self::restoreContext($context);
-                    ErrorHandler::getInstance()->handleException($e, false);
+                    ErrorHandler::logCaughtException($e);
+                    ErrorHandler::displayCaughtExceptionMessage($e);
                 }
             }
             return 1;

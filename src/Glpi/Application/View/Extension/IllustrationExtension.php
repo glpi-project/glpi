@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,11 +56,19 @@ class IllustrationExtension extends AbstractExtension
             new TwigFunction('render_illustration', [$this, 'renderIllustration'], [
                 'is_safe' => ['html'],
             ]),
+            new TwigFunction(
+                'searchIcons',
+                [$this->illustration_manager, 'searchIcons'],
+            ),
+            new TwigFunction(
+                'countIcons',
+                [$this->illustration_manager, 'countIcons'],
+            ),
         ];
     }
 
-    public function renderIllustration(string $filename, int $size = 100): string
+    public function renderIllustration(string $filename, ?int $size = null): string
     {
-        return $this->illustration_manager->render($filename, $size);
+        return $this->illustration_manager->renderIcon($filename, $size);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,7 +69,15 @@ class Peripheral extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Asset_PeripheralAsset::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
 
@@ -124,6 +132,7 @@ class Peripheral extends CommonDBTM
         $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
+        $this->addStandardTab('Item_Project', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
         $this->addStandardTab('Lock', $ong, $options);
         $this->addStandardTab('Notepad', $ong, $options);

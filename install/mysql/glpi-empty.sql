@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2024 Teclib' and contributors.
+-- @copyright 2015-2025 Teclib' and contributors.
 -- @copyright 2003-2014 by the INDEPNET Development Team.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
@@ -3159,6 +3159,54 @@ CREATE TABLE `glpi_groups_users` (
   KEY `is_manager` (`is_manager`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_helpdesks_tiles_profiles_tiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_profiles_tiles`;
+CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `rank` int NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`profiles_id`, `rank`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `rank` (`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_formtiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_formtiles`;
+CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `forms_forms_id` (`forms_forms_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_glpipagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_glpipagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `page` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_helpdesks_tiles_externalpagetiles
+
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_externalpagetiles`;
+CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `illustration` varchar(255) DEFAULT NULL,
+  `url` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_holidays
 
@@ -4265,6 +4313,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `use_mail_date` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `requester_field` int NOT NULL DEFAULT '0',
+  `add_to_to_observer` tinyint NOT NULL DEFAULT '1',
   `add_cc_to_observer` tinyint NOT NULL DEFAULT '0',
   `collect_only_unread` tinyint NOT NULL DEFAULT '0',
   `create_user_from_email` tinyint NOT NULL DEFAULT '0',
@@ -6689,7 +6738,7 @@ CREATE TABLE `glpi_softwarecategories` (
 DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `softwares_id` int unsigned NOT NULL DEFAULT '0',
+  `softwares_id` int unsigned,
   `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
   `completename` text,
   `level` int NOT NULL DEFAULT '0',
@@ -9404,6 +9453,24 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_categories`;
+CREATE TABLE `glpi_forms_categories` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `description` longtext,
+    `illustration` varchar(255) NOT NULL DEFAULT '',
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+    `completename` text,
+    `level` int NOT NULL DEFAULT '0',
+    `ancestors_cache` longtext,
+    `sons_cache` longtext,
+    `comment` text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `level` (`level`),
+    KEY `forms_categories_id` (`forms_categories_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_forms_forms`;
 CREATE TABLE `glpi_forms_forms` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -9416,6 +9483,7 @@ CREATE TABLE `glpi_forms_forms` (
     `header` longtext,
     `illustration` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
+    `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -9426,17 +9494,22 @@ CREATE TABLE `glpi_forms_forms` (
     KEY `is_deleted` (`is_deleted`),
     KEY `is_draft` (`is_draft`),
     KEY `date_mod` (`date_mod`),
-    KEY `date_creation` (`date_creation`)
+    KEY `date_creation` (`date_creation`),
+    KEY `forms_categories_id` (`forms_categories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_sections`;
 CREATE TABLE `glpi_forms_sections` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
     `rank` int NOT NULL DEFAULT '0',
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
     KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -9444,29 +9517,43 @@ CREATE TABLE `glpi_forms_sections` (
 DROP TABLE IF EXISTS `glpi_forms_questions`;
 CREATE TABLE `glpi_forms_questions` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `type` varchar(255) NOT NULL DEFAULT '',
     `is_mandatory` tinyint NOT NULL DEFAULT '0',
-    `rank` int NOT NULL DEFAULT '0',
+    `vertical_rank` int NOT NULL DEFAULT '0',
+    `horizontal_rank` int DEFAULT NULL,
     `description` longtext,
     `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
     `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_comments`;
 CREATE TABLE `glpi_forms_comments` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(255) NOT NULL DEFAULT '',
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
+    `forms_sections_uuid` varchar(255) NOT NULL DEFAULT '',
     `name` varchar(255) NOT NULL DEFAULT '',
     `description` longtext,
-    `rank` int NOT NULL DEFAULT '0',
+    `vertical_rank` int NOT NULL DEFAULT '0',
+    `horizontal_rank` int DEFAULT NULL,
+    `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+    `conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),
-    KEY `forms_sections_id` (`forms_sections_id`)
+    KEY `forms_sections_id` (`forms_sections_id`),
+    KEY `forms_sections_uuid` (`forms_sections_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_answerssets`;
@@ -9827,12 +9914,15 @@ DROP TABLE IF EXISTS `glpi_assets_assetdefinitions`;
 CREATE TABLE `glpi_assets_assetdefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
+  `picture` text,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
   `capacities` JSON NOT NULL,
   `profiles` JSON NOT NULL,
   `translations` JSON NOT NULL,
+  `fields_display` JSON NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -9950,6 +10040,7 @@ DROP TABLE IF EXISTS `glpi_dropdowns_dropdowndefinitions`;
 CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `system_name` varchar(255) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
@@ -9994,15 +10085,36 @@ DROP TABLE IF EXISTS `glpi_assets_customfielddefinitions`;
 CREATE TABLE `glpi_assets_customfielddefinitions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `assets_assetdefinitions_id` int unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `system_name` varchar(255) NOT NULL,
   `label` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `field_options` json,
   `itemtype` VARCHAR(255) NULL DEFAULT NULL,
   `default_value` text,
+  `translations` JSON NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
-  KEY `name` (`name`)
+  UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
+  KEY `system_name` (`system_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_contracts_users`;
+CREATE TABLE `glpi_contracts_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `contracts_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`contracts_id`, `users_id`),
+  KEY `item` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_softwarelicenses_users`;
+CREATE TABLE `glpi_softwarelicenses_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `softwarelicenses_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `softwarelicenses_id` (`softwarelicenses_id`),
+  KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

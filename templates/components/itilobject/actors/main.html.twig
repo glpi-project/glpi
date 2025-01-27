@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -162,7 +162,7 @@
     <div class="modal-content">
       <div class="modal-header">
          <h5 class="modal-title">
-            <i class="fas fa-envelope"></i>
+            <i class="ti ti-mail"></i>
             &nbsp;{{ __('Edit notification settings') }}
          </h5>
          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
@@ -181,7 +181,7 @@
                <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
             </div>
             <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
-               <i class='fas fa-info-circle fa-xl'></i>
+               <i class='ti ti-info-circle fs-2x'></i>
                <span class='ms-2'>
                   {{ __('Notifications are disabled because:') }}
                   <ul>
@@ -198,10 +198,10 @@
       <div class="modal-footer">
          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="ti ti-x"></i>
-            <span>{{ __('Close') }}<span>
+            <span>{{ __('Close') }}</span>
          </button>
          <button type="button" class="btn btn-primary" id="saveActorNotifySettings">
-            <i class="far fa-save"></i>
+            <i class="ti ti-device-floppy"></i>
             <span>{{ __('Save') }}</span>
          </button>
       </div>

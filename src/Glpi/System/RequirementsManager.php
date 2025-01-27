@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -76,7 +76,7 @@ class RequirementsManager
 
         $requirements[] = new MemoryLimit(64 * 1024 * 1024);
 
-        // Mandatory PHP extensions that are defaultly enabled but can be disabled
+        // Mandatory PHP extensions that are enabled per default but can be disabled
         $requirements[] = new ExtensionGroup(
             __('PHP core extensions'),
             [
@@ -91,7 +91,7 @@ class RequirementsManager
             ]
         );
 
-        // Mandatory PHP extensions that are NOT defaultly enabled
+        // Mandatory PHP extensions that are NOT enabled per default
         $requirements[] = new Extension(
             'mysqli',
             false,

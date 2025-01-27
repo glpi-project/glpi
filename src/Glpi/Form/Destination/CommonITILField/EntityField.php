@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -79,26 +79,18 @@ class EntityField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUE strategy
             'specific_value_extra_field' => [
                 'aria_label'      => __("Select an entity..."),
                 'value'           => $config->getSpecificEntityId() ?? 0,
-                'input_name'      => $input_name . "[" . EntityFieldConfig::ENTITY_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_ENTITY_ID . "]",
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_answer_extra_field' => [
                 'empty_label'     => __("Select a question..."),
                 'value'           => $config->getSpecificQuestionId(),
-                'input_name'      => $input_name . "[" . EntityFieldConfig::QUESTION_ID . "]",
+                'input_name'      => $input_name . "[" . EntityFieldConfig::SPECIFIC_QUESTION_ID . "]",
                 'possible_values' => $this->getEntityQuestionsValuesForDropdown($form),
             ],
         ]);
@@ -114,8 +106,11 @@ class EntityField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $entity_id = $config->getStrategy()->getEntityID($config, $answers_set);
+        $entity_id = $strategy->getEntityID($config, $answers_set);
 
         // Do not edit input if invalid value was found
         if (Entity::getById($entity_id) === false) {
@@ -130,7 +125,7 @@ class EntityField extends AbstractConfigField
     #[Override]
     public function getDefaultConfig(Form $form): EntityFieldConfig
     {
-        // Returne last valid answer by default and fallback
+        // Return last valid answer by default and fallback
         // to form entity if no valid answer was found
         $valid_answers = array_filter(
             $form->getQuestionsByType(
@@ -141,7 +136,7 @@ class EntityField extends AbstractConfigField
 
         if (count($valid_answers) == 0) {
             return new EntityFieldConfig(
-                EntityFieldStrategy::FROM_FORM
+                EntityFieldStrategy::FORM_FILLER
             );
         }
 
@@ -150,7 +145,7 @@ class EntityField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (EntityFieldStrategy::cases() as $strategies) {

@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -56,64 +56,64 @@
          <div class="text-muted">
             {% if user['login'] is not empty %}
                 <div>
-                    <i class="fa-fw fas fa-id-badge"></i>
+                    <i class="ti ti-id-badge"></i>
                     {{ user['login'] }}
                 </div>
             {% endif %}
             {% if user['email']|length > 0 %}
                <div>
-                  <i class="fas fa-fw fa-envelope"></i>
+                  <i class="ti ti-mail"></i>
                   <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
                </div>
             {% endif %}
             {% if not user['phone'] is empty or not user['phone2'] is empty %}
                <div>
                   {% if not user['phone'] is empty %}
-                     <i class="fas fa-fw fa-phone"></i>
+                     <i class="ti ti-phone"></i>
                      <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
                   {% endif %}
                   {% if not user['phone'] is empty and not user['phone2'] is empty %}
                      <span> - </span>
                   {% endif %}
                   {% if not user['phone2'] is empty %}
-                     <i class="fas fa-fw fa-phone"></i>
+                     <i class="ti ti-phone"></i>
                      <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
                   {% endif %}
                </div>
             {% endif %}
             {% if user['mobile']|length > 0 %}
                <div>
-                  <i class="fas fa-fw fa-mobile"></i>
+                  <i class="ti ti-device-mobile"></i>
                   <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
                </div>
             {% endif %}
             {% if user['registration_number']|length > 0 %}
                <div>
-                  <i class="fas fa-fw fa-id-card-clip"></i>
+                  <i class="ti ti-id-badge-2"></i>
                   {{ user['registration_number'] }}
                </div>
             {% endif %}
             {% if user['locations_id'] > 0 %}
                <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-fw fa-map-marker-alt"></i>
+                  <i class="{{ 'Location'|itemtype_icon }}"></i>
                   {{ get_item_name('Location', user['locations_id']) }}
                </div>
             {% endif %}
             {% if user['usertitles_id'] > 0 %}
                <div title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-fw fa-user-tie"></i>
+                  <i class="{{ 'UserTitle'|itemtype_icon }}"></i>
                   {{ get_item_name('UserTitle', user['usertitles_id']) }}
                </div>
             {% endif %}
             {% if user['usercategories_id'] > 0 %}
                <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-fw fa-user-tag"></i>
+                  <i class="{{ 'UserCategory'|itemtype_icon }}"></i>
                   {{ get_item_name('UserCategory', user['usercategories_id']) }}
                </div>
             {% endif %}
             {% if user['groups_id'] > 0 %}
                <div title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="fas fa-fw fa-users"></i>
+                  <i class="{{ 'Group'|itemtype_icon }}"></i>
                   {{ get_item_name('Group', user['groups_id']) }}
                </div>
             {% endif %}
@@ -124,7 +124,7 @@
          <div class="col">
             <a class="btn btn-icon btn-sm btn-outline-secondary" href="{{ path('front/preference.php') }}"
                title="{{ __('Edit') }}" data-bs-toggle="tooltip" data-bs-placement="right">
-               <i class="fas fa-user-edit"></i>
+               <i class="ti ti-user-edit"></i>
             </a>
          </div>
       {% endif %}

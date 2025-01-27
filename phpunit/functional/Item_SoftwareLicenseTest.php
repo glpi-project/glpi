@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,30 @@
 namespace tests\units;
 
 use DbTestCase;
-
-/* Test for inc/item_softwarelicense.class.php */
+use Glpi\Asset\Capacity\HasSoftwaresCapacity;
+use Glpi\Features\Clonable;
+use Item_SoftwareLicense;
+use Toolbox;
 
 class Item_SoftwareLicenseTest extends DbTestCase
 {
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+
+        foreach ($CFG_GLPI['software_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Item_SoftwareLicense::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public function testCountForLicense()
     {
         $this->login();
@@ -225,7 +244,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $expected = [
             1 => "Summary",
-            2 => "Items",
+            2 => "Affected items",
         ];
         $tabs = array_map(
             'strip_tags',
@@ -236,7 +255,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [
             1 => "Summary",
-            2 => "Items 2"
+            2 => "Affected items 2"
         ];
         $tabs = array_map(
             'strip_tags',

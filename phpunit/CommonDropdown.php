@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,7 +47,7 @@ abstract class CommonDropdown extends DbTestCase
     abstract protected function getObjectClass();
 
     abstract public static function typenameProvider();
-    #[dataProvider('typenameProvider')]
+    #[DataProvider('typenameProvider')]
     public function testGetTypeName($string, $expected)
     {
         $this->assertSame($expected, $string);

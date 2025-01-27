@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,12 +48,15 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
         CREATE TABLE `glpi_assets_assetdefinitions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `system_name` varchar(255) DEFAULT NULL,
+            `label` varchar(255) NOT NULL,
             `icon` varchar(255) DEFAULT NULL,
+            `picture` text,
             `comment` text,
             `is_active` tinyint NOT NULL DEFAULT '0',
             `capacities` JSON NOT NULL,
             `profiles` JSON NOT NULL,
             `translations` JSON NOT NULL,
+            `fields_display` JSON NOT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -65,12 +68,17 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    foreach (['profiles', 'translations'] as $field) {
+    foreach (['profiles', 'translations', 'fields_display'] as $field) {
         $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
     }
+    $migration->addField('glpi_assets_assetdefinitions', 'label', 'string', [
+        'after' => 'system_name',
+        'update' => $DB::quoteName('system_name'),
+    ]);
+    $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
 }
 
-$ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [3, 4, 5, 6];
+$ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
 
 if (!$DB->tableExists('glpi_assets_assets')) {
     $query = <<<SQL
@@ -200,18 +208,22 @@ if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
         CREATE TABLE `glpi_assets_customfielddefinitions` (
           `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
           `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
-          `name` varchar(255) NOT NULL,
+          `system_name` varchar(255) NOT NULL,
           `label` varchar(255) NOT NULL,
           `type` varchar(255) NOT NULL,
           `field_options` json,
           `itemtype` VARCHAR(255) NULL DEFAULT NULL,
           `default_value` text,
+          `translations` JSON NOT NULL,
           PRIMARY KEY (`id`),
-          UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `name`),
-          KEY `name` (`name`)
+          UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
+          KEY `system_name` (`system_name`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQuery($query);
+} else {
+    $migration->addField('glpi_assets_customfielddefinitions', 'translations', 'JSON NOT NULL', ['update' => "'[]'"]);
+    $migration->changeField('glpi_assets_customfielddefinitions', 'name', 'system_name', 'string');
 }
 
 // Dev migration

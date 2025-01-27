@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,7 +54,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     }
 
     #[Override]
-    protected static function getTypes(): array
+    protected static function getTypes(array $options = []): array
     {
         $allowed_types = [
             User::getType(),
@@ -62,8 +62,8 @@ final class FormActorsDropdown extends AbstractRightsDropdown
             Supplier::getType(),
         ];
 
-        if (isset($_POST['allowed_types'])) {
-            $allowed_types = array_intersect($allowed_types, $_POST['allowed_types']);
+        if (isset($options['allowed_types'])) {
+            $allowed_types = array_intersect($allowed_types, $options['allowed_types']);
         }
 
         return $allowed_types;
@@ -82,17 +82,17 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))
                 ) {
-                    icon = '<i class="ti fa-fw ti-user mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-user mx-1" title="' + title + '"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Group')
                     || (data.id && data.id.startsWith('groups_id-'))
                 ) {
-                    icon = '<i class="ti fa-fw ti-users mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-users mx-1" title="' + title + '"></i>';
                 } else if (
                     (data.itemtype && data.itemtype === 'Supplier')
                     || (data.id && data.id.startsWith('suppliers_id-'))
                 ) {
-                    icon = '<i class="ti fa-fw ti-package mx-1" title="' + title + '"></i>';
+                    icon = '<i class="ti ti-package mx-1" title="' + title + '"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');
@@ -120,9 +120,14 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     }
 
     #[Override]
-    protected static function getUsers(string $text): array
+    protected static function getUsers(string $text, array $options): array
     {
-        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
+        $right = 'all';
+        if (isset($options['right_for_users'])) {
+            $right = $options['right_for_users'];
+        }
+
+        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, 0, self::LIMIT);
         $users_items = [];
         foreach ($users as $user) {
             $new_key = 'users_id-' . $user['id'];
@@ -137,18 +142,18 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     }
 
     #[Override]
-    public static function fetchValues(string $text = ""): array
+    public static function fetchValues(string $text = "", array $options = []): array
     {
         $possible_rights = [];
 
         // Add users if enabled
-        if (self::isTypeEnabled(User::getType())) {
-            $possible_rights[User::getType()] = self::getUsers($text);
+        if (self::isTypeEnabled(User::getType(), $options)) {
+            $possible_rights[User::getType()] = self::getUsers($text, $options);
         }
 
         // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType())) {
-            $possible_rights[Group::getType()] = self::getGroups($text);
+        if (self::isTypeEnabled(Group::getType(), $options)) {
+            $possible_rights[Group::getType()] = self::getGroups($text, $options);
         }
 
         // Add suppliers if enabled

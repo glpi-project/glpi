@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,19 @@
 
 namespace Glpi\Session;
 
-final readonly class SessionInfo
+use Profile;
+
+final class SessionInfo
 {
+    private ?Profile $profile = null;
+    private ?array $rights = null;
+
     public function __construct(
         private int $user_id = 0,
         private array $group_ids = [],
         private int $profile_id = 0,
+        /** @var int[] $entities_ids */
+        private array $active_entities_ids = [],
     ) {
     }
 
@@ -57,5 +64,73 @@ final readonly class SessionInfo
     public function getProfileId(): int
     {
         return $this->profile_id;
+    }
+
+    /** @return int[] */
+    public function getActiveEntitiesIds(): array
+    {
+        return $this->active_entities_ids;
+    }
+
+    public function hasRight(string $right, int $action): bool
+    {
+        $rights = $this->getRights();
+
+        if (!isset($rights[$right])) {
+            return false;
+        }
+
+        return ((int) $rights[$right] & $action) > 0;
+    }
+
+    public function hasAnyRights(string $right, array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if ($this->hasRight($right, $action)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasAllRights(string $right, array $actions): bool
+    {
+        foreach ($actions as $action) {
+            if (!$this->hasRight($right, $action)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getProfile(): ?Profile
+    {
+        if ($this->profile_id === 0) {
+            return null;
+        }
+
+        if ($this->profile === null) {
+            $profile = Profile::getById($this->profile_id);
+            if (!$profile) {
+                return null;
+            }
+
+            $this->profile = $profile;
+        }
+
+        return $this->profile;
+    }
+
+    private function getRights(): array
+    {
+        if ($this->rights === null) {
+            $profile = $this->getProfile();
+            $profile->cleanProfile();
+            $this->rights = $profile->fields;
+        }
+
+        return $this->rights;
     }
 }

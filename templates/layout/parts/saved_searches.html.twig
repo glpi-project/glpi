@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -80,11 +80,11 @@
       </ul>
       <div class="saved-searches-panel-content tab-content">
          <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane show active" id="itemtype-filtered">
-            <i class="fas fa-spinner fa-spin m-3"></i>
+             <span class="spinner-border m-3" role="status" aria-hidden="true"></span>
          </div>
 
          <div class="list-group list-group-flush list-group-hoverable saved-searches-panel-lists tab-pane" id="all-savedsearches">
-            <i class="fas fa-spinner fa-spin m-3"></i>
+             <span class="spinner-border m-3" role="status" aria-hidden="true"></span>
          </div>
       </div>
    </div>
@@ -95,7 +95,7 @@
                 placeholder="{{ __('Filter list') }}" />
          <span class="input-group-text">
             <a href="#" class="link-secondary clear-text" role="button" title="Clear search">
-               <i class="ti ti-x fa-xs"></i>
+               <i class="ti ti-x fs-5"></i>
             </a>
          </span>
       </div>
@@ -147,18 +147,19 @@ $(function() {
       var line = $(this).closest('.search-line');
       var list = line.closest('.saved-searches-panel-lists');
       var id   = line.data('id');
-      var set  = $(this).hasClass('fas') ? 0 : 1;
+      var to_set_default  = $(this).hasClass('ti-star-filled') ? 0 : 1;
 
+      // Make all mark default icons unmarked
       list.find(".search-line .mark-default")
-          .removeClass('fas')
-          .addClass('far')
+          .removeClass('ti-star-filled')
+          .addClass('ti-star')
           .parent()
             .addClass('list-item-actions');
 
-      if (set) {
+      if (to_set_default) {
          $(this)
-            .removeClass('far')
-            .addClass('fas')
+            .removeClass('ti-star')
+            .addClass('ti-star-filled')
             .parent()
                .removeClass('list-item-actions');
       }
@@ -167,7 +168,7 @@ $(function() {
          url: CFG_GLPI.root_doc + '/ajax/savedsearch.php',
          type: 'GET',
          data: {
-            mark_default: set,
+            mark_default: to_set_default,
             id: id,
          }
       });

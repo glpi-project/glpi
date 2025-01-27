@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -109,11 +109,11 @@
 
                <div class="validation-footer">
                   <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-                     <i class="fas fa-thumbs-up"></i>
+                     <i class="ti ti-thumb-up"></i>
                      <span class="validation-label">{{ __('Approve') }}</span>
                   </button>
                   <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
-                     <i class="fas fa-thumbs-down"></i>
+                     <i class="ti ti-thumb-down"></i>
                      <span class="validation-label">{{ __('Refuse') }}</span>
                   </button>
                </div>
@@ -161,11 +161,11 @@
 
          <div class="validation-footer">
             <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
-               <i class="fas fa-thumbs-up"></i>
+               <i class="ti ti-thumb-up"></i>
                <span class="validation-label">{{ __('Approve') }}</span>
             </button>
             <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
-               <i class="fas fa-thumbs-down"></i>
+               <i class="ti ti-thumb-down"></i>
                <span class="validation-label">{{ __('Refuse') }}</span>
             </button>
          </div>
@@ -271,20 +271,20 @@
             <div class="d-flex justify-content-center card-footer">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">
-                     <i class="fas fa-plus"></i>
+                     <i class="ti ti-plus"></i>
                      <span>{{ _x('button', 'Add') }}</span>
                   </button>
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="far fa-save"></i>
+                     <i class="ti ti-device-floppy"></i>
                      <span>{{ _x('button', 'Save') }}</span>
                   </button>
 
                   {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="fas fa-trash-alt"></i>
+                        <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% endif %}

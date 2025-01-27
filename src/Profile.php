@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,9 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Form\Form;
+use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Session\SessionInfo;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
@@ -148,6 +151,7 @@ class Profile extends CommonDBTM
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab('Profile_User', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
+
         return $ong;
     }
 
@@ -158,10 +162,11 @@ class Profile extends CommonDBTM
                 case self::class:
                     if ($item->fields['interface'] === 'helpdesk') {
                         $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset'); // Helpdesk
-                        $ong[4] = self::createTabEntry(__('Life cycles'));
+                        $ong[4] = self::createTabEntry(__('Helpdesk home'), 0, $item::class, 'ti ti-home');
+                        $ong[5] = self::createTabEntry(__('Life cycles'));
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
-                        $ong[8] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-cog');
-                        $ong[9] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[7] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-cog');
+                        $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
                     } else {
                         $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
                         $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset');
@@ -182,56 +187,34 @@ class Profile extends CommonDBTM
     {
         if ($item::class === self::class) {
             $item->cleanProfile();
-            switch ($tabnum) {
-                case 2:
-                    $item->showFormAsset();
-                    break;
-
-                case 3:
-                    if ($item->fields['interface'] === 'helpdesk') {
-                        $item->showFormTrackingHelpdesk();
-                    } else {
-                        $item->showFormTracking();
-                    }
-                    break;
-
-                case 4:
-                    if ($item->fields['interface'] === 'helpdesk') {
-                        $item->showFormLifeCycleHelpdesk();
-                    } else {
-                        $item->showFormLifeCycle();
-                    }
-                    break;
-
-                case 5:
-                    $item->showFormManagement();
-                    break;
-
-                case 6:
-                    if ($item->fields['interface'] === 'helpdesk') {
-                        $item->showFormToolsHelpdesk();
-                    } else {
-                        $item->showFormTools();
-                    }
-                    break;
-
-                case 7:
-                    $item->showFormAdmin();
-                    break;
-
-                case 8:
-                    if ($item->fields['interface'] === 'helpdesk') {
-                        $item->showFormSetupHelpdesk();
-                    } else {
-                        $item->showFormSetup();
-                    }
-                    break;
-
-                case 9:
-                    $item->showFormSecurity();
-                    break;
+            if ($item->fields['interface'] === 'helpdesk') {
+                $ret = match ((int) $tabnum) {
+                    2 => $item->showFormAsset(),
+                    3 => $item->showFormTrackingHelpdesk(),
+                    4 => $item->showHelpdeskHomeConfig(),
+                    5 => $item->showFormLifeCycleHelpdesk(),
+                    6 => $item->showFormToolsHelpdesk(),
+                    7 => $item->showFormSetupHelpdesk(),
+                    8 => $item->showFormSecurity(),
+                    default => false,
+                };
+            } else {
+                $ret = match ((int) $tabnum) {
+                    2 => $item->showFormAsset(),
+                    3 => $item->showFormTracking(),
+                    4 => $item->showFormLifeCycle(),
+                    5 => $item->showFormManagement(),
+                    6 => $item->showFormTools(),
+                    7 => $item->showFormAdmin(),
+                    8 => $item->showFormSetup(),
+                    9 => $item->showFormSecurity(),
+                    default => false,
+                };
             }
+
+            return $ret;
         }
+
         return true;
     }
 
@@ -1141,6 +1124,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(TaskCategory::class, 'central'),
                             $fn_get_rights(State::class, 'central'),
                             $fn_get_rights(ITILFollowupTemplate::class, 'central'),
+                            $fn_get_rights(TaskTemplate::class, 'central'),
                             $fn_get_rights(SolutionTemplate::class, 'central'),
                             $fn_get_rights(ITILValidationTemplate::class, 'central'),
                             $fn_get_rights(Calendar::class, 'central'),
@@ -1323,8 +1307,9 @@ class Profile extends CommonDBTM
             echo "<tr'>";
             echo "<td colspan='4' class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</td></tr>";
@@ -1363,8 +1348,9 @@ class Profile extends CommonDBTM
         if ($canedit) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1417,8 +1403,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1482,8 +1469,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1531,8 +1519,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1664,8 +1653,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1774,8 +1764,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1890,8 +1881,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1943,8 +1935,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -1986,8 +1979,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -2034,8 +2028,9 @@ class Profile extends CommonDBTM
         ) {
             echo "<div class='center'>";
             echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
-            echo Html::submit("<i class='fas fa-save'></i><span>" . _sx('button', 'Save') . "</span>", [
+            echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
+                'icon'  => 'ti ti-device-floppy',
                 'name'  => 'update'
             ]);
             echo "</div>";
@@ -2910,6 +2905,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => DefaultFilter::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '177',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => TaskTemplate::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => TaskTemplate::class,
+            'rightname'          => TaskTemplate::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => TaskTemplate::$rightname]
             ]
         ];
 
@@ -4370,6 +4379,25 @@ class Profile extends CommonDBTM
         if ($this->isLastSuperAdminProfile()) {
             return false;
         }
+
+        return true;
+    }
+
+    private function showHelpdeskHomeConfig(): bool
+    {
+        // Load tiles of the current profile
+        $tiles_manager = new TilesManager();
+        $tiles = $tiles_manager->getTiles(new SessionInfo(
+            profile_id: $this->getID(),
+        ), check_availability: false);
+
+        // Render content
+        $twig = TemplateRenderer::getInstance();
+        $twig->display('pages/admin/helpdesk_home_config.html.twig', [
+            'tiles_manager' => $tiles_manager,
+            'tiles' => $tiles,
+            'profile_id' => $this->getID(),
+        ]);
 
         return true;
     }

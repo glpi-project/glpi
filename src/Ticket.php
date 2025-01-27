@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -138,10 +138,7 @@ class Ticket extends CommonITILObject
 
     public function canAssign()
     {
-        if (
-            isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
-            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
-        ) {
+        if ($this->isDeleted() || (!$this->isNewItem() && $this->isClosed())) {
             return false;
         }
         return Session::haveRight(static::$rightname, self::ASSIGN);
@@ -1474,8 +1471,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
@@ -1782,8 +1779,8 @@ class Ticket extends CommonITILObject
         $projects_ids = $this->input['_projects_id'] ?? [];
         foreach ($projects_ids as $projects_id) {
             if ($projects_id) {
-                $item_project = new Item_Project();
-                $item_project->add([
+                $itil_project = new Itil_Project();
+                $itil_project->add([
                     'projects_id' => $projects_id,
                     'itemtype'   => Ticket::class,
                     'items_id'   => $this->getID(),
@@ -2105,34 +2102,34 @@ class Ticket extends CommonITILObject
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
-                 = "<i class='fa-fw ti ti-git-merge'></i>" .
+                 = "<i class='ti ti-git-merge'></i>" .
                  __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='fa-fw fas fa-plus'></i>" .
+                = "<i class='ti ti-plus'></i>" .
                  _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='fa-fw $icon'></i>" .
+                = "<i class='$icon'></i>" .
                  __s('Approval request');
             }
 
@@ -2142,16 +2139,16 @@ class Ticket extends CommonITILObject
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='fa-fw ti ti-user'></i>" . __s('Add an actor');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                        = "<i class='fa-fw fas fa-link'></i>" .
+                        = "<i class='ti ti-link'></i>" .
                         _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                        = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
+                        = "<i class='" . Contract::getIcon() . "'></i>" .
                         _sx('button', 'Add contract');
                 }
 
@@ -2160,7 +2157,7 @@ class Ticket extends CommonITILObject
 
             if (self::canUpdate()) {
                 $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-                = "<i class='fa-fw fas fa-check'></i>" .
+                = "<i class='ti ti-check'></i>" .
                 __s("Resolve selected tickets");
             }
         }
@@ -3135,6 +3132,24 @@ JAVASCRIPT;
             }
         }
 
+        $tab[] = [
+            'id'                 => '111',
+            'table'              => ProjectTask::getTable(),
+            'field'              => 'name',
+            'name'               => ProjectTask::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => ProjectTask_Ticket::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
@@ -3487,6 +3502,48 @@ JAVASCRIPT;
     }
 
 
+    /**
+     * Check if the category is valid for the given type and entity.
+     *
+     * @param array $input An associative array containing 'itilcategories_id', 'type', and 'entities_id'.
+     *
+     * @return bool
+     */
+    public static function isCategoryValid(array $input): bool
+    {
+        $cat = new ITILCategory();
+        if ($cat->getFromDB($input['itilcategories_id'])) {
+            switch ($input['type']) {
+                case self::INCIDENT_TYPE:
+                    if (!$cat->fields['is_incident']) {
+                        return false;
+                    }
+                    break;
+
+                case self::DEMAND_TYPE:
+                    if (!$cat->fields['is_request']) {
+                        return false;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            // Check category / entity validity
+            if (
+                $cat->fields['entities_id'] != $input['entities_id']
+                && !(
+                    $cat->isRecursive()
+                    && in_array($input['entities_id'], getSonsOf('glpi_entities', $cat->fields['entities_id']))
+                )
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public function showForm($ID, array $options = [])
     {
        // show full create form only to tech users
@@ -3500,13 +3557,16 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
+        $initial_creation = static::isNewID($ID) && !$this->hasSavedInput();
+
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
         }
 
-        if (!$ID) {
+        if ($initial_creation) {
+            // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
@@ -3588,31 +3648,12 @@ JAVASCRIPT;
         }
 
         // Check category / type validity
-        if ($options['itilcategories_id']) {
-            $cat = new ITILCategory();
-            if ($cat->getFromDB($options['itilcategories_id'])) {
-                switch ($options['type']) {
-                    case self::INCIDENT_TYPE:
-                        if (!$cat->getField('is_incident')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    case self::DEMAND_TYPE:
-                        if (!$cat->getField('is_request')) {
-                            $options['itilcategories_id'] = 0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                // Check category / entity validity
-                if (!in_array($cat->fields['entities_id'], getSonsOf('glpi_entities', $options['entities_id']))) {
-                    $options['itilcategories_id'] = 0;
-                    $this->fields['itilcategories_id'] = 0;
-                }
-            }
+        if (
+            $options['itilcategories_id']
+            && !$this::isCategoryValid($options)
+        ) {
+            $options['itilcategories_id'] = 0;
+            $this->fields['itilcategories_id'] = 0;
         }
 
         if ($options['type'] <= 0) {
@@ -3716,7 +3757,6 @@ JAVASCRIPT;
             'canpriority'               => $canpriority,
             'canassign'                 => $canassign,
             'canassigntome'             => $canassigntome,
-            'load_kb_sol'               => $options['load_kb_sol'] ?? 0,
             'userentities'              => $userentities,
             'cancreateuser'             => $cancreateuser,
             'canreadnote'               => Session::haveRight('entity', READNOTE),
@@ -4167,8 +4207,8 @@ JAVASCRIPT;
 
                         $options['criteria'][2]['field']      = 12; // validation aprobator
                         $options['criteria'][2]['searchtype'] = 'equals';
-                        $options['criteria'][2]['value']      = 'old';
-                        $options['criteria'][2]['link']       = 'AND NOT';
+                        $options['criteria'][2]['value']      = 'notold';
+                        $options['criteria'][2]['link']       = 'AND';
 
                         $options['criteria'][3]['field']      = 52; // global validation status
                         $options['criteria'][3]['searchtype'] = 'equals';
@@ -4279,13 +4319,13 @@ JAVASCRIPT;
                                 'link'     => 'AND',
                                 'criteria' => [
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'morethan',
                                         'value'       => 'NOW',
                                         'link'        => 'OR'
                                     ],
                                     [
-                                        'field'       => 72, // end_date
+                                        'field'       => 75, // satisfaction survey end_date
                                         'searchtype'  => 'empty',
                                         'value'       => 'NULL',
                                         'link'        => 'OR'
@@ -4406,11 +4446,11 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
                                         htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
                                         $d['alternative_email'];
                                 }
                             }
@@ -4421,7 +4461,7 @@ JAVASCRIPT;
                             && count($job->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
@@ -4616,10 +4656,15 @@ JAVASCRIPT;
             $opt['criteria'][1]['criteria'][3]['link']       = 'OR';
             $opt['criteria'][1]['link']       = 'AND';
 
+            $opt['criteria'][2]['field']      = 12; // ticket status
+            $opt['criteria'][2]['searchtype'] = 'equals';
+            $opt['criteria'][2]['value']      = 'notold';
+            $opt['criteria'][2]['link']       = 'AND';
+
             $twig_params['items'][] = [
                 'link'    => self::getSearchURL() . "?" . Toolbox::append_params($opt),
                 'text'    => __('Tickets waiting for your approval'),
-                'icon'    => 'fas fa-check',
+                'icon'    => 'ti ti-check',
                 'count'   => $number_waitapproval
             ];
         }
@@ -4639,7 +4684,7 @@ JAVASCRIPT;
         $twig_params['items'][] = [
             'link'   => self::getSearchURL() . "?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
-            'icon'   => 'fas fa-trash bg-red-lt',
+            'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted
         ];
 
@@ -4756,21 +4801,13 @@ JAVASCRIPT;
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-                    echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __s('Last tickets') . "</th></tr>";
-                    echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __s('Child groups') . "&nbsp;";
-                    Dropdown::showYesNo(
-                        'tree',
-                        $tree,
-                        -1,
-                        ['on_change' => 'reloadTab("start=0&tree="+this.value)']
-                    );
+                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                        'tree' => $tree
+                    ]);
                 } else {
                     $tree = 0;
                 }
-                echo "</td></tr></table>";
                 break;
         }
         Item_Ticket::showListForItem($item, $withtemplate, $options);
@@ -5378,19 +5415,19 @@ JAVASCRIPT;
 
         if ($sla->getFromDB($this->fields['slas_id_tto'])) {
             $sla_tto_link = "<a href='" . $sla->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
         if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
             $sla_ttr_link = "<a href='" . $sla->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
         if ($ola->getFromDB($this->fields['olas_id_tto'])) {
             $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
         }
         if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
             $ola_ttr_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='fas fa-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
         }
 
         $dates = [

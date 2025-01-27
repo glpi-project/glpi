@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -283,7 +283,7 @@ class Provider
                 break;
 
             case 'late':
-                $params['icon']  = "far fa-clock";
+                $params['icon']  = "ti ti-clock";
                 $params['label']  = __("Late tickets");
                 $search_criteria = [
                     $notold,
@@ -325,7 +325,7 @@ class Provider
                 break;
 
             case 'waiting_validation':
-                $params['icon']  = "far fa-eye";
+                $params['icon']  = "ti ti-eye";
                 $params['label'] = __("Tickets waiting for validation");
                 $search_criteria = [
                     [
@@ -377,7 +377,7 @@ class Provider
             case 'waiting':
                 if (!$skip) {
                     $status = Ticket::WAITING;
-                    $params['icon']  = "fas fa-pause-circle";
+                    $params['icon']  = "ti ti-player-pause-filled";
                     $params['label'] = __("Pending tickets");
                     $skip = true;
                 }
@@ -385,7 +385,7 @@ class Provider
             case 'assigned':
                 if (!$skip) {
                     $status = Ticket::ASSIGNED;
-                    $params['icon']  = "fas fa-users";
+                    $params['icon']  = "ti ti-users";
                     $params['label'] = __("Assigned tickets");
                     $skip = true;
                 }
@@ -393,7 +393,7 @@ class Provider
             case 'planned':
                 if (!$skip) {
                     $status = Ticket::PLANNED;
-                    $params['icon']  = "fas fa-calendar-check";
+                    $params['icon']  = "ti ti-calendar";
                     $params['label'] = __("Planned tickets");
                     $skip = true;
                 }
@@ -401,7 +401,7 @@ class Provider
             case 'solved':
                 if (!$skip) {
                     $status = Ticket::SOLVED;
-                    $params['icon']  = "far fa-check-square";
+                    $params['icon']  = "ti ti-checkbox";
                     $params['label'] = __("Solved tickets");
                     $skip = true;
                 }
@@ -409,7 +409,7 @@ class Provider
             case 'closed':
                 if (!$skip) {
                     $status = Ticket::CLOSED;
-                    $params['icon']  = "fas fa-archive";
+                    $params['icon']  = "ti ti-archive";
                     $params['label'] = __("Closed tickets");
                     $skip = true;
                 }
@@ -470,7 +470,7 @@ class Provider
 
         $default_params = [
             'label'         => "",
-            'icon'          => 'fas fa-stopwatch',
+            'icon'          => 'ti ti-stopwatch',
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
@@ -639,7 +639,7 @@ class Provider
 
         $default_params = [
             'label'         => "",
-            'icon'          => 'fas fa-stopwatch',
+            'icon'          => 'ti ti-stopwatch',
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
@@ -1440,6 +1440,7 @@ class Provider
         $n_fields = [
             "$ug_table.firstname as first",
             "$ug_table.realname as second",
+            "$ug_table.name as username"
         ];
 
         $where = [
@@ -1543,7 +1544,7 @@ class Provider
             $s_params['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
                 'number' => $result['nb_tickets'],
-                'label'  => $result['first'] . " " . ($result['second'] ?? ""),
+                'label'  => formatUserName($result['actor_id'], $result['username'], $result['second'], $result['first']),
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
         }
@@ -1570,7 +1571,7 @@ class Provider
         $DBread = DBConnection::getReadConnection();
         $default_params = [
             'label'         => "",
-            'icon'          => "fas fa-stopwatch",
+            'icon'          => "ti ti-stopwatch",
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);

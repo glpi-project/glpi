@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -63,6 +63,22 @@
                                 title="{{ _x('button', 'Delete permanently') }}"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
                            <i class="ti ti-trash"></i>
+                        </button>
+                     </form>
+                  {% endif %}
+
+                  {% if document['item']['_can_edit'] %}
+                    {% set blacklisted_class    = document['item']['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_title    = document['item']['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
+                    {% set blacklisted_value    = document['item']['is_blacklisted'] ? 0 : 1 %}
+                     <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
+                        <input type="hidden" name="id" value="{{ document['item']['id'] }}">
+                        <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
+                                title="{{ blacklisted_title }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top">
+                           <i class="ti ti-ban {{ blacklisted_class }}"></i>
                         </button>
                      </form>
                   {% endif %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -853,10 +853,8 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getFormURLWithID($id = 0, $full = true)
     {
-
-        $itemtype = get_called_class();
-        $link     = $itemtype::getFormURL($full);
-        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . $id;
+        $link     = static::getFormURL($full);
+        $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . ((int) $id);
         return $link;
     }
 
@@ -1065,7 +1063,7 @@ class CommonGLPI implements CommonGLPIInterface
             $list = "<a href='$glpilisturl' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='ti ti-list-search fa-lg'></i>
+                  <i class='ti ti-list-search fs-2'></i>
                </a>";
             $list_shown = false;
 
@@ -1077,7 +1075,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<a href='$cleantarget?id=$first$extraparamhtml'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fa-lg ti ti-chevrons-left'></i>
+                 <i class='fs-2 ti ti-chevrons-left'></i>
               </a>";
 
             if (!$list_shown && $prev < 0) {
@@ -1089,7 +1087,7 @@ class CommonGLPI implements CommonGLPIInterface
                  id='previouspage'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fa-lg ti ti-chevron-left'></i>
+                 <i class='fs-2 ti ti-chevron-left'></i>
               </a>";
             if ($prev >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1147,7 +1145,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-            "<i class='fa-lg ti ti-chevron-right'></i>
+            "<i class='fs-2 ti ti-chevron-right'></i>
                 </a>";
             if ($next >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1164,7 +1162,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-            "<i class='fa-lg ti ti-chevrons-right'></i></a>";
+            "<i class='fs-2 ti ti-chevrons-right'></i></a>";
 
             echo "</div>";
 
@@ -1181,10 +1179,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $name = '';
         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
-            $name = $this->getName();
-            if ($_SESSION['glpiis_ids_visible'] || empty($name)) {
-                $name = sprintf(__('%1$s - ID %2$d'), $name, $this->fields['id']);
-            }
+            $name = sprintf(__('%1$s - ID %2$d'), $this->getName(), $this->fields['id']);
         }
 
         return $name;

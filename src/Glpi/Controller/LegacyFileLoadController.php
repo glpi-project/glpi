@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -67,7 +67,6 @@ final class LegacyFileLoadController implements PublicService
         $this->getRequest()->attributes->set('_glpi_ajax', true);
 
         \Session::setAjax();
-        \Html::setAjax();
     }
 
     private function getRequest(): ?Request

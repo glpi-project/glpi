@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,8 +48,8 @@ class NotificationMailingSettingTest extends DbTestCase
 
     public function testGetTypeName()
     {
-        $this->assertSame('Email followups configuration', \NotificationMailingSetting::getTypeName());
-        $this->assertSame('Email followups configuration', \NotificationMailingSetting::getTypeName(10));
+        $this->assertSame('Email notifications configuration', \NotificationMailingSetting::getTypeName());
+        $this->assertSame('Email notifications configuration', \NotificationMailingSetting::getTypeName(10));
     }
 
     public function testDefineTabs()
@@ -83,7 +83,7 @@ class NotificationMailingSettingTest extends DbTestCase
     public function testGetEnableLabel()
     {
         $settings = new \NotificationMailingSetting();
-        $this->assertSame('Enable followups via email', $settings->getEnableLabel());
+        $this->assertSame('Enable email notifications', $settings->getEnableLabel());
     }
 
     public function testGetMode()

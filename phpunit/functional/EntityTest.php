@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,6 +43,7 @@ use ITILSolution;
 use NotificationTarget;
 use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Profile_User;
 use Ticket;
 use Ticket_Contract;
@@ -283,9 +284,7 @@ class EntityTest extends DbTestCase
         $this->runChangeEntityParent();
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testChangeEntityParentCached()
     {
         //run with cache
@@ -302,9 +301,7 @@ class EntityTest extends DbTestCase
         $this->doTestMoveParentEntity(false);
     }
 
-    /**
-     * @tags cache
-     */
+    #[Group('cache')]
     public function testMoveParentEntityCached(): void
     {
         $this->doTestMoveParentEntity(true);
@@ -639,7 +636,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('getUsedConfigProvider')]
+    #[DataProvider('getUsedConfigProvider')]
     public function testGetUsedConfig(
         array $root_values,
         array $child_values,
@@ -762,7 +759,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('customCssProvider')]
+    #[DataProvider('customCssProvider')]
     public function testGetCustomCssTag(
         int $entity_id,
         int $root_enable_custom_css,
@@ -868,7 +865,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('testAnonymizeSettingProvider')]
+    #[DataProvider('testAnonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,
@@ -1391,7 +1388,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('entityTreeProvider')]
+    #[DataProvider('entityTreeProvider')]
     public function testGetEntityTree(int $entity_id, array $result): void
     {
         $this->login();

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql|null $DB
+ * @var array $CFG_GLPI
+ */
+global $DB, $CFG_GLPI;
+
 if (PHP_SAPI === 'cli') {
     // Check the resources state before trying to instanciate the Kernel.
     // It must be done here as this check must be done even when the Kernel
@@ -43,13 +49,45 @@ if (PHP_SAPI === 'cli') {
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
     $kernel = new \Glpi\Kernel\Kernel();
-    $kernel->loadCommonGlobalConfig();
-}
+    $kernel->boot();
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+    // Handle the `--debug` argument
+    $debug = array_search('--debug', $_SERVER['argv']);
+    if ($debug) {
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        unset($_SERVER['argv'][$debug]);
+        $_SERVER['argv'] = array_values($_SERVER['argv']);
+        $_SERVER['argc']--;
+    }
+
+    if ($CFG_GLPI['maintenance_mode'] ?? false) {
+        echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
+        exit();
+    }
+
+    if (!($DB instanceof DBmysql)) {
+        echo sprintf(
+            'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
+            GLPI_CONFIG_DIR . '/config_db.php'
+        ) . PHP_EOL;
+        exit();
+    }
+
+    if (!$DB->connected) {
+        echo 'ERROR: The connection to the SQL server could not be established. Please check your configuration.' . PHP_EOL;
+        exit();
+    }
+
+    if (!Config::isLegacyConfigurationLoaded()) {
+        echo 'ERROR: Unable to load the GLPI configuration from the database.' . PHP_EOL;
+        exit();
+    }
+
+    if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
+        exit();
+    }
+}
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);

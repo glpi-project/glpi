@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,31 +31,191 @@
  * ---------------------------------------------------------------------
  */
 
-[data-glpi-specific-values-extra-field-container] {
-    [data-glpi-specific-values-extra-field-item] {
-        padding-left: 1px;
+[data-glpi-associated-items-specific-values-extra-field] {
+    [data-glpi-associated-items-specific-values-extra-field-container] {
+        [data-glpi-associated-items-specific-values-extra-field-item] {
+            padding-left: 1px;
 
-        >span:last-of-type {
-            flex-grow: 1;
+            >span:last-of-type {
+                flex-grow: 1;
 
-            .select2-container {
-                width: 100% !important;
+                .select2-container {
+                    width: 100% !important;
+                }
+            }
+
+            &:last-of-type {
+                [data-glpi-remove-associated-item-button] {
+                    border-bottom-right-radius: var(--tblr-btn-border-radius) !important;
+                }
+            }
+
+            &:not(:has([data-glpi-associated-items-items-id-dropdown])) {
+                .select2-container {
+                    width: 100% !important;
+                }
+            }
+        }
+
+        .input-group[data-glpi-associated-items-specific-values-extra-field-item] {
+            >span:first-of-type {
+                .select2-selection {
+                    border-top-right-radius: 0 !important;
+                    border-bottom-right-radius: 0 !important;
+                }
+            }
+
+            >span:not(:first-of-type) {
+                .select2-selection {
+                    border-radius: 0 !important;
+                }
             }
         }
     }
 
-    .input-group[data-glpi-specific-values-extra-field-item] {
-        >span:first-of-type {
-            .select2-selection {
-                border-top-right-radius: 0 !important;
-                border-bottom-right-radius: 0 !important;
+    [data-glpi-add-associated-item-button] {
+        position: relative;
+        margin-left: 1px;
+        margin-top: calc(-1 * var(--tblr-border-width));
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+    }
+}
+
+[data-glpi-itildestination-field-configs] {
+    &:not(:has(> [data-glpi-itildestination-field-config]:nth-child(2))) {
+        [data-glpi-itildestination-remove-field-config] {
+            display: none !important;
+        }
+    }
+
+    &:has(> [data-glpi-itildestination-field-config]:nth-child(2)) {
+        &:has([data-glpi-itildestination-remove-field-config]) {
+            [data-glpi-itildestination-field-config] {
+                &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
+                    .select2-selection {
+                        border-top-right-radius: 0 !important;
+                        border-bottom-right-radius: 0 !important;
+                    }
+                }
+
+                &:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none)) {
+                    &:has([data-glpi-itildestination-field-config-display-condition="specific_values"]) {
+                        >div {
+                            &:first-child {
+                                .select2-selection {
+                                    border-top-right-radius: 0 !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [data-glpi-itildestination-field-config] {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+
+        &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
+            &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
+                >div {
+                    &:first-child {
+                        .select2-selection {
+                            border-top-right-radius: 0 !important;
+                            border-bottom-right-radius: 0 !important;
+                        }
+                    }
+                }
             }
         }
 
-        >span:not(:first-of-type) {
-            .select2-selection {
-                border-radius: 0 !important;
+        >div {
+            flex: 1;
+
+            // Fix height issue with multiple select2
+            &:has(.select2-selection--multiple) {
+                >div {
+                    height: 100%;
+
+                    >div.btn-group.btn-group-sm {
+                        height: 100%;
+                    }
+
+                    .select2-container {
+                        height: 100%;
+
+                        .select2-selection {
+                            height: 100%;
+                        }
+                    }
+                }
             }
+        }
+
+        &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
+            >div {
+                &[data-glpi-itildestination-field-config-display-condition] {
+                    margin-left: calc(-1 * var(--tblr-border-width));
+
+                    .select2-selection {
+                        border-top-left-radius: 0 !important;
+                        border-bottom-left-radius: 0 !important;
+                    }
+                }
+            }
+        }
+
+        // Specific layout for associated items
+        &:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none)) {
+            &:has([data-glpi-itildestination-field-config-display-condition="specific_values"]) {
+                >div {
+                    &:first-child {
+                        .select2-selection {
+                            border-bottom-left-radius: 0 !important;
+                            border-bottom-right-radius: 0 !important;
+                        }
+                    }
+                }
+            }
+
+            // Make the strategy select fill the whole line
+            [data-glpi-associated-items-specific-values-extra-field] {
+                flex-basis: 100%;
+                order: 1;
+
+                [data-glpi-associated-items-specific-values-extra-field-item] {
+                    .select2-selection {
+                        border-bottom-right-radius: 0 !important;
+                        border-top-left-radius: 0 !important;
+                    }
+
+                    &:not(:last-of-type) {
+                        .select2-selection {
+                            border-bottom-left-radius: 0 !important;
+                        }
+                    }
+                }
+            }
+
+            [data-glpi-associated-items-specific-values-extra-field-item] {
+                margin-top: calc(-1 * var(--tblr-border-width));
+            }
+        }
+
+        [data-glpi-itildestination-remove-field-config] {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            margin-left: calc(-1 * var(--tblr-border-width));
+        }
+    }
+
+    [data-glpi-itildestination-remove-field-config],
+    [data-glpi-remove-associated-item-button] {
+        &:hover {
+            z-index: 99;
         }
     }
 }

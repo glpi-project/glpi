@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -80,10 +80,6 @@ class CommonAjaxController
             return $this->handleAction($input);
         } catch (\Glpi\Controller\RequestException $e) {
             return $this->errorReponse($e->getHttpCode(), $e->getMessage());
-        } catch (\Throwable $e) {
-            // Log error
-            trigger_error($e->getMessage(), E_USER_WARNING);
-            return $this->errorReponse(500, __('An unexpected error occurred.'));
         }
     }
 
@@ -232,7 +228,7 @@ class CommonAjaxController
         } else {
             // Failed update
             $error = $this->item->formatSessionMessageAfterAction(
-                __("Failed to udpate item")
+                __("Failed to update item")
             );
             return $this->errorReponse(422, $error);
         }

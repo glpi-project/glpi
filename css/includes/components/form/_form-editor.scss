@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,9 +31,38 @@
  * ---------------------------------------------------------------------
  */
 
+@import "form-editor-horizontal-layout";
+
 [data-glpi-form-editor-container]{
     &:not(.initialized) {
         pointer-events: none;
+    }
+
+    &:not([data-glpi-form-editor-sorting]) {
+        [data-glpi-form-editor-question-drag-merge] {
+            position: absolute;
+        }
+    }
+
+    &[data-glpi-form-editor-sorting] {
+        [data-glpi-form-editor-section-blocks] > [data-glpi-form-editor-block] {
+            display: flex;
+            align-items: stretch;
+
+            [data-glpi-form-editor-question-drag-merge] {
+                position: relative;
+                width: 15%;
+            }
+
+            [data-glpi-form-editor-toolbar] {
+                position: absolute;
+                height: 0;
+                width: 0;
+                opacity: 0;
+                visibility: hidden;
+                overflow: hidden;
+            }
+        }
     }
 }
 
@@ -72,6 +101,24 @@
             // Weird chrome only css issue that break select2 dropdown for
             // question type dropdowns...
             display: flex !important;
+        }
+    }
+
+    .fileupload {
+        margin: 0;
+    }
+
+    .only-uploaded-files {
+        .fileupload_info {
+            margin-bottom: 0;
+
+            p:first-child {
+                margin-top: 10px;
+            }
+
+            p:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 }
@@ -159,8 +206,10 @@
         [data-glpi-form-editor-question-extra-details] {
             position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
 
         // Hide tinymce toolbar on inactive questions
@@ -199,7 +248,20 @@
     border: 2px dashed var(--tblr-primary);
     background: rgba(var(--tblr-primary), 0.1);
     opacity: 0.5;
-    height: 70px !important;
+}
+
+[data-glpi-form-editor-section-blocks] {
+    .glpi-form-editor-drag-question-placeholder {
+        margin-bottom: 1rem;
+        height: 70px !important;
+    }
+}
+
+[data-glpi-form-editor-question-drag-merge] {
+    .glpi-form-editor-drag-question-placeholder {
+        height: 100% !important;
+        margin-left: 0.5rem;
+    }
 }
 
 .glpi-form-editor-drag-question-option-placeholder {
@@ -221,7 +283,8 @@
     opacity: 0;
 }
 
-[data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
+[data-glpi-form-editor-question-details],
+[data-glpi-form-editor-comment-details] {
     &:hover {
         .glpi-form-editor-question-handle {
             opacity: 0.7;
@@ -250,7 +313,6 @@
             border-bottom-right-radius: var(--tblr-border-radius);
             padding: 0.5rem;
             padding-bottom: 0;
-            margin-bottom: 0.5rem;
         }
 
         .single-preview-dropdown, .multiple-preview-dropdown {
@@ -259,5 +321,158 @@
                 border-bottom-right-radius: unset;
             }
         }
+
+        div:not([data-glpi-form-editor-selectable-question-options])>[data-glpi-form-selectable-question-option]:last-child {
+            margin-bottom: 0 !important;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-question]) {
+        [data-glpi-form-editor-selectable-question-options] {
+            [data-glpi-form-selectable-question-option]:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
+}
+
+.logic-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-pink-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.question-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-indigo-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-operator-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-teal-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
+}
+
+.value-selector {
+    border: 0 !important;
+    background-color: var(--tblr-yellow-lt) !important;
+}
+
+.visibility-dropdown-card {
+    width: 600px;
+}
+
+[data-glpi-form-editor-block] {
+    margin-bottom: 1rem;
+}
+
+[data-glpi-form-editor-toolbar] {
+    margin-top: 0.5rem;
+}
+
+.question-type-dropdown-group {
+    @include media-breakpoint-up(sm) {
+        display: flex;
+        flex-wrap: wrap;
+
+        &:not(:has(> :nth-child(2).d-none)) {
+            > div:not(:only-child) {
+                &:first-child {
+                    .select2-selection {
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+
+                &:not(:first-child) {
+                    margin-left: calc(-1 * var(--tblr-border-width));
+
+                    .select2-selection {
+                        border-top-left-radius: 0;
+                        border-bottom-left-radius: 0;
+                    }
+                }
+            }
+        }
+
+        &:not(:has(> :nth-child(3).d-none)) {
+            > div:not(:only-child) {
+                &:not(:first-child) {
+                    &:not(:last-child) {
+                        .select2-selection {
+                            border-top-right-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @include media-breakpoint-down(sm) {
+        width: 100%;
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection__rendered > span {
+            margin-right: auto;
+        }
+
+        &:not(:has(> :nth-child(2).d-none)) {
+            > div:not(:only-child) {
+                &:first-child {
+                    .select2-selection {
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                    }
+                }
+
+                &:not(:first-child) {
+                    margin-top: calc(-1 * var(--tblr-border-width));
+
+                    .select2-selection {
+                        border-top-left-radius: 0;
+                        border-top-right-radius: 0;
+                    }
+                }
+            }
+        }
+
+        &:not(:has(> :nth-child(3).d-none)) {
+            > div:not(:only-child) {
+                &:not(:first-child) {
+                    &:not(:last-child) {
+                        .select2-selection {
+                            border-bottom-left-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.question-type-dropdown-group-dropdown-select {
+    width: min-content !important;
+}
+
+// Fix a weird scrolling issue on the form editor where the body scrolls instead of the form editor
+html {
+    // Only apply the overflow hidden on the body when active tab contains the form editor
+    &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
+        overflow: hidden;
     }
 }

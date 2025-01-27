@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +35,9 @@
 namespace Glpi\Kernel;
 
 use GLPI;
-use Glpi\Application\ConfigurationConstants;
-use Glpi\Config\ConfigProviderConsoleExclusiveInterface;
-use Glpi\Config\ConfigProviderWithRequestInterface;
-use Glpi\Config\LegacyConfigProviders;
-use Glpi\Http\PluginsRouterListener;
+use Glpi\Application\SystemConfigurator;
+use Glpi\Http\Listener\PluginsRouterListener;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -56,17 +54,16 @@ final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    private LoggerInterface $logger;
+
     public function __construct(?string $env = null)
     {
-        // Initialize configuration constants.
+        // Initialize system configuration.
         // It must be done after the autoload inclusion that requires some constants to be defined (e.g. GLPI_VERSION).
-        // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence.
-        (new ConfigurationConstants($this->getProjectDir()))->computeConstants($env);
-
-        // TODO: refactor the GLPI class.
-        $glpi = (new GLPI());
-        $glpi->initLogger();
-        $glpi->initErrorHandler();
+        // It must be done before the Kernel boot as some of the define constants must be defined during the boot sequence
+        // and as it initializes the error handler that will catch errors that may happen during the boot sequence.
+        $configurator = new SystemConfigurator($this->getProjectDir(), $env);
+        $this->logger = $configurator->getLogger();
 
         $env = GLPI_ENVIRONMENT_TYPE;
         parent::__construct(
@@ -111,30 +108,17 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
-    public function loadCommonGlobalConfig(): void
+    public function boot(): void
     {
-        $this->boot();
+        $dispatch_postboot = !$this->booted;
 
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderWithRequestInterface) {
-                continue;
-            }
-            $provider->execute();
-        }
-    }
+        parent::boot();
 
-    public function loadCliConsoleOnlyConfig(): void
-    {
-        $this->boot();
+        // Define synthetic logger service
+        $this->container->set('logger', $this->logger);
 
-        /** @var LegacyConfigProviders $providers */
-        $providers = $this->container->get(LegacyConfigProviders::class);
-        foreach ($providers->getProviders() as $provider) {
-            if ($provider instanceof ConfigProviderConsoleExclusiveInterface) {
-                $provider->execute();
-            }
+        if ($dispatch_postboot) {
+            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
     }
 
@@ -143,7 +127,6 @@ final class Kernel extends BaseKernel
         $projectDir = $this->getProjectDir();
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
-        $container->import($projectDir . '/dependency_injection/legacyConfigProviders.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
@@ -236,34 +219,6 @@ final class Kernel extends BaseKernel
                 'The global `$dont_check_maintenance_mode` variable has no effect anymore.',
                 E_USER_WARNING
             );
-        }
-    }
-
-    /**
-     * Send the response and catch any exception that may occurs to forward it to the request error handling.
-     *
-     * It permits to correctly handle errors that may be thrown during the response sending. This will mainly
-     * occurs when handling the GLPI legacy scripts using a streamed response, but may also rarely occurs
-     * in other contexts.
-     *
-     * @param Request $request
-     * @param Response $response
-     */
-    public function sendResponse(Request $request, Response $response): void
-    {
-        try {
-            $response->send();
-        } catch (\Throwable $exception) {
-            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
-
-            $dispatcher = $this->container->get('event_dispatcher');
-            $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
-
-            if ($event->hasResponse()) {
-                $event->getResponse()->send();
-            } else {
-                throw $exception;
-            }
         }
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,16 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
 {
+    /**
+     * Indicates whether the custom assets autoloader is registered.
+     * @var boolean
+     */
+    private $is_asset_autoloader_registered = false;
+
     public function setUp(): void
     {
         global $DB;
@@ -107,11 +114,11 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Generic method to test if an added object is corretly inserted
+     * Assert added object is inserted as expected
      *
      * @param  CommonDBTM $object The object to test
-     * @param  int    $id     The id of added object
-     * @param  array  $input  the input used for add object (optionnal)
+     * @param  int        $id     The id of added object
+     * @param  array      $input  the input used for add object (optionnal)
      *
      * @return void
      */
@@ -127,8 +134,9 @@ class DbTestCase extends \GLPITestCase
                     $v,
                     $object->fields[$k],
                     "
-                    '$k' key current value '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
-                    is not equal to '$v' (" . gettype($v) . ")"
+                    Object not created as expected
+                    field '$k' value is '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
+                    but was expected to be '$v' (" . gettype($v) . ")"
                 );
             }
         }
@@ -190,11 +198,12 @@ class DbTestCase extends \GLPITestCase
     /**
      * Create an item of the given class
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
      *
-     * @return CommonDBTM
+     * @return T
      */
     protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
     {
@@ -358,10 +367,22 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
+     * Register the custom asset autoloader. This autoloader is not available by default in the testing context.
+     */
+    protected function registerAssetsAutoloader(): void
+    {
+        if (!$this->is_asset_autoloader_registered) {
+            AssetDefinitionManager::getInstance()->registerAutoload();
+            $this->is_asset_autoloader_registered = true;
+        }
+    }
+
+    /**
      * Initialize a definition.
      *
-     * @param string $system_name
+     * @param ?string $system_name
      * @param array $capacities
+     * @param ?array $profiles
      *
      * @return AssetDefinition
      */
@@ -370,6 +391,8 @@ class DbTestCase extends \GLPITestCase
         array $capacities = [],
         ?array $profiles = null,
     ): AssetDefinition {
+        $this->registerAssetsAutoloader();
+
         if ($profiles === null) {
             // Initialize with all standard rights for super admin profile
             $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
@@ -385,8 +408,9 @@ class DbTestCase extends \GLPITestCase
                 'is_active'   => true,
                 'capacities'  => $capacities,
                 'profiles'    => $profiles,
+                'fields_display' => [],
             ],
-            skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
         $this->assertEquals(
             $capacities,
@@ -397,19 +421,39 @@ class DbTestCase extends \GLPITestCase
             $this->callPrivateMethod($definition, 'getDecodedProfilesField')
         );
 
-        // Clear definition cache
-        $rc = new ReflectionClass(\Glpi\CustomObject\AbstractDefinitionManager::class);
-        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), []);
+        return $definition;
+    }
 
-        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryCollectionClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteModelDictionaryClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryCollectionClass', $definition);
-        $this->callPrivateMethod($manager, 'loadConcreteTypeDictionaryClass', $definition);
-        $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
+    /**
+     * Initialize a definition.
+     *
+     * @param ?string $system_name
+     * @param ?array $profiles
+     *
+     * @return DropdownDefinition
+     */
+    protected function initDropdownDefinition(
+        ?string $system_name = null,
+        ?array $profiles = null,
+    ): DropdownDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
+        $definition = $this->createItem(
+            DropdownDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'profiles'    => $profiles,
+            ],
+            skip_fields: ['profiles'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->assertEquals($profiles, $this->callPrivateMethod($definition, 'getDecodedProfilesField'));
 
         return $definition;
     }
@@ -472,14 +516,6 @@ class DbTestCase extends \GLPITestCase
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         );
 
-        // Force boostrap to trigger methods such as "onClassBootstrap"
-        $manager = AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod(
-            $manager,
-            'boostrapConcreteClass',
-            $definition
-        );
-
         return $definition;
     }
 
@@ -518,14 +554,6 @@ class DbTestCase extends \GLPITestCase
         $this->assertNotContains(
             $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        );
-
-        // Force boostrap to trigger methods such as "onClassBootstrap"
-        $manager = AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod(
-            $manager,
-            'boostrapConcreteClass',
-            $definition
         );
 
         return $definition;

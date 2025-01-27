@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,9 @@ namespace Glpi\Dashboard;
 use Config;
 use Dropdown;
 use GLPI;
-use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
@@ -153,7 +153,7 @@ class Grid
 
             $card_html    = <<<HTML
             <div class="loading-card">
-               <i class="fas fa-spinner fa-spin fa-3x"></i>
+               <span class="spinner-border spinner-border" role="status" aria-hidden="true"></span>
             </div>
 HTML;
             $this->addGridItem(
@@ -317,7 +317,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary fas fa-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
@@ -388,7 +388,7 @@ HTML;
                 <div class='filters_toolbar m-2 {{ is_placeholder ? "d-none" : "" }}'>
                     <span class='filters'></span>
                     <span class='filters-control'>
-                        <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
+                        <i class="btn btn-sm btn-ghost-secondary ti ti-plus plus-sign add-filter">
                             <span class='add-filter-lbl'>{{ messages['add_filter'] }}</span>
                         </i>
                     </span>
@@ -396,7 +396,7 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fa-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
@@ -421,64 +421,66 @@ HTML;
 TWIG, $params);
         }
 
-       // display the grid
-        $html = <<<HTML
-      <div class="dashboard {$embed_class} {$mini_class}" id="dashboard-{$rand}">
-         <span class='glpi_logo'></span>
-         $toolbars
-         $filters
-         $grid_guide
-         <div class="grid-stack grid-stack-{$this->grid_cols}"
-            id="grid-stack-$rand"
-            gs-column="{$this->grid_cols}"
-            gs-min-row="{$this->grid_rows}"
-            style="width: 100%">
-            $gridstack_items
-         </div>
-      </div>
-HTML;
-
-        if ($mini) {
-            $html = "<div class='card mb-4 d-none d-md-block dashboard-card'>
-            <div class='card-body p-2'>
-               $html
-            </div>
-         </div>";
-        }
-
         $ajax_cards = GLPI_AJAX_DASHBOARD;
         $cache_key  = sha1($_SESSION['glpiactiveentities_string'] ?? "");
 
-        $js_params = json_encode([
-            'current'       => $this->current,
-            'cols'          => $this->grid_cols,
-            'rows'          => $this->grid_rows,
-            'cell_margin'   => $this->cell_margin,
-            'rand'          => $rand,
-            'ajax_cards'    => $ajax_cards,
-            'all_cards'     => $cards,
-            'all_widgets'   => $all_widgets,
-            'context'       => $this->context,
-            'cache_key'     => $cache_key,
-            'embed'         => self::$embed,
-            'token'         => $token,
-            'entities_id'   => $_SESSION['glpiactive_entity'],
-            'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
-        ]);
-        $js = <<<JAVASCRIPT
-      $(function () {
-        // Sometimes GLPIDashboard is undefined and it messes with e2e tests
-        // by throwing a blocking error
-        // TODO: investigate why this happens
-        if (typeof GLPIDashboard === 'undefined') {
-          return;
-        }
-        new GLPIDashboard({$js_params})
-      });
-JAVASCRIPT;
-        $js = Html::scriptBlock($js);
-
-        echo $html . $js;
+        $twig_params = [
+            'mini' => $mini,
+            'embed_class' => $embed_class,
+            'mini_class' => $mini_class,
+            'toolbars' => $toolbars,
+            'filters' => $filters,
+            'grid_guide' => $grid_guide,
+            'gridstack_items' => $gridstack_items,
+            'rand' => $rand,
+            'grid_cols' => $this->grid_cols,
+            'grid_rows' => $this->grid_rows,
+            'js_params' => [
+                'current'       => $this->current,
+                'cols'          => $this->grid_cols,
+                'rows'          => $this->grid_rows,
+                'cell_margin'   => $this->cell_margin,
+                'rand'          => $rand,
+                'ajax_cards'    => $ajax_cards,
+                'all_cards'     => $cards,
+                'all_widgets'   => $all_widgets,
+                'context'       => $this->context,
+                'cache_key'     => $cache_key,
+                'embed'         => self::$embed,
+                'token'         => $token,
+                'entities_id'   => $_SESSION['glpiactive_entity'],
+                'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
+            ]
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% if mini %}
+                <div class='card mb-4 d-none d-md-block dashboard-card'>
+                    <div class='card-body p-2'>
+            {% endif %}
+            <div class="dashboard {{ embed_class }} {{ mini_class }}" id="dashboard-{{ rand }}">
+                <span class='glpi_logo'></span>
+                {{ toolbars|raw }}
+                {{ filters|raw }}
+                {{ grid_guide|raw }}
+                <div class="grid-stack grid-stack-{{ grid_cols }}"
+                    id="grid-stack-{{ rand }}"
+                    gs-column="{{ grid_cols }}"
+                    gs-min-row="{{ grid_rows }}"
+                    style="width: 100%">
+                    {{ gridstack_items|raw }}
+                </div>
+            </div>
+            {% if mini %}
+                    </div>
+                </div>
+            {% endif %}
+            <script type="module">
+                import('{{ js_path('js/modules/Dashboard/Dashboard.js') }}').then((m) => {
+                    new m.GLPIDashboard({{ js_params|json_encode|raw }});
+                });
+            </script>
+TWIG, $twig_params);
     }
 
 
@@ -699,7 +701,7 @@ HTML;
         echo "</div>"; // .field
 
         echo Html::submit(_x('button', "Add"), [
-            'icon'  => 'fas fa-plus',
+            'icon'  => 'ti ti-plus',
             'class' => 'btn btn-primary submit-new-dashboard'
         ]);
 
@@ -816,7 +818,8 @@ HTML;
         echo "</div>";
         echo "</div>"; // .field
 
-        echo Html::submit("<i class='fas fa-plus'></i>&nbsp;" . _x('button', "Add"), [
+        echo Html::submit(_x('button', "Add"), [
+            'icon'  => 'ti ti-plus',
             'class' => 'btn btn-primary mt-2'
         ]);
         echo "</form>"; // form.card.display-filter-form
@@ -907,7 +910,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='far fa-save'></i>
+         <i class='ti ti-device-floppy'></i>
          <span>" . __("Save") . "</span>
       </a>";
 
@@ -939,11 +942,11 @@ HTML;
 
        // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='fas fa-exclamation-triangle'></i>" .
+         <i class='ti ti-alert-triangle'></i>" .
          __('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='fas fa-exclamation-triangle'></i>" .
+         <i class='ti ti-alert-triangle'></i>" .
          __('Error rendering card!') .
             "</br>" .
             $card_id .
@@ -1036,7 +1039,7 @@ HTML;
         } catch (\Throwable $e) {
             $html = $render_error_html;
             // Log the error message without exiting
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::logCaughtException($e);
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 

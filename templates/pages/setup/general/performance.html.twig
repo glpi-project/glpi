@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -41,11 +41,11 @@
 {% endmacro %}
 
 {% macro success_icon_msg(message) %}
-   {{ _self.icon_msg(message, 'fa fa-check-circle text-success') }}
+   {{ _self.icon_msg(message, 'ti ti-circle-check text-success') }}
 {% endmacro %}
 
 {% macro warning_icon_msg(message) %}
-   {{ _self.icon_msg(message, 'fa fa-info-circle text-warning') }}
+   {{ _self.icon_msg(message, 'ti ti-info-circle text-warning') }}
 {% endmacro %}
 
 {% if opcache_enabled %}
@@ -64,7 +64,7 @@
          <th class="fw-normal">{{ msg }}</th>
          <td>{{ opcache_version }}</td>
          <td></td>
-         {{ _self.icon_msg(short_msg, "fa fa-check-circle text-" ~ opcache_enabled ? 'success' : 'danger') }}
+         {{ _self.icon_msg(short_msg, "ti ti-circle-check text-" ~ (opcache_enabled ? 'success' : 'danger')) }}
       </tr>
       {% if opcache_enabled %}
          {% set free = opcache_info['memory_usage']['free_memory'] %}
@@ -75,10 +75,7 @@
             <th class="fw-normal">{{ _n('Memory', 'Memories', 1) }}</th>
             <td>{{ __('%1$s / %2$s')|format(used|formatted_size, max|formatted_size) }}</td>
             <td>
-               {{ call('Html::displayProgressBar', [100, rate, {
-                  simple: true,
-                  forcepadding: false
-               }]) }}
+               {{ progress_bar(rate) }}
             </td>
             {% if rate > 5 and rate < 75 %}
                {{ _self.success_icon_msg(__('%1$s memory usage is correct')|format(opcache_ext)) }}
@@ -94,10 +91,7 @@
             <th class="fw-normal">{{ __('Hits rate') }}</th>
             <td>{{ __('%1$s / %2$s')|format(hits, num_requests) }}</td>
             <td>
-               {{ call('Html::displayProgressBar', [100, hit_rate, {
-                  simple: true,
-                  forcepadding: false
-               }]) }}
+               {{ progress_bar(hit_rate) }}
             </td>
             {% if hit_rate > 90 %}
                {{ _self.success_icon_msg(__('%1$s hits rate is correct')|format(opcache_ext)) }}

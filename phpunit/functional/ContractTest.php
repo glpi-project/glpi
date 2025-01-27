@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -91,7 +91,7 @@ class ContractTest extends DbTestCase
         $cloned = $contract->clone();
         $this->assertGreaterThan($cid, $cloned);
 
-        foreach ($contract->getCloneRelations() as $rel_class) {
+        foreach ([\ContractCost::class, \Contract_Supplier::class, \Contract_Item::class] as $rel_class) {
             $this->assertSame(
                 1,
                 countElementsInTable(
@@ -187,5 +187,39 @@ class ContractTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
         $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
+    }
+
+    public function testLinkUser()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $contract = new \Contract();
+        $input = [
+            'name' => 'A test contract',
+            'entities_id'  => 0
+        ];
+        $cid = $contract->add($input);
+        $this->assertGreaterThan(0, $cid);
+
+        $user = new \User();
+        $uid = $user->add([
+            'name' => 'Test User',
+            'firstname' => 'Test',
+            'realname' => 'User',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $uid);
+
+        $link_user = new \Contract_User();
+        $link_id = $link_user->add([
+            'users_id' => $uid,
+            'contracts_id' => $cid
+        ]);
+        $this->assertGreaterThan(0, $link_id);
+
+        $this->assertTrue($link_user->getFromDB($link_id));
+        $relation_items = $link_user->getItemsAssociatedTo($contract->getType(), $cid);
+        $this->assertCount(1, $relation_items, 'Original Contract_User not found!');
     }
 }

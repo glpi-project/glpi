@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -719,6 +719,7 @@ class Infocom extends CommonDBChild
 
                           $data['warrantyexpiration']        = $warranty;
                           $data['item_name']                 = $item_infocom->getName();
+                          $data['is_deleted']                = $item_infocom->maybeDeleted() ? (int) $item_infocom->fields['is_deleted'] : 0;
                           $items_infos[$entity][$data['id']] = $data;
 
                         if (!isset($items_messages[$entity])) {
@@ -731,9 +732,17 @@ class Infocom extends CommonDBChild
         }
 
         foreach ($items_infos as $entity => $items) {
+            // We will ignore items that have been deleted but aren't expired, in case they are restored before the warranty expires
+            $not_deleted_items = array_filter($items, static function ($item) {
+                return $item['is_deleted'] === 0;
+            });
+            $deleted_expired_items = array_filter($items, static function ($item) {
+                return $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime'];
+            });
             if (
-                NotificationEvent::raiseEvent("alert", new self(), ['entities_id' => $entity,
-                    'items'       => $items
+                NotificationEvent::raiseEvent("alert", new self(), [
+                    'entities_id' => $entity,
+                    'items'       => $not_deleted_items
                 ])
             ) {
                 $message     = $items_messages[$entity];
@@ -757,9 +766,11 @@ class Infocom extends CommonDBChild
                 }
 
                 $alert             = new Alert();
-                $input["itemtype"] = 'Infocom';
-                $input["type"]     = Alert::END;
-                foreach ($items as $id => $item) {
+                $input = [
+                    'itemtype' => 'Infocom',
+                    'type'     => Alert::END
+                ];
+                foreach ($not_deleted_items as $id => $item) {
                     $input["items_id"] = $id;
                     $alert->add($input);
                     unset($alert->fields['id']);
@@ -773,6 +784,16 @@ class Infocom extends CommonDBChild
                 } else {
                     Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                 }
+            }
+
+            $alert = new Alert();
+            foreach ($deleted_expired_items as $id => $item) {
+                $alert->add([
+                    'itemtype' => 'Infocom',
+                    'type'     => Alert::END,
+                    'items_id' => $id
+                ]);
+                unset($alert->fields['id']);
             }
         }
         return $cron_status;
@@ -1378,10 +1399,7 @@ JS;
             $dev_ID   = $item->getField('id');
             $ic       = new self();
 
-            if (
-                !strpos($_SERVER['PHP_SELF'], "infocoms-show")
-                && in_array($item->getType(), self::getExcludedTypes())
-            ) {
+            if (in_array($item->getType(), self::getExcludedTypes())) {
                 echo "<div class='firstbloc center'>" .
                   __('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
                  "</div>";
@@ -1983,7 +2001,8 @@ JS;
      * @param boolean $auto_renew
      * @param integer $periodicity   renewal periodicity in month if different from addwarranty
      *
-     * @return string expiration date automatically converted to the user's preferred date format
+     * @return string Expiration date automatically converted to the user's preferred date format.
+     *                The returned value is a safe HTML string.
      **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
@@ -1993,7 +2012,7 @@ JS;
             ($addwarranty == -1)
             && ($deletenotice == 0)
         ) {
-            return __('Never');
+            return __s('Never');
         }
 
         if (empty($from)) {
@@ -2013,9 +2032,9 @@ JS;
         }
 
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
-            return "<span class='red'>" . Html::convDate(date("Y-m-d", $timestamp)) . "</span>";
+            return "<span class='red'>" . htmlescape(Html::convDate(date("Y-m-d", $timestamp))) . "</span>";
         }
-        return Html::convDate(date("Y-m-d", $timestamp));
+        return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
     }
 
 
@@ -2032,7 +2051,7 @@ JS;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" .
                                   __s('Enable the financial and administrative information');
         }
     }

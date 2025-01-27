@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -420,24 +420,24 @@ class PDU_Rack extends CommonDBRelation
                     echo "<td class='rack_position'>";
                     $current_pdu['position'] = (int) $current_pdu['position'];
                     if ($current_pdu['racked']) {
-                        echo "<i class='fa fa-server fa-fw'
+                        echo "<i class='" . Rack::getIcon() . "'
                            title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
                     } else {
                         switch ($current_pdu['side']) {
                             case self::SIDE_LEFT:
-                                echo "<i class='fa fa-arrow-left fa-fw'
+                                echo "<i class='ti ti-arrow-left'
                                  title='" . __s("On left") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_RIGHT:
-                                 echo "<i class='fa fa-arrow-right fa-fw'
+                                 echo "<i class='ti ti-arrow-right'
                                  title='" . __s("On right") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_TOP:
-                                echo "<i class='fa fa-arrow-up fa-fw'
+                                echo "<i class='ti ti-arrow-up'
                                  title='" . __s("On top") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_BOTTOM:
-                                echo "<i class='fa fa-arrow-down fa-fw'
+                                echo "<i class='ti ti-arrow-down'
                                  title='" . __s("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                         }
@@ -450,7 +450,7 @@ class PDU_Rack extends CommonDBRelation
 
                     echo "<td>";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                         echo "<i class='fa fa-bolt'></i>";
+                         echo "<i class='ti ti-bolt'></i>";
                          echo $pdu_m->fields['max_power'] . "W";
                     }
                     echo "</td>";
@@ -460,7 +460,7 @@ class PDU_Rack extends CommonDBRelation
             echo "</table>";
         }
         echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto mt-2'>";
-        echo "<i class='fa fa-plus'></i>";
+        echo "<i class='ti ti-plus'></i>";
         echo "<span>" . _sx('button', "Add") . "</span>";
         echo "</a>";
         echo "</div>";
@@ -620,7 +620,7 @@ JAVASCRIPT;
                         </a>
                      </span>
                      <a href='" . $rel->getLinkUrl() . "' class='rel-link'>
-                        <i class='fa fa-pencil-alt fa-rotate-270'
+                        <i class='ti ti-pencil fa-rotate-270'
                            style='$fg_color_s'
                            title='" . __s("Edit rack relation") . "'></i>
                      </a>

@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -44,7 +44,7 @@
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                <button type="submit" class="btn btn-primary" name="add" value="1">
-                  <i class="fas fa-coins"></i>
+                  <i class="ti ti-coins"></i>
                   <span>{{ __('Enable the financial and administrative information') }}</span>
                </button>
          </div>
@@ -62,7 +62,7 @@
                      {# ## LIFECYCLE PART ## #}
                      {{ fields.largeTitle(
                         __('Asset lifecycle'),
-                        'fas fa-sync-alt',
+                        'ti ti-refresh',
                         true
                      ) }}
 
@@ -111,7 +111,7 @@
                      {# ## FINANCIAL PART ## #}
                      {{ fields.largeTitle(
                         __('Financial and administrative information'),
-                        'fas fa-coins'
+                        'ti ti-coins'
                      ) }}
 
                      {{ fields.dropdownField(
@@ -274,7 +274,7 @@
                      {# ## WARRANTY PART ## #}
                      {{ fields.largeTitle(
                         __('Warranty information'),
-                        'fas fa-file-contract'
+                        'ti ti-contract'
                      ) }}
 
                      {{ fields.dateField(
@@ -341,14 +341,14 @@
                      <div class="card-body mx-n2 mb-4  border-top">
                         {% if can_global_update %}
                            <button class="btn btn-primary me-2" type="submit" name="update">
-                              <i class="far fa-save"></i>
+                              <i class="ti ti-device-floppy"></i>
                               <span>{{ _x('button', 'Save') }}</span>
                            </button>
                         {% endif %}
 
                         {% if can_global_purge %}
                            <button class="btn btn-outline-danger me-2" type="submit" name="purge">
-                              <i class="fas fa-trash-alt"></i>
+                              <i class="ti ti-trash"></i>
                               <span>{{ _x('button', 'Delete permanently') }}</span>
                            </button>
                         {% endif %}

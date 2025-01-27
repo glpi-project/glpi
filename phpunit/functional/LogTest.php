@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -423,7 +423,7 @@ class LogTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataLogToAffectedField')]
+    #[DataProvider('dataLogToAffectedField')]
     public function testValuesComputationForGetDistinctAffectedFieldValuesInItemLog($log_data, $expected_result)
     {
         $computer = $this->createComputer();
@@ -487,13 +487,13 @@ class LogTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataLinkedActionLabel')]
+    #[DataProvider('dataLinkedActionLabel')]
     public function testGetLinkedActionLabel($linked_action, $expected_label)
     {
         $this->assertSame($expected_label, \Log::getLinkedActionLabel($linked_action));
     }
 
-    #[dataProvider('dataLinkedActionLabel')]
+    #[DataProvider('dataLinkedActionLabel')]
     public function testValuesComputationForGetDistinctLinkedActionValuesInItemLog($linked_action, $expected_value)
     {
         $computer = $this->createComputer();
@@ -730,7 +730,7 @@ class LogTest extends DbTestCase
     }
 
 
-    #[dataProvider('dataFiltersValuesToSqlCriteria')]
+    #[DataProvider('dataFiltersValuesToSqlCriteria')]
     public function testConvertFiltersValuesToSqlCriteria($filters_values, $expected_result)
     {
         $this->assertSame($expected_result, \Log::convertFiltersValuesToSqlCriteria($filters_values));
@@ -744,7 +744,7 @@ class LogTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('userNameFormattingProvider')]
+    #[DataProvider('userNameFormattingProvider')]
     public function testUserNameFormatting(string $username, string $password, string $expected_name)
     {
         global $DB, $CFG_GLPI;

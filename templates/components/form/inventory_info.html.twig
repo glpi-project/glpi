@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -35,7 +35,7 @@
 <div class="card m-n2 border-0 shadow-none">
    <div class="card-header">
       <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-         <i class="fas fa-cloud-download-alt"></i>
+         <i class="ti ti-cloud-download"></i>
       </div>
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
@@ -46,11 +46,11 @@
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
             data-bs-toggle="tooltip" data-bs-placement="right"
             title="{{ __('Download "%1$s" inventory file')|format(get_item_name(item)) }}">
-            <i class="fas fa-download"></i>
+            <i class="ti ti-download"></i>
          </a>
       {% else %}
          <span class="ms-auto" title="{{ __('Inventory file missing') }}">
-            <i class="fas fa-ban"></i>
+            <i class="ti ti-ban"></i>
             <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
          </span>
       {% endif %}
@@ -100,7 +100,7 @@
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Agent status') }}
-               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
+               <i id="update-status" class="ti ti-refresh d-inline-block" role="button" title="{{ __('Ask agent about its current status') }}"></i>
             </label>
             <span id='agent_status'>{{ __('Unknown') }}</span>
          </div>
@@ -108,7 +108,7 @@
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Request inventory') }}
-               <i id="update-inventory" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+               <i id="update-inventory" class="ti ti-refresh d-inline-block" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
             </label>
             <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
@@ -118,7 +118,7 @@
       $(function () {
          $('#update-status').on('click', function() {
             var icon = $(this);
-            icon.addClass('fa-spin');
+            icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
@@ -132,14 +132,14 @@
                   $('#agent_status').text(json.answer);
                },
                complete: function() {
-                  icon.removeClass('fa-spin');
+                  icon.removeClass('icon-rotate');
                }
             });
          });
 
          $('#update-inventory').on('click', function() {
             var icon = $(this);
-            icon.addClass("fa-spin");
+            icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
@@ -153,7 +153,7 @@
                   $('#inventory_status').text(json.answer);
                },
                complete: function() {
-                  icon.removeClass('fa-spin');
+                  icon.removeClass('icon-rotate');
                }
             });
          });

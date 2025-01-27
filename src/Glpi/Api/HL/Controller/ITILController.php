@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -168,6 +168,22 @@ final class ITILController extends AbstractController
             ]
         ];
 
+        $schemas['TeamMember'] = [
+            'x-version-introduced' => '2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'description' => 'The valid types and roles depend on the type of the item they are being added to',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'type' => ['type' => Doc\Schema::TYPE_STRING],
+                'role' => ['type' => Doc\Schema::TYPE_STRING],
+            ]
+        ];
+
         $itil_types = [Ticket::class, Change::class, Problem::class];
 
         /** @var class-string<CommonITILObject> $itil_type */
@@ -211,7 +227,6 @@ final class ITILController extends AbstractController
 
             $schemas[$itil_type]['properties']['team'] = [
                 'type' => Doc\Schema::TYPE_ARRAY,
-                'x-full-schema' => 'TeamMember',
                 'items' => [
                     'x-mapped-from' => 'id',
                     'x-mapper' => function ($v) use ($itil_type) {
@@ -221,7 +236,9 @@ final class ITILController extends AbstractController
                         }
                         return [];
                     },
-                    'ref' => 'TeamMember'
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => $schemas['TeamMember']['properties'],
+                    'x-full-schema' => 'TeamMember',
                 ]
             ];
         }
@@ -424,22 +441,6 @@ final class ITILController extends AbstractController
         $schemas['ChangeValidation']['x-version-introduced'] = '2.0';
         $schemas['ChangeValidation']['x-itemtype'] = \ChangeValidation::class;
         $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
-
-        $schemas['TeamMember'] = [
-            'x-version-introduced' => '2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => 'The valid types and roles depend on the type of the item they are being added to',
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'type' => ['type' => Doc\Schema::TYPE_STRING],
-                'role' => ['type' => Doc\Schema::TYPE_STRING],
-            ]
-        ];
 
         $schemas['RecurringTicket'] = [
             'x-version-introduced' => '2.0',
@@ -853,7 +854,7 @@ final class ITILController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}', methods: ['GET'], requirements: [
-        'subitem_type' => 'Followup|Document|Solution|Validation'
+        'subitem_type' => 'Followup|Document|Solution'
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -913,6 +914,37 @@ final class ITILController extends AbstractController
         return new JSONResponse($timeline);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Validation', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change'
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Get all validations for a Ticket or Change by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket or Change',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ],
+        responses: [
+            ['schema' => '{itemtype}Validation[]']
+        ]
+    )]
+    public function getTimelineValidations(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $timeline = $this->getITILTimelineItems($item, $request, ['Validation']);
+        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        if ($single_result && $timeline === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return new JSONResponse($timeline);
+    }
+
     public function getSubitemType(CommonITILObject $parent_item, string $friendly_name): string
     {
         return match ($friendly_name) {
@@ -959,7 +991,7 @@ final class ITILController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['GET'], requirements: [
-        'subitem_type' => 'Followup|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution',
         'subitem_id' => '\d+'
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1014,8 +1046,37 @@ final class ITILController extends AbstractController
         return $this->getTimelineItems($request);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change',
+        'subitem_id' => '\d+'
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Get a validation for a Ticket or Change by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket or Change',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ],
+        responses: [
+            ['schema' => '{itemtype}Validation']
+        ]
+    )]
+    public function getTimelineValidation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';id==' . $request->getAttribute('subitem_id');
+        // Reuse existing logic from the getTimelineItems route
+        $request->setParameter('filter', $filters);
+        $request->setAttribute('subitem_type', 'Validation');
+        return $this->getTimelineItems($request);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}', methods: ['POST'], requirements: [
-        'subitem_type' => 'Followup|Document|Solution|Validation'
+        'subitem_type' => 'Followup|Document|Solution'
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -1089,8 +1150,46 @@ final class ITILController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Validation', methods: ['POST'], requirements: [
+        'itemtype' => 'Ticket|Change'
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Create a validation for a Ticket or Change by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket or Change',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}Task',
+            ]
+        ],
+    )]
+    public function createTimelineValidation(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $parameters = $request->getParameters();
+        $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Validation'));
+        $schema = $this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request));
+        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineValidation'], [
+            'mapped' => [
+                'itemtype' => $item::getType(),
+                'subitem_type' => 'Validation',
+                'id' => $item->getID()
+            ],
+            'id' => 'subitem_id'
+        ]);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['PATCH'], requirements: [
-        'subitem_type' => 'Followup|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution',
         'subitem_id' => '\d+'
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -1163,8 +1262,45 @@ final class ITILController extends AbstractController
         return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $parameters);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Ticket|Change',
+        'subitem_id' => '\d+'
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Update a validation for a Ticket or Change',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket or Change',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}Validation',
+            ]
+        ]
+    )]
+    public function updateTimelineValidation(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $parameters = $request->getParameters();
+        $required_fields = $this->getRequiredTimelineItemFields($item, $request, 'Validation');
+        // Required fields are used to link to the parent item. We cannot let them be changed
+        foreach ($required_fields as $field => $value) {
+            unset($parameters[$field]);
+        }
+        $attributes = $request->getAttributes();
+        $attributes['id'] = $request->getAttribute('subitem_id');
+        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $parameters);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['DELETE'], requirements: [
-        'subitem_type' => 'Followup|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution',
         'subitem_id' => '\d+'
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -1211,6 +1347,31 @@ final class ITILController extends AbstractController
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
         return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Task', $this->getAPIVersion($request)), $attributes, $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Timeline/Validation/{subitem_id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Ticket|Change',
+        'subitem_id' => '\d+'
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Delete a validation for a Ticket or Change by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket or Change',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ]
+    )]
+    public function deleteTimelineValidation(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+        $attributes = $request->getAttributes();
+        $attributes['id'] = $request->getAttribute('subitem_id');
+        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Validation', $this->getAPIVersion($request)), $attributes, $request->getParameters());
     }
 
     /**
@@ -1301,7 +1462,9 @@ final class ITILController extends AbstractController
         return new JSONResponse($team);
     }
 
-    #[Route(path: '/{itemtype}/{id}/TeamMember/{role}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/{itemtype}/{id}/TeamMember/{role}', methods: ['GET'], requirements: [
+        'role' => '\w+'
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the team members by role for specific Ticket, Change, Problem by ID',

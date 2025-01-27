@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -65,16 +65,16 @@ trait TreeBrowse
 
         $loading_txt = __s('Loading...');
         $start       = isset($params['start'])
-                            ? $params['start']
+                            ? (int) $params['start']
                             : 0;
         $browse      = isset($params['browse'])
-                            ? $params['browse']
+                            ? (int) $params['browse']
                             : 0;
         $is_deleted  = isset($params['is_deleted'])
-                            ? $params['is_deleted']
+                            ? (int) $params['is_deleted']
                             : 0;
         $unpublished = isset($params['unpublished'])
-                            ? $params['unpublished']
+                            ? (int) $params['unpublished']
                             : 1;
 
         $criteria    = json_encode($params['criteria']);

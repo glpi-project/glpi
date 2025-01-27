@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,9 +43,16 @@ class Hooks
     const CSRF_COMPLIANT = 'csrf_compliant';
 
    // File hooks
-    const ADD_CSS        = 'add_css';
-    const ADD_JAVASCRIPT = 'add_javascript';
-    const ADD_HEADER_TAG = 'add_header_tag';
+    const ADD_CSS               = 'add_css';
+    const ADD_JAVASCRIPT        = 'add_javascript';
+    const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
+    const ADD_HEADER_TAG        = 'add_header_tag';
+
+    // File hooks for anonymous pages
+    const ADD_CSS_ANONYMOUS_PAGE               = 'add_css_anonymous_page';
+    const ADD_JAVASCRIPT_ANONYMOUS_PAGE        = 'add_javascript_anonymous_page';
+    const ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE = 'add_javascript_module_anonymous_page';
+    const ADD_HEADER_TAG_ANONYMOUS_PAGE        = 'add_header_tag_anonymous_page';
 
    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
@@ -118,7 +125,11 @@ class Hooks
     const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
-    const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
+    /**
+     * @deprecated 11.0.0 Use `TIMELINE_ITEMS` instead.
+     */
+    const SHOW_IN_TIMELINE        = 'show_in_timeline';
+    const TIMELINE_ITEMS          = 'timeline_items';  // (keys: item)
     const SET_ITEM_IMPACT_ICON    = 'set_item_impact_icon'; // (keys: itemtype, items_id)
 
    // Security hooks (data to encypt)

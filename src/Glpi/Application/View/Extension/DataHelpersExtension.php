@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Html;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig\TwigTest;
 
 /**
@@ -66,6 +67,13 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
             new TwigFilter('truncate_left', [$this, 'truncateLeft']),
+        ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('progress_bar', [$this, 'getProgressBar'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -306,5 +314,18 @@ class DataHelpersExtension extends AbstractExtension
         }
 
         return $separator . mb_substr($string, -$length);
+    }
+
+    /**
+     * Returns a static progress bar HTML snippet.
+     *
+     * @param float $percentage
+     * @param string $label
+     *
+     * @return string
+     */
+    public function getProgressBar(float $percentage, ?string $label = null): string
+    {
+        return Html::getProgressBar($percentage, $label);
     }
 }

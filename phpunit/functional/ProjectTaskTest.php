@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -372,6 +372,30 @@ class ProjectTaskTest extends DbTestCase
             'name'            => 'Subtask 2',
         ]);
 
+        // Create a user
+        $user_name = 'Project testClone - User' . random_int(0, 99999);
+        $this->createItems('User', [['name' => $user_name]]);
+        $users_id = getItemByTypeName("User", $user_name, true);
+
+       // Create a group
+        $group_name = 'Project testClone - Group' . random_int(0, 99999);
+        $this->createItems('Group', [['name' => $group_name]]);
+        $groups_id = getItemByTypeName("Group", $group_name, true);
+
+        // Add team to project
+        $this->createItems('ProjectTaskTeam', [
+            [
+                'projecttasks_id' => $task->fields['id'],
+                'itemtype'    => 'User',
+                'items_id'    => $users_id,
+            ],
+            [
+                'projecttasks_id' => $task->fields['id'],
+                'itemtype'    => 'Group',
+                'items_id'    => $groups_id,
+            ],
+        ]);
+
         // Clone the task
         $clonedTaskId = $task->clone();
         $clonedTask = \ProjectTask::getById($clonedTaskId);
@@ -379,6 +403,28 @@ class ProjectTaskTest extends DbTestCase
         // Check if the cloned task is in the same project with the same name
         $this->assertEquals($project->getID(), $clonedTask->fields['projects_id']);
         $this->assertEquals($task->fields['name'] . ' (copy)', $clonedTask->fields['name']);
+
+        // Load task team
+        $project_task_team = new \ProjectTaskTeam();
+        $team = [];
+        foreach ($project_task_team->find(['projecttasks_id' => $task->fields['id']]) as $row) {
+            $team[] = [
+                'itemtype' => $row['itemtype'],
+                'items_id' => $row['items_id'],
+            ];
+        }
+
+        // Load clone team
+        $team_clone = [];
+        foreach ($project_task_team->find(['projecttasks_id' => $clonedTaskId]) as $row) {
+            $team_clone[] = [
+                'itemtype' => $row['itemtype'],
+                'items_id' => $row['items_id'],
+            ];
+        }
+
+        // Compare teams
+        $this->assertEquals($team, $team_clone);
 
         // Check if the subtask has been cloned
         $clonedSubtask = new \ProjectTask();

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,6 +54,30 @@ export class GlpiFormQuestionTypeItem {
                 const question_details = question.find('[data-glpi-form-editor-question-type-specific]');
                 this.#updateItemsIdDropdownID(question_details);
             }
+        });
+
+        $(document).on('glpi-form-editor-question-sub-type-changed', (event, question, sub_type) => {
+            if (question.find('[name="type"], [data-glpi-form-editor-original-name="type"]').val() !== this.#question_type) {
+                return;
+            }
+
+            const select = question.find('[data-glpi-form-editor-question-type-specific] select');
+            const container = select.parent();
+
+            // Add a flag to all children to mark them as to be removed
+            container.children().attr('data-to-remove', 'true');
+
+            // Load the new dropdown
+            container.load(
+                `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
+                {
+                    'idtable'   : sub_type,
+                    'width'     : '100%',
+                    'name'      : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'aria_label': select.attr('aria-label'),
+                },
+                () => container.find('[data-to-remove]').remove()
+            );
         });
     }
 

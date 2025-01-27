@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -520,10 +520,6 @@ var switchFoldMenu = function() {
 };
 
 $(function() {
-    if ($('html').hasClass('loginpage')) {
-        return;
-    }
-
     $("body").delegate('td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
@@ -756,11 +752,11 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
 
     //add map, set a default arbitrary location
     parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
-    var map = L.map(map_id, {fullscreenControl: true}).setView(initial_view.position, initial_view.zoom);
+    var map = L.map(map_id, {fullscreenControl: true, minZoom: 2}).setView(initial_view.position, initial_view.zoom);
 
     //setup tiles and © messages
     L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href=\'https://osm.org/copyright\'>OpenStreetMap</a> contributors',
     }).addTo(map);
     return map;
 };
@@ -776,10 +772,10 @@ var showMapForLocation = function(elt) {
     glpi_html_dialog({
         title: __("Display on map"),
         body: "<div id='location_map_dialog'/>",
-        dialogclass: "modal-lg",
+        dialogclass: "modal-xl",
         show: function() {
             //add map, set a default arbitrary location
-            var map_elt = initMap($('#location_map_dialog'), 'location_map');
+            var map_elt = initMap($('#location_map_dialog'), 'location_map', '500px');
             map_elt.spin(true);
 
             $.ajax({
@@ -1448,10 +1444,6 @@ window.validateFormWithBootstrap = function (event) {
 
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
-        if (!window.validateFormWithBootstrap(e)) {
-            return false;
-        }
-
         const form = $(e.target).closest('form');
         if (form.attr('data-submitted') === 'true') {
             e.preventDefault();
@@ -1460,6 +1452,9 @@ $(() => {
             let submitter = null;
             if (e.originalEvent && e.originalEvent.submitter) {
                 submitter = $(e.originalEvent.submitter);
+            }
+            if ((submitter === null || submitter.attr('formnovalidate') === undefined) && !window.validateFormWithBootstrap(e)) {
+                return false;
             }
             if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
                 // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
@@ -1856,6 +1851,7 @@ function setupAdaptDropdown(config)
         placeholder: config.placeholder,
         width: config.width,
         dropdownAutoWidth: true,
+        dropdownCssClass: config.dropdown_css_class,
         dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
@@ -1956,14 +1952,14 @@ function setupAdaptDropdown(config)
     return select2_el;
 }
 
-function displaySessionMessages() {
+window.displaySessionMessages = () => {
     $.ajax({
         method: 'GET',
         url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
         data: {
             'get_raw': true
         }
-    }).done((messages) => {
+    }).then((messages) => {
         $.each(messages, (level, level_messages) => {
             $.each(level_messages, (index, message) => {
                 switch (parseInt(level)) {
@@ -1979,4 +1975,22 @@ function displaySessionMessages() {
             });
         });
     });
-}
+};
+
+// Add/remove a special data attribute to bootstrap's modals when they are
+// displayed/hidden.
+// This is needed for e2e testing as bootstrap have some compatibility issues
+// with cypress.
+// See https://github.com/cypress-io/cypress/issues/25202.
+document.addEventListener('shown.bs.modal', (e) => {
+    const modal = e.target.closest('.modal');
+    if (modal) {
+        modal.setAttribute('data-cy-shown', 'true');
+    }
+});
+document.addEventListener('hidden.bs.modal', (e) => {
+    const modal = e.target.closest('.modal');
+    if (modal) {
+        modal.setAttribute('data-cy-shown', 'false');
+    }
+});

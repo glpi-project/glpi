@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -185,6 +185,7 @@ i.fa-impact-manipulation {
 .impact-range {
    height            : 18px;
    -webkit-appearance: none;
+   appearance: none;
    margin            : 10px 0;
    border-width      : 0 !important;
    margin-top        : 0 !important;
@@ -199,7 +200,6 @@ i.fa-impact-manipulation {
    width        : 100%;
    height       : 4px;
    cursor       : pointer;
-   animate      : 0.2s;
    box-shadow   : 0px 0px 0px #000000;
    background   : #AEC8D8;
    border-radius: 25px;
@@ -226,7 +226,6 @@ i.fa-impact-manipulation {
    width        : 100%;
    height       : 4px;
    cursor       : pointer;
-   animate      : 0.2s;
    box-shadow   : 0px 0px 0px #000000;
    background   : #AEC8D8;
    border-radius: 25px;
@@ -247,7 +246,6 @@ i.fa-impact-manipulation {
    width       : 100%;
    height      : 4px;
    cursor      : pointer;
-   animate     : 0.2s;
    background  : transparent;
    border-color: transparent;
    color       : transparent;

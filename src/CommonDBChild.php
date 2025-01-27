@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -868,9 +868,9 @@ abstract class CommonDBChild extends CommonDBConnexity
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-            $result .= "<span id='add" . $lower_name . "button' class='fa fa-plus pointer'" .
+            $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'" .
               " title=\"" . __s('Add') . "\"" .
-                "\" onClick=\"var row = " . Html::jsGetElementByID($div_id) . ";
+                "\" onClick=\"var row = $('#" . $div_id . "');
                              row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"

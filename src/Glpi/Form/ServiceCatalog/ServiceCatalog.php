@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,8 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
 use Override;
+use Session;
+use Ticket;
 
 final class ServiceCatalog extends CommonGLPI
 {
@@ -48,9 +50,10 @@ final class ServiceCatalog extends CommonGLPI
         return __("Service catalog");
     }
 
-    public static function getIcon()
+    // TODO: Should be #[Override] but getIcon() is defined by CommonDBTM instead of CommonGLPI.
+    public static function getIcon(): string
     {
-        return "ti ti-notes";
+        return "ti ti-library";
     }
 
     #[Override]
@@ -82,5 +85,20 @@ final class ServiceCatalog extends CommonGLPI
         ]);
 
         return true;
+    }
+
+    #[Override]
+    public static function getSearchURL($full = true): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return $full ? $CFG_GLPI['root_doc'] . '/ServiceCatalog' : '/ServiceCatalog';
+    }
+
+    #[Override]
+    public static function canView(): bool
+    {
+        return Session::haveRight(Ticket::$rightname, CREATE);
     }
 }

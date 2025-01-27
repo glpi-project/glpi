@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -31,116 +31,118 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set rand = random() %}
-{% set save_action_id = "save_filters_" ~ rand %}
-{% set save_action_icon_id = "save_filters_icon" ~ rand %}
-{% set delete_action_id = "delete_filters_" ~ rand %}
+<div>
+    <button
+        class="btn btn-sm btn-primary me-1 {{ show_save ? "" : "d-none" }}"
+        type="submit"
+        name="save_filters"
+    >
+        <i class="ti ti-device-floppy"></i>
+        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        <span class="d-none d-sm-block">{{ __("Save") }}</span>
+    </button>
 
-<button
-    id="{{ save_action_id }}"
-    class="btn btn-sm btn-primary me-1 {{ show_save ? "" : "d-none" }}"
-    type="submit"
-    name="save_filters"
->
-    <i id="{{ save_action_icon_id }}" class="ti ti-device-floppy"></i>
-    <span class="d-none d-sm-block">{{ __("Save") }}</span>
-</button>
+    <button
+        class="btn btn-sm btn-outline-danger me-1 {{ show_delete ? "" : "d-none" }}"
+        name="delete_filters"
+    >
+        <i class="ti ti-trash"></i>
+        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        <span class="d-none d-sm-block">{{ __("Delete") }}</span>
+    </button>
+</div>
 
-<button
-    id="{{ delete_action_id }}"
-    class="btn btn-sm btn-outline-danger me-1 {{ show_delete ? "" : "d-none" }}"
-    name="delete_filters"
->
-    <i id="{{ save_action_icon_id }}" class="ti ti-trash"></i>
-    <span class="d-none d-sm-block">{{ __("Delete") }}</span>
-</button>
+<script type="module">
+    function showLoading(btn) {
+        btn.find('i').addClass('d-none');
+        btn.find('.spinner-border').removeClass('d-none');
+        // Disable this and sibling buttons
+        btn.prop('disabled', true);
+        btn.siblings('button').prop('disabled', true);
+    }
 
-<script>
-    (function () {
-        // Save action
-        $("#{{ save_action_id }}").on("click", function(e) {
-            // Prevent form submit
-            e.preventDefault();
+    function hideLoading(btn) {
+        btn.find('i').removeClass('d-none');
+        btn.find('.spinner-border').addClass('d-none');
+        // Enable this and sibling buttons
+        btn.prop('disabled', false);
+        btn.siblings('button').prop('disabled', false);
+    }
 
-            // Find form
-            const form = $("#{{ save_action_id }}").closest('form');
+    // Save action
+    $("button[name='save_filters']").on("click", (e) => {
+        // Prevent form submit
+        e.preventDefault();
 
-            // Set loading icon and disable buttons
-            $("#{{ save_action_icon_id }}").removeClass('ti ti-device-floppy');
-            $("#{{ save_action_icon_id }}").addClass('fa-solid fa-spinner fa-spin');
-            $("#{{ save_action_id }}").prop('disabled', true);
-            $("#{{ delete_action_id }}").prop('disabled', true);
+        const btn = $(e.currentTarget);
 
-            // Save results
-            const form_data = new FormData(form[0]);
+        // Find form
+        const form = btn.closest('form');
 
-            // Add references to parent item, must be prefixed by "item_" because
-            // "itemtype" will already be set by the search's form
-            form_data.append('item_itemtype', "{{ itemtype }}");
-            form_data.append('item_items_id', {{ items_id }});
+        showLoading(btn);
 
-            // Endpoint
-            form_data.append('action', "save_filter");
+        // Save results
+        const form_data = new FormData(form[0]);
 
-            // Send data to backend
-            $.ajax({
-                type: "POST",
-                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
-                data: form_data,
-                processData: false, // Needed when using FormData object
-                contentType: false, // Needed when using FormData object
-            }).done(function() {
-                glpi_toast_info("{{ __("Filter saved") }}");
+        // Add references to parent item, must be prefixed by "item_" because
+        // "itemtype" will already be set by the search's form
+        form_data.append('item_itemtype', "{{ itemtype }}");
+        form_data.append('item_items_id', {{ items_id }});
 
-                // Show delete button if it wasn't already enabled
-                $("#{{ delete_action_id }}").removeClass('d-none');
+        // Endpoint
+        form_data.append('action', "save_filter");
 
-                // Add badge to menu to hint that a filter have been set
-                const tab = $("a.nav-link[href*='CriteriaFilter']");
-                if (tab.find('span.badge').length == 0) {
-                    tab.append('<span class="badge">1</span>');
-                }
-            }).fail(function() {
-                glpi_toast_error("{{ __("Unable to save filter") }}");
-            }).always(function() {
-                // Restore original icon and button
-                $("#{{ save_action_icon_id }}").addClass('ti ti-device-floppy');
-                $("#{{ save_action_icon_id }}").removeClass('fa-solid fa-spinner fa-spin');
-                $("#{{ save_action_id }}").prop('disabled', false);
-                $("#{{ delete_action_id }}").prop('disabled', false);
-            });
+        // Send data to backend
+        $.ajax({
+            type: "POST",
+            url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+            data: form_data,
+            processData: false, // Needed when using FormData object
+            contentType: false, // Needed when using FormData object
+        }).done(function() {
+            glpi_toast_info("{{ __("Filter saved") }}");
 
-            // Hide preview since its content may not match the saved value
-            $("#criteria_filter_preview").addClass("d-none");
+            // Show delete button if it wasn't already enabled
+            $("#{{ delete_action_id }}").removeClass('d-none');
+
+            // Add badge to menu to hint that a filter have been set
+            const tab = $("a.nav-link[href*='CriteriaFilter']");
+            if (tab.find('span.badge').length == 0) {
+                tab.append('<span class="badge">1</span>');
+            }
+        }).fail(function() {
+            glpi_toast_error("{{ __("Unable to save filter") }}");
+        }).always(function() {
+            hideLoading(btn);
         });
 
-        // Delete action
-        $("#{{ delete_action_id }}").on("click", function(e) {
-            // Prevent form submit
-            e.preventDefault();
+        // Hide preview since its content may not match the saved value
+        $("#criteria_filter_preview").addClass("d-none");
+    });
 
-            // Disable actions
-            $("#{{ save_action_id }}").prop('disabled', true);
-            $("#{{ delete_action_id }}").prop('disabled', true);
+    // Delete action
+    $("button[name='delete_filters']").on("click", (e) => {
+        // Prevent form submit
+        e.preventDefault();
 
-            $.ajax({
-                type: "POST",
-                url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
-                data: {
-                    'action': 'delete_filter',
-                    'itemtype': '{{ itemtype }}',
-                    'items_id': {{ items_id }},
-                },
-            }).done(function() {
-                // Reload page, easiest way to clear search UI
-                location.reload();
-            }).fail(function() {
-                // Restore actions
-                $("#{{ save_action_id }}").prop('disabled', false);
-                $("#{{ delete_action_id }}").prop('disabled', false);
+        const btn = $(e.currentTarget);
+        showLoading(btn);
 
-                glpi_toast_error("{{ __("Failed to delete filter") }}");
-            });
+        $.ajax({
+            type: "POST",
+            url: CFG_GLPI.root_doc + "/ajax/criteria_filter.php",
+            data: {
+                'action': 'delete_filter',
+                'itemtype': '{{ itemtype }}',
+                'items_id': {{ items_id }},
+            },
+        }).done(function() {
+            // Reload page, easiest way to clear search UI
+            location.reload();
+        }).fail(function() {
+            hideLoading(btn);
+
+            glpi_toast_error("{{ __("Failed to delete filter") }}");
         });
-    })();
+    });
 </script>

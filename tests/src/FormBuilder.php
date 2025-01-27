@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -96,6 +96,11 @@ class FormBuilder
     protected array $access_control;
 
     /**
+     * Form category
+     */
+    protected int $category;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -112,6 +117,7 @@ class FormBuilder
         $this->sections = [];
         $this->destinations = [];
         $this->access_control = [];
+        $this->category = 0;
     }
 
     /**
@@ -440,6 +446,29 @@ class FormBuilder
             ),
             is_active: true,
         );
+        return $this;
+    }
+
+    /**
+     * Get form category
+     *
+     * @return int Form category
+     */
+    public function getCategory(): int
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set form category
+     *
+     * @param int Form category
+     *
+     * @return self To allow chain calls
+     */
+    public function setCategory(int $category): self
+    {
+        $this->category = $category;
         return $this;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -77,14 +77,6 @@ class ITILTaskField extends AbstractConfigField
             // General display options
             'options' => $display_options,
 
-            // Main config field
-            'main_config_field' => [
-                'label'           => $this->getLabel(),
-                'value'           => $config->getStrategy()->value,
-                'input_name'      => $input_name . "[" . ITILTaskFieldConfig::STRATEGY . "]",
-                'possible_values' => $this->getMainConfigurationValuesforDropdown(),
-            ],
-
             // Specific additional config for SPECIFIC_VALUES strategy
             'specific_value_extra_field' => [
                 'aria_label'     => __("Select task templates..."),
@@ -104,8 +96,11 @@ class ITILTaskField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
+
         // Compute value according to strategy
-        $tasktemplates_ids = $config->getStrategy()->getTaskTemplatesIDs($config);
+        $tasktemplates_ids = $strategy->getTaskTemplatesIDs($config);
 
         if (!empty($tasktemplates_ids)) {
             $input['_tasktemplates_id'] = $tasktemplates_ids;
@@ -122,7 +117,7 @@ class ITILTaskField extends AbstractConfigField
         );
     }
 
-    private function getMainConfigurationValuesforDropdown(): array
+    public function getStrategiesForDropdown(): array
     {
         $values = [];
         foreach (ITILTaskFieldStrategy::cases() as $strategies) {

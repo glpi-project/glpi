@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -43,7 +43,7 @@
 
 {% if pending_reason %}
    <span class="badge bg-blue-lt {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
-      <i class="fas fa-pause me-1"></i>
+      <i class="ti ti-player-pause-filled me-1"></i>
       {{ __("Pending: %s")|format(pending_reason.getLink())|raw }}
 
       {% if display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
@@ -53,13 +53,13 @@
          {% set next_bump = pending_reason_item_parent.getNextFollowupDate() %}
          {% if next_bump %}
 
-            <i class="fas fa-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(call("Html::convDate", [next_bump])) }}"
+            <i class="ti ti-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(next_bump|formatted_date) }}"
                data-bs-toggle="tooltip"></i>
          {% endif %}
 
          {% set resolve = pending_reason_item_parent.getAutoResolvedate() %}
          {% if resolve %}
-            <i class="fas fa-stop ms-2" title="{{ __("Automatic resolution scheduled on %s")|format(call("Html::convDate", [resolve])) }}"
+            <i class="ti ti-player-stop-filled ms-2" title="{{ __("Automatic resolution scheduled on %s")|format(resolve|formatted_date) }}"
                data-bs-toggle="tooltip"></i>
          {% endif %}
       {% endif %}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -729,8 +729,14 @@ final class AdministrationController extends AbstractController
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
         // Create a union schema with all relevant item types
-        $schema = Doc\Schema::getUnionSchemaForItemtypes($CFG_GLPI['assignable_types'], $api_version);
+        $schema = Doc\Schema::getUnionSchemaForItemtypes(
+            itemtypes: array_filter($CFG_GLPI['assignable_types'], static function ($t) use ($is_managed) {
+                return (new $t())->isField($is_managed ? 'users_id_tech' : 'users_id');
+            }),
+            api_version: $api_version
+        );
         $rsql_filter = $request_params['filter'] ?? '';
         if (!empty($rsql_filter)) {
             $rsql_filter = "($rsql_filter);";

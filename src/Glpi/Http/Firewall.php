@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -187,13 +187,18 @@ final class Firewall
     private function computeFallbackStrategyForCore(string $path): string
     {
         if (!file_exists($this->root_dir . $path)) {
+            $paths = [
+                '/_wdt/' => self::STRATEGY_NO_CHECK,
+                '/_profiler/' => self::STRATEGY_NO_CHECK,
+            ];
+            foreach ($paths as $checkPath => $strategy) {
+                if (\str_starts_with($path, $checkPath)) {
+                    return $strategy;
+                }
+            }
+
             // Modern controllers
             return self::FALLBACK_STRATEGY;
-        }
-
-        if (isset($_GET["embed"], $_GET["dashboard"]) && str_starts_with($path, '/front/central.php')) {
-            // Allow anonymous access for embed dashboards.
-            return 'no_check';
         }
 
         if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
@@ -210,7 +215,6 @@ final class Firewall
             '/front/cron.php' => self::STRATEGY_NO_CHECK, // in GLPI mode, cronjob can also be triggered from public pages
             '/front/css.php' => self::STRATEGY_NO_CHECK, // CSS must be accessible also on public pages
             '/front/document.send.php' => self::STRATEGY_NO_CHECK, // may allow unauthenticated access, for public FAQ images
-            '/front/inventory.php' => self::STRATEGY_NO_CHECK, // allow anonymous requests from inventory agent
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
             '/front/login.php' => self::STRATEGY_NO_CHECK,
             '/front/logout.php' => self::STRATEGY_NO_CHECK,
@@ -237,6 +241,9 @@ final class Firewall
         foreach ($this->plugins_dirs as $plugin_dir) {
             $expected_filenames = [
                 $plugin_dir . '/' . $plugin_key . $plugin_resource,
+
+                // A PHP script located in the `/public` directory of a plugin will not have the `/public` prefix in its URL
+                $plugin_dir . '/' . $plugin_key . '/public' . $plugin_resource,
             ];
             $resource_matches = [];
             if (\preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {

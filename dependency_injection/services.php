@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +35,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Log\LegacyGlobalLogger;
+use Glpi\Error\ErrorHandler;
 
 return static function (ContainerConfigurator $container): void {
     $projectDir = dirname(__DIR__);
@@ -47,6 +47,9 @@ return static function (ContainerConfigurator $container): void {
     $parameters->set('env(APP_SECRET_FILE)', $projectDir . '/config/glpicrypt.key');
     $parameters->set('kernel.secret', env('default:glpi.default_secret:file:APP_SECRET_FILE'));
 
+    // Prevent low level errors (e.g. warning) to be converted to exception in dev environment
+    $parameters->set('debug.error_handler.throw_at', ErrorHandler::FATAL_ERRORS);
+
     $services = $services
         ->defaults()
             ->autowire()
@@ -54,14 +57,17 @@ return static function (ContainerConfigurator $container): void {
         ->instanceof(PublicService::class)->public()
     ;
 
-    $services->load('Glpi\Config\\', $projectDir . '/src/Glpi/Config');
     $services->load('Glpi\Controller\\', $projectDir . '/src/Glpi/Controller');
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
+    $services->load('Glpi\Kernel\\Listener\\', $projectDir . '/src/Glpi/Kernel/Listener');
     $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
+    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress')->exclude($projectDir . '/src/Glpi/Progress/SessionProgress.php');
+    $services->load(
+        'Glpi\Form\ConditionalVisiblity\\',
+        $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'
+    );
 
-    /**
-     * Override Symfony's logger.
-     * @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
-     */
-    $services->set('logger', LegacyGlobalLogger::class);
+    // Prevent Symfony to register its own default logger.
+    // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
+    $services->set('logger')->synthetic();
 };

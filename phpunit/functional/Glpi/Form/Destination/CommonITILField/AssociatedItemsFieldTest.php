@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,7 +63,7 @@ final class AssociatedItemsFieldTest extends DbTestCase
         $monitors = $this->createMonitors(2);
 
         $specific_values = new AssociatedItemsFieldConfig(
-            strategy: AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
+            strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
             specific_associated_items: [
                 Computer::getType() => [
                     $computers[0]->getID(),
@@ -131,7 +131,7 @@ final class AssociatedItemsFieldTest extends DbTestCase
 
         $form = $this->createAndGetFormWithMultipleItemQuestions();
         $specific_answers = new AssociatedItemsFieldConfig(
-            strategy: AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
+            strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
             specific_question_ids: [
                 $this->getQuestionId($form, "Your Computer"),
                 $this->getQuestionId($form, "Your Monitors"),
@@ -187,7 +187,7 @@ final class AssociatedItemsFieldTest extends DbTestCase
 
         $form = $this->createAndGetFormWithMultipleItemQuestions();
         $last_valid_answer = new AssociatedItemsFieldConfig(
-            strategy: AssociatedItemsFieldStrategy::LAST_VALID_ANSWER
+            strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
         );
 
         // Test with no answers
@@ -254,7 +254,7 @@ final class AssociatedItemsFieldTest extends DbTestCase
 
         $form = $this->createAndGetFormWithMultipleItemQuestions();
         $all_valid_answers = new AssociatedItemsFieldConfig(
-            strategy: AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS
+            strategies: [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS]
         );
 
         // Test with no answers
@@ -327,6 +327,54 @@ final class AssociatedItemsFieldTest extends DbTestCase
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
                 ]
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                ],
+                Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
+                    $monitors[1]->getID() => $monitors[1]->getID(),
+                ],
+            ]
+        );
+    }
+
+    public function testMultipleStrategies(): void
+    {
+        $this->login();
+
+        // Create computers and monitors
+        $computers = $this->createComputers(2);
+        $monitors = $this->createMonitors(2);
+
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
+
+        // Multiple strategies: SPECIFIC_VALUES and SPECIFIC_ANSWERS
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: new AssociatedItemsFieldConfig(
+                strategies: [
+                    AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
+                    AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS
+                ],
+                specific_associated_items: [
+                    Computer::getType() => [
+                        $computers[0]->getID(),
+                    ],
+                ],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Your Monitors"),
+                ]
+            ),
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[1]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [

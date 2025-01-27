@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -248,7 +248,7 @@
 
         {% if not options.readonly %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Show date picker') }}">
                 <i class="{{ calendar_icon }}"></i>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}

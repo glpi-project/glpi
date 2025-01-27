@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -85,7 +85,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         ] + self::commonProvider();
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($nodes, $expected)
     {
         $xml = $this->buildXml($nodes);
@@ -364,7 +364,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         return $data  + self::commonProvider();
     }
 
-    #[dataProvider('assetCleanOsProvider')]
+    #[DataProvider('assetCleanOsProvider')]
     public function testPrepareWithCleanOS($nodes, $expected)
     {
         global $DB;

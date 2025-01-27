@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -42,7 +42,7 @@
          <h4 class="card-title {{ icon|length ? 'ms-5' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fa-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}"></i>
                </div>
             {% endif %}
             {{ label }}
@@ -64,7 +64,7 @@
          <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-                  <i class="fa-2x {{ icon }}"></i>
+                  <i class="fs-2x {{ icon }}"></i>
                </div>
             {% endif %}
              <span class="ms-2">{{ label }}</span>
@@ -702,6 +702,44 @@
    {% endif %}
 {% endmacro %}
 
+{% macro dropdownAjaxField(url, name, value, label = '', options = {}) %}
+    {% if options.multiple %}
+        {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
+        {% set defined_input_name = "_#{name}_defined" %}
+        <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
+
+        {# Multiple values will be set, input need to be an array #}
+        {% set name = "#{name}[]" %}
+    {% endif %}
+    {% set options = {
+        'rand': random(),
+        'width': '100%',
+    }|merge(options) %}
+    {% if options.fields_template.isMandatoryField(name) %}
+        {% set options = {'specific_tags': {'required': true}}|merge(options) %}
+    {% endif %}
+
+    {% if options.fields_template.isReadonlyField(name) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
+
+    {% if options.disabled %}
+        {% set options = options|merge({'specific_tags': {'disabled': 'disabled'}}) %}
+    {% endif %}
+
+    {% set options = options|merge({
+        'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand
+    }) %}
+    {% set field %}
+        {% set ajax_opts = options|filter((v, k) => k in ['templateResult', 'templateSelection', 'rand']) %}
+        {{ call('Html::jsAjaxDropdown', [name, options.id, url, ajax_opts])|raw }}
+    {% endset %}
+
+    {% if field|trim is not empty %}
+        {{ _self.field(name, field, label, options) }}
+    {% endif %}
+{% endmacro %}
+
 {% macro htmlField(name, value, label = '', options = {}) %}
    {% if value|length == 0 %}
       {% set value = '&nbsp;' %}
@@ -743,7 +781,7 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name ~ '_' ~ options.rand) %}
+      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
@@ -820,6 +858,7 @@
       'add_field_attribs': {},
       'center': false,
       'label_align': 'end',
+      'inline_add_field_html': false,
    }|merge(options) %}
 
    {% if options.icon_label %}
@@ -862,9 +901,7 @@
    <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
-      {% if options.center %}
-         {% set flex_class = "d-flex align-items-center" %}
-      {% endif %}
+      {% set flex_class = options.center ? 'd-flex align-items-center' : (options.inline_add_field_html ? 'd-flex' : '') %}
       <div {{ container_id }} class="{{ options.input_class }} {{ flex_class }} field-container">
          {{ field|raw }}
          {{ add_field_html|raw }}
@@ -950,4 +987,56 @@
             });
         });
     </script>
+{% endmacro %}
+
+{% macro illustrationField(name, value, label = '', options = {}) %}
+    {% set field %}
+        {% set container_id = "container-" ~ random() %}
+
+        <div id="{{ container_id }}">
+            <input
+                name="{{ name }}"
+                type="hidden"
+                value="{{ value }}"
+                data-glpi-icon-picker-value
+            >
+
+            {# Display the illustration, trigger the modal on click #}
+            {% set modal_id = "illustration-modal-" ~ random() %}
+            <div
+                class="illustration-selector d-flex align-items-center card border-1"
+                role="button"
+                aria-label="{{ __("Select an illustration") }}"
+                data-bs-toggle="modal"
+                data-bs-target="#{{ modal_id }}"
+                data-glpi-icon-picker-value-preview
+            >
+                <div class="card-body">
+                    {{ render_illustration(value, 100) }}
+                </div>
+            </div>
+
+            {# Render the modal content #}
+            {{ include('components/illustration/icon_picker_modal.html.twig', {
+                'id': modal_id,
+            }, with_context: false) }}
+
+            {# Start js controller #}
+            <script defer type="module">
+                (async () => {
+                    const module = await import(
+                        "{{ js_path('js/modules/IllustrationPicker/Controller.js') }}"
+                    );
+                    new module.GlpiIllustrationPickerController(
+                        document.getElementById('{{ container_id }}'),
+                    );
+                })();
+            </script>
+        </div>
+    {% endset %}
+
+    {% set options = {
+        'id': '%id%',
+    }|merge(options) %}
+    {{ _self.field(name, field, label, options) }}
 {% endmacro %}

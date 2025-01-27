@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -32,13 +32,11 @@
  #}
 
 {% macro display_folder(folder, input_id) %}
-   {% set name = folder.getLocalName|convert_encoding('UTF-8', 'UTF7-IMAP') %}
-   {% set global_name = folder.getGlobalName|convert_encoding('UTF-8', 'UTF7-IMAP') %}
    <li class="cursor-pointer" data-input-id="{{ input_id }}">
       <i class="ti ti-folder"></i>
-      <span class="folder-name" data-globalname="{{ global_name }}">{{ name }}</span>
+      <span class="folder-name" data-globalname="{{ folder['global_name'] }}">{{ folder['local_name'] }}</span>
       <ul>
-         {% for subfolder in folder %}
+         {% for subfolder in folder['children'] %}
             {{ _self.display_folder(subfolder, input_id) }}
          {% endfor %}
       </ul>

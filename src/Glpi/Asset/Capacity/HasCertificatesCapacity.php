@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,6 +50,13 @@ class HasCertificatesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Certificate::getIcon();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Certificate_Item::class,
+        ];
     }
 
     public function getSearchOptions(string $classname): array

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -125,7 +125,7 @@ final class FakeProvider extends Provider
         return $values[$itemtype] ?? null;
     }
 
-    public static function bigNumberItem(CommonDBTM $item = null, array $params = []): array
+    public static function bigNumberItem(?CommonDBTM $item = null, array $params = []): array
     {
         return [
             'number' => self::getItemCount($item::class) ?? 1500,
@@ -239,7 +239,7 @@ final class FakeProvider extends Provider
                 ],
                 'labels' => self::getFakeNames(),
             ],
-            'icon' => 'fas fa-stopwatch',
+            'icon' => 'ti ti-stopwatch',
         ];
     }
 
@@ -274,11 +274,11 @@ final class FakeProvider extends Provider
                     _x('fake_data', 'Helpdesk team'),
                 ],
             ],
-            'icon' => 'fas fa-stopwatch',
+            'icon' => 'ti ti-stopwatch',
         ];
     }
 
-    public static function nbItemByFk(CommonDBTM $item = null, CommonDBTM $fk_item = null, array $params = []): array
+    public static function nbItemByFk(?CommonDBTM $item = null, ?CommonDBTM $fk_item = null, array $params = []): array
     {
         $item_counts = self::getItemCount();
         $number_fk = $item_counts[$fk_item::class] ?? 20;
@@ -306,7 +306,7 @@ final class FakeProvider extends Provider
         ];
     }
 
-    public static function articleListItem(CommonDBTM $item = null, array $params = []): array
+    public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
         $data = [];
         for ($i = 0; $i < 5; $i++) {

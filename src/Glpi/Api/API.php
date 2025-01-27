@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -161,9 +161,6 @@ abstract class API
         $api_version_info = array_filter(Router::getAPIVersions(), static fn ($info) => (int) $info['api_version'] === 1);
         $api_version_info = reset($api_version_info);
         self::$api_url = trim($api_version_info['endpoint'], "/");
-
-       // Don't display error in result
-        ini_set('display_errors', 'Off');
 
        // Avoid keeping messages between api calls
         $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
@@ -2484,7 +2481,7 @@ abstract class API
 TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         Html::nullFooter();
-        exit;
+        exit();
     }
 
 
@@ -2949,6 +2946,15 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
                 foreach ($netp_iterator as $data) {
                     if (isset($data['netport_id'])) {
+                        // append contact
+                        $npo = new NetworkPort();
+                        $oppositecontactID = $npo->getContact($data['netport_id']) ;
+                        if ($oppositecontactID) {
+                            $data['networkports_id_opposite'] = $oppositecontactID ;
+                        } else {
+                            $data['networkports_id_opposite'] = null;
+                        }
+
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
@@ -3105,7 +3111,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
            // No content
             http_response_code(204);
         }
-        die;
+        exit();
     }
 
     /**

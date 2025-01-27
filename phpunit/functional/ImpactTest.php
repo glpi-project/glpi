@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,11 +37,12 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
+use Glpi\Plugin\Hooks;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Plugin;
 use Ticket;
 
 class ImpactTest extends \DbTestCase
@@ -531,6 +532,57 @@ class ImpactTest extends \DbTestCase
                 \Impact::DIRECTION_BACKWARD,
                 \Impact::DIRECTION_BACKWARD & $edge['flag']
             );
+        }
+    }
+
+    public function testGetImpactIconFromConfig(): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        foreach (['', '/glpi'] as $root_doc) {
+            $CFG_GLPI['root_doc'] = $root_doc;
+
+            foreach ($CFG_GLPI['impact_asset_types'] as $itemtype => $expected_icon) {
+                $this->assertSame($root_doc . $expected_icon, \Impact::getImpactIcon($itemtype));
+                // By default, targetting a particular ID does not change the result.
+                $this->assertSame($root_doc . $expected_icon, \Impact::getImpactIcon($itemtype, 1));
+            }
+
+            $this->assertSame($root_doc . '/pics/impact/default.png', \Impact::getImpactIcon('NotAnAssetType'));
+            // By default, targetting a particular ID does not change the result.
+            $this->assertSame($root_doc . '/pics/impact/default.png', \Impact::getImpactIcon('NotAnAssetType', 1));
+        }
+    }
+
+    public function testGetImpactIconFromPluginHook(): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
+
+        (new Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
+
+        $PLUGIN_HOOKS[Hooks::SET_ITEM_IMPACT_ICON]['tester'] = function (array $params) {
+            if ($params['itemtype'] === 'PluginTesterMyAsset') {
+                return $params['items_id'] > 0
+                    ? sprintf('/plugins/tester/MyAsset/Picture/%d', $params['items_id'])
+                    : '/plugins/tester/pics/myasset.png';
+            }
+            return null;
+        };
+
+        foreach (['', '/glpi'] as $root_doc) {
+            $CFG_GLPI['root_doc'] = $root_doc;
+
+            $this->assertSame($root_doc . '/plugins/tester/pics/myasset.png', \Impact::getImpactIcon('PluginTesterMyAsset'));
+            $this->assertSame($root_doc . '/plugins/tester/MyAsset/Picture/7', \Impact::getImpactIcon('PluginTesterMyAsset', 7));
+
+            $this->assertSame($root_doc . '/pics/impact/default.png', \Impact::getImpactIcon('PluginTesterAnotherAsset'));
         }
     }
 }

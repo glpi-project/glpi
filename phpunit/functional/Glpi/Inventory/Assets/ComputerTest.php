@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -176,7 +176,7 @@ class ComputerTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $asset)
     {
         $date_now = date('Y-m-d H:i:s');
@@ -187,7 +187,7 @@ class ComputerTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Computer($computer, $json);
         $main->setExtraData((array)$json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
@@ -590,7 +590,7 @@ class ComputerTest extends AbstractInventoryAsset
         $agent = new \Agent();
         $this->assertGreaterThan(0, $agent->handleAgent($inventory->extractMetadata()));
 
-        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main = new \Glpi\Inventory\MainAsset\Computer($computer, $json);
         $main->setAgent($agent)->setExtraData($data)->checkConf($conf);
         $result = $main->prepare();
         $this->assertCount(1, $result);

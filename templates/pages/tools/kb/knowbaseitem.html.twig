@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -62,7 +62,7 @@
         {% endset %}
     {% endif %}
     {% if item.fields['users_id'] %}
-        {% set user_field = call('getUserName', [item.fields['users_id'], has_profile_right('user', constant('READ')) ? 1 : 0]) %}
+        {% set user_field = call('getUserLink', [item.fields['users_id']]) %}
         {{ fields.htmlField('', user_field, __('Writer')) }}
     {% else %}
         {{ fields.nullField() }}

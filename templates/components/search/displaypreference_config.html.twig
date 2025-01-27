@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -53,7 +53,7 @@
             <div class="alert alert-warning mt-3">
                 {{ __('No personal criteria. Create personal parameters?') }}
                 <button type="button" class="btn btn-primary ms-3" name="activate" value="1">
-                    <i class="fas fa-plus"></i>
+                    <i class="ti ti-plus"></i>
                     <span>{{ __('Create') }}</span>
                 </button>
             </div>
@@ -62,7 +62,7 @@
                 {% if available_to_add|length > 0 %}
                     {% set add_opt_btn %}
                         <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
-                            <i class="fas fa-plus"></i>
+                            <i class="ti ti-plus"></i>
                             <span>{{ _x('button', 'Add') }}</span>
                         </button>
                     {% endset %}
@@ -95,14 +95,14 @@
             <ul class="list-group">
                 {% for opt in entries|filter(v => v['fixed'] == true) %}
                     <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item py-2 disabled px-2">
-                        <i class="fa-fw d-inline-flex"></i>
+                        <i class="ti ti-grip-vertical bs-invisible"></i>
                         <span>{{ opt['name'] }}</span>
                     </li>
                 {% endfor %}
                 {% for opt in entries|filter(v => v['fixed'] != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
                     <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
-                        <i class="ti ti-grip-vertical fa-fw"></i>
+                        <i class="ti ti-grip-vertical"></i>
                         <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
                         <span>
                             {% if opt['noremove'] is not defined or opt['noremove'] != true %}
@@ -210,7 +210,7 @@
             const tbody = specific_form.find(`ul.list-group`);
             tbody.append(`
                <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
-                  <i class="ti ti-grip-vertical fa-fw"></i>
+                  <i class="ti ti-grip-vertical"></i>
                   <span class="flex-fill ms-1">${label}</span>
                   <span>
                         <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">

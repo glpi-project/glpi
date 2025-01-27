@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ class MemoryTest extends AbstractInventoryAsset
         ];
     }
 
-    #[dataProvider('assetProvider')]
+    #[DataProvider('assetProvider')]
     public function testPrepare($xml, $expected)
     {
         $converter = new \Glpi\Inventory\Converter();
@@ -90,14 +90,14 @@ class MemoryTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idm = new \Item_DeviceMemory();
                  $this->assertFalse(
                      $idm->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
                      'A memory is already linked to computer!'
                  );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -110,7 +110,7 @@ class MemoryTest extends AbstractInventoryAsset
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -240,10 +240,10 @@ class MemoryTest extends AbstractInventoryAsset
             $this->assertEquals(0, $memory['is_dynamic']);
         }
 
-       //computer inventory knows only "Bottom-Slot 1(left)" and "Bottom-Slot 2(right)" memories
+        //computer inventory knows only "Bottom-Slot 1(left)" and "Bottom-Slot 2(right)" memories
         $this->doInventory($xml_source, true);
 
-       //we still have 2 memory devices
+        //we still have 2 memory devices
         $memories = $device_mem->find();
         $this->assertCount(2, $memories);
 
@@ -253,20 +253,20 @@ class MemoryTest extends AbstractInventoryAsset
             countElementsInTable($mem_model->getTable())
         );
 
-       //we still have 3 memories items linked to the computer
+        //we still have 3 memories items linked to the computer
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $memories);
 
-       //memories present in the inventory source are now dynamic
+        //memories present in the inventory source are now dynamic
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $memories);
 
-       //memory not present in the inventory is still not dynamic
+        //memory not present in the inventory is still not dynamic
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $memories);
 
-       //Redo inventory, but with removed "Bottom-Slot 2(right)" memory
-       //and a different memory model in Slot 1
+        //Redo inventory, but with removed "Bottom-Slot 2(right)" memory
+        //and a different memory model in Slot 1
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -301,16 +301,97 @@ class MemoryTest extends AbstractInventoryAsset
         // 'DDR4 - 2133 - SODIMM' (MODEL-A)
         $this->assertCount(1, $device_mem->find(['devicememorymodels_id' => $mem_model_id]));
 
-       //we now have 2 memories linked to computer only
+        //we now have 2 memories linked to computer only
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $memories);
 
-       //memory present in the inventory source is still dynamic
+        //memory present in the inventory source is still dynamic
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $memories);
 
-       //memory not present in the inventory is still not dynamic
+        //memory not present in the inventory is still not dynamic
         $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $memories);
+    }
+
+    public function testMemoryOneManufactuerOneNot()
+    {
+        $device_mem = new \DeviceMemory();
+        $item_mem = new \Item_DeviceMemory();
+
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc_with_memories",
+         "uuid": "32EED9C2-204C-42A1-A97E-A6EF2CE44B3E"
+      },
+      "memories": [
+         {
+            "capacity": 8192,
+            "caption": "DIMM 0",
+            "description": "SODIMM",
+            "manufacturer": "Hynix",
+            "model": "HMAA1GS6CJR6N-XN",
+            "numslots": 1,
+            "serialnumber": "953E68BA",
+            "speed": "3200",
+            "type": "DDR4"
+         },
+         {
+            "capacity": 16384,
+            "caption": "DIMM 0",
+            "description": "SODIMM",
+            "model": "CT16G4SFRA32A.C16FP",
+            "numslots": 2,
+            "serialnumber": "E72ADEC5",
+            "speed": "3200",
+            "type": "DDR4"
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.xx"
+   },
+   "deviceid": "Inspiron-5515-2024-02-01-08-19-36",
+   "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+
+        //initial import
+        $this->doInventory($json);
+
+        $computer = new \Computer();
+        $this->assertTrue(
+            $computer->getFromDBByCrit([
+                'name' => 'pc_with_memories' // a computer that remembers
+            ])
+        );
+        $computers_id = $computer->fields['id'];
+
+        //we have 2 memories items linked to the computer
+        $memories = $item_mem->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(
+            2,
+            $memories,
+            print_r($memories, true)
+        );
+
+        $manufacturer = new \Manufacturer();
+        $manufacturers = $manufacturer->find();
+        //2 manufacturers ine db: "Hynix" from current inv, "My Manufacturer" from bootstrap data
+        $this->assertCount(
+            2,
+            $manufacturers,
+            print_r($manufacturers, true)
+        );
+
+        //we have 2 memory devices: one for Hynix, one without manufacturer
+        $memories = $device_mem->find();
+        $this->assertCount(
+            2,
+            $memories,
+            print_r($memories, true)
+        );
     }
 }

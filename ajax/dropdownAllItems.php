@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -97,6 +97,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     }
     if (isset($_POST['specific_tags_items_id_dropdown'])) {
         $p['specific_tags'] = $_POST['specific_tags_items_id_dropdown'];
+    }
+    if (isset($_POST['aria_label'])) {
+        $p['aria_label'] = $_POST['aria_label'];
     }
     $p['_idor_token'] = Session::getNewIDORToken($_POST["idtable"], $idor_params);
 

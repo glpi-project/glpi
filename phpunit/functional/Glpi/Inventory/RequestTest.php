@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -101,7 +101,7 @@ class RequestTest extends \GLPITestCase
     /**
      * Test known queries
      */
-    #[dataProvider('queriesProvider')]
+    #[DataProvider('queriesProvider')]
     public function testSnmpQuery($query)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
@@ -109,8 +109,12 @@ class RequestTest extends \GLPITestCase
         $request = $this->getMockBuilder(\Glpi\Inventory\Request::class)
             ->onlyMethods(['inventory', 'prolog'])
             ->getMock();
-        $request->method('inventory')->willReturn(null);
-        $request->method('prolog')->willReturn(null);
+        $request->method('inventory')->willReturnCallback(function () {
+            return;
+        });
+        $request->method('prolog')->willReturnCallback(function () {
+            return;
+        });
 
         $request->handleContentType('Application/xml');
         $request->handleRequest($data);
@@ -133,7 +137,7 @@ class RequestTest extends \GLPITestCase
     /**
      * Test unknown queries
      */
-    #[dataProvider('unhandledQueriesProvider')]
+    #[DataProvider('unhandledQueriesProvider')]
     public function testWrongQuery($query)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
@@ -248,7 +252,7 @@ class RequestTest extends \GLPITestCase
      *
      * @return void
      */
-    #[dataProvider('compressionProvider')]
+    #[DataProvider('compressionProvider')]
     public function testCompression(string $function, string $mime)
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";

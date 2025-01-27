@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -213,9 +213,9 @@ final class Parser
 
     /**
      * @param array $tokens Tokens from the RSQL lexer.
-     * @return QueryExpression SQL criteria
+     * @return Result RSQL query result
      */
-    public function parse(array $tokens): QueryExpression
+    public function parse(array $tokens): Result
     {
         $it = new \DBmysqlIterator($this->db);
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
@@ -230,6 +230,7 @@ final class Parser
         $operators = array_combine(array_column($operators, 'operator'), $operators);
 
         $flat_props = $this->search->getFlattenedProperties();
+        $invalid_filters = [];
 
         $buffer = [];
         while ($position < $token_count) {
@@ -238,6 +239,14 @@ final class Parser
                 // If the property isn't in the flattened properties array, the filter should be ignored (not valid)
                 if (!isset($flat_props[$value])) {
                     // Not valid. Just fill the buffer and continue to the next token. This will be handled once the value token is reached.
+                    $invalid_filters[$value] = Error::UNKNOWN_PROPERTY;
+                    $buffer = [
+                        'property' => null,
+                        'field' => null,
+                    ];
+                } else if (isset($flat_props[$value]['x-mapped-from'])) {
+                    // Mapped properties cannot be used in RSQL currently since they are calculated after the query is executed
+                    $invalid_filters[$value] = Error::MAPPED_PROPERTY;
                     $buffer = [
                         'property' => null,
                         'field' => null,
@@ -249,9 +258,16 @@ final class Parser
                     ];
                 }
             } else if ($type === Lexer::T_OPERATOR) {
-                $buffer['operator'] = $operators[$value]['sql_where_callable'];
+                if (!isset($operators[$value])) {
+                    if ($buffer['property'] !== null) {
+                        $invalid_filters[$buffer['property']] = Error::UNKNOWN_OPERATOR;
+                    }
+                    $buffer['operator'] = null;
+                } else {
+                    $buffer['operator'] = $operators[$value]['sql_where_callable'];
+                }
             } else if ($type === Lexer::T_VALUE) {
-                if ($buffer['property'] !== null && $buffer['field'] !== null) {
+                if ($buffer['property'] !== null && $buffer['operator'] !== null && $buffer['field'] !== null) {
                     // Unquote value if it is quoted
                     if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
                         $value = substr($value, 1, -1);
@@ -285,6 +301,6 @@ final class Parser
             $sql_string = '1';
         }
 
-        return new QueryExpression($sql_string);
+        return new Result(new QueryExpression($sql_string), $invalid_filters);
     }
 }

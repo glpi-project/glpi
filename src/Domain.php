@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,6 +69,8 @@ class Domain extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Notepad::class,
+            Certificate_Item::class,
+            ManualLink::class,
         ];
     }
 

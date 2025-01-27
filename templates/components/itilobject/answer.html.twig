@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -33,10 +33,9 @@
 
 <div id="new-itilobject-form" class="d-flex">
    {% for timeline_itemtype in timeline_itemtypes %}
-      {% set show_kb_sol = load_kb_sol > 0 and timeline_itemtype.type == 'ITILSolution' %}
       {% set is_private = timeline_itemtype.item.fields['is_private'] ?? false %}
       {% set is_private_class = is_private ? "private-item" : "" %}
-      <div class="timeline-item mb-1 ms-auto {{ is_private_class }} {{ timeline_itemtype.type }} collapse {{ show_kb_sol ? 'show' : '' }}"
+      <div class="timeline-item mb-1 ms-auto {{ is_private_class }} {{ timeline_itemtype.type }} collapse"
         id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
          <div class="row">
             <div class="col-auto todo-list-state"></div>
@@ -49,23 +48,17 @@
                      <div class="clearfix">
                         <button class="btn btn-sm btn-ghost-secondary float-end mb-1 close-itil-answer"
                               data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                           <i class="fa-lg ti ti-x"></i>
+                           <i class="fs-2 ti ti-x"></i>
                         </button>
                      </div>
                      <div>
                         {% if timeline_itemtype.template is defined %}
                            {{ include(timeline_itemtype.template, {
                               'item': item,
-                              'subitem': timeline_itemtype.item,
-                              'kb_id_toload': load_kb_sol
+                              'subitem': timeline_itemtype.item
                            }) }}
                         {% else %}
                            {% set sf_options = {'parent': item} %}
-                           {% if show_kb_sol %}
-                              {% set sf_options = sf_options|merge({
-                                 'kb_id_toload': load_kb_sol
-                              }) %}
-                           {% endif %}
                            {{ timeline_itemtype.item.showForm(-1, sf_options) }}
                         {% endif %}
                      </div>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,26 +52,6 @@ class Update extends \GLPITestCase
             'version'   => GLPI_VERSION
         ];
         $this->array($update->getCurrents())->isEqualTo($expected);
-    }
-
-    public function testInitSession()
-    {
-        global $DB;
-
-        $update = new \Update($DB);
-        session_destroy();
-        $this->variable(session_status())->isIdenticalTo(PHP_SESSION_NONE);
-
-        $update->initSession();
-        $this->variable(session_status())->isIdenticalTo(PHP_SESSION_ACTIVE);
-
-        $this->array($_SESSION)->hasKeys([
-            'glpilanguage',
-            'glpi_currenttime',
-        ])->notHasKeys([
-            'glpi_use_mode',
-            'use_log_in_files'
-        ]);
     }
 
     public function testSetMigration()
@@ -401,7 +381,7 @@ class Update extends \GLPITestCase
         $method->setAccessible(true);
 
         global $DB;
-        $update = new \Update($DB, [], vfsStream::url('install/migrations'));
+        $update = new \Update($DB, vfsStream::url('install/migrations'));
         $this->array($method->invokeArgs($update, [$current_version, $force_latest]))->isIdenticalTo($expected_migrations);
     }
 }

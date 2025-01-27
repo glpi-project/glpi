@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,14 +63,16 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         return $output;
     }
 
-    public function warningBeforeReplayRulesOnExistingDB($target)
+    public function warningBeforeReplayRulesOnExistingDB()
     {
+        $rule_class = $this->getRuleClassName();
+
         $twig_params = [
             'warning_title' => __('Warning before running rename based on the dictionary rules'),
             'warning_message' => __('Warning! This operation can put merged software in the trashbin. Ensure to notify your users.'),
             'manufacturer_label' => __('Replay dictionary rules for manufacturers'),
             'btn_label' => _sx('button', 'Post'),
-            'target' => $target,
+            'target' => $rule_class::getSearchURL(),
             'emptylabel' => __('All'),
         ];
 

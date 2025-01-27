@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -860,21 +860,13 @@ class Change extends CommonITILObject
                 // Mini search engine
                 /** @var Group $item */
                 if ($item->haveChildren()) {
-                    $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-                    echo "<table class='tab_cadre_fixe'>";
-                    echo "<tr class='tab_bg_1'><th>" . __('Last tickets') . "</th></tr>";
-                    echo "<tr class='tab_bg_1'><td class='center'>";
-                    echo __('Child groups') . "&nbsp;";
-                    Dropdown::showYesNo(
-                        'tree',
-                        $tree,
-                        -1,
-                        ['on_change' => 'reloadTab("start=0&tree="+this.value)']
-                    );
+                    $tree = (int) Session::getSavedOption(__CLASS__, 'tree', 0);
+                    TemplateRenderer::getInstance()->display('components/form/item_itilobject_group.html.twig', [
+                        'tree' => $tree
+                    ]);
                 } else {
                     $tree = 0;
                 }
-                echo "</td></tr></table>";
                 break;
         }
         Change_Item::showListForItem($item, $withtemplate, $options);
@@ -902,8 +894,8 @@ class Change extends CommonITILObject
                 } else {
                     $tree = 0;
                 }
-                $restrict['glpi_groups_changes.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
-                $restrict['glpi_groups_changes.type'] = CommonITILActor::REQUESTER;
+                $restrict['glpi_changes_groups.groups_id'] = ($tree ? getSonsOf('glpi_groups', $item->getID()) : $item->getID());
+                $restrict['glpi_changes_groups.type'] = CommonITILActor::REQUESTER;
                 /** @var CommonDBTM $item */
                 break;
 
@@ -922,7 +914,7 @@ class Change extends CommonITILObject
                         ]
                     ];
                     if (count($_SESSION['glpigroups'])) {
-                        $or['glpi_groups_changes.groups_id'] = $_SESSION['glpigroups'];
+                        $or['glpi_changes_groups.groups_id'] = $_SESSION['glpigroups'];
                     }
                     $restrict[] = ['OR' => $or];
                 }
@@ -1043,26 +1035,6 @@ class Change extends CommonITILObject
     public static function getItemLinkClass(): string
     {
         return Change_Item::class;
-    }
-
-    public static function getStatusClass($status)
-    {
-        $class = null;
-        $solid = true;
-
-        switch ($status) {
-            case self::REFUSED:
-            case self::CANCELED:
-                $class = 'circle';
-                break;
-            default:
-                return parent::getStatusClass($status);
-        }
-
-        return $class == null
-         ? ''
-         : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class .
-         " " . static::getStatusKey($status);
     }
 
     public static function getStatusKey($status)
@@ -1341,11 +1313,11 @@ class Change extends CommonITILObject
                         ) {
                             foreach ($change->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fas fa-sm fa-fw fa-user text-muted me-1"></i>' .
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
                                         htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fas fa-sm fa-fw fa-envelope text-muted me-1"></i>' .
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
                                         $d['alternative_email'];
                                 }
                             }
@@ -1356,7 +1328,7 @@ class Change extends CommonITILObject
                             && count($change->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fas fa-sm fa-fw fa-users text-muted me-1"></i>' .
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
                                     Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
@@ -1523,7 +1495,7 @@ class Change extends CommonITILObject
         $twig_params['items'][] = [
             'link'   => $CFG_GLPI["root_doc"] . "/front/change.php?" . Toolbox::append_params($options),
             'text'   => __('Deleted'),
-            'icon'   => 'fas fa-trash bg-red-lt',
+            'icon'   => 'ti ti-trash bg-red-lt',
             'count'  => $number_deleted
         ];
 

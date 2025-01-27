@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
 use SimplePie\SimplePie;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *  Config class
@@ -80,6 +81,12 @@ class Config extends CommonDBTM
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+
+    /**
+     * Indicates whether the GLPI configuration has been loaded.
+     * @var boolean
+     */
+    private static $loaded = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -576,7 +583,9 @@ class Config extends CommonDBTM
             'legacy_doc_url' => $legacy_version['endpoint'],
             'legacy_api_url' => $legacy_version['endpoint'],
         ]);
-        TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        if ($CFG_GLPI['enable_api']) {
+            TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
+        }
     }
 
 
@@ -901,9 +910,6 @@ class Config extends CommonDBTM
             [ 'name'    => 'laminas/laminas-i18n',
                 'check'   => 'Laminas\\I18n\\Module'
             ],
-            [ 'name'    => 'laminas/laminas-json',
-                'check'   => 'Laminas\Json\Json'
-            ],
             [ 'name'    => 'monolog/monolog',
                 'check'   => 'Monolog\\Logger'
             ],
@@ -1178,86 +1184,6 @@ class Config extends CommonDBTM
 
         return "";
     }
-
-
-    public static function detectRootDoc()
-    {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
-
-        if (isset($CFG_GLPI['root_doc'])) {
-            return; // already computed
-        }
-
-        if (isset($_SERVER['REQUEST_URI'])) {
-            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
-
-            // In this case, `$CFG_GLPI['root_doc']` corresponds to the piece of path
-            // that is common between `GLPI_ROOT` and $_SERVER['SCRIPT_NAME']
-            // e.g. GLPI_ROOT=/var/www/glpi and $_SERVER['SCRIPT_NAME']=/glpi/front/index.php -> $CFG_GLPI['root_doc']=/glpi
-
-            // We cannot rely on $_SERVER['REQUEST_URI'] value as it is a value defined by HTTP client.
-            // $_SERVER['SCRIPT_NAME'] is consider safe as it is either set by GLPI router (see `/public/index.php`),
-            // either it contains the path of PHP script executed by the web server.
-            $script_path = $_SERVER['SCRIPT_NAME'];
-
-            // Extract relative path of entry script directory
-            // e.g. /var/www/mydomain.org/glpi/front/index.php -> /front
-            $current_dir_relative = str_replace(
-                str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT)),
-                '',
-                str_replace(DIRECTORY_SEPARATOR, '/', realpath(getcwd()))
-            );
-
-            // Extract relative path of script directory
-            // e.g. /glpi/front/index.php -> /glpi/front
-            $script_dir_relative = preg_replace(
-                '/\/[0-9a-zA-Z\.\-\_]+\.php/',
-                '',
-                $script_path
-            );
-            // API exception (handles `RewriteRule api/(.*)$ apirest.php/$1`)
-            if (strpos($script_dir_relative, 'api/') !== false) {
-                $script_dir_relative = preg_replace("/(.*\/)api\/.*/", "$1", $script_dir_relative);
-            }
-
-            // Remove relative path of entry script directory
-            // e.g. /glpi/front -> /glpi
-            $root_doc = str_replace($current_dir_relative, '', $script_dir_relative);
-            $root_doc = rtrim($root_doc, '/');
-
-            $CFG_GLPI['root_doc'] = $root_doc;
-        } else {
-            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
-            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`.
-
-            $url_base = $CFG_GLPI['url_base'] ?? null;
-            // $CFG_GLPI may have not been loaded yet, load value form DB if `$CFG_GLPI['url_base']` is not set.
-            if (
-                $url_base === null
-                && $DB instanceof DBmysql
-                && $DB->connected
-                // table/field may not exists in edge case (e.g. update from GLPI < 0.85)
-                && $DB->tableExists('glpi_configs')
-                && $DB->fieldExists('glpi_configs', 'context')
-            ) {
-                $url_base = Config::getConfigurationValue('core', 'url_base');
-            }
-
-            if ($url_base !== null) {
-                $CFG_GLPI['root_doc'] = parse_url($url_base, PHP_URL_PATH) ?? '';
-            }
-        }
-
-        // Path for icon of document type (web mode only)
-        if (isset($CFG_GLPI['root_doc'])) {
-            $CFG_GLPI['typedoc_icon_dir'] = $CFG_GLPI['root_doc'] . '/pics/icones';
-        }
-    }
-
 
     /**
      * Display field unicity criterias form
@@ -1652,12 +1578,28 @@ class Config extends CommonDBTM
      */
     public static function loadLegacyConfiguration()
     {
-
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var \DBmysql|null $DB
          */
         global $CFG_GLPI, $DB;
+
+        // Compute URLs base path.
+        $root_doc = '';
+        if (isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
+            $root_doc = Request::createFromGlobals()->getBasePath();
+        }
+        $CFG_GLPI['root_doc'] = $root_doc;
+        $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+
+        if (
+            !($DB instanceof DBmysql)
+            || !$DB->connected
+            || !$DB->tableExists('glpi_configs')
+        ) {
+            return false;
+        }
 
         $iterator = $DB->request(['FROM' => 'glpi_configs']);
 
@@ -1704,7 +1646,36 @@ class Config extends CommonDBTM
             $CFG_GLPI['planning_work_days'] = importArrayFromDB($CFG_GLPI['planning_work_days']);
         }
 
+        if (isset($CFG_GLPI[Impact::CONF_ENABLED])) {
+            $CFG_GLPI[Impact::CONF_ENABLED] = importArrayFromDB($CFG_GLPI[Impact::CONF_ENABLED]);
+        }
+
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            // $_SERVER['REQUEST_URI'] is not set, meaning that GLPI is probably acces from CLI.
+            // In this case, `$CFG_GLPI['root_doc']` has to be extracted from `$CFG_GLPI['url_base']`,
+            // and it can only be done once configuration is loaded.
+
+            // `$CFG_GLPI['root_doc']` is not supposed to be used in a CLI context,
+            // but it is likely to be used indirectly by cron tasks.
+
+            if (isset($CFG_GLPI['url_base'])) {
+                $root_doc = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH) ?: '';
+                $CFG_GLPI['root_doc'] = $root_doc;
+                $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
+            }
+        }
+
+        self::$loaded = true;
+
         return true;
+    }
+
+    /**
+     * Indicates whether the legacy configuration has been correctly loaded.
+     */
+    public static function isLegacyConfigurationLoaded(): bool
+    {
+        return self::$loaded;
     }
 
 
@@ -2019,6 +1990,20 @@ class Config extends CommonDBTM
                 return;
             }
 
+            // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
+            $array_fields = [
+                'priority_matrix',
+                'devices_in_menu',
+                'lock_item_list',
+                'planning_work_days',
+                Impact::CONF_ENABLED,
+            ];
+            if (in_array($this->fields['name'], $array_fields, true)) {
+                $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);
+            } else {
+                $CFG_GLPI[$this->fields['name']] = $newvalue;
+            }
+
             // avoid inserting truncated json in logs
             if (strlen($newvalue) > 255 && Toolbox::isJSON($newvalue)) {
                 $newvalue = "{...}";
@@ -2026,8 +2011,6 @@ class Config extends CommonDBTM
             if (strlen($oldvalue) > 255 && Toolbox::isJSON($oldvalue)) {
                 $oldvalue = "{...}";
             }
-
-            $CFG_GLPI[$this->fields['name']] = $newvalue; // Ensure post update actions and hook that are using `$CFG_GLPI` will use the new value
 
             $this->logConfigChange(
                 $this->fields['context'],

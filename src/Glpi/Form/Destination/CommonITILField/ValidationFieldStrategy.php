@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,10 +59,10 @@ enum ValidationFieldStrategy: string
         return match ($this) {
             self::NO_VALIDATION    => null,
             self::SPECIFIC_ACTORS  => $this->getActorsFromSpecificActors(
-                $config->getSpecificActors() ?? []
+                $config->getSpecificActors()
             ),
             self::SPECIFIC_ANSWERS => $this->getActorsForSpecificAnswers(
-                $config->getSpecificQuestionIds() ?? [],
+                $config->getSpecificQuestionIds(),
                 $answers_set
             ),
         };
@@ -135,10 +135,10 @@ enum ValidationFieldStrategy: string
         }
 
         $actors = [];
-        foreach ($specific_actors as $fk => $actor_ids) {
+        foreach ($specific_actors as $itemtype => $actor_ids) {
             foreach ($actor_ids as $actor_id) {
                 $actors[] = [
-                    'itemtype' => getItemtypeForForeignKeyField($fk),
+                    'itemtype' => $itemtype,
                     'items_id' => $actor_id,
                 ];
             }

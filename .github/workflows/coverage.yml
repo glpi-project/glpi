@@ -64,21 +64,10 @@ jobs:
       - name: "PHPUnit tests"
         run: |
           docker compose exec -T app .github/actions/test_tests-phpunit.sh
-      - name: "Functional tests"
-        run: |
-          docker compose exec -T app .github/actions/test_tests-functional.sh
-      - name: "LDAP tests"
-        run: |
-          .github/actions/init_initialize-ldap-fixtures.sh
-          docker compose exec -T app .github/actions/test_tests-ldap.sh
-      - name: "IMAP tests"
-        run: |
-          .github/actions/init_initialize-imap-fixtures.sh
-          docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
-        uses: "codecov/codecov-action@v4"
+        uses: "codecov/codecov-action@v5"
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          files: ./phpunit/coverage-functional/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
+          files: ./phpunit/coverage/clover.xml
           override_branch: ${{ inputs.branch }}

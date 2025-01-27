@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -615,10 +615,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='fas fa-arrows-alt-v'></i>"
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
                 . __s('Move');
         }
-        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='fas fa-file-download'></i>"
+        $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
             . _sx('button', 'Export');
 
         return $actions;
@@ -2081,11 +2081,12 @@ JS
     /**
      * Show preview result of a rule
      *
-     * @param string $target    Not used
      * @param array $input     input data array
      * @param array $params    params used (see addSpecificParamsForPreview)
-     **/
-    public function showRulePreviewResultsForm($target, $input, $params)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulePreviewResultsForm($input, $params)
     {
         $actions       = $this->getAllActions();
         $check_results = [];
@@ -2468,7 +2469,7 @@ JS
                     break;
 
                 case "dropdown_inventory_itemtype":
-                    $types = $CFG_GLPI['state_types'];
+                    $types = $CFG_GLPI['ruleimportasset_types'];
                     $types[''] = __('No item type defined');
                     Dropdown::showItemTypes($name, $types, ['value' => $value]);
                     $display = true;
@@ -2697,10 +2698,11 @@ JS
     /**
      * Criteria form used to preview rule
      *
-     * @param string  $target   target of the form
      * @param integer $rules_id ID of the rule
-     **/
-    public function showRulePreviewCriteriasForm($target, $rules_id)
+     *
+     * @since 11.0.0 The `$target` parameter has been removed.
+     */
+    public function showRulePreviewCriteriasForm($rules_id)
     {
         $criteria = $this->getAllCriteria();
         if (!$this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
@@ -2718,6 +2720,12 @@ JS
                 $already_added_criterias[] = $criterion->fields["criteria"];
             }
         }
+
+        $target = '/front/rule.test.php';
+        if ($plugin = isPluginItemType(static::class)) {
+            $target = '/plugins/' . $plugin['plugin'] . $target;
+        }
+
         TemplateRenderer::getInstance()->display('pages/admin/rules/preview_criteria.html.twig', [
             'criterias' => $unique_criterias,
             'criteria_names' => $criteria_names,

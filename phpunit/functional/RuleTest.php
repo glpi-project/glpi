@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -178,7 +178,7 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
+                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export'
             ],
             $actions
         );
@@ -188,8 +188,8 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:move_rule' => '<i class=\'fas fa-arrows-alt-v\'></i>Move',
-                'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
+                'Rule:move_rule' => '<i class=\'ti ti-arrows-vertical\'></i>Move',
+                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export'
             ],
             $actions
         );
@@ -199,7 +199,7 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:export'     => '<i class=\'fas fa-file-download\'></i>Export'
+                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export'
             ],
             $actions
         );

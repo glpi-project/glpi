@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -84,7 +84,9 @@ class User extends CommonDBTM
     {
         return [
             Profile_User::class,
-            Group_User::class
+            Group_User::class,
+            Certificate_Item::class,
+            ManualLink::class,
         ];
     }
 
@@ -405,6 +407,8 @@ class User extends CommonDBTM
         $this->addStandardTab('Auth', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
         $this->addStandardTab('Certificate_Item', $ong, $options);
+        $this->addStandardTab(SoftwareLicense_User::class, $ong, $options);
+        $this->addStandardTab(Contract_User::class, $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -790,14 +794,28 @@ class User extends CommonDBTM
     {
         parent::unsetUndisclosedFields($fields);
 
-        $user = new self();
-        $can_see_token = Session::getLoginUserID() === $fields['id']
-            || (
-                $user->can($fields['id'], UPDATE)
-                && $user->currentUserHaveMoreRightThan($fields['id'])
-            );
-        if (!$can_see_token) {
-            unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+        if (
+            array_key_exists('password_forget_token', $fields)
+            || array_key_exists('password_forget_token_date', $fields)
+        ) {
+            if (array_key_exists('id', $fields)) {
+                // `id` is present mainly when the whole object is fetched.
+                // In this case, we must show the token only if the user is allowed to read it.
+                $user = new self();
+                $can_see_token = Session::getLoginUserID() === $fields['id']
+                    || (
+                        $user->can($fields['id'], UPDATE)
+                        && $user->currentUserHaveMoreRightThan($fields['id'])
+                    );
+            } else {
+                // `id` may be missing when a partial object is fetch.
+                // In this case, we cannot ensure that the user is allowed to read the token
+                // and we must NOT show it.
+                $can_see_token = false;
+            }
+            if (!$can_see_token) {
+                unset($fields['password_forget_token'], $fields['password_forget_token_date']);
+            }
         }
     }
 
@@ -1143,8 +1161,27 @@ class User extends CommonDBTM
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
                 && !$this->currentUserHaveMoreRightThan($input['id'])
             ) {
+                $ignored_fields = [];
                 foreach ($protected_input_keys as $input_key) {
+                    if (
+                        isset($input[$input_key])
+                        && !str_starts_with($input_key, '_') // virtual field
+                        && $input[$input_key] != $this->getField($input_key)
+                    ) {
+                        $ignored_fields[] = $input_key;
+                    }
                     unset($input[$input_key]);
+                }
+                if (!empty($ignored_fields)) {
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('You are not allowed to update the following fields: %s'),
+                            implode(', ', $ignored_fields)
+                        ),
+                        false,
+                        ERROR
+                    );
+                    return false;
                 }
             }
         }
@@ -1194,9 +1231,10 @@ class User extends CommonDBTM
             }
         }
 
-       // Security on default group  update
+        // Security on default group update
         if (
             isset($input['groups_id'])
+            && $input['groups_id'] > 0
             && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
         ) {
             unset($input['groups_id']);
@@ -1315,6 +1353,34 @@ class User extends CommonDBTM
                 E_USER_WARNING
             );
         }
+    }
+
+    /**
+     * Force authorization assignment rules to be processed for this user
+     * @return void
+     */
+    public function reapplyRightRules()
+    {
+        $rules  = new RuleRightCollection();
+        $this->applyRightRules();
+        $groups = Group_User::getUserGroups($this->getID());
+        $groups_id = array_column($groups, 'id');
+        $result = $rules->processAllRules(
+            $groups_id,
+            $this->fields,
+            [
+                'type' => $this->fields['authtype'],
+                'login' => $this->fields['name'],
+                'email' => UserEmail::getDefaultForUser($this->getID())
+            ]
+        );
+
+        $this->input = $result;
+        $this->willProcessRuleRight();
+        $this->syncLdapGroups();
+        $this->syncDynamicEmails();
+        $this->applyGroupsRules();
+        $this->applyRightRules();
     }
 
     /**
@@ -2596,7 +2662,7 @@ class User extends CommonDBTM
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="ti ti-id fa-lg"></i>
+               <i class="ti ti-id fs-2"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -2614,7 +2680,7 @@ HTML;
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
-                            <i class="ti ti-spy fa-lg"></i>
+                            <i class="ti ti-spy fs-2"></i>
                         </button>
                     </form>
 HTML;
@@ -2639,7 +2705,7 @@ JAVASCRIPT;
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
                        title="{$error_message}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="ti ti-spy fa-lg"></i>
+                  <i class="ti ti-spy fs-2"></i>
                </button>
 HTML;
                 $toolbar[] = $impersonate_btn;
@@ -2713,7 +2779,7 @@ HTML;
            //display login field for new records, or if this is not external auth
             echo "<td><input name='name' id='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         } else {
-            echo "<td class='b'>" . $this->fields["name"];
+            echo "<td class='b'>" . htmlescape($this->fields["name"]);
             echo "<input type='hidden' name='name' value=\"" . htmlescape($this->fields["name"]) . "\" class='form-control'></td>";
         }
 
@@ -2754,7 +2820,7 @@ HTML;
                 if (empty($this->fields['sync_field'])) {
                     echo Dropdown::EMPTY_VALUE;
                 } else {
-                    echo $this->fields['sync_field'];
+                    echo htmlescape($this->fields['sync_field']);
                 }
             }
             echo "</td></tr>";
@@ -2864,7 +2930,12 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_1'>";
         $activerand = mt_rand();
         echo "<td><label for='dropdown_is_active$activerand'>" . __s('Active') . "</label></td><td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, ['rand' => $activerand]);
+        $params = ['rand' => $activerand];
+        if (!$higherrights) {
+            $params['readonly'] = true;
+            $params['tooltip'] = __('Not enough rights to change this field');
+        }
+        Dropdown::showYesNo('is_active', $this->fields['is_active'], -1, $params);
         echo "</td>";
         echo "<td>" . _sn('Email', 'Emails', Session::getPluralNumber());
         UserEmail::showAddEmailButton($this);
@@ -2908,7 +2979,7 @@ JAVASCRIPT;
         if (!empty($ID)) {
             if (Session::haveRight(self::$rightname, self::READAUTHENT)) {
                 echo "<td>" . __s('Authentication') . "</td><td>";
-                echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
+                echo htmlescape(Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]));
                 if (!empty($this->fields["date_sync"])) {
                     //TRANS: %s is the date of last sync
                     echo '<br>' . sprintf(
@@ -3014,7 +3085,7 @@ JAVASCRIPT;
 
         if (empty($ID)) {
             echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2'>" . _n('Authorization', 'Authorizations', 1) . "</th>";
+            echo "<th colspan='2'>" . _sn('Authorization', 'Authorizations', 1) . "</th>";
             $recurrand = mt_rand();
             echo "<td><label for='dropdown__is_recursive$recurrand'>" .  __s('Recursive') . "</label></td><td>";
             Dropdown::showYesNo("_is_recursive", 0, -1, ['rand' => $recurrand]);
@@ -3117,7 +3188,7 @@ JAVASCRIPT;
                         'value' => $this->fields['nickname']
                     ]);
                 } else {
-                    echo $this->fields['nickname'];
+                    echo htmlescape($this->fields['nickname']);
                 }
                 echo "</td>";
                 echo "</tr>";
@@ -3138,21 +3209,21 @@ JAVASCRIPT;
                      echo "</div>";
                      echo "(" . sprintf(
                          __s('generated on %s'),
-                         Html::convDateTime($this->fields["api_token_date"])
+                         htmlescape(Html::convDateTime($this->fields["api_token_date"]))
                      ) . ")";
                 }
                 echo "</td><td>";
                 Html::showCheckbox(['name'  => '_reset_api_token',
                     'title' => __('Regenerate')
                 ]);
-                echo "&nbsp;&nbsp;" . __('Regenerate');
+                echo "&nbsp;&nbsp;" . __s('Regenerate');
                 echo "</td></tr>";
             }
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2' class='center'>";
             if ($this->fields["last_login"]) {
-                printf(__('Last login on %s'), Html::convDateTime($this->fields["last_login"]));
+                printf(__s('Last login on %s'), htmlescape(Html::convDateTime($this->fields["last_login"])));
             }
             echo "</td><td colspan='2'class='center'>";
 
@@ -3462,7 +3533,7 @@ JAVASCRIPT;
                 $extauth
                 && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])
             ) {
-                echo $this->fields["registration_number"];
+                echo htmlescape($this->fields["registration_number"]);
             } else {
                 echo Html::input(
                     'registration_number',
@@ -3663,15 +3734,17 @@ JAVASCRIPT;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='fas fa-users'></i>" .
+                                                         = "<i class='ti ti-users-plus'></i>" .
                                                            __s('Associate to a group');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __s('Dissociate from a group');
+                                                         = "<i class='ti ti-users-minus'></i>" .
+                                                           __s('Dissociate from a group');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='fas fa-user-shield'></i>" .
+                                                         = "<i class='ti ti-shield-plus'></i>" .
                                                            __s('Associate to a profile');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __s('Dissociate from a profile');
+                                                         = "<i class='ti ti-shield-minus'></i>" .
+                                                           __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
                                                          = "<i class='fas fa-users-cog'></i>" .
                                                            __s("Move to group");
@@ -3679,14 +3752,16 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            $actions[$prefix . 'change_authtype']        = "<i class='fas fa-user-cog'></i>" .
+            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog'></i>" .
                                                       _sx('button', 'Change the authentication method');
-            $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
+            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>" .
                                                       __s('Force synchronization');
             $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
                                                     __s('Clean LDAP fields and force synchronisation');
-            $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
+            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>" .
                                                       __s('Disable 2FA');
+            $actions[$prefix . 'reapply_rights']            = "<i class='" . Profile::getIcon() . "'></i>" .
+                                                      __s('Reapply authorization assignment rules');
         }
         return $actions;
     }
@@ -3809,6 +3884,18 @@ JAVASCRIPT;
                     $totp->disable2FAForUser($id);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
+                break;
+            case 'reapply_rights':
+                $user = new self();
+                foreach ($ids as $id) {
+                    if ($user->getFromDB($id)) {
+                        $user->reapplyRightRules();
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
+                    }
+                }
+                break;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
@@ -4936,7 +5023,7 @@ JAVASCRIPT;
             );
             $icons .= "<span title=\"" . __s('Import a user') . "\"" .
             " data-bs-toggle='modal' data-bs-target='#userimport{$p['rand']}'>
-            <i class='fas fa-plus fa-fw '></i>
+            <i class='ti ti-plus'></i>
             <span class='sr-only'>" . __s('Import a user') . "</span>
          </span>";
             $icons .= '</div>';
@@ -4970,7 +5057,7 @@ JAVASCRIPT;
         }
 
         echo "<div class='center'>\n";
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>\n";
+        echo "<form method='post' action='" . htmlescape(self::getFormURL()) . "'>\n";
 
         echo "<table class='tab_cadre'>\n";
         echo "<tr><th colspan='4'>" . __s('Automatically add a user of an external source') . "</th></tr>\n";
@@ -5828,7 +5915,7 @@ JAVASCRIPT;
         // Check that the configuration allow this user to change his password
         if ($this->fields["authtype"] !== Auth::DB_GLPI && Auth::useAuthExt()) {
             trigger_error(
-                __("The authentication method configuration doesn't allow the user '$email' to change their password."),
+                "The authentication method configuration doesn't allow the user '$email' to change their password.",
                 E_USER_WARNING
             );
 
@@ -6648,8 +6735,8 @@ JAVASCRIPT;
         $table  = self::getTable();
         return QueryFunction::if(
             condition: [
-                "$table.$first" => ['<>' => ''],
-                "$table.$second" => ['<>' => '']
+                "$table.$first" => ['<>', ''],
+                "$table.$second" => ['<>', '']
             ],
             true_expression: QueryFunction::concat(["$table.$first", new QueryExpression($DB::quoteValue(' ')), "$table.$second"]),
             false_expression: $table . '.' . self::getNameField(),

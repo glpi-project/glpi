@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -54,14 +54,14 @@
                            href="{{ itemtype|itemtype_search_path }}">
                            <div class="row">
                               <div class="col-auto">
-                                 <i class="fa-fw {{ itemtype|itemtype_icon }}"></i>
+                                 <i class="{{ itemtype|itemtype_icon }}"></i>
                               </div>
                               <div class="col text-truncate">
                                  {{ dropdown_label }}
                               </div>
                               <div class="col-1 text-muted">
                                  {% if is_entity_assign %}
-                                    <i class="{{ 'Entity'|itemtype_icon }} fa-sm"
+                                    <i class="{{ 'Entity'|itemtype_icon }} fs-4"
                                        data-bs-toggle="tooltip"
                                        title="{{ __('Dropdown with entity management') }}"></i>
                                  {% endif %}
@@ -86,7 +86,7 @@
    <div class="input-icon mb-3">
       <input class="form-control" placeholder="{{ __('Filter dropdowns') }}" id="filter-dropdown" />
       <span class="input-icon-addon">
-         <i class="fas fa-search"></i>
+         <i class="ti ti-search"></i>
       </span>
    </div>
 

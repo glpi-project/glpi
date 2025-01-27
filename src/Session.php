@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,13 @@
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
+use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
@@ -69,6 +70,12 @@ class Session
      * Prevents intensive use of dropdowns from resulting in an excessively cumbersome session.
      */
     private const IDOR_MAX_TOKENS = 2500;
+
+    /**
+     * @var bool $bypass_right_checks
+     * @internal
+     */
+    private static bool $bypass_right_checks = false;
 
     /**
      * Destroy the current session
@@ -158,7 +165,6 @@ class Session
                     } else {
                         $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                     }
-                    $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                     $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                     $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                     $_SESSION["glpicrontimer"]       = time();
@@ -168,9 +174,7 @@ class Session
 
                     $auth->user->computePreferences();
                     foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                        if ($field == 'language' && isset($_POST['language']) && $_POST['language'] != '') {
-                            $_SESSION["glpi$field"] = $_POST[$field];
-                        } else if (isset($auth->user->fields[$field])) {
+                        if (isset($auth->user->fields[$field])) {
                             $_SESSION["glpi$field"] = $auth->user->fields[$field];
                         }
                     }
@@ -191,6 +195,11 @@ class Session
                     self::loadLanguage();
 
                     if ($auth->password_expired) {
+                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
+                        // fail the session check (as we use a special partial session here without profiles) and thus
+                        // destroy the session (which would make the "password expired" form impossible to submit as the
+                        // csrf check would fail as the session data would be empty).
+                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
                        // Do not init profiles, as user has to update its password to be able to use GLPI
                         return;
@@ -249,48 +258,26 @@ class Session
     public static function start()
     {
         if (session_status() === PHP_SESSION_NONE) {
-            ini_set('session.use_only_cookies', '1'); // Force session to use cookies
-            session_name(self::buildSessionName());
-
-            @session_start();
+            session_start();
         }
-       // Define current time for sync of action timing
+
+        // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-    }
 
-    /**
-     * Build the session name based on GLPI's folder path + full domain + port
-     *
-     * Adding the full domain name prevent two GLPI instances on the same
-     * domain (e.g. test.domain and prod.domain) with identical folder's
-     * path (e.g. /var/www/glpi) to compete for the same cookie name
-     *
-     * Adding the port prevent some conflicts when using docker
-     *
-     * @param string|null $path Default to GLPI_ROOT
-     * @param string|null $host Default to $_SERVER['HTTP_HOST']
-     * @param string|null $port Default to $_SERVER['SERVER_PORT']
-     *
-     * @return string An unique session name
-     */
-    public static function buildSessionName(
-        ?string $path = null,
-        ?string $host = null,
-        ?string $port = null
-    ): string {
-        if (is_null($path)) {
-            $path = realpath(GLPI_ROOT);
+        // Define session default mode
+        if (!isset($_SESSION['glpi_use_mode'])) {
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         }
 
-        if (is_null($host)) {
-            $host = $_SERVER['HTTP_HOST'] ?? '';
+        // Define default language
+        if (!isset($_SESSION['glpilanguage'])) {
+            $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
         }
 
-        if (is_null($port)) {
-            $port = $_SERVER['SERVER_PORT'] ?? '';
+        // Init messages array
+        if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
         }
-
-        return "glpi_" . md5($path . $host . $port);
     }
 
 
@@ -978,8 +965,7 @@ class Session
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
               && (
-                  strpos($_SERVER['PHP_SELF'], '/inventory.php') !== false
-                  || strpos($_SERVER['PHP_SELF'], '/index.php') !== false
+                  InventoryController::$is_running === true
                   || defined('TU_USER')
               )
         );
@@ -1012,39 +998,6 @@ class Session
         return false;
     }
 
-
-    /**
-     * Redirect User to login if not logged in
-     *
-     * @since 0.85
-     *
-     * @return void
-     **/
-    public static function redirectIfNotLoggedIn()
-    {
-
-        if (!self::isAuthenticated()) {
-            Html::redirectToLogin();
-        }
-    }
-
-    /**
-     * Check the `session.cookie_secure` configuration and exit with an error message if the
-     * current request context is not allowed to use session cookies.
-     */
-    public static function checkCookieSecureConfig(): void
-    {
-        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
-        // throw an exception
-        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
-        if ($is_https_request === false && $cookie_secure === true) {
-            $exception = new BadRequestHttpException();
-            $exception->setMessageToDisplay(__('The web server is configured to allow session cookies only on secured context (https). Therefore, you must access GLPI on a secured context to be able to use it.'));
-            throw $exception;
-        }
-    }
-
     /**
      * Global check of session to prevent PHP vulnerability
      *
@@ -1070,60 +1023,56 @@ class Session
         $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
         $entity_id  = $_SESSION['glpiactive_entity'] ?? null;
 
-        $valid_user = true;
-
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
-            $valid_user = false;
-        } else {
-            $user_table = User::getTable();
-            $pu_table   = Profile_User::getTable();
-            $profile_table = Profile::getTable();
-            $result = $DB->request(
-                [
-                    'COUNT'     => 'count',
-                    'SELECT'    => [$profile_table . '.last_rights_update'],
-                    'FROM'      => $user_table,
-                    'LEFT JOIN' => [
-                        $pu_table => [
-                            'FKEY'  => [
-                                Profile_User::getTable() => 'users_id',
-                                $user_table         => 'id'
-                            ]
-                        ],
-                        $profile_table => [
-                            'FKEY'  => [
-                                $pu_table => 'profiles_id',
-                                $profile_table => 'id'
-                            ]
-                        ]
-                    ],
-                    'WHERE'     => [
-                        $user_table . '.id'         => $user_id,
-                        $user_table . '.is_active'  => 1,
-                        $user_table . '.is_deleted' => 0,
-                        $pu_table . '.profiles_id'  => $profile_id,
-                    ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
-                    'GROUPBY'   => [$profile_table . '.id'],
-                ]
-            );
-
-            $row = $result->current();
-
-            if ($row === null || $row['count'] === 0) {
-                $valid_user = false;
-            } elseif (
-                $row['last_rights_update'] !== null
-                && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
-            ) {
-                Session::reloadCurrentProfile();
-                $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
-            }
+            throw new SessionExpiredException();
         }
 
-        if (!$valid_user) {
-            Session::destroy();
-            Auth::setRememberMeCookie('');
-            Html::redirectToLogin();
+        $user_table = User::getTable();
+        $pu_table   = Profile_User::getTable();
+        $profile_table = Profile::getTable();
+        $result = $DB->request(
+            [
+                'COUNT'     => 'count',
+                'SELECT'    => [$profile_table . '.last_rights_update'],
+                'FROM'      => $user_table,
+                'LEFT JOIN' => [
+                    $pu_table => [
+                        'FKEY'  => [
+                            Profile_User::getTable() => 'users_id',
+                            $user_table         => 'id'
+                        ]
+                    ],
+                    $profile_table => [
+                        'FKEY'  => [
+                            $pu_table => 'profiles_id',
+                            $profile_table => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE'     => [
+                    $user_table . '.id'         => $user_id,
+                    $user_table . '.is_active'  => 1,
+                    $user_table . '.is_deleted' => 0,
+                    $pu_table . '.profiles_id'  => $profile_id,
+                ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
+                'GROUPBY'   => [$profile_table . '.id'],
+            ]
+        );
+
+        $row = $result->current();
+
+        if ($row === null || $row['count'] === 0) {
+            // The current profile cannot be found for the current user in the database.
+            // The session information are stale, therefore the session should be considered as expired.
+            throw new SessionExpiredException();
+        }
+
+        if (
+            $row['last_rights_update'] !== null
+            && $row['last_rights_update'] > ($_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0)
+        ) {
+            Session::reloadCurrentProfile();
+            $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
         }
 
         return true;
@@ -1138,8 +1087,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "central") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the standard interface");
         }
     }
@@ -1173,8 +1120,6 @@ class Session
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "helpdesk") {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("The current profile does not use the simplified interface");
         }
     }
@@ -1188,8 +1133,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!isset($_SESSION["glpiname"])) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             throw new AccessDeniedHttpException("User has no valid session but seems to be logged in");
         }
     }
@@ -1262,8 +1205,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRight($module, $right)) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $right_name = self::getRightNameForError($module, $right);
             throw new AccessDeniedHttpException("User is missing the $right ($right_name) right for $module");
         }
@@ -1281,7 +1222,6 @@ class Session
     {
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($rights as $right) {
                 $right_name = self::getRightNameForError($module, $right);
@@ -1324,8 +1264,6 @@ class Session
         }
 
         if (!$valid) {
-           // Gestion timeout session
-            self::redirectIfNotLoggedIn();
             $info = "User is missing all of the following rights: ";
             foreach ($modules as $mod => $right) {
                 $right_name = self::getRightNameForError($mod, $right);
@@ -1450,7 +1388,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory() || Session::isCron()) {
+        if (self::isRightChecksDisabled() || Session::isInventory() || Session::isCron()) {
             return true;
         }
 
@@ -2410,6 +2348,7 @@ class Session
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
+            active_entities_ids: $_SESSION['glpiactiveentities'],
         );
     }
 
@@ -2427,5 +2366,48 @@ class Session
     public static function resetAjaxParam(): void
     {
         self::$is_ajax_request = false;
+    }
+
+    public static function getCurrentProfile(): Profile
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            throw new RuntimeException("No active session");
+        }
+
+        $profile = Profile::getById($profile_id);
+        if (!$profile) {
+            throw new RuntimeException("Failed to load profile: $profile_id");
+        }
+
+        return $profile;
+    }
+
+    /**
+     * Runs a callable with the right checks disabled.
+     * @return mixed|void The return value of the callable.
+     * @throws Throwable Any throwable that was caught from the callable if any.
+     */
+    public static function callAsSystem(callable $fn)
+    {
+        $caught_throwable = null;
+        try {
+            self::$bypass_right_checks = true;
+            return $fn();
+        } catch (Throwable $e) {
+            $caught_throwable = $e;
+        } finally {
+            self::$bypass_right_checks = false;
+        }
+        throw $caught_throwable;
+    }
+
+    /**
+     * @return bool Whether the right checks are disabled.
+     * @internal No backwards compatibility promise.
+     */
+    public static function isRightChecksDisabled(): bool
+    {
+        return self::$bypass_right_checks;
     }
 }

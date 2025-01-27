@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Entity;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Session;
 
 enum EntityFieldStrategy: string
 {
+    case FORM_FILLER          = 'form_filler';
     case FROM_FORM            = 'from_form';
     case SPECIFIC_VALUE       = 'specific_value';
     case SPECIFIC_ANSWER      = 'specific_answer';
@@ -49,6 +51,7 @@ enum EntityFieldStrategy: string
     public function getLabel(): string
     {
         return match ($this) {
+            self::FORM_FILLER          => __("Active entity of the form filler"),
             self::FROM_FORM            => __("From form"),
             self::SPECIFIC_VALUE       => __("Specific entity"),
             self::SPECIFIC_ANSWER      => __("Answer from a specific question"),
@@ -61,6 +64,7 @@ enum EntityFieldStrategy: string
         AnswersSet $answers_set,
     ): ?int {
         return match ($this) {
+            self::FORM_FILLER          => $this->getFormFillerEntityID(),
             self::FROM_FORM            => $answers_set->getItem()->fields['entities_id'],
             self::SPECIFIC_VALUE       => $config->getSpecificEntityId(),
             self::SPECIFIC_ANSWER      => $this->getEntityIDForSpecificAnswer(
@@ -69,6 +73,11 @@ enum EntityFieldStrategy: string
             ),
             self::LAST_VALID_ANSWER => $this->getEntityIDForLastValidAnswer($answers_set),
         };
+    }
+
+    private function getFormFillerEntityID(): int
+    {
+        return Session::getActiveEntity();
     }
 
     private function getEntityIDForSpecificAnswer(

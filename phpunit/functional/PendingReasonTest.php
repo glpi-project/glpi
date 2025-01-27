@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,10 +40,16 @@ use ChangeTask;
 use CommonITILObject;
 use DbTestCase;
 use ITILFollowup;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
+use PendingReason;
 use PendingReason_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use ProblemTask;
+use SolutionTemplate;
 use Ticket;
 use TicketTask;
 
@@ -893,5 +899,164 @@ class PendingReasonTest extends DbTestCase
                 );
             }
         }
+    }
+
+    public function testNotificationEvents(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $notification = new Notification();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $add_notifications_id = $notification->add([
+            'name' => 'Add PendingReason',
+            'entities_id' => $entities_id,
+            'itemtype' => 'Ticket',
+            'event' => 'pendingreason_add',
+            'is_active' => 1
+        ]);
+
+        $remove_notifications_id = $notification->add([
+            'name' => 'Remove PendingReason',
+            'entities_id' => $entities_id,
+            'itemtype' => 'Ticket',
+            'event' => 'pendingreason_del',
+            'is_active' => 1
+        ]);
+
+        $autoclose_notifications_id = $notification->add([
+            'name' => 'Auto close PendingReason',
+            'entities_id' => $entities_id,
+            'itemtype' => 'Ticket',
+            'event' => 'pendingreason_close',
+            'is_active' => 1
+        ]);
+
+        $notification_template = new NotificationTemplate();
+        $notification_notification_template = new Notification_NotificationTemplate();
+
+        $add_template_id = $notification_template->add([
+            'name' => 'PendingReason Add',
+            'itemtype' => 'Ticket',
+        ]);
+
+        $remove_template_id = $notification_template->add([
+            'name' => 'PendingReason Remove',
+            'itemtype' => 'Ticket',
+        ]);
+
+        $autoclose_template_id = $notification_template->add([
+            'name' => 'PendingReason Auto close',
+            'itemtype' => 'Ticket',
+        ]);
+
+        $notification_notification_template->add([
+            'notifications_id' => $add_notifications_id,
+            'mode' => 'mailing',
+            'notificationtemplates_id' => $add_template_id,
+        ]);
+        $notification_notification_template->add([
+            'notifications_id' => $remove_notifications_id,
+            'mode' => 'mailing',
+            'notificationtemplates_id' => $remove_template_id,
+        ]);
+        $notification_notification_template->add([
+            'notifications_id' => $autoclose_notifications_id,
+            'mode' => 'mailing',
+            'notificationtemplates_id' => $autoclose_template_id,
+        ]);
+
+        $translation = new NotificationTemplateTranslation();
+        $translation->add([
+            'notificationtemplates_id' => $add_template_id,
+            'language' => '',
+            'subject' => 'PendingReason Add',
+            'content_text' => 'PendingReason Add',
+            'content_html' => 'PendingReason Add',
+        ]);
+        $translation->add([
+            'notificationtemplates_id' => $remove_template_id,
+            'language' => '',
+            'subject' => 'PendingReason Remove',
+            'content_text' => 'PendingReason Remove',
+            'content_html' => 'PendingReason Remove',
+        ]);
+        $translation->add([
+            'notificationtemplates_id' => $autoclose_template_id,
+            'language' => '',
+            'subject' => 'PendingReason Auto close',
+            'content_text' => 'PendingReason Auto close',
+            'content_html' => 'PendingReason Auto close',
+        ]);
+
+        $target = new \NotificationTarget();
+        $target->add([
+            'notifications_id' => $add_notifications_id,
+            'type' => 1, // User
+            'items_id' => 7 // Writer
+        ]);
+        $target->add([
+            'notifications_id' => $remove_notifications_id,
+            'type' => 1, // User
+            'items_id' => 7 // Writer
+        ]);
+        $target->add([
+            'notifications_id' => $autoclose_notifications_id,
+            'type' => 1, // User
+            'items_id' => 7 // Writer
+        ]);
+
+        $solutiontemplate = new SolutionTemplate();
+        $solutiontemplates_id = $solutiontemplate->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+        $pending_reason = new PendingReason();
+        $pending_reason->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'followup_frequency' => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+            'solutiontemplates_id' => $solutiontemplates_id,
+        ]);
+
+        $this->login();
+        $ticket = new Ticket();
+
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'status' => CommonITILObject::WAITING,
+        ]);
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->assertTrue(PendingReason_Item::createForItem($ticket, [
+            'pendingreasons_id' => $pending_reason->getID(),
+            'followup_frequency' => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+        ]));
+        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $add_template_id]));
+
+        $pri = new PendingReason_Item();
+        $this->assertTrue($pri->getFromDBByCrit([
+            'items_id' => $ticket->getID(),
+            'itemtype' => $ticket::getType(),
+        ]));
+        $this->assertTrue($pri->update([
+            'id' => $pri->getID(),
+            'bump_count' => 3,
+            'last_bump_date' => date('Y-m-d H:i:s', time() - (2 * DAY_TIMESTAMP)),
+        ]));
+
+        \PendingReasonCron::cronPendingreason_autobump_autosolve(new \CronTask());
+        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $autoclose_template_id]));
+
+        PendingReason_Item::deleteForItem($ticket);
+        $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $remove_template_id]));
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,22 +35,22 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Glpi\Tests\FormBuilder;
+use Glpi\PHPUnit\Tests\Glpi\Form\QuestionType\AbstractQuestionTypeActorsTest;
 use Glpi\Tests\FormTesterTrait;
 use Group;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Profile;
-use Profile_User;
 use User;
 
-final class QuestionTypeRequesterTest extends DbTestCase
+final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
 {
     use FormTesterTrait;
 
-    public static function requesterAnswerIsDisplayedInTicketDescriptionProvider(): iterable
+    public static function getQuestionType(): string
+    {
+        return QuestionTypeRequester::class;
+    }
+
+    public static function actorAnswerIsDisplayedInTicketDescriptionProvider(): iterable
     {
         $glpi_id = getItemByTypeName(User::class, "glpi", true);
         $tech_id = getItemByTypeName(User::class, "tech", true);
@@ -60,11 +60,13 @@ final class QuestionTypeRequesterTest extends DbTestCase
         yield 'simple user' => [
             'answer' => ["users_id-$glpi_id"],
             'expected' => "glpi",
+            'is_multiple' => false,
         ];
 
         yield 'simple group' => [
             'answer' => ["groups_id-$test_group_1_id"],
             'expected' => "_test_group_1",
+            'is_multiple' => false,
         ];
 
         yield 'multiple users' => [
@@ -73,6 +75,7 @@ final class QuestionTypeRequesterTest extends DbTestCase
                 "users_id-$tech_id",
             ],
             'expected' => "glpi, tech",
+            'is_multiple' => true,
         ];
 
         yield 'multiple groups' => [
@@ -81,59 +84,128 @@ final class QuestionTypeRequesterTest extends DbTestCase
                 "groups_id-$test_group_2_id",
             ],
             'expected' => "_test_group_1, _test_group_2",
+            'is_multiple' => true,
         ];
     }
 
-    #[DataProvider("requesterAnswerIsDisplayedInTicketDescriptionProvider")]
-    public function testRequesterAnswerIsDisplayedInTicketDescription(
-        array $answer,
-        string $expected
-    ): void {
-        $builder = new FormBuilder();
-        $builder->addQuestion("Requester", QuestionTypeRequester::class);
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-            ['is_multiple_actors' => count($answer) > 1]
-        );
-        $form = $this->createForm($builder);
+    public static function invalidActorsProvider(): iterable
+    {
+        yield 'invalid user' => [
+            'answer' => [User::getForeignKeyField() . "-999999"],
+            'expected_exception' => \Exception::class,
+            'expected_message' => "Invalid actor ID: 999999",
+        ];
 
-        $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Requester" => $answer,
-        ]);
+        yield 'invalid group' => [
+            'answer' => [Group::getForeignKeyField() . "-999999"],
+            'expected_exception' => \Exception::class,
+            'expected_message' => "Invalid actor ID: 999999",
+        ];
 
-        $this->assertStringContainsString(
-            "1) Requester: $expected",
-            strip_tags($ticket->fields['content']),
-        );
+        yield 'invalid user and group' => [
+            'answer' => [User::getForeignKeyField() . "-999999", Group::getForeignKeyField() . "-999999"],
+            'expected_exception' => \Exception::class,
+            'expected_message' => "Invalid actor ID: 999999",
+        ];
+
+        yield 'valid user and invalid group' => [
+            'answer' => [
+                User::getForeignKeyField() . "-" . getItemByTypeName(User::class, "glpi", true),
+                Group::getForeignKeyField() . "-999999"
+            ],
+            'expected_exception' => \Exception::class,
+            'expected_message' => "Invalid actor ID: 999999",
+        ];
+
+        yield 'multiple valid actors for single actors question' => [
+            'answer' => [
+                User::getForeignKeyField() . "-" . getItemByTypeName(User::class, "glpi", true),
+                Group::getForeignKeyField() . "-" . getItemByTypeName(Group::class, "_test_group_1", true),
+            ],
+            'expected_exception' => \Exception::class,
+            'expected_message' => "Multiple actors are not allowed",
+        ];
     }
 
-    public function testRequesterUserWithFullNameIsDisplayedInTicketDescription(): void
+    public static function validActorsProvider(): iterable
     {
-        // Create a user with a fully qualified name and allow him to be an Requester by making him super admin profile
-        $john_doe = $this->createItem(User::class, [
-            'name' => 'jdoe',
-            'firstname' => 'John',
-            'realname' => 'Doe',
-        ]);
-        $this->createItem(Profile_User::class, [
-            'users_id' => $john_doe->getID(),
-            'profiles_id' => getItemByTypeName(Profile::class, 'Super-Admin', true),
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-        ]);
+        $glpi_id = getItemByTypeName(User::class, "glpi", true);
+        $tech_id = getItemByTypeName(User::class, "tech", true);
+        $test_group_1_id = getItemByTypeName(Group::class, "_test_group_1", true);
+        $test_group_2_id = getItemByTypeName(Group::class, "_test_group_2", true);
 
-        $builder = new FormBuilder();
-        $builder->addQuestion("Requester", QuestionTypeRequester::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
-        $form = $this->createForm($builder);
+        yield 'valid user' => [
+            'answer' => [User::getForeignKeyField() . "-$glpi_id"],
+            'expected' => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ]
+            ],
+            'allow_multiple_actors' => false
+        ];
 
-        $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Requester" => ["users_id-{$john_doe->getID()}"],
-        ]);
+        yield 'valid group' => [
+            'answer' => [Group::getForeignKeyField() . "-$test_group_1_id"],
+            'expected' => [
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $test_group_1_id,
+                ]
+            ],
+            'allow_multiple_actors' => false
+        ];
 
-        $this->assertStringContainsString(
-            "1) Requester: Doe John",
-            strip_tags($ticket->fields['content']),
-        );
+        yield 'multiple valid users' => [
+            'answer' => [
+                User::getForeignKeyField() . "-$glpi_id",
+                User::getForeignKeyField() . "-$tech_id",
+            ],
+            'expected' => [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $glpi_id,
+                ],
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $tech_id,
+                ]
+            ],
+            'allow_multiple_actors' => true
+        ];
+
+        yield 'multiple valid groups' => [
+            'answer' => [
+                Group::getForeignKeyField() . "-$test_group_1_id",
+                Group::getForeignKeyField() . "-$test_group_2_id",
+            ],
+            'expected' => [
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $test_group_1_id,
+                ],
+                [
+                    'itemtype' => Group::class,
+                    'items_id' => $test_group_2_id,
+                ]
+            ],
+            'allow_multiple_actors' => true
+        ];
+    }
+
+    public static function groupActorProvider(): iterable
+    {
+        yield 'valid group' => [
+            'questionType' => QuestionTypeRequester::class,
+            'actorField'   => "is_requester",
+            'canBeActor'   => true,
+        ];
+
+        yield 'invalid group' => [
+            'questionType' => QuestionTypeRequester::class,
+            'actorField'   => "is_requester",
+            'canBeActor'   => false,
+            'expectedMessage' => "Invalid actor: must be a requester",
+        ];
     }
 }

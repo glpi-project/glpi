@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -37,7 +37,7 @@
             <div class="card">
                 <div class="card-header">
                     <a href="event.php">
-                        <i class="fa-fw {{ call('Glpi\\Event::getIcon') }} me-1"></i>
+                        <i class="{{ call('Glpi\\Event::getIcon') }} me-1"></i>
                         <span>
                             {{ "Glpi\\Event"|itemtype_name(get_plural_number()) }}
                         </span>
@@ -95,7 +95,7 @@
                         <span class="list-group-item list-group-item-action d-flex justify-content-between">
                             <a class="text-truncate"
                                href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
-                                <i class="fa-fw ti ti-file me-1"></i>
+                                <i class="ti ti-file me-1"></i>
                                 <span>{{ log['filepath'] }}</span>
                             </a>
                             <span class="d-inline-flex">

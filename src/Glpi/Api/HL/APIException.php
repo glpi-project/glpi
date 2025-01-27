@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,9 @@ class APIException extends \Exception
 {
     private string $user_message;
 
-    public function __construct(string $message = '', string $user_message = '', int $code = 0, ?Throwable $previous = null)
+    private string|array|null $details;
+
+    public function __construct(string $message = '', string $user_message = '', string|array|null $details = null, int $code = 0, ?Throwable $previous = null)
     {
         if ($user_message === '') {
             $user_message = __('An error occurred while processing your request.');
@@ -55,11 +57,17 @@ class APIException extends \Exception
             $message = $user_message;
         }
         $this->user_message = $user_message;
+        $this->details = $details;
         parent::__construct($message, $code, $previous);
     }
 
     public function getUserMessage(): string
     {
         return $this->user_message;
+    }
+
+    public function getDetails(): string|array|null
+    {
+        return $this->details;
     }
 }

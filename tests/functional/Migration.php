@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -146,13 +146,13 @@ class Migration extends \GLPITestCase
             'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'one\'',
             'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
             'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one \', \'key\')',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'SELECT `id` FROM `glpi_configs` WHERE `context` = \'core\' AND `name` = \'two\'',
             'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
             'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two \', \'value\')',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
         ];
         $this->array($this->queries)->isIdenticalTo($core_queries, print_r($this->queries, true));
 
@@ -174,13 +174,13 @@ class Migration extends \GLPITestCase
             'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'one\'',
             'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
             'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'one (test-context) \', \'key\')',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'SELECT `id` FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` = \'two\'',
             'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
             'SELECT * FROM `glpi_configs` WHERE `glpi_configs`.`id` = \'0\' LIMIT 1',
-            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
             'INSERT INTO `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`, `date_mod`, `id_search_option`, `old_value`, `new_value`) VALUES (\'1\', \'Config\', \'\', \'0\', \'\', \'' . $_SESSION['glpi_currenttime'] . '\', \'1\', \'two (test-context) \', \'value\')',
+            'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables` WHERE `table_schema` = \'' . $DB->dbdefault . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'glpi_webhooks\'',
         ]);
 
        //test with one existing value => only new key should be inserted

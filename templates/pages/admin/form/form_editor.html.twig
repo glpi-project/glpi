@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -71,10 +71,8 @@
 
         <div class="designer col-12 px-4 py-3">
             <div class="row">
-
-                {# We expect to use the right side to display some extra info later so keep some available space for now #}
                 <div
-                    class="col-7"
+                    class="col-12 col-xl-7"
                     data-glpi-form-editor-form
                     data-glpi-form-editor-active-form
                 >
@@ -84,7 +82,7 @@
                         aria-label="{{ __("Form details") }}"
                     >
                         {# Card containing the main form data: title, header and status #}
-                        <div class="card form-details mb-3">
+                        <div class="card form-details">
                             <div
                                 class="card-status-start bg-primary"
                                 data-glpi-form-editor-active-form-status-indicator
@@ -157,8 +155,9 @@
 
                     <div data-glpi-form-editor-form-extra-details>
                         {{ include('pages/admin/form/form_toolbar.html.twig', {
-                            'can_update': item.canUpdate(),
-                            'form'      : item,
+                            'can_update'     : item.canUpdate(),
+                            'form'           : item,
+                            'vertical_layout': false,
                         }, with_context = false) }}
                     </div>
                 </div>
@@ -348,6 +347,23 @@
             }, with_context = false) }}
         </div>
 
+        {# Load new horizontal block template #}
+        <div data-glpi-form-editor-horizontal-block-template>
+            {{ include('pages/admin/form/form_horizontal_block.html.twig', {
+                'blocks' : null,
+                'can_update' : true,
+                'form' : item,
+            }, with_context = false) }}
+        </div>
+
+        {# Load new horizontal block placeholder template #}
+        <div data-glpi-form-editor-horizontal-block-placeholder-template>
+            {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
+                'can_update': true,
+                'form'      : item,
+            }, with_context = false) }}
+        </div>
+
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>
             {% for key, question_type in question_types_manager.getQuestionTypes() %}
@@ -389,6 +405,18 @@
             '{{ get_class(question_type)|e('js') }}',
             {{ question_type.getFormEditorJsOptions()|raw }}
         );
+
+        {% if question_type.getSubTypes() is not empty %}
+            controller.registerQuestionSubTypesOptions(
+                '{{ get_class(question_type)|e('js') }}',
+                {
+                    'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
+                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
+                    'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
+                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
+                }
+            )
+        {% endif %}
     {% endfor %}
 
     $(container_selector).data('controller', controller);
@@ -396,11 +424,3 @@
     $(container_selector).trigger("initialized");
 })();
 </script>
-
-<style>
-    /* Fix a weird scrolling issue, can't find a better solution at this time */
-    /* Must be inline style to make sure it is only applied to this page */
-    html {
-        overflow: hidden;
-    }
-</style>

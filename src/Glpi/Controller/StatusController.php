@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,13 +34,13 @@
 
 namespace Glpi\Controller;
 
+use Glpi\Http\Firewall;
 use Session;
 use Glpi\Api\HL\Router;
-use Glpi\Application\ErrorHandler;
+use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -50,8 +50,8 @@ final class StatusController extends AbstractController
         "/status.php",
         name: "glpi_status"
     )]
-    #[SecurityStrategy('no_check')]
-    public function __invoke(SymfonyRequest $request): SymfonyResponse
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function __invoke(): SymfonyResponse
     {
         // Force in normal mode
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
@@ -62,7 +62,7 @@ final class StatusController extends AbstractController
         try {
             $response = Router::getInstance()->handleRequest($request);
         } catch (\Throwable $e) {
-            ErrorHandler::getInstance()->handleException($e, true);
+            ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
         }
 

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,52 @@ describe('Helpdesk home page', () => {
         cy.login();
         cy.changeProfile('Self-Service');
     });
+
+    it('can search for forms and faq entries', () => {
+        const unique_id = (new Date()).getTime();
+        cy.createWithAPI('KnowbaseItem', {
+            name: `FAQ: ${unique_id}`,
+            answer: 'my answer',
+            is_faq: true,
+        }).then((id) => {
+            cy.createWithAPI('KnowbaseItem_User', {
+                knowbaseitems_id: id,
+                users_id: 7,
+            });
+        });
+
+        cy.visit('/Helpdesk');
+
+        // Search for a form
+        cy.findByPlaceholderText("Search for knowledge base entries or forms")
+            .type("Issue")
+        ;
+        cy.findByRole('region', {'name': "Search results"})
+            .findByRole('link', {'name': "Report an issue"})
+            .should('exist')
+        ;
+        cy.findByRole('region', {'name': "Search results"})
+            .findByRole('link', {'name': `FAQ: ${unique_id}`})
+            .should('not.exist')
+        ;
+
+        // Search for a faq entry
+        cy.findByPlaceholderText("Search for knowledge base entries or forms")
+            .clear()
+        ;
+        cy.findByPlaceholderText("Search for knowledge base entries or forms")
+            .type(unique_id)
+        ;
+        cy.findByRole('region', {'name': "Search results"})
+            .findByRole('link', {'name': `FAQ: ${unique_id}`})
+            .should('exist')
+        ;
+        cy.findByRole('region', {'name': "Search results"})
+            .findByRole('link', {'name': "Report an issue"})
+            .should('not.exist')
+        ;
+    });
+
     it('can use tiles', () => {
         cy.visit('/Helpdesk');
         cy.findByRole('region', { name: 'Quick Access' })

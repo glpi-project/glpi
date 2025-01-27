@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -66,7 +66,7 @@ class PendingReason extends CommonDropdown
                 'name' => 'is_pending_per_default',
                 'label' => __('Pending per default'),
                 'type' => 'bool',
-                'params' => [
+                'form_params' => [
                     'disabled' => !$this->fields['is_default'],
                 ],
             ],
@@ -277,7 +277,7 @@ class PendingReason extends CommonDropdown
                 ),
                 [
                     'display' => false,
-                    'awesome-class' => 'fa fa-exclamation-triangle fa-lg',
+                    'awesome-class' => 'ti ti-alert-triangle fs-2',
                 ]
             ) : '',
         ]);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -208,14 +208,11 @@ class Contract_Item extends CommonDBRelation
                 case Contract::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
+                        $nb += countElementsInTable(Contract_User::getTable(), ['contracts_id' => $item->fields['id']]);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
-
+                    return self::createTabEntry(_n('Affected item', 'Affected items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
                 default:
-                    if (
-                        $_SESSION['glpishow_count_on_tabs']
-                        && in_array($item::class, $CFG_GLPI["contract_types"], true)
-                    ) {
+                    if (in_array($item::class, $CFG_GLPI["contract_types"], true)) {
                         $nb = self::countForItem($item);
                     }
                     return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -394,8 +391,11 @@ TWIG, $twig_params);
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array    $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $instID = $contract->fields['id'];
 
@@ -482,8 +482,41 @@ TWIG, $twig_params);
                 foreach ($iterator as $objdata) {
                     $data[$itemtype][$objdata['id']] = $objdata;
                     $used[$itemtype][$objdata['id']] = $objdata['id'];
+                    $totalnb++;
                 }
             }
+        }
+
+        // Add contract users
+        $contract_users_table = Contract_User::getTable();
+        $users_table = User::getTable();
+        $user_params = [
+            'SELECT' => [
+                "$users_table.*",
+                "$contract_users_table.id AS linkid",
+            ],
+            'FROM'   => $contract_users_table,
+            'LEFT JOIN' => [
+                $users_table => [
+                    'FKEY' => [
+                        $contract_users_table => 'users_id',
+                        $users_table          => 'id'
+                    ]
+                ],
+            ],
+            'WHERE'  => [
+                "$contract_users_table.contracts_id" => $instID
+            ],
+            'ORDER' => "$users_table.name"
+        ];
+
+        $user_iterator = $DB->request($user_params);
+
+        $data[User::class] = [];
+        foreach ($user_iterator as $userdata) {
+            $data[User::class][$userdata['id']] = $userdata;
+            $used[User::class][$userdata['id']] = $userdata['id'];
+            $totalnb++;
         }
 
         if (
@@ -494,6 +527,7 @@ TWIG, $twig_params);
         ) {
             $twig_params = [
                 'contract' => $contract,
+                'contract_types' => array_merge($CFG_GLPI["contract_types"], [User::class]),
                 'entity_restrict' => $contract->fields['is_recursive']
                     ? getSonsOf('glpi_entities', $contract->fields['entities_id'])
                     : $contract->fields['entities_id'],
@@ -509,7 +543,7 @@ TWIG, $twig_params);
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownItemsFromItemtypes('', null, {
-                                itemtypes: config('contract_types'),
+                                itemtypes: contract_types,
                                 entity_restrict: entity_restrict,
                                 checkright: true,
                                 used: used
@@ -531,7 +565,7 @@ TWIG, $twig_params);
         foreach ($data as $itemtype => $datas) {
             foreach ($datas as $objdata) {
                 $entry = [
-                    'itemtype' => self::class,
+                    'itemtype' => $itemtype === User::class ? Contract_User::class : self::class,
                     'id'       => $objdata['linkid'],
                     'row_class' => isset($objdata['is_deleted']) && $objdata['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype::getTypeName(1),
@@ -540,23 +574,31 @@ TWIG, $twig_params);
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
 
-                if (!isset($entity_cache[$objdata['entity']])) {
-                    $entity_cache[$objdata['entity']] = Dropdown::getDropdownName(
-                        "glpi_entities",
-                        $objdata['entity']
-                    );
+                if (isset($objdata['entity'])) {
+                    if (!isset($entity_cache[$objdata['entity']])) {
+                        $entity_cache[$objdata['entity']] = Dropdown::getDropdownName(
+                            "glpi_entities",
+                            $objdata['entity']
+                        );
+                    }
+                    $entry['entity'] = $entity_cache[$objdata['entity']];
+                } else {
+                    $entry['entity'] = '-';
                 }
-                $entry['entity'] = $entity_cache[$objdata['entity']];
                 $entry['serial'] = $objdata['serial'] ?? '-';
                 $entry['otherserial'] = $objdata['otherserial'] ?? '-';
 
-                if (!isset($state_cache[$objdata['states_id']])) {
-                    $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
-                        "glpi_states",
-                        $objdata['states_id']
-                    );
+                if (isset($objdata['states_id'])) {
+                    if (!isset($state_cache[$objdata['states_id']])) {
+                        $state_cache[$objdata['states_id']] = Dropdown::getDropdownName(
+                            "glpi_states",
+                            $objdata['states_id']
+                        );
+                    }
+                    $entry['status'] = $state_cache[$objdata['states_id']];
+                } else {
+                    $entry['status'] = '-';
                 }
-                $entry['status'] = $state_cache[$objdata['states_id']];
                 $entries[] = $entry;
             }
         }

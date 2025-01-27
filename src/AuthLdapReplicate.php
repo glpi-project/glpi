@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  *  Class used to manage LDAP replicate config
@@ -80,31 +82,9 @@ class AuthLdapReplicate extends CommonDBTM
      */
     public static function addNewReplicateForm($target, $master_id)
     {
-        echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='5'>" . __('Add a LDAP directory replica') . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>" . __('Name') . "</td>";
-        echo "<td class='center'>" . __('Server') . "</td>";
-        echo "<td class='center'>" . _n('Port', 'Ports', 1) . "</td>";
-        echo "<td class='center'>" . __('Timeout') . "</td><td></td></tr>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center'><input type='text' class='form-control' name='name'></td>";
-        echo "<td class='center'><input type='text' class='form-control' name='host'></td>";
-        echo "<td class='center'><input type='text' class='form-control' name='port'></td>";
-        echo "<td class='center'>";
-        Dropdown::showNumber('timeout', ['value'  => 10,
-            'min'    => 1,
-            'max'    => 30,
-            'step'   => 1,
-            'toadd'  => [0 => __('No timeout')]
+        TemplateRenderer::getInstance()->display('pages/setup/authentication/ldap_replicate.html.twig', [
+            'target' => $target,
+            'authldaps_id' => $master_id,
         ]);
-        echo "</td>";
-        echo "<td class='center'><input type='hidden' name='next' value='extauth_ldap'>";
-        echo "<input type='hidden' name='authldaps_id' value='$master_id'>";
-        echo "<input type='submit' name='add_replicate' value='" . _sx('button', 'Add') . "' class='btn btn-primary'></td>";
-        echo "</tr></table></div>";
-        Html::closeForm();
     }
 }

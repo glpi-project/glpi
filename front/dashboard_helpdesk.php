@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,7 +52,7 @@ if (!$dashboard->canViewCurrent()) {
     throw new AccessDeniedHttpException();
 }
 
-Html::header(__('Helpdesk Dashboard'), $_SERVER['PHP_SELF'], "helpdesk", "dashboard");
+Html::header(__('Helpdesk Dashboard'), '', "helpdesk", "dashboard");
 
 $grid = new Glpi\Dashboard\Grid($default);
 $grid->showDefault();

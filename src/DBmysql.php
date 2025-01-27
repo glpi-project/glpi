@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -56,7 +55,7 @@ class DBmysql
         '>'  => '&gt;',
     ];
 
-    //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
     //! Database User
     public $dbuser             = "";
@@ -70,9 +69,6 @@ class DBmysql
      * @var mysqli
      */
     protected $dbh;
-
-    //! Database Error
-    public $error              = 0;
 
     // Slave management
     public $slave              = false;
@@ -201,13 +197,6 @@ class DBmysql
     private $field_cache = [];
 
     /**
-     * Last query warnings.
-     *
-     * @var array
-     */
-    private $last_query_warnings = [];
-
-    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param integer $choice host number (default NULL)
@@ -269,13 +258,7 @@ class DBmysql
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
-        if ($this->dbh->connect_error) {
-            $this->connected = false;
-            $this->error     = 1;
-        } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
-            $this->connected = false;
-            $this->error     = 2;
-        } else {
+        if (!$this->dbh->connect_error) {
             $this->setConnectionCharset();
 
             // force mysqlnd to return int and float types correctly (not as strings)
@@ -398,31 +381,29 @@ class DBmysql
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->affectedRows();
 
-        // Ensure that we collect warning after affected rows
-        $this->last_query_warnings = $this->fetchQueryWarnings();
-
-        $warnings_string = implode(
-            "\n",
-            array_map(
-                static function ($warning) {
-                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                },
-                $this->last_query_warnings
-            )
-        );
-        $debug_data['warnings'] = $warnings_string;
-
-        // Output warnings in SQL log
-        if (!empty($this->last_query_warnings)) {
-            $message = sprintf(
-                "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
-                $query,
-                $warnings_string
+        // Trigger warning errors if any SQL warnings was produced by the query
+        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
+        if (count($sql_warnings) > 0) {
+            $warnings_string = implode(
+                "\n",
+                array_map(
+                    static function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $sql_warnings
+                )
             );
-            $message .= Toolbox::backtrace(false, 'DBmysql->doQuery()', ['Toolbox::backtrace()']);
-            Toolbox::logSqlWarning($message);
 
-            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
+            $debug_data['warnings'] = $warnings_string;
+
+            trigger_error(
+                sprintf(
+                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
+                    $query,
+                    $warnings_string
+                ),
+                E_USER_WARNING
+            );
         }
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
@@ -442,7 +423,7 @@ class DBmysql
     }
 
     /**
-     * Execute a MySQL query and die
+     * Execute a MySQL query and throw an exception
      * (optionally with a message) if it fails
      *
      * @since 0.84
@@ -1013,46 +994,47 @@ class DBmysql
      */
     public function runFile($path)
     {
-        $script = fopen($path, 'r');
-        if (!$script) {
-            return false;
-        }
-        $sql_query = @fread(
-            $script,
-            @filesize($path)
-        ) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
-
-        $sql_query = $this->removeSqlRemarks($sql_query);
-        $queries = preg_split('/;\s*$/m', $sql_query);
+        $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = trim($query);
-            if ($query != '') {
-                $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                $this->doQuery($query);
-                if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
-                    echo ' ';
-                    Html::glpi_flush();
-                }
-            }
+            $this->doQuery($query);
         }
 
         return true;
     }
 
     /**
+     * @internal
+     *
+     * @return array<string>
+     */
+    public function getQueriesFromFile(string $path): array
+    {
+        $script = fopen($path, 'r');
+        if (!$script) {
+            return [];
+        }
+        $sql_query = @fread($script, @filesize($path)) . "\n";
+
+        $sql_query = $this->removeSqlRemarks($sql_query);
+
+        $queries = preg_split('/;\s*$/m', $sql_query);
+
+        $queries = array_filter($queries, static fn ($query) => \trim($query) !== '');
+
+        return $queries;
+    }
+
+    /**
      * Instanciate a Simple DBIterator
      *
      * @param array|QueryUnion  $criteria Query criteria
-     * @param boolean           $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
+     *
+     * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($criteria, $debug = false)
+    public function request($criteria)
     {
         $iterator = new DBmysqlIterator($this);
         $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
@@ -1264,7 +1246,7 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-            /** @var \DBmysql $DB */
+            /** @var \DBmysql|null $DB */
             global $DB;
             $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";
@@ -1593,7 +1575,7 @@ class DBmysql
     }
 
     /**
-     * Truncate table in the database or die
+     * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
      * @since 10.0.0
@@ -1985,15 +1967,6 @@ class DBmysql
         }
 
         return $warnings;
-    }
-
-    /**
-     * Get SQL warnings related to last query.
-     * @return array
-     */
-    public function getLastQueryWarnings(): array
-    {
-        return $this->last_query_warnings;
     }
 
     /**

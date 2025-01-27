@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,21 +33,18 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
-global $CFG_GLPI;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`
 // considers it as an invalid session.
 if (Session::getLoginUserID() === false) {
-    Html::redirectToLogin();
+    throw new AccessDeniedHttpException();
 }
 
 switch (Session::getCurrentInterface()) {
     case 'central':
-        Html::header(__('Update password'), $_SERVER['PHP_SELF']);
+        Html::header(__('Update password'));
         break;
     case 'helpdesk':
         Html::helpHeader(__('Update password'));

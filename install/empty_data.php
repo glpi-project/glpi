@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -937,7 +937,7 @@ $empty_data_builder = new class
             ]
         ];
 
-        $dashboards_data = include_once __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
+        $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
         $tables['glpi_dashboards_dashboards'] = [];
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
@@ -4383,7 +4383,177 @@ $empty_data_builder = new class
                 'items_id'         => '37',
                 'type'             => '1',
                 'notifications_id' => '40',
-            ],
+            ], [
+                'id'               => '159',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '1',
+            ], [
+                'id'               => '160',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '12',
+            ], [
+                'id'               => '161',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '16',
+            ], [
+                'id'               => '162',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '17',
+            ], [
+                'id'               => '163',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '18',
+            ], [
+                'id'               => '164',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '20',
+            ], [
+                'id'               => '165',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '21',
+            ], [
+                'id'               => '166',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '22',
+            ], [
+                'id'               => '167',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '23',
+            ], [
+                'id'               => '168',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '24',
+            ], [
+                'id'               => '169',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '26',
+            ], [
+                'id'               => '170',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '27',
+            ], [
+                'id'               => '171',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '37',
+            ], [
+                'id'               => '172',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '38',
+            ], [
+                'id'               => '173',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '39',
+            ], [
+                'id'               => '174',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '50',
+            ], [
+                'id'               => '175',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '59',
+            ], [
+                'id'               => '176',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '60',
+            ], [
+                'id'               => '177',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '61',
+            ], [
+                'id'               => '178',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '62',
+            ], [
+                'id'               => '179',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '63',
+            ], [
+                'id'               => '180',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '64',
+            ], [
+                'id'               => '181',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '65',
+            ], [
+                'id'               => '183',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '67',
+            ], [
+                'id'               => '184',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '68',
+            ], [
+                'id'               => '185',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '69',
+            ], [
+                'id'               => '186',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '70',
+            ], [
+                'id'               => '187',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '71',
+            ], [
+                'id'               => '188',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '72',
+            ], [
+                'id'               => '189',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '74',
+            ], [
+                'id'               => '190',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '191',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '80',
+            ], [
+                'id'               => '192',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '81',
+            ], [
+                'id'               => '193',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '82',
+            ]
         ];
 
         $tables['glpi_notificationtemplates'] = [
@@ -5660,6 +5830,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'taskcategory',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'statistic',
                 'rights' => self::RIGHT_NONE,
@@ -5942,6 +6116,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'taskcategory',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'tasktemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -6244,6 +6422,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -6538,6 +6720,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'taskcategory',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'tasktemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
@@ -6839,6 +7025,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'tasktemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -7126,6 +7316,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'tasktemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cable_management',
                 'rights' => READ | UPDATE | CREATE | DELETE | PURGE,
             ], [
@@ -7406,6 +7600,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'taskcategory',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'tasktemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -7762,6 +7960,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'taskcategory',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'tasktemplate',
                 'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,

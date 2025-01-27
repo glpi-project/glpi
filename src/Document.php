@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1526,9 +1526,10 @@ class Document extends CommonDBTM
 
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
-                $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>" .
                                                 _sx('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a document');
+                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>" .
+                                                _sx('button', 'Remove a document');
             }
         }
 

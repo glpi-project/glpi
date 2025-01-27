@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -64,7 +64,7 @@
 
             {# Dynamically show additional fields unique to certain dropdowns #}
             {% for field in additional_fields %}
-                {% set fields_params = base_fields_params|merge(field['params'] ?? []) %}
+                {% set fields_params = base_fields_params|merge(field['form_params'] ?? []) %}
                 {% set type = field['type']|default('') %}
                 {% set show_field = true %}
                 {% if field['name'] == 'entities_id' and (type != 'parent' or item.fields['id'] == 0) %}
@@ -114,6 +114,22 @@
                         {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                     {% elseif type == 'textarea' %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
+                    {% elseif type == 'richtext' %}
+                        {{ fields.textareaField(
+                            field['name'],
+                            item.fields[field['name']],
+                            field['label'],
+                            fields_params|merge({
+                                'enable_richtext': true,
+                                'enable_images': false,
+                            })
+                        ) }}
+                    {% elseif type == 'illustration' %}
+                        {{ fields.illustrationField(
+                            field['name'],
+                            item.fields[field['name']],
+                            field['label'],
+                        ) }}
                     {% elseif type == 'integer' %}
                         {% set fields_params = {
                             'value': item.fields[field['name']]
@@ -196,7 +212,7 @@
                         {% set field_value %}
                             {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
                         {% endset %}
-                        {{ fields.field(field['name'], field_value, field['label']) }}
+                        {{ fields.field(field['name'], field_value, field['label'], fields_params) }}
                     {% endif %}
                 {% elseif field['name'] in picture_fields %}
                     {% set has_picture_field = true %}
@@ -204,7 +220,7 @@
             {% endfor %}
 
             {% if has_picture_field %}
-                {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'fas fa-image') }}
+                {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'ti ti-photo') }}
             {% endif %}
             {# Show pictures at the bottom of the form #}
             {% for field in additional_fields %}
@@ -224,7 +240,7 @@
                         }) }}
                         {% endif %}
                     {% elseif type == 'picture_gallery' %}
-                        {{ fields.smallTitle(__('Other pictures'), 'fas fa-images') }}
+                        {{ fields.smallTitle(__('Other pictures'), 'ti ti-library-photo') }}
                         {% set pictures = call('importArrayFromDB', [item.fields[field['name']]]) %}
                         {% set picture_urls = [] %}
                         {% for picture in pictures %}

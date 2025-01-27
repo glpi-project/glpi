@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,53 +35,60 @@
 
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
+// Keep in sync with the dynamicConstantNames config option in the PHPStan config file
 
-// Directories constants
-define('GLPI_CACHE_DIR', null);
-define('GLPI_CONFIG_DIR', null);
-define('GLPI_CRON_DIR', null);
-define('GLPI_DOC_DIR', null);
-define('GLPI_DUMP_DIR', null);
-define('GLPI_GRAPH_DIR', null);
-define('GLPI_INVENTORY_DIR', null);
-define('GLPI_LOCAL_I18N_DIR', null);
-define('GLPI_LOCK_DIR', null);
-define('GLPI_LOG_DIR', null);
-define('GLPI_MARKETPLACE_DIR', null);
-define('GLPI_PICTURE_DIR', null);
-define('GLPI_PLUGIN_DOC_DIR', null);
-define('GLPI_RSS_DIR', null);
-define('GLPI_SESSION_DIR', null);
-define('GLPI_THEMES_DIR', null);
-define('GLPI_TMP_DIR', null);
-define('GLPI_UPLOAD_DIR', null);
-define('GLPI_VAR_DIR', null);
+// Wrap in a function to be sure to never declare any variable in the global scope.
+(static function () {
+    $random_val = static fn (array $values) => $values[array_rand($values)];
 
-// Optionnal constants
-define('GLPI_FORCE_MAIL', null);
-define('GLPI_LOG_LVL', null);
-define('GLPI_SQL_DEBUG', null);
-define('GLPI_STRICT_DEPRECATED', null);
+    // Directories constants
+    define('GLPI_CACHE_DIR', dirname(__FILE__, 2) . '/files/_cache');
+    define('GLPI_CONFIG_DIR', dirname(__FILE__, 2) . '/config');
+    define('GLPI_CRON_DIR', dirname(__FILE__, 2) . '/files/_cron');
+    define('GLPI_DOC_DIR', dirname(__FILE__, 2) . '/files');
+    define('GLPI_GRAPH_DIR', dirname(__FILE__, 2) . '/files/_graphs');
+    define('GLPI_INVENTORY_DIR', dirname(__FILE__, 2) . '/files/_inventories');
+    define('GLPI_LOCAL_I18N_DIR', dirname(__FILE__, 2) . '/files/_locales');
+    define('GLPI_LOCK_DIR', dirname(__FILE__, 2) . '/files/_lock');
+    define('GLPI_LOG_DIR', dirname(__FILE__, 2) . '/files/_log');
+    define('GLPI_MARKETPLACE_DIR', dirname(__FILE__, 2) . '/marketplace');
+    define('GLPI_PICTURE_DIR', dirname(__FILE__, 2) . '/files/_pictures');
+    define('GLPI_PLUGIN_DOC_DIR', dirname(__FILE__, 2) . '/files/_plugins');
+    define('GLPI_RSS_DIR', dirname(__FILE__, 2) . '/files/_rss');
+    define('GLPI_SESSION_DIR', dirname(__FILE__, 2) . '/files/_sessions');
+    define('GLPI_THEMES_DIR', dirname(__FILE__, 2) . '/files/_themes');
+    define('GLPI_TMP_DIR', dirname(__FILE__, 2) . '/files/_tmp');
+    define('GLPI_UPLOAD_DIR', dirname(__FILE__, 2) . '/files/_uploads');
+    define('GLPI_VAR_DIR', dirname(__FILE__, 2) . '/files');
 
-// Other constants
-define('GLPI_AJAX_DASHBOARD', null);
-define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', null);
-define('GLPI_CALDAV_IMPORT_STATE', null);
-define('GLPI_CENTRAL_WARNINGS', null);
-define('GLPI_DOCUMENTATION_ROOT_URL', null);
-define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', null);
-define('GLPI_ENVIRONMENT_TYPE', null);
-define('GLPI_INSTALL_MODE', null);
-define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', null);
-define('GLPI_MARKETPLACE_ENABLE', null);
-define('GLPI_MARKETPLACE_MANUAL_DOWNLOADS', null);
-define('GLPI_MARKETPLACE_PLUGINS_API_URI', null);
-define('GLPI_MARKETPLACE_PRERELEASES', null);
-define('GLPI_NETWORK_REGISTRATION_API_URL', null);
-define('GLPI_NETWORK_MAIL', null);
-define('GLPI_NETWORK_SERVICES', null);
-define('GLPI_SERVERSIDE_URL_ALLOWLIST', []);
-define('GLPI_TELEMETRY_URI', null);
-define('GLPI_TEXT_MAXSIZE', null);
-define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
-define('PLUGINS_DIRECTORIES', ['/a', '/b', '/c']);
+    // Optionnal constants
+    if ($random_val([false, true]) === true) {
+        define('GLPI_FORCE_MAIL', 'example@glpi-project.org');
+        define('GLPI_LOG_LVL', 'DEBUG');
+        define('GLPI_STRICT_DEPRECATED', true);
+    }
+
+    // Other constants
+    define('GLPI_AJAX_DASHBOARD', $random_val([false, true]));
+    define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', $random_val([false, true]));
+    define('GLPI_CALDAV_IMPORT_STATE', $random_val([0, 1, 2]));
+    define('GLPI_CENTRAL_WARNINGS', $random_val([false, true]));
+    define('GLPI_DOCUMENTATION_ROOT_URL', 'https://links.glpi-project.org');
+    define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', $random_val([false, true]));
+    define('GLPI_ENVIRONMENT_TYPE', $random_val(['development', 'testing', 'staging', 'production']));
+    define('GLPI_INSTALL_MODE', $random_val(['GIT', 'TARBALL']));
+    define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', $random_val([false, true]));
+    define('GLPI_MARKETPLACE_ENABLE', $random_val([0, 1, 2, 3]));
+    define('GLPI_MARKETPLACE_MANUAL_DOWNLOADS', $random_val([false, true]));
+    define('GLPI_MARKETPLACE_PLUGINS_API_URI', 'https://services.glpi-network.com/api/marketplace/');
+    define('GLPI_MARKETPLACE_PRERELEASES', $random_val([false, true]));
+    define('GLPI_NETWORK_REGISTRATION_API_URL', 'https://services.glpi-network.com/api/registration/');
+    define('GLPI_NETWORK_MAIL', 'glpi@teclib.com');
+    define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
+    define('GLPI_SERVERSIDE_URL_ALLOWLIST', $random_val([[], ['/^.*$/']]));
+    define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
+    define('GLPI_TEXT_MAXSIZE', $random_val([1000, 2000, 3000, 4000]));
+    define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
+    define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
+    define('PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
+})();

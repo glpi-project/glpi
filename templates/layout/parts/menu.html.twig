@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -55,7 +55,7 @@
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
-         <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+         <i class="{{ firstlevel['icon'] ?? '' }}"></i>
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </a>
       <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? '' : 'animate__animated' }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
@@ -75,7 +75,7 @@
                <a class="dropdown-item {{ menu_active == sublevel['title'] ? 'active' : '' }}"
                   href="{{ path(sublevel['page']) }}"
                   accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
-                  <i class="fa-fw {{ sublevel['icon'] ?? '' }}"></i>
+                  <i class="{{ sublevel['icon'] ?? '' }}"></i>
                   <span class='text-wrap'>
                      {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
                   </span>
@@ -95,7 +95,7 @@
    {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link" href="{{ path(firstlevel['default']) }}">
-            <i class="fa-fw {{ firstlevel['icon'] ?? '' }}"></i>
+            <i class="{{ firstlevel['icon'] ?? '' }}"></i>
             <span class="menu-label">{{ firstlevel['title'] }}</span>
          </a>
       <li>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +35,51 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity\HasDevicesCapacity;
+use Glpi\Features\Clonable;
 use Item_Devices;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Toolbox;
 
 class Item_DevicesTest extends DbTestCase
 {
+    public function testRelatedItemHasTab()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasDevicesCapacity::class]);
+
+        $this->login(); // tab will be available only if corresponding right is available in the current session
+
+        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+            $item = $this->createItem(
+                $itemtype,
+                $this->getMinimalCreationInput($itemtype)
+            );
+
+            $tabs = $item->defineAllTabs();
+            $this->assertArrayHasKey('Item_Devices$1', $tabs, $itemtype);
+        }
+    }
+
+    public function testRelatedItemCloneRelations()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->initAssetDefinition(capacities: [HasDevicesCapacity::class]);
+
+        foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
+            if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
+                continue;
+            }
+
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Item_Devices::class, $item->getCloneRelations(), $itemtype);
+        }
+    }
+
     public static function itemAffinitiesProvider(): iterable
     {
         yield 'Computer' => [

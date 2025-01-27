@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -43,6 +43,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="field_dropdown_container" class="mb-3">
+                        <label class="form-label" for="dropdown_field{{ rand }}">{{ __('Asset name / Field') }}</label>
+                        {{ fields_dropdown|raw }}
+                    </div>
                     <div class="mb-3">
                         <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
                         {{ languages_dropdown|raw }}
@@ -76,48 +80,60 @@
     {% else %}
         <table class="table">
             <thead>
-                <tr>
-                    <th><i class="ti ti-language me-1"></i>{{ __("Language") }}</th>
-                    <th># {{ __("Translations") }}</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th><i class="ti ti-forms me-1"></i>{{ __('Asset name / Field') }}</th>
+                <th><i class="ti ti-language me-1"></i>{{ __("Language") }}</th>
+                <th># {{ __("Translations") }}</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-            {% for language, plurals in translations %}
-                <tr lang="{{ language }}" data-language="{{ language }}" data-plurals="{{ plurals|json_encode }}">
-                    <td>{{ config('languages')[language][0] }}</td>
-                    <td>
-                        {% include "pages/admin/customobjects/plurals.html.twig" with {
-                            'plurals': plurals,
-                        } only %}
-                    </td>
-                    <td>
-                        <span title="{{ __("Edit translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <button type="button" class="btn btn-icon btn-ghost-secondary edit-translation" data-bs-toggle="modal">
-                                <i class="ti ti-pencil"></i>
-                            </button>
-                        </span>
-                        <span title="{{ __("Delete translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <form method="POST" action="{{ get_class(item)|itemtype_form_path }}" class="d-inline">
-                                <input type="hidden" name="id" value="{{ item.fields['id'] }}">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                                <input type="hidden" name="_delete_translation" value="1" />
-                                <input type="hidden" name="language" value="{{ language }}" />
-                                <button type="submit" name="update" class="btn btn-icon btn-ghost-danger">
-                                    <i class="ti ti-trash-x"></i>
+                {% for trans_data in translations %}
+                    <tr data-field="{{ trans_data['id'] }}" data-language="{{ trans_data['language'] }}" data-translation="{{ trans_data['translation']|json_encode }}">
+                        <td>{{ trans_data['name'] }}</td>
+                        <td lang="{{ trans_data['language'] }}">{{ config('languages')[trans_data['language']][0] }}</td>
+                        <td lang="{{ trans_data['language'] }}">
+                            {% include "pages/admin/customobjects/plurals.html.twig" with {
+                                'plurals': trans_data['translation'],
+                            } only %}
+                        </td>
+                        <td>
+                            <div title="{{ __("Edit translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary edit-translation" data-bs-toggle="modal">
+                                    <i class="ti ti-pencil"></i>
                                 </button>
-                            </form>
-                        </span>
-                    </td>
-            {% endfor %}
+                            </div>
+                            <div title="{{ __("Delete translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <form method="POST" action="{{ get_class(item)|itemtype_form_path }}" class="d-inline">
+                                    <input type="hidden" name="id" value="{{ item.fields['id'] }}">
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="hidden" name="_delete_translation" value="1" />
+                                    <input type="hidden" name="field" value="{{ trans_data['id'] }}" />
+                                    <input type="hidden" name="language" value="{{ trans_data['language'] }}" />
+                                    <button type="submit" name="update" class="btn btn-sm btn-icon btn-ghost-danger">
+                                        <i class="ti ti-trash-x"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     {% endif %}
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('.add-translation').click(function() {
+    $(() => {
+        $('#TranslationModal{{ rand }} select[name="language"]').on('change', function() {
+            const field_selection = $('#TranslationModal{{ rand }} select[name="field"]').val();
+            setModalLanguagePlural(field_selection, $(this).val());
+        });
+        $('#TranslationModal{{ rand }} select[name="field"]').on('change', function() {
+            const lang_selection = $('#TranslationModal{{ rand }} select[name="language"]').val();
+            setModalLanguagePlural($(this).val(), lang_selection);
+        });
+        $('.add-translation').on('click', () => {
             // empty the old plural inputs
             $('#translations_panel{{ rand }}').html("");
 
@@ -128,12 +144,14 @@
             $('#translation-modal-button-text{{ rand }}').text("{{ __("Add") }}");
         });
 
-        $('.edit-translation').click(function() {
-            var language = $(this).closest('tr').data('language');
-            var plurals = $(this).closest('tr').data('plurals');
+        $('.edit-translation').on('click', (e) => {
+            const target_row = $(e.target).closest('tr');
+            const language = target_row.data('language');
+            const plurals = target_row.data('translation');
+            const field = target_row.data('field') ?? 0;
 
             $('#dropdown_language{{ rand }}').val(language);
-            setModalLanguagePlural(language, plurals);
+            setModalLanguagePlural(field, language, plurals);
 
             $('#translation-modal-button-icon{{ rand }}').attr('class', '').addClass('ti ti-device-floppy');
             $('#translation-modal-button-text{{ rand }}').text("{{ __("Save") }}");
@@ -141,36 +159,39 @@
             $('#TranslationModal{{ rand }}').modal('show');
         });
 
-    });
+        let avoid_language_recursion = false;
+        const setModalLanguagePlural = (field, language, plurals_values) => {
+            if (avoid_language_recursion) {
+                return;
+            }
 
-    let avoid_language_recursion = false;
-    const setModalLanguagePlural = function(language, plurals_values) {
-        if (avoid_language_recursion) {
-            return;
-        }
+            plurals_values = plurals_values || {};
 
-        plurals_values = plurals_values || {};
+            // empty the old plural inputs
+            $('#translations_panel{{ rand }}').html("");
 
-        // empty the old plural inputs
-        $('#translations_panel{{ rand }}').html("");
+            // Set the language dropdown value (we redo it for edit case)
+            avoid_language_recursion = true;
+            $('#TranslationModal{{ rand }} select[name="field"]').val(field).trigger('change');
+            $('#TranslationModal{{ rand }} select[name="language"]').val(language).trigger('change');
+            avoid_language_recursion = false;
 
-        // Set the language dropdown value (we redo it for edit case)
-        avoid_language_recursion = true;
-        $('#TranslationModal{{ rand }} select[name="language"]').val(language).trigger('change');
-        avoid_language_recursion = false;
+            const plurals_promise = (field === null || parseInt(field) === 0) ?
+                $.ajax({url: "{{ path('ajax/getPlurals.php') }}", data: {language: language}})
+                : Promise.resolve([
+                    {id: 'one', formula: 'n = 1', examples: '1'},
+                ]);
 
-        $.get("{{ path('ajax/getPlurals.php') }}", {
-            language: language
-        }, function(data) {
-            // Append new input for each plural in data
-            data.forEach(function(pluralForm) {
-                let helper = pluralForm.examples;
-                if (pluralForm.formula) {
-                    helper = pluralForm.formula + ' (' + pluralForm.examples + ')';
-                }
+            plurals_promise.then((data) => {
+                // Append new input for each plural in data
+                data.forEach((pluralForm) => {
+                    let helper = pluralForm.examples;
+                    if (pluralForm.formula) {
+                        helper = pluralForm.formula + ' (' + pluralForm.examples + ')';
+                    }
 
-                const plural_value = plurals_values[pluralForm.id] || '';
-                var plural_html = `
+                    const plural_value = plurals_values[pluralForm.id] || '';
+                    const plural_html = `
                     <div class="mb-2">
                         <label class="form-label" for="plural_${pluralForm.id}{{ rand }}">
                             ${pluralForm.id}
@@ -182,9 +203,9 @@
                         <input type="text" class="form-control" id="plural_${pluralForm.id}{{ rand }}" name="plurals[${pluralForm.id}]" value="${plural_value}">
                     </div>
                 `;
-                $('#translations_panel{{ rand }}').append(plural_html);
-
+                    $('#translations_panel{{ rand }}').append(plural_html);
+                });
             });
-        });
-    };
+        };
+    });
 </script>

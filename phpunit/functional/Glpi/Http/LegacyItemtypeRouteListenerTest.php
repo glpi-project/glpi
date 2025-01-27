@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Http;
 
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
-use Glpi\Http\LegacyItemtypeRouteListener;
+use Glpi\Http\Listener\LegacyItemtypeRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;

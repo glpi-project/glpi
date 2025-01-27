@@ -1,3 +1,4 @@
+
 {#
  # ---------------------------------------------------------------------
  #
@@ -5,7 +6,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -31,7 +32,6 @@
  # ---------------------------------------------------------------------
  #}
 
-
 {% extends "layout/page_without_tabs.html.twig" %}
 
 {% set container_size = "narrow" %}
@@ -49,17 +49,13 @@
 
             {# Form header: title and description #}
             <div
-                class="card mb-3"
+                class="mb-4"
                 data-glpi-form-renderer-form-header
             >
-                <div class="card-status-top bg-primary"></div>
+                <h1 class="form-title mb-2"> {{ form.fields.name }} </h1>
 
-                <div class="card-body">
-                    <h1 class="form-title"> {{ form.fields.name }} </h1>
-
-                    <div class="text-muted form-description">
-                        {{ form.fields.header|safe_html }}
-                    </div>
+                <div class="text-muted form-description">
+                    {{ form.fields.header|safe_html }}
                 </div>
             </div>
 
@@ -69,73 +65,95 @@
                 {% set section_index = loop.index0 %}
 
                 <div
-                    class="{{ is_first_section and not is_single_section_form ? "" : "d-none" }}"
+                    class="{{ is_first_section ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
                 >
+                    {% if not is_single_section_form %}
+                        <div
+                            class="bg-primary px-2 py-1 rounded-top "
+                            style="width: fit-content;"
+                        >
+                            {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                        </div>
+                    {% endif %}
                     <div
-                        class="bg-primary px-2 py-1 rounded-top "
-                        style="width: fit-content;"
-                    >
-                        {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
-                    </div>
-                    <div
-                        class="card mb-3"
+                        class="card mb-3" {{ not is_single_section_form ? "style='border-top-left-radius: 0;'" : "" }}
                     >
                         <div class="card-body">
 
-                            <h2>{{ section.fields.name }}</h2>
+                            {% if not is_single_section_form %}
+                                <h2 class="mb-1 {{ not section.fields.name ? "text-muted" : "" }}">
+                                    {{ section.fields.name|default(__('Untitled section')) }}
+                                </h2>
 
-                            <div class="text-muted section-description">
-                                {{ section.fields.description|safe_html }}
-                            </div>
+                                <div class="text-muted section-description mb-3">
+                                    {{ section.fields.description|safe_html }}
+                                </div>
+                            {% endif %}
+
+                            {% for form_group_blocks in section.getBlocks() %}
+                                {# Ensure form_group_blocks is iterable (may be a single question) #}
+                                {% if form_group_blocks is not iterable %}
+                                    {% set form_group_blocks = [form_group_blocks] %}
+                                {% endif %}
+
+                                <section data-glpi-form-renderer-horizontal-blocks>
+                                    {% set previous_index = -1 %}
+                                    {% for form_block in form_group_blocks %}
+                                        {% if form_block.fields.horizontal_rank > previous_index + 1 %}
+                                            {% for i in 1..(form_block.fields.horizontal_rank - (previous_index + 1)) %}
+                                            <div style="flex: 1;"></div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% set previous_index = form_block.fields.horizontal_rank %}
+
+                                        {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                            {% set question_type = form_block.getQuestionType() %}
+                                        {% endif %}
+
+                                        {% set skip_question = false %}
+
+                                        {# Skip unknown types (may be a disabled plugin) #}
+                                        {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {# Skip questions not allowed for anonymous forms #}
+                                        {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
+                                            {% set skip_question = true %}
+                                        {% endif %}
+
+                                        {% if not skip_question %}
+                                            <section
+                                                aria-label="{{ form_block.fields.name }}"
+                                                class="{{ is_first_section ? "" : "d-none" }}"
+                                                style="flex: 1;"
+                                                data-glpi-form-renderer-parent-section="{{ section_index }}"
+                                            >
+                                                <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
+                                                    {{ form_block.fields.name|default(__('Untitled question')) }}
+                                                    {% if form_block.fields.is_mandatory %}
+                                                        <span class="text-danger">*</span>
+                                                    {% endif %}
+                                                </h3>
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    <div class="mb-2">
+                                                        {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="text-muted block-description">
+                                                    {{ form_block.fields.description|safe_html }}
+                                                </div>
+                                            </section>
+                                        {% endif %}
+                                    {% endfor %}
+                                </section>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
-
-                {% for form_block in section.getBlocks() %}
-                    {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                        {% set question_type = form_block.getQuestionType() %}
-                    {% endif %}
-
-                    {% set skip_question = false %}
-
-                    {# Skip unknown types (may be a disabled plugin) #}
-                    {% if form_block is instanceof('Glpi\\Form\\Question') and question_type is null %}
-                        {% set skip_question = true %}
-                    {% endif %}
-
-                    {# Skip questions not allowed for anonymous forms #}
-                    {% if not skip_question and form_block is instanceof('Glpi\\Form\\Question') and unauthenticated_user and not question_type.isAllowedForUnauthenticatedAccess() %}
-                        {% set skip_question = true %}
-                    {% endif %}
-
-                    {% if not skip_question %}
-                        <section
-                            aria-label="{{ form_block.fields.name }}"
-                            class="card mb-3 {{ is_first_section ? "" : "d-none" }}"
-                            data-glpi-form-renderer-parent-section="{{ section_index }}"
-                        >
-                            <div class="card-body">
-                                <h3>
-                                    {{ form_block.fields.name }}
-                                    {% if form_block.fields.is_mandatory %}
-                                        <span class="text-danger">*</span>
-                                    {% endif %}
-                                </h3>
-
-                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                    <div class="mb-2">
-                                        {{ question_type.renderEndUserTemplate(form_block)|raw }}
-                                    </div>
-                                {% endif %}
-
-                                <div class="text-muted block-description">
-                                    {{ form_block.fields.description|safe_html }}
-                                </div>
-                            </div>
-                        </section>
-                    {% endif %}
-                {% endfor %}
 
             {% endfor %}
 
@@ -197,11 +215,26 @@
                 <p class="empty-subtitle text-secondary">
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
+                <div class="mt-3 d-flex">
+                    <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
+                        <i class="ti ti-home me-1"></i>
+                        <span>{{ __("Go home") }}</span>
+                    </a>
+                    <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
+                        <i class="ti ti-article me-1"></i>
+                        <span>{{ __("See my tickets") }}</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+    {# Include direct access token if supplied #}
+    {% if token %}
+        <input type="hidden" name="token" value="{{ token }}" />
+    {% endif %}
 
     <script>
         import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,112 +34,121 @@
 
 namespace Glpi\UI;
 
-use DirectoryIterator;
+use Glpi\Application\View\TemplateRenderer;
+use RuntimeException;
 
 final class IllustrationManager
 {
+    private string $icons_definition_file;
+    private string $icons_sprites_path;
+    private ?array $icons_definitions = null;
+
+    public const DEFAULT_ILLUSTRATION = "request-service";
+
     public function __construct(
-        private string $illustration_dir = GLPI_ROOT . "/resources/illustration"
+        ?string $icons_definition_file = null,
+        ?string $icons_sprites_path = null,
     ) {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
+            . '/public/lib/glpi-project/illustrations/icons.json'
+        ;
+        $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
+        ;
+
+        $this->checkIconFile($this->icons_definition_file);
+        $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
     }
 
     /**
-     * @param int $size Height and width (px)
+     * @param int|null $size Height and width (px). Will be set to 100% if null.
      */
-    public function render(string $filename, int $size = 100): string
+    public function renderIcon(string $icon_id, ?int $size = null): string
     {
-        if (!$this->isValidIllustrationName($filename)) {
-            return "";
-        }
-
-        $svg_content = $this->getSvgContent($filename);
-        $svg_content = $this->replaceColorsByVariables($svg_content);
-        $svg_content = $this->adjustSize($svg_content, $size);
-
-        return $svg_content;
+        $icons = $this->getIconsDefinitions();
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/icon.svg.twig', [
+            'file_path' => $this->icons_sprites_path,
+            'icon_id'   => $icon_id,
+            'size'      => $this->computeSize($size),
+            'title'     => $icons[$icon_id]['title'] ?? "",
+        ]);
     }
 
     /** @return string[] */
-    public function getAllIllustrationsNames(): array
+    public function getAllIconsIds(): array
     {
-        $illustrations = [];
-        $illustrations_files = new DirectoryIterator($this->getIllustrationDir());
-        foreach ($illustrations_files as $file) {
-            /** @var \SplFileInfo $file */
-            if ($file->isDir()) {
-                continue;
-            }
+        return array_keys($this->getIconsDefinitions());
+    }
 
-            if ($file->getExtension() !== 'svg') {
-                continue;
-            }
-
-            $illustrations[] = $file->getFilename();
+    public function countIcons(string $filter = ""): int
+    {
+        if ($filter == "") {
+            return count($this->getIconsDefinitions());
         }
 
-        return $illustrations;
-    }
-
-    private function isValidIllustrationName(string $filename): bool
-    {
-        $full_path = $this->getIllustrationDir() . "/$filename";
-
-        return
-            file_exists($full_path)
-            && is_file($full_path)
-            && is_readable($full_path)
-            && str_ends_with($full_path, '.svg')
-            // Make sure malicious users are not able to read files outside the illustration directory
-            && realpath($full_path) == $full_path
-        ;
-    }
-
-    private function getIllustrationDir(): string
-    {
-        return $this->illustration_dir;
-    }
-
-    private function getSvgContent(string $filename): string
-    {
-        $svg_content = file_get_contents($this->getIllustrationDir() . "/$filename");
-        if (!$svg_content) {
-            return "";
-        }
-
-        return $svg_content;
-    }
-
-    private function replaceColorsByVariables(string $svg_content): string
-    {
-        $mapping = [
-            'rgb(71,71,71)'    => "--glpi-mainmenu-bg",
-            '#474747'          => "--glpi-mainmenu-bg",
-            'rgb(186,186,186)' => "--glpi-helpdesk-header",
-            '#BABABA'          => "--glpi-helpdesk-header",
-            'rgb(235,235,235)' => "--tblr-primary",
-            '#EBEBEB'          => "--tblr-primary",
-        ];
-
-        foreach ($mapping as $color => $variable) {
-            $svg_content = str_replace($color, "var($variable)", $svg_content);
-        }
-
-        return $svg_content;
-    }
-
-    private function adjustSize(string $svg_content, int $size): string
-    {
-        $svg_content = str_replace(
-            'width="100%"',
-            'width="' . $size . 'px"',
-            $svg_content
-        );
-        $svg_content = str_replace(
-            'height="100%"',
-            'height="' . $size . 'px"',
-            $svg_content
+        $icons = array_filter(
+            $this->getIconsDefinitions(),
+            fn ($icon) => str_contains(
+                strtolower($icon['title']),
+                strtolower($filter),
+            )
         );
 
-        return $svg_content;
+        return count($icons);
+    }
+
+    /** @return string[] */
+    public function searchIcons(
+        string $filter = "",
+        int $page = 1,
+        int $page_size = 30,
+    ): array {
+        $icons = array_filter(
+            $this->getIconsDefinitions(),
+            fn ($icon) => str_contains(
+                strtolower($icon['title']),
+                strtolower($filter),
+            )
+        );
+
+        $icons = array_slice(
+            array: $icons,
+            offset: ($page - 1) * $page_size,
+            length: $page_size,
+        );
+
+        return array_keys($icons);
+    }
+
+    private function getIconsDefinitions(): array
+    {
+        if ($this->icons_definitions === null) {
+            $json = file_get_contents($this->icons_definition_file);
+            if ($json === false) {
+                throw new \RuntimeException();
+            }
+            $this->icons_definitions = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
+        }
+
+        return $this->icons_definitions;
+    }
+
+    private function computeSize(?int $size = null): string
+    {
+        if ($size === null) {
+            return "100%";
+        }
+
+        return $size . "px";
+    }
+
+    private function checkIconFile(string $file): void
+    {
+        if (!is_readable($file)) {
+            throw new RuntimeException("Failed to read file: $file");
+        }
     }
 }

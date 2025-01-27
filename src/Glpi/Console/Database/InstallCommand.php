@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,7 @@ use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -272,7 +273,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             OutputInterface::VERBOSITY_VERBOSE
         );
         if (
-            !$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $db_name . '`')
+            !$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $mysqli->real_escape_string($db_name) . '`')
             || !$mysqli->select_db($db_name)
         ) {
             $message = sprintf(
@@ -288,7 +289,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
         $tables_result = $mysqli->query(
             "SELECT COUNT(table_name)
           FROM information_schema.tables
-          WHERE table_schema = '{$db_name}'
+          WHERE table_schema = '" . $mysqli->real_escape_string($db_name) . "'
              AND table_type = 'BASE TABLE'
              AND table_name LIKE 'glpi\_%'"
         );
@@ -303,14 +304,32 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
         }
 
         $output->writeln(
-            '<comment>' . __('Loading default schema...') . '</comment>',
+            '<comment>' . __('Initializing database tables and default data...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
         );
 
+        $progress_bar = new ProgressBar($output);
+        $progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
+        $progress_bar->setMessage(''); // Empty message on iteration start
+        $progress_bar->start();
+
         try {
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
-            Toolbox::createSchema($default_language, $this->db);
+
+            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar) {
+                if ($max !== null) {
+                    $progress_bar->setMaxSteps($max);
+                }
+                if ($data !== null) {
+                    $progress_bar->setMessage($data);
+                }
+                $progress_bar->advance($current - $progress_bar->getProgress());
+            };
+
+            Toolbox::createSchema($default_language, $this->db, $progress_callback);
         } catch (\Throwable $e) {
+            $progress_bar->finish();
+
             $message = sprintf(
                 __('An error occurred during the database initialization. The error was: %s'),
                 $e->getMessage()
@@ -318,6 +337,9 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_SCHEMA_CREATION_FAILED;
         }
+
+        $progress_bar->setMessage(''); // Remove last message
+        $progress_bar->finish();
 
         $output->writeln('<info>' . __('Installation done.') . '</info>');
 

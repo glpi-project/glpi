@@ -9,7 +9,6 @@
 # Joren Guillaume <chaos.side@gmail.com>, 2022
 # Frederik Van Helleputte <transifex.com@goorix.be>, 2022
 # Ruud Hop, 2022
-# Derek V. Giroulle <derek.v.giroulle@skynet.be>, 2022
 # Ron Peeters <ronnie.peeters@gmail.com>, 2023
 # -- --, 2023
 # Eric Vervoordeldonk <eric.vervoordeldonk@gmail.com>, 2023
@@ -17,6 +16,7 @@
 # S. ypie, 2024
 # Chris Gralike, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
+# Derek V. Giroulle <derek.v.giroulle@skynet.be>, 2024
 # Steven <Nevets82@gmail.com>, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2024
 # 
@@ -4593,7 +4593,7 @@ msgstr[1] ""
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:55
 msgid "Associated items"
-msgstr ""
+msgstr "Bijhorende items"
 
 #: src/Contract.php:730 src/Contact.php:362
 msgid "Associated supplier"
@@ -5286,7 +5286,7 @@ msgstr "Merk"
 #: js/modules/Form/WebIconSelector.js:131
 msgctxt "icons"
 msgid "Brand"
-msgstr ""
+msgstr "Merk"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -6037,7 +6037,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "Gewijzigd"
 
 #: src/Glpi/Marketplace/View.php:577
 msgid "Changelog"
@@ -8752,7 +8752,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:140
 msgctxt "icons"
 msgid "Devices"
-msgstr ""
+msgstr "Apparaten"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Devices displayed in menu"
@@ -9158,7 +9158,7 @@ msgstr ""
 
 #: js/modules/Knowbase.js:42
 msgid "Do you want to restore the selected revision?"
-msgstr ""
+msgstr "Wilt u de geselecteerde revisies terugplaatsen?"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -9179,7 +9179,7 @@ msgstr "Document"
 #: js/modules/Form/WebIconSelector.js:141
 msgctxt "icons"
 msgid "Document"
-msgstr ""
+msgstr "Document"
 
 #: src/NotificationTargetKnowbaseItem.php:71
 #: src/NotificationTargetKnowbaseItem.php:186
@@ -15255,7 +15255,7 @@ msgstr ""
 #: src/WifiNetwork.php:77
 msgctxt "wifi_card_mode"
 msgid "Master"
-msgstr ""
+msgstr "Master"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17873,7 +17873,7 @@ msgstr "Andere"
 #: js/modules/Form/WebIconSelector.js:170
 msgctxt "icons"
 msgid "Other"
-msgstr ""
+msgstr "Andere"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Other authentication sent in the HTTP request"
@@ -20891,7 +20891,7 @@ msgstr "Rest API"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Restore"
-msgstr ""
+msgstr "Herstellen"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/ProjectTask.php:1346
@@ -23285,7 +23285,7 @@ msgstr "systeem"
 #: js/modules/Form/WebIconSelector.js:164
 msgctxt "icons"
 msgid "System"
-msgstr ""
+msgstr "systeem"
 
 #: src/DeviceMotherboard.php:43
 msgid "System board"
@@ -24970,7 +24970,7 @@ msgstr "Totaal"
 #: src/Budget.php:614 src/Budget.php:617
 msgctxt "price"
 msgid "Total"
-msgstr ""
+msgstr "Totaal"
 
 #: src/Contract.php:772 src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:2017
@@ -26864,7 +26864,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
-msgstr ""
+msgstr "Overzichten"
 
 #: src/Dropdown.php:1285 src/ItemVirtualMachine.php:511
 msgid "Virtual machine"

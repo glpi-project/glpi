@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -62,7 +62,7 @@ class RuleImportAssetCollection extends RuleCollection
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    $types = $CFG_GLPI['state_types'];
+                    $types = $CFG_GLPI['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
                             $ong[$type] = $type::getTypeName();
@@ -148,7 +148,6 @@ class RuleImportAssetCollection extends RuleCollection
                 ->handleRequest($contents);
 
             $inventory = $inventory_request->getInventory();
-            $item = $inventory->getItem();
             $invitem = $inventory->getMainAsset();
 
             // sanitize input

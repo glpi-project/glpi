@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,10 +38,8 @@ use Glpi\Application\View\TemplateRenderer;
 /** @var \Glpi\Controller\LegacyFileLoadController $this */
 $this->setAjax();
 
-if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
@@ -101,7 +99,7 @@ if (
     ) {
         $email_string =  $default_email[$user_index];
        // Clean alternative email
-        echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
+        echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
     } else if (count($emails) > 1) {
        // Several emails : select in the list
@@ -122,8 +120,8 @@ if (
             ]
         );
     } else {
-        $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlescape($default_email) . "'>";
+        $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
+         :               value='" . htmlescape($default_email) . "'>";
     }
 
     echo "$email_string";

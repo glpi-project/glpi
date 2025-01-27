@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,7 +47,7 @@ describe('Display preferences', () => {
         openDisplayPreferences();
 
         // Add a new column to the global view
-        goToTab('Global View');
+        goToTab('Global View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
@@ -67,7 +67,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the global view config
         openDisplayPreferences();
-        goToTab('Global View');
+        goToTab('Global View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the helpdesk view config
@@ -86,7 +86,7 @@ describe('Display preferences', () => {
         openDisplayPreferences();
 
         // Add a new column to the global view
-        goToTab('Helpdesk View');
+        goToTab('Helpdesk View', true);
         addDisplayPeference('Pending reason');
 
         // Refresh page
@@ -106,7 +106,7 @@ describe('Display preferences', () => {
 
         // Validate that the column was added to the helpdesk view
         openDisplayPreferences();
-        goToTab('Helpdesk View');
+        goToTab('Helpdesk View', true);
         validateThatDisplayPreferenceExist('Pending reason');
 
         // Make sure the column is not in the global view
@@ -135,11 +135,21 @@ describe('Display preferences', () => {
         ;
     }
 
-    function goToTab(name) {
+    function goToTab(name, wait = false) {
+        if (wait) {
+            // When changing tabs for the first time, we must wait for the
+            // js hanlder to be loaded.
+            // Sadly, there is no easy way to determine this without waiting
+            // an arbitrary amount of time.
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(800);
+        }
+
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
     }
 
     function addDisplayPeference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .getDropdownByLabelText('Select an option to add')
             .click()
@@ -152,15 +162,18 @@ describe('Display preferences', () => {
             .findByRole('button', {'name': 'Add'})
             .click()
         ;
+        cy.wait('@update_request');
     }
 
     function deletePreference(name) {
+        cy.intercept('POST', '/ajax/displaypreference.php').as('update_request');
         cy.get('@iframeBody')
             .findByRole('list')
             .findByRole('option', {'name': name}) // Should be listitem instead of option, our DOM is wrong
             .findByRole('button', {'name': "Delete permanently"})
             .click()
         ;
+        cy.wait('@update_request');
     }
 
     function validateThatDisplayPreferenceExist(name) {

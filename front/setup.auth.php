@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 Session::checkRight("config", READ);
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
+Html::header(__('External authentication sources'), '', "config", "auth", -1);
 
 echo TemplateRenderer::getInstance()->render(
     'pages/setup/authentication.html.twig',

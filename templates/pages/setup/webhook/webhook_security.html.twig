@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -89,7 +89,7 @@
 
       {% set cra_btn %}
          <button class="btn btn-primary me-2" type="button" name="validate_challenge" value="1">
-            <i class="fa-solid fa-flag-checkered"></i>
+            <i class="ti ti-lock-check"></i>
             <span>{{ _x('button', 'Validate') }}</span>
          </button>
       {% endset %}
@@ -157,10 +157,10 @@
                   success: function(json_response) {
                       if (json_response.status) {
                           $('input[name="is_cra_challenge_valid"]').val(1);
-                          $('span[name="cra_result"]').html('<i class="fa-solid fa-circle-check fa-beat fa-lg" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                          $('span[name="cra_result"]').html('<i class="ti ti-circle-check icon-pulse fs-2" style="color: #36d601;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
                       } else {
                           $('input[name="is_cra_challenge_valid"]').val(0);
-                          $('span[name="cra_result"]').html('<i class="fa-solid fa-triangle-exclamation fa-beat fa-lg" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
+                          $('span[name="cra_result"]').html('<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i> ' + (json_response.status_code ? json_response.status_code + ' ' : ' ') + json_response.message);
                       }
                   },
               });

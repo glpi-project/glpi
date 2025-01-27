@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,6 +69,7 @@
     &.vertical {
         .nav-link {
             border-bottom: 1px solid var(--glpi-tabs-border-color);
+            border-top-right-radius: 0;
 
             &.active {
                 border-left-width: 5px;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use CommonDBTM;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\InventoryAsset;
-use Glpi\Inventory\Asset\MainAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
 use Lockedfield;
 use RefusedEquipment;
 use Session;
@@ -568,7 +568,7 @@ class Inventory
     public function getMainClass()
     {
         $agent = $this->getAgent();
-        $class_ns = '\Glpi\Inventory\Asset\\';
+        $class_ns = '\Glpi\Inventory\MainAsset\\';
         $main_class = $class_ns . $agent->fields['itemtype'];
         if (class_exists($main_class)) {
             return $main_class;
@@ -837,6 +837,11 @@ class Inventory
     public function getMetadata(): array
     {
         return $this->metadata;
+    }
+
+    public function getAssets()
+    {
+        return $this->assets;
     }
 
     public function getMainAsset(): MainAsset

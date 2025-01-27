@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -577,6 +577,7 @@ EOT;
     public function handleRequest(Request $request): Response
     {
         // Start an output buffer to capture any potential debug errors
+        $current_output_buffer_level = ob_get_level();
         ob_start();
         $response = null;
         $original_method = $request->getMethod();
@@ -686,15 +687,11 @@ EOT;
         if ($original_method === 'HEAD') {
             $response = $response->withBody(Utils::streamFor(''));
         }
-        // Clear output buffers
-        $ob_config = ini_get('output_buffering');
-        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        while (ob_get_level() > $max_level) {
+        // Clear output buffers up to the level when the request was started
+        while (ob_get_level() > $current_output_buffer_level) {
             ob_end_clean();
         }
-        if (ob_get_level() > 0) {
-            ob_clean();
-        }
+
         return $response;
     }
 

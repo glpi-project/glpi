@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\URL;
 
 /**
  * @since 9.5.0
@@ -291,7 +292,7 @@ JS);
             echo '<thead>';
             echo '<tr class="noHover">';
             echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlescape($label) . '';
-            echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems-master impact-pointer"></i></h3></th>';
+            echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems-master impact-pointer"></i></h3></th>';
             echo '</tr>';
             echo '<tr class="noHover">';
             echo '<th>' . _sn('Item', 'Items', 1) . '</th>';
@@ -312,7 +313,7 @@ JS);
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
                 echo '<a>' . htmlescape($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
-                echo '<i class="fas fa-2x fa-caret-down impact-toggle-subitems impact-pointer"></i>';
+                echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems impact-pointer"></i>';
                 echo '</td>';
                 echo '</tr>';
 
@@ -334,7 +335,7 @@ JS);
                             $path[] = htmlescape($node['label']);
                         }
                     }
-                    $separator = '<i class="fas fa-angle-right"></i>';
+                    $separator = '<i class="ti ti-chevron-right"></i>';
                     echo implode(" $separator ", $path);
 
                     echo '</div></td>';
@@ -377,11 +378,11 @@ JS);
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
             echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlescape($impact_item->fields['itemtype']) . '&items_id=' . htmlescape($impact_item->fields['items_id']) . '">';
-            echo '<i class="fas fa-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
+            echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
             echo '</a>';
         }
         if ($can_update && $impact_context) {
-            echo '<i id="impact-list-settings" class="fas fa-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
+            echo '<i id="impact-list-settings" class="ti ti-cog impact-pointer impact-list-tools" title="' . __s('Settings') . '"></i>';
         }
         echo '</div>';
 
@@ -424,64 +425,68 @@ JS);
             return;
         }
 
-       // Hide / show handler
-        echo Html::scriptBlock('
-         // jQuery doesn\'t allow slide animation on table elements, we need
-         // to apply the animation to each cells content and then remove the
-         // padding to get the desired "slide" animation
+        $twig_params = [
+            'itemtype' => $item::class,
+            'items_id' => $item->getID()
+        ];
 
-         function impactListUp(target) {
-            target.removeClass("fa-caret-down");
-            target.addClass("fa-caret-up");
-            target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'0px\'}, {duration: 400});
-            target.closest("tbody").find(\'tr:gt(0) div\').slideUp("400");
-         }
+        // Hide / show handler
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {# jQuery doesn't allow slide animation on table elements, we need to apply the animation to each cells content and then remove the padding to get the desired "slide" animation #}
+            <script>
+                function impactListUp(target) {
+                    target.removeClass("ti-caret-down-filled");
+                    target.addClass("ti-caret-up-filled");
+                    target.closest("tbody").find('tr:gt(0) td').animate({padding: '0px'}, {duration: 400});
+                    target.closest("tbody").find('tr:gt(0) div').slideUp("400");
+                }
 
-         function impactListDown(target) {
-            target.addClass("fa-caret-down");
-            target.removeClass("fa-caret-up");
-            target.closest("tbody").find(\'tr:gt(0) td\').animate({padding: \'8px 5px\'}, {duration: 400});
-            target.closest("tbody").find(\'tr:gt(0) div\').slideDown("400");
-         }
+                function impactListDown(target) {
+                    target.addClass("ti-caret-down-filled");
+                    target.removeClass("ti-caret-up-filled");
+                    target.closest("tbody").find('tr:gt(0) td').animate({padding: '8px 5px'}, {duration: 400});
+                    target.closest("tbody").find('tr:gt(0) div').slideDown("400");
+                }
 
-         $(document).on("click", ".impact-toggle-subitems", function(e) {
-            if ($(e.target).hasClass("fa-caret-up")) {
-               impactListDown($(e.target));
-            } else {
-               impactListUp($(e.target));
-            }
-         });
+                $(document).on("click", ".impact-toggle-subitems", (e) => {
+                    if ($(e.target).hasClass("ti-caret-up-filled")) {
+                        impactListDown($(e.target));
+                    } else {
+                        impactListUp($(e.target));
+                    }
+                });
 
-         $(document).on("click", ".impact-toggle-subitems-master", function(e) {
-            $(e.target).closest("table").find(".impact-toggle-subitems").each(function(i, elem) {
-               if ($(e.target).hasClass("fa-caret-up")) {
-                  impactListDown($(elem));
-               } else {
-                  impactListUp($(elem));
-               }
-            });
+                $(document).on("click", ".impact-toggle-subitems-master", (e) => {
+                    $(e.target).closest("table").find(".impact-toggle-subitems").each((i, elem) => {
+                        if ($(e.target).hasClass("ti-caret-up-filled")) {
+                            impactListDown($(elem));
+                        } else {
+                            impactListUp($(elem));
+                        }
+                    });
+                    $(e.target).toggleClass("ti-caret-up-filled");
+                    $(e.target).toggleClass("ti-caret-down-filled");
+                });
 
-            $(e.target).toggleClass("fa-caret-up");
-            $(e.target).toggleClass("fa-caret-down");
-         });
-
-         $(document).on("impactUpdated", function() {
-            $.ajax({
-               type: "GET",
-               url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
-               data: {
-                  itemtype: "' . htmlescape(get_class($item)) . '",
-                  items_id: "' . $item->fields['id'] . '",
-                  action  : "load",
-                  view    : "list",
-               },
-               success: function(data){
-                  $("#impact_list_view").replaceWith(data);
-                  showGraphView();
-               },
-            });
-         });
-      ');
+                $(document).on("impactUpdated", () => {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ path('ajax/impact.php') }}",
+                        data: {
+                            itemtype: "{{ itemtype|e('js') }}",
+                            items_id: {{ items_id }},
+                            action  : "load",
+                            view    : "list",
+                        },
+                        success: (data) => {
+                            $("#impact_list_view").replaceWith(data);
+                            showGraphView();
+                        },
+                    });
+                });
+            </script>
+TWIG, $twig_params);
 
         if ($can_update) {
            // Handle settings actions
@@ -921,7 +926,7 @@ JS);
                 'NOT' => [
                     "$table.id" => $used
                 ],
-            ],
+            ] + $itemtype::getSystemSQLCriteria()
         ];
 
        // Add friendly name search criteria
@@ -1011,37 +1016,29 @@ JS);
         ]);
 
         echo '<div class="impact-side-filter-itemtypes-items">';
-        $itemtypes = $CFG_GLPI["impact_asset_types"];
+        $itemtypes = array_keys($CFG_GLPI["impact_asset_types"]);
        // Sort by translated itemtypes
-        uksort($itemtypes, function ($a, $b) {
+        usort($itemtypes, function ($a, $b) {
             /** @var class-string $a
              *  @var class-string $b */
             return strcasecmp($a::getTypeName(), $b::getTypeName());
         });
-        foreach ($itemtypes as $itemtype => $icon) {
+        foreach ($itemtypes as $itemtype) {
             /** @var class-string $itemtype */
             // Do not display this itemtype if the user doesn't have READ rights
             if (!Session::haveRight($itemtype::$rightname, READ)) {
                 continue;
             }
 
-            $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
-                'itemtype' => $itemtype,
-                'items_id' => 0
-            ]);
-            if ($plugin_icon && is_string($plugin_icon)) {
-                $icon = ltrim($plugin_icon, '/');
-            }
-
-           // Skip if not enabled
+            // Skip if not enabled
             if (!self::isEnabled($itemtype)) {
                 continue;
             }
 
-            $icon = self::checkIcon($icon);
+            $icon = self::getImpactIcon($itemtype);
 
             echo '<div class="impact-side-filter-itemtypes-item">';
-            echo '<h4><img class="impact-side-icon" src="' . htmlescape($CFG_GLPI['root_doc']) . '/' . htmlescape($icon) . '" title="' . htmlescape($itemtype::getTypeName()) . '" data-itemtype="' . htmlescape($itemtype) . '">';
+            echo '<h4><img class="impact-side-icon" src="' . htmlescape($icon) . '" title="' . htmlescape($itemtype::getTypeName()) . '" data-itemtype="' . htmlescape($itemtype) . '">';
             echo "<span>" . htmlescape($itemtype::getTypeName()) . "</span></h4>";
             echo '</div>'; // impact-side-filter-itemtypes-item
         }
@@ -1049,7 +1046,7 @@ JS);
         echo '</div>'; // <div class="impact-side-select-itemtype">
 
         echo '<div class="impact-side-search">';
-        echo '<h4><i class="fas fa-chevron-left"></i><img><span></span></h4>';
+        echo '<h4><i class="ti ti-chevron-left"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
             'id' => 'impact-side-filter-assets',
             'placeholder' => __s('Filter assets...'),
@@ -1059,7 +1056,7 @@ JS);
         echo '<div class="impact-side-search-results"></div>';
 
         echo '<div class="impact-side-search-more">';
-        echo '<h4><i class="fas fa-chevron-down"></i>' . __s("More...") . '</h4>';
+        echo '<h4><i class="ti ti-chevron-down"></i>' . __s("More...") . '</h4>';
         echo '</div>'; // <div class="impact-side-search-more">
 
         echo '<div class="impact-side-search-no-results">';
@@ -1067,7 +1064,7 @@ JS);
         echo '</div>'; // <div class="impact-side-search-no-results">
 
         echo '<div class="impact-side-search-spinner">';
-        echo '<i class="fas fa-spinner fa-2x fa-spin"></i>';
+        echo '<span class="spinner-border spinner-border m-3" role="status" aria-hidden="true"></span>';
         echo '</div>'; // <div class="impact-side-search-spinner">
 
         echo '</div>'; // <div class="impact-side-search-panel">
@@ -1124,21 +1121,21 @@ JS);
         echo '<div class="impact-side-search-footer"></div>';
         echo '</div>'; // div class="impact-side-panel">
 
-        echo '<ul>';
-        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="fa-fw far fa-save"></i></li>';
+        echo '<ul class="fs-1">';
+        echo '<li id="save_impact" title="' . __s("Save") . '"><i class="ti ti-device-floppy"></i></li>';
         echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="fa-fw fas fa-undo"></i></li>';
         echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="fa-fw fas fa-redo"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="fa-fw ti ti-plus"></i></li>';
-        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="fa-fw ti ti-line"></i></li>';
-        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-fw fa-object-group"></i></li>';
-        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="fa-fw ti ti-trash"></i></li>';
+        echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="ti ti-plus"></i></li>';
+        echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="ti ti-line"></i></li>';
+        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-object-group"></i></li>';
+        echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="ti ti-trash"></i></li>';
         echo '<li class="impact-separator"></li>';
-        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="fa-fw ti ti-download"></i></li>';
-        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="fa-fw ti ti-maximize"></i></li>';
-        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="fa-fw ti ti-adjustments"></i></li>';
+        echo '<li id="export_graph" title="' . __s("Download") . '"><i class="ti ti-download"></i></li>';
+        echo '<li id="toggle_fullscreen" title="' . __s("Fullscreen") . '"><i class="ti ti-maximize"></i></li>';
+        echo '<li id="impact_settings" title="' . __s("Settings") . '"><i class="ti ti-adjustments"></i></li>';
         echo '</ul>';
-        echo '<span class="impact-side-toggle"><i class="fa-fw ti ti-chevron-left"></i></span>';
+        echo '<span class="impact-side-toggle"><i class="ti ti-chevron-left"></i></span>';
         echo '</div>'; // <div class="impact-side impact-side-expanded">
         echo "</td></tr>";
         echo "</table>";
@@ -1270,26 +1267,56 @@ JS);
     }
 
     /**
-     * Check if the icon path is valid, if not return a fallback path
+     * Get the icon to be displayed for the given item.
      *
-     * @param string $icon_path
+     * @param string $itemtype
+     * @param int|null $id
+     *
      * @return string
      */
-    private static function checkIcon(string $icon_path): string
+    public static function getImpactIcon(string $itemtype, ?int $id = null): string
     {
-        // Special case for images returned dynamicly
-        if (str_contains($icon_path, ".php")) {
-            return $icon_path;
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        // First, try to get the icon from plugins
+        $plugin_icon = Plugin::doHookFunction(
+            Hooks::SET_ITEM_IMPACT_ICON,
+            [
+                'itemtype' => $itemtype,
+                'items_id' => $id,
+            ]
+        );
+        if (is_string($plugin_icon) && $plugin_icon !== '' && URL::isGLPIRelativeUrl($plugin_icon)) {
+            if (!str_starts_with($plugin_icon, '/')) {
+                // Fix paths declared without a leading `/`, as it was done before GLPI 11.0.
+                Toolbox::deprecated(
+                    sprintf('Impact icon path `%s` must now be prefixed by a `/`.', $plugin_icon)
+                );
+                $plugin_icon = '/' . $plugin_icon;
+            }
+
+            return $CFG_GLPI['root_doc'] . $plugin_icon;
         }
 
-        // Check if icon exist on the filesystem
-        $file_path = GLPI_ROOT . "/$icon_path";
-        if (file_exists($file_path) && is_file($file_path)) {
-            return $icon_path;
+        // Second, try to get the icon from the configuration entry
+        $icon = $CFG_GLPI['impact_asset_types'][$itemtype] ?? '';
+        if (is_string($icon) && $icon !== '' && URL::isGLPIRelativeUrl($icon)) {
+            if (!str_starts_with($icon, '/')) {
+                // Fix paths declared without a leading `/`, as it was done before GLPI 11.0.
+                Toolbox::deprecated(
+                    sprintf('Impact icon path `%s` must now be prefixed by a `/`.', $icon)
+                );
+                $icon = '/' . $icon;
+            }
+
+            return $CFG_GLPI['root_doc'] . $icon;
         }
 
-        // Fallback "default" icon
-        return "pics/impact/default.png";
+        // Fallback to the default icon
+        return $CFG_GLPI['root_doc'] . '/pics/impact/default.png';
     }
 
     /**
@@ -1313,24 +1340,11 @@ JS);
             return false;
         }
 
-        // Get web path to the image matching the itemtype from config
-        $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "";
-
-        $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
-            'itemtype' => get_class($item),
-            'items_id' => $item->getID()
-        ]);
-        if ($plugin_icon && is_string($plugin_icon)) {
-            $image_name = ltrim($plugin_icon, '/');
-        }
-
-        $image_name = self::checkIcon($image_name);
-
         // Define basic data of the new node
         $new_node = [
             'id'          => $key,
             'label'       => $item->getFriendlyName(),
-            'image'       => $CFG_GLPI['root_doc'] . "/$image_name",
+            'image'       => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects' => $item->getITILTickets(true),
         ];
 
@@ -1575,27 +1589,28 @@ JS);
         echo Html::script("js/impact.js");
 
         // Load backend values
-        $default   = self::DEFAULT_COLOR;
-        $forward   = self::IMPACT_COLOR;
-        $backward  = self::DEPENDS_COLOR;
-        $both      = self::IMPACT_AND_DEPENDS_COLOR;
-        $start_node = self::getNodeID($item);
+        $twig_params = [
+            'default'   => self::DEFAULT_COLOR,
+            'forward'   => self::IMPACT_COLOR,
+            'backward'  => self::DEPENDS_COLOR,
+            'both'      => self::IMPACT_AND_DEPENDS_COLOR,
+            'start_node' => self::getNodeID($item),
+        ];
 
         // Bind the backend values to the client and start the network
-        echo  Html::scriptBlock(<<<JS
-            $(function() {
-                GLPIImpact.prepareNetwork(
-                    $("#network_container"),
-                    {
-                        default : '$default',
-                        forward : '$forward',
-                        backward: '$backward',
-                        both    : '$both'
-                    },
-                    '$start_node'
-                )
-            });
-JS);
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <script defer>
+                {% autoescape 'js' %}
+                    GLPIImpact.prepareNetwork($("#network_container"), {
+                        'default' : '{{ default }}',
+                        'forward' : '{{ forward }}',
+                        'backward' : '{{ backward }}',
+                        'both' : '{{ both }}',
+                    }, '{{ start_node }}');
+                {% endautoescape %}
+            </script>
+TWIG, $twig_params);
     }
 
     /**
@@ -1637,7 +1652,7 @@ JS);
      */
     public static function getNodeID(CommonDBTM $item): string
     {
-        return $item::class . self::NODE_ID_DELIMITER . $item->fields['id'];
+        return $item::class . self::NODE_ID_DELIMITER . ((int) $item->fields['id']);
     }
 
     /**
@@ -1755,21 +1770,22 @@ JS);
      */
     public static function getEnabledItemtypes(): array
     {
-        // Get configured values
-        $conf = Config::getConfigurationValues('core');
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        if (!isset($conf[self::CONF_ENABLED])) {
+        // Get configured values
+        $enabled_itemtypes = $CFG_GLPI[Impact::CONF_ENABLED] ?? [];
+
+        if (!count($enabled_itemtypes)) {
             return [];
         }
 
-        $enabled = importArrayFromDB($conf[self::CONF_ENABLED]);
-
         // Remove any forbidden values
-        return array_filter($enabled, static function ($itemtype) {
+        return array_filter($enabled_itemtypes, static function ($itemtype) {
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
-            return isset($CFG_GLPI['impact_asset_types'][$itemtype]);
+            return array_key_exists($itemtype, $CFG_GLPI['impact_asset_types']);
         });
     }
 

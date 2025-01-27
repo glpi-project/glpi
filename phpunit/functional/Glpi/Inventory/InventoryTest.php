@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1463,7 +1463,9 @@ class InventoryTest extends InventoryTestCase
         //check memory
         $this->assertCount(2, $components['Item_DeviceMemory']);
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component1);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
+        $this->assertIsArray($mem_component2);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
         $expected_mem_component = [
             'items_id' => $mem_component1['items_id'],
@@ -1480,11 +1482,14 @@ class InventoryTest extends InventoryTestCase
             'locations_id' => 0,
             'states_id' => 0
         ];
-        $this->assertIsArray($mem_component1);
+
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
-        $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1626,12 +1631,10 @@ class InventoryTest extends InventoryTestCase
         $mem_component1 = array_pop($components['Item_DeviceMemory']);
         $mem_component2 = array_pop($components['Item_DeviceMemory']);
         $this->assertGreaterThan(0, $mem_component1['devicememories_id']);
-        $expected_mem_component['busID'] = "2";
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -1820,9 +1823,13 @@ class InventoryTest extends InventoryTestCase
         ];
         $this->assertIsArray($mem_component1);
         $this->assertSame($expected_mem_component, $mem_component1);
-        $expected_mem_component['busID'] = "1";
+
+        $expected_mem_component2 = $expected_mem_component;
+        $expected_mem_component2['busID'] = "1";
+        //device is different, because no manufacturer is set on second memory slot
+        $expected_mem_component2['devicememories_id'] = $mem_component2['devicememories_id'];
         $this->assertIsArray($mem_component2);
-        $this->assertSame($expected_mem_component, $mem_component2);
+        $this->assertSame($expected_mem_component2, $mem_component2);
 
         //software
         $isoft = new \Item_SoftwareVersion();
@@ -8198,7 +8205,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
     }
 
-    #[dataProvider('getAssignUserByFieldAndRegexRules')]
+    #[DataProvider('getAssignUserByFieldAndRegexRules')]
     public function testAssignUserByFieldAndRegex($rules_fields, $xml_fields, $result)
     {
         global $DB;
@@ -9242,5 +9249,143 @@ JSON;
         $c_update = new \Computer();
         $c_update->getFromDBByCrit(['uuid' => 'zrerythegfzed']);
         $this->assertSame("mailpit_update", $c_update->fields['name']);
+    }
+
+    public function testRuleRecursivityYes(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => __METHOD__,
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rule1_id);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "name",
+            'pattern'   => "/.*/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $entity_id,
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'is_recursive',
+            'value'       => 1
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $files = [
+            'computer_1.json',
+            'networkequipment_1.json',
+            'phone_1.json',
+            'printer_1.json',
+        ];
+
+        foreach ($files as $file) {
+            //run inventory
+            $json = json_decode(file_get_contents(self::INV_FIXTURES . $file));
+            $inventory = $this->doInventory($json);
+            $assets = $inventory->getAssets();
+
+            foreach ($assets as $assettype) {
+                foreach ($assettype as $asset) {
+                    $this->assertSame($entity_id, $asset->getEntity());
+                    if (
+                        $asset->maybeRecursive()
+                        && !($asset instanceof \Glpi\Inventory\Asset\Software)
+                    ) {
+                        $this->assertTrue($asset->isRecursive());
+                    }
+                }
+            }
+        }
+    }
+
+    public function testRuleRecursivityNo(): void
+    {
+        $this->login();
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => __METHOD__,
+            'match'     => 'AND',
+            'sub_type'  => 'RuleImportEntity',
+            'ranking'   => 1
+        ];
+        $rule1_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rule1_id);
+
+        // Add criteria
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rule1_id,
+            'criteria'  => "name",
+            'pattern'   => "/.*/",
+            'condition' => \RuleImportEntity::REGEX_MATCH
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        // Add action
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => getItemByTypeName('Entity', '_test_child_2', true),
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $input = [
+            'rules_id'    => $rule1_id,
+            'action_type' => 'assign',
+            'field'       => 'is_recursive',
+            'value'       => 0
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        $files = [
+            'computer_1.json',
+            'networkequipment_1.json',
+            'phone_1.json',
+            'printer_1.json',
+        ];
+
+        foreach ($files as $file) {
+            //run inventory
+            $json = json_decode(file_get_contents(self::INV_FIXTURES . $file));
+            $inventory = $this->doInventory($json);
+            $assets = $inventory->getAssets();
+
+            foreach ($assets as $assettype) {
+                foreach ($assettype as $asset) {
+                    if ($asset->maybeRecursive()) {
+                        $this->assertFalse($asset->isRecursive());
+                    }
+                }
+            }
+        }
     }
 }

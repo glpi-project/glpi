@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -99,7 +99,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_peripheral
  * @property int $import_env
  * @property string $auth_required
- *
+ * @property bool $enabled_inventory
  */
 class Conf extends CommonGLPI
 {
@@ -381,7 +381,7 @@ class Conf extends CommonGLPI
         if ($config['enabled_inventory'] == false) {
             echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
             echo "<span class='ms-2'>";
-            echo "<i class='fas fa-info-circle'> </i> &nbsp;";
+            echo "<i class='ti ti-info-circle'> </i> &nbsp;";
             echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";

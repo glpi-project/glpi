@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,34 +36,59 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
+use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
-final class ValidationFieldConfig implements JsonFieldInterface
+final class ValidationFieldConfig implements
+    JsonFieldInterface,
+    ConfigWithForeignKeysInterface,
+    ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGY        = 'strategy';
-    public const QUESTION_IDS    = 'question_ids';
-    public const SPECIFIC_ACTORS = 'specific_actors';
+    public const STRATEGIES            = 'strategies';
+    public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
+    public const SPECIFIC_ACTORS       = 'specific_actors';
 
+    /**
+     * @param array<ValidationFieldStrategy> $strategies
+     * @param array<int>                     $specific_question_ids
+     * @param array<int>                     $specific_actors
+     */
     public function __construct(
-        private ValidationFieldStrategy $strategy,
-        private ?array $specific_question_ids = null,
-        private ?array $specific_actors = null,
+        private array $strategies,
+        private array $specific_question_ids = [],
+        private array $specific_actors = [],
     ) {
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        return [
+            new ForeignKeyItemsArrayHandler(key: self::SPECIFIC_ACTORS),
+            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
+        ];
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategy = ValidationFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = ValidationFieldStrategy::NO_VALIDATION;
+        $strategies = array_map(
+            fn (string $strategy) => ValidationFieldStrategy::tryFrom($strategy),
+            $data[self::STRATEGIES] ?? []
+        );
+        if (empty($strategies)) {
+            $strategies = [ValidationFieldStrategy::NO_VALIDATION];
         }
 
         return new self(
-            strategy: $strategy,
-            specific_question_ids: $data[self::QUESTION_IDS] ?? null,
-            specific_actors: $data[self::SPECIFIC_ACTORS] ?? null,
+            strategies: $strategies,
+            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
+            specific_actors: $data[self::SPECIFIC_ACTORS] ?? [],
         );
     }
 
@@ -71,23 +96,35 @@ final class ValidationFieldConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            self::STRATEGY => $this->strategy->value,
-            self::QUESTION_IDS => $this->specific_question_ids,
+            self::STRATEGIES              => array_map(
+                fn (ValidationFieldStrategy $strategy) => $strategy->value,
+                $this->strategies
+            ),
+            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
             self::SPECIFIC_ACTORS => $this->specific_actors,
         ];
     }
 
-    public function getStrategy(): ValidationFieldStrategy
+    #[Override]
+    public static function getStrategiesInputName(): string
     {
-        return $this->strategy;
+        return self::STRATEGIES;
     }
 
-    public function getSpecificQuestionIds(): ?array
+    /**
+     * @return array<ValidationFieldStrategy>
+     */
+    public function getStrategies(): array
+    {
+        return $this->strategies;
+    }
+
+    public function getSpecificQuestionIds(): array
     {
         return $this->specific_question_ids;
     }
 
-    public function getSpecificActors(): ?array
+    public function getSpecificActors(): array
     {
         return $this->specific_actors;
     }

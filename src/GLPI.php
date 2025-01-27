@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,15 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Psr\Log\LogLevel;
-
 /**
- *  GLPI (instantiation and so on)
- **/
+ * @FIXME Find a better place for these constants.
+ */
 class GLPI
 {
     /**
@@ -66,71 +60,4 @@ class GLPI
      * Suitable for developer machines and development servers.
      */
     public const ENV_DEVELOPMENT = 'development';
-
-    private $error_handler;
-
-    /**
-     * Init logger
-     *
-     * @return void
-     */
-    public function initLogger()
-    {
-        /**
-         * @var \Psr\Log\LoggerInterface $PHPLOGGER
-         * @var \Psr\Log\LoggerInterface $SQLLOGGER
-         */
-        global $PHPLOGGER, $SQLLOGGER;
-
-        if (defined('GLPI_LOG_LVL')) {
-            $log_level = GLPI_LOG_LVL;
-        } else {
-            switch (GLPI_ENVIRONMENT_TYPE) {
-                case self::ENV_DEVELOPMENT:
-                    // All error/messages are logs, including deprecations.
-                    $log_level = LogLevel::DEBUG;
-                    break;
-                case self::ENV_TESTING:
-                    // Silent deprecation and info, as they should have no functional impact.
-                    // Keep notices as they have may indicate that code is not correctly handling a specific case.
-                    $log_level = LogLevel::NOTICE;
-                    break;
-                case self::ENV_STAGING:
-                case self::ENV_PRODUCTION:
-                default:
-                    // Keep only warning/error messages.
-                    $log_level = LogLevel::WARNING;
-                    break;
-            }
-        }
-
-        foreach (['php', 'sql'] as $type) {
-            $logger = new Logger('glpi' . $type . 'log');
-            $handler = new StreamHandler(
-                GLPI_LOG_DIR . "/{$type}-errors.log",
-                $log_level
-            );
-            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-            switch ($type) {
-                case 'php':
-                    $PHPLOGGER = $logger;
-                    break;
-                case 'sql':
-                    $SQLLOGGER = $logger;
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Init and register error handler.
-     *
-     * @return void
-     */
-    public function initErrorHandler(): void
-    {
-        ErrorHandler::getInstance()->register();
-    }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,9 +39,13 @@ final class FormContentSpecification
 {
     public int $id;
     public string $name;
-    public string $header;
+    public ?string $header;
+    public ?string $description;
+    public string $illustration;
+    public string $category_name;
     public string $entity_name;
     public bool $is_recursive;
+    public bool $is_active;
 
     /** @var SectionContentSpecification[] $sections */
     public array $sections = [];
@@ -54,6 +58,9 @@ final class FormContentSpecification
 
     /** @var AccesControlPolicyContentSpecification[] $policies */
     public array $policies = [];
+
+    /** @var DestinationContentSpecification[] $destinations */
+    public array $destinations = [];
 
     /** @var DataRequirementSpecification[] $data_requirements */
     public array $data_requirements = [];

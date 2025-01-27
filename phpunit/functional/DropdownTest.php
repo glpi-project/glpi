@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,7 +83,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataTestImport')]
+    #[DataProvider('dataTestImport')]
     public function testImport($input, $result, $msg)
     {
         $id = \Dropdown::import('UserTitle', $input);
@@ -116,7 +116,7 @@ class DropdownTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('dataTestTreeImport')]
+    #[DataProvider('dataTestTreeImport')]
     public function testTreeImport($input, $result, $complete, $msg)
     {
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -461,7 +461,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('dataGetValueWithUnit')]
+    #[DataProvider('dataGetValueWithUnit')]
     public function testGetValueWithUnit($input, $unit, $decimals, $expected)
     {
         $value = $decimals !== null
@@ -1037,7 +1037,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('getDropdownValueProvider')]
+    #[DataProvider('getDropdownValueProvider')]
     public function testGetDropdownValue($params, $expected, $session_params = [])
     {
         $this->login();
@@ -1200,7 +1200,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('getDropdownConnectProvider')]
+    #[DataProvider('getDropdownConnectProvider')]
     public function testGetDropdownConnect($params, $expected, $session_params = [])
     {
         $this->login();
@@ -1384,7 +1384,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('getDropdownNumberProvider')]
+    #[DataProvider('getDropdownNumberProvider')]
     public function testGetDropdownNumber($params, $expected)
     {
         global $CFG_GLPI;
@@ -1508,7 +1508,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('getDropdownUsersProvider')]
+    #[DataProvider('getDropdownUsersProvider')]
     public function testGetDropdownUsers($params, $expected)
     {
         $this->login();
@@ -1927,7 +1927,7 @@ HTML;
      *
      * @return void
      */
-    #[dataProvider('testDropdownNumberProvider')]
+    #[DataProvider('testDropdownNumberProvider')]
     public function testDropdownNumber(array $params, array $expected): void
     {
         $params['display'] = false;
@@ -2010,7 +2010,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('assignableAssetsProvider')]
+    #[DataProvider('assignableAssetsProvider')]
     public function testGetDropdownValueAssignableItems($itemtype)
     {
         $this->login();
@@ -2101,7 +2101,7 @@ HTML;
         $this->assertNotContains(__FUNCTION__ . '3', $children);
     }
 
-    #[dataProvider('assignableAssetsProvider')]
+    #[DataProvider('assignableAssetsProvider')]
     public function testGetDropdownFindNumAssignableItems($itemtype)
     {
         $this->login();
@@ -2246,7 +2246,7 @@ HTML;
         ];
     }
 
-    #[dataProvider('displayWithProvider')]
+    #[DataProvider('displayWithProvider')]
     public function testFilterDisplayWith(CommonDBTM $item, array $displaywith, array $filtered): void
     {
         $instance = new \Dropdown();

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.12',
+        '_version' => '4.13',
 
         // Type => array of entries
         'Entity' => [
@@ -678,7 +678,19 @@ function loadDataset()
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
             ]
-        ]
+        ],
+        'CartridgeItem' => [
+            [
+                'name'        => '_test_cartridgeitem01',
+                'entities_id' => '_test_root_entity',
+            ]
+        ],
+        'ConsumableItem' => [
+            [
+                'name'        => '_test_consumableitem01',
+                'entities_id' => '_test_root_entity',
+            ]
+        ],
     ];
 
     // To bypass various right checks

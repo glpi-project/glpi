@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLATTRFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
@@ -80,7 +80,7 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTRFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE,
             ),
             expected_slas_ttr_id: $created_sla_ttr->getID()
@@ -102,7 +102,7 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTRFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_ttr->getID()
             ),
@@ -146,7 +146,7 @@ final class SLATTRFieldTest extends DbTestCase
 
         $this->checkSLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
-            config: new SLMFieldConfig(
+            config: new SLATTRFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: $created_sla_ttr->getID()
             ),
@@ -156,7 +156,7 @@ final class SLATTRFieldTest extends DbTestCase
 
     private function checkSLATTRFieldConfiguration(
         Form $form,
-        SLMFieldConfig $config,
+        SLATTRFieldConfig $config,
         int $expected_slas_ttr_id
     ): Ticket {
         // Insert config

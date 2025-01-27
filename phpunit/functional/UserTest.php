@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -450,7 +450,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('prepareInputForTimezoneUpdateProvider')]
+    #[DataProvider('prepareInputForTimezoneUpdateProvider')]
     public function testPrepareInputForUpdateTimezone(array $input, array $expected)
     {
         $this->login();
@@ -631,7 +631,18 @@ class UserTest extends \DbTestCase
 
                 foreach ($inputs as $key => $value) {
                     $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), $key => $value]);
-                    $this->assertEquals($can, \array_key_exists($key, $output));
+                    if (is_array($output)) {
+                        $this->assertEquals($can, \array_key_exists($key, $output));
+                    } else {
+                        $this->assertFalse($can);
+                        $this->assertFalse($output);
+                        $this->hasSessionMessages(ERROR, [
+                            sprintf(
+                                __('You are not allowed to update the following fields: %s'),
+                                $key
+                            )
+                        ]);
+                    }
                 }
             }
         }
@@ -917,7 +928,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('rawNameProvider')]
+    #[DataProvider('rawNameProvider')]
     public function testGetFriendlyName($input, $rawname)
     {
         $user = new \User();
@@ -1222,7 +1233,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('cronPasswordExpirationNotificationsProvider')]
+    #[DataProvider('cronPasswordExpirationNotificationsProvider')]
     public function testCronPasswordExpirationNotifications(
         int $expiration_delay,
         int $notice_delay,
@@ -1932,7 +1943,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[dataProvider('toggleSavedSearchPinProvider')]
+    #[DataProvider('toggleSavedSearchPinProvider')]
     public function testToggleSavedSearchPin(string $initial_db_value, string $itemtype, bool $success, string $result_db_value): void
     {
         $user = $this->createItem(
@@ -2026,5 +2037,185 @@ class UserTest extends \DbTestCase
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token_date', $fields));
             }
         }
+    }
+
+    public function testUnsetUndisclosedFieldsWithPartialFields()
+    {
+        $fields = [
+            //'id' is missing
+            'name'                       => 'test',
+            'password'                   => \bin2hex(\random_bytes(16)),
+            'api_token'                  => \bin2hex(\random_bytes(16)),
+            'cookie_token'               => \bin2hex(\random_bytes(16)),
+            'password_forget_token'      => \bin2hex(\random_bytes(16)),
+            'personal_token'             => \bin2hex(\random_bytes(16)),
+            'password_forget_token_date' => '2024-10-25 13:15:12',
+        ];
+
+        \User::unsetUndisclosedFields($fields);
+
+        $this->assertEquals(['name' => 'test'], $fields);
+    }
+
+    public function testReapplyRightRules()
+    {
+        $this->login();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $user = new \User();
+        $user->getFromDB($_SESSION['glpiID']);
+
+        // Create a group that will be used to add a profile
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+        ]);
+
+        // Create a profile that will be added to the user
+        $profile = new \Profile();
+        $profiles_id = $profile->add([
+            'name' => __FUNCTION__,
+        ]);
+
+        // Create a rule that associates the profile to users with the group
+        $rule = new \RuleRight();
+        $rules_id = $rule->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $entities_id,
+            'match' => 'AND',
+        ]);
+        (new \RuleCriteria())->add([
+            'rules_id' => $rules_id,
+            'criteria' => '_groups_id',
+            'condition' => 0,
+            'pattern' => $groups_id,
+        ]);
+        $action = new \RuleAction();
+        $action->add([
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'profiles_id',
+            'value' => $profiles_id,
+        ]);
+        $action->add([
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'entities_id',
+            'value' => $entities_id,
+        ]);
+
+        $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+
+        $group_user = new \Group_User();
+        $group_user_id = $group_user->add([
+            'groups_id' => $groups_id,
+            'users_id' => $user->getID(),
+        ]);
+
+        $user->reapplyRightRules();
+        $this->assertContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+
+        $group_user->delete(['id' => $group_user_id]);
+        $user->reapplyRightRules();
+        $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
+    }
+
+    public static function testGetFriendlyNameFieldsProvider()
+    {
+        return [
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::REALNAME_BEFORE,
+                'expected' => 'lastname firstname',
+            ],
+            [
+                'input' => [
+                    'name' => 'login_only',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'login_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_only',
+                    'firstname' => 'firstname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'lastname_only',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'lastname_only',
+            ],
+            [
+                'input' => [
+                    'name'      => 'firstname_lastname',
+                    'firstname' => 'firstname',
+                    'realname'  => 'lastname',
+                ],
+                'names_format' => User::FIRSTNAME_BEFORE,
+                'expected' => 'firstname lastname',
+            ],
+        ];
+    }
+
+    #[DataProvider('testGetFriendlyNameFieldsProvider')]
+    public function testGetFriendlyNameFields(
+        array $input,
+        int $names_format,
+        string $expected
+    ) {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        \Config::setConfigurationValues('core', ['names_format' => $names_format]);
+
+        $user = $this->createItem('User', $input);
+
+        $query = [
+            'SELECT' => [
+                User::getFriendlyNameFields(),
+            ],
+            'FROM' => [
+                User::getTable(),
+            ],
+            'WHERE' => [
+                'id' => $user->fields['id'],
+            ]
+        ];
+        $result = $DB->request($query)->current();
+        $this->assertSame($expected, $result['name']);
     }
 }

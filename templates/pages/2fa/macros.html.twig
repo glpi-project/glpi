@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -49,7 +49,7 @@
                if ($(this).val().length === 1) {
                    const next = $(this).next();
                    if (next.length === 0) {
-                       $(this).closest('form').submit();
+                       $(this).closest('form').find('button[name="continue"]').click();
                        input_fields.prop('disabled', true);
                    }
                }
@@ -64,7 +64,7 @@
                    if (next.length) {
                        next.focus();
                    } else {
-                       $(this).closest('form').submit();
+                       $(this).closest('form').find('button[name="continue"]').click();
                        input_fields.prop('disabled', true);
                    }
                }
@@ -113,7 +113,7 @@
                      <div class="btn-group d-flex">
                         <input class="form-control" alt="{{ __('Secret') }}" value="{{ secret }}"/>
                         <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
-                           <i class="fas fa-copy"></i>
+                           <i class="ti ti-clipboard-copy"></i>
                         </button>
                         <script>
                            $(document).ready(function() {

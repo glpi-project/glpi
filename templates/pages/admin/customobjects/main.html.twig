@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -43,37 +43,27 @@
         {{ alerts.alert_warning(__('There is currently no profile with access to items with current definition.')) }}
     {% endif %}
 
-    {% if item.isNewItem() %}
-        {% set helper %}
-            {{ __('The system name corresponds to the customizable part of the item class which will correspond to the current definition. For example, items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
-            {{ __('The value must contains only letters and must not end by "Model" or "Type".') }}
-            {{ __('Also, the value must not be one of the following reserved names: %s.')|format('"' ~ reserved_system_names|join('", "') ~ '"') }}
-        {% endset %}
-        {{ fields.textField(
-            'system_name',
-            item.fields['system_name'],
-            __('System name'),
-            {
-                'required': true,
-                'pattern': '^(?!(' ~ reserved_system_names|join('|') ~ ')$)[A-Za-z]+(?<!Model|Type)$',
-                'helper': helper
-            }
-        ) }}
-    {% else %}
+    {% set helper %}
+        {{ __('The system name field corresponds to what will be used when development is involved. Examples: API calls, webhooks, etc.') }}
+        {{ __('It can be personalized, but some words are reserved such as classes from GLPI like Computer, Monitor, etc.') }}
+        {{ __('Items linked to the system name "%s" will have the class "%s".')|format('Example', customobj_ns ~ '\\Example') }}
+    {% endset %}
+    {{ fields.textField('label', item.fields['label'], __('Label')) }}
+    {{ fields.textField(
+        'system_name',
+        item.fields['system_name'],
+        __('System name'),
+        {
+            disabled: not item.isNewItem(),
+            'helper': helper
+        }
+    ) }}
+    {% if not item.isNewItem() %}
         {% set helper_html %}
             <em class="text-muted">
                 {{ __('The class of items related to current definition is "%s".')|format(customobj_ns ~ '\\%s'|format(item.fields['system_name'])) }}
             </em>
         {% endset %}
-        {{ fields.textField(
-            'system_name',
-            item.fields['system_name'],
-            __('System name'),
-            {
-                'disabled': true,
-                'add_field_html': helper_html,
-            }
-        ) }}
     {% endif %}
 
     {% if not item.isNewItem() %}
@@ -116,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <script>
+        <script defer>
             $('#mainformtable button[name="purge"]').on('click', { is_from_modal: false }, (event, data) => {
                 data = data || event.data;
 
@@ -137,6 +127,36 @@
             });
         </script>
     {% endif %}
+    <script type="module">
+        $('#mainformtable input[name="system_name"]').on('input', () => {
+            if ($('input[name="system_name"]').val() === '') {
+                $('input[name="system_name"]').data('manually_changed', false);
+            } else {
+                $('input[name="system_name"]').data('manually_changed', true);
+            }
+        });
+        function autoUpdateNameField() {
+            if ({{ not item.isNewItem() ? 'true' : 'false' }} || $('#mainformtable input[name="system_name"]').data('manually_changed')) {
+                return;
+            }
+            const reserved_names = {{ reserved_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
+            const existing_names = {{ existing_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
+            $('#mainformtable input[name="system_name"]').val(
+                $('#mainformtable input[name="label"]').val().normalize('NFD').replace(/[^a-z]/gi, '')
+            );
+            const system_name = $('#mainformtable input[name="system_name"]').val().toLowerCase();
+            if (reserved_names.includes(system_name) || system_name.endsWith('type') || system_name.endsWith('model')) {
+                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is a reserved name. Please enter a different label or manually change the system name.'));
+            } else if (existing_names.includes(system_name)) {
+                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is already in use. Please enter a different label or manually change the system name.'));
+            } else {
+                $('#mainformtable input[name="system_name"]').get(0).setCustomValidity('');
+            }
+        };
+        $('#mainformtable input[name="label"]').on('input', () => {
+            autoUpdateNameField();
+        });
+    </script>
     {{ parent() }}
 {% endblock %}
 
@@ -146,4 +166,16 @@
         item.fields['icon'],
         __('Icon'),
     ) }}
+
+    {% if item.isField('picture') %}
+        {% if item.fields['picture'] is not empty %}
+            {{ fields.imageField('picture', item.fields['picture']|picture_url, field['label'], {
+                'clearable': (not item.isNewItem() and item.canUpdateItem())
+            }) }}
+        {% else %}
+            {{ fields.fileField('picture', null, _n('Picture', 'Pictures', 1), {
+                'onlyimages': true
+            }) }}
+        {% endif %}
+    {% endif %}
 {% endblock %}

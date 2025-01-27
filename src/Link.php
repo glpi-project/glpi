@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -572,7 +572,7 @@ class Link extends CommonDBTM
                 <div class="text-center my-3">
                     {% if show_add %}
                         <a class="btn btn-primary" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
-                            <i class="fas fa-plus me-2"></i>
+                            <i class="ti ti-plus me-2"></i>
                             {{ add_msg }}
                         </a>
                     {% endif %}
@@ -606,7 +606,7 @@ TWIG, $buttons_params);
 
                 if ($manuallink->canUpdateItem()) {
                     $actions .= '<a href="' . htmlescape(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
-                    $actions .= '<i class="fas fa-edit"></i>';
+                    $actions .= '<i class="ti ti-edit"></i>';
                     $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
                     $actions .= '</a>';
                 }
@@ -724,7 +724,7 @@ TWIG, $buttons_params);
                                  "&itemtype=" . $item::class .
                                  "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
-                $newlink        .= "<i class='fa-lg fa-fw fas fa-link me-2'></i>";
+                $newlink        .= "<i class='fs-2 ti ti-link me-2'></i>";
                 $linkname        = htmlescape(sprintf(__('%1$s #%2$s'), $name, $i));
                 $newlink        .= htmlescape(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink        .= "</a>";

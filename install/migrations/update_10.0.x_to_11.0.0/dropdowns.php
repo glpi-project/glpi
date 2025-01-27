@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,6 +47,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
         CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `system_name` varchar(255) DEFAULT NULL,
+            `label` varchar(255) NOT NULL,
             `icon` varchar(255) DEFAULT NULL,
             `comment` text,
             `is_active` tinyint NOT NULL DEFAULT '0',
@@ -62,6 +63,11 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQuery($query);
+} else {
+    $migration->addField('glpi_dropdowns_dropdowndefinitions', 'label', 'string', [
+        'after' => 'system_name',
+        'update' => $DB::quoteName('system_name'),
+    ]);
 }
 
 if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {

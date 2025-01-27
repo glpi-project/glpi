@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,16 +61,16 @@ if ($rulecollection->isRuleRecursive()) {
 }
 $rulecollection->checkGlobal(READ);
 
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'));
 
-$rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POST, $condition);
+$rulecollection->showRulesEnginePreviewCriteriasForm($_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {
    //Unset values that must not be processed by the rule
     unset($_POST["sub_type"], $_POST["test_all_rules"]);
 
     echo "<br>";
-    $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST, $condition);
+    $rulecollection->showRulesEnginePreviewResultsForm($_POST, $condition);
 }
 
 Html::popFooter();

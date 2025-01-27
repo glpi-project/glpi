@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -584,23 +584,8 @@ class Reminder extends CommonDBVisible implements
         ]);
     }
 
-    /**
-     * Show list for central view
-     *
-     * @param boolean $personal display reminders created by me?
-     * @param boolean $display if false return html
-     *
-     * @return string|void
-     * @phpstan-return $display ? void : string
-     **/
-    public static function showListForCentral(bool $personal = true, bool $display = true)
+    final public static function getListCriteria(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
-
         $users_id = Session::getLoginUserID();
         $today    = date('Y-m-d');
         $now      = date('Y-m-d H:i:s');
@@ -666,6 +651,54 @@ class Reminder extends CommonDBVisible implements
             $personal_criteria = array_merge_recursive($personal_criteria, $additional_criteria);
             $public_criteria   = array_merge_recursive($public_criteria, $additional_criteria);
         }
+
+        // TOOD: would be cleaner to have two separate method like getPersonalCriteria
+        // and getPublicCriteria
+        return [
+            'personal' => $personal_criteria,
+            'public' => $public_criteria,
+        ];
+    }
+
+    final public static function countPublicReminders(): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $criteria = self::getListCriteria();
+        $public_criteria = $criteria['public'];
+
+        // Replace select * by count
+        $public_criteria['COUNT'] = 'total_rows';
+        unset($public_criteria['ORDER BY']);
+        unset($public_criteria['DISTINCT']);
+        unset($public_criteria['SELECT']);
+
+        $data = $DB->request($public_criteria);
+        $row = $data->current();
+        return $row['total_rows'];
+    }
+
+    /**
+     * Show list for central view
+     *
+     * @param boolean $personal display reminders created by me?
+     * @param boolean $display if false return html
+     *
+     * @return string|void
+     * @phpstan-return $display ? void : string
+     **/
+    public static function showListForCentral(bool $personal = true, bool $display = true)
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $criteria = self::getListCriteria();
+        $personal_criteria = $criteria['personal'];
+        $public_criteria = $criteria['public'];
 
         // Only standard interface users have personal reminders
         $can_see_personal = Session::getCurrentInterface() === 'central';

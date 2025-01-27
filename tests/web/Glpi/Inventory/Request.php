@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,8 +41,8 @@ use GuzzleHttp\Psr7\Response;
 
 class Request extends \DBTestCase
 {
-    private $http_client;
-    private $base_uri;
+    private GuzzleHttp\Client $http_client;
+    private string $base_uri;
 
     public function beforeTestMethod($method)
     {
@@ -94,7 +94,7 @@ class Request extends \DBTestCase
             function () {
                 $this->http_client->request(
                     'GET',
-                    $this->base_uri . 'front/inventory.php'
+                    $this->base_uri . 'Inventory'
                 );
             }
         );
@@ -110,7 +110,7 @@ class Request extends \DBTestCase
             function () {
                 $this->http_client->request(
                     'GET',
-                    $this->base_uri . 'front/inventory.php?action=getConfig'
+                    $this->base_uri . 'Inventory?action=getConfig'
                 );
             }
         );
@@ -126,7 +126,7 @@ class Request extends \DBTestCase
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml'
@@ -151,7 +151,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/json'
@@ -169,7 +169,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
@@ -188,7 +188,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/x-compress-zlib',
@@ -209,7 +209,45 @@ XML
     {
         $res = $this->http_client->request(
             'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                '<REQUEST>' .
+                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                  '<QUERY>PROLOG</QUERY>' .
+                '</REQUEST>'
+            ]
+        );
+        $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+    }
+
+    public function testPrologRequestLegacyURI()
+    {
+        $res = $this->http_client->request(
+            'POST',
             $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                '<REQUEST>' .
+                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                  '<QUERY>PROLOG</QUERY>' .
+                '</REQUEST>'
+            ]
+        );
+        $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+    }
+
+    public function testPrologRequestRootURI()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri,
             [
                 'headers' => [
                     'Content-Type' => 'application/xml'
@@ -248,7 +286,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml'
@@ -269,7 +307,7 @@ XML
         //second attempt should be authorized
         $res = $this->http_client->request(
             'POST',
-            $this->base_uri . 'front/inventory.php',
+            $this->base_uri . 'Inventory',
             [
                 'headers' => [
                     'Content-Type' => 'application/xml',
@@ -311,7 +349,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml'
@@ -334,7 +372,7 @@ XML
             function () use ($basic_auth_login, $basic_auth_password) {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml',
@@ -381,7 +419,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml'
@@ -404,7 +442,7 @@ XML
             function () {
                 $this->http_client->request(
                     'POST',
-                    $this->base_uri . 'front/inventory.php',
+                    $this->base_uri . 'Inventory',
                     [
                         'headers' => [
                             'Content-Type' => 'application/xml',
