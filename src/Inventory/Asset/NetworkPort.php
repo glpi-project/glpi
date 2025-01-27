@@ -60,6 +60,7 @@ class NetworkPort extends InventoryAsset
     private $current_connection;
     private $vlan_stmt;
     private $pvlan_stmt;
+    private Conf $conf;
 
     public function prepare(): array
     {
@@ -899,6 +900,7 @@ class NetworkPort extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        $this->conf = $conf;
         return true;
     }
 

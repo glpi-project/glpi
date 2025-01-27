@@ -98,14 +98,16 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      */
     public function createHub($netports_id, $entities_id = 0)
     {
-        $config = \Config::getConfigurationValues('inventory');
-        if ($config['import_unmanaged'] == 0) {
+        $netport = new NetworkPort();
+
+        $unmanagedasset = new \Glpi\Inventory\Asset\Unmanaged($netport, ['id' => $netports_id, 'entities_id' => $entities_id]);
+        $conf = $unmanagedasset->checkConf(new \Glpi\Inventory\Conf());
+        if (!$conf) {
             return 0;
         }
 
-        $netport = new NetworkPort();
-
         $unmanaged = new Unmanaged();
+
         $hubs_id = $unmanaged->add([
             'hub'          => 1,
             'name'         => 'Hub',
