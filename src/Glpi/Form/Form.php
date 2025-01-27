@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use CommonDBTM;
+use CommonGLPI;
 use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
@@ -131,6 +132,47 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    {
+        if (!$item instanceof Category) {
+            return "";
+        }
+
+        $nb = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable(self::getTable(), [
+                'forms_categories_id' => $item->getID(),
+            ]);
+        }
+
+        return self::createTabEntry(
+            self::getTypeName(Session::getPluralNumber()),
+            $nb,
+        );
+    }
+
+    #[Override]
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ): bool {
+        if (!$item instanceof Category) {
+            return false;
+        }
+
+        self::displayList([
+            [
+                'link'       => 'AND',
+                'field'      => 6,  // Service catalog category
+                'searchtype' => 'equals',
+                'value'      => $item->getID()
+            ]
+        ], 1 /* Sort by name */);
+        return true;
+    }
+
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -173,6 +215,14 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
             'massiveaction' => false
+        ];
+        $search_options[] = [
+            'id'            => '6',
+            'table'         => Category::getTable(),
+            'field'         => 'completename',
+            'name'          => Category::getTypeName(1),
+            'datatype'      => 'dropdown',
+            'massiveaction' => true,
         ];
 
         return $search_options;
