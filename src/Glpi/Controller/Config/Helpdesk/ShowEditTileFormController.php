@@ -75,6 +75,10 @@ final class ShowEditTileFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        if (!$tile::canView() || !$tile->canViewItem()) {
+            throw new AccessDeniedHttpException();
+        }
+
         // Render form
         return $this->render('pages/admin/helpdesk_home_config_edit_tile_form.html.twig', [
             'tile' => $tile,
