@@ -1048,7 +1048,7 @@ class MailCollector extends CommonDBTM
         $play_rules = (isset($options['play_rules']) && $options['play_rules']);
         $headers = $this->getHeaders($message);
 
-        $tkt                 = [];
+        $tkt                 = Ticket::getDefaultValues();
         $tkt['_blacklisted'] = false;
        // For RuleTickets
         $tkt['_mailgate']    = $options['mailgates_id'];
