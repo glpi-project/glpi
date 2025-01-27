@@ -55,7 +55,7 @@ class HasRemoteManagementCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Generate remote links for common services");
+        return __("Generate links for common remote access and control services");
     }
 
     public function getCloneRelations(): array

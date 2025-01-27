@@ -56,7 +56,7 @@ class HasPlugCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Has power plugs");
+        return __("Has power plugs. Usually related to PDU or UPS");
     }
 
     public function getCloneRelations(): array

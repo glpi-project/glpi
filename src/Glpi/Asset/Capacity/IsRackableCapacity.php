@@ -55,7 +55,7 @@ class IsRackableCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("It can be inserted in a datacenter rack");
+        return __("Can be inserted in a datacenter rack");
     }
 
     public function getSearchOptions(string $classname): array

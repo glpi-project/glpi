@@ -56,7 +56,7 @@ class HasDomainsCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Links domains");
+        return __("Track domains, records and their expiration dates");
     }
 
     public function getCloneRelations(): array

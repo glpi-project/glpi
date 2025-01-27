@@ -56,7 +56,7 @@ class HasContractsCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Link contracts to the asset");
+        return __("Link contracts to the asset for costs, renewal and supplier tracking");
     }
 
     public function getCloneRelations(): array
