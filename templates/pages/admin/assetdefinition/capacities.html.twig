@@ -50,7 +50,7 @@
     <input type="hidden" name="_update_capacities" value="1" />
     {% for capacity in capacities %}
         {% set label %}
-            <span class="d-inline-flex align-items-center">
+            <span class="d-inline-flex align-items-center badge bg-gray-600">
                 <span>{{ capacity.getLabel() }}</span>
                 <i class="ms-1 {{ capacity.getIcon() }}"></i>
             </span>
@@ -76,7 +76,10 @@
                     title="{{ capacity.getCapacityUsageDescription(classname) }}"></i>
             </label>
         {% endset %}
-        {{ fields.field('capacities[]', field, label) }}
+        {{ fields.field('capacities[]', field, label, {
+            label_class: 'col-xxl-10',
+            input_class: 'col-xxl-2',
+        }) }}
     {% endfor %}
 
     {# Modal #}
