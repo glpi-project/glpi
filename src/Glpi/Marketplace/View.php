@@ -283,11 +283,8 @@ class View extends CommonGLPI
         // found a logo from online resource?
         if (isset($apidata['logo_url']) && strpos(strtolower($apidata['logo_url']), '.png') !== false) return $apidata['logo_url'];
 
-        // absolute path to the plugin directory (for checking if a local file exists)
-        $pluginDir = GLPI_ROOT . '/plugins/' . $key . '/';
-
-        // relative path to the plugin directory (for html view)
-        $pluginPath = '../plugins/' . $key . '/';
+        // path to the plugin directory (for checking if a local file exists)
+        $pluginDir = Plugin::getPhpDir($key);
 
         // try to find a local logo
         $logo = $pluginDir . $key . '.png';
