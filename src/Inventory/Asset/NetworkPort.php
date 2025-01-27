@@ -872,26 +872,27 @@ class NetworkPort extends InventoryAsset
         if (!$hubs_id) {
             //create direct connection if import_unmanaged is enabled
             $hubs_id = $link->createHub($netports_id, $this->entities_id);
+            if (!$hubs_id) {
+                return;
+            }
         }
 
-        if (!$hubs_id) {
-            $glpi_ports = [];
-            $dbports = $netport->find([
-                'items_id' => $hubs_id,
-                'itemtype' => Unmanaged::getType()
-            ]);
-            foreach ($dbports as $dbport) {
-                $id = $link->getOppositeContact($dbport['id']);
-                if ($id) {
-                    $glpi_ports[$id] = $dbport['id'];
-                }
+        $glpi_ports = [];
+        $dbports = $netport->find([
+            'items_id' => $hubs_id,
+            'itemtype' => Unmanaged::getType()
+        ]);
+        foreach ($dbports as $dbport) {
+            $id = $link->getOppositeContact($dbport['id']);
+            if ($id) {
+                $glpi_ports[$id] = $dbport['id'];
             }
+        }
 
-            foreach ($found_macs as $ports_id) {
-                if (!isset($glpi_ports[$ports_id])) {
-                // Connect port (port found in GLPI)
-                    $link->connectToHub($ports_id, $hubs_id);
-                }
+        foreach ($found_macs as $ports_id) {
+            if (!isset($glpi_ports[$ports_id])) {
+            // Connect port (port found in GLPI)
+                $link->connectToHub($ports_id, $hubs_id);
             }
         }
     }
