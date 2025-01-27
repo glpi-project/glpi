@@ -3171,8 +3171,10 @@ TWIG, $twig_params);
         $auth->extauth       = 1;
 
         $infos  = $auth->connection_ldap($ldap_method, $login, $password, $error);
+        // Get another connection using the rootdn, in case the user doesn't have all the permissions required to see their own info
+        $rootdn_ldap_connection = self::tryToConnectToServer($ldap_method, $ldap_method['rootdn'], (new GLPIKey())->decrypt($ldap_method['rootdn_passwd']));
 
-        if ($infos === false) {
+        if ($infos === false || $rootdn_ldap_connection === false) {
             return $auth;
         }
 
@@ -3200,7 +3202,7 @@ TWIG, $twig_params);
                 $auth->user_present = false;
             }
             $auth->user->getFromLDAP(
-                $auth->ldap_connection,
+                $rootdn_ldap_connection,
                 $ldap_method,
                 $user_dn,
                 $login,
