@@ -115,5 +115,13 @@ class NetworkPort_NetworkPortTest extends DbTestCase
         $this->assertSame($unmanaged->getType(), $netport->fields['itemtype']);
         $this->assertSame('Hub link', $netport->fields['name']);
         $this->assertSame(\NetworkPortEthernet::getType(), $netport->fields['instantiation_type']);
+
+        // Set import of unmanaged configuration to false before retrying createHub
+        $config = \Config::getConfigurationValues('inventory');
+        $config['import_unmanaged'] = "0";
+        \Config::setConfigurationValues('inventory', $config);
+
+        $hubs_id = $wired->createHub($ports_id);
+        $this->assertSame(0, $hubs_id);
     }
 }
