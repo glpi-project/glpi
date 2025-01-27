@@ -3283,7 +3283,7 @@ JAVASCRIPT;
                 && isset($authtype['realname_field'])
                 && !empty($authtype['realname_field'])
             ) {
-                echo $this->fields["realname"];
+                echo htmlescape($this->fields["realname"]);
             } else {
                 echo Html::input(
                     'realname',

@@ -521,7 +521,7 @@ class Item_SoftwareLicense extends CommonDBRelation
          */
         global $CFG_GLPI, $DB;
 
-        $searchID = $license->getField('id');
+        $searchID = (int) $license->getField('id');
 
         if (!Software::canView() || !$searchID) {
             return false;

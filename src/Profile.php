@@ -1306,7 +1306,7 @@ class Profile extends CommonDBTM
         if ($canedit) {
             echo "<tr'>";
             echo "<td colspan='4' class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1347,7 +1347,7 @@ class Profile extends CommonDBTM
 
         if ($canedit) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1402,7 +1402,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1468,7 +1468,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1518,7 +1518,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1652,7 +1652,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1763,7 +1763,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1880,7 +1880,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1934,7 +1934,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -1978,7 +1978,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
@@ -2027,7 +2027,7 @@ class Profile extends CommonDBTM
             && $closeform
         ) {
             echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->fields['id'] . "'>";
+            echo "<input type='hidden' name='id' value='" . (int) $this->fields['id'] . "'>";
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',

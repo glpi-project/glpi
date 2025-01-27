@@ -113,9 +113,9 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $language   = '';
         if ($item::class === KnowbaseItem::class) {
-            $kb_item_id = $item->getID();
+            $kb_item_id = (int) $item->getID();
         } else {
-            $kb_item_id = $item->fields['knowbaseitems_id'];
+            $kb_item_id = (int) $item->fields['knowbaseitems_id'];
             $language   = $item->fields['language'];
         }
         $where = [

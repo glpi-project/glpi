@@ -95,7 +95,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     public static function showForCartridgeItem(CartridgeItem $item)
     {
 
-        $instID = $item->getField('id');
+        $instID = (int) $item->getField('id');
         if (!$item->can($instID, READ)) {
             return false;
         }
