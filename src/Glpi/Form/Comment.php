@@ -36,9 +36,11 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
 use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -49,6 +51,9 @@ use Ramsey\Uuid\Uuid;
 final class Comment extends CommonDBChild implements BlockInterface, ConditionnableInterface
 {
     use ConditionnableTrait;
+
+    public const TRANSLATION_KEY_NAME = 'comment_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'comment_description';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -122,6 +127,33 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                parent_item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Comment title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                parent_item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Comment description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        return $handlers;
     }
 
     public function displayBlockForEditor(): void
