@@ -1559,6 +1559,7 @@ TWIG, $twig_params);
         $param['end']                 = '';
         $param['view_name']           = '';
         $param['force_all_events']    = false;
+        $param['state_done']          = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1585,7 +1586,6 @@ TWIG, $twig_params);
         $param['begin'] = date("Y-m-d H:i:s", $time_begin);
         $param['end']   = date("Y-m-d H:i:s", $time_end);
 
-        $param['state_done'] = true;
         if (!$_SESSION['glpi_plannings']['filters']['StateDone']['display']) {
             $param['state_done'] = false;
         }

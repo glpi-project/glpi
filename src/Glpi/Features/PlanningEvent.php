@@ -399,6 +399,7 @@ trait PlanningEvent
             'color'               => '',
             'event_type_color'    => '',
             'check_planned'       => false,
+            'state_done'          => false,
         ];
         $options = array_merge($default_options, $options);
 
