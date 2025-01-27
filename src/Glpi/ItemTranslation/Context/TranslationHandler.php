@@ -33,12 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\ItemTranslation\Context;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use CommonDBTM;
 
-interface BlockInterface extends ProvideTranslationsInterface
+final class TranslationHandler
 {
-    public function displayBlockForEditor(): void;
-    public function getUniqueIDInForm(): string;
+    public function __construct(
+        private CommonDBTM $parent_item,
+        private string $key,
+        private string $name,
+        private string $value,
+    ) {
+    }
+
+    public function getParentItem(): CommonDBTM
+    {
+        return $this->parent_item;
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }

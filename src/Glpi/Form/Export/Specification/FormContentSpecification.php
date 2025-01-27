@@ -62,6 +62,9 @@ final class FormContentSpecification
     /** @var DestinationContentSpecification[] $destinations */
     public array $destinations = [];
 
+    /** @var TranslationContentSpecification[] $translations */
+    public array $translations = [];
+
     /** @var DataRequirementSpecification[] $data_requirements */
     public array $data_requirements = [];
 
