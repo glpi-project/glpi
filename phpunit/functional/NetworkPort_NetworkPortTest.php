@@ -123,5 +123,10 @@ class NetworkPort_NetworkPortTest extends DbTestCase
 
         $hubs_id = $wired->createHub($ports_id);
         $this->assertSame(0, $hubs_id);
+
+        // Reset import of unmanaged configuration
+        $config = \Config::getConfigurationValues('inventory');
+        $config['import_unmanaged'] = "1";
+        \Config::setConfigurationValues('inventory', $config);
     }
 }
