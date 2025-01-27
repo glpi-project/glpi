@@ -227,6 +227,7 @@ The present file will list all changes made to the project; according to the
 - `Search::getOptions()` no longer returns a reference.
 - The `$target` parameter has been removed from the `AuthLDAP::showLdapGroups()` method.
 - The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
+- `Hooks::SHOW_IN_TIMELINE`/`show_in_timeline` plugin hook has been renamed to `Hooks::TIMELINE_ITEMS`/`timeline_items`.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

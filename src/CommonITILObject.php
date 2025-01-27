@@ -7888,7 +7888,8 @@ abstract class CommonITILObject extends CommonDBTM
             ];
         }
 
-        Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]);
+        Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]); // @phpstan-ignore classConstant.deprecated
+        Plugin::doHook(Hooks::TIMELINE_ITEMS, ['item' => $this, 'timeline' => &$timeline]);
 
         //sort timeline items by date. If items have the same date, sort by id
         $reverse = $params['sort_by_date_desc'];
