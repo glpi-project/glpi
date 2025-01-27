@@ -2688,7 +2688,7 @@ abstract class API
      *
      * @param boolean $return_error (default true)
      *
-     * @return void
+     * @return array|void
      */
     public function messageNotfoundError($return_error = true)
     {
@@ -2708,7 +2708,7 @@ abstract class API
      *
      * @param boolean $return_error (default true)
      *
-     * @return void
+     * @return array|void
      */
     public function messageBadArrayError($return_error = true)
     {
@@ -2728,7 +2728,7 @@ abstract class API
      *
      * @param boolean $return_error (default true)
      *
-     * @return void
+     * @return array|void
      */
     public function messageLostError($return_error = true)
     {
@@ -2748,7 +2748,7 @@ abstract class API
      *
      * @param boolean $return_error (default true)
      *
-     * @return void
+     * @return array|void
      */
     public function messageRightError($return_error = true)
     {
