@@ -70,6 +70,7 @@ class TitleField extends AbstractConfigField
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        // language=Twig
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -87,20 +88,10 @@ class TitleField extends AbstractConfigField
                     'toolbar'          : false,
                     'editor_height'    : 0,
                     'statusbar'        : false,
+                    'rand'             : rand,
+                    'single_line'      : true,
                 })
             ) }}
-
-            <script>
-                tinymce.on('AddEditor', (e) => {
-                    if (e.editor.id === '{{ input_name ~ '_' ~ options.rand }}') {
-                        e.editor.on('keydown', (e) => {
-                            if (e.keyCode === 13) {
-                                e.preventDefault();
-                            }
-                        });
-                    }
-                });
-            </script>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();

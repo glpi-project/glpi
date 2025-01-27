@@ -380,47 +380,45 @@
 {% endif %}
 
 <script defer type="module">
-(async () => {
-    const modules = await Promise.all([
-        import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}")
-    ]);
-    const GlpiFormEditorController = modules[0].GlpiFormEditorController;
-    const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
+    import("{{ js_path('js/modules/Form/TinyMCEEditor.js') }}").then(() => {
+        import("{{ js_path('js/modules/Forms/EditorController.js') }}").then((m_controller) => {
+            const GlpiFormEditorController = m_controller.GlpiFormEditorController;
+            const EditorConvertedExtractedDefaultValue = m_controller.GlpiFormEditorConvertedExtractedDefaultValue;
 
-    const container_selector = "[data-glpi-form-editor-container]";
-    const controller = new GlpiFormEditorController(
-        container_selector,
-        {{ item.fields.is_draft ? "true" : "false" }},
-        "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
-    );
+            const container_selector = "[data-glpi-form-editor-container]";
+            const controller = new GlpiFormEditorController(
+                container_selector,
+                {{ item.fields.is_draft ? "true" : "false" }},
+                "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
+                "[data-glpi-form-editor-templates]"
+            );
 
-    // Temporary solution, would be better to import it directly where it is needed but the current
-    // design doesn't allow it.
-    $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
+            // Temporary solution, would be better to import it directly where it is needed but the current
+            // design doesn't allow it.
+            $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
 
-    {% for question_type in question_types_manager.getQuestionTypes() %}
-        controller.registerQuestionTypeOptions(
-            '{{ get_class(question_type)|e('js') }}',
-            {{ question_type.getFormEditorJsOptions()|raw }}
-        );
+            {% for question_type in question_types_manager.getQuestionTypes() %}
+                controller.registerQuestionTypeOptions(
+                    '{{ get_class(question_type)|e('js') }}',
+                    {{ question_type.getFormEditorJsOptions()|raw }}
+                );
 
-        {% if question_type.getSubTypes() is not empty %}
-            controller.registerQuestionSubTypesOptions(
-                '{{ get_class(question_type)|e('js') }}',
-                {
-                    'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
-                    'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
-                    'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
-                    'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
-                }
-            )
-        {% endif %}
-    {% endfor %}
+                {% if question_type.getSubTypes() is not empty %}
+                    controller.registerQuestionSubTypesOptions(
+                        '{{ get_class(question_type)|e('js') }}',
+                        {
+                            'subtypes'        : {{ question_type.getSubTypes()|json_encode|raw }},
+                            'default_value'   : '{{ question_type.getSubTypeDefaultValue(null)|e('js') }}',
+                            'field_name'      : '{{ question_type.getSubTypeFieldName()|e('js') }}',
+                            'field_aria_label': '{{ question_type.getSubTypeFieldAriaLabel()|e('js') }}',
+                        }
+                    )
+                {% endif %}
+            {% endfor %}
 
-    $(container_selector).data('controller', controller);
-    $(container_selector).addClass("initialized");
-    $(container_selector).trigger("initialized");
-})();
+            $(container_selector).data('controller', controller);
+            $(container_selector).addClass("initialized");
+            $(container_selector).trigger("initialized");
+        });
+    });
 </script>

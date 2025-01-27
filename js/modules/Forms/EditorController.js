@@ -33,10 +33,12 @@
 
 /* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
 
+import { GlpiFormEditorConvertedExtractedDefaultValue } from './EditorConvertedExtractedDefaultValue.js';
+
 /**
  * Client code to handle users actions on the form_editor template
  */
-export class GlpiFormEditorController
+class GlpiFormEditorController
 {
     /**
      * Target form editor (jquery selector)
@@ -1082,8 +1084,11 @@ export class GlpiFormEditorController
     ) {
         const copy = target.clone();
 
-        // Keep track of rich text editors that will need to be initialized
-        const tiny_mce_to_init = [];
+        /**
+         * Keep track of rich text editors that will need to be initialized
+         * @type {Map<string, object>}
+         */
+        const tiny_mce_to_init = new Map();
 
         // Keep track of select2 that will need to be initialized
         const select2_to_init = [];
@@ -1095,10 +1100,11 @@ export class GlpiFormEditorController
         copy.find("textarea").each(function() {
             // Get editor config for this field
             let id = $(this).attr("id");
+            const target_textarea = target.find(`#${id}`);
 
             // JS object are passed by reference, we need to clone the config
             // to avoid breaking previous instances
-            const config = _.cloneDeep(window.tinymce_editor_configs[id]);
+            const config = _.cloneDeep(target_textarea.data('tinymce_config'));
 
             // Rename id to ensure it is unique
             const uid = getUUID();
@@ -1109,11 +1115,7 @@ export class GlpiFormEditorController
             // the rich text editor until the template is inserted into
             // its final DOM destination
             config.selector = `#${id}`;
-            tiny_mce_to_init.push(config);
-
-            // Store config with udpated ID in case we need to re render
-            // this question
-            window.tinymce_editor_configs[id] = config;
+            tiny_mce_to_init.set(id, config);
         });
 
         // Look for select2 to init
@@ -1215,8 +1217,14 @@ export class GlpiFormEditorController
                 throw new Error(`Unknown action: ${action}`);
         }
 
-        // Init the editors
-        tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+        import('../Form/TinyMCEEditor.js').then((m) => {
+            // Init the editors
+            tiny_mce_to_init.forEach((config, id) => {
+                $(`#${id}`).data('tinymce_config', config);
+                new m.default(id, config);
+            });
+        });
+
 
         // Init the select2
         select2_to_init.forEach((config) => {
@@ -2129,8 +2137,10 @@ export class GlpiFormEditorController
      * @param {array} ids
      */
     #enableTinyMce(ids) {
-        ids.forEach((id) => {
-            tinymce.init(window.tinymce_editor_configs[id]);
+        import('../Form/TinyMCEEditor.js').then((m) => {
+            ids.forEach((id) => {
+                new m.default(id, $(`#${id}`).data('tinymce_config'));
+            });
         });
     }
 
@@ -2411,3 +2421,6 @@ export class GlpiFormEditorController
         horizontal_block.find('[data-glpi-form-editor-horizontal-block-placeholder]').remove();
     }
 }
+
+
+export {GlpiFormEditorController, GlpiFormEditorConvertedExtractedDefaultValue};
