@@ -1334,7 +1334,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'genical'             => false,
             'color'               => '',
             'event_type_color'    => '',
-            'state_done'          => false,
+            'state_done'          => true,
         ];
         $options = array_merge($default_options, $options);
 
