@@ -84,6 +84,9 @@ final class UpdateTileController extends AbstractController
         ) {
             throw new BadRequestHttpException();
         }
+        if (!$itemtype::canUpdate()) {
+            throw new AccessDeniedHttpException();
+        }
 
         // Try to load the given tile
         $tile = $itemtype::getById($id);
@@ -92,6 +95,9 @@ final class UpdateTileController extends AbstractController
         }
 
         // Try to update the tile
+        if (!$tile->canUpdateItem()) {
+            throw new AccessDeniedHttpException();
+        }
         if (!$tile->update($input)) {
             throw new RuntimeException();
         }
