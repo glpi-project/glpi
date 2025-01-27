@@ -100,14 +100,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     {
         $netport = new NetworkPort();
 
-        $unmanagedasset = new \Glpi\Inventory\Asset\Unmanaged($netport, ['id' => $netports_id, 'entities_id' => $entities_id]);
-        $conf = $unmanagedasset->checkConf(new \Glpi\Inventory\Conf());
-        if (!$conf) {
-            return 0;
-        }
-
         $unmanaged = new Unmanaged();
-
         $hubs_id = $unmanaged->add([
             'hub'          => 1,
             'name'         => 'Hub',

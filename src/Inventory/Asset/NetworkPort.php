@@ -870,12 +870,13 @@ class NetworkPort extends InventoryAsset
             }
         }
 
-        if (!$hubs_id) {
+        if (!$hubs_id && $this->conf->import_unmanaged) {
             //create direct connection if import_unmanaged is enabled
             $hubs_id = $link->createHub($netports_id, $this->entities_id);
-            if (!$hubs_id) {
-                return;
-            }
+        }
+
+        if (!$hubs_id) {
+            return;
         }
 
         $glpi_ports = [];
