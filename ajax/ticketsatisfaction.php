@@ -115,7 +115,10 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
 
             echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
             echo "<td>";
-            echo Html::input('inquest_URL', ['value' => $entity->fields['inquest_URL']]);
+            echo Html::input('inquest_URL', [
+                'value' => $entity->fields['inquest_URL'],
+                'maxlength' => 255,
+            ]);
             echo "</td></tr>";
         }
 
