@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Infocom;
+use Override;
 
 class HasInfocomCapacity extends AbstractCapacity
 {
@@ -48,6 +49,12 @@ class HasInfocomCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Infocom::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Manage and track asset lifecycle, financial, adminstrative and warranty informations");
     }
 
     public function getCloneRelations(): array

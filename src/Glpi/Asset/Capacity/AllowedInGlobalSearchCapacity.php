@@ -34,6 +34,8 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Override;
+
 class AllowedInGlobalSearchCapacity extends AbstractCapacity
 {
     public function getLabel(): string
@@ -44,6 +46,12 @@ class AllowedInGlobalSearchCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return 'ti ti-search';
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List in the results of a gobal search (from the header bar)");
     }
 
     public function isUsed(string $classname): bool

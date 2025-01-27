@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_RemoteManagement;
+use Override;
 use Session;
 
 class HasRemoteManagementCapacity extends AbstractCapacity
@@ -49,6 +50,12 @@ class HasRemoteManagementCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Item_RemoteManagement::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Generate links for common remote access and control services");
     }
 
     public function getCloneRelations(): array

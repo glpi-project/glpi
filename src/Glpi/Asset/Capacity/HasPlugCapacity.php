@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_Plug;
+use Override;
 use Plug;
 use Session;
 
@@ -50,6 +51,12 @@ class HasPlugCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Plug::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has power plugs. Usually related to PDU or UPS");
     }
 
     public function getCloneRelations(): array

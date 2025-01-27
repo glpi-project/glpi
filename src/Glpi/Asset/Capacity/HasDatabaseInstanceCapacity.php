@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Database;
 use DatabaseInstance;
+use Override;
 use Session;
 
 class HasDatabaseInstanceCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Database::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List database instances found by automatic inventory");
     }
 
     public function getCloneRelations(): array

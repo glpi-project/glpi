@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use Cable;
 use CommonGLPI;
 use Glpi\Socket;
+use Override;
 use Session;
 
 class HasSocketCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasSocketCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Socket::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Manage sockets and cable links");
     }
 
     public function getCloneRelations(): array

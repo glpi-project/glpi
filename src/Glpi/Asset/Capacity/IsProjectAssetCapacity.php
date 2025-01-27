@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Project;
 use Item_Project;
+use Override;
 
 class IsProjectAssetCapacity extends AbstractCapacity
 {
@@ -49,6 +50,12 @@ class IsProjectAssetCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Project::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be associated to a project");
     }
 
     public function getCloneRelations(): array

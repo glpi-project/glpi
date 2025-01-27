@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Override;
 use Reservation;
 use ReservationItem;
 use Session;
@@ -50,6 +51,12 @@ class IsReservableCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Reservation::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("End users can reserve this asset");
     }
 
     public function isUsed(string $classname): bool

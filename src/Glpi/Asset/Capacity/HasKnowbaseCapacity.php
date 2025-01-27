@@ -39,6 +39,7 @@ use CommonGLPI;
 use Knowbase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
+use Override;
 use Session;
 
 class HasKnowbaseCapacity extends AbstractCapacity
@@ -51,6 +52,12 @@ class HasKnowbaseCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return KnowbaseItem::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("KB articles can be associated to this asset");
     }
 
     public function getCloneRelations(): array

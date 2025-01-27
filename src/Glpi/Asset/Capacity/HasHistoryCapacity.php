@@ -55,7 +55,7 @@ class HasHistoryCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Records the modifications made to the asset.");
+        return __("Records the modifications made to the asset");
     }
 
     public function isUsed(string $classname): bool

@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use Item_Rack;
+use Override;
 use Rack;
 use Session;
 
@@ -49,6 +50,12 @@ class IsRackableCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Rack::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be inserted in a datacenter rack");
     }
 
     public function getSearchOptions(string $classname): array
