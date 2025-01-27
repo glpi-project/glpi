@@ -114,7 +114,7 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Generic method to test if an added object is corretly inserted
+     * Assert added object is inserted as expected
      *
      * @param  CommonDBTM $object The object to test
      * @param  int        $id     The id of added object
@@ -134,8 +134,9 @@ class DbTestCase extends \GLPITestCase
                     $v,
                     $object->fields[$k],
                     "
-                    '$k' key current value '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
-                    is not equal to '$v' (" . gettype($v) . ")"
+                    Object not created as expected
+                    field '$k' value is '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
+                    but was expected to be '$v' (" . gettype($v) . ")"
                 );
             }
         }

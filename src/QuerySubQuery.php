@@ -40,7 +40,7 @@ class QuerySubQuery extends Glpi\DBAL\QuerySubQuery
 {
     public function __construct($expression)
     {
-        Toolbox::deprecated();
+        Toolbox::deprecated('\QuerySubQuery is deprecated, use \Glpi\DBAL\QuerySubQuery instead');
         parent::__construct($expression);
     }
 }

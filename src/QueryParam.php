@@ -40,7 +40,7 @@ class QueryParam extends Glpi\DBAL\QueryParam
 {
     public function __construct($expression = '?')
     {
-        Toolbox::deprecated();
+        Toolbox::deprecated('\QueryParam is deprecated, use \Glpi\DBAL\QueryParam instead');
         parent::__construct($expression);
     }
 }
