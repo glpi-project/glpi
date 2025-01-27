@@ -18,8 +18,6 @@
 /vendor/*
 !/vendor/.htaccess
 phpunit.xml
-/tests/code-coverage/
-/tests/coverage-*/
 /tests/cypress/screenshots/
 /tests/cypress/downloads/
 /tests/cypress/videos/
@@ -47,5 +45,6 @@ phpstan.neon
 /.phpunit.result.cache
 /phpunit/files/
 /phpunit/config
+/phpunit/coverage/
 *.phar
 .env
