@@ -57,6 +57,12 @@ final class FormTile extends CommonDBChild implements TileInterface
     }
 
     #[Override]
+    public static function canPurge(): bool
+    {
+        return self::canUpdate();
+    }
+
+    #[Override]
     public function post_getFromDB(): void
     {
         $form = $this->getItem();
@@ -137,5 +143,16 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function getDatabaseId(): int
     {
         return $this->fields['id'];
+    }
+
+    #[Override]
+    public function getConfigFieldsTemplate(): string
+    {
+        return "pages/admin/form_tile_config_fields.html.twig";
+    }
+
+    public function getFormId(): int
+    {
+        return $this->fields['forms_forms_id'] ?? 0;
     }
 }
