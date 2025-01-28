@@ -891,10 +891,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $CFG_GLPI, $DB;
 
+        $default_options = [
+            'display' => true,
+            'token' => '',
+        ];
+        $options = array_merge($default_options, $options);
+
         if (
             $this->fields['allow_access_using_token']
-            && isset($options['token'])
-            && $this->fields['token'] == $options['token']
+            && hash_equals($this->fields['token'], $options['token'])
         ) {
             $answer = preg_replace(
                 [
@@ -910,11 +915,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         } elseif (!$this->can($this->fields['id'], READ)) {
             return false;
         }
-
-        $default_options = [
-            'display' => true,
-        ];
-        $options = array_merge($default_options, $options);
 
         $linkusers_id = true;
         if (
