@@ -578,7 +578,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Path in include_once\\(\\) "/home/stanislas/TECLIB/DEV/GLPI/10bugfixes/inc/downstream\\.php" is not a file or it does not exist\\.$#',
+	'message' => '#^Path in include_once\\(\\) "/var/www/glpi/inc/downstream\\.php" is not a file or it does not exist\\.$#',
 	'identifier' => 'includeOnce.fileNotFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Api/API.php',
