@@ -428,7 +428,7 @@ HTML;
                 updateCurrentTab();
                 return;
             }
-            $(target).html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
+            $(target).html(`<div class="d-flex justify-content-center"><span class="spinner-border spinner-border position-absolute m-5" role="status" aria-hidden="true"></span></div>`);
 
             $.get(url, function(data) {
                $(target).html(data);
