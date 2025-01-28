@@ -69,6 +69,7 @@ define('GLPI_CSRF_EXPIRES', null);
 define('GLPI_CSRF_MAX_TOKENS', null);
 define('GLPI_DEMO_MODE', null);
 define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', null);
+define('GLPI_DISALLOWED_UPLOADS_PATTERN', null);
 define('GLPI_IDOR_EXPIRES', null);
 define('GLPI_INSTALL_MODE', null);
 define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', null);
