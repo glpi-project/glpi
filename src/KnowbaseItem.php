@@ -141,7 +141,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (
             $this->fields["allow_access_using_token"]
             && isset($_GET['token'])
-            && hash_equals($_GET['token'], $this->fields["token"])
+            && hash_equals($this->fields["token"], $_GET['token'])
         ) {
             return true;
         }
@@ -748,7 +748,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 && empty($this->fields['token'])
             ) || (
                 isset($input['_regenerate_token'])
-                && $input['_regenerate_token'] == 'on'
+                && $input['_regenerate_token']
             )
         ) {
             $input['token'] = Toolbox::getRandomString(20);
