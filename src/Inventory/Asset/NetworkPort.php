@@ -60,6 +60,7 @@ class NetworkPort extends InventoryAsset
     private $current_connection;
     private $vlan_stmt;
     private $pvlan_stmt;
+    private Conf $conf;
 
     public function prepare(): array
     {
@@ -869,9 +870,13 @@ class NetworkPort extends InventoryAsset
             }
         }
 
-        if (!$hubs_id) {
-           //create direct connection
+        if (!$hubs_id && $this->conf->import_unmanaged) {
+            //create direct connection if import_unmanaged is enabled
             $hubs_id = $link->createHub($netports_id, $this->entities_id);
+        }
+
+        if (!$hubs_id) {
+            return;
         }
 
         $glpi_ports = [];
@@ -888,7 +893,7 @@ class NetworkPort extends InventoryAsset
 
         foreach ($found_macs as $ports_id) {
             if (!isset($glpi_ports[$ports_id])) {
-               // Connect port (port found in GLPI)
+            // Connect port (port found in GLPI)
                 $link->connectToHub($ports_id, $hubs_id);
             }
         }
@@ -896,6 +901,7 @@ class NetworkPort extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
+        $this->conf = $conf;
         return true;
     }
 
