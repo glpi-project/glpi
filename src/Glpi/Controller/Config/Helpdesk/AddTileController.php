@@ -65,10 +65,6 @@ final class AddTileController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!FormTile::canCreate()) {
-            throw new AccessDeniedHttpException();
-        }
-
         // Read parameters
         $profile_id = $request->request->getInt('_profile_id');
         $itemtype = $request->request->getString('_itemtype');
@@ -82,6 +78,9 @@ final class AddTileController extends AbstractController
             || !is_a($itemtype, CommonDBTM::class, true)
         ) {
             throw new BadRequestHttpException();
+        }
+        if (!$itemtype::canCreate()) {
+            throw new AccessDeniedHttpException();
         }
 
         $profile = Profile::getById($profile_id);

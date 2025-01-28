@@ -38,6 +38,8 @@
 
 interface TileInterface
 {
+    public function getLabel(): string;
+
     public function getTitle(): string;
 
     public function getDescription(): string;

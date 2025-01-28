@@ -55,10 +55,6 @@ final class ShowEditTileFormController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!FormTile::canUpdate()) {
-            throw new AccessDeniedHttpException();
-        }
-
         // Validate itemtype
         $tile_itemtype = $request->query->getString('tile_itemtype');
         if (
@@ -66,6 +62,9 @@ final class ShowEditTileFormController extends AbstractController
             || !is_a($tile_itemtype, CommonDBTM::class, true)
         ) {
             throw new BadRequestHttpException();
+        }
+        if (!$tile_itemtype::canView()) {
+            throw new AccessDeniedHttpException();
         }
 
         // Validate id

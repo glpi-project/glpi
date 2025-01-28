@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
+use CommonDBTM;
 use Config;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -41,6 +42,7 @@ use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Helpdesk\Tile\TilesManager;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +50,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ShowAddTileFormController extends AbstractController
 {
+    private TilesManager $tiles_manager;
+
+    public function __construct()
+    {
+        $this->tiles_manager = new TilesManager();
+    }
+
     #[Route(
         "/Config/Helpdesk/ShowAddTileForm",
         name: "glpi_config_helpdesk_show_add_tile_form",
@@ -55,22 +64,25 @@ final class ShowAddTileFormController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!FormTile::canCreate()) {
+        $possible_tiles = [];
+        foreach ($this->tiles_manager->getTileTypes() as $tile_type) {
+            if ($tile_type::canCreate()) {
+                $possible_tiles[] = $tile_type;
+            }
+        }
+        if (empty($possible_tiles)) {
             throw new AccessDeniedHttpException();
+        }
+
+        $possible_tiles_dropdown_values = [];
+        foreach ($possible_tiles as $possible_tile) {
+            $possible_tiles_dropdown_values[$possible_tile::class] = $possible_tile->getLabel();
         }
 
         // Render form
         return $this->render('pages/admin/helpdesk_home_config_add_tile_form.html.twig', [
-            'possible_tiles' => [
-                new GlpiPageTile(),
-                new ExternalPageTile(),
-                new FormTile(),
-            ],
-            'possible_tiles_dropdown_values' => [
-                GlpiPageTile::class     => __("GLPI page"),
-                ExternalPageTile::class => __("External page"),
-                FormTile::class         => Form::getTypeName(1),
-            ],
+            'possible_tiles' => $possible_tiles,
+            'possible_tiles_dropdown_values' => $possible_tiles_dropdown_values,
         ]);
     }
 }

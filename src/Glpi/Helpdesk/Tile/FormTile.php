@@ -51,6 +51,12 @@ final class FormTile extends CommonDBChild implements TileInterface
     private ?Form $form;
 
     #[Override]
+    public function getLabel(): string
+    {
+        return Form::getTypeName(1);
+    }
+
+    #[Override]
     public static function canCreate(): bool
     {
         return self::canUpdate();

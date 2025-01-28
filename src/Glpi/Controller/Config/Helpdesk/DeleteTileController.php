@@ -75,7 +75,7 @@ final class DeleteTileController extends AbstractController
         ) {
             throw new BadRequestHttpException();
         }
-        if (!$tile_itemtype::canDelete()) {
+        if (!$tile_itemtype::canPurge()) {
             throw new AccessDeniedHttpException();
         }
 

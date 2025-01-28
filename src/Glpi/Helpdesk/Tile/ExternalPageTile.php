@@ -44,7 +44,19 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface
     public static $rightname = 'config';
 
     #[Override]
+    public function getLabel(): string
+    {
+        return __("External page");
+    }
+
+    #[Override]
     public static function canCreate(): bool
+    {
+        return self::canUpdate();
+    }
+
+    #[Override]
+    public static function canPurge(): bool
     {
         return self::canUpdate();
     }

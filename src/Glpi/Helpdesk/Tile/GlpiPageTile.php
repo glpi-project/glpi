@@ -51,7 +51,19 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     public const PAGE_APPROVAL = 'approval';
 
     #[Override]
+    public function getLabel(): string
+    {
+        return __("GLPI page");
+    }
+
+    #[Override]
     public static function canCreate(): bool
+    {
+        return self::canUpdate();
+    }
+
+    #[Override]
+    public static function canPurge(): bool
     {
         return self::canUpdate();
     }
