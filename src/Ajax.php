@@ -397,7 +397,7 @@ JAVASCRIPT;
                 updateCurrentTab();
                 return;
             }
-            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 start-50\"></i>');
+            $(target).html('<i class=\"fas fa-3x fa-spinner fa-pulse position-absolute m-5 ms-0 start-50\"></i>');
 
             $.get(url, function(data) {
                $(target).html(data);
