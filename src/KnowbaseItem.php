@@ -126,6 +126,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             return true;
         }
 
+        if (
+            $this->fields["allow_access_using_token"]
+            && isset($_GET['token'])
+            && hash_equals($_GET['token'], $this->fields["token"])
+        ) {
+            return true;
+        }
+
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                   && $this->haveVisibilityAccess())
@@ -713,10 +721,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function prepareInputForAdd($input)
     {
-        // set title for question if empty
-        if (isset($input["name"]) && empty($input["name"])) {
-            $input["name"] = __('New item');
-        }
+        $input = self::prepareInputForUpdate($input);
 
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
@@ -739,6 +744,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
+
+        if (
+            (
+                isset($input['allow_access_using_token'])
+                && $input['allow_access_using_token']
+                && empty($this->fields['token'])
+            ) || (
+                isset($input['_regenerate_token'])
+                && $input['_regenerate_token'] == 'on'
+            )
+        ) {
+            $input['token'] = Toolbox::getRandomString(20);
+        }
+
         return $input;
     }
 
@@ -888,7 +907,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
          */
         global $CFG_GLPI, $DB;
 
-        if (!$this->can($this->fields['id'], READ)) {
+        if (
+            $this->fields['allow_access_using_token']
+            && isset($options['token'])
+            && $this->fields['token'] == $options['token']
+        ) {
+            $answer = preg_replace(
+                [
+                    '/<img([^>]+src=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/',
+                    '/<a([^>]+href=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/'
+                ],
+                [
+                    '<img$1$2&token=' . $options['token'] . '$3>',
+                    '<a$1$2&token=' . $options['token'] . '$3>'
+                ],
+                $this->getAnswer()
+            );
+        } elseif (!$this->can($this->fields['id'], READ)) {
             return false;
         }
 
@@ -960,7 +995,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'item' => $this,
             'categories' => $article_categories,
             'subject' => KnowbaseItemTranslation::getTranslatedValue($this, 'name'),
-            'answer' => $this->getAnswer(),
+            'answer' => $answer ?? $this->getAnswer(),
             'attachments' => $attachments,
             'writer_link' => $writer_link,
         ]);
@@ -1100,6 +1135,13 @@ TWIG, $twig_params);
                     'glpi_knowbaseitems.is_faq' => 1,
                     'glpi_knowbaseitems_users.users_id' => Session::getLoginUserID(),
                 ]
+            ];
+        }
+
+        if (isset($_GET['token'])) {
+            $criteria['WHERE']['OR'][] = [
+                'glpi_knowbaseitems.allow_access_using_token' => 1,
+                'glpi_knowbaseitems.token'                    => $_GET['token'],
             ];
         }
 
