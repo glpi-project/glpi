@@ -38,29 +38,33 @@ namespace tests\units;
 use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\BrowserKit\HttpBrowser;
 
-class Ticket extends \FrontBaseClass
+class ComputerTest extends \FrontBaseClass
 {
-    public function testTicketCreate()
+    public function testComputerCreate()
     {
         $this->logIn();
-        $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
+        $this->addToCleanup(\Computer::class, ['uuid' => 'thetestuuidtoremove']);
 
         //load computer form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
+        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/computer.form.php');
 
         $crawler = $this->http_client->request(
             'POST',
-            $this->base_uri . 'front/ticket.form.php',
+            $this->base_uri . 'front/computer.form.php',
             [
                 'add'  => true,
-                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
+                'name' => 'A test > computer & name',
+                'uuid' => 'thetestuuidtoremove',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                 '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
             ]
         );
 
-        $ticket = new \Ticket();
-        $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
-        $this->string(Sanitizer::unsanitize($ticket->fields['name'], false))->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']));
+        $this->assertSame(
+            'A test > computer & name',
+            Sanitizer::unsanitize($computer->fields['name'], false)
+        );
     }
 }

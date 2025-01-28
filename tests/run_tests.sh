@@ -71,7 +71,7 @@ while [[ $# -gt 0 ]]; do
   fi
 done
 
-# Flag to indicate wether services containers are usefull
+# Flag to indicate whether services containers are useful
 USE_SERVICES_CONTAINERS=0
 SELECTED_SCOPE="default"
 SELECTED_METHODS="all"
@@ -96,7 +96,7 @@ if [[ $# -gt 0 ]]; then
 
   # Ensure install test is executed if something else than "lint" or "javascript" is executed.
   # This is mandatory as database is initialized by this test suite.
-  # Also, check wether services containes are usefull.
+  # Also, check whether services containers are useful.
   for TEST_SUITE in "${SELECTED_TESTS_TO_RUN[@]}"; do
     if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
       USE_SERVICES_CONTAINERS=1

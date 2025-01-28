@@ -35,33 +35,38 @@
 
 namespace tests\units;
 
-use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
-
-class Computer extends \FrontBaseClass
+class SNMPCredentialTest extends \FrontBaseClass
 {
-    public function testComputerCreate()
+    public function testCreate()
     {
         $this->logIn();
-        $this->addToCleanup(\Computer::class, ['uuid' => 'thetestuuidtoremove']);
+        $this->addToCleanup(\SNMPCredential::class, ['name' => 'thetestuuidtoremove']);
 
-        //load computer form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/computer.form.php');
+        //load snmp credential form
+        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/snmpcredential.form.php');
 
+        $auth_passphrase = '¡<av€ry$3"cur€p@ssp\'hr@se>!';
+        $priv_passphrase = '>>P4ss"ph&ase<<';
         $crawler = $this->http_client->request(
             'POST',
-            $this->base_uri . 'front/computer.form.php',
+            $this->base_uri . 'front/snmpcredential.form.php',
             [
                 'add'  => true,
-                'name' => 'A test > computer & name',
-                'uuid' => 'thetestuuidtoremove',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'name' => 'thetestuuidtoremove',
+                'snmpversion' => 3,
+                'username' => 'snmpuser',
+                'auth_passphrase' => $auth_passphrase,
+                'priv_passphrase' => $priv_passphrase,
                 '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
             ]
         );
 
-        $computer = new \Computer();
-        $this->boolean($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']))->isTrue();
-        $this->string(Sanitizer::unsanitize($computer->fields['name'], false))->isIdenticalTo('A test > computer & name');
+        $credential = new \SNMPCredential();
+        $this->assertTrue($credential->getFromDBByCrit(['name' => 'thetestuuidtoremove']));
+
+        $this->assertNotEquals($auth_passphrase, $credential->fields['auth_passphrase']);
+        $this->assertSame($auth_passphrase, (new \GLPIKey())->decrypt($credential->fields['auth_passphrase']));
+        $this->assertNotEquals($priv_passphrase, $credential->fields['priv_passphrase']);
+        $this->assertSame($priv_passphrase, (new \GLPIKey())->decrypt($credential->fields['priv_passphrase']));
     }
 }
